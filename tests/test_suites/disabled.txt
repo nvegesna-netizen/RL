@@ -5,3 +5,6 @@
 # grpo-qwen3.5-35ba3b-2n8g-megatron-ep16tp2cp2 run hangs the same way on main,
 # so this is the pre-existing Qwen3.5 + Megatron + EP hang.
 tests/test_suites/vlm/vlm_grpo-qwen3.5-35ba3b-geo3k-2n8g-megatron-ep16.sh
+
+# Requires external SWE data plus a NeMo Skills sandbox image.
+tests/test_suites/llm/grpo-nanov3-30ba3b-swe-6n4g-megatron-dynamo-wandb.sh
