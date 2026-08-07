@@ -33,6 +33,7 @@ from copy import deepcopy
 import pytest
 import torch
 
+from nemo_rl.algorithms.async_utils.rollout_lifecycle import RolloutRemovalReason
 from nemo_rl.data.collate_fn import rl_collate_fn
 from nemo_rl.data.datasets.response_datasets import NemoGymDataset
 from nemo_rl.data.interfaces import DatumSpec
@@ -76,7 +77,7 @@ class _FakeBuffer:
     def __init__(self) -> None:
         self.reserve_calls: list[int] = []  # weight_versions passed to reserve
         self.commit_calls: list[tuple[str, object, int, int]] = []
-        self.remove_calls: list[str] = []
+        self.remove_calls: list[tuple[str, RolloutRemovalReason]] = []
         # reserve(weight_version=X) -> group_id; commit fills the slot.
         self._slots: list[str] = []
 
@@ -105,9 +106,16 @@ class _FakeBuffer:
         )
         return record
 
-    async def remove_group(self, group_id: str, *, remove_in_dp: bool = False) -> int:
-        del remove_in_dp
-        self.remove_calls.append(group_id)
+    async def remove_group(
+        self,
+        group_id: str,
+        *,
+        remove_in_dp: bool = False,
+        reason: RolloutRemovalReason = RolloutRemovalReason.UNKNOWN,
+        learner_weight_version: int | None = None,
+    ) -> int:
+        del remove_in_dp, learner_weight_version
+        self.remove_calls.append((group_id, reason))
         self._slots.remove(group_id)
         return 1
 
@@ -149,8 +157,23 @@ class TestGenerateAndPushFlow:
 
         assert len(buf.reserve_calls) == 1
         assert len(buf.remove_calls) == 1
+        assert buf.remove_calls[0][1] is RolloutRemovalReason.FAILED
         assert buf._slots == []
         assert buf.commit_calls == []
+
+    def test_rollout_cancellation_records_distinct_reason(self):
+        async def _cancel_rollout(_sample):
+            raise asyncio.CancelledError
+
+        buf = _FakeBuffer()
+        mgr = _make_manager(buf, _FakeImpl(on_run=_cancel_rollout))
+
+        with pytest.raises(asyncio.CancelledError):
+            _run(mgr.generate_and_push({"prompt": "p"}))
+
+        assert len(buf.remove_calls) == 1
+        assert buf.remove_calls[0][1] is RolloutRemovalReason.CANCELLED
+        assert buf._slots == []
 
     def test_reserves_then_runs_then_commits(self):
         events: list[str] = []

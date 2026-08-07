@@ -43,6 +43,7 @@ import ray
 import torch
 
 from nemo_rl.algorithms.async_utils.staleness_sampler import create_sampler
+from nemo_rl.algorithms.async_utils.rollout_lifecycle import RolloutLifecycleRecorder
 from nemo_rl.algorithms.single_controller_utils.config import (
     AdvantageConfig,
     MasterConfig,
@@ -120,6 +121,10 @@ class SingleControllerActor:
         # Rebind so writer and sampler share one buffer instance even
         # when Ray deserializes rollout_manager and tq_buffer separately.
         self._rollout_manager._tq_buffer = self._buffer
+        self._lifecycle_recorder: Optional[RolloutLifecycleRecorder] = None
+        if self._async_cfg.lifecycle_audit_path is not None:
+            self._lifecycle_recorder = RolloutLifecycleRecorder()
+            self._buffer.set_lifecycle_recorder(self._lifecycle_recorder)
 
         # Built here, not on the driver: Logger backends (wandb/tb/...) hold
         # _thread.lock that Ray can't cloudpickle into the actor.
@@ -207,6 +212,11 @@ class SingleControllerActor:
             rollout_task.cancel()
             train_task.cancel()
             await asyncio.gather(rollout_task, train_task, return_exceptions=True)
+            if self._lifecycle_recorder is not None:
+                assert self._async_cfg.lifecycle_audit_path is not None
+                self._lifecycle_recorder.flush_jsonl(
+                    self._async_cfg.lifecycle_audit_path
+                )
             self._logger.finish()
 
         return {

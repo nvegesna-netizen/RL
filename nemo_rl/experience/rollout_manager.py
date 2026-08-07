@@ -22,6 +22,7 @@ from transformers import PreTrainedTokenizerBase
 from wandb import Table
 
 from nemo_rl.algorithms.async_utils.replay_buffer import TQReplayBuffer
+from nemo_rl.algorithms.async_utils.rollout_lifecycle import RolloutRemovalReason
 from nemo_rl.data.interfaces import DatumSpec, LLMMessageLogType
 from nemo_rl.distributed.batched_data_dict import BatchedDataDict
 from nemo_rl.environments.interfaces import EnvironmentInterface
@@ -751,8 +752,17 @@ class RolloutManager:
                 start_weight_version=start_version,
                 end_weight_version=end_version,
             )
+        except asyncio.CancelledError:
+            await self._tq_buffer.remove_group(
+                group_id,
+                reason=RolloutRemovalReason.CANCELLED,
+            )
+            raise
         except BaseException:
             # A failed rollout must not leave an unready slot that can block an
             # in-order sampler. commit() rolls back any DataPlane rows it wrote.
-            await self._tq_buffer.remove_group(group_id)
+            await self._tq_buffer.remove_group(
+                group_id,
+                reason=RolloutRemovalReason.FAILED,
+            )
             raise

@@ -54,6 +54,7 @@ from typing import (
 from pydantic import BaseModel, Field, NonNegativeInt
 
 from nemo_rl.algorithms.async_utils.replay_buffer import TQReplayBuffer
+from nemo_rl.algorithms.async_utils.rollout_lifecycle import RolloutRemovalReason
 from nemo_rl.data_plane import KVBatchMeta
 
 # Poll interval for the rollout-pump admission gate.
@@ -151,7 +152,12 @@ class BaseSampler(abc.ABC):
         ]
         if not stale_idxs:
             return 0
-        return await self._buffer.remove(stale_idxs, remove_in_dp=True)
+        return await self._buffer.remove(
+            stale_idxs,
+            remove_in_dp=True,
+            reason=RolloutRemovalReason.STALE_EVICTED,
+            learner_weight_version=current_train_weight,
+        )
 
     # ── derived facts ────────────────────────────────────────────────────
     @property
@@ -181,6 +187,8 @@ class BaseSampler(abc.ABC):
         valid_idxs: list[int],
         min_prompt_groups: int,
         max_prompt_groups: int,
+        *,
+        current_train_weight: int,
     ) -> tuple[Optional[KVBatchMeta], int]:
         """Cap, drop from the buffer, and concat the chosen groups.
 
@@ -193,7 +201,12 @@ class BaseSampler(abc.ABC):
         requested_groups = min(len(valid_idxs), max_prompt_groups)
         selected_idxs = valid_idxs[:requested_groups]
         selected_metas = [self._buffer.meta_list[i] for i in selected_idxs]
-        await self._buffer.remove(selected_idxs, remove_in_dp=False)
+        await self._buffer.remove(
+            selected_idxs,
+            remove_in_dp=False,
+            reason=RolloutRemovalReason.SELECTED,
+            learner_weight_version=current_train_weight,
+        )
         return (
             selected_metas[0].concat(*selected_metas[1:]),  # type: ignore
             len(selected_idxs),
@@ -255,7 +268,10 @@ class WindowedSampler(BaseSampler):
                 )
             )
         return await self._finalize_selection(
-            valid_idxs, min_prompt_groups, max_prompt_groups
+            valid_idxs,
+            min_prompt_groups,
+            max_prompt_groups,
+            current_train_weight=current_train_weight,
         )
 
 
@@ -335,7 +351,10 @@ class WeightFifoSampler(_GatedSampler):
             if weight == target_version and self._buffer.ready_list[i]
         ]
         return await self._finalize_selection(
-            valid_idxs, min_prompt_groups, max_prompt_groups
+            valid_idxs,
+            min_prompt_groups,
+            max_prompt_groups,
+            current_train_weight=current_train_weight,
         )
 
 
@@ -370,7 +389,10 @@ class InOrderSampler(_GatedSampler):
             if target == current_train_weight and self._buffer.ready_list[i]
         ]
         return await self._finalize_selection(
-            valid_idxs, min_prompt_groups, max_prompt_groups
+            valid_idxs,
+            min_prompt_groups,
+            max_prompt_groups,
+            current_train_weight=current_train_weight,
         )
 
     async def evict(self, *, current_train_weight: int) -> int:
@@ -386,7 +408,12 @@ class InOrderSampler(_GatedSampler):
         ]
         if not stale_idxs:
             return 0
-        return await self._buffer.remove(stale_idxs, remove_in_dp=True)
+        return await self._buffer.remove(
+            stale_idxs,
+            remove_in_dp=True,
+            reason=RolloutRemovalReason.STALE_EVICTED,
+            learner_weight_version=current_train_weight,
+        )
 
 
 # ── config + factory ────────────────────────────────────────────────────────

@@ -24,6 +24,11 @@ import torch
 
 import nemo_rl.algorithms.async_utils.replay_buffer as _replay_buffer_module
 from nemo_rl.algorithms.async_utils.replay_buffer import TQReplayBuffer
+from nemo_rl.algorithms.async_utils.rollout_lifecycle import (
+    RolloutLifecycleRecorder,
+    RolloutLifecycleStage,
+    RolloutRemovalReason,
+)
 from nemo_rl.data_plane import KVBatchMeta
 from nemo_rl.distributed.batched_data_dict import BatchedDataDict
 from nemo_rl.experience.interfaces import PromptGroupRecord
@@ -136,12 +141,14 @@ def _make_buffer(
     dp: FakeDataPlaneClient,
     *,
     require_routed_experts: bool = False,
+    lifecycle_recorder: RolloutLifecycleRecorder | None = None,
 ) -> TQReplayBuffer:
     return TQReplayBuffer(
         dp,
         partition_id="rollout_data",
         pad_value_dict={"token_ids": 0},
         require_routed_experts=require_routed_experts,
+        lifecycle_recorder=lifecycle_recorder,
     )
 
 
@@ -162,6 +169,45 @@ def _add_group(
 
 
 class TestTQReplayBufferReserveCommit:
+    def test_lifecycle_records_reserve_ready_and_selected(self):
+        timestamps = iter((10, 20, 30))
+        recorder = RolloutLifecycleRecorder(
+            run_id="run",
+            clock_domain_id="controller",
+            clock_ns=lambda: next(timestamps),
+        )
+        dp = FakeDataPlaneClient()
+        buf = _make_buffer(dp, lifecycle_recorder=recorder)
+
+        group_id = buf.reserve(weight_version=3, target_step=5)
+        meta = _run(
+            buf.commit(
+                group_id,
+                _make_record(),
+                start_weight_version=3,
+                end_weight_version=4,
+            )
+        )
+        _run(
+            buf.remove(
+                [0],
+                remove_in_dp=False,
+                reason=RolloutRemovalReason.SELECTED,
+                learner_weight_version=5,
+            )
+        )
+
+        events = recorder.snapshot()
+        assert [event.stage for event in events] == [
+            RolloutLifecycleStage.RESERVED,
+            RolloutLifecycleStage.GROUP_READY,
+            RolloutLifecycleStage.REMOVED,
+        ]
+        assert events[1].mixed_generation_versions is True
+        assert events[1].sample_ids == tuple(meta.sample_ids)
+        assert events[2].removal_reason is RolloutRemovalReason.SELECTED
+        assert events[2].learner_weight_version == 5
+
     def test_commit_clears_rows_when_put_raises_after_writing(self):
         dp = FailAfterPutDataPlaneClient()
         buf = _make_buffer(dp)

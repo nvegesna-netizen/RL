@@ -50,6 +50,8 @@ class AsyncRLConfig(BaseModel, extra="allow"):
     max_buffered_rollouts: int = 64
     # Enable per-rollout diagnostic prints (prompt content / completion previews).
     diagnostics: bool = False
+    # Optional controller-local JSONL path for prompt-group lifecycle events.
+    lifecycle_audit_path: Optional[str] = None
 
 
 class MasterConfig(BaseModel, extra="allow"):

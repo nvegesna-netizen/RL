@@ -23,6 +23,11 @@ from typing import Any, Iterable, Optional
 import ray
 
 from nemo_rl.algorithms.async_utils.interfaces import ReplayBufferProtocol
+from nemo_rl.algorithms.async_utils.rollout_lifecycle import (
+    RolloutLifecycleRecorder,
+    RolloutLifecycleStage,
+    RolloutRemovalReason,
+)
 from nemo_rl.data_plane import KVBatchMeta
 from nemo_rl.data_plane.schema import ROUTED_EXPERTS_FIELD
 from nemo_rl.experience.interfaces import PromptGroupRecord
@@ -651,11 +656,13 @@ class TQReplayBuffer:
         *,
         pad_value_dict: Mapping[str, int],
         require_routed_experts: bool = False,
+        lifecycle_recorder: Optional[RolloutLifecycleRecorder] = None,
     ):
         self._dp_client = dp_client
         self._partition_id = partition_id
         self._pad_value_dict = dict(pad_value_dict)
         self._require_routed_experts = require_routed_experts
+        self._lifecycle_recorder = lifecycle_recorder
         self.meta_list: list[Optional[KVBatchMeta]] = []
         self.start_weight_list: list[int] = []
         self.end_weight_list: list[int] = []
@@ -689,7 +696,20 @@ class TQReplayBuffer:
         self.target_step_list.append(target_step)
         self.ready_list.append(False)
         self._group_ids.append(group_id)
+        if self._lifecycle_recorder is not None:
+            self._lifecycle_recorder.record(
+                group_id=group_id,
+                stage=RolloutLifecycleStage.RESERVED,
+                start_weight_version=weight_version,
+                target_step=target_step,
+            )
         return group_id
+
+    def set_lifecycle_recorder(
+        self, recorder: Optional[RolloutLifecycleRecorder]
+    ) -> None:
+        """Attach or detach the controller-local lifecycle recorder."""
+        self._lifecycle_recorder = recorder
 
     async def commit(
         self,
@@ -757,6 +777,15 @@ class TQReplayBuffer:
             self.meta_list[idx] = meta
             self.end_weight_list[idx] = end_weight_version
             self.ready_list[idx] = True
+            if self._lifecycle_recorder is not None:
+                self._lifecycle_recorder.record(
+                    group_id=group_id,
+                    stage=RolloutLifecycleStage.GROUP_READY,
+                    start_weight_version=start_weight_version,
+                    end_weight_version=end_weight_version,
+                    target_step=self.target_step_list[idx],
+                    sample_ids=sample_ids,
+                )
             return meta
         except BaseException as commit_error:
             # put_samples may have written rows before raising. Roll back by the
@@ -776,12 +805,21 @@ class TQReplayBuffer:
                 )
             raise
 
-    async def remove_group(self, group_id: str, *, remove_in_dp: bool = False) -> int:
+    async def remove_group(
+        self,
+        group_id: str,
+        *,
+        remove_in_dp: bool = False,
+        reason: RolloutRemovalReason = RolloutRemovalReason.UNKNOWN,
+        learner_weight_version: Optional[int] = None,
+    ) -> int:
         """Remove the live slot identified by ``group_id``.
 
         Args:
             group_id: Group identifier returned by :meth:`reserve`.
             remove_in_dp: Whether to clear rows referenced by a committed slot.
+            reason: Why the group is being removed.
+            learner_weight_version: Learner version at removal, when applicable.
 
         Returns:
             Number of removed slots (always one on success).
@@ -793,14 +831,28 @@ class TQReplayBuffer:
             idx = self._group_ids.index(group_id)
         except ValueError as error:
             raise ValueError(f"unknown group_id={group_id!r}") from error
-        return await self.remove([idx], remove_in_dp=remove_in_dp)
+        return await self.remove(
+            [idx],
+            remove_in_dp=remove_in_dp,
+            reason=reason,
+            learner_weight_version=learner_weight_version,
+        )
 
-    async def remove(self, idxs: list[int], remove_in_dp: bool) -> int:
+    async def remove(
+        self,
+        idxs: list[int],
+        remove_in_dp: bool,
+        *,
+        reason: RolloutRemovalReason = RolloutRemovalReason.UNKNOWN,
+        learner_weight_version: Optional[int] = None,
+    ) -> int:
         """Drop entries at the given indices and optionally clear them from DataPlane.
 
         Args:
             idxs: Entry indices to drop. Must be within [0, size).
             remove_in_dp: If True, also clear the dropped rows from DataPlane.
+            reason: Why the groups are being removed.
+            learner_weight_version: Learner version at removal, when applicable.
 
         Returns:
             Number of group entries removed from the buffer.
@@ -816,10 +868,24 @@ class TQReplayBuffer:
             )
 
         dropped_sample_ids: list[str] = []
-        for i in drop_idxs:
+        removed_events: list[
+            tuple[str, int, Optional[int], Optional[int], tuple[str, ...]]
+        ] = []
+        for i in sorted(idxs):
             meta = self.meta_list[i]
+            sample_ids = tuple(meta.sample_ids) if meta is not None else ()
             if meta is not None:
                 dropped_sample_ids.extend(meta.sample_ids)
+            removed_events.append(
+                (
+                    self._group_ids[i],
+                    self.start_weight_list[i],
+                    (self.end_weight_list[i] if self.end_weight_list[i] >= 0 else None),
+                    self.target_step_list[i],
+                    sample_ids,
+                )
+            )
+        for i in drop_idxs:
             del self.meta_list[i]
             del self.start_weight_list[i]
             del self.end_weight_list[i]
@@ -833,6 +899,25 @@ class TQReplayBuffer:
                 sample_ids=dropped_sample_ids,
                 partition_id=self._partition_id,
             )
+
+        if self._lifecycle_recorder is not None:
+            for (
+                group_id,
+                start_weight_version,
+                end_weight_version,
+                target_step,
+                sample_ids,
+            ) in removed_events:
+                self._lifecycle_recorder.record(
+                    group_id=group_id,
+                    stage=RolloutLifecycleStage.REMOVED,
+                    start_weight_version=start_weight_version,
+                    end_weight_version=end_weight_version,
+                    target_step=target_step,
+                    learner_weight_version=learner_weight_version,
+                    sample_ids=sample_ids,
+                    removal_reason=reason,
+                )
 
         return len(drop_idxs)
 

@@ -35,6 +35,7 @@ from nemo_rl.algorithms.async_utils.staleness_sampler import (
     WindowedSamplerConfig,
     create_sampler,
 )
+from nemo_rl.algorithms.async_utils.rollout_lifecycle import RolloutRemovalReason
 from nemo_rl.data_plane import KVBatchMeta
 
 
@@ -48,7 +49,9 @@ class FakeBuffer:
         self.end_weight_list: list[int] = []
         self.target_step_list: list[int | None] = []
         self.ready_list: list[bool] = []
-        self.remove_calls: list[tuple[list[int], bool]] = []
+        self.remove_calls: list[
+            tuple[list[int], bool, RolloutRemovalReason, int | None]
+        ] = []
 
     def add(
         self,
@@ -70,8 +73,17 @@ class FakeBuffer:
         self.target_step_list.append(target_step)
         self.ready_list.append(ready)
 
-    async def remove(self, idxs: list[int], remove_in_dp: bool) -> int:
-        self.remove_calls.append((list(idxs), remove_in_dp))
+    async def remove(
+        self,
+        idxs: list[int],
+        remove_in_dp: bool,
+        *,
+        reason: RolloutRemovalReason = RolloutRemovalReason.UNKNOWN,
+        learner_weight_version: int | None = None,
+    ) -> int:
+        self.remove_calls.append(
+            (list(idxs), remove_in_dp, reason, learner_weight_version)
+        )
         for i in sorted(idxs, reverse=True):
             del self.meta_list[i]
             del self.start_weight_list[i]
@@ -205,6 +217,7 @@ class TestWindowedSelect:
         )
         assert n == 2  # a(3) and b(5); c(1) excluded
         assert len(buf.start_weight_list) == 1  # only c remains
+        assert buf.remove_calls[0][2:] == (RolloutRemovalReason.SELECTED, 5)
 
     def test_below_min_returns_none(self):
         buf = FakeBuffer()
@@ -296,6 +309,7 @@ class TestDefaultEvictSkipsUnready:
         removed = _run(s.evict(current_train_weight=5))  # min_valid = 4
         assert removed == 1
         assert buf.start_weight_list == [5]
+        assert buf.remove_calls[0][2:] == (RolloutRemovalReason.STALE_EVICTED, 5)
 
     def test_windowed_evict_skips_unready_stale(self):
         buf = FakeBuffer()
