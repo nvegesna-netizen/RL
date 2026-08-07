@@ -19,6 +19,11 @@ import torch
 from turn_level_credit.advantage import TurnLevelGRPOAdvantageEstimator
 from turn_level_credit.config import TurnCreditConfig
 from turn_level_credit.trace import TurnBatch, attach_turn_batch
+from turn_level_credit.verifier_credit import (
+    VerifierCreditTransformConfig,
+    VerifierScoreBatch,
+    compute_verifier_credit,
+)
 
 
 class _FixedBaseEstimator:
@@ -40,6 +45,26 @@ def _repeated_batch():
             trainable_mask=torch.tensor([[True, True]]),
             assistant_spans=torch.tensor([[[1, 3], [4, 5]]]),
             terminateds=torch.tensor([[False, True]]),
+        ),
+    )
+    return batch
+
+
+def _verifier_repeated_batch(scores: torch.Tensor):
+    batch_size, turns = scores.shape
+    batch = {}
+    spans = torch.arange(turns, dtype=torch.int64).repeat(batch_size, 1)
+    terminateds = torch.zeros_like(scores, dtype=torch.bool)
+    terminateds[:, -1] = True
+    attach_turn_batch(
+        batch,
+        TurnBatch(
+            rewards=scores.clone(),
+            credit_rewards=scores.clone(),
+            mask=torch.ones_like(scores, dtype=torch.bool),
+            trainable_mask=torch.ones_like(scores, dtype=torch.bool),
+            assistant_spans=torch.stack((spans, spans + 1), dim=-1),
+            terminateds=terminateds,
         ),
     )
     return batch
@@ -76,6 +101,32 @@ def test_zero_turn_weight_still_validates_trace_transport():
             mask=torch.ones((1, 5)),
             repeated_batch={},
         )
+
+
+def test_zero_turn_weight_with_verifier_config_is_bitwise_base_equivalent():
+    base_output = torch.tensor([[3.0, 5.0]])
+    estimator = TurnLevelGRPOAdvantageEstimator(
+        base_estimator=_FixedBaseEstimator(base_output),
+        config=TurnCreditConfig(
+            enabled=True,
+            environment_component="reward/verifier_score",
+            turn_weight=0.0,
+            verifier_transform=VerifierCreditTransformConfig(
+                mode="retrospective_hindsight",
+                normalization="group_zscore",
+            ),
+        ),
+    )
+
+    actual = estimator.compute_advantage(
+        prompt_ids=torch.tensor([[1, 2]]),
+        rewards=torch.tensor([0.0]),
+        mask=torch.ones((1, 2)),
+        repeated_batch=_verifier_repeated_batch(torch.tensor([[0.0, 1.0]])),
+    )
+
+    assert actual.data_ptr() == base_output.data_ptr()
+    assert torch.equal(actual, base_output)
 
 
 def test_composes_macro_and_turn_credit_on_generated_spans():
@@ -137,3 +188,101 @@ def test_return_to_go_changes_earlier_turn_only():
     )
 
     assert actual.tolist() == [[0.0, 0.375, 0.375, 0.0, -0.25]]
+
+
+def test_verifier_normalization_uses_exact_nonadjacent_prompt_rows():
+    scores = torch.tensor([[0.0], [0.5], [1.0], [0.5]])
+    estimator = TurnLevelGRPOAdvantageEstimator(
+        base_estimator=_FixedBaseEstimator(torch.zeros((4, 1))),
+        config=TurnCreditConfig(
+            enabled=True,
+            environment_component="reward/verifier_score",
+            macro_weight=0.0,
+            turn_weight=1.0,
+            verifier_transform=VerifierCreditTransformConfig(
+                mode="raw",
+                normalization="group_zscore",
+                normalization_epsilon=1.0e-12,
+            ),
+        ),
+    )
+
+    actual = estimator.compute_advantage(
+        prompt_ids=torch.tensor([[1, 2], [9, 9], [1, 2], [9, 9]]),
+        rewards=torch.zeros(4),
+        mask=torch.ones((4, 1)),
+        repeated_batch=_verifier_repeated_batch(scores),
+    )
+
+    torch.testing.assert_close(
+        actual,
+        torch.tensor([[-1.0], [0.0], [1.0], [0.0]]),
+    )
+
+
+@pytest.mark.parametrize(
+    "mode",
+    ["raw", "adjacent_delta", "retrospective", "retrospective_hindsight"],
+)
+def test_verifier_modes_flow_through_turn_span_scatter(mode):
+    scores = torch.tensor([[0.0, 0.0, 1.0], [0.0, 0.0, 0.0]])
+    transform = VerifierCreditTransformConfig(mode=mode)
+    estimator = TurnLevelGRPOAdvantageEstimator(
+        base_estimator=_FixedBaseEstimator(torch.zeros((2, 3))),
+        config=TurnCreditConfig(
+            enabled=True,
+            environment_component="reward/verifier_score",
+            macro_weight=0.0,
+            turn_weight=1.0,
+            verifier_transform=transform,
+        ),
+    )
+
+    actual = estimator.compute_advantage(
+        prompt_ids=torch.tensor([[4, 2], [4, 2]]),
+        rewards=torch.zeros(2),
+        mask=torch.ones((2, 3)),
+        repeated_batch=_verifier_repeated_batch(scores),
+    )
+    expected = compute_verifier_credit(
+        VerifierScoreBatch(
+            scores=scores,
+            mask=torch.ones_like(scores, dtype=torch.bool),
+            prompt_group_ids=torch.zeros(2, dtype=torch.int64),
+        ),
+        config=transform,
+    )
+
+    torch.testing.assert_close(actual, expected)
+
+
+@pytest.mark.parametrize(
+    ("prompt_ids", "error_type", "message"),
+    [
+        (torch.tensor([1, 1]), ValueError, r"shape \[turn-credit batch"),
+        (torch.tensor([[1.0], [1.0]]), TypeError, "integer token dtype"),
+    ],
+)
+def test_verifier_rejects_malformed_prompt_group_inputs(
+    prompt_ids,
+    error_type,
+    message,
+):
+    estimator = TurnLevelGRPOAdvantageEstimator(
+        base_estimator=_FixedBaseEstimator(torch.zeros((2, 1))),
+        config=TurnCreditConfig(
+            enabled=True,
+            environment_component="reward/verifier_score",
+            macro_weight=0.0,
+            turn_weight=1.0,
+            verifier_transform=VerifierCreditTransformConfig(),
+        ),
+    )
+
+    with pytest.raises(error_type, match=message):
+        estimator.compute_advantage(
+            prompt_ids=prompt_ids,
+            rewards=torch.zeros(2),
+            mask=torch.ones((2, 1)),
+            repeated_batch=_verifier_repeated_batch(torch.zeros((2, 1))),
+        )

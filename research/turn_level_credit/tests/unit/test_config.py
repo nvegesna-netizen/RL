@@ -21,6 +21,7 @@ from pydantic import ValidationError
 from run_grpo_turn_credit import load_master_and_turn_credit_config
 from run_grpo_turn_credit_dense_puzzle import _paired_config_sha256
 from turn_level_credit.config import TurnCreditConfig
+from turn_level_credit.verifier_credit import VerifierCreditTransformConfig
 
 
 def test_config_defaults_are_macro_only():
@@ -34,6 +35,38 @@ def test_config_defaults_are_macro_only():
     assert config.environment_mode == "immediate"
     assert config.macro_weight == 1.0
     assert config.turn_weight == 0.0
+    assert config.verifier_transform is None
+
+
+def test_verifier_transform_requires_explicit_enabled_component():
+    with pytest.raises(ValidationError, match="enabled=true"):
+        TurnCreditConfig(
+            verifier_transform=VerifierCreditTransformConfig(),
+            environment_component="reward/verifier_score",
+        )
+
+    with pytest.raises(ValidationError, match="environment_component"):
+        TurnCreditConfig(
+            enabled=True,
+            verifier_transform=VerifierCreditTransformConfig(),
+        )
+
+
+@pytest.mark.parametrize(
+    "override",
+    [
+        {"environment_mode": "return_to_go"},
+        {"discount": 0.5},
+    ],
+)
+def test_verifier_transform_rejects_ambiguous_environment_transform(override):
+    with pytest.raises(ValidationError, match="cannot be combined"):
+        TurnCreditConfig(
+            enabled=True,
+            environment_component="reward/verifier_score",
+            verifier_transform=VerifierCreditTransformConfig(),
+            **override,
+        )
 
 
 @pytest.mark.parametrize(

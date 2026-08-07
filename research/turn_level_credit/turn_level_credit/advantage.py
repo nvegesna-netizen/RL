@@ -24,6 +24,32 @@ from turn_level_credit.trace import (
     scatter_turn_credit,
     turn_batch_from_mapping,
 )
+from turn_level_credit.verifier_credit import (
+    VerifierScoreBatch,
+    compute_verifier_credit,
+)
+
+
+def _prompt_group_ids(
+    prompt_ids: torch.Tensor,
+    *,
+    batch_size: int,
+    device: torch.device,
+) -> torch.Tensor:
+    """Match core GRPO's exact padded-prompt row equivalence relation."""
+    if prompt_ids.ndim != 2 or prompt_ids.shape[0] != batch_size:
+        raise ValueError(
+            "Verifier prompt IDs must have shape [turn-credit batch, prompt tokens]"
+        )
+    if prompt_ids.is_floating_point() or prompt_ids.is_complex():
+        raise TypeError("Verifier prompt IDs must use an integer token dtype")
+    _, inverse_group_ids = torch.unique(
+        prompt_ids,
+        dim=0,
+        sorted=True,
+        return_inverse=True,
+    )
+    return inverse_group_ids.to(device=device, dtype=torch.int64)
 
 
 class TurnLevelGRPOAdvantageEstimator:
@@ -71,11 +97,26 @@ class TurnLevelGRPOAdvantageEstimator:
             )
             return macro_advantage
 
-        credit = compute_environment_credit(
-            turn_batch,
-            mode=self.config.environment_mode,
-            discount=self.config.discount,
-        )
+        if self.config.verifier_transform is None:
+            credit = compute_environment_credit(
+                turn_batch,
+                mode=self.config.environment_mode,
+                discount=self.config.discount,
+            )
+        else:
+            prompt_group_ids = _prompt_group_ids(
+                prompt_ids,
+                batch_size=turn_batch.batch_size,
+                device=turn_batch.credit_rewards.device,
+            )
+            credit = compute_verifier_credit(
+                VerifierScoreBatch(
+                    scores=turn_batch.credit_rewards,
+                    mask=turn_batch.mask,
+                    prompt_group_ids=prompt_group_ids,
+                ),
+                config=self.config.verifier_transform,
+            )
         auxiliary_advantage = scatter_turn_credit(
             credit,
             turn_batch,

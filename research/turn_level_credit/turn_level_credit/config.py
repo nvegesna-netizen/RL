@@ -17,6 +17,7 @@
 from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, model_validator
+from turn_level_credit.verifier_credit import VerifierCreditTransformConfig
 
 
 class TurnCreditConfig(BaseModel):
@@ -42,6 +43,9 @@ class TurnCreditConfig(BaseModel):
         turn_weight: Weight applied to the token-aligned turn credit.
         raw_reward_atol: Absolute tolerance used to validate that raw turn
             rewards sum to the trajectory reward before reward transforms.
+        verifier_transform: Optional bounded verifier score-to-credit transform.
+            When configured, it replaces the immediate/return-to-go environment
+            transform while preserving the same transported turn-score tensor.
     """
 
     model_config = ConfigDict(extra="forbid", allow_inf_nan=False)
@@ -56,6 +60,7 @@ class TurnCreditConfig(BaseModel):
     macro_weight: float = 1.0
     turn_weight: float = 0.0
     raw_reward_atol: float = 1.0e-6
+    verifier_transform: VerifierCreditTransformConfig | None = None
 
     @model_validator(mode="after")
     def _validate_numeric_ranges(self) -> "TurnCreditConfig":
@@ -75,4 +80,19 @@ class TurnCreditConfig(BaseModel):
             raise ValueError("turn_credit.turn_weight must be non-negative")
         if self.raw_reward_atol < 0.0:
             raise ValueError("turn_credit.raw_reward_atol must be non-negative")
+        if self.verifier_transform is not None:
+            if not self.enabled:
+                raise ValueError(
+                    "turn_credit.verifier_transform requires turn_credit.enabled=true"
+                )
+            if self.environment_component is None:
+                raise ValueError(
+                    "turn_credit.verifier_transform requires an explicit "
+                    "turn_credit.environment_component"
+                )
+            if self.environment_mode != "immediate" or self.discount != 1.0:
+                raise ValueError(
+                    "turn_credit.verifier_transform cannot be combined with "
+                    "environment return-to-go or discounting"
+                )
         return self

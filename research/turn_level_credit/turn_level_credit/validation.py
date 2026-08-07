@@ -69,3 +69,11 @@ def validate_supported_path(
             "Turn-level credit research currently supports only synchronous "
             "native rollouts"
         )
+    if (
+        turn_credit_config.verifier_transform is not None
+        and master_config.grpo.use_dynamic_sampling
+    ):
+        raise ValueError(
+            "Verifier prompt-group transforms require "
+            "grpo.use_dynamic_sampling=false in this research slice"
+        )
