@@ -1,0 +1,83 @@
+defaults: "../../../examples/configs/grpo_math_1B.yaml"
+
+turn_credit:
+  enabled: true
+  source: environment
+  environment_component: "reward/verifier_score"
+  macro_environment_component: "reward/terminal_success"
+  evaluation_environment_component: "reward/terminal_success"
+  environment_mode: immediate
+  discount: 1.0
+  macro_weight: 1.0
+  turn_weight: 0.0
+  raw_reward_atol: 1.0e-6
+
+grpo:
+  num_prompts_per_step: 4
+  num_generations_per_prompt: 8
+  max_rollout_turns: 3
+  max_num_steps: 0
+  max_num_epochs: 1
+  max_val_samples: 32
+  val_num_generations_per_prompt: 8
+  val_batch_size: 32
+  val_period: 0
+  val_at_start: true
+  val_at_end: false
+  seed: 42
+
+checkpointing:
+  enabled: false
+
+policy:
+  model_name: "Qwen/Qwen2.5-0.5B-Instruct"
+  tokenizer:
+    name: ${policy.model_name}
+  train_global_batch_size: 32
+  train_micro_batch_size: 1
+  logprob_batch_size: 1
+  max_total_sequence_length: 1024
+  generation:
+    max_new_tokens: 192
+    vllm_cfg:
+      async_engine: false
+      tensor_parallel_size: 1
+      gpu_memory_utilization: 0.5
+
+data:
+  train:
+    dataset_name: GSM8K
+    subset: main
+    split: train
+  validation:
+    dataset_name: GSM8K
+    subset: main
+    split: test
+  default:
+    prompt_file: "examples/prompts/cot.txt"
+    system_prompt_file: null
+    processor: "math_hf_data_processor"
+    env_name: "math"
+
+env:
+  math:
+    num_workers: 8
+    max_turns: 3
+    success_threshold: 1.0
+    math_verify_impl: "hf_math_verify"
+
+logger:
+  log_dir: "logs/turn-level-credit-math-repair-calibration"
+  num_val_samples_to_print: 0
+  wandb_enabled: false
+  tensorboard_enabled: false
+  mlflow_enabled: false
+  swanlab_enabled: false
+  monitor_gpus: false
+
+cluster:
+  num_nodes: 1
+  gpus_per_node: 1
+
+data_plane:
+  enabled: false
