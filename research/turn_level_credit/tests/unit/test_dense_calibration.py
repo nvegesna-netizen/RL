@@ -34,6 +34,7 @@ def _log(*, turn_weight: float, success_rate: float = 0.25) -> str:
         "TURN_CREDIT_DENSE_CALIBRATION_CONFIG "
         f"max_num_steps=0 max_val_samples=256 seed=42 turn_weight={turn_weight} "
         "validation_seed=43000 puzzle_size=4 shuffle_moves=20 max_moves=20 "
+        "randomized_solution=1 "
         "credit_uses_progress=1 training_uses_progress=1 "
         "evaluation_uses_success=1 paired_config_sha256=abc123\n"
         f"TURN_CREDIT_ROLLOUT_METRICS {metric_payload}\n"

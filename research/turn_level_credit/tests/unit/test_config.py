@@ -121,6 +121,11 @@ def test_dense_puzzle_control_separates_objectives_and_localized_signal():
     )
 
     assert master_config.grpo.max_rollout_turns == 12
+    puzzle_config = master_config.env["sliding_puzzle_game"]["cfg"]
+    assert puzzle_config["size"] == 3
+    assert puzzle_config["shuffle_moves"] == 3
+    assert puzzle_config["max_moves"] == 6
+    assert puzzle_config["randomize_solution"] is True
     assert turn_credit_config.environment_component == "reward/progress"
     assert turn_credit_config.macro_environment_component == "reward/progress"
     assert turn_credit_config.evaluation_environment_component == "reward/success"

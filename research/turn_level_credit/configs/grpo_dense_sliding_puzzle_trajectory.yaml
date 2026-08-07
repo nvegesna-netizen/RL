@@ -54,13 +54,16 @@ env:
   sliding_puzzle_game:
     cfg:
       size: 3
-      shuffle_moves: 11
-      minimum_manhattan_distance: 2
+      shuffle_moves: 3
+      minimum_manhattan_distance: 1
       max_generation_attempts: 100
       max_unique_generation_attempts: 100000
       unique_training_pool_size: 128
-      max_moves: 12
+      max_moves: 6
       progress_scale: 1.0
+      # Random goals provide many distinct easy tasks instead of repeatedly
+      # evaluating the tiny fixed-goal near-solved state space.
+      randomize_solution: true
       # Fixed across optimizer seeds and distinct across data splits.
       train_seed: 42000
       validation_seed: 43000

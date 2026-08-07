@@ -201,6 +201,7 @@ def evaluate_dense_calibration(
         "puzzle_size",
         "shuffle_moves",
         "max_moves",
+        "randomized_solution",
         "credit_uses_progress",
         "training_uses_progress",
         "evaluation_uses_success",
@@ -232,6 +233,10 @@ def evaluate_dense_calibration(
                 "training_uses_progress",
                 "evaluation_uses_success",
             )
+        ),
+        "randomized_solution_is_enabled": all(
+            _config_number(config, "randomized_solution") == 1
+            for config in (control_config, treatment_config)
         ),
         "control_sample_count": control["sample_count"] >= thresholds.minimum_samples,
         "treatment_sample_count": treatment["sample_count"]

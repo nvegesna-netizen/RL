@@ -52,6 +52,7 @@ class DensePuzzleConfig(BaseModel):
     unique_training_pool_size: int = 128
     max_moves: int = 12
     progress_scale: float = 1.0
+    randomize_solution: bool = False
     train_seed: int = 42_000
     validation_seed: int = 43_000
 
@@ -264,12 +265,16 @@ def _generate_puzzle_state(
     size: int,
     shuffle_moves: int,
     rng: random.Random,
+    randomize_solution: bool = False,
 ) -> dict[str, Any]:
     """Generate one puzzle without reading or mutating process-global RNG state."""
-    grid = [[row * size + column + 1 for column in range(size)] for row in range(size)]
-    grid[-1][-1] = 0
+    flat_solution = list(range(1, size * size)) + [0]
+    if randomize_solution:
+        rng.shuffle(flat_solution)
+    grid = [flat_solution[row * size : (row + 1) * size] for row in range(size)]
     solution = [row[:] for row in grid]
-    empty_row, empty_column = size - 1, size - 1
+    empty_index = flat_solution.index(0)
+    empty_row, empty_column = divmod(empty_index, size)
     for _ in range(shuffle_moves):
         valid_positions = [
             (row, column)
@@ -315,6 +320,7 @@ def _generate_initial_state(
             size=config.size,
             shuffle_moves=config.shuffle_moves,
             rng=rng,
+            randomize_solution=config.randomize_solution,
         )
         if manhattan_distance(game_state) >= config.minimum_manhattan_distance:
             return game_state
@@ -335,12 +341,28 @@ def generate_dense_puzzle_datum(
 ) -> DatumSpec:
     """Generate one fixed-size dense-puzzle training datum."""
     initial_render = SlidingPuzzleGameLogic.render(initial_game_state)
-    welcome_message = SlidingPuzzleGameLogic.init(initial_game_state)
+    goal_state = copy.deepcopy(initial_game_state)
+    goal_state["grid"] = copy.deepcopy(initial_game_state["solution"])
+    goal_empty_index = next(
+        index
+        for index, tile in enumerate(tile for row in goal_state["grid"] for tile in row)
+        if tile == 0
+    )
+    goal_state["empty_pos"] = divmod(goal_empty_index, config.size)
+    goal_render = SlidingPuzzleGameLogic.render(goal_state)
+    if config.randomize_solution:
+        welcome_message = (
+            "\n===== SLIDING PUZZLE =====\n"
+            f"Arrange the {config.size}x{config.size} grid to match the displayed "
+            "goal board by sliding tiles into the empty space."
+        )
+    else:
+        welcome_message = SlidingPuzzleGameLogic.init(initial_game_state)
     prompt_instructions = (
         f"{welcome_message}\n\n"
         f"Current Board State:\n{initial_render}\n\n"
-        f"Reach the goal state where numbers are ordered 1 through "
-        f"{config.size**2 - 1} with the empty space (0) at the bottom right.\n"
+        f"Goal Board State:\n{goal_render}\n\n"
+        "Reach the displayed goal board state.\n"
         "Valid actions: 'up', 'down', 'left', 'right', or 'slide row col' "
         "(e.g., 'slide 1 2').\n"
         "Respond with exactly one action tag and no other text, for example "
@@ -424,8 +446,10 @@ class DensePuzzleDataset(Dataset):
 
 
 def _state_key(game_state: dict[str, Any]) -> tuple[int, ...]:
-    """Return the board identity used to enforce unique data populations."""
-    return tuple(int(tile) for row in game_state["grid"] for tile in row)
+    """Return the start/goal identity used to enforce unique task populations."""
+    solution = tuple(int(tile) for row in game_state["solution"] for tile in row)
+    grid = tuple(int(tile) for row in game_state["grid"] for tile in row)
+    return solution + grid
 
 
 def _generate_unique_state_pools(

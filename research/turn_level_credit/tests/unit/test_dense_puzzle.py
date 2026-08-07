@@ -193,6 +193,27 @@ def test_local_generator_matches_upstream_generator_for_fixed_seed():
     assert local == upstream
 
 
+def test_randomized_solution_is_deterministic_and_part_of_task_identity():
+    first = _generate_puzzle_state(
+        size=3,
+        shuffle_moves=3,
+        rng=random.Random(123),
+        randomize_solution=True,
+    )
+    repeated = _generate_puzzle_state(
+        size=3,
+        shuffle_moves=3,
+        rng=random.Random(123),
+        randomize_solution=True,
+    )
+    different_goal = copy.deepcopy(first)
+    different_goal["solution"] = [row[:] for row in reversed(first["solution"])]
+
+    assert first == repeated
+    assert first["solution"] != [[1, 2, 3], [4, 5, 6], [7, 8, 0]]
+    assert _state_key(first) != _state_key(different_goal)
+
+
 def test_sample_seed_pairing_is_injective_for_test_grid():
     seeds = {
         _sample_seed(split_seed, sample_index)
@@ -241,7 +262,12 @@ def test_state_pools_are_unique_disjoint_repeatable_and_validation_first():
 
 def test_configured_scientific_population_is_unique_and_held_out():
     training, validation = _generate_unique_state_pools(
-        DensePuzzleConfig(),
+        DensePuzzleConfig(
+            shuffle_moves=3,
+            minimum_manhattan_distance=1,
+            max_moves=6,
+            randomize_solution=True,
+        ),
         train_length=160,
         validation_length=256,
     )

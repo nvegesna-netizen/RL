@@ -72,6 +72,7 @@ def main() -> None:
             f"puzzle_size={puzzle_config['size']} "
             f"shuffle_moves={puzzle_config['shuffle_moves']} "
             f"max_moves={puzzle_config['max_moves']} "
+            f"randomized_solution={int(puzzle_config['randomize_solution'])} "
             "credit_uses_progress="
             f"{int(turn_credit_config.environment_component == 'reward/progress')} "
             "training_uses_progress="

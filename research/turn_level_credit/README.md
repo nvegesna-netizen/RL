@@ -178,7 +178,10 @@ at least three seeds.
 The follow-on dense puzzle is a research-only environment that keeps terminal
 success as an explicit reward component and adds normalized Manhattan-potential
 progress. Progress telescopes to the endpoint potential change, so repeated or
-inverse moves cannot inflate cumulative progress.
+inverse moves cannot inflate cumulative progress. Its calibration cohort uses
+displayed randomized goal layouts a few moves from each start, providing many
+distinct easy tasks instead of repeatedly sampling a tiny fixed-goal state
+space.
 
 The checked-in configuration trains on summed potential progress, evaluates on
 terminal puzzle success, and uses potential progress as the candidate localized
