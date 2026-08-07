@@ -47,6 +47,7 @@ project-includes = [
   "research/turn_level_credit/run_grpo_turn_credit.py",
   "research/turn_level_credit/run_grpo_turn_credit_dense_puzzle.py",
   "research/turn_level_credit/run_grpo_turn_credit_math_repair.py",
+  "research/turn_level_credit/run_grpo_turn_credit_math_repair_one_step.py",
   "research/turn_level_credit/evaluate_dense_calibration.py",
   "research/turn_level_credit/evaluate_math_repair_calibration.py",
   "research/turn_level_credit/turn_level_credit/__init__.py",

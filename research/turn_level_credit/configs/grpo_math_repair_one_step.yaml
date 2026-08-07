@@ -1,0 +1,23 @@
+defaults: "grpo_math_repair_calibration.yaml"
+
+turn_credit:
+  verifier_transform:
+    mode: retrospective_hindsight
+    success_threshold: 1.0
+    progress_weight: 1.0
+    preservation_weight: 1.0
+    regression_weight: 1.0
+    hindsight_weight: 1.0
+    normalization: group_zscore
+    normalization_epsilon: 1.0e-6
+    early_turn_discount: 1.0
+
+grpo:
+  max_num_steps: 1
+  val_period: 1
+  val_at_start: true
+  val_at_end: true
+  use_dynamic_sampling: false
+
+logger:
+  log_dir: "logs/turn-level-credit-math-repair-one-step"

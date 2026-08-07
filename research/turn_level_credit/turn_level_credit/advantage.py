@@ -14,6 +14,7 @@
 
 """GRPO advantage composition with token-aligned native turn credit."""
 
+from dataclasses import dataclass
 from typing import Any
 
 import torch
@@ -28,6 +29,75 @@ from turn_level_credit.verifier_credit import (
     VerifierScoreBatch,
     compute_verifier_credit,
 )
+
+
+@dataclass(frozen=True)
+class TurnCreditAdvantageDiagnostics:
+    """Finite first-update scale and support diagnostics on trainable tokens."""
+
+    valid_token_count: int
+    macro_std: float
+    auxiliary_std: float
+    weighted_auxiliary_std: float
+    auxiliary_nonzero_fraction: float
+    composed_std: float
+
+
+def _advantage_diagnostics(
+    *,
+    macro_advantage: torch.Tensor,
+    auxiliary_advantage: torch.Tensor,
+    advantage_mask: torch.Tensor,
+    macro_weight: float,
+    turn_weight: float,
+) -> TurnCreditAdvantageDiagnostics:
+    """Summarize exactly the trainable token values entering composition."""
+    if (
+        macro_advantage.shape != auxiliary_advantage.shape
+        or macro_advantage.shape != advantage_mask.shape
+    ):
+        raise ValueError("Advantage diagnostics require equal tensor shapes")
+    valid_token_count = int(advantage_mask.sum().item())
+    if valid_token_count == 0:
+        raise ValueError("Advantage diagnostics require at least one trainable token")
+    macro_values = macro_advantage[advantage_mask]
+    auxiliary_values = auxiliary_advantage[advantage_mask]
+    composed_values = macro_weight * macro_values + turn_weight * auxiliary_values
+    if not bool(
+        torch.isfinite(macro_values).all().item()
+        and torch.isfinite(auxiliary_values).all().item()
+        and torch.isfinite(composed_values).all().item()
+    ):
+        raise ValueError("Turn-credit advantage components must be finite")
+
+    def population_std(values: torch.Tensor) -> float:
+        return float(values.float().std(unbiased=False).item())
+
+    return TurnCreditAdvantageDiagnostics(
+        valid_token_count=valid_token_count,
+        macro_std=population_std(macro_values),
+        auxiliary_std=population_std(auxiliary_values),
+        weighted_auxiliary_std=population_std(turn_weight * auxiliary_values),
+        auxiliary_nonzero_fraction=float((auxiliary_values != 0).float().mean().item()),
+        composed_std=population_std(composed_values),
+    )
+
+
+def _log_advantage_diagnostics(
+    diagnostics: TurnCreditAdvantageDiagnostics,
+) -> None:
+    """Emit one parseable research-local diagnostic line per update."""
+    print(
+        "TURN_CREDIT_ADVANTAGE_METRICS "
+        f"valid_token_count={diagnostics.valid_token_count} "
+        f"macro_std={diagnostics.macro_std:.9g} "
+        f"auxiliary_std={diagnostics.auxiliary_std:.9g} "
+        f"weighted_auxiliary_std={diagnostics.weighted_auxiliary_std:.9g} "
+        "auxiliary_nonzero_fraction="
+        f"{diagnostics.auxiliary_nonzero_fraction:.9g} "
+        f"composed_std={diagnostics.composed_std:.9g}",
+        flush=True,
+    )
 
 
 def _prompt_group_ids(
@@ -131,6 +201,15 @@ class TurnLevelGRPOAdvantageEstimator:
             credit,
             turn_batch,
             advantage_mask,
+        )
+        _log_advantage_diagnostics(
+            _advantage_diagnostics(
+                macro_advantage=macro_advantage,
+                auxiliary_advantage=auxiliary_advantage,
+                advantage_mask=advantage_mask,
+                macro_weight=self.config.macro_weight,
+                turn_weight=self.config.turn_weight,
+            )
         )
         advantages = (
             self.config.macro_weight * macro_advantage

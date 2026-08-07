@@ -14,9 +14,14 @@
 
 """Tests for turn-level GRPO advantage composition."""
 
+import math
+
 import pytest
 import torch
-from turn_level_credit.advantage import TurnLevelGRPOAdvantageEstimator
+from turn_level_credit.advantage import (
+    TurnLevelGRPOAdvantageEstimator,
+    _advantage_diagnostics,
+)
 from turn_level_credit.config import TurnCreditConfig
 from turn_level_credit.trace import TurnBatch, attach_turn_batch
 from turn_level_credit.verifier_credit import (
@@ -317,3 +322,78 @@ def test_verifier_moves_cpu_prompt_groups_to_score_device():
 
     assert actual.device.type == "cuda"
     torch.testing.assert_close(actual, scores)
+
+
+def test_treatment_emits_finite_parseable_advantage_diagnostics(capsys):
+    scores = torch.tensor([[0.0, 1.0], [0.0, 0.0]])
+    estimator = TurnLevelGRPOAdvantageEstimator(
+        base_estimator=_FixedBaseEstimator(torch.ones((2, 2))),
+        config=TurnCreditConfig(
+            enabled=True,
+            environment_component="reward/verifier_score",
+            macro_weight=1.0,
+            turn_weight=0.5,
+            verifier_transform=VerifierCreditTransformConfig(
+                mode="retrospective_hindsight",
+            ),
+        ),
+    )
+
+    estimator.compute_advantage(
+        prompt_ids=torch.tensor([[3], [3]]),
+        rewards=torch.zeros(2),
+        mask=torch.ones((2, 2)),
+        repeated_batch=_verifier_repeated_batch(scores),
+    )
+
+    line = capsys.readouterr().out.strip()
+    assert line.startswith("TURN_CREDIT_ADVANTAGE_METRICS ")
+    fields = dict(field.split("=", 1) for field in line.split()[1:])
+    assert int(fields["valid_token_count"]) == 4
+    for field_name in (
+        "macro_std",
+        "auxiliary_std",
+        "weighted_auxiliary_std",
+        "auxiliary_nonzero_fraction",
+        "composed_std",
+    ):
+        assert math.isfinite(float(fields[field_name]))
+    assert 0.0 < float(fields["auxiliary_nonzero_fraction"]) <= 1.0
+
+
+@pytest.mark.parametrize(
+    ("kwargs", "message"),
+    [
+        (
+            {
+                "macro_advantage": torch.zeros((1, 2)),
+                "auxiliary_advantage": torch.zeros((1, 1)),
+                "advantage_mask": torch.ones((1, 2), dtype=torch.bool),
+            },
+            "equal tensor shapes",
+        ),
+        (
+            {
+                "macro_advantage": torch.zeros((1, 1)),
+                "auxiliary_advantage": torch.zeros((1, 1)),
+                "advantage_mask": torch.zeros((1, 1), dtype=torch.bool),
+            },
+            "at least one trainable token",
+        ),
+        (
+            {
+                "macro_advantage": torch.tensor([[float("nan")]]),
+                "auxiliary_advantage": torch.zeros((1, 1)),
+                "advantage_mask": torch.ones((1, 1), dtype=torch.bool),
+            },
+            "must be finite",
+        ),
+    ],
+)
+def test_advantage_diagnostics_reject_malformed_inputs(kwargs, message):
+    with pytest.raises(ValueError, match=message):
+        _advantage_diagnostics(
+            **kwargs,
+            macro_weight=1.0,
+            turn_weight=1.0,
+        )

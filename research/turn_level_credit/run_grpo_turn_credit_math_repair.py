@@ -29,7 +29,6 @@ from turn_level_credit.math_repair import (
     VERIFIER_SCORE_KEY,
     MathRepairConfig,
 )
-from turn_level_credit.math_repair_runtime import install_math_repair_environment
 
 CALIBRATION_GENERATIONS_PER_PROMPT = 8
 CALIBRATION_PROMPT_COUNT = 32
@@ -84,6 +83,8 @@ def install_repeated_math_validation() -> Iterator[None]:
 
 def main() -> None:
     """Validate the calibration protocol, install the environment, and run."""
+    from turn_level_credit.math_repair_runtime import install_math_repair_environment
+
     args, overrides = parse_args()
     config_path = args.config
     if config_path is None:
