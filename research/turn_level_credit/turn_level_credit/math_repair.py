@@ -14,7 +14,10 @@
 
 """Fixed-horizon verifier feedback for research-only math repair rollouts."""
 
+import itertools
 import math
+from collections.abc import Iterator
+from contextlib import contextmanager
 from dataclasses import dataclass
 from typing import Any, Literal, NotRequired, TypedDict
 
@@ -23,17 +26,19 @@ import torch
 from pydantic import BaseModel, ConfigDict, model_validator
 
 from nemo_rl.data.interfaces import LLMMessageLogType
+from nemo_rl.distributed import ray_actor_environment_registry
 from nemo_rl.distributed.batched_data_dict import BatchedDataDict
-from nemo_rl.environments.interfaces import EnvironmentReturn
-from nemo_rl.environments.math_environment import (
-    BaseMathEnvironment,
-    HFVerifyWorker,
-    MathEnvConfig,
-)
+from nemo_rl.distributed.virtual_cluster import PY_EXECUTABLES
+from nemo_rl.environments import utils as environment_utils
+from nemo_rl.environments.interfaces import EnvironmentInterface, EnvironmentReturn
+from nemo_rl.environments.math_environment import HFVerifyWorker
 from nemo_rl.environments.utils import chunk_list_to_workers
 
 VERIFIER_SCORE_KEY = "reward/verifier_score"
 TERMINAL_SUCCESS_KEY = "reward/terminal_success"
+MATH_REPAIR_ENVIRONMENT_FQN = (
+    "turn_level_credit.math_repair.FixedHorizonMathRepairEnvironment"
+)
 
 
 class MathRepairConfig(BaseModel):
@@ -220,20 +225,22 @@ def _latest_assistant_responses(
     return responses
 
 
-@ray.remote(max_restarts=-1, max_task_retries=-1, max_concurrency=1000)
-class FixedHorizonMathRepairEnvironment(BaseMathEnvironment):  # pragma: no cover
+@ray.remote
+class FixedHorizonMathRepairEnvironment(  # pragma: no cover
+    EnvironmentInterface[MathRepairMetadata]
+):
     """Batched math verifier that always consumes the configured turn budget."""
-
-    WORKER_CLASS_DICT = {"math": HFVerifyWorker}
 
     def __init__(self, cfg: dict[str, Any]) -> None:
         self._repair_config = MathRepairConfig.model_validate(cfg)
-        base_config = MathEnvConfig(
-            num_workers=self._repair_config.num_workers,
-            verifier_type="math",
-            math_verify_impl=self._repair_config.math_verify_impl,
-        )
-        super().__init__(base_config)
+        self.num_workers = self._repair_config.num_workers
+        self._worker_counter = itertools.count()
+        self.workers = [
+            HFVerifyWorker.options(  # type: ignore # decorated with @ray.remote
+                runtime_env={"py_executable": PY_EXECUTABLES.SYSTEM}
+            ).remote()
+            for _ in range(self.num_workers)
+        ]
 
     def step(
         self,
@@ -304,3 +311,35 @@ class FixedHorizonMathRepairEnvironment(BaseMathEnvironment):  # pragma: no cove
                 verifier_score_sum.mean().item()
             ),
         }
+
+    def shutdown(self) -> None:
+        """Release verifier workers owned by this environment."""
+        for worker in self.workers:
+            ray.kill(worker)
+
+
+@contextmanager
+def install_math_repair_environment() -> Iterator[None]:
+    """Temporarily route the standard math task to the research environment."""
+    original_entry = environment_utils.ENV_REGISTRY.get("math")
+    if original_entry is None:
+        raise RuntimeError("the standard math environment is not registered")
+    original_fqn = original_entry.get("actor_class_fqn")
+    if original_fqn is None:
+        raise RuntimeError("the standard math environment has no actor class")
+    actor_environments = ray_actor_environment_registry.ACTOR_ENVIRONMENT_REGISTRY
+    if original_fqn not in actor_environments:
+        raise RuntimeError("the standard math actor has no Python environment")
+    previous_actor_environment = actor_environments.get(MATH_REPAIR_ENVIRONMENT_FQN)
+    environment_utils.ENV_REGISTRY["math"] = {
+        "actor_class_fqn": MATH_REPAIR_ENVIRONMENT_FQN
+    }
+    actor_environments[MATH_REPAIR_ENVIRONMENT_FQN] = actor_environments[original_fqn]
+    try:
+        yield
+    finally:
+        environment_utils.ENV_REGISTRY["math"] = original_entry
+        if previous_actor_environment is None:
+            actor_environments.pop(MATH_REPAIR_ENVIRONMENT_FQN, None)
+        else:
+            actor_environments[MATH_REPAIR_ENVIRONMENT_FQN] = previous_actor_environment

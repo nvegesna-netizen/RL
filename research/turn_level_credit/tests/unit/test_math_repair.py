@@ -3,12 +3,16 @@
 import pytest
 import torch
 from pydantic import ValidationError
+from nemo_rl.distributed import ray_actor_environment_registry
+from nemo_rl.environments import utils as environment_utils
 from turn_level_credit.math_repair import (
+    MATH_REPAIR_ENVIRONMENT_FQN,
     TERMINAL_SUCCESS_KEY,
     VERIFIER_SCORE_KEY,
     MathRepairConfig,
     _latest_assistant_responses,
     advance_math_repair_turns,
+    install_math_repair_environment,
 )
 
 
@@ -93,6 +97,35 @@ def test_latest_response_ignores_prior_candidates():
     )
 
     assert responses == ["new answer"]
+
+
+def test_math_repair_environment_installation_is_scoped():
+    original_entry = environment_utils.ENV_REGISTRY["math"]
+    original_fqn = original_entry["actor_class_fqn"]
+    original_python = ray_actor_environment_registry.ACTOR_ENVIRONMENT_REGISTRY[
+        original_fqn
+    ]
+    assert (
+        MATH_REPAIR_ENVIRONMENT_FQN
+        not in ray_actor_environment_registry.ACTOR_ENVIRONMENT_REGISTRY
+    )
+
+    with install_math_repair_environment():
+        assert environment_utils.ENV_REGISTRY["math"] == {
+            "actor_class_fqn": MATH_REPAIR_ENVIRONMENT_FQN
+        }
+        assert (
+            ray_actor_environment_registry.ACTOR_ENVIRONMENT_REGISTRY[
+                MATH_REPAIR_ENVIRONMENT_FQN
+            ]
+            == original_python
+        )
+
+    assert environment_utils.ENV_REGISTRY["math"] is original_entry
+    assert (
+        MATH_REPAIR_ENVIRONMENT_FQN
+        not in ray_actor_environment_registry.ACTOR_ENVIRONMENT_REGISTRY
+    )
 
 
 @pytest.mark.parametrize(
