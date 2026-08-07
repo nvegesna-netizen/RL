@@ -548,8 +548,16 @@ def setup_dense_puzzle_data(
 def install_dense_puzzle_runtime() -> Iterator[None]:
     """Scope the upstream runner's data factory replacement to one run."""
     original_setup_puzzle_data = run_grpo_sliding_puzzle.setup_puzzle_data
-    run_grpo_sliding_puzzle.setup_puzzle_data = setup_dense_puzzle_data
+    setattr(
+        run_grpo_sliding_puzzle,
+        "setup_puzzle_data",
+        setup_dense_puzzle_data,
+    )
     try:
         yield
     finally:
-        run_grpo_sliding_puzzle.setup_puzzle_data = original_setup_puzzle_data
+        setattr(
+            run_grpo_sliding_puzzle,
+            "setup_puzzle_data",
+            original_setup_puzzle_data,
+        )
