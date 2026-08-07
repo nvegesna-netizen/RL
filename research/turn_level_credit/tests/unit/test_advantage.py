@@ -53,7 +53,11 @@ def _repeated_batch():
 def _verifier_repeated_batch(scores: torch.Tensor):
     batch_size, turns = scores.shape
     batch = {}
-    spans = torch.arange(turns, dtype=torch.int64).repeat(batch_size, 1)
+    spans = torch.arange(
+        turns,
+        dtype=torch.int64,
+        device=scores.device,
+    ).repeat(batch_size, 1)
     terminateds = torch.zeros_like(scores, dtype=torch.bool)
     terminateds[:, -1] = True
     attach_turn_batch(
@@ -260,7 +264,9 @@ def test_verifier_modes_flow_through_turn_span_scatter(mode):
     ("prompt_ids", "error_type", "message"),
     [
         (torch.tensor([1, 1]), ValueError, r"shape \[turn-credit batch"),
+        (torch.empty((2, 0), dtype=torch.int64), ValueError, "prompt tokens"),
         (torch.tensor([[1.0], [1.0]]), TypeError, "integer token dtype"),
+        (torch.tensor([[True], [True]]), TypeError, "integer token dtype"),
     ],
 )
 def test_verifier_rejects_malformed_prompt_group_inputs(
@@ -286,3 +292,28 @@ def test_verifier_rejects_malformed_prompt_group_inputs(
             mask=torch.ones((2, 1)),
             repeated_batch=_verifier_repeated_batch(torch.zeros((2, 1))),
         )
+
+
+@pytest.mark.skipif(not torch.cuda.is_available(), reason="requires CUDA")
+def test_verifier_moves_cpu_prompt_groups_to_score_device():
+    scores = torch.tensor([[0.0], [1.0]], device="cuda")
+    estimator = TurnLevelGRPOAdvantageEstimator(
+        base_estimator=_FixedBaseEstimator(torch.zeros((2, 1), device="cuda")),
+        config=TurnCreditConfig(
+            enabled=True,
+            environment_component="reward/verifier_score",
+            macro_weight=0.0,
+            turn_weight=1.0,
+            verifier_transform=VerifierCreditTransformConfig(mode="raw"),
+        ),
+    )
+
+    actual = estimator.compute_advantage(
+        prompt_ids=torch.tensor([[7], [7]], device="cpu"),
+        rewards=torch.zeros(2, device="cuda"),
+        mask=torch.ones((2, 1), device="cuda"),
+        repeated_batch=_verifier_repeated_batch(scores),
+    )
+
+    assert actual.device.type == "cuda"
+    torch.testing.assert_close(actual, scores)

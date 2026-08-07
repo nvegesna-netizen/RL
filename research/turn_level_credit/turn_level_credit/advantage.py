@@ -37,11 +37,21 @@ def _prompt_group_ids(
     device: torch.device,
 ) -> torch.Tensor:
     """Match core GRPO's exact padded-prompt row equivalence relation."""
-    if prompt_ids.ndim != 2 or prompt_ids.shape[0] != batch_size:
+    if (
+        prompt_ids.ndim != 2
+        or prompt_ids.shape[0] != batch_size
+        or prompt_ids.shape[1] == 0
+    ):
         raise ValueError(
             "Verifier prompt IDs must have shape [turn-credit batch, prompt tokens]"
         )
-    if prompt_ids.is_floating_point() or prompt_ids.is_complex():
+    if prompt_ids.dtype not in (
+        torch.int8,
+        torch.int16,
+        torch.int32,
+        torch.int64,
+        torch.uint8,
+    ):
         raise TypeError("Verifier prompt IDs must use an integer token dtype")
     _, inverse_group_ids = torch.unique(
         prompt_ids,
