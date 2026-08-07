@@ -23,6 +23,8 @@ from turn_level_credit.verifier_credit import (
     adjacent_score_delta_credit,
     compute_verifier_credit,
     hindsight_leave_one_out_credit,
+    normalize_credit_within_prompt_turn,
+    postprocess_verifier_credit,
     raw_verifier_credit,
     retrospective_verifier_credit,
 )
@@ -266,6 +268,90 @@ def test_combined_dispatch_adds_weighted_hindsight_to_retrospective():
     _assert_values(credit, [[0.5, 0.5, 1.0], [-0.5, -0.5, 0.0]])
 
 
+def test_prompt_turn_normalization_isolates_groups_and_centers_each_turn():
+    batch = _batch(
+        [[0.0, 0.0], [0.0, 0.0], [0.0, 0.0], [0.0, 0.0]],
+        group_ids=[7, 7, -2, -2],
+    )
+    raw_credit = torch.tensor(
+        [[1.0, 4.0], [3.0, 8.0], [10.0, -2.0], [14.0, 2.0]],
+    )
+
+    normalized = normalize_credit_within_prompt_turn(
+        raw_credit,
+        batch,
+        epsilon=1.0e-12,
+    )
+
+    _assert_values(
+        normalized,
+        [[-1.0, -1.0], [1.0, 1.0], [-1.0, -1.0], [1.0, 1.0]],
+    )
+
+
+def test_prompt_turn_normalization_skips_singletons_and_zeros_padding():
+    batch = _batch(
+        [[0.0, 0.0], [0.0, 99.0], [0.0, 0.0]],
+        mask=[[True, True], [True, False], [True, True]],
+        group_ids=[5, 5, 9],
+    )
+    raw_credit = torch.tensor(
+        [[1.0, 3.0], [3.0, float("nan")], [7.0, 11.0]],
+        dtype=torch.float64,
+    )
+
+    normalized = normalize_credit_within_prompt_turn(
+        raw_credit,
+        batch,
+        epsilon=1.0e-12,
+    )
+
+    assert normalized.dtype == torch.float64
+    _assert_values(normalized, [[-1.0, 3.0], [1.0, 0.0], [7.0, 11.0]])
+
+
+def test_prompt_turn_normalization_maps_constant_multi_sample_group_to_zero():
+    batch = _batch([[0.0], [0.0]], group_ids=[0, 0])
+
+    normalized = normalize_credit_within_prompt_turn(
+        torch.tensor([[2.5], [2.5]]),
+        batch,
+        epsilon=1.0e-6,
+    )
+
+    assert not normalized.any()
+
+
+def test_compute_dispatch_applies_normalization_then_early_turn_discount():
+    batch = _batch(
+        [[0.0, 0.25, 0.75], [1.0, 0.75, 0.25]],
+        group_ids=[3, 3],
+    )
+    config = VerifierCreditTransformConfig(
+        mode="raw",
+        normalization="group_zscore",
+        normalization_epsilon=1.0e-12,
+        early_turn_discount=0.5,
+    )
+
+    credit = compute_verifier_credit(batch, config=config)
+
+    _assert_values(credit, [[-1.0, -0.5, 0.25], [1.0, 0.5, -0.25]])
+
+
+def test_postprocessing_without_normalization_only_applies_early_turn_discount():
+    batch = _batch([[0.0, 0.0, 0.0]])
+    config = VerifierCreditTransformConfig(early_turn_discount=0.5)
+
+    credit = postprocess_verifier_credit(
+        torch.ones_like(batch.scores),
+        batch,
+        config=config,
+    )
+
+    _assert_values(credit, [[1.0, 0.5, 0.25]])
+
+
 @pytest.mark.parametrize(
     ("batch", "error_type", "message"),
     [
@@ -325,6 +411,9 @@ def test_score_batch_validation_rejects_malformed_inputs(batch, error_type, mess
         {"preservation_weight": -1.0},
         {"regression_weight": -1.0},
         {"hindsight_weight": -1.0},
+        {"normalization_epsilon": 0.0},
+        {"early_turn_discount": 0.0},
+        {"early_turn_discount": 1.1},
         {"unknown_option": 1},
     ],
 )
@@ -382,3 +471,38 @@ def test_simple_transforms_ignore_nonfinite_padding(transform):
 
     assert torch.isfinite(credit).all()
     _assert_values(credit, [[0.25, 0.0], [0.75, 0.0]])
+
+
+@pytest.mark.parametrize("epsilon", [0.0, -1.0, float("nan"), float("inf")])
+def test_prompt_turn_normalization_rejects_invalid_epsilon(epsilon):
+    batch = _batch([[0.0], [0.0]], group_ids=[0, 0])
+
+    with pytest.raises(ValueError, match="finite and positive"):
+        normalize_credit_within_prompt_turn(
+            torch.zeros_like(batch.scores),
+            batch,
+            epsilon=epsilon,
+        )
+
+
+@pytest.mark.parametrize(
+    ("credit", "error_type", "message"),
+    [
+        (torch.zeros((2, 2)), ValueError, "score tensor shape"),
+        (torch.zeros((2, 1), dtype=torch.int64), TypeError, "floating-point"),
+        (torch.tensor([[0.0], [float("nan")]]), ValueError, "finite"),
+    ],
+)
+def test_prompt_turn_normalization_rejects_malformed_credit(
+    credit,
+    error_type,
+    message,
+):
+    batch = _batch([[0.0], [0.0]], group_ids=[0, 0])
+
+    with pytest.raises(error_type, match=message):
+        normalize_credit_within_prompt_turn(
+            credit,
+            batch,
+            epsilon=1.0e-6,
+        )

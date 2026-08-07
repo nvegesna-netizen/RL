@@ -21,6 +21,8 @@ from turn_level_credit.verifier_credit import (
     VerifierCreditTransformConfig,
     VerifierScoreBatch,
     compute_verifier_credit,
+    normalize_credit_within_prompt_turn,
+    postprocess_verifier_credit,
 )
 
 __all__ = [
@@ -30,4 +32,6 @@ __all__ = [
     "VerifierCreditTransformConfig",
     "VerifierScoreBatch",
     "compute_verifier_credit",
+    "normalize_credit_within_prompt_turn",
+    "postprocess_verifier_credit",
 ]

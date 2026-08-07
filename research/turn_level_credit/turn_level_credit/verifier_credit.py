@@ -14,6 +14,7 @@
 
 """Pure verifier score-to-credit transforms for multi-turn trajectories."""
 
+import math
 from dataclasses import dataclass
 from typing import Literal
 
@@ -35,6 +36,9 @@ class VerifierCreditTransformConfig(BaseModel):
         preservation_weight: Credit for preserving a prior successful best score.
         regression_weight: Multiplier for score loss after prior success.
         hindsight_weight: Multiplier for eligible leave-one-out hindsight credit.
+        normalization: Optional post-transform normalization within prompt-turn groups.
+        normalization_epsilon: Variance stabilizer for group z-score normalization.
+        early_turn_discount: Multiplicative early-turn prior, raised to turn index.
     """
 
     model_config = ConfigDict(extra="forbid", allow_inf_nan=False)
@@ -50,6 +54,9 @@ class VerifierCreditTransformConfig(BaseModel):
     preservation_weight: float = 1.0
     regression_weight: float = 1.0
     hindsight_weight: float = 1.0
+    normalization: Literal["none", "group_zscore"] = "none"
+    normalization_epsilon: float = 1.0e-6
+    early_turn_discount: float = 1.0
 
     @model_validator(mode="after")
     def _validate_ranges(self) -> "VerifierCreditTransformConfig":
@@ -63,6 +70,10 @@ class VerifierCreditTransformConfig(BaseModel):
         ):
             if getattr(self, field_name) < 0.0:
                 raise ValueError(f"{field_name} must be non-negative")
+        if self.normalization_epsilon <= 0.0:
+            raise ValueError("normalization_epsilon must be positive")
+        if not 0.0 < self.early_turn_discount <= 1.0:
+            raise ValueError("early_turn_discount must be in (0, 1]")
         return self
 
 
@@ -129,6 +140,22 @@ def _validate_score_batch(batch: VerifierScoreBatch) -> None:
         raise ValueError("observed verifier scores must be finite")
     if bool(((observed_scores < 0.0) | (observed_scores > 1.0)).any().item()):
         raise ValueError("observed verifier scores must be in [0, 1]")
+
+
+def _validate_credit_tensor(
+    credit: torch.Tensor,
+    batch: VerifierScoreBatch,
+) -> None:
+    """Validate a padded credit tensor against an already described batch."""
+    _validate_score_batch(batch)
+    if credit.shape != batch.scores.shape:
+        raise ValueError("credit must have the verifier score tensor shape")
+    if not credit.is_floating_point():
+        raise TypeError("credit must use a floating-point dtype")
+    if credit.device != batch.scores.device:
+        raise ValueError("credit and verifier scores must share one device")
+    if not bool(torch.isfinite(credit[batch.mask]).all().item()):
+        raise ValueError("observed credit must be finite")
 
 
 def _best_previous_scores(batch: VerifierScoreBatch) -> torch.Tensor:
@@ -277,6 +304,98 @@ def hindsight_leave_one_out_credit(
     )
 
 
+def normalize_credit_within_prompt_turn(
+    credit: torch.Tensor,
+    batch: VerifierScoreBatch,
+    *,
+    epsilon: float,
+) -> torch.Tensor:
+    """Z-score observed credit within each prompt and turn index.
+
+    Groups with fewer than two observed trajectories retain their raw credit.
+    A constant group with at least two observations maps to zero. Padded values
+    are ignored and replaced with zero.
+    """
+    _validate_credit_tensor(credit, batch)
+    if not math.isfinite(epsilon) or epsilon <= 0.0:
+        raise ValueError("epsilon must be finite and positive")
+
+    _, inverse_group_ids = torch.unique(
+        batch.prompt_group_ids,
+        sorted=True,
+        return_inverse=True,
+    )
+    group_count = int(inverse_group_ids.max().item()) + 1
+    working_dtype = torch.float64 if credit.dtype == torch.float64 else torch.float32
+    observed_credit = credit.masked_fill(~batch.mask, 0.0).to(working_dtype)
+    normalized = torch.zeros_like(observed_credit)
+
+    for turn_index in range(batch.scores.shape[1]):
+        observed = batch.mask[:, turn_index]
+        values = observed_credit[:, turn_index]
+        observed_values = values * observed.to(working_dtype)
+
+        group_sums = torch.zeros(
+            group_count,
+            dtype=working_dtype,
+            device=credit.device,
+        )
+        group_sums.scatter_add_(0, inverse_group_ids, observed_values)
+        group_counts = torch.zeros(
+            group_count,
+            dtype=torch.int64,
+            device=credit.device,
+        )
+        group_counts.scatter_add_(0, inverse_group_ids, observed.to(torch.int64))
+
+        counts = group_counts[inverse_group_ids]
+        safe_counts = counts.clamp_min(1).to(working_dtype)
+        means = group_sums[inverse_group_ids] / safe_counts
+        centered = (values - means) * observed.to(working_dtype)
+        group_centered_square_sums = torch.zeros_like(group_sums)
+        group_centered_square_sums.scatter_add_(
+            0,
+            inverse_group_ids,
+            centered.square(),
+        )
+        variances = group_centered_square_sums[inverse_group_ids] / safe_counts
+        zscores = centered / torch.sqrt(variances + epsilon)
+        normalizable = observed & (counts >= 2)
+        normalized[:, turn_index] = torch.where(
+            normalizable,
+            zscores,
+            torch.where(observed, values, torch.zeros_like(values)),
+        )
+
+    return normalized.to(credit.dtype)
+
+
+def postprocess_verifier_credit(
+    credit: torch.Tensor,
+    batch: VerifierScoreBatch,
+    *,
+    config: VerifierCreditTransformConfig,
+) -> torch.Tensor:
+    """Apply configured prompt-turn normalization and early-turn weighting."""
+    if config.normalization == "group_zscore":
+        credit = normalize_credit_within_prompt_turn(
+            credit,
+            batch,
+            epsilon=config.normalization_epsilon,
+        )
+    else:
+        _validate_credit_tensor(credit, batch)
+        credit = credit.masked_fill(~batch.mask, 0.0)
+
+    turn_indices = torch.arange(
+        batch.scores.shape[1],
+        dtype=credit.dtype,
+        device=credit.device,
+    )
+    early_turn_weights = config.early_turn_discount**turn_indices
+    return (credit * early_turn_weights.unsqueeze(0)).masked_fill(~batch.mask, 0.0)
+
+
 def compute_verifier_credit(
     batch: VerifierScoreBatch,
     *,
@@ -284,17 +403,18 @@ def compute_verifier_credit(
 ) -> torch.Tensor:
     """Dispatch the configured pure score-to-credit transform."""
     if config.mode == "raw":
-        return raw_verifier_credit(batch)
-    if config.mode == "adjacent_delta":
-        return adjacent_score_delta_credit(batch)
-
-    retrospective = retrospective_verifier_credit(batch, config=config)
-    if config.mode == "retrospective":
-        return retrospective.credit
-    if config.mode == "retrospective_hindsight":
+        credit = raw_verifier_credit(batch)
+    elif config.mode == "adjacent_delta":
+        credit = adjacent_score_delta_credit(batch)
+    elif config.mode == "retrospective":
+        credit = retrospective_verifier_credit(batch, config=config).credit
+    elif config.mode == "retrospective_hindsight":
+        retrospective = retrospective_verifier_credit(batch, config=config)
         hindsight = hindsight_leave_one_out_credit(
             batch,
             success_threshold=config.success_threshold,
         )
-        return retrospective.credit + config.hindsight_weight * hindsight.credit
-    raise AssertionError(f"Unhandled verifier credit mode: {config.mode}")
+        credit = retrospective.credit + config.hindsight_weight * hindsight.credit
+    else:
+        raise AssertionError(f"Unhandled verifier credit mode: {config.mode}")
+    return postprocess_verifier_credit(credit, batch, config=config)

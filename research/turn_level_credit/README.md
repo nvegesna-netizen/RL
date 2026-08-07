@@ -162,7 +162,10 @@ completed verifier traces, independent of rollout collection:
 - retrospective improvement over the best prior score, successful-state
   preservation, and post-success regression;
 - delayed future-best credit relative to eligible trajectories from the same
-  prompt and turn, using a leave-one-out baseline.
+  prompt and turn, using a leave-one-out baseline;
+- optional same-prompt, same-turn z-score normalization with a raw-credit
+  fallback for groups containing fewer than two observed trajectories;
+- optional early-turn discounting after normalization.
 
 Observed scores must be finite and normalized to `[0, 1]`. Turn masks must be
 prefix-contiguous, and hindsight comparisons require explicit integer prompt
@@ -170,12 +173,14 @@ group IDs. Padding is ignored and receives zero credit, malformed score, mask,
 or group-ID tensors fail loudly, and a singleton hindsight reference falls back
 to zero.
 
-The retrospective and hindsight equations follow the low-cost TCPO components.
-This project does not yet implement TCPO's fixed-history counterfactual
-branches, prompt-turn normalization, early-turn weighting, verifier-driven
-fixed-horizon environment, or online training integration. The checked-in unit
-tests establish transform semantics only; they do not reproduce TCPO's
-reported task results.
+The retrospective, hindsight, prompt-turn normalization, and early-turn stages
+follow the non-counterfactual TCPO structure. The exact normalization used here
+is an explicitly configured population z-score with an epsilon-stabilized
+denominator; it is not asserted to reproduce an unspecified implementation
+detail. This project does not yet implement TCPO's fixed-history
+counterfactual branches, verifier-driven fixed-horizon environment, or online
+training integration. The checked-in unit tests establish transform semantics
+only; they do not reproduce TCPO's reported task results.
 
 ## Run the multi-turn pilot
 
