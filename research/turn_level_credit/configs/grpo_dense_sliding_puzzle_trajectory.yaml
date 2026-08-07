@@ -59,6 +59,9 @@ env:
       max_generation_attempts: 100
       max_moves: 12
       progress_scale: 1.0
+      # Fixed across optimizer seeds and distinct across data splits.
+      train_seed: 42000
+      validation_seed: 43000
 
 logger:
   log_dir: "logs/turn-level-credit-dense-sliding-puzzle"

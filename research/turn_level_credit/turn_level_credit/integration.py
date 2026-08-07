@@ -154,6 +154,8 @@ def install_turn_credit_runtime(
         )
         observed_credit = credit[turn_batch.mask]
         turn_metrics = {
+            "turn_credit/sample_count": turn_batch.batch_size,
+            "turn_credit/observed_turn_count": int(turn_batch.mask.sum().item()),
             "turn_credit/turns_per_sample/mean": float(
                 turns_per_sample.float().mean().item()
             ),

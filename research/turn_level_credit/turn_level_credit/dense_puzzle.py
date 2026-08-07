@@ -15,6 +15,7 @@
 """Research-only sliding puzzle with potential-based dense rewards."""
 
 import itertools
+import random
 from collections.abc import Iterator
 from contextlib import contextmanager
 from typing import Any
@@ -49,6 +50,8 @@ class DensePuzzleConfig(BaseModel):
     max_generation_attempts: int = 100
     max_moves: int = 12
     progress_scale: float = 1.0
+    train_seed: int = 42_000
+    validation_seed: int = 43_000
 
     @model_validator(mode="after")
     def _validate_ranges(self) -> "DensePuzzleConfig":
@@ -69,6 +72,10 @@ class DensePuzzleConfig(BaseModel):
             raise ValueError("dense puzzle max_moves must be positive")
         if self.progress_scale <= 0.0:
             raise ValueError("dense puzzle progress_scale must be positive")
+        if self.train_seed < 0 or self.validation_seed < 0:
+            raise ValueError("dense puzzle dataset seeds must be non-negative")
+        if self.train_seed == self.validation_seed:
+            raise ValueError("dense puzzle train and validation seeds must differ")
         return self
 
 
@@ -236,14 +243,71 @@ class DenseSlidingPuzzleEnv(EnvironmentInterface[SlidingPuzzleMetadata | None]):
         """Release environment resources."""
 
 
-def _generate_initial_state(config: DensePuzzleConfig) -> dict[str, Any]:
-    """Generate a nonsolved state satisfying the configured distance gate."""
-    generation_config = {
-        "size": config.size,
-        "shuffle_moves": config.shuffle_moves,
+def _sample_seed(split_seed: int, sample_index: int) -> int:
+    """Map a non-negative split seed and sample index to a unique integer."""
+    if sample_index < 0:
+        raise ValueError("dense puzzle sample index must be non-negative")
+    diagonal = split_seed + sample_index
+    return diagonal * (diagonal + 1) // 2 + sample_index
+
+
+def _generate_puzzle_state(
+    *,
+    size: int,
+    shuffle_moves: int,
+    rng: random.Random,
+) -> dict[str, Any]:
+    """Generate one puzzle without reading or mutating process-global RNG state."""
+    grid = [[row * size + column + 1 for column in range(size)] for row in range(size)]
+    grid[-1][-1] = 0
+    solution = [row[:] for row in grid]
+    empty_row, empty_column = size - 1, size - 1
+    for _ in range(shuffle_moves):
+        valid_positions = [
+            (row, column)
+            for row, column in (
+                (empty_row, empty_column + 1),
+                (empty_row + 1, empty_column),
+                (empty_row, empty_column - 1),
+                (empty_row - 1, empty_column),
+            )
+            if 0 <= row < size and 0 <= column < size
+        ]
+        next_row, next_column = rng.choice(valid_positions)
+        grid[empty_row][empty_column], grid[next_row][next_column] = (
+            grid[next_row][next_column],
+            grid[empty_row][empty_column],
+        )
+        empty_row, empty_column = next_row, next_column
+    return {
+        "size": size,
+        "grid": grid,
+        "solution": solution,
+        "empty_pos": (empty_row, empty_column),
+        "commands": {
+            "up": "Slide tile below empty space up",
+            "down": "Slide tile above empty space down",
+            "left": "Slide tile to the right of empty space left",
+            "right": "Slide tile to the left of empty space right",
+            "view": "View the current state of the board",
+        },
     }
+
+
+def _generate_initial_state(
+    config: DensePuzzleConfig,
+    *,
+    split_seed: int,
+    sample_index: int,
+) -> dict[str, Any]:
+    """Generate a deterministic nonsolved state satisfying the distance gate."""
+    rng = random.Random(_sample_seed(split_seed, sample_index))
     for _attempt in range(config.max_generation_attempts):
-        game_state = SlidingPuzzleGameLogic.generate(generation_config)
+        game_state = _generate_puzzle_state(
+            size=config.size,
+            shuffle_moves=config.shuffle_moves,
+            rng=rng,
+        )
         if manhattan_distance(game_state) >= config.minimum_manhattan_distance:
             return game_state
     raise RuntimeError(
@@ -258,10 +322,15 @@ def generate_dense_puzzle_datum(
     config: DensePuzzleConfig,
     task_name: str,
     idx: int,
+    split_seed: int,
     add_system_prompt: bool,
 ) -> DatumSpec:
     """Generate one fixed-size dense-puzzle training datum."""
-    initial_game_state = _generate_initial_state(config)
+    initial_game_state = _generate_initial_state(
+        config,
+        split_seed=split_seed,
+        sample_index=idx,
+    )
     initial_render = SlidingPuzzleGameLogic.render(initial_game_state)
     welcome_message = SlidingPuzzleGameLogic.init(initial_game_state)
     prompt_instructions = (
@@ -271,10 +340,8 @@ def generate_dense_puzzle_datum(
         f"{config.size**2 - 1} with the empty space (0) at the bottom right.\n"
         "Valid actions: 'up', 'down', 'left', 'right', or 'slide row col' "
         "(e.g., 'slide 1 2').\n"
-        "After thinking, output your chosen action on a new line as "
-        "<action>your_action</action>.\n"
-        "Use <action>view</action> to view the board.\n"
-        "Think carefully step-by-step before acting.\n"
+        "Respond with exactly one action tag and no other text, for example "
+        "<action>up</action>.\n"
     )
     initial_prompt_content = tokenizer.apply_chat_template(
         [{"role": "user", "content": prompt_instructions}],
@@ -322,6 +389,7 @@ class DensePuzzleDataset(IterableDataset):
         task_name: str,
         add_system_prompt: bool,
         length: int,
+        split_seed: int,
     ) -> None:
         super().__init__()
         self._tokenizer = tokenizer
@@ -329,6 +397,7 @@ class DensePuzzleDataset(IterableDataset):
         self._task_name = task_name
         self._add_system_prompt = add_system_prompt
         self._length = length
+        self._split_seed = split_seed
 
     def __iter__(self) -> Iterator[DatumSpec]:
         for idx in itertools.count():
@@ -337,6 +406,7 @@ class DensePuzzleDataset(IterableDataset):
                 config=self._config,
                 task_name=self._task_name,
                 idx=idx,
+                split_seed=self._split_seed,
                 add_system_prompt=self._add_system_prompt,
             )
 
@@ -368,6 +438,7 @@ def setup_dense_puzzle_data(
         task_name=task_name,
         add_system_prompt=add_system_prompt,
         length=length,
+        split_seed=config.train_seed,
     )
     validation_dataset = DensePuzzleDataset(
         tokenizer=tokenizer,
@@ -375,6 +446,7 @@ def setup_dense_puzzle_data(
         task_name=task_name,
         add_system_prompt=add_system_prompt,
         length=val_length,
+        split_seed=config.validation_seed,
     )
     task_to_env = {task_name: env}
     return training_dataset, validation_dataset, task_to_env, task_to_env

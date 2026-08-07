@@ -196,6 +196,28 @@ progress telescopes, and success is neither at floor nor ceiling. The matched
 localized treatment changes only `turn_weight`; its environment, prompts,
 seeds, model, training objective, and evaluation objective remain identical.
 
+The calibration config evaluates 256 samples without taking an optimizer step:
+
+```bash
+uv run run_grpo_turn_credit_dense_puzzle.py \
+  --config configs/grpo_dense_sliding_puzzle_calibration.yaml
+```
+
+Run the zero-weight control and the proposed nonzero-weight treatment with the
+same seed. Then evaluate the two logs and their `val_data_step0.jsonl` files:
+
+```bash
+uv run evaluate_dense_calibration.py \
+  --control-log control.log \
+  --treatment-log treatment.log \
+  --control-rollouts control/val_data_step0.jsonl \
+  --treatment-rollouts treatment/val_data_step0.jsonl
+```
+
+The command exits nonzero unless both arms meet the declared multi-turn,
+intermediate-signal, reward-sign, and success-rate gates and their pre-update
+rollout artifacts match exactly.
+
 ## Evidence required before claiming an improvement
 
 The next scientific experiment needs a genuinely long-horizon environment with

@@ -124,3 +124,22 @@ def test_dense_puzzle_control_separates_objectives_and_localized_signal():
     assert turn_credit_config.macro_environment_component == "reward/progress"
     assert turn_credit_config.evaluation_environment_component == "reward/success"
     assert turn_credit_config.turn_weight == 0.0
+
+
+def test_dense_puzzle_calibration_is_frozen_policy_only():
+    config_path = (
+        Path(__file__).parents[2]
+        / "configs"
+        / "grpo_dense_sliding_puzzle_calibration.yaml"
+    )
+
+    master_config, turn_credit_config = load_master_and_turn_credit_config(
+        str(config_path),
+        [],
+    )
+
+    assert master_config.grpo.max_num_steps == 0
+    assert master_config.grpo.val_at_start
+    assert not master_config.grpo.val_at_end
+    assert master_config.grpo.max_val_samples == 256
+    assert turn_credit_config.turn_weight == 0.0

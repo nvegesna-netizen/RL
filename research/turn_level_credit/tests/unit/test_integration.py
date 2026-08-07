@@ -145,6 +145,8 @@ def test_runtime_hooks_capture_metrics_and_restore_after_error(monkeypatch, caps
             assert metrics["turn_credit/environment_reward/mean"] == 0.75
             assert metrics["turn_credit/source_reward/mean"] == 0.75
             assert metrics["turn_credit/credit/mean"] == 0.75
+            assert metrics["turn_credit/sample_count"] == 1
+            assert metrics["turn_credit/observed_turn_count"] == 1
             metric_line = capsys.readouterr().out
             assert "TURN_CREDIT_ROLLOUT_METRICS" in metric_line
             assert "turn_credit/turns_per_sample/mean=1.0" in metric_line

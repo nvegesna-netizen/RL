@@ -1,0 +1,15 @@
+defaults: "grpo_dense_sliding_puzzle_trajectory.yaml"
+
+# Frozen-policy signal calibration. max_num_steps=0 runs only the initial
+# validation pass, so no optimizer update can change the rollout policy.
+grpo:
+  max_num_steps: 0
+  max_num_epochs: 1
+  val_at_start: true
+  val_at_end: false
+  val_period: 0
+  max_val_samples: 256
+  val_batch_size: 8
+
+logger:
+  log_dir: "logs/turn-level-credit-dense-calibration"

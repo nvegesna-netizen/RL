@@ -35,10 +35,19 @@ def main() -> None:
         )
         sys.argv[1:1] = ["--config", config_path]
 
-    _master_config, turn_credit_config = load_master_and_turn_credit_config(
+    master_config, turn_credit_config = load_master_and_turn_credit_config(
         config_path,
         overrides,
     )
+    if master_config.grpo.max_num_steps == 0:
+        print(
+            "TURN_CREDIT_DENSE_CALIBRATION_CONFIG "
+            f"max_num_steps={master_config.grpo.max_num_steps} "
+            f"max_val_samples={master_config.grpo.max_val_samples} "
+            f"seed={master_config.grpo.seed} "
+            f"turn_weight={turn_credit_config.turn_weight}",
+            flush=True,
+        )
     with (
         install_dense_puzzle_runtime(),
         install_turn_credit_runtime(turn_credit_config),

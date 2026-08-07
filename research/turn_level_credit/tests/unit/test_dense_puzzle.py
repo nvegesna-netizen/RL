@@ -15,6 +15,7 @@
 """Tests for potential-based dense sliding-puzzle rewards."""
 
 import copy
+import random
 
 import pytest
 from turn_level_credit.dense_puzzle import (
@@ -22,6 +23,8 @@ from turn_level_credit.dense_puzzle import (
     SUCCESS_REWARD_KEY,
     DensePuzzleConfig,
     DenseSlidingPuzzleRunner,
+    _generate_initial_state,
+    _sample_seed,
     manhattan_distance,
     normalized_manhattan_potential,
 )
@@ -152,3 +155,32 @@ def test_manhattan_distance_rejects_duplicate_tiles():
 
     with pytest.raises(ValueError, match="each tile exactly once"):
         manhattan_distance(state)
+
+
+def test_dataset_state_is_deterministic_per_split_and_sample():
+    config = _config()
+    global_rng_state = random.getstate()
+
+    first = _generate_initial_state(config, split_seed=7, sample_index=11)
+    repeated = _generate_initial_state(config, split_seed=7, sample_index=11)
+
+    assert first == repeated
+    assert _sample_seed(7, 11) != _sample_seed(8, 11)
+    assert random.getstate() == global_rng_state
+
+
+def test_sample_seed_pairing_is_injective_for_test_grid():
+    seeds = {
+        _sample_seed(split_seed, sample_index)
+        for split_seed in range(10)
+        for sample_index in range(10)
+    }
+
+    assert len(seeds) == 100
+
+
+def test_config_requires_disjoint_nonnegative_split_seeds():
+    with pytest.raises(ValueError, match="must be non-negative"):
+        DensePuzzleConfig(train_seed=-1)
+    with pytest.raises(ValueError, match="must differ"):
+        DensePuzzleConfig(train_seed=7, validation_seed=7)
