@@ -32,6 +32,7 @@ from turn_level_credit.trace import (
     compute_environment_credit,
     record_environment_turn,
     remove_turn_annotations,
+    summarize_turn_reward_components,
     tensorize_turn_traces,
     validate_raw_reward_sums,
     validate_turn_count,
@@ -79,6 +80,7 @@ def install_turn_credit_runtime(
             greedy=greedy,
         )
         turn_batch = tensorize_turn_traces(final_batch["message_log"])
+        component_metrics = summarize_turn_reward_components(final_batch["message_log"])
         if turn_batch.max_turns == 0:
             raise ValueError("Enabled turn credit captured no environment transitions")
         if "total_turns" not in metrics:
@@ -120,6 +122,7 @@ def install_turn_credit_runtime(
             ),
             "turn_credit/credit/mean": float(observed_credit.mean().item()),
             "turn_credit/credit/std": float(observed_credit.std(unbiased=False).item()),
+            **component_metrics,
         }
         metrics.update(turn_metrics)
         print(

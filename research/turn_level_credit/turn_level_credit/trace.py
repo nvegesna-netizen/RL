@@ -214,6 +214,34 @@ def extract_turn_records(message_log: Sequence[Mapping[str, Any]]) -> list[TurnR
     return records
 
 
+def summarize_turn_reward_components(
+    message_logs: Sequence[Sequence[Mapping[str, Any]]],
+) -> dict[str, float]:
+    """Summarize observed named reward components before annotations are removed."""
+    values_by_component: dict[str, list[float]] = {}
+    for message_log in message_logs:
+        for record in extract_turn_records(message_log):
+            for component_name, value in record.reward_components.items():
+                values_by_component.setdefault(component_name, []).append(value)
+
+    metrics: dict[str, float] = {}
+    for component_name, values in sorted(values_by_component.items()):
+        tensor = torch.tensor(values, dtype=torch.float32)
+        metric_prefix = f"turn_credit/reward_component/{component_name}"
+        metrics[f"{metric_prefix}/mean"] = float(tensor.mean().item())
+        metrics[f"{metric_prefix}/std"] = float(tensor.std(unbiased=False).item())
+        metrics[f"{metric_prefix}/nonzero_fraction"] = float(
+            (tensor != 0).float().mean().item()
+        )
+        metrics[f"{metric_prefix}/positive_fraction"] = float(
+            (tensor > 0).float().mean().item()
+        )
+        metrics[f"{metric_prefix}/negative_fraction"] = float(
+            (tensor < 0).float().mean().item()
+        )
+    return metrics
+
+
 def _message_token_length(message: Mapping[str, Any], *, message_index: int) -> int:
     token_ids = message.get("token_ids")
     if not isinstance(token_ids, torch.Tensor):

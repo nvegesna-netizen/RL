@@ -165,6 +165,26 @@ This ten-step pilot is a feasibility and signal-quality gate, not evidence of
 an accuracy improvement. A performance claim requires longer matched runs and
 at least three seeds.
 
+## Run the dense-signal control
+
+The follow-on dense puzzle is a research-only environment that keeps terminal
+success as an explicit reward component and adds normalized Manhattan-potential
+progress. Progress telescopes to the endpoint potential change, so repeated or
+inverse moves cannot inflate cumulative progress.
+
+The checked-in configuration is the dense trajectory-reward control with local
+credit disabled:
+
+```bash
+uv run run_grpo_turn_credit_dense_puzzle.py \
+  --config configs/grpo_dense_sliding_puzzle_trajectory.yaml
+```
+
+Before changing `turn_weight`, calibrate frozen-policy rollouts and verify that
+the task has multiple trainable turns, nonzero positive and negative progress,
+and neither floor nor ceiling success. The matched localized treatment must use
+the same environment, prompts, seeds, model, and macro reward.
+
 ## Evidence required before claiming an improvement
 
 The next scientific experiment needs a genuinely long-horizon environment with

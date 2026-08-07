@@ -25,6 +25,7 @@ from turn_level_credit.trace import (
     record_environment_turn,
     remove_turn_annotations,
     scatter_turn_credit,
+    summarize_turn_reward_components,
     tensorize_turn_traces,
     turn_batch_from_mapping,
     validate_raw_reward_sums,
@@ -118,6 +119,54 @@ def test_capture_named_components_and_validate_raw_sum():
         torch.tensor([1.0]),
         atol=1.0e-6,
     )
+
+
+def test_summarize_turn_reward_components_preserves_sign_information():
+    logs = [[_message("assistant", [1], generated=True)]]
+    record_environment_turn(
+        logs,
+        _environment_return(
+            {
+                "reward/progress": torch.tensor([-0.25]),
+                "reward/success": torch.tensor([0.0]),
+            },
+            [False],
+        ),
+    )
+    logs[0].extend(
+        [
+            _message("user", [2]),
+            _message("assistant", [3], generated=True),
+        ]
+    )
+    record_environment_turn(
+        logs,
+        _environment_return(
+            {
+                "reward/progress": torch.tensor([0.5]),
+                "reward/success": torch.tensor([1.0]),
+            },
+            [True],
+        ),
+    )
+
+    metrics = summarize_turn_reward_components(logs)
+
+    assert metrics[
+        "turn_credit/reward_component/reward/progress/mean"
+    ] == pytest.approx(0.125)
+    assert metrics[
+        "turn_credit/reward_component/reward/progress/nonzero_fraction"
+    ] == pytest.approx(1.0)
+    assert metrics[
+        "turn_credit/reward_component/reward/progress/positive_fraction"
+    ] == pytest.approx(0.5)
+    assert metrics[
+        "turn_credit/reward_component/reward/progress/negative_fraction"
+    ] == pytest.approx(0.5)
+    assert metrics[
+        "turn_credit/reward_component/reward/success/positive_fraction"
+    ] == pytest.approx(0.5)
 
 
 def test_uneven_horizons_immediate_and_return_to_go():

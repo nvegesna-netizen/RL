@@ -1,0 +1,71 @@
+defaults: "../../../examples/configs/grpo_sliding_puzzle.yaml"
+
+turn_credit:
+  enabled: true
+  source: environment
+  environment_mode: immediate
+  discount: 1.0
+  macro_weight: 1.0
+  turn_weight: 0.0
+  raw_reward_atol: 1.0e-6
+
+# Dense trajectory-reward control. The matched localization treatment changes
+# only turn_credit.turn_weight after frozen-policy calibration fixes its scale.
+grpo:
+  num_prompts_per_step: 4
+  num_generations_per_prompt: 4
+  max_rollout_turns: 12
+  max_num_steps: 10
+  max_num_epochs: 1
+  val_period: 0
+  val_at_start: true
+  val_at_end: true
+  max_val_samples: 64
+  val_batch_size: 8
+  seed: 42
+
+checkpointing:
+  enabled: false
+
+policy:
+  model_name: "Qwen/Qwen2.5-1.5B-Instruct"
+  train_global_batch_size: 16
+  train_micro_batch_size: 1
+  logprob_batch_size: 1
+  max_total_sequence_length: 1536
+  dtensor_cfg:
+    cpu_offload: false
+    activation_checkpointing: false
+  generation:
+    max_new_tokens: 96
+    vllm_cfg:
+      async_engine: false
+      tensor_parallel_size: 1
+      gpu_memory_utilization: 0.6
+      max_model_len: ${policy.max_total_sequence_length}
+
+env:
+  _override_: true
+  sliding_puzzle_game:
+    cfg:
+      size: 3
+      shuffle_moves: 11
+      minimum_manhattan_distance: 2
+      max_generation_attempts: 100
+      max_moves: 12
+      progress_scale: 1.0
+
+logger:
+  log_dir: "logs/turn-level-credit-dense-sliding-puzzle"
+  wandb_enabled: false
+  tensorboard_enabled: false
+  mlflow_enabled: false
+  swanlab_enabled: false
+  monitor_gpus: false
+
+cluster:
+  num_nodes: 1
+  gpus_per_node: 1
+
+data_plane:
+  enabled: false
