@@ -27,6 +27,9 @@ def test_config_defaults_are_macro_only():
 
     assert not config.enabled
     assert config.source == "environment"
+    assert config.environment_component is None
+    assert config.macro_environment_component is None
+    assert config.evaluation_environment_component is None
     assert config.environment_mode == "immediate"
     assert config.macro_weight == 1.0
     assert config.turn_weight == 0.0
@@ -50,6 +53,19 @@ def test_config_rejects_invalid_numeric_ranges(field, value):
 def test_config_rejects_unknown_fields():
     with pytest.raises(ValidationError):
         TurnCreditConfig.model_validate({"silent_fallback": True})
+
+
+@pytest.mark.parametrize(
+    "field",
+    [
+        "environment_component",
+        "macro_environment_component",
+        "evaluation_environment_component",
+    ],
+)
+def test_config_rejects_blank_component_names(field):
+    with pytest.raises(ValidationError):
+        TurnCreditConfig.model_validate({field: "  "})
 
 
 @pytest.mark.parametrize(
@@ -88,4 +104,23 @@ def test_sliding_puzzle_pilot_is_multi_turn_and_macro_only_by_default():
     assert master_config.grpo.max_num_steps == 10
     assert master_config.policy["train_global_batch_size"] == 16
     assert turn_credit_config.enabled
+    assert turn_credit_config.turn_weight == 0.0
+
+
+def test_dense_puzzle_control_separates_objectives_and_localized_signal():
+    config_path = (
+        Path(__file__).parents[2]
+        / "configs"
+        / "grpo_dense_sliding_puzzle_trajectory.yaml"
+    )
+
+    master_config, turn_credit_config = load_master_and_turn_credit_config(
+        str(config_path),
+        [],
+    )
+
+    assert master_config.grpo.max_rollout_turns == 12
+    assert turn_credit_config.environment_component == "reward/progress"
+    assert turn_credit_config.macro_environment_component == "reward/progress"
+    assert turn_credit_config.evaluation_environment_component == "reward/success"
     assert turn_credit_config.turn_weight == 0.0

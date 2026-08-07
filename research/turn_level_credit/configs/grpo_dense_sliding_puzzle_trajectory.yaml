@@ -3,6 +3,11 @@ defaults: "../../../examples/configs/grpo_sliding_puzzle.yaml"
 turn_credit:
   enabled: true
   source: environment
+  # Train on telescoping progress, evaluate on exact terminal success, and use
+  # only progress as the candidate localized signal.
+  environment_component: "reward/progress"
+  macro_environment_component: "reward/progress"
+  evaluation_environment_component: "reward/success"
   environment_mode: immediate
   discount: 1.0
   macro_weight: 1.0

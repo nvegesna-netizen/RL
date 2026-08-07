@@ -65,15 +65,18 @@ def test_disabled_runtime_does_not_install_hooks():
     original_calculate_rewards = rollout_module.calculate_rewards
     original_rollout = grpo_module.run_multi_turn_rollout
     original_estimator_factory = grpo_module._create_advantage_estimator
+    original_validate = grpo_module.validate
 
     with install_turn_credit_runtime(TurnCreditConfig(enabled=False)):
         assert rollout_module.calculate_rewards is original_calculate_rewards
         assert grpo_module.run_multi_turn_rollout is original_rollout
         assert grpo_module._create_advantage_estimator is original_estimator_factory
+        assert grpo_module.validate is original_validate
 
     assert rollout_module.calculate_rewards is original_calculate_rewards
     assert grpo_module.run_multi_turn_rollout is original_rollout
     assert grpo_module._create_advantage_estimator is original_estimator_factory
+    assert grpo_module.validate is original_validate
 
 
 def test_runtime_hooks_capture_metrics_and_restore_after_error(monkeypatch, capsys):
@@ -137,8 +140,10 @@ def test_runtime_hooks_capture_metrics_and_restore_after_error(monkeypatch, caps
             estimator = grpo_module._create_advantage_estimator(_master_config())
 
             assert final_batch["turn_rewards"].tolist() == [[0.75]]
+            assert final_batch["turn_credit_rewards"].tolist() == [[0.75]]
             assert final_batch["assistant_turn_spans"].tolist() == [[[0, 2]]]
             assert metrics["turn_credit/environment_reward/mean"] == 0.75
+            assert metrics["turn_credit/source_reward/mean"] == 0.75
             assert metrics["turn_credit/credit/mean"] == 0.75
             metric_line = capsys.readouterr().out
             assert "TURN_CREDIT_ROLLOUT_METRICS" in metric_line
@@ -158,3 +163,79 @@ def test_runtime_hooks_capture_metrics_and_restore_after_error(monkeypatch, caps
     assert rollout_module.calculate_rewards is fake_calculate_rewards
     assert grpo_module.run_multi_turn_rollout is fake_rollout
     assert grpo_module._create_advantage_estimator is fake_estimator_factory
+
+
+def test_named_components_separate_training_validation_and_credit(monkeypatch):
+    def make_batch():
+        return BatchedDataDict(
+            {
+                "message_log": [
+                    [
+                        {
+                            "role": "assistant",
+                            "content": "answer",
+                            "token_ids": torch.tensor([1]),
+                            "generation_logprobs": torch.zeros(1),
+                        }
+                    ]
+                ]
+            }
+        )
+
+    def fake_calculate_rewards(_batch, _task_to_env):
+        return EnvironmentReturn(
+            observations=[{"role": "user", "content": "done"}],
+            metadata=[None],
+            next_stop_strings=[None],
+            rewards={
+                "reward/progress": torch.tensor([0.25]),
+                "reward/success": torch.tensor([1.0]),
+            },
+            terminateds=torch.tensor([True]),
+            answers=[None],
+        )
+
+    def fake_rollout(**kwargs):
+        rollout_batch = kwargs["input_batch"]
+        environment_return = rollout_module.calculate_rewards(rollout_batch, {})
+        assert isinstance(environment_return.rewards, dict)
+        for name, reward in environment_return.rewards.items():
+            rollout_batch[name] = reward
+        rollout_batch["total_reward"] = sum(environment_return.rewards.values())
+        return rollout_batch, {"total_turns": 1}
+
+    def fake_validate(*_args, **_kwargs):
+        final_batch, _ = grpo_module.run_multi_turn_rollout(
+            policy_generation=None,
+            input_batch=make_batch(),
+            tokenizer=None,
+            task_to_env={},
+            max_seq_len=8,
+        )
+        return {"accuracy": float(final_batch["total_reward"].item())}, {}
+
+    monkeypatch.setattr(rollout_module, "calculate_rewards", fake_calculate_rewards)
+    monkeypatch.setattr(grpo_module, "run_multi_turn_rollout", fake_rollout)
+    monkeypatch.setattr(grpo_module, "validate", fake_validate)
+
+    config = TurnCreditConfig(
+        enabled=True,
+        environment_component="reward/progress",
+        macro_environment_component="reward/progress",
+        evaluation_environment_component="reward/success",
+    )
+    with install_turn_credit_runtime(config):
+        training_batch, _ = grpo_module.run_multi_turn_rollout(
+            policy_generation=None,
+            input_batch=make_batch(),
+            tokenizer=None,
+            task_to_env={},
+            max_seq_len=8,
+        )
+        val_metrics, _ = grpo_module.validate()
+
+    assert training_batch["turn_rewards"].tolist() == [[1.25]]
+    assert training_batch["turn_credit_rewards"].tolist() == [[0.25]]
+    assert training_batch["total_reward"].tolist() == [0.25]
+    assert val_metrics["accuracy"] == 1.0
+    assert grpo_module.validate is fake_validate

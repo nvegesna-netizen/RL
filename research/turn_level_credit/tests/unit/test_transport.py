@@ -35,6 +35,7 @@ def _batch(
         batch,
         TurnBatch(
             rewards=torch.tensor([rewards], dtype=torch.float32),
+            credit_rewards=torch.tensor([rewards], dtype=torch.float32),
             mask=torch.ones((1, num_turns), dtype=torch.bool),
             trainable_mask=torch.ones((1, num_turns), dtype=torch.bool),
             assistant_spans=torch.tensor([spans], dtype=torch.int64),
@@ -60,6 +61,7 @@ def test_turn_fields_survive_padding_reordering_and_slicing():
         restored.rewards,
         torch.tensor([[0.1, -0.2, 1.0]]),
     )
+    assert torch.equal(restored.credit_rewards, restored.rewards)
     assert restored.mask.tolist() == [[True, True, True]]
     assert restored.trainable_mask.tolist() == [[True, True, True]]
     assert restored.assistant_spans.tolist() == [[[1, 2], [3, 5], [6, 7]]]
@@ -70,6 +72,7 @@ def test_turn_fields_survive_padding_reordering_and_slicing():
         padded.rewards,
         torch.tensor([[0.25, 0.0, 0.0], [0.1, -0.2, 1.0]]),
     )
+    assert torch.equal(padded.credit_rewards, padded.rewards)
     assert padded.mask.tolist() == [[True, False, False], [True, True, True]]
     assert padded.assistant_spans.tolist()[0] == [[1, 2], [0, 0], [0, 0]]
 

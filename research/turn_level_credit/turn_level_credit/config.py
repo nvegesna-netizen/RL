@@ -26,6 +26,14 @@ class TurnCreditConfig(BaseModel):
         enabled: Whether to record native turn rewards and modify advantages.
         source: Credit source. The first research slice supports only native
             environment rewards.
+        environment_component: Optional named environment reward component used
+            as the auxiliary turn-credit source. ``None`` uses the scalar sum.
+        macro_environment_component: Optional named environment reward component
+            used as the trajectory reward during training. ``None`` preserves
+            NeMo-RL's scalar reward.
+        evaluation_environment_component: Optional named environment reward
+            component used as the trajectory reward during validation. ``None``
+            uses ``macro_environment_component``.
         environment_mode: Whether each turn receives its immediate reward or
             its discounted return-to-go.
         discount: Return-to-go discount in the closed interval ``[0, 1]``.
@@ -40,6 +48,9 @@ class TurnCreditConfig(BaseModel):
 
     enabled: bool = False
     source: Literal["environment"] = "environment"
+    environment_component: str | None = None
+    macro_environment_component: str | None = None
+    evaluation_environment_component: str | None = None
     environment_mode: Literal["immediate", "return_to_go"] = "immediate"
     discount: float = 1.0
     macro_weight: float = 1.0
@@ -48,6 +59,14 @@ class TurnCreditConfig(BaseModel):
 
     @model_validator(mode="after")
     def _validate_numeric_ranges(self) -> "TurnCreditConfig":
+        for field_name in (
+            "environment_component",
+            "macro_environment_component",
+            "evaluation_environment_component",
+        ):
+            value = getattr(self, field_name)
+            if value is not None and not value.strip():
+                raise ValueError(f"turn_credit.{field_name} must not be blank")
         if not 0.0 <= self.discount <= 1.0:
             raise ValueError("turn_credit.discount must be in [0, 1]")
         if self.macro_weight < 0.0:

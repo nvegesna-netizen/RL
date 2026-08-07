@@ -34,7 +34,8 @@ def _repeated_batch():
     attach_turn_batch(
         batch,
         TurnBatch(
-            rewards=torch.tensor([[0.5, -0.25]]),
+            rewards=torch.tensor([[1.5, 0.75]]),
+            credit_rewards=torch.tensor([[0.5, -0.25]]),
             mask=torch.tensor([[True, True]]),
             trainable_mask=torch.tensor([[True, True]]),
             assistant_spans=torch.tensor([[[1, 3], [4, 5]]]),

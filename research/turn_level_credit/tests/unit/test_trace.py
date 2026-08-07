@@ -25,6 +25,7 @@ from turn_level_credit.trace import (
     record_environment_turn,
     remove_turn_annotations,
     scatter_turn_credit,
+    summarize_credit_source,
     summarize_turn_reward_components,
     tensorize_turn_traces,
     turn_batch_from_mapping,
@@ -89,6 +90,7 @@ def test_capture_tensorize_and_remove_annotations_with_assistant_history():
         turn_batch.rewards,
         torch.tensor([[0.2], [-0.1]]),
     )
+    assert torch.equal(turn_batch.credit_rewards, turn_batch.rewards)
     assert turn_batch.assistant_spans.tolist() == [[[4, 6]], [[1, 4]]]
     assert turn_batch.terminateds.tolist() == [[False], [True]]
     assert TURN_REWARD_KEY not in logs[0][1]
@@ -111,14 +113,26 @@ def test_capture_named_components_and_validate_raw_sum():
             [True],
         ),
     )
-    turn_batch = tensorize_turn_traces(logs)
+    turn_batch = tensorize_turn_traces(logs, component_name="correctness")
 
     assert turn_batch.rewards.tolist() == [[1.0]]
+    assert turn_batch.credit_rewards.tolist() == [[0.75]]
     validate_raw_reward_sums(
         turn_batch,
         torch.tensor([1.0]),
         atol=1.0e-6,
     )
+
+
+def test_component_selection_fails_when_a_turn_lacks_the_component():
+    logs = [[_message("assistant", [1], generated=True)]]
+    record_environment_turn(
+        logs,
+        _environment_return({"present": torch.tensor([1.0])}, [True]),
+    )
+
+    with pytest.raises(ValueError, match="missing configured reward component"):
+        tensorize_turn_traces(logs, component_name="missing")
 
 
 def test_summarize_turn_reward_components_preserves_sign_information():
@@ -216,6 +230,51 @@ def test_uneven_horizons_immediate_and_return_to_go():
     )
 
 
+def test_credit_source_summary_reports_predeclared_sample_gates():
+    logs = [
+        [_message("assistant", [1], generated=True)],
+        [_message("assistant", [4], generated=True)],
+    ]
+    record_environment_turn(
+        logs,
+        _environment_return(
+            {
+                "progress": torch.tensor([0.25, 0.0]),
+                "success": torch.tensor([0.0, 0.0]),
+            },
+            [False, False],
+        ),
+    )
+    logs[0].extend([_message("user", [2]), _message("assistant", [3], generated=True)])
+    record_environment_turn(
+        [logs[0]],
+        _environment_return(
+            {
+                "progress": torch.tensor([-0.25]),
+                "success": torch.tensor([1.0]),
+            },
+            [True],
+        ),
+    )
+    turn_batch = tensorize_turn_traces(logs, component_name="progress")
+
+    metrics = summarize_credit_source(turn_batch)
+
+    assert metrics["turn_credit/source_reward/positive_fraction"] == pytest.approx(
+        1 / 3
+    )
+    assert metrics["turn_credit/source_reward/zero_fraction"] == pytest.approx(1 / 3)
+    assert metrics["turn_credit/source_reward/negative_fraction"] == pytest.approx(
+        1 / 3
+    )
+    assert metrics[
+        "turn_credit/gate/two_plus_trainable_turns_fraction"
+    ] == pytest.approx(0.5)
+    assert metrics[
+        "turn_credit/gate/nonzero_intermediate_source_reward_fraction"
+    ] == pytest.approx(0.5)
+
+
 def test_scatter_targets_only_generated_turn_spans():
     logs = [
         [
@@ -283,6 +342,7 @@ def test_turn_batch_round_trip_and_raw_sum_mismatch():
 
     restored = turn_batch_from_mapping(mapping)
     assert torch.equal(restored.rewards, turn_batch.rewards)
+    assert torch.equal(restored.credit_rewards, turn_batch.credit_rewards)
     with pytest.raises(ValueError, match="do not sum"):
         validate_raw_reward_sums(
             restored,

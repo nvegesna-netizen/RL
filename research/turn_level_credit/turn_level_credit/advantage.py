@@ -65,7 +65,7 @@ class TurnLevelGRPOAdvantageEstimator:
 
         if self.config.turn_weight == 0.0 and self.config.macro_weight == 1.0:
             scatter_turn_credit(
-                torch.zeros_like(turn_batch.rewards),
+                torch.zeros_like(turn_batch.credit_rewards),
                 turn_batch,
                 advantage_mask,
             )

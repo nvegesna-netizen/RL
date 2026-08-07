@@ -51,6 +51,7 @@ The research entrypoint installs scoped hooks for the duration of training:
    compact tensors:
 
    - `turn_rewards [B, T]`
+   - `turn_credit_rewards [B, T]`
    - `turn_mask [B, T]`
    - `turn_trainable_mask [B, T]`
    - `assistant_turn_spans [B, T, 2]`
@@ -85,6 +86,9 @@ GRPO schema:
 turn_credit:
   enabled: true
   source: environment
+  environment_component: null
+  macro_environment_component: null
+  evaluation_environment_component: null
   environment_mode: immediate  # or return_to_go
   discount: 1.0
   macro_weight: 1.0
@@ -93,7 +97,11 @@ turn_credit:
 ```
 
 Defaults live in the local Pydantic `TurnCreditConfig`; unknown fields and
-invalid numeric ranges fail during startup.
+invalid numeric ranges fail during startup. For environments with named reward
+components, `environment_component` selects the per-turn auxiliary source,
+`macro_environment_component` selects the training trajectory objective, and
+`evaluation_environment_component` selects the held-out metric. Missing or
+malformed configured components fail instead of falling back to a scalar sum.
 
 ## Run the smoke recipe
 
@@ -172,8 +180,9 @@ success as an explicit reward component and adds normalized Manhattan-potential
 progress. Progress telescopes to the endpoint potential change, so repeated or
 inverse moves cannot inflate cumulative progress.
 
-The checked-in configuration is the dense trajectory-reward control with local
-credit disabled:
+The checked-in configuration trains on summed potential progress, evaluates on
+terminal puzzle success, and uses potential progress as the candidate localized
+signal. Local credit is disabled, making it the A1 trajectory-control arm:
 
 ```bash
 uv run run_grpo_turn_credit_dense_puzzle.py \
@@ -181,9 +190,11 @@ uv run run_grpo_turn_credit_dense_puzzle.py \
 ```
 
 Before changing `turn_weight`, calibrate frozen-policy rollouts and verify that
-the task has multiple trainable turns, nonzero positive and negative progress,
-and neither floor nor ceiling success. The matched localized treatment must use
-the same environment, prompts, seeds, model, and macro reward.
+at least 80% of samples have two trainable turns, at least 30% have a nonzero
+intermediate progress delta, positive/zero/negative deltas all occur, cumulative
+progress telescopes, and success is neither at floor nor ceiling. The matched
+localized treatment changes only `turn_weight`; its environment, prompts,
+seeds, model, training objective, and evaluation objective remain identical.
 
 ## Evidence required before claiming an improvement
 
@@ -206,11 +217,11 @@ default credit weight or clipping policy without those measurements.
 
 ## Known limitations
 
-- The runtime uses scoped replacement of three driver-side module functions.
+- The runtime uses scoped replacement of four driver-side module functions.
   This keeps the experiment self-contained but is not the intended core API.
-- Named reward components are preserved on the temporary turn record and
-  summed for the first scalar auxiliary-credit experiment. Component-specific
-  credit semantics are not implemented.
+- Named reward components can be selected independently for training,
+  evaluation, and auxiliary credit. The unmodified scalar sum is retained for
+  the raw rollout-integrity check.
 - Native NeMo Gym process rewards are blocked until a versioned aligned result
   contract is available; see
   [NVIDIA-NeMo/Gym#1298](https://github.com/NVIDIA-NeMo/Gym/issues/1298).

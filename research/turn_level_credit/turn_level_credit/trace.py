@@ -27,6 +27,7 @@ TURN_REWARD_COMPONENTS_KEY = "_turn_credit_reward_components"
 TURN_TERMINATED_KEY = "_turn_credit_terminated"
 
 TURN_REWARDS_FIELD = "turn_rewards"
+TURN_CREDIT_REWARDS_FIELD = "turn_credit_rewards"
 TURN_MASK_FIELD = "turn_mask"
 TURN_TRAINABLE_MASK_FIELD = "turn_trainable_mask"
 ASSISTANT_TURN_SPANS_FIELD = "assistant_turn_spans"
@@ -48,6 +49,7 @@ class TurnBatch:
     """Compact padded turn representation for one rollout batch."""
 
     rewards: torch.Tensor
+    credit_rewards: torch.Tensor
     mask: torch.Tensor
     trainable_mask: torch.Tensor
     assistant_spans: torch.Tensor
@@ -258,8 +260,15 @@ def _message_token_length(message: Mapping[str, Any], *, message_index: int) -> 
 
 def tensorize_turn_traces(
     message_logs: Sequence[Sequence[Mapping[str, Any]]],
+    *,
+    component_name: str | None = None,
 ) -> TurnBatch:
-    """Convert annotated message logs to compact padded turn tensors."""
+    """Convert annotated message logs to compact padded turn tensors.
+
+    ``rewards`` always contains the scalar environment reward so callers can
+    validate NeMo-RL's raw trajectory total. ``credit_rewards`` contains either
+    that scalar or one explicitly selected named component.
+    """
     records_per_row = [
         extract_turn_records(message_log) for message_log in message_logs
     ]
@@ -267,6 +276,7 @@ def tensorize_turn_traces(
     batch_size = len(message_logs)
 
     rewards = torch.zeros((batch_size, max_turns), dtype=torch.float32)
+    credit_rewards = torch.zeros((batch_size, max_turns), dtype=torch.float32)
     mask = torch.zeros((batch_size, max_turns), dtype=torch.bool)
     trainable_mask = torch.zeros((batch_size, max_turns), dtype=torch.bool)
     assistant_spans = torch.zeros((batch_size, max_turns, 2), dtype=torch.int64)
@@ -292,6 +302,17 @@ def tensorize_turn_traces(
                 )
             previous_end = end
             rewards[row, turn_index] = record.environment_reward
+            if component_name is None:
+                credit_reward = record.environment_reward
+            else:
+                if component_name not in record.reward_components:
+                    available = sorted(record.reward_components)
+                    raise ValueError(
+                        f"Turn {turn_index} in row {row} is missing configured "
+                        f"reward component {component_name!r}; available={available}"
+                    )
+                credit_reward = record.reward_components[component_name]
+            credit_rewards[row, turn_index] = credit_reward
             mask[row, turn_index] = True
             trainable_mask[row, turn_index] = end > start
             assistant_spans[row, turn_index] = torch.tensor([start, end])
@@ -299,6 +320,7 @@ def tensorize_turn_traces(
 
     turn_batch = TurnBatch(
         rewards=rewards,
+        credit_rewards=credit_rewards,
         mask=mask,
         trainable_mask=trainable_mask,
         assistant_spans=assistant_spans,
@@ -314,6 +336,7 @@ def attach_turn_batch(
 ) -> None:
     """Attach compact turn tensors to a rollout batch."""
     batch[TURN_REWARDS_FIELD] = turn_batch.rewards
+    batch[TURN_CREDIT_REWARDS_FIELD] = turn_batch.credit_rewards
     batch[TURN_MASK_FIELD] = turn_batch.mask
     batch[TURN_TRAINABLE_MASK_FIELD] = turn_batch.trainable_mask
     batch[ASSISTANT_TURN_SPANS_FIELD] = turn_batch.assistant_spans
@@ -324,6 +347,7 @@ def turn_batch_from_mapping(batch: Mapping[str, Any]) -> TurnBatch:
     """Read compact turn tensors from a mapping and validate their shapes."""
     required_fields = (
         TURN_REWARDS_FIELD,
+        TURN_CREDIT_REWARDS_FIELD,
         TURN_MASK_FIELD,
         TURN_TRAINABLE_MASK_FIELD,
         ASSISTANT_TURN_SPANS_FIELD,
@@ -340,13 +364,18 @@ def turn_batch_from_mapping(batch: Mapping[str, Any]) -> TurnBatch:
 
     turn_batch = TurnBatch(
         rewards=batch[TURN_REWARDS_FIELD],
+        credit_rewards=batch[TURN_CREDIT_REWARDS_FIELD],
         mask=batch[TURN_MASK_FIELD],
         trainable_mask=batch[TURN_TRAINABLE_MASK_FIELD],
         assistant_spans=batch[ASSISTANT_TURN_SPANS_FIELD],
         terminateds=batch[TURN_TERMINATEDS_FIELD],
     )
-    if not turn_batch.rewards.is_floating_point():
-        raise ValueError("turn_rewards must use a floating-point dtype")
+    for field_name, value in (
+        (TURN_REWARDS_FIELD, turn_batch.rewards),
+        (TURN_CREDIT_REWARDS_FIELD, turn_batch.credit_rewards),
+    ):
+        if not value.is_floating_point():
+            raise ValueError(f"{field_name} must use a floating-point dtype")
     for field_name, value in (
         (TURN_MASK_FIELD, turn_batch.mask),
         (TURN_TRAINABLE_MASK_FIELD, turn_batch.trainable_mask),
@@ -360,6 +389,7 @@ def turn_batch_from_mapping(batch: Mapping[str, Any]) -> TurnBatch:
         value.device
         for value in (
             turn_batch.rewards,
+            turn_batch.credit_rewards,
             turn_batch.mask,
             turn_batch.trainable_mask,
             turn_batch.assistant_spans,
@@ -372,6 +402,8 @@ def turn_batch_from_mapping(batch: Mapping[str, Any]) -> TurnBatch:
     expected = turn_batch.rewards.shape
     if turn_batch.rewards.ndim != 2:
         raise ValueError(f"turn_rewards must have shape [B, T], got {tuple(expected)}")
+    if turn_batch.credit_rewards.shape != expected:
+        raise ValueError("turn_credit_rewards must match turn_rewards")
     if turn_batch.mask.shape != expected:
         raise ValueError("turn_mask must match turn_rewards")
     if turn_batch.trainable_mask.shape != expected:
@@ -385,6 +417,8 @@ def turn_batch_from_mapping(batch: Mapping[str, Any]) -> TurnBatch:
         )
     if not torch.isfinite(turn_batch.rewards[turn_batch.mask]).all():
         raise ValueError("Observed turn rewards contain non-finite values")
+    if not torch.isfinite(turn_batch.credit_rewards[turn_batch.mask]).all():
+        raise ValueError("Observed turn credit rewards contain non-finite values")
     _validate_terminal_order(turn_batch)
     return turn_batch
 
@@ -423,6 +457,56 @@ def validate_raw_reward_sums(
             f"turn_sums={turn_sums.tolist()}, "
             f"total_reward={raw_total_reward.tolist()}, atol={atol}"
         )
+
+
+def summarize_credit_source(turn_batch: TurnBatch) -> dict[str, float]:
+    """Return sample- and turn-level diagnostics for the selected credit source."""
+    if turn_batch.batch_size == 0 or not bool(turn_batch.mask.any().item()):
+        raise ValueError("Cannot summarize an empty turn-credit batch")
+
+    observed = turn_batch.credit_rewards[turn_batch.mask]
+    source_sums = (turn_batch.credit_rewards * turn_batch.mask).sum(dim=1)
+    trainable_counts = turn_batch.trainable_mask.sum(dim=1)
+    has_nonzero_intermediate = torch.zeros(
+        turn_batch.batch_size,
+        dtype=torch.bool,
+        device=turn_batch.credit_rewards.device,
+    )
+    for row in range(turn_batch.batch_size):
+        observed_indices = torch.nonzero(turn_batch.mask[row], as_tuple=False).flatten()
+        if observed_indices.numel() < 2:
+            continue
+        intermediate = turn_batch.credit_rewards[row, observed_indices[:-1]]
+        has_nonzero_intermediate[row] = bool((intermediate != 0).any().item())
+
+    return {
+        "turn_credit/source_reward/mean": float(observed.mean().item()),
+        "turn_credit/source_reward/std": float(observed.std(unbiased=False).item()),
+        "turn_credit/source_reward/nonzero_fraction": float(
+            (observed != 0).float().mean().item()
+        ),
+        "turn_credit/source_reward/positive_fraction": float(
+            (observed > 0).float().mean().item()
+        ),
+        "turn_credit/source_reward/zero_fraction": float(
+            (observed == 0).float().mean().item()
+        ),
+        "turn_credit/source_reward/negative_fraction": float(
+            (observed < 0).float().mean().item()
+        ),
+        "turn_credit/source_reward/trajectory_sum_mean": float(
+            source_sums.mean().item()
+        ),
+        "turn_credit/source_reward/trajectory_sum_std": float(
+            source_sums.std(unbiased=False).item()
+        ),
+        "turn_credit/gate/two_plus_trainable_turns_fraction": float(
+            (trainable_counts >= 2).float().mean().item()
+        ),
+        "turn_credit/gate/nonzero_intermediate_source_reward_fraction": float(
+            has_nonzero_intermediate.float().mean().item()
+        ),
+    }
 
 
 def validate_turn_spans(turn_batch: TurnBatch, token_mask: torch.Tensor) -> None:
@@ -492,22 +576,22 @@ def compute_environment_credit(
     if not 0.0 <= discount <= 1.0:
         raise ValueError("discount must be in [0, 1]")
     if mode == "immediate":
-        return turn_batch.rewards * turn_batch.mask
+        return turn_batch.credit_rewards * turn_batch.mask
     if mode != "return_to_go":
         raise ValueError(f"Unsupported environment credit mode: {mode!r}")
 
-    credit = torch.zeros_like(turn_batch.rewards)
+    credit = torch.zeros_like(turn_batch.credit_rewards)
     for row in range(turn_batch.batch_size):
         running_return = torch.zeros(
             (),
-            dtype=turn_batch.rewards.dtype,
-            device=turn_batch.rewards.device,
+            dtype=turn_batch.credit_rewards.dtype,
+            device=turn_batch.credit_rewards.device,
         )
         for turn_index in range(turn_batch.max_turns - 1, -1, -1):
             if not bool(turn_batch.mask[row, turn_index].item()):
                 continue
             running_return = (
-                turn_batch.rewards[row, turn_index] + discount * running_return
+                turn_batch.credit_rewards[row, turn_index] + discount * running_return
             )
             credit[row, turn_index] = running_return
     return credit
@@ -519,15 +603,15 @@ def scatter_turn_credit(
     token_mask: torch.Tensor,
 ) -> torch.Tensor:
     """Scatter one credit value over each generated assistant-token span."""
-    if credit.shape != turn_batch.rewards.shape:
+    if credit.shape != turn_batch.credit_rewards.shape:
         raise ValueError("Turn credit must match turn_rewards shape")
     if not credit.is_floating_point():
         raise ValueError("Turn credit must use a floating-point dtype")
-    if credit.device != turn_batch.rewards.device:
+    if credit.device != turn_batch.credit_rewards.device:
         raise ValueError("Turn credit and turn rewards must be on the same device")
     if token_mask.dtype != torch.bool:
         raise ValueError("Turn-credit token eligibility mask must use torch.bool")
-    if token_mask.device != turn_batch.rewards.device:
+    if token_mask.device != turn_batch.credit_rewards.device:
         raise ValueError(
             "Turn-credit token eligibility mask and turn rewards must be "
             "on the same device"

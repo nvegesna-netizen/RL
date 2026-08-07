@@ -16,7 +16,10 @@
 
 from collections.abc import Iterator
 from contextlib import contextmanager
+from contextvars import ContextVar
 from typing import Any, cast
+
+import torch
 
 from nemo_rl.algorithms import grpo as grpo_module
 from nemo_rl.algorithms.grpo import MasterConfig
@@ -32,12 +35,41 @@ from turn_level_credit.trace import (
     compute_environment_credit,
     record_environment_turn,
     remove_turn_annotations,
+    summarize_credit_source,
     summarize_turn_reward_components,
     tensorize_turn_traces,
     validate_raw_reward_sums,
     validate_turn_count,
 )
 from turn_level_credit.validation import validate_supported_path
+
+
+def _select_trajectory_reward(
+    batch: BatchedDataDict[DatumSpec],
+    component_name: str | None,
+) -> torch.Tensor:
+    """Select and validate a scalar trajectory reward from a rollout batch."""
+    reward_name = "total_reward" if component_name is None else component_name
+    if reward_name not in batch:
+        raise ValueError(
+            f"Rollout batch is missing configured trajectory reward {reward_name!r}"
+        )
+    reward = batch[reward_name]
+    if not isinstance(reward, torch.Tensor):
+        raise TypeError(f"Trajectory reward {reward_name!r} must be a tensor")
+    expected_shape = (len(batch["message_log"]),)
+    if reward.shape != expected_shape:
+        raise ValueError(
+            f"Trajectory reward {reward_name!r} must have shape {expected_shape}, "
+            f"got {tuple(reward.shape)}"
+        )
+    if not reward.is_floating_point():
+        raise ValueError(
+            f"Trajectory reward {reward_name!r} must use a floating-point dtype"
+        )
+    if not torch.isfinite(reward).all():
+        raise ValueError(f"Trajectory reward {reward_name!r} is non-finite")
+    return reward
 
 
 @contextmanager
@@ -52,6 +84,10 @@ def install_turn_credit_runtime(
     original_calculate_rewards = rollout_module.calculate_rewards
     original_rollout = grpo_module.run_multi_turn_rollout
     original_estimator_factory = grpo_module._create_advantage_estimator
+    original_validate = grpo_module.validate
+    validation_active: ContextVar[bool] = ContextVar(
+        "turn_credit_validation_active", default=False
+    )
 
     def calculate_rewards_with_turn_recording(
         batch: BatchedDataDict[DatumSpec],
@@ -79,7 +115,10 @@ def install_turn_credit_runtime(
             max_rollout_turns=max_rollout_turns,
             greedy=greedy,
         )
-        turn_batch = tensorize_turn_traces(final_batch["message_log"])
+        turn_batch = tensorize_turn_traces(
+            final_batch["message_log"],
+            component_name=turn_credit_config.environment_component,
+        )
         component_metrics = summarize_turn_reward_components(final_batch["message_log"])
         if turn_batch.max_turns == 0:
             raise ValueError("Enabled turn credit captured no environment transitions")
@@ -91,7 +130,18 @@ def install_turn_credit_runtime(
             final_batch["total_reward"],
             atol=turn_credit_config.raw_reward_atol,
         )
+        objective_component = turn_credit_config.macro_environment_component
+        if validation_active.get():
+            objective_component = (
+                turn_credit_config.evaluation_environment_component
+                or objective_component
+            )
+        objective_reward = _select_trajectory_reward(
+            final_batch,
+            objective_component,
+        )
         attach_turn_batch(final_batch, turn_batch)
+        final_batch["total_reward"] = objective_reward
         remove_turn_annotations(final_batch["message_log"])
 
         turns_per_sample = turn_batch.mask.sum(dim=1)
@@ -120,8 +170,13 @@ def install_turn_credit_runtime(
             "turn_credit/environment_reward/std": float(
                 observed_rewards.std(unbiased=False).item()
             ),
+            "turn_credit/objective_reward/mean": float(objective_reward.mean().item()),
+            "turn_credit/objective_reward/std": float(
+                objective_reward.std(unbiased=False).item()
+            ),
             "turn_credit/credit/mean": float(observed_credit.mean().item()),
             "turn_credit/credit/std": float(observed_credit.std(unbiased=False).item()),
+            **summarize_credit_source(turn_batch),
             **component_metrics,
         }
         metrics.update(turn_metrics)
@@ -143,12 +198,21 @@ def install_turn_credit_runtime(
             config=turn_credit_config,
         )
 
+    def validate_with_component_reward(*args: Any, **kwargs: Any) -> Any:
+        token = validation_active.set(True)
+        try:
+            return original_validate(*args, **kwargs)
+        finally:
+            validation_active.reset(token)
+
     rollout_module.calculate_rewards = calculate_rewards_with_turn_recording
     grpo_module.run_multi_turn_rollout = rollout_with_turn_tensors
     grpo_module._create_advantage_estimator = cast(Any, create_turn_credit_estimator)
+    grpo_module.validate = cast(Any, validate_with_component_reward)
     try:
         yield
     finally:
         rollout_module.calculate_rewards = original_calculate_rewards
         grpo_module.run_multi_turn_rollout = original_rollout
         grpo_module._create_advantage_estimator = original_estimator_factory
+        grpo_module.validate = original_validate

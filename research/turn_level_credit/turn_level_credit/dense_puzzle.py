@@ -303,7 +303,7 @@ def generate_dense_puzzle_datum(
     return {
         "message_log": message_log,
         "length": len(tokenized_prompt),
-        "extra_env_info": metadata,
+        "extra_env_info": dict(metadata),
         "loss_multiplier": 1.0,
         "idx": idx,
         "task_name": task_name,
@@ -359,7 +359,9 @@ def setup_dense_puzzle_data(
     if "cfg" not in task_config:
         raise ValueError(f"environment {task_name!r} is missing cfg")
     config = DensePuzzleConfig.model_validate(task_config["cfg"])
-    env = DenseSlidingPuzzleEnv.options(num_gpus=0).remote(cfg=config.model_dump())
+    env = DenseSlidingPuzzleEnv.options(  # type: ignore # decorated with @ray.remote
+        num_gpus=0
+    ).remote(cfg=config.model_dump())
     training_dataset = DensePuzzleDataset(
         tokenizer=tokenizer,
         config=config,
