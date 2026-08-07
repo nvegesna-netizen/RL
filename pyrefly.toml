@@ -57,6 +57,7 @@ project-includes = [
   "research/turn_level_credit/turn_level_credit/integration.py",
   "research/turn_level_credit/turn_level_credit/math_repair.py",
   "research/turn_level_credit/turn_level_credit/math_repair_calibration.py",
+  "research/turn_level_credit/turn_level_credit/math_repair_runtime.py",
   "research/turn_level_credit/turn_level_credit/trace.py",
   "research/turn_level_credit/turn_level_credit/validation.py",
   "research/turn_level_credit/turn_level_credit/verifier_credit.py",
