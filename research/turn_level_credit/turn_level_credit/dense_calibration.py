@@ -29,14 +29,27 @@ class DenseCalibrationThresholds:
     minimum_samples: int = 256
     minimum_two_plus_trainable_turns_fraction: float = 0.80
     minimum_nonzero_intermediate_fraction: float = 0.30
+    minimum_success_rate: float = 0.02
+    maximum_success_rate: float = 0.80
 
 
-def _parse_key_values(payload: str, *, marker: str) -> dict[str, float]:
-    values: dict[str, float] = {}
+def _split_key_values(payload: str, *, marker: str) -> dict[str, str]:
+    values: dict[str, str] = {}
     for item in payload.split():
         if "=" not in item:
             raise ValueError(f"Malformed {marker.strip()} item: {item!r}")
         key, raw_value = item.split("=", 1)
+        if not key or not raw_value:
+            raise ValueError(f"Malformed {marker.strip()} item: {item!r}")
+        if key in values:
+            raise ValueError(f"Duplicate {marker.strip()} key: {key!r}")
+        values[key] = raw_value
+    return values
+
+
+def _parse_key_values(payload: str, *, marker: str) -> dict[str, float]:
+    values: dict[str, float] = {}
+    for key, raw_value in _split_key_values(payload, marker=marker).items():
         try:
             value = float(raw_value)
         except ValueError as error:
@@ -53,14 +66,14 @@ def _parse_key_values(payload: str, *, marker: str) -> dict[str, float]:
 
 def parse_calibration_log(
     log_text: str,
-) -> tuple[dict[str, float], list[dict[str, float]]]:
+) -> tuple[dict[str, str], list[dict[str, float]]]:
     """Parse one calibration config marker and its rollout metric records."""
     config_records = []
     metric_records = []
     for line in log_text.splitlines():
         if CONFIG_MARKER in line:
             config_records.append(
-                _parse_key_values(
+                _split_key_values(
                     line.split(CONFIG_MARKER, 1)[1],
                     marker=CONFIG_MARKER,
                 )
@@ -80,6 +93,21 @@ def parse_calibration_log(
     if not metric_records:
         raise ValueError("Calibration log contains no rollout metric records")
     return config_records[0], metric_records
+
+
+def _config_number(config: dict[str, str], key: str) -> float:
+    """Read one required finite numeric calibration configuration value."""
+    if key not in config:
+        raise ValueError(f"Calibration configuration is missing {key!r}")
+    try:
+        value = float(config[key])
+    except ValueError as error:
+        raise ValueError(
+            f"Calibration configuration value for {key!r} is not numeric"
+        ) from error
+    if not isfinite(value):
+        raise ValueError(f"Calibration configuration value for {key!r} is not finite")
+    return value
 
 
 def _weighted_mean(
@@ -165,17 +193,46 @@ def evaluate_dense_calibration(
     control = summarize_calibration_records(control_records)
     treatment = summarize_calibration_records(treatment_records)
 
-    config_match_fields = ("max_num_steps", "max_val_samples", "seed")
+    config_match_fields = (
+        "max_num_steps",
+        "max_val_samples",
+        "seed",
+        "validation_seed",
+        "puzzle_size",
+        "shuffle_moves",
+        "max_moves",
+        "credit_uses_progress",
+        "training_uses_progress",
+        "evaluation_uses_success",
+        "paired_config_sha256",
+    )
     config_fields_match = all(
-        control_config.get(field) == treatment_config.get(field)
+        field in control_config
+        and field in treatment_config
+        and control_config[field] == treatment_config[field]
         for field in config_match_fields
     )
     checks = {
-        "control_is_frozen_policy": control_config.get("max_num_steps") == 0,
-        "treatment_is_frozen_policy": treatment_config.get("max_num_steps") == 0,
+        "control_is_frozen_policy": _config_number(control_config, "max_num_steps")
+        == 0,
+        "treatment_is_frozen_policy": _config_number(treatment_config, "max_num_steps")
+        == 0,
         "calibration_config_fields_match": config_fields_match,
-        "turn_weights_differ": control_config.get("turn_weight")
-        != treatment_config.get("turn_weight"),
+        "control_turn_weight_is_zero": _config_number(control_config, "turn_weight")
+        == 0,
+        "treatment_turn_weight_is_positive": _config_number(
+            treatment_config, "turn_weight"
+        )
+        > 0,
+        "configured_components_are_declared": all(
+            _config_number(config, field) == 1
+            for config in (control_config, treatment_config)
+            for field in (
+                "credit_uses_progress",
+                "training_uses_progress",
+                "evaluation_uses_success",
+            )
+        ),
         "control_sample_count": control["sample_count"] >= thresholds.minimum_samples,
         "treatment_sample_count": treatment["sample_count"]
         >= thresholds.minimum_samples,
@@ -209,8 +266,12 @@ def evaluate_dense_calibration(
                 "negative_source_reward_fraction",
             )
         ),
-        "control_success_not_floor_or_ceiling": 0.0 < control["success_rate"] < 1.0,
-        "treatment_success_not_floor_or_ceiling": 0.0 < treatment["success_rate"] < 1.0,
+        "control_success_not_floor_or_ceiling": thresholds.minimum_success_rate
+        <= control["success_rate"]
+        <= thresholds.maximum_success_rate,
+        "treatment_success_not_floor_or_ceiling": thresholds.minimum_success_rate
+        <= treatment["success_rate"]
+        <= thresholds.maximum_success_rate,
         "pre_update_rollouts_match_exactly": control_rollouts == treatment_rollouts,
     }
     return {
@@ -219,6 +280,8 @@ def evaluate_dense_calibration(
             "minimum_samples": thresholds.minimum_samples,
             "minimum_two_plus_trainable_turns_fraction": thresholds.minimum_two_plus_trainable_turns_fraction,
             "minimum_nonzero_intermediate_fraction": thresholds.minimum_nonzero_intermediate_fraction,
+            "minimum_success_rate": thresholds.minimum_success_rate,
+            "maximum_success_rate": thresholds.maximum_success_rate,
         },
         "control": control,
         "treatment": treatment,

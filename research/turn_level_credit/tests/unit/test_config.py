@@ -19,6 +19,7 @@ from pathlib import Path
 import pytest
 from pydantic import ValidationError
 from run_grpo_turn_credit import load_master_and_turn_credit_config
+from run_grpo_turn_credit_dense_puzzle import _paired_config_sha256
 from turn_level_credit.config import TurnCreditConfig
 
 
@@ -143,3 +144,23 @@ def test_dense_puzzle_calibration_is_frozen_policy_only():
     assert not master_config.grpo.val_at_end
     assert master_config.grpo.max_val_samples == 256
     assert turn_credit_config.turn_weight == 0.0
+
+
+def test_dense_calibration_fingerprint_excludes_only_intended_pair_differences():
+    config_path = (
+        Path(__file__).parents[2]
+        / "configs"
+        / "grpo_dense_sliding_puzzle_calibration.yaml"
+    )
+    control, _ = load_master_and_turn_credit_config(str(config_path), [])
+    treatment, _ = load_master_and_turn_credit_config(
+        str(config_path),
+        ["turn_credit.turn_weight=0.2", "logger.log_dir=other-log-dir"],
+    )
+    different_seed, _ = load_master_and_turn_credit_config(
+        str(config_path),
+        ["grpo.seed=43"],
+    )
+
+    assert _paired_config_sha256(control) == _paired_config_sha256(treatment)
+    assert _paired_config_sha256(control) != _paired_config_sha256(different_seed)

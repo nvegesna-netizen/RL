@@ -57,6 +57,8 @@ env:
       shuffle_moves: 11
       minimum_manhattan_distance: 2
       max_generation_attempts: 100
+      max_unique_generation_attempts: 100000
+      unique_training_pool_size: 128
       max_moves: 12
       progress_scale: 1.0
       # Fixed across optimizer seeds and distinct across data splits.

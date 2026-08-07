@@ -18,13 +18,17 @@ import copy
 import random
 
 import pytest
+from nemo_rl.environments.games.sliding_puzzle import SlidingPuzzleGameLogic
 from turn_level_credit.dense_puzzle import (
     PROGRESS_REWARD_KEY,
     SUCCESS_REWARD_KEY,
     DensePuzzleConfig,
     DenseSlidingPuzzleRunner,
     _generate_initial_state,
+    _generate_puzzle_state,
+    _generate_unique_state_pools,
     _sample_seed,
+    _state_key,
     manhattan_distance,
     normalized_manhattan_potential,
 )
@@ -138,6 +142,8 @@ def test_max_move_termination_preserves_potential():
         ("size", 1, "size must be at least 2"),
         ("minimum_manhattan_distance", 0, "must be positive"),
         ("max_generation_attempts", 0, "must be positive"),
+        ("max_unique_generation_attempts", 0, "must be positive"),
+        ("unique_training_pool_size", 0, "must be positive"),
         ("progress_scale", 0.0, "must be positive"),
     ],
 )
@@ -169,6 +175,24 @@ def test_dataset_state_is_deterministic_per_split_and_sample():
     assert random.getstate() == global_rng_state
 
 
+def test_local_generator_matches_upstream_generator_for_fixed_seed():
+    seed = 123
+    global_rng_state = random.getstate()
+    try:
+        random.seed(seed)
+        upstream = SlidingPuzzleGameLogic.generate({"size": 3, "shuffle_moves": 7})
+    finally:
+        random.setstate(global_rng_state)
+
+    local = _generate_puzzle_state(
+        size=3,
+        shuffle_moves=7,
+        rng=random.Random(seed),
+    )
+
+    assert local == upstream
+
+
 def test_sample_seed_pairing_is_injective_for_test_grid():
     seeds = {
         _sample_seed(split_seed, sample_index)
@@ -184,3 +208,64 @@ def test_config_requires_disjoint_nonnegative_split_seeds():
         DensePuzzleConfig(train_seed=-1)
     with pytest.raises(ValueError, match="must differ"):
         DensePuzzleConfig(train_seed=7, validation_seed=7)
+
+
+def test_state_pools_are_unique_disjoint_repeatable_and_validation_first():
+    config = _config()
+    training, validation = _generate_unique_state_pools(
+        config,
+        train_length=1,
+        validation_length=2,
+    )
+    repeated_training, repeated_validation = _generate_unique_state_pools(
+        config,
+        train_length=1,
+        validation_length=2,
+    )
+    larger_training, stable_validation = _generate_unique_state_pools(
+        config,
+        train_length=2,
+        validation_length=2,
+    )
+    training_keys = {_state_key(state) for state in training}
+    validation_keys = {_state_key(state) for state in validation}
+
+    assert len(training_keys) == len(training)
+    assert len(validation_keys) == len(validation)
+    assert training_keys.isdisjoint(validation_keys)
+    assert training == repeated_training
+    assert validation == repeated_validation
+    assert validation == stable_validation
+    assert training == larger_training[: len(training)]
+
+
+def test_configured_scientific_population_is_unique_and_held_out():
+    training, validation = _generate_unique_state_pools(
+        DensePuzzleConfig(),
+        train_length=160,
+        validation_length=256,
+    )
+    training_keys = {_state_key(state) for state in training}
+    validation_keys = {_state_key(state) for state in validation}
+
+    assert len(training_keys) == 128
+    assert len(validation_keys) == 256
+    assert training_keys.isdisjoint(validation_keys)
+
+
+def test_training_pool_is_stable_when_training_budget_exceeds_unique_pool():
+    config = DensePuzzleConfig()
+    training, validation = _generate_unique_state_pools(
+        config,
+        train_length=160,
+        validation_length=256,
+    )
+    longer_training, stable_validation = _generate_unique_state_pools(
+        config,
+        train_length=1600,
+        validation_length=256,
+    )
+
+    assert len(training) == config.unique_training_pool_size
+    assert training == longer_training
+    assert validation == stable_validation

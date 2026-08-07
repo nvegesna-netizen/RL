@@ -192,11 +192,15 @@ uv run run_grpo_turn_credit_dense_puzzle.py \
 Before changing `turn_weight`, calibrate frozen-policy rollouts and verify that
 at least 80% of samples have two trainable turns, at least 30% have a nonzero
 intermediate progress delta, positive/zero/negative deltas all occur, cumulative
-progress telescopes, and success is neither at floor nor ceiling. The matched
-localized treatment changes only `turn_weight`; its environment, prompts,
-seeds, model, training objective, and evaluation objective remain identical.
+progress telescopes, and terminal success is between 2% and 80%, inclusive. The
+matched localized treatment changes only `turn_weight`; its environment,
+prompts, seeds, model, training objective, and evaluation objective remain
+identical.
 
 The calibration config evaluates 256 samples without taking an optimizer step:
+the dataset builder rejects duplicate boards and constructs validation before
+training so the held-out validation population stays unique, disjoint, and
+fixed when the training budget changes.
 
 ```bash
 uv run run_grpo_turn_credit_dense_puzzle.py \

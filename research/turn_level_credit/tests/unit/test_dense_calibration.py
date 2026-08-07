@@ -32,7 +32,10 @@ def _log(*, turn_weight: float, success_rate: float = 0.25) -> str:
     metric_payload = " ".join(f"{key}={value}" for key, value in metric_values.items())
     return (
         "TURN_CREDIT_DENSE_CALIBRATION_CONFIG "
-        f"max_num_steps=0 max_val_samples=256 seed=42 turn_weight={turn_weight}\n"
+        f"max_num_steps=0 max_val_samples=256 seed=42 turn_weight={turn_weight} "
+        "validation_seed=43000 puzzle_size=4 shuffle_moves=20 max_moves=20 "
+        "credit_uses_progress=1 training_uses_progress=1 "
+        "evaluation_uses_success=1 paired_config_sha256=abc123\n"
         f"TURN_CREDIT_ROLLOUT_METRICS {metric_payload}\n"
     )
 
@@ -52,8 +55,8 @@ def test_dense_calibration_passes_all_predeclared_gates():
 @pytest.mark.parametrize(
     ("success_rate", "rollouts", "failed_check"),
     [
-        (0.0, b"same rollouts", "control_success_not_floor_or_ceiling"),
-        (1.0, b"same rollouts", "control_success_not_floor_or_ceiling"),
+        (0.01, b"same rollouts", "control_success_not_floor_or_ceiling"),
+        (0.90, b"same rollouts", "control_success_not_floor_or_ceiling"),
         (0.25, b"different rollouts", "pre_update_rollouts_match_exactly"),
     ],
 )
@@ -69,6 +72,79 @@ def test_dense_calibration_rejects_failed_signal_or_pairing(
 
     assert not result["passed"]
     assert not result["checks"][failed_check]
+
+
+@pytest.mark.parametrize(
+    ("control_weight", "treatment_weight", "failed_check"),
+    [
+        (0.1, 0.2, "control_turn_weight_is_zero"),
+        (0.0, 0.0, "treatment_turn_weight_is_positive"),
+    ],
+)
+def test_dense_calibration_requires_control_and_treatment_roles(
+    control_weight, treatment_weight, failed_check
+):
+    result = evaluate_dense_calibration(
+        control_log_text=_log(turn_weight=control_weight),
+        treatment_log_text=_log(turn_weight=treatment_weight),
+        control_rollouts=b"same rollouts",
+        treatment_rollouts=b"same rollouts",
+    )
+
+    assert not result["passed"]
+    assert not result["checks"][failed_check]
+
+
+def test_dense_calibration_requires_declared_reward_components():
+    treatment_log = _log(turn_weight=0.2).replace(
+        "evaluation_uses_success=1",
+        "evaluation_uses_success=0",
+    )
+    result = evaluate_dense_calibration(
+        control_log_text=_log(turn_weight=0.0),
+        treatment_log_text=treatment_log,
+        control_rollouts=b"same rollouts",
+        treatment_rollouts=b"same rollouts",
+    )
+
+    assert not result["passed"]
+    assert not result["checks"]["configured_components_are_declared"]
+
+
+def test_dense_calibration_requires_full_paired_config_match():
+    treatment_log = _log(turn_weight=0.2).replace(
+        "paired_config_sha256=abc123",
+        "paired_config_sha256=def456",
+    )
+    result = evaluate_dense_calibration(
+        control_log_text=_log(turn_weight=0.0),
+        treatment_log_text=treatment_log,
+        control_rollouts=b"same rollouts",
+        treatment_rollouts=b"same rollouts",
+    )
+
+    assert not result["passed"]
+    assert not result["checks"]["calibration_config_fields_match"]
+
+
+def test_dense_calibration_rejects_missing_paired_config_fingerprint():
+    control_log = _log(turn_weight=0.0).replace(
+        " paired_config_sha256=abc123",
+        "",
+    )
+    treatment_log = _log(turn_weight=0.2).replace(
+        " paired_config_sha256=abc123",
+        "",
+    )
+    result = evaluate_dense_calibration(
+        control_log_text=control_log,
+        treatment_log_text=treatment_log,
+        control_rollouts=b"same rollouts",
+        treatment_rollouts=b"same rollouts",
+    )
+
+    assert not result["passed"]
+    assert not result["checks"]["calibration_config_fields_match"]
 
 
 def test_dense_calibration_requires_markers():

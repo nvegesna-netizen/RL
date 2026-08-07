@@ -14,7 +14,7 @@
 
 """Research-only sliding puzzle with potential-based dense rewards."""
 
-import itertools
+import copy
 import random
 from collections.abc import Iterator
 from contextlib import contextmanager
@@ -23,7 +23,7 @@ from typing import Any
 import ray
 import torch
 from pydantic import BaseModel, ConfigDict, model_validator
-from torch.utils.data import IterableDataset
+from torch.utils.data import Dataset
 
 from examples import run_grpo_sliding_puzzle
 from nemo_rl.data.interfaces import DatumSpec, LLMMessageLogType, TokenizerType
@@ -48,6 +48,8 @@ class DensePuzzleConfig(BaseModel):
     shuffle_moves: int = 11
     minimum_manhattan_distance: int = 2
     max_generation_attempts: int = 100
+    max_unique_generation_attempts: int = 100_000
+    unique_training_pool_size: int = 128
     max_moves: int = 12
     progress_scale: float = 1.0
     train_seed: int = 42_000
@@ -68,6 +70,12 @@ class DensePuzzleConfig(BaseModel):
             )
         if self.max_generation_attempts < 1:
             raise ValueError("dense puzzle max_generation_attempts must be positive")
+        if self.max_unique_generation_attempts < 1:
+            raise ValueError(
+                "dense puzzle max_unique_generation_attempts must be positive"
+            )
+        if self.unique_training_pool_size < 1:
+            raise ValueError("dense puzzle unique_training_pool_size must be positive")
         if self.max_moves < 1:
             raise ValueError("dense puzzle max_moves must be positive")
         if self.progress_scale <= 0.0:
@@ -322,15 +330,10 @@ def generate_dense_puzzle_datum(
     config: DensePuzzleConfig,
     task_name: str,
     idx: int,
-    split_seed: int,
+    initial_game_state: dict[str, Any],
     add_system_prompt: bool,
 ) -> DatumSpec:
     """Generate one fixed-size dense-puzzle training datum."""
-    initial_game_state = _generate_initial_state(
-        config,
-        split_seed=split_seed,
-        sample_index=idx,
-    )
     initial_render = SlidingPuzzleGameLogic.render(initial_game_state)
     welcome_message = SlidingPuzzleGameLogic.init(initial_game_state)
     prompt_instructions = (
@@ -378,8 +381,8 @@ def generate_dense_puzzle_datum(
     }
 
 
-class DensePuzzleDataset(IterableDataset):
-    """Generate deterministic-shape puzzle samples indefinitely."""
+class DensePuzzleDataset(Dataset):
+    """Index a deterministic population, cycling only the training pool."""
 
     def __init__(
         self,
@@ -388,30 +391,83 @@ class DensePuzzleDataset(IterableDataset):
         config: DensePuzzleConfig,
         task_name: str,
         add_system_prompt: bool,
+        states: list[dict[str, Any]],
         length: int,
-        split_seed: int,
     ) -> None:
         super().__init__()
         self._tokenizer = tokenizer
         self._config = config
         self._task_name = task_name
         self._add_system_prompt = add_system_prompt
+        self._states = states
         self._length = length
-        self._split_seed = split_seed
+        if self._length < 0:
+            raise ValueError("dense puzzle dataset length must be non-negative")
+        if self._length > 0 and not self._states:
+            raise ValueError("non-empty dense puzzle dataset requires states")
 
-    def __iter__(self) -> Iterator[DatumSpec]:
-        for idx in itertools.count():
-            yield generate_dense_puzzle_datum(
-                tokenizer=self._tokenizer,
-                config=self._config,
-                task_name=self._task_name,
-                idx=idx,
-                split_seed=self._split_seed,
-                add_system_prompt=self._add_system_prompt,
-            )
+    def __getitem__(self, idx: int) -> DatumSpec:
+        if not 0 <= idx < self._length:
+            raise IndexError(idx)
+        state_index = idx % len(self._states)
+        return generate_dense_puzzle_datum(
+            tokenizer=self._tokenizer,
+            config=self._config,
+            task_name=self._task_name,
+            idx=idx,
+            initial_game_state=copy.deepcopy(self._states[state_index]),
+            add_system_prompt=self._add_system_prompt,
+        )
 
     def __len__(self) -> int:
         return self._length
+
+
+def _state_key(game_state: dict[str, Any]) -> tuple[int, ...]:
+    """Return the board identity used to enforce unique data populations."""
+    return tuple(int(tile) for row in game_state["grid"] for tile in row)
+
+
+def _generate_unique_state_pools(
+    config: DensePuzzleConfig,
+    *,
+    train_length: int,
+    validation_length: int,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """Build repeatable, within-split unique, cross-split disjoint boards."""
+    if train_length < 0 or validation_length < 0:
+        raise ValueError("dense puzzle dataset lengths must be non-negative")
+    unique_train_length = min(train_length, config.unique_training_pool_size)
+    requested = validation_length + unique_train_length
+    if requested == 0:
+        return [], []
+    pool_seed = _sample_seed(config.train_seed, config.validation_seed)
+    unique_states: list[dict[str, Any]] = []
+    seen: set[tuple[int, ...]] = set()
+    for candidate_index in range(config.max_unique_generation_attempts):
+        game_state = _generate_initial_state(
+            config,
+            split_seed=pool_seed,
+            sample_index=candidate_index,
+        )
+        key = _state_key(game_state)
+        if key in seen:
+            continue
+        seen.add(key)
+        unique_states.append(game_state)
+        if len(unique_states) == requested:
+            break
+    if len(unique_states) != requested:
+        raise RuntimeError(
+            "failed to generate the requested unique, disjoint dense puzzle "
+            f"population: requested {requested}, found {len(unique_states)} "
+            f"within {config.max_unique_generation_attempts} candidates"
+        )
+
+    # Validation comes first so it remains fixed if the training budget changes.
+    validation_states = unique_states[:validation_length]
+    training_states = unique_states[validation_length:]
+    return training_states, validation_states
 
 
 def setup_dense_puzzle_data(
@@ -421,7 +477,7 @@ def setup_dense_puzzle_data(
     length: int,
     val_length: int,
     add_system_prompt: bool,
-) -> tuple[IterableDataset, IterableDataset, dict[str, Any], dict[str, Any]]:
+) -> tuple[Dataset, Dataset, dict[str, Any], dict[str, Any]]:
     """Build datasets and environment for the research-only dense task."""
     if task_name not in env_cfg:
         raise ValueError(f"missing environment configuration for {task_name!r}")
@@ -429,6 +485,18 @@ def setup_dense_puzzle_data(
     if "cfg" not in task_config:
         raise ValueError(f"environment {task_name!r} is missing cfg")
     config = DensePuzzleConfig.model_validate(task_config["cfg"])
+    training_states, validation_states = _generate_unique_state_pools(
+        config,
+        train_length=length,
+        validation_length=val_length,
+    )
+    print(
+        "TURN_CREDIT_DENSE_DATASET "
+        f"train_unique_states={len(training_states)} "
+        f"validation_unique_states={len(validation_states)} "
+        "overlap_states=0",
+        flush=True,
+    )
     env = DenseSlidingPuzzleEnv.options(  # type: ignore # decorated with @ray.remote
         num_gpus=0
     ).remote(cfg=config.model_dump())
@@ -437,16 +505,16 @@ def setup_dense_puzzle_data(
         config=config,
         task_name=task_name,
         add_system_prompt=add_system_prompt,
+        states=training_states,
         length=length,
-        split_seed=config.train_seed,
     )
     validation_dataset = DensePuzzleDataset(
         tokenizer=tokenizer,
         config=config,
         task_name=task_name,
         add_system_prompt=add_system_prompt,
+        states=validation_states,
         length=val_length,
-        split_seed=config.validation_seed,
     )
     task_to_env = {task_name: env}
     return training_dataset, validation_dataset, task_to_env, task_to_env
