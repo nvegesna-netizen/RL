@@ -14,17 +14,72 @@
 
 """Run frozen-policy fixed-horizon math-repair calibration."""
 
+import copy
 import os
 import sys
+from collections.abc import Iterator
+from contextlib import contextmanager
+from typing import Any
 
 import run_grpo_turn_credit
 from run_grpo_turn_credit import load_master_and_turn_credit_config, parse_args
+from torch.utils.data import Dataset
 from turn_level_credit.math_repair import (
     TERMINAL_SUCCESS_KEY,
     VERIFIER_SCORE_KEY,
     MathRepairConfig,
-    install_math_repair_environment,
 )
+from turn_level_credit.math_repair_runtime import install_math_repair_environment
+
+CALIBRATION_GENERATIONS_PER_PROMPT = 8
+CALIBRATION_PROMPT_COUNT = 32
+
+
+class _RepeatedValidationDataset(Dataset):
+    """Repeat each validation prompt contiguously for grouped credit analysis."""
+
+    def __init__(self, dataset: Any, *, repeats: int) -> None:
+        if repeats < 2:
+            raise ValueError("math-repair validation repeats must be at least two")
+        self._dataset = dataset
+        self._repeats = repeats
+
+    def __len__(self) -> int:
+        return len(self._dataset) * self._repeats
+
+    def __getitem__(self, index: int) -> Any:
+        if not 0 <= index < len(self):
+            raise IndexError(index)
+        datum = copy.deepcopy(self._dataset[index // self._repeats])
+        if not isinstance(datum, dict):
+            raise TypeError("math-repair validation datum must be a dictionary")
+        datum["idx"] = index
+        return datum
+
+
+@contextmanager
+def install_repeated_math_validation() -> Iterator[None]:
+    """Scope validation repetition to this research entrypoint."""
+    original_setup = run_grpo_turn_credit.setup_response_data
+
+    def setup_with_repeated_validation(*args: Any, **kwargs: Any) -> Any:
+        result = original_setup(*args, **kwargs)
+        if len(result) != 4:
+            raise RuntimeError("math-repair setup requires native environments")
+        dataset, val_dataset, task_to_env, val_task_to_env = result
+        if val_dataset is None:
+            raise ValueError("math-repair calibration requires validation data")
+        repeated_validation = _RepeatedValidationDataset(
+            val_dataset,
+            repeats=CALIBRATION_GENERATIONS_PER_PROMPT,
+        )
+        return dataset, repeated_validation, task_to_env, val_task_to_env
+
+    run_grpo_turn_credit.setup_response_data = setup_with_repeated_validation
+    try:
+        yield
+    finally:
+        run_grpo_turn_credit.setup_response_data = original_setup
 
 
 def main() -> None:
@@ -52,11 +107,15 @@ def main() -> None:
         )
     if not master_config.grpo.val_at_start:
         raise ValueError("math-repair calibration requires validation at start")
-    if master_config.grpo.max_val_samples < 32:
-        raise ValueError("math-repair calibration requires at least 32 prompts")
-    if master_config.grpo.val_num_generations_per_prompt < 4:
+    minimum_validation_samples = (
+        CALIBRATION_PROMPT_COUNT * CALIBRATION_GENERATIONS_PER_PROMPT
+    )
+    if (
+        master_config.grpo.max_val_samples is None
+        or master_config.grpo.max_val_samples < minimum_validation_samples
+    ):
         raise ValueError(
-            "math-repair calibration requires at least four generations per prompt"
+            "math-repair calibration requires at least 256 repeated validation samples"
         )
     if turn_credit_config.environment_component != VERIFIER_SCORE_KEY:
         raise ValueError("math-repair calibration must capture verifier scores")
@@ -66,14 +125,14 @@ def main() -> None:
         "TURN_CREDIT_MATH_REPAIR_CALIBRATION_CONFIG "
         f"max_num_steps={master_config.grpo.max_num_steps} "
         f"max_turns={repair_config.max_turns} "
-        f"max_val_prompts={master_config.grpo.max_val_samples} "
+        f"max_val_prompts={CALIBRATION_PROMPT_COUNT} "
         "generations_per_prompt="
-        f"{master_config.grpo.val_num_generations_per_prompt} "
+        f"{CALIBRATION_GENERATIONS_PER_PROMPT} "
         f"seed={master_config.grpo.seed} "
         f"success_threshold={repair_config.success_threshold}",
         flush=True,
     )
-    with install_math_repair_environment():
+    with install_math_repair_environment(), install_repeated_math_validation():
         run_grpo_turn_credit.main()
 
 

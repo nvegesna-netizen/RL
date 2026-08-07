@@ -59,6 +59,21 @@ def _score_from_feedback(content: object, *, prompt: int, generation: int) -> fl
     )
 
 
+def _initial_prompt(conversation: list[object], *, record_number: int) -> str:
+    """Return the logged user prompt used to recover rollout groups."""
+    if not conversation or not isinstance(conversation[0], dict):
+        raise ValueError(
+            f"validation record {record_number} has no initial prompt message"
+        )
+    first_message = conversation[0]
+    content = first_message.get("content")
+    if first_message.get("role") != "user" or not isinstance(content, str):
+        raise ValueError(
+            f"validation record {record_number} must start with a text user prompt"
+        )
+    return content
+
+
 def parse_math_repair_validation_records(
     records: list[dict[str, Any]],
     *,
@@ -77,34 +92,37 @@ def parse_math_repair_validation_records(
     terminal_success: list[float] = []
     group_ids: list[int] = []
     group_sizes: dict[int, int] = {}
+    prompt_to_group: dict[str, int] = {}
 
     for record_number, record in enumerate(records):
         logged_index = record.get("idx")
         if logged_index != record_number:
             raise ValueError("validation record indices must be contiguous and ordered")
-        prompt_index = record_number // generations_per_prompt
-        generation_index = record_number % generations_per_prompt
         contents = record.get("content")
         rewards = record.get("rewards")
         if not isinstance(contents, list) or not isinstance(rewards, list):
             raise TypeError(
-                f"validation prompt {prompt_index} requires content and reward lists"
+                f"validation record {record_number} requires content and reward lists"
             )
         if len(contents) != 1 or len(rewards) != 1:
             raise ValueError(
                 f"validation record {record_number} must contain one logged sample"
             )
-        group_sizes[prompt_index] = group_sizes.get(prompt_index, 0) + 1
-
         for conversation, raw_reward in zip(contents, rewards, strict=True):
             if not isinstance(conversation, list):
                 raise TypeError(
-                    f"prompt {prompt_index} generation {generation_index} is not a conversation"
+                    f"validation record {record_number} is not a conversation"
                 )
+            prompt_text = _initial_prompt(
+                conversation,
+                record_number=record_number,
+            )
+            group_id = prompt_to_group.setdefault(prompt_text, len(prompt_to_group))
+            generation_index = group_sizes.get(group_id, 0)
             feedback_scores = [
                 _score_from_feedback(
                     message.get("content"),
-                    prompt=prompt_index,
+                    prompt=group_id,
                     generation=generation_index,
                 )
                 for message in conversation
@@ -112,11 +130,11 @@ def parse_math_repair_validation_records(
             ]
             if not feedback_scores:
                 raise ValueError(
-                    f"prompt {prompt_index} generation {generation_index} has no verifier turns"
+                    f"prompt {group_id} generation {generation_index} has no verifier turns"
                 )
             if isinstance(raw_reward, bool) or not isinstance(raw_reward, (int, float)):
                 raise TypeError(
-                    f"prompt {prompt_index} generation {generation_index} has invalid reward"
+                    f"prompt {group_id} generation {generation_index} has invalid reward"
                 )
             outcome = float(raw_reward)
             if outcome not in (0.0, 1.0):
@@ -124,12 +142,18 @@ def parse_math_repair_validation_records(
             expected_outcome = float(any(score == 1.0 for score in feedback_scores))
             if outcome != expected_outcome:
                 raise ValueError(
-                    f"prompt {prompt_index} generation {generation_index} terminal reward "
+                    f"prompt {group_id} generation {generation_index} terminal reward "
                     "does not match its verifier trace"
                 )
             score_rows.append(feedback_scores)
             terminal_success.append(outcome)
-            group_ids.append(prompt_index)
+            group_ids.append(group_id)
+            group_sizes[group_id] = group_sizes.get(group_id, 0) + 1
+
+    if any(size != generations_per_prompt for size in group_sizes.values()):
+        raise ValueError("logged prompt groups do not match generations_per_prompt")
+    if group_ids != sorted(group_ids):
+        raise ValueError("validation rollouts for each prompt must be contiguous")
 
     turn_counts = {len(scores) for scores in score_rows}
     if len(turn_counts) != 1:
@@ -153,11 +177,9 @@ def evaluate_math_repair_calibration(
     thresholds: MathRepairCalibrationThresholds = MathRepairCalibrationThresholds(),
 ) -> dict[str, Any]:
     """Evaluate frozen outcome, repair, grouping, and estimator signal gates."""
-    batch, terminal_success, generations_per_prompt = (
-        parse_math_repair_validation_records(
-            records,
-            generations_per_prompt=generations_per_prompt,
-        )
+    batch, terminal_success, group_sizes = parse_math_repair_validation_records(
+        records,
+        generations_per_prompt=generations_per_prompt,
     )
     if thresholds.expected_turns < 2:
         raise ValueError("expected_turns must be at least two")
@@ -173,11 +195,11 @@ def evaluate_math_repair_calibration(
     )
 
     metrics: dict[str, float | int] = {
-        "prompt_count": len(generations_per_prompt),
+        "prompt_count": len(group_sizes),
         "sample_count": batch.scores.shape[0],
         "observed_turns": batch.scores.shape[1],
-        "minimum_generations_per_prompt": min(generations_per_prompt.values()),
-        "maximum_generations_per_prompt": max(generations_per_prompt.values()),
+        "minimum_generations_per_prompt": min(group_sizes.values()),
+        "maximum_generations_per_prompt": max(group_sizes.values()),
         "first_turn_success_fraction": float(first_success.float().mean().item()),
         "any_turn_success_fraction": float(terminal_success.mean().item()),
         "repair_after_initial_failure_fraction": float(repaired.float().mean().item()),
@@ -212,12 +234,11 @@ def evaluate_math_repair_calibration(
 
     checks = {
         "expected_fixed_horizon": batch.scores.shape[1] == thresholds.expected_turns,
-        "minimum_prompt_count": len(generations_per_prompt)
-        >= thresholds.minimum_prompts,
+        "minimum_prompt_count": len(group_sizes) >= thresholds.minimum_prompts,
         "minimum_sample_count": batch.scores.shape[0] >= thresholds.minimum_samples,
-        "minimum_group_size": min(generations_per_prompt.values())
+        "minimum_group_size": min(group_sizes.values())
         >= thresholds.minimum_generations_per_prompt,
-        "uniform_group_size": len(set(generations_per_prompt.values())) == 1,
+        "uniform_group_size": len(set(group_sizes.values())) == 1,
         "first_turn_success_off_floor": metrics["first_turn_success_fraction"]
         >= thresholds.minimum_first_turn_success,
         "first_turn_success_off_ceiling": metrics["first_turn_success_fraction"]
@@ -229,6 +250,7 @@ def evaluate_math_repair_calibration(
         "repair_is_observed": metrics["repair_after_initial_failure_fraction"]
         >= thresholds.minimum_repair_fraction,
         "preservation_is_observed": preserved_count > 0,
+        "regression_is_observed": regression_count > 0,
         "hindsight_has_peer_references": metrics["hindsight_reference_fraction"] > 0.0,
         "hindsight_is_nonzero": metrics["hindsight_nonzero_credit_fraction"]
         >= thresholds.minimum_nonzero_credit_fraction,

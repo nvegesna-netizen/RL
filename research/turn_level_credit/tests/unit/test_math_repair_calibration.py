@@ -1,3 +1,17 @@
+# Copyright (c) 2026, NVIDIA CORPORATION.  All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 """Tests for frozen fixed-horizon math-repair calibration gates."""
 
 import pytest
@@ -7,8 +21,8 @@ from turn_level_credit.math_repair_calibration import (
 )
 
 
-def _conversation(scores):
-    messages = [{"role": "user", "content": "problem"}]
+def _conversation(scores, prompt):
+    messages = [{"role": "user", "content": prompt}]
     for score in scores:
         messages.extend(
             [
@@ -39,12 +53,12 @@ def _records(patterns=None):
             [0, 0, 0],
         )
     rows = []
-    for _prompt in range(32):
+    for prompt in range(32):
         for scores in patterns:
             rows.append(
                 {
                     "idx": len(rows),
-                    "content": [_conversation(scores)],
+                    "content": [_conversation(scores, f"problem {prompt}")],
                     "rewards": [float(any(scores))],
                 }
             )
@@ -60,6 +74,7 @@ def test_informative_fixed_horizon_calibration_passes_all_gates():
     assert result["metrics"]["observed_turns"] == 3
     assert result["metrics"]["repair_after_initial_failure_fraction"] > 0
     assert result["metrics"]["regression_after_success_transition_count"] > 0
+    assert result["checks"]["regression_is_observed"]
 
 
 def test_calibration_fails_when_no_failed_answer_is_repaired():
@@ -94,6 +109,11 @@ def test_calibration_fails_when_no_failed_answer_is_repaired():
             lambda records: records[0]["rewards"].__setitem__(0, 0.0),
             ValueError,
             "does not match",
+        ),
+        (
+            lambda records: records[8]["content"][0][0].update(content="problem 0"),
+            ValueError,
+            "do not match generations_per_prompt",
         ),
     ],
 )

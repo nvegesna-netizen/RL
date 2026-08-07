@@ -18,9 +18,9 @@ grpo:
   max_rollout_turns: 3
   max_num_steps: 0
   max_num_epochs: 1
-  max_val_samples: 32
-  val_num_generations_per_prompt: 8
-  val_batch_size: 32
+  # The research entrypoint repeats 32 source prompts eight times contiguously.
+  max_val_samples: 256
+  val_batch_size: 256
   val_period: 0
   val_at_start: true
   val_at_end: false
