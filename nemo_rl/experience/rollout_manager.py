@@ -200,7 +200,11 @@ class AsyncRolloutImpl:
 
             # Generate response for this sample using async generation
             try:
-                generation_started_ns = time.monotonic_ns()
+                generation_started_ns = (
+                    time.monotonic_ns()
+                    if self._lifecycle_recorder is not None
+                    else None
+                )
                 try:
                     (
                         assistant_message,
@@ -211,9 +215,10 @@ class AsyncRolloutImpl:
                         current_stop_strings,
                     )
                 finally:
-                    generation_duration_ns += (
-                        time.monotonic_ns() - generation_started_ns
-                    )
+                    if generation_started_ns is not None:
+                        generation_duration_ns += (
+                            time.monotonic_ns() - generation_started_ns
+                        )
                 current_message_log.append(assistant_message)
 
                 # Check if response was truncated (hit max_tokens without stop token)
@@ -255,13 +260,18 @@ class AsyncRolloutImpl:
             # blocks every other in-flight rollout coroutine for the entire env
             # step. In this case, need to wrap with asyncio.to_thread to make
             # this function yieldable.
-            environment_started_ns = time.monotonic_ns()
+            environment_started_ns = (
+                time.monotonic_ns() if self._lifecycle_recorder is not None else None
+            )
             try:
                 env_output = await asyncio.to_thread(
                     calculate_rewards, sample_batch, self._task_to_env
                 )
             finally:
-                environment_duration_ns += time.monotonic_ns() - environment_started_ns
+                if environment_started_ns is not None:
+                    environment_duration_ns += (
+                        time.monotonic_ns() - environment_started_ns
+                    )
 
             # Update reward and termination statistics
             # Multi-reward isn't supported in RolloutManager now, see
