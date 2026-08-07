@@ -15,6 +15,7 @@
 import asyncio
 import copy
 import json
+import time
 from typing import Any, Optional
 
 import torch
@@ -22,7 +23,11 @@ from transformers import PreTrainedTokenizerBase
 from wandb import Table
 
 from nemo_rl.algorithms.async_utils.replay_buffer import TQReplayBuffer
-from nemo_rl.algorithms.async_utils.rollout_lifecycle import RolloutRemovalReason
+from nemo_rl.algorithms.async_utils.rollout_lifecycle import (
+    RolloutLifecycleRecorder,
+    RolloutLifecycleStage,
+    RolloutRemovalReason,
+)
 from nemo_rl.data.interfaces import DatumSpec, LLMMessageLogType
 from nemo_rl.distributed.batched_data_dict import BatchedDataDict
 from nemo_rl.environments.interfaces import EnvironmentInterface
@@ -68,8 +73,21 @@ class AsyncRolloutImpl:
         self._max_seq_len = max_seq_len
         self._max_rollout_turns = max_rollout_turns
         self._policy_generation = policy_generation
+        self._lifecycle_recorder: Optional[RolloutLifecycleRecorder] = None
 
-    async def run_rollout(self, input_sample: DatumSpec) -> PromptGroupRecord:
+    def set_lifecycle_recorder(
+        self, recorder: Optional[RolloutLifecycleRecorder]
+    ) -> None:
+        """Attach the controller-local lifecycle recorder."""
+        self._lifecycle_recorder = recorder
+
+    async def run_rollout(
+        self,
+        input_sample: DatumSpec,
+        *,
+        group_id: Optional[str] = None,
+        start_weight_version: int = -1,
+    ) -> PromptGroupRecord:
         """Run num_generations_per_prompt rollouts for one prompt.
 
         Args:
@@ -83,16 +101,50 @@ class AsyncRolloutImpl:
         timer.start(f"{timer_prefix}/total")
 
         with timer.time(f"{timer_prefix}/run_rollouts"):
+
+            async def _run_and_record(
+                traj_idx: int,
+            ) -> tuple[Completion, dict[str, Any]]:
+                completion, sample_metrics = await self._run_single_rollout(
+                    input_sample, traj_idx
+                )
+                if self._lifecycle_recorder is not None and group_id is not None:
+                    self._lifecycle_recorder.record(
+                        group_id=group_id,
+                        stage=RolloutLifecycleStage.SIBLING_DONE,
+                        start_weight_version=start_weight_version,
+                        trajectory_id=f"{group_id}_g{traj_idx}",
+                        sibling_idx=traj_idx,
+                        turn_count=sample_metrics["turn_count"],
+                        assistant_tokens=sample_metrics["assistant_tokens"],
+                        env_tokens=sample_metrics["env_tokens"],
+                        reward=float(completion.reward),
+                        terminated=sample_metrics["terminated"],
+                        truncated=completion.truncated,
+                        generation_duration_ns=sample_metrics["generation_duration_ns"],
+                        environment_duration_ns=sample_metrics[
+                            "environment_duration_ns"
+                        ],
+                    )
+                return completion, sample_metrics
+
             results = list(
                 await asyncio.gather(
                     *[
-                        self._run_single_rollout(input_sample, traj_idx)
+                        _run_and_record(traj_idx)
                         for traj_idx in range(self._num_generations_per_prompt)
                     ]
                 )
             )
             completions = [c for c, _ in results]
             all_sample_metrics = [m for _, m in results]
+
+        if self._lifecycle_recorder is not None and group_id is not None:
+            self._lifecycle_recorder.record(
+                group_id=group_id,
+                stage=RolloutLifecycleStage.GROUP_COMPLETED,
+                start_weight_version=start_weight_version,
+            )
 
         with timer.time(f"{timer_prefix}/aggregate_metrics"):
             rollout_metrics = self._aggregate_rollout_metrics(
@@ -137,6 +189,8 @@ class AsyncRolloutImpl:
         turn_total_tokens = []
         # Track per-turn per-worker token accounting if available
         per_worker_token_counts = {}  # worker_idx -> token_count
+        generation_duration_ns = 0
+        environment_duration_ns = 0
 
         for _ in range(self._max_rollout_turns):
             if terminated or truncated:
@@ -146,14 +200,20 @@ class AsyncRolloutImpl:
 
             # Generate response for this sample using async generation
             try:
-                (
-                    assistant_message,
-                    input_lengths,
-                    gen_metrics,
-                ) = await self._generate_response(
-                    current_message_log,
-                    current_stop_strings,
-                )
+                generation_started_ns = time.monotonic_ns()
+                try:
+                    (
+                        assistant_message,
+                        input_lengths,
+                        gen_metrics,
+                    ) = await self._generate_response(
+                        current_message_log,
+                        current_stop_strings,
+                    )
+                finally:
+                    generation_duration_ns += (
+                        time.monotonic_ns() - generation_started_ns
+                    )
                 current_message_log.append(assistant_message)
 
                 # Check if response was truncated (hit max_tokens without stop token)
@@ -195,9 +255,13 @@ class AsyncRolloutImpl:
             # blocks every other in-flight rollout coroutine for the entire env
             # step. In this case, need to wrap with asyncio.to_thread to make
             # this function yieldable.
-            env_output = await asyncio.to_thread(
-                calculate_rewards, sample_batch, self._task_to_env
-            )
+            environment_started_ns = time.monotonic_ns()
+            try:
+                env_output = await asyncio.to_thread(
+                    calculate_rewards, sample_batch, self._task_to_env
+                )
+            finally:
+                environment_duration_ns += time.monotonic_ns() - environment_started_ns
 
             # Update reward and termination statistics
             # Multi-reward isn't supported in RolloutManager now, see
@@ -267,6 +331,8 @@ class AsyncRolloutImpl:
             "turn_input_tokens": turn_input_tokens,
             "turn_total_tokens": turn_total_tokens,
             "per_worker_token_counts": per_worker_token_counts,
+            "generation_duration_ns": generation_duration_ns,
+            "environment_duration_ns": environment_duration_ns,
         }
         return completion, sample_metrics
 
@@ -437,10 +503,23 @@ class AsyncNemoGymRolloutImpl:
         self._max_rollout_turns = max_rollout_turns
         self._generation_config = generation_config
         self._mask_env_flagged_samples = mask_env_flagged_samples
+        self._lifecycle_recorder: Optional[RolloutLifecycleRecorder] = None
 
         self._validate_init_params()
 
-    async def run_rollout(self, input_sample: DatumSpec) -> PromptGroupRecord:
+    def set_lifecycle_recorder(
+        self, recorder: Optional[RolloutLifecycleRecorder]
+    ) -> None:
+        """Attach the controller-local lifecycle recorder."""
+        self._lifecycle_recorder = recorder
+
+    async def run_rollout(
+        self,
+        input_sample: DatumSpec,
+        *,
+        group_id: Optional[str] = None,
+        start_weight_version: int = -1,
+    ) -> PromptGroupRecord:
         """Run num_generations_per_prompt rollouts for one prompt.
 
         Args:
@@ -457,6 +536,13 @@ class AsyncNemoGymRolloutImpl:
         completions, prompt_message_log, rollout_metrics = await self._run_rollouts(
             rollout_inputs, timer, timer_prefix
         )
+
+        if self._lifecycle_recorder is not None and group_id is not None:
+            self._lifecycle_recorder.record(
+                group_id=group_id,
+                stage=RolloutLifecycleStage.GROUP_COMPLETED,
+                start_weight_version=start_weight_version,
+            )
 
         timer.stop(f"{timer_prefix}/total")
         rollout_metrics.update(timer.get_timing_metrics("sum"))
@@ -724,8 +810,24 @@ class RolloutManager:
         """
         self._weight_version = int(version)
 
-    async def run_rollout(self, input_sample: DatumSpec) -> PromptGroupRecord:
-        return await self._impl.run_rollout(input_sample)
+    def set_lifecycle_recorder(
+        self, recorder: Optional[RolloutLifecycleRecorder]
+    ) -> None:
+        """Attach a controller-local lifecycle recorder to the rollout path."""
+        self._impl.set_lifecycle_recorder(recorder)
+
+    async def run_rollout(
+        self,
+        input_sample: DatumSpec,
+        *,
+        group_id: Optional[str] = None,
+        start_weight_version: int = -1,
+    ) -> PromptGroupRecord:
+        return await self._impl.run_rollout(
+            input_sample,
+            group_id=group_id,
+            start_weight_version=start_weight_version,
+        )
 
     async def generate_and_push(
         self, input_sample: DatumSpec, *, target_step: Optional[int] = None
@@ -744,7 +846,11 @@ class RolloutManager:
             weight_version=start_version, target_step=target_step
         )
         try:
-            record = await self.run_rollout(input_sample)
+            record = await self.run_rollout(
+                input_sample,
+                group_id=group_id,
+                start_weight_version=start_version,
+            )
             end_version = self._weight_version
             await self._tq_buffer.commit(
                 group_id,

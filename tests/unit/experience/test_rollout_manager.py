@@ -33,7 +33,11 @@ from copy import deepcopy
 import pytest
 import torch
 
-from nemo_rl.algorithms.async_utils.rollout_lifecycle import RolloutRemovalReason
+from nemo_rl.algorithms.async_utils.rollout_lifecycle import (
+    RolloutLifecycleRecorder,
+    RolloutLifecycleStage,
+    RolloutRemovalReason,
+)
 from nemo_rl.data.collate_fn import rl_collate_fn
 from nemo_rl.data.datasets.response_datasets import NemoGymDataset
 from nemo_rl.data.interfaces import DatumSpec
@@ -42,6 +46,7 @@ from nemo_rl.distributed.batched_data_dict import BatchedDataDict
 from nemo_rl.experience.interfaces import Completion, PromptGroupRecord
 from nemo_rl.experience.rollout_manager import (
     AsyncNemoGymRolloutImpl,
+    AsyncRolloutImpl,
     RolloutManager,
 )
 from nemo_rl.experience.rollouts import (
@@ -127,7 +132,14 @@ class _FakeImpl:
         self._record = record
         self._on_run = on_run
 
-    async def run_rollout(self, input_sample):
+    async def run_rollout(
+        self,
+        input_sample,
+        *,
+        group_id=None,
+        start_weight_version=-1,
+    ):
+        del group_id, start_weight_version
         if self._on_run is not None:
             await self._on_run(input_sample)
         return self._record
@@ -300,6 +312,80 @@ class TestGenerateAndPushFlow:
         mgr._tq_buffer = None
         with pytest.raises(AssertionError, match="tq_buffer"):
             _run(mgr.generate_and_push({"prompt": "p"}))
+
+
+class TestSiblingLifecycle:
+    def test_native_rollout_records_individual_completion_order(self):
+        impl = object.__new__(AsyncRolloutImpl)
+        impl._num_generations_per_prompt = 3
+        gates = [asyncio.Event() for _ in range(3)]
+
+        async def _fake_single_rollout(_sample, traj_idx):
+            await gates[traj_idx].wait()
+            completion = Completion(
+                message_log=[],
+                env_extras=None,
+                truncated=False,
+                reward=float(traj_idx),
+            )
+            return completion, {
+                "turn_count": traj_idx + 1,
+                "assistant_tokens": 10 + traj_idx,
+                "env_tokens": traj_idx,
+                "terminated": True,
+                "generation_duration_ns": 100 + traj_idx,
+                "environment_duration_ns": 20 + traj_idx,
+            }
+
+        impl._run_single_rollout = _fake_single_rollout
+        impl._aggregate_rollout_metrics = lambda _completions, _metrics: {}
+        timestamps = iter((10, 20, 30, 40))
+        recorder = RolloutLifecycleRecorder(
+            run_id="run",
+            clock_domain_id="controller",
+            clock_ns=lambda: next(timestamps),
+        )
+        impl.set_lifecycle_recorder(recorder)
+
+        async def _drive():
+            task = asyncio.create_task(
+                impl.run_rollout(
+                    {
+                        "idx": 7,
+                        "message_log": [],
+                        "extra_env_info": None,
+                        "task_name": "test",
+                    },
+                    group_id="group",
+                    start_weight_version=2,
+                )
+            )
+            await asyncio.sleep(0)
+            for idx in (1, 2, 0):
+                gates[idx].set()
+                await asyncio.sleep(0)
+            return await task
+
+        record = _run(_drive())
+        events = recorder.snapshot()
+
+        assert [completion.reward for completion in record.completions] == [
+            0.0,
+            1.0,
+            2.0,
+        ]
+        assert [event.stage for event in events] == [
+            RolloutLifecycleStage.SIBLING_DONE,
+            RolloutLifecycleStage.SIBLING_DONE,
+            RolloutLifecycleStage.SIBLING_DONE,
+            RolloutLifecycleStage.GROUP_COMPLETED,
+        ]
+        assert [event.sibling_idx for event in events[:3]] == [1, 2, 0]
+        assert [event.timestamp_ns for event in events] == [10, 20, 30, 40]
+        assert events[0].trajectory_id == "group_g1"
+        assert events[0].start_weight_version == 2
+        assert events[0].generation_duration_ns == 101
+        assert events[3].sibling_idx is None
 
 
 # ---------------------------------------------------------------------------

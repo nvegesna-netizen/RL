@@ -92,7 +92,11 @@ def test_flush_jsonl_is_machine_readable(tmp_path):
     assert rows == [
         {
             "clock_domain_id": "controller",
+            "assistant_tokens": None,
             "end_weight_version": None,
+            "env_tokens": None,
+            "environment_duration_ns": None,
+            "generation_duration_ns": None,
             "group_id": "group",
             "learner_weight_version": None,
             "mixed_generation_versions": None,
@@ -101,9 +105,15 @@ def test_flush_jsonl_is_machine_readable(tmp_path):
             "sample_ids": [],
             "schema_version": 1,
             "sequence": 0,
+            "sibling_idx": None,
             "stage": "reserved",
             "start_weight_version": 2,
             "target_step": None,
             "timestamp_ns": 123,
+            "terminated": None,
+            "trajectory_id": None,
+            "truncated": None,
+            "turn_count": None,
+            "reward": None,
         }
     ]

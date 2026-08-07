@@ -125,6 +125,7 @@ class SingleControllerActor:
         if self._async_cfg.lifecycle_audit_path is not None:
             self._lifecycle_recorder = RolloutLifecycleRecorder()
             self._buffer.set_lifecycle_recorder(self._lifecycle_recorder)
+            self._rollout_manager.set_lifecycle_recorder(self._lifecycle_recorder)
 
         # Built here, not on the driver: Logger backends (wandb/tb/...) hold
         # _thread.lock that Ray can't cloudpickle into the actor.

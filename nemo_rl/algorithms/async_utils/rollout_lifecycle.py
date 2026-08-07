@@ -30,6 +30,8 @@ class RolloutLifecycleStage(str, Enum):
     """Observable milestones emitted on the controller clock."""
 
     RESERVED = "reserved"
+    SIBLING_DONE = "sibling_done"
+    GROUP_COMPLETED = "group_completed"
     GROUP_READY = "group_ready"
     REMOVED = "removed"
 
@@ -62,6 +64,16 @@ class RolloutLifecycleEvent:
     mixed_generation_versions: Optional[bool]
     sample_ids: tuple[str, ...]
     removal_reason: Optional[RolloutRemovalReason]
+    trajectory_id: Optional[str]
+    sibling_idx: Optional[int]
+    turn_count: Optional[int]
+    assistant_tokens: Optional[int]
+    env_tokens: Optional[int]
+    reward: Optional[float]
+    terminated: Optional[bool]
+    truncated: Optional[bool]
+    generation_duration_ns: Optional[int]
+    environment_duration_ns: Optional[int]
 
     def to_dict(self) -> dict[str, Any]:
         """Return a JSON-compatible representation."""
@@ -82,6 +94,16 @@ class RolloutLifecycleEvent:
             "removal_reason": (
                 self.removal_reason.value if self.removal_reason is not None else None
             ),
+            "trajectory_id": self.trajectory_id,
+            "sibling_idx": self.sibling_idx,
+            "turn_count": self.turn_count,
+            "assistant_tokens": self.assistant_tokens,
+            "env_tokens": self.env_tokens,
+            "reward": self.reward,
+            "terminated": self.terminated,
+            "truncated": self.truncated,
+            "generation_duration_ns": self.generation_duration_ns,
+            "environment_duration_ns": self.environment_duration_ns,
         }
 
 
@@ -115,12 +137,31 @@ class RolloutLifecycleRecorder:
         learner_weight_version: Optional[int] = None,
         sample_ids: Sequence[str] = (),
         removal_reason: Optional[RolloutRemovalReason] = None,
+        trajectory_id: Optional[str] = None,
+        sibling_idx: Optional[int] = None,
+        turn_count: Optional[int] = None,
+        assistant_tokens: Optional[int] = None,
+        env_tokens: Optional[int] = None,
+        reward: Optional[float] = None,
+        terminated: Optional[bool] = None,
+        truncated: Optional[bool] = None,
+        generation_duration_ns: Optional[int] = None,
+        environment_duration_ns: Optional[int] = None,
     ) -> RolloutLifecycleEvent:
         """Append and return one lifecycle event."""
         if stage is RolloutLifecycleStage.REMOVED and removal_reason is None:
             raise ValueError("removed lifecycle events require removal_reason")
         if stage is not RolloutLifecycleStage.REMOVED and removal_reason is not None:
             raise ValueError("removal_reason is valid only for removed events")
+        if stage is RolloutLifecycleStage.SIBLING_DONE:
+            if trajectory_id is None or sibling_idx is None:
+                raise ValueError(
+                    "sibling_done lifecycle events require trajectory_id and sibling_idx"
+                )
+        elif trajectory_id is not None or sibling_idx is not None:
+            raise ValueError(
+                "trajectory_id and sibling_idx are valid only for sibling_done events"
+            )
 
         event = RolloutLifecycleEvent(
             schema_version=1,
@@ -141,6 +182,16 @@ class RolloutLifecycleRecorder:
             ),
             sample_ids=tuple(sample_ids),
             removal_reason=removal_reason,
+            trajectory_id=trajectory_id,
+            sibling_idx=sibling_idx,
+            turn_count=turn_count,
+            assistant_tokens=assistant_tokens,
+            env_tokens=env_tokens,
+            reward=reward,
+            terminated=terminated,
+            truncated=truncated,
+            generation_duration_ns=generation_duration_ns,
+            environment_duration_ns=environment_duration_ns,
         )
         self._events.append(event)
         return event
