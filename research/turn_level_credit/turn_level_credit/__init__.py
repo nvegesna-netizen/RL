@@ -17,9 +17,17 @@
 from turn_level_credit.advantage import TurnLevelGRPOAdvantageEstimator
 from turn_level_credit.config import TurnCreditConfig
 from turn_level_credit.trace import TurnBatch
+from turn_level_credit.verifier_credit import (
+    VerifierCreditTransformConfig,
+    VerifierScoreBatch,
+    compute_verifier_credit,
+)
 
 __all__ = [
     "TurnBatch",
     "TurnCreditConfig",
     "TurnLevelGRPOAdvantageEstimator",
+    "VerifierCreditTransformConfig",
+    "VerifierScoreBatch",
+    "compute_verifier_credit",
 ]

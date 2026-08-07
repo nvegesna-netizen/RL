@@ -23,6 +23,9 @@ Recent work reports gains from finer credit in long-horizon agents:
 - [HCAPO](https://arxiv.org/abs/2603.08754) uses a hindsight critic.
 - [TRACE](https://arxiv.org/abs/2607.13988) derives temporal-difference credit
   from frozen-reference state values.
+- [TCPO](https://arxiv.org/abs/2608.01667) treats dense verifier scores as state
+  quality rather than marginal credit and compares raw score, adjacent delta,
+  best-prior retrospective credit, and leave-one-out hindsight credit.
 
 This first slice implements the neutral substrate needed to test native
 environment rewards. It does not claim to implement TRACE.
@@ -148,6 +151,31 @@ The longer 1-GPU suite is:
 bash \
   tests/test_suites/llm/grpo-qwen2.5-0.5b-instruct-1n1g-dtensor2tp1-turn-credit.sh
 ```
+
+## Verifier score-to-credit transforms
+
+`turn_level_credit.verifier_credit` implements pure tensor transforms for
+completed verifier traces, independent of rollout collection:
+
+- current verifier score;
+- current-minus-previous adjacent score difference;
+- retrospective improvement over the best prior score, successful-state
+  preservation, and post-success regression;
+- delayed future-best credit relative to eligible trajectories from the same
+  prompt and turn, using a leave-one-out baseline.
+
+Observed scores must be finite and normalized to `[0, 1]`. Turn masks must be
+prefix-contiguous, and hindsight comparisons require explicit integer prompt
+group IDs. Padding is ignored and receives zero credit, malformed score, mask,
+or group-ID tensors fail loudly, and a singleton hindsight reference falls back
+to zero.
+
+The retrospective and hindsight equations follow the low-cost TCPO components.
+This project does not yet implement TCPO's fixed-history counterfactual
+branches, prompt-turn normalization, early-turn weighting, verifier-driven
+fixed-horizon environment, or online training integration. The checked-in unit
+tests establish transform semantics only; they do not reproduce TCPO's
+reported task results.
 
 ## Run the multi-turn pilot
 
