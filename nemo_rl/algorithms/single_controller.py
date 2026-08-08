@@ -231,7 +231,10 @@ class SingleControllerActor:
                     f"version={self._trainer_version} "
                     f"expected={expected_steps}"
                 )
-            if completed_bounded_run:
+            if (
+                self._async_cfg.controlled_release_delay.enabled
+                and completed_bounded_run
+            ):
                 cleanup_reason = RolloutRemovalReason.BOUNDED_SHUTDOWN
         finally:
             rollout_task.cancel()

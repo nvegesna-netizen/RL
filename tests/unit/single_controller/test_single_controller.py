@@ -436,6 +436,18 @@ def test_disabled_run_preserves_early_completion_behavior() -> None:
     )
 
 
+def test_disabled_run_preserves_exact_boundary_cleanup_reason() -> None:
+    ctrl = _run_lifecycle_controller()
+    ctrl._async_cfg.controlled_release_delay.enabled = False
+
+    result = asyncio.run(ctrl.run())
+
+    assert result == {"train_steps": 128, "trainer_version": 128}
+    ctrl._cancel_residual_buffer_groups.assert_awaited_once_with(
+        reason=single_controller.RolloutRemovalReason.CANCELLED
+    )
+
+
 def test_run_failure_retains_cancelled_cleanup_reason() -> None:
     ctrl = _run_lifecycle_controller()
     ctrl._train_pump = AsyncMock(side_effect=RuntimeError("train failed"))
