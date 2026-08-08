@@ -29,6 +29,7 @@ from typing import Any, Optional
 class RolloutLifecycleStage(str, Enum):
     """Observable milestones emitted on the controller clock."""
 
+    LEARNER_VERSION_ADVANCED = "learner_version_advanced"
     RESERVED = "reserved"
     SIBLING_DONE = "sibling_done"
     GROUP_COMPLETED = "group_completed"
@@ -199,6 +200,25 @@ class RolloutLifecycleRecorder:
     def snapshot(self) -> tuple[RolloutLifecycleEvent, ...]:
         """Return an immutable snapshot in event order."""
         return tuple(self._events)
+
+    def record_learner_version_advanced(
+        self,
+        *,
+        previous_version: int,
+        learner_weight_version: int,
+    ) -> RolloutLifecycleEvent:
+        """Record a successful learner-version transition on this clock."""
+        if learner_weight_version != previous_version + 1:
+            raise ValueError(
+                "learner version must advance by exactly one: "
+                f"{previous_version} -> {learner_weight_version}"
+            )
+        return self.record(
+            group_id="__learner__",
+            stage=RolloutLifecycleStage.LEARNER_VERSION_ADVANCED,
+            start_weight_version=previous_version,
+            learner_weight_version=learner_weight_version,
+        )
 
     def flush_jsonl(self, output_path: str | Path) -> None:
         """Write the current snapshot as JSON Lines.

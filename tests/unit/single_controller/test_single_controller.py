@@ -16,7 +16,7 @@
 
 import asyncio
 from types import SimpleNamespace
-from unittest.mock import MagicMock
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 import torch
@@ -218,6 +218,23 @@ class _EmptyBuffer:
         return 0
 
 
+class _ResidualBuffer:
+    def __init__(self, size: int) -> None:
+        self.size = size
+        self.remove_calls: list[dict[str, object]] = []
+
+    def __len__(self) -> int:
+        return self.size
+
+    async def remove(
+        self, idxs: list[int], remove_in_dp: bool, **kwargs: object
+    ) -> int:
+        self.remove_calls.append({"idxs": idxs, "remove_in_dp": remove_in_dp, **kwargs})
+        removed = self.size
+        self.size = 0
+        return removed
+
+
 class _NoOpTrainer:
     def prepare_for_lp_inference(self) -> None:
         pass
@@ -264,12 +281,67 @@ def _train_pump_controller(*, sampler) -> object:
     ctrl._timer = Timer()
     ctrl._trainer_version = 0
     ctrl._train_steps = 0
+    ctrl._lifecycle_recorder = None
     ctrl._step_log_dict = {
         "rewards": [],
         "masked_advantages": [],
         "sequence_lengths": [],
     }
     return ctrl
+
+
+def test_bounded_run_cleanup_cancels_all_residual_buffer_groups() -> None:
+    controller_cls = SingleControllerActor.__ray_metadata__.modified_class
+    ctrl = object.__new__(controller_cls)
+    ctrl._buffer = _ResidualBuffer(3)
+    ctrl._trainer_version = 48
+
+    asyncio.run(ctrl._cancel_residual_buffer_groups())
+
+    assert len(ctrl._buffer) == 0
+    assert ctrl._buffer.remove_calls == [
+        {
+            "idxs": [0, 1, 2],
+            "remove_in_dp": True,
+            "reason": single_controller.RolloutRemovalReason.CANCELLED,
+            "learner_weight_version": 48,
+        }
+    ]
+
+
+def test_successful_train_step_advances_audited_learner_version() -> None:
+    controller_cls = SingleControllerActor.__ray_metadata__.modified_class
+    ctrl = object.__new__(controller_cls)
+    ctrl._trainer_version = 4
+    ctrl._lifecycle_recorder = MagicMock()
+
+    ctrl._advance_trainer_version()
+
+    assert ctrl._trainer_version == 5
+    ctrl._lifecycle_recorder.record_learner_version_advanced.assert_called_once_with(
+        previous_version=4,
+        learner_weight_version=5,
+    )
+
+
+def test_run_flushes_audit_when_residual_cleanup_fails() -> None:
+    controller_cls = SingleControllerActor.__ray_metadata__.modified_class
+    ctrl = object.__new__(controller_cls)
+    ctrl._sync_weights = AsyncMock()
+    ctrl._rollout_pump = AsyncMock()
+    ctrl._train_pump = AsyncMock()
+    ctrl._cancel_residual_buffer_groups = AsyncMock(
+        side_effect=RuntimeError("cleanup failed")
+    )
+    ctrl._lifecycle_recorder = MagicMock()
+    ctrl._async_cfg = SimpleNamespace(lifecycle_audit_path="audit.jsonl")
+    ctrl._logger = MagicMock()
+
+    with pytest.raises(RuntimeError, match="cleanup failed"):
+        asyncio.run(ctrl.run())
+
+    ctrl._lifecycle_recorder.flush_jsonl.assert_called_once_with("audit.jsonl")
+    ctrl._logger.finish.assert_called_once_with()
 
 
 def test_train_pump_stops_after_rollout_exhaustion_and_buffer_drain() -> None:

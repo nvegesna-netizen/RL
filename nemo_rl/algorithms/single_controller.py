@@ -43,7 +43,10 @@ import ray
 import torch
 
 from nemo_rl.algorithms.async_utils.staleness_sampler import create_sampler
-from nemo_rl.algorithms.async_utils.rollout_lifecycle import RolloutLifecycleRecorder
+from nemo_rl.algorithms.async_utils.rollout_lifecycle import (
+    RolloutLifecycleRecorder,
+    RolloutRemovalReason,
+)
 from nemo_rl.algorithms.single_controller_utils.config import (
     AdvantageConfig,
     MasterConfig,
@@ -213,12 +216,17 @@ class SingleControllerActor:
             rollout_task.cancel()
             train_task.cancel()
             await asyncio.gather(rollout_task, train_task, return_exceptions=True)
-            if self._lifecycle_recorder is not None:
-                assert self._async_cfg.lifecycle_audit_path is not None
-                self._lifecycle_recorder.flush_jsonl(
-                    self._async_cfg.lifecycle_audit_path
-                )
-            self._logger.finish()
+            try:
+                await self._cancel_residual_buffer_groups()
+            finally:
+                try:
+                    if self._lifecycle_recorder is not None:
+                        assert self._async_cfg.lifecycle_audit_path is not None
+                        self._lifecycle_recorder.flush_jsonl(
+                            self._async_cfg.lifecycle_audit_path
+                        )
+                finally:
+                    self._logger.finish()
 
         return {
             "train_steps": self._train_steps,
@@ -235,6 +243,28 @@ class SingleControllerActor:
             "rollout_permitted": self._rollout_permitted.is_set(),
             "epoch": self._current_epoch,
         }
+
+    async def _cancel_residual_buffer_groups(self) -> None:
+        """Clear and terminally record groups left at bounded-run shutdown."""
+        residual_groups = len(self._buffer)
+        if residual_groups == 0:
+            return
+        await self._buffer.remove(
+            list(range(residual_groups)),
+            remove_in_dp=True,
+            reason=RolloutRemovalReason.CANCELLED,
+            learner_weight_version=self._trainer_version,
+        )
+
+    def _advance_trainer_version(self) -> None:
+        """Advance and audit the learner version after a successful train step."""
+        previous_version = self._trainer_version
+        self._trainer_version += 1
+        if self._lifecycle_recorder is not None:
+            self._lifecycle_recorder.record_learner_version_advanced(
+                previous_version=previous_version,
+                learner_weight_version=self._trainer_version,
+            )
 
     # ── internal helpers ───────────────────────────────────────────────────
 
@@ -526,7 +556,7 @@ class SingleControllerActor:
                 )
                 self._step_log_dict = {k: [] for k in self._step_log_dict}
 
-                self._trainer_version += 1
+                self._advance_trainer_version()
                 self._train_steps += 1
                 with self._timer.time("weight_sync"):
                     calibration_data = (
