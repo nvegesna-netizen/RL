@@ -20,6 +20,7 @@ import hashlib
 import math
 from collections.abc import Callable
 from dataclasses import dataclass
+from typing import Annotated
 
 from pydantic import BaseModel, Field, model_validator
 
@@ -32,7 +33,7 @@ class ControlledReleaseArmConfig(BaseModel, frozen=True):
 
     label: str
     delay_seconds: float
-    mass: int = Field(..., ge=1, strict=True)
+    mass: Annotated[int, Field(ge=1, strict=True)]
 
     @model_validator(mode="after")
     def validate_arm(self) -> ControlledReleaseArmConfig:
@@ -57,7 +58,7 @@ class ControlledReleaseDelayConfig(BaseModel, frozen=True):
     """Default-off release-delay intervention configuration."""
 
     enabled: bool = False
-    seed: int = Field(20260808, ge=0)
+    seed: Annotated[int, Field(ge=0)] = 20260808
     arms: tuple[ControlledReleaseArmConfig, ...] = Field(default_factory=_default_arms)
 
     @model_validator(mode="after")
