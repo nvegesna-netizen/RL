@@ -377,7 +377,7 @@ class TestControlledReleaseFlow:
         assert started.ready_buffer_depth == 0
         assert started.buffer_admission_stalls == 2
 
-    def test_cancellation_during_hold_removes_without_completion(monkeypatch):
+    def test_cancellation_during_hold_removes_without_completion(self, monkeypatch):
         buffer = _FakeBuffer()
         recorder = RolloutLifecycleRecorder(clock_ns=lambda: 0)
         manager = _make_controlled_manager(buffer, _FakeImpl(), recorder)
