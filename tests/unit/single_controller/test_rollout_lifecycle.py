@@ -128,7 +128,7 @@ def test_flush_jsonl_is_machine_readable(tmp_path):
             "removal_reason": None,
             "run_id": "run",
             "sample_ids": [],
-            "schema_version": 2,
+            "schema_version": 3,
             "sequence": 0,
             "sibling_idx": None,
             "stage": "reserved",
@@ -180,7 +180,7 @@ def test_release_delay_stage_requires_and_serializes_assignment_fields() -> None
         **assignment_fields,
     )
 
-    assert event.schema_version == 2
+    assert event.schema_version == 3
     assert event.release_arm == "d30"
     assert event.release_draw == 4
     assert event.active_release_holds == 1
@@ -200,3 +200,21 @@ def test_release_delay_stage_requires_and_serializes_assignment_fields() -> None
             start_weight_version=0,
             **assignment_fields,
         )
+
+
+def test_bounded_shutdown_reason_serializes_in_schema_v3() -> None:
+    recorder = RolloutLifecycleRecorder(clock_ns=lambda: 10)
+
+    event = recorder.record(
+        group_id="ready-at-stop",
+        stage=RolloutLifecycleStage.REMOVED,
+        start_weight_version=127,
+        end_weight_version=127,
+        learner_weight_version=128,
+        sample_ids=("sample",),
+        removal_reason=RolloutRemovalReason.BOUNDED_SHUTDOWN,
+    )
+
+    assert event.schema_version == 3
+    assert event.removal_reason is RolloutRemovalReason.BOUNDED_SHUTDOWN
+    assert event.to_dict()["removal_reason"] == "bounded_shutdown"

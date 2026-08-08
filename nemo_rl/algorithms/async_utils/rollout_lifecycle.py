@@ -48,6 +48,7 @@ class RolloutRemovalReason(str, Enum):
     STALE_EVICTED = "stale_evicted"
     FAILED = "failed"
     CANCELLED = "cancelled"
+    BOUNDED_SHUTDOWN = "bounded_shutdown"
     UNKNOWN = "unknown"
 
 
@@ -269,7 +270,7 @@ class RolloutLifecycleRecorder:
             )
 
         event = RolloutLifecycleEvent(
-            schema_version=2,
+            schema_version=3,
             run_id=self.run_id,
             clock_domain_id=self.clock_domain_id,
             sequence=len(self._events),

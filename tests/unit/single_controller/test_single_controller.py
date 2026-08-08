@@ -335,20 +335,24 @@ def _train_pump_controller(*, sampler) -> object:
     return ctrl
 
 
-def test_bounded_run_cleanup_cancels_all_residual_buffer_groups() -> None:
+def test_bounded_run_cleanup_removes_all_residual_buffer_groups() -> None:
     controller_cls = SingleControllerActor.__ray_metadata__.modified_class
     ctrl = object.__new__(controller_cls)
     ctrl._buffer = _ResidualBuffer(3)
     ctrl._trainer_version = 48
 
-    asyncio.run(ctrl._cancel_residual_buffer_groups())
+    asyncio.run(
+        ctrl._cancel_residual_buffer_groups(
+            reason=single_controller.RolloutRemovalReason.BOUNDED_SHUTDOWN
+        )
+    )
 
     assert len(ctrl._buffer) == 0
     assert ctrl._buffer.remove_calls == [
         {
             "idxs": [0, 1, 2],
             "remove_in_dp": True,
-            "reason": single_controller.RolloutRemovalReason.CANCELLED,
+            "reason": single_controller.RolloutRemovalReason.BOUNDED_SHUTDOWN,
             "learner_weight_version": 48,
         }
     ]
@@ -369,23 +373,142 @@ def test_successful_train_step_advances_audited_learner_version() -> None:
     )
 
 
-def test_run_flushes_audit_when_residual_cleanup_fails() -> None:
+def _run_lifecycle_controller(
+    *, train_steps: int = 128, trainer_version: int = 128
+) -> object:
     controller_cls = SingleControllerActor.__ray_metadata__.modified_class
     ctrl = object.__new__(controller_cls)
     ctrl._sync_weights = AsyncMock()
     ctrl._rollout_pump = AsyncMock()
     ctrl._train_pump = AsyncMock()
+    ctrl._cancel_residual_buffer_groups = AsyncMock()
+    ctrl._lifecycle_recorder = MagicMock()
+    ctrl._master_config = SimpleNamespace(grpo=SimpleNamespace(max_num_steps=128))
+    ctrl._async_cfg = SimpleNamespace(
+        lifecycle_audit_path="audit.jsonl",
+        controlled_release_delay=SimpleNamespace(enabled=True),
+    )
+    ctrl._logger = MagicMock()
+    ctrl._train_steps = train_steps
+    ctrl._trainer_version = trainer_version
+    return ctrl
+
+
+def test_run_uses_bounded_shutdown_only_at_configured_boundary() -> None:
+    ctrl = _run_lifecycle_controller()
+
+    result = asyncio.run(ctrl.run())
+
+    assert result == {"train_steps": 128, "trainer_version": 128}
+    ctrl._cancel_residual_buffer_groups.assert_awaited_once_with(
+        reason=single_controller.RolloutRemovalReason.BOUNDED_SHUTDOWN
+    )
+
+
+@pytest.mark.parametrize(
+    ("train_steps", "trainer_version"),
+    [(127, 127), (128, 127), (127, 128)],
+)
+def test_controlled_run_rejects_premature_or_mismatched_boundary(
+    train_steps: int, trainer_version: int
+) -> None:
+    ctrl = _run_lifecycle_controller(
+        train_steps=train_steps, trainer_version=trainer_version
+    )
+
+    with pytest.raises(RuntimeError, match="ended before the configured"):
+        asyncio.run(ctrl.run())
+
+    ctrl._cancel_residual_buffer_groups.assert_awaited_once_with(
+        reason=single_controller.RolloutRemovalReason.CANCELLED
+    )
+
+
+def test_disabled_run_preserves_early_completion_behavior() -> None:
+    ctrl = _run_lifecycle_controller(train_steps=127, trainer_version=127)
+    ctrl._async_cfg.controlled_release_delay.enabled = False
+
+    result = asyncio.run(ctrl.run())
+
+    assert result == {"train_steps": 127, "trainer_version": 127}
+    ctrl._cancel_residual_buffer_groups.assert_awaited_once_with(
+        reason=single_controller.RolloutRemovalReason.CANCELLED
+    )
+
+
+def test_run_failure_retains_cancelled_cleanup_reason() -> None:
+    ctrl = _run_lifecycle_controller()
+    ctrl._train_pump = AsyncMock(side_effect=RuntimeError("train failed"))
+
+    with pytest.raises(RuntimeError, match="train failed"):
+        asyncio.run(ctrl.run())
+
+    ctrl._cancel_residual_buffer_groups.assert_awaited_once_with(
+        reason=single_controller.RolloutRemovalReason.CANCELLED
+    )
+
+
+def test_rollout_failure_retains_cancelled_cleanup_reason() -> None:
+    ctrl = _run_lifecycle_controller()
+    ctrl._rollout_pump = AsyncMock(side_effect=RuntimeError("rollout failed"))
+
+    with pytest.raises(RuntimeError, match="rollout failed"):
+        asyncio.run(ctrl.run())
+
+    ctrl._cancel_residual_buffer_groups.assert_awaited_once_with(
+        reason=single_controller.RolloutRemovalReason.CANCELLED
+    )
+
+
+def test_external_run_cancellation_retains_cancelled_cleanup_reason() -> None:
+    ctrl = _run_lifecycle_controller()
+
+    async def cancel_running_controller() -> None:
+        pump_started = asyncio.Event()
+        pump_block = asyncio.Event()
+
+        async def blocked_pump() -> None:
+            pump_started.set()
+            await pump_block.wait()
+
+        ctrl._rollout_pump = blocked_pump
+        ctrl._train_pump = blocked_pump
+        run_task = asyncio.create_task(ctrl.run())
+        await pump_started.wait()
+        run_task.cancel()
+        with pytest.raises(asyncio.CancelledError):
+            await run_task
+
+    asyncio.run(cancel_running_controller())
+
+    ctrl._cancel_residual_buffer_groups.assert_awaited_once_with(
+        reason=single_controller.RolloutRemovalReason.CANCELLED
+    )
+
+
+def test_run_flushes_audit_when_residual_cleanup_fails() -> None:
+    ctrl = _run_lifecycle_controller()
     ctrl._cancel_residual_buffer_groups = AsyncMock(
         side_effect=RuntimeError("cleanup failed")
     )
-    ctrl._lifecycle_recorder = MagicMock()
-    ctrl._async_cfg = SimpleNamespace(lifecycle_audit_path="audit.jsonl")
-    ctrl._logger = MagicMock()
 
     with pytest.raises(RuntimeError, match="cleanup failed"):
         asyncio.run(ctrl.run())
 
+    ctrl._cancel_residual_buffer_groups.assert_awaited_once_with(
+        reason=single_controller.RolloutRemovalReason.BOUNDED_SHUTDOWN
+    )
     ctrl._lifecycle_recorder.flush_jsonl.assert_called_once_with("audit.jsonl")
+    ctrl._logger.finish.assert_called_once_with()
+
+
+def test_run_finishes_logger_when_audit_flush_fails() -> None:
+    ctrl = _run_lifecycle_controller()
+    ctrl._lifecycle_recorder.flush_jsonl.side_effect = RuntimeError("flush failed")
+
+    with pytest.raises(RuntimeError, match="flush failed"):
+        asyncio.run(ctrl.run())
+
     ctrl._logger.finish.assert_called_once_with()
 
 

@@ -205,6 +205,7 @@ class SingleControllerActor:
         # Start the rollout and train pumps
         rollout_task = asyncio.create_task(self._rollout_pump())
         train_task = asyncio.create_task(self._train_pump())
+        cleanup_reason = RolloutRemovalReason.CANCELLED
         try:
             done, _ = await asyncio.wait(
                 {rollout_task, train_task}, return_when=asyncio.FIRST_COMPLETED
@@ -214,12 +215,30 @@ class SingleControllerActor:
                 # rollout pump leaves the train pump to drain committed groups.
                 await rollout_task
             await train_task
+            expected_steps = self._master_config.grpo.max_num_steps
+            completed_bounded_run = (
+                self._train_steps == expected_steps
+                and self._trainer_version == expected_steps
+            )
+            if (
+                self._async_cfg.controlled_release_delay.enabled
+                and not completed_bounded_run
+            ):
+                raise RuntimeError(
+                    "controlled-release run ended before the configured "
+                    "train-step/version boundary: "
+                    f"steps={self._train_steps} "
+                    f"version={self._trainer_version} "
+                    f"expected={expected_steps}"
+                )
+            if completed_bounded_run:
+                cleanup_reason = RolloutRemovalReason.BOUNDED_SHUTDOWN
         finally:
             rollout_task.cancel()
             train_task.cancel()
             await asyncio.gather(rollout_task, train_task, return_exceptions=True)
             try:
-                await self._cancel_residual_buffer_groups()
+                await self._cancel_residual_buffer_groups(reason=cleanup_reason)
             finally:
                 try:
                     if self._lifecycle_recorder is not None:
@@ -246,7 +265,9 @@ class SingleControllerActor:
             "epoch": self._current_epoch,
         }
 
-    async def _cancel_residual_buffer_groups(self) -> None:
+    async def _cancel_residual_buffer_groups(
+        self, *, reason: RolloutRemovalReason
+    ) -> None:
         """Clear and terminally record groups left at bounded-run shutdown."""
         residual_groups = len(self._buffer)
         if residual_groups == 0:
@@ -254,7 +275,7 @@ class SingleControllerActor:
         await self._buffer.remove(
             list(range(residual_groups)),
             remove_in_dp=True,
-            reason=RolloutRemovalReason.CANCELLED,
+            reason=reason,
             learner_weight_version=self._trainer_version,
         )
 
