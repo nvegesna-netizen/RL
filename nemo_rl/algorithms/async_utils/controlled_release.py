@@ -32,7 +32,7 @@ class ControlledReleaseArmConfig(BaseModel, frozen=True):
 
     label: str
     delay_seconds: float
-    mass: int = Field(ge=1, strict=True)
+    mass: int = Field(..., ge=1, strict=True)
 
     @model_validator(mode="after")
     def validate_arm(self) -> ControlledReleaseArmConfig:
@@ -57,7 +57,7 @@ class ControlledReleaseDelayConfig(BaseModel, frozen=True):
     """Default-off release-delay intervention configuration."""
 
     enabled: bool = False
-    seed: int = Field(default=20260808, ge=0)
+    seed: int = Field(20260808, ge=0)
     arms: tuple[ControlledReleaseArmConfig, ...] = Field(default_factory=_default_arms)
 
     @model_validator(mode="after")
