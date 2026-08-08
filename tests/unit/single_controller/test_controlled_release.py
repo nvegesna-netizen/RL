@@ -18,13 +18,19 @@ from collections import Counter
 from pathlib import Path
 
 import pytest
-from hydra import compose, initialize_config_dir
+from omegaconf import OmegaConf
 from pydantic import ValidationError
 
 from nemo_rl.algorithms.async_utils.controlled_release import (
     ControlledReleaseArmConfig,
     ControlledReleaseAssigner,
     ControlledReleaseDelayConfig,
+)
+from nemo_rl.algorithms.single_controller_utils.config import MasterConfig
+from nemo_rl.utils.config import (
+    load_config,
+    parse_hydra_overrides,
+    register_omegaconf_resolvers,
 )
 
 
@@ -138,20 +144,27 @@ def test_digest_must_be_exactly_32_bytes() -> None:
 
 
 def test_single_controller_yaml_composes_with_enabled_cli_overrides() -> None:
-    config_dir = Path(__file__).parents[3] / "examples" / "configs"
-    with initialize_config_dir(version_base=None, config_dir=str(config_dir)):
-        config = compose(
-            config_name="grpo_math_1B_megatron_single_controller",
-            overrides=[
-                "async_rl.controlled_release_delay.enabled=true",
-                "+async_rl.lifecycle_audit_path=/tmp/m3-audit.jsonl",
-            ],
-        )
+    config_path = (
+        Path(__file__).parents[3]
+        / "examples"
+        / "configs"
+        / "grpo_math_1B_megatron_single_controller.yaml"
+    )
+    register_omegaconf_resolvers()
+    config = load_config(config_path)
+    config = parse_hydra_overrides(
+        config,
+        [
+            "async_rl.controlled_release_delay.enabled=true",
+            "+async_rl.lifecycle_audit_path=/tmp/m3-audit.jsonl",
+        ],
+    )
+    master_config = MasterConfig(**OmegaConf.to_container(config, resolve=True))
 
-    release = config.async_rl.controlled_release_delay
+    release = master_config.async_rl.controlled_release_delay
     assert release.enabled is True
     assert release.seed == 20260808
     assert [arm.label for arm in release.arms] == ["control", "d30", "d60"]
     assert [arm.mass for arm in release.arms] == [4, 1, 1]
     assert [arm.delay_seconds for arm in release.arms] == [0.0, 30.0, 60.0]
-    assert config.async_rl.lifecycle_audit_path == "/tmp/m3-audit.jsonl"
+    assert master_config.async_rl.lifecycle_audit_path == "/tmp/m3-audit.jsonl"
