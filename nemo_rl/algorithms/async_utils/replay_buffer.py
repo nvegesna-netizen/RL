@@ -925,6 +925,14 @@ class TQReplayBuffer:
         """Return the number of prompt-group entries currently held."""
         return len(self.meta_list)
 
+    def ready_size(self) -> int:
+        """Return the number of committed prompt groups currently ready."""
+        return sum(self.ready_list)
+
+    def has_group(self, group_id: str) -> bool:
+        """Return whether a prompt group still owns a live buffer slot."""
+        return group_id in self._group_ids
+
     def __len__(self) -> int:
         return len(self.meta_list)
 

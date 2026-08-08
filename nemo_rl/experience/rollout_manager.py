@@ -16,12 +16,18 @@ import asyncio
 import copy
 import json
 import time
-from typing import Any, Optional
+from dataclasses import dataclass
+from typing import Any, Callable, Optional
 
 import torch
 from transformers import PreTrainedTokenizerBase
 from wandb import Table
 
+from nemo_rl.algorithms.async_utils.controlled_release import (
+    ControlledReleaseAssigner,
+    ControlledReleaseAssignment,
+    ControlledReleaseDelayConfig,
+)
 from nemo_rl.algorithms.async_utils.replay_buffer import TQReplayBuffer
 from nemo_rl.algorithms.async_utils.rollout_lifecycle import (
     RolloutLifecycleRecorder,
@@ -50,6 +56,17 @@ from nemo_rl.utils.timer import Timer
 TokenizerType = PreTrainedTokenizerBase
 
 
+@dataclass(frozen=True)
+class PendingPromptGroup:
+    """Generated prompt group that still owns its reserved buffer slot."""
+
+    group_id: str
+    record: PromptGroupRecord
+    start_weight_version: int
+    target_step: Optional[int]
+    assignment: ControlledReleaseAssignment
+
+
 class AsyncRolloutImpl:
     """Manages per-prompt multi-turn rollouts, producing a PromptGroupRecord per call.
 
@@ -74,12 +91,17 @@ class AsyncRolloutImpl:
         self._max_rollout_turns = max_rollout_turns
         self._policy_generation = policy_generation
         self._lifecycle_recorder: Optional[RolloutLifecycleRecorder] = None
+        self._defer_group_completed = False
 
     def set_lifecycle_recorder(
         self, recorder: Optional[RolloutLifecycleRecorder]
     ) -> None:
         """Attach the controller-local lifecycle recorder."""
         self._lifecycle_recorder = recorder
+
+    def set_defer_group_completed(self, defer: bool) -> None:
+        """Defer group completion to the controlled-release owner."""
+        self._defer_group_completed = defer
 
     async def run_rollout(
         self,
@@ -139,7 +161,11 @@ class AsyncRolloutImpl:
             completions = [c for c, _ in results]
             all_sample_metrics = [m for _, m in results]
 
-        if self._lifecycle_recorder is not None and group_id is not None:
+        if (
+            not getattr(self, "_defer_group_completed", False)
+            and self._lifecycle_recorder is not None
+            and group_id is not None
+        ):
             self._lifecycle_recorder.record(
                 group_id=group_id,
                 stage=RolloutLifecycleStage.GROUP_COMPLETED,
@@ -780,6 +806,7 @@ class RolloutManager:
         use_nemo_gym: bool = False,
         mask_env_flagged_samples: bool = True,
         tq_buffer: Optional[TQReplayBuffer] = None,
+        controlled_release_delay: Optional[ControlledReleaseDelayConfig] = None,
     ) -> None:
         assert num_generations_per_prompt >= 1, (
             "num_generations_per_prompt must be >= 1"
@@ -811,6 +838,21 @@ class RolloutManager:
         self._num_generations_per_prompt = num_generations_per_prompt
         self._tq_buffer = tq_buffer
         self._weight_version: int = 0
+        self._lifecycle_recorder: Optional[RolloutLifecycleRecorder] = None
+        self._controlled_release_config = (
+            controlled_release_delay or ControlledReleaseDelayConfig()
+        )
+        if self._controlled_release_config.enabled and use_nemo_gym:
+            raise ValueError(
+                "controlled release delay is supported only by native async rollouts"
+            )
+        self._controlled_release_assigner = ControlledReleaseAssigner(
+            self._controlled_release_config
+        )
+        self._active_release_holds = 0
+        if self._controlled_release_config.enabled:
+            assert isinstance(self._impl, AsyncRolloutImpl)
+            self._impl.set_defer_group_completed(True)
 
     def set_weight_version(self, version: int) -> None:
         """Set the weight_version used for rollout tags.
@@ -824,7 +866,170 @@ class RolloutManager:
         self, recorder: Optional[RolloutLifecycleRecorder]
     ) -> None:
         """Attach a controller-local lifecycle recorder to the rollout path."""
+        self._lifecycle_recorder = recorder
         self._impl.set_lifecycle_recorder(recorder)
+
+    @property
+    def controlled_release_enabled(self) -> bool:
+        """Whether the post-generation controlled release path is active."""
+        return self._controlled_release_config.enabled
+
+    def _record_release_event(
+        self,
+        *,
+        group_id: str,
+        start_weight_version: int,
+        target_step: Optional[int],
+        assignment: ControlledReleaseAssignment,
+        stage: RolloutLifecycleStage,
+        generation_inflight: Optional[int] = None,
+        buffer_admission_stalls: Optional[int] = None,
+    ) -> None:
+        if self._lifecycle_recorder is None:
+            return
+        buffer = self._tq_buffer
+        assert buffer is not None
+        self._lifecycle_recorder.record(
+            group_id=group_id,
+            stage=stage,
+            start_weight_version=start_weight_version,
+            target_step=target_step,
+            learner_weight_version=self._weight_version,
+            release_arm=assignment.arm_label,
+            release_delay_seconds=assignment.delay_seconds,
+            release_arm_mass=assignment.arm_mass,
+            release_total_mass=assignment.total_mass,
+            release_global_ordinal=assignment.global_ordinal,
+            release_draw=assignment.draw,
+            release_nonce=assignment.nonce,
+            generation_inflight=generation_inflight,
+            active_release_holds=self._active_release_holds,
+            reserved_buffer_occupancy=buffer.size(),
+            ready_buffer_depth=buffer.ready_size(),
+            buffer_admission_stalls=buffer_admission_stalls,
+        )
+
+    async def generate_pending(
+        self,
+        input_sample: DatumSpec,
+        *,
+        target_step: Optional[int] = None,
+        generation_inflight: int,
+        buffer_admission_stalls: int,
+    ) -> PendingPromptGroup:
+        """Reserve, assign, and generate without holding release admission."""
+        assert self._controlled_release_config.enabled
+        assert self._tq_buffer is not None
+        start_version = self._weight_version
+        group_id = self._tq_buffer.reserve(
+            weight_version=start_version, target_step=target_step
+        )
+        assignment = self._controlled_release_assigner.assign()
+        self._record_release_event(
+            group_id=group_id,
+            start_weight_version=start_version,
+            target_step=target_step,
+            assignment=assignment,
+            stage=RolloutLifecycleStage.RELEASE_DELAY_ASSIGNED,
+            generation_inflight=generation_inflight,
+            buffer_admission_stalls=buffer_admission_stalls,
+        )
+        try:
+            record = await self.run_rollout(
+                input_sample,
+                group_id=group_id,
+                start_weight_version=start_version,
+            )
+            return PendingPromptGroup(
+                group_id=group_id,
+                record=record,
+                start_weight_version=start_version,
+                target_step=target_step,
+                assignment=assignment,
+            )
+        except asyncio.CancelledError:
+            await self._tq_buffer.remove_group(
+                group_id, reason=RolloutRemovalReason.CANCELLED
+            )
+            raise
+        except BaseException:
+            await self._tq_buffer.remove_group(
+                group_id, reason=RolloutRemovalReason.FAILED
+            )
+            raise
+
+    async def release_and_commit(
+        self,
+        pending: PendingPromptGroup,
+        *,
+        generation_inflight_fn: Callable[[], int],
+        buffer_admission_stalls_fn: Callable[[], int],
+    ) -> None:
+        """Apply the assigned hold, emit completion, and commit the reserved slot."""
+        assert self._tq_buffer is not None
+        hold_active = pending.assignment.delay_seconds > 0
+        if hold_active:
+            self._active_release_holds += 1
+        try:
+            self._record_release_event(
+                group_id=pending.group_id,
+                start_weight_version=pending.start_weight_version,
+                target_step=pending.target_step,
+                assignment=pending.assignment,
+                stage=RolloutLifecycleStage.RELEASE_DELAY_STARTED,
+                generation_inflight=generation_inflight_fn(),
+                buffer_admission_stalls=buffer_admission_stalls_fn(),
+            )
+            await asyncio.sleep(pending.assignment.delay_seconds)
+            self._record_release_event(
+                group_id=pending.group_id,
+                start_weight_version=pending.start_weight_version,
+                target_step=pending.target_step,
+                assignment=pending.assignment,
+                stage=RolloutLifecycleStage.RELEASE_DELAY_COMPLETED,
+                generation_inflight=generation_inflight_fn(),
+                buffer_admission_stalls=buffer_admission_stalls_fn(),
+            )
+            if hold_active:
+                self._active_release_holds -= 1
+                hold_active = False
+
+            end_version = self._weight_version
+            if self._lifecycle_recorder is not None:
+                self._lifecycle_recorder.record(
+                    group_id=pending.group_id,
+                    stage=RolloutLifecycleStage.GROUP_COMPLETED,
+                    start_weight_version=pending.start_weight_version,
+                    end_weight_version=end_version,
+                    target_step=pending.target_step,
+                )
+            await self._tq_buffer.commit(
+                pending.group_id,
+                pending.record,
+                start_weight_version=pending.start_weight_version,
+                end_weight_version=end_version,
+            )
+        except asyncio.CancelledError:
+            await self._tq_buffer.remove_group(
+                pending.group_id, reason=RolloutRemovalReason.CANCELLED
+            )
+            raise
+        except BaseException:
+            await self._tq_buffer.remove_group(
+                pending.group_id, reason=RolloutRemovalReason.FAILED
+            )
+            raise
+        finally:
+            if hold_active:
+                self._active_release_holds -= 1
+
+    async def abort_pending(
+        self, pending: PendingPromptGroup, *, reason: RolloutRemovalReason
+    ) -> None:
+        """Idempotently clean a pending slot across the generation/release boundary."""
+        assert self._tq_buffer is not None
+        if self._tq_buffer.has_group(pending.group_id):
+            await self._tq_buffer.remove_group(pending.group_id, reason=reason)
 
     async def run_rollout(
         self,
@@ -850,6 +1055,10 @@ class RolloutManager:
         """
         assert self._tq_buffer is not None, (
             "generate_and_push requires tq_buffer to be set at __init__"
+        )
+        assert not self._controlled_release_config.enabled, (
+            "controlled release requires generate_pending followed by "
+            "release_and_commit"
         )
         start_version = self._weight_version
         group_id = self._tq_buffer.reserve(

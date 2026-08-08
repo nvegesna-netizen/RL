@@ -25,6 +25,10 @@ import ray
 import torch
 
 from nemo_rl.algorithms.async_utils.replay_buffer import TQReplayBuffer
+from nemo_rl.algorithms.async_utils.rollout_lifecycle import (
+    RolloutLifecycleRecorder,
+    RolloutRemovalReason,
+)
 from nemo_rl.algorithms.async_utils.staleness_sampler import (
     InOrderSampler,
     WeightFifoSampler,
@@ -44,6 +48,9 @@ from nemo_rl.experience.rollout_manager import RolloutManager
 
 # Reuse fixtures from the experience tests; same shape as test_async_rollout_manager.
 from tests.unit.experience.test_rollout_manager import (
+    _FakeBuffer,
+    _FakeImpl,
+    _make_controlled_manager,
     single_multi_step_calculator_input_sample,  # noqa: F401
 )
 from tests.unit.experience.test_rollouts import (
@@ -265,6 +272,190 @@ def test_rollout_pump_releases_permits_when_child_never_starts(monkeypatch) -> N
         assert ctrl._inflight_rollouts == 0
         assert ctrl._dispatched_rollouts == set()
         assert ctrl._rollout_exhausted.is_set()
+
+    asyncio.run(_main())
+
+
+def test_controlled_hold_releases_generation_admission_for_later_control() -> None:
+    class _ControlledManager:
+        controlled_release_enabled = True
+
+        def __init__(self) -> None:
+            self.events: list[str] = []
+            self.control_released = asyncio.Event()
+
+        async def generate_pending(
+            self,
+            prompt: Any,
+            *,
+            target_step: int | None = None,
+            generation_inflight: int,
+            buffer_admission_stalls: int,
+        ) -> str:
+            del target_step, buffer_admission_stalls
+            assert generation_inflight == 1
+            content = prompt["message_log"][0]["content"]
+            self.events.append(f"generate:{content}")
+            return content
+
+        async def release_and_commit(
+            self,
+            pending: str,
+            *,
+            generation_inflight_fn,
+            buffer_admission_stalls_fn,
+        ) -> None:
+            assert generation_inflight_fn() >= 0
+            assert buffer_admission_stalls_fn() >= 0
+            self.events.append(f"release-start:{pending}")
+            if pending == "held":
+                await self.control_released.wait()
+            else:
+                self.control_released.set()
+            self.events.append(f"release-end:{pending}")
+
+    async def _main() -> None:
+        manager = _ControlledManager()
+        controller_cls = SingleControllerActor.__ray_metadata__.modified_class
+        ctrl = object.__new__(controller_cls)
+        ctrl._async_cfg = SimpleNamespace(max_inflight_prompts=1, diagnostics=False)
+        ctrl._master_config = SimpleNamespace(
+            grpo=GRPOConfig.model_construct(max_num_epochs=1)
+        )
+        ctrl._rollout_manager = manager
+        ctrl._sampler = WindowedSampler(None, max_staleness_versions=1)
+        ctrl._dataloader = [
+            BatchedDataDict(
+                {
+                    "message_log": [
+                        [{"role": "user", "content": "held"}],
+                        [{"role": "user", "content": "control"}],
+                    ]
+                }
+            )
+        ]
+        ctrl._rollout_permitted = asyncio.Event()
+        ctrl._rollout_permitted.set()
+        ctrl._rollout_exhausted = asyncio.Event()
+        ctrl._buffer_capacity = asyncio.Semaphore(2)
+        ctrl._buffer_admission_stalls = 0
+        ctrl._inflight_rollouts = 0
+        ctrl._dispatched_rollouts = set()
+        ctrl._trainer_version = 0
+        ctrl._current_epoch = 0
+
+        await asyncio.wait_for(ctrl._rollout_pump(), timeout=1.0)
+
+        assert manager.events == [
+            "generate:held",
+            "release-start:held",
+            "generate:control",
+            "release-start:control",
+            "release-end:control",
+            "release-end:held",
+        ]
+        assert ctrl._inflight_rollouts == 0
+        assert ctrl._rollout_exhausted.is_set()
+
+    asyncio.run(_main())
+
+
+def test_controlled_release_failure_aborts_pending_and_restores_buffer_permit() -> None:
+    class _FailingControlledManager:
+        controlled_release_enabled = True
+
+        def __init__(self) -> None:
+            self.abort_reasons: list[RolloutRemovalReason] = []
+
+        async def generate_pending(self, prompt: Any, **kwargs: Any) -> str:
+            del prompt, kwargs
+            return "pending"
+
+        async def release_and_commit(self, pending: str, **kwargs: Any) -> None:
+            del pending, kwargs
+            raise RuntimeError("release boundary failure")
+
+        async def abort_pending(
+            self, pending: str, *, reason: RolloutRemovalReason
+        ) -> None:
+            assert pending == "pending"
+            self.abort_reasons.append(reason)
+
+    async def _main() -> None:
+        manager = _FailingControlledManager()
+        controller_cls = SingleControllerActor.__ray_metadata__.modified_class
+        ctrl = object.__new__(controller_cls)
+        ctrl._async_cfg = SimpleNamespace(max_inflight_prompts=1, diagnostics=False)
+        ctrl._master_config = SimpleNamespace(
+            grpo=GRPOConfig.model_construct(max_num_epochs=1)
+        )
+        ctrl._rollout_manager = manager
+        ctrl._sampler = WindowedSampler(None, max_staleness_versions=1)
+        ctrl._dataloader = [
+            BatchedDataDict({"message_log": [[{"role": "user", "content": "prompt"}]]})
+        ]
+        ctrl._rollout_permitted = asyncio.Event()
+        ctrl._rollout_permitted.set()
+        ctrl._rollout_exhausted = asyncio.Event()
+        ctrl._buffer_capacity = asyncio.Semaphore(1)
+        ctrl._buffer_admission_stalls = 0
+        ctrl._inflight_rollouts = 0
+        ctrl._dispatched_rollouts = set()
+        ctrl._trainer_version = 0
+        ctrl._current_epoch = 0
+
+        with pytest.raises(ExceptionGroup) as exc_info:
+            await ctrl._rollout_pump()
+
+        assert exc_info.value.subgroup(RuntimeError) is not None
+        assert manager.abort_reasons == [RolloutRemovalReason.FAILED]
+        assert ctrl._buffer_capacity._value == 1
+        assert ctrl._inflight_rollouts == 0
+        assert not ctrl._rollout_exhausted.is_set()
+
+    asyncio.run(_main())
+
+
+def test_actual_manager_commit_failure_restores_controller_buffer_permit() -> None:
+    class _CommitFailsBuffer(_FakeBuffer):
+        async def commit(self, *args: Any, **kwargs: Any) -> None:
+            del args, kwargs
+            raise RuntimeError("actual manager commit failure")
+
+    async def _main() -> None:
+        buffer = _CommitFailsBuffer()
+        recorder = RolloutLifecycleRecorder(clock_ns=lambda: 0)
+        manager = _make_controlled_manager(buffer, _FakeImpl(), recorder, seed=0)
+        controller_cls = SingleControllerActor.__ray_metadata__.modified_class
+        ctrl = object.__new__(controller_cls)
+        ctrl._async_cfg = SimpleNamespace(max_inflight_prompts=1, diagnostics=False)
+        ctrl._master_config = SimpleNamespace(
+            grpo=GRPOConfig.model_construct(max_num_epochs=1)
+        )
+        ctrl._rollout_manager = manager
+        ctrl._sampler = WindowedSampler(None, max_staleness_versions=1)
+        ctrl._dataloader = [
+            BatchedDataDict({"message_log": [[{"role": "user", "content": "prompt"}]]})
+        ]
+        ctrl._rollout_permitted = asyncio.Event()
+        ctrl._rollout_permitted.set()
+        ctrl._rollout_exhausted = asyncio.Event()
+        ctrl._buffer_capacity = asyncio.Semaphore(1)
+        ctrl._buffer_admission_stalls = 0
+        ctrl._inflight_rollouts = 0
+        ctrl._dispatched_rollouts = set()
+        ctrl._trainer_version = 0
+        ctrl._current_epoch = 0
+
+        with pytest.raises(ExceptionGroup) as exc_info:
+            await ctrl._rollout_pump()
+
+        assert exc_info.value.subgroup(RuntimeError) is not None
+        assert buffer._slots == []
+        assert len(buffer.remove_calls) == 1
+        assert buffer.remove_calls[0][1] is RolloutRemovalReason.FAILED
+        assert ctrl._buffer_capacity._value == 1
+        assert ctrl._inflight_rollouts == 0
 
     asyncio.run(_main())
 

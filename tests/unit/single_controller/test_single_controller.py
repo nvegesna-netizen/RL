@@ -29,6 +29,10 @@ from nemo_rl.algorithms.single_controller_utils.config import (
     AdvantageConfig,
     AsyncRLConfig,
     MasterConfig,
+    validate_single_controller_config,
+)
+from nemo_rl.algorithms.async_utils.controlled_release import (
+    ControlledReleaseDelayConfig,
 )
 from nemo_rl.data_plane import KVBatchMeta
 from nemo_rl.distributed.batched_data_dict import BatchedDataDict
@@ -37,6 +41,47 @@ from nemo_rl.utils.timer import Timer
 
 class FakeWeightSynchronizer:
     pass
+
+
+def _controlled_release_master_config(
+    *, lifecycle_audit_path: str | None, use_nemo_gym: bool = False
+) -> MasterConfig:
+    return MasterConfig.model_construct(
+        policy={"train_global_batch_size": 4},
+        grpo=GRPOConfig.model_construct(
+            num_prompts_per_step=1,
+            num_generations_per_prompt=4,
+            skip_reference_policy_logprobs_calculation=True,
+        ),
+        loss_fn=ClippedPGLossConfig(reference_policy_kl_penalty=0),
+        async_rl=AsyncRLConfig(
+            min_groups_for_streaming_train=1,
+            lifecycle_audit_path=lifecycle_audit_path,
+            controlled_release_delay=ControlledReleaseDelayConfig(enabled=True),
+        ),
+        env={"should_use_nemo_gym": use_nemo_gym},
+    )
+
+
+@pytest.mark.parametrize("lifecycle_audit_path", [None, ""])
+def test_controlled_release_requires_lifecycle_audit(
+    lifecycle_audit_path: str | None,
+) -> None:
+    config = _controlled_release_master_config(
+        lifecycle_audit_path=lifecycle_audit_path
+    )
+
+    with pytest.raises(ValueError, match="requires async_rl.lifecycle_audit_path"):
+        validate_single_controller_config(config)
+
+
+def test_controlled_release_rejects_nemo_gym() -> None:
+    config = _controlled_release_master_config(
+        lifecycle_audit_path="audit.jsonl", use_nemo_gym=True
+    )
+
+    with pytest.raises(ValueError, match="only by native async rollouts"):
+        validate_single_controller_config(config)
 
 
 def test_rejects_multiple_optimizer_steps_per_rl_step(monkeypatch) -> None:

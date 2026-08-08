@@ -38,6 +38,10 @@ from nemo_rl.algorithms.async_utils.rollout_lifecycle import (
     RolloutLifecycleStage,
     RolloutRemovalReason,
 )
+from nemo_rl.algorithms.async_utils.controlled_release import (
+    ControlledReleaseAssigner,
+    ControlledReleaseDelayConfig,
+)
 from nemo_rl.data.collate_fn import rl_collate_fn
 from nemo_rl.data.datasets.response_datasets import NemoGymDataset
 from nemo_rl.data.interfaces import DatumSpec
@@ -85,6 +89,15 @@ class _FakeBuffer:
         self.remove_calls: list[tuple[str, RolloutRemovalReason]] = []
         # reserve(weight_version=X) -> group_id; commit fills the slot.
         self._slots: list[str] = []
+
+    def size(self) -> int:
+        return len(self._slots)
+
+    def ready_size(self) -> int:
+        return len(self.commit_calls)
+
+    def has_group(self, group_id: str) -> bool:
+        return group_id in self._slots
 
     def reserve(
         self,
@@ -153,6 +166,30 @@ def _make_manager(buffer: _FakeBuffer, impl: _FakeImpl) -> RolloutManager:
     mgr._num_generations_per_prompt = 1
     mgr._tq_buffer = buffer
     mgr._weight_version = 0
+    mgr._lifecycle_recorder = None
+    mgr._controlled_release_config = ControlledReleaseDelayConfig()
+    mgr._controlled_release_assigner = ControlledReleaseAssigner(
+        mgr._controlled_release_config
+    )
+    mgr._active_release_holds = 0
+    return mgr
+
+
+def _make_controlled_manager(
+    buffer: _FakeBuffer,
+    impl: _FakeImpl,
+    recorder: RolloutLifecycleRecorder,
+    *,
+    seed: int = 20260808,
+) -> RolloutManager:
+    mgr = _make_manager(buffer, impl)
+    mgr._controlled_release_config = ControlledReleaseDelayConfig(
+        enabled=True, seed=seed
+    )
+    mgr._controlled_release_assigner = ControlledReleaseAssigner(
+        mgr._controlled_release_config
+    )
+    mgr._lifecycle_recorder = recorder
     return mgr
 
 
@@ -172,6 +209,251 @@ class TestGenerateAndPushFlow:
         assert buf.remove_calls[0][1] is RolloutRemovalReason.FAILED
         assert buf._slots == []
         assert buf.commit_calls == []
+
+
+class TestControlledReleaseFlow:
+    def test_zero_dose_traverses_without_becoming_an_active_hold(self, monkeypatch):
+        buffer = _FakeBuffer()
+        recorder = RolloutLifecycleRecorder(clock_ns=lambda: 0)
+        manager = _make_controlled_manager(buffer, _FakeImpl(), recorder, seed=0)
+        observed_active_holds: list[int] = []
+
+        async def _observe_zero_sleep(delay: float) -> None:
+            assert delay == 0
+            observed_active_holds.append(manager._active_release_holds)
+
+        monkeypatch.setattr(asyncio, "sleep", _observe_zero_sleep)
+
+        async def _main() -> None:
+            pending = await manager.generate_pending(
+                {"prompt": "p"},
+                generation_inflight=1,
+                buffer_admission_stalls=0,
+            )
+            assert pending.assignment.arm_label == "control"
+            await manager.release_and_commit(
+                pending,
+                generation_inflight_fn=lambda: 0,
+                buffer_admission_stalls_fn=lambda: 0,
+            )
+
+        _run(_main())
+
+        assert observed_active_holds == [0]
+        release_events = [
+            event
+            for event in recorder.snapshot()
+            if event.stage
+            in {
+                RolloutLifecycleStage.RELEASE_DELAY_STARTED,
+                RolloutLifecycleStage.RELEASE_DELAY_COMPLETED,
+            }
+        ]
+        assert [event.active_release_holds for event in release_events] == [0, 0]
+
+    def test_concurrent_manager_reservations_assign_contiguous_ordinals(self):
+        first_running = asyncio.Event()
+        release_first = asyncio.Event()
+        runs = 0
+
+        async def _interleave(_sample):
+            nonlocal runs
+            runs += 1
+            if runs == 1:
+                first_running.set()
+                await release_first.wait()
+            else:
+                release_first.set()
+
+        buffer = _FakeBuffer()
+        recorder = RolloutLifecycleRecorder(clock_ns=lambda: 0)
+        manager = _make_controlled_manager(
+            buffer, _FakeImpl(on_run=_interleave), recorder
+        )
+
+        async def _main() -> None:
+            first = asyncio.create_task(
+                manager.generate_pending(
+                    {"prompt": "first"},
+                    generation_inflight=1,
+                    buffer_admission_stalls=0,
+                )
+            )
+            await first_running.wait()
+            second = asyncio.create_task(
+                manager.generate_pending(
+                    {"prompt": "second"},
+                    generation_inflight=2,
+                    buffer_admission_stalls=0,
+                )
+            )
+            await asyncio.gather(first, second)
+
+        _run(_main())
+
+        assigned = [
+            event
+            for event in recorder.snapshot()
+            if event.stage is RolloutLifecycleStage.RELEASE_DELAY_ASSIGNED
+        ]
+        assert [event.release_global_ordinal for event in assigned] == [0, 1]
+        assert [event.sequence for event in assigned] == [0, 1]
+
+    def test_generation_cancellation_preserves_assignment_prefix(self):
+        async def _cancel(_sample):
+            raise asyncio.CancelledError
+
+        buffer = _FakeBuffer()
+        recorder = RolloutLifecycleRecorder(clock_ns=lambda: 0)
+        manager = _make_controlled_manager(buffer, _FakeImpl(on_run=_cancel), recorder)
+
+        with pytest.raises(asyncio.CancelledError):
+            _run(
+                manager.generate_pending(
+                    {"prompt": "p"},
+                    generation_inflight=1,
+                    buffer_admission_stalls=0,
+                )
+            )
+
+        assert [event.stage for event in recorder.snapshot()] == [
+            RolloutLifecycleStage.RELEASE_DELAY_ASSIGNED
+        ]
+        assert buffer.remove_calls[0][1] is RolloutRemovalReason.CANCELLED
+        assert buffer.commit_calls == []
+
+    def test_assignment_generation_hold_completion_and_commit_order(self, monkeypatch):
+        events: list[str] = []
+        buffer = _FakeBuffer()
+        recorder = RolloutLifecycleRecorder(clock_ns=lambda: len(events))
+
+        async def _track_run(_sample):
+            events.append("run")
+
+        manager = _make_controlled_manager(
+            buffer, _FakeImpl(record="record", on_run=_track_run), recorder
+        )
+
+        async def _track_sleep(delay: float) -> None:
+            events.append(f"sleep:{delay}")
+
+        monkeypatch.setattr(asyncio, "sleep", _track_sleep)
+
+        async def _main() -> None:
+            pending = await manager.generate_pending(
+                {"prompt": "p"},
+                generation_inflight=1,
+                buffer_admission_stalls=0,
+            )
+            events.append("generated")
+            await manager.release_and_commit(
+                pending,
+                generation_inflight_fn=lambda: 0,
+                buffer_admission_stalls_fn=lambda: 2,
+            )
+            events.append("committed")
+
+        _run(_main())
+
+        stages = [event.stage for event in recorder.snapshot()]
+        assert stages == [
+            RolloutLifecycleStage.RELEASE_DELAY_ASSIGNED,
+            RolloutLifecycleStage.RELEASE_DELAY_STARTED,
+            RolloutLifecycleStage.RELEASE_DELAY_COMPLETED,
+            RolloutLifecycleStage.GROUP_COMPLETED,
+        ]
+        assert events == ["run", "generated", "sleep:60.0", "committed"]
+        assert len(buffer.commit_calls) == 1
+        assigned = recorder.snapshot()[0]
+        assert assigned.generation_inflight == 1
+        assert assigned.active_release_holds == 0
+        assert assigned.reserved_buffer_occupancy == 1
+        assert assigned.ready_buffer_depth == 0
+        assert assigned.buffer_admission_stalls == 0
+        started = recorder.snapshot()[1]
+        assert started.generation_inflight == 0
+        assert started.active_release_holds == 1
+        assert started.reserved_buffer_occupancy == 1
+        assert started.ready_buffer_depth == 0
+        assert started.buffer_admission_stalls == 2
+
+    def test_cancellation_during_hold_removes_without_completion(monkeypatch):
+        buffer = _FakeBuffer()
+        recorder = RolloutLifecycleRecorder(clock_ns=lambda: 0)
+        manager = _make_controlled_manager(buffer, _FakeImpl(), recorder)
+        sleep_started = asyncio.Event()
+
+        async def _blocked_sleep(_delay: float) -> None:
+            sleep_started.set()
+            await asyncio.Event().wait()
+
+        monkeypatch.setattr(asyncio, "sleep", _blocked_sleep)
+
+        async def _main() -> None:
+            pending = await manager.generate_pending(
+                {"prompt": "p"},
+                generation_inflight=1,
+                buffer_admission_stalls=0,
+            )
+            task = asyncio.create_task(
+                manager.release_and_commit(
+                    pending,
+                    generation_inflight_fn=lambda: 0,
+                    buffer_admission_stalls_fn=lambda: 0,
+                )
+            )
+            await sleep_started.wait()
+            task.cancel()
+            with pytest.raises(asyncio.CancelledError):
+                await task
+
+        _run(_main())
+
+        stages = [event.stage for event in recorder.snapshot()]
+        assert stages == [
+            RolloutLifecycleStage.RELEASE_DELAY_ASSIGNED,
+            RolloutLifecycleStage.RELEASE_DELAY_STARTED,
+        ]
+        assert buffer.remove_calls[0][1] is RolloutRemovalReason.CANCELLED
+        assert buffer.commit_calls == []
+        assert manager._active_release_holds == 0
+
+    def test_commit_cancellation_keeps_completed_prefix(self, monkeypatch):
+        class _CommitCancelsBuffer(_FakeBuffer):
+            async def commit(self, *args, **kwargs):
+                del args, kwargs
+                raise asyncio.CancelledError
+
+        async def _no_sleep(_delay: float) -> None:
+            return None
+
+        monkeypatch.setattr(asyncio, "sleep", _no_sleep)
+        buffer = _CommitCancelsBuffer()
+        recorder = RolloutLifecycleRecorder(clock_ns=lambda: 0)
+        manager = _make_controlled_manager(buffer, _FakeImpl(), recorder)
+
+        async def _main() -> None:
+            pending = await manager.generate_pending(
+                {"prompt": "p"},
+                generation_inflight=1,
+                buffer_admission_stalls=0,
+            )
+            await manager.release_and_commit(
+                pending,
+                generation_inflight_fn=lambda: 0,
+                buffer_admission_stalls_fn=lambda: 0,
+            )
+
+        with pytest.raises(asyncio.CancelledError):
+            _run(_main())
+
+        assert [event.stage for event in recorder.snapshot()] == [
+            RolloutLifecycleStage.RELEASE_DELAY_ASSIGNED,
+            RolloutLifecycleStage.RELEASE_DELAY_STARTED,
+            RolloutLifecycleStage.RELEASE_DELAY_COMPLETED,
+            RolloutLifecycleStage.GROUP_COMPLETED,
+        ]
+        assert buffer.remove_calls[0][1] is RolloutRemovalReason.CANCELLED
 
     def test_rollout_cancellation_records_distinct_reason(self):
         async def _cancel_rollout(_sample):
@@ -289,6 +571,7 @@ class TestGenerateAndPushFlow:
         second_mgr._num_generations_per_prompt = 1
         second_mgr._tq_buffer = buf
         second_mgr._weight_version = 0
+        second_mgr._controlled_release_config = ControlledReleaseDelayConfig()
 
         async def _drive():
             t1 = asyncio.create_task(first_mgr.generate_and_push({"prompt": "p1"}))
@@ -386,6 +669,27 @@ class TestSiblingLifecycle:
         assert events[0].start_weight_version == 2
         assert events[0].generation_duration_ns == 101
         assert events[3].sibling_idx is None
+
+        deferred_recorder = RolloutLifecycleRecorder(clock_ns=iter((1, 2, 3)).__next__)
+        impl.set_lifecycle_recorder(deferred_recorder)
+        impl.set_defer_group_completed(True)
+        _run(
+            impl.run_rollout(
+                {
+                    "idx": 8,
+                    "message_log": [],
+                    "extra_env_info": None,
+                    "task_name": "test",
+                },
+                group_id="deferred",
+                start_weight_version=3,
+            )
+        )
+        assert [event.stage for event in deferred_recorder.snapshot()] == [
+            RolloutLifecycleStage.SIBLING_DONE,
+            RolloutLifecycleStage.SIBLING_DONE,
+            RolloutLifecycleStage.SIBLING_DONE,
+        ]
 
 
 # ---------------------------------------------------------------------------

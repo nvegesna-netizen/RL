@@ -19,6 +19,9 @@ from typing import Any, Optional
 
 from pydantic import BaseModel, Field
 
+from nemo_rl.algorithms.async_utils.controlled_release import (
+    ControlledReleaseDelayConfig,
+)
 from nemo_rl.algorithms.async_utils.staleness_sampler import (
     InOrderSamplerConfig,
     SamplerConfig,
@@ -52,6 +55,10 @@ class AsyncRLConfig(BaseModel, extra="allow"):
     diagnostics: bool = False
     # Optional controller-local JSONL path for prompt-group lifecycle events.
     lifecycle_audit_path: Optional[str] = None
+    # Default-off research intervention applied after sibling generation.
+    controlled_release_delay: ControlledReleaseDelayConfig = Field(
+        default_factory=ControlledReleaseDelayConfig
+    )
 
 
 class MasterConfig(BaseModel, extra="allow"):
@@ -89,6 +96,17 @@ def validate_sampler_buffer_capacity(
 def validate_single_controller_config(master_config: MasterConfig) -> None:
     """Validate cross-section SingleController constraints before setup."""
     async_config = master_config.async_rl
+    release_config = async_config.controlled_release_delay
+    if release_config.enabled:
+        if not async_config.lifecycle_audit_path:
+            raise ValueError(
+                "async_rl.controlled_release_delay.enabled=true requires "
+                "async_rl.lifecycle_audit_path"
+            )
+        if bool(master_config.env.get("should_use_nemo_gym")):
+            raise ValueError(
+                "controlled release delay is supported only by native async rollouts"
+            )
     num_prompts_per_step = master_config.grpo.num_prompts_per_step
     if num_prompts_per_step < async_config.min_groups_for_streaming_train:
         raise ValueError(

@@ -441,6 +441,7 @@ def setup_single_controller(
         use_nemo_gym=use_nemo_gym,
         mask_env_flagged_samples=should_mask_flagged_samples(master_config.env),
         tq_buffer=tq_buffer,
+        controlled_release_delay=master_config.async_rl.controlled_release_delay,
     )
 
     return SingleControllerActorArgs(

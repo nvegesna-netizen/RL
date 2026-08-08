@@ -20,6 +20,20 @@ async_rl:
   max_buffered_rollouts: 64
   # Enable per-rollout diagnostic prints (prompt content / completion previews).
   diagnostics: false
+  # Default-off controlled delay between final sibling completion and release.
+  controlled_release_delay:
+    enabled: false
+    seed: 20260808
+    arms:
+      - label: control
+        delay_seconds: 0.0
+        mass: 4
+      - label: d30
+        delay_seconds: 30.0
+        mass: 1
+      - label: d60
+        delay_seconds: 60.0
+        mass: 1
 
 # SC does not support checkpointing yet.
 checkpointing:

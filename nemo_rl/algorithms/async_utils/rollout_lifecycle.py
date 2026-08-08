@@ -17,6 +17,7 @@
 from __future__ import annotations
 
 import json
+import math
 import time
 import uuid
 from collections.abc import Callable, Sequence
@@ -31,7 +32,10 @@ class RolloutLifecycleStage(str, Enum):
 
     LEARNER_VERSION_ADVANCED = "learner_version_advanced"
     RESERVED = "reserved"
+    RELEASE_DELAY_ASSIGNED = "release_delay_assigned"
     SIBLING_DONE = "sibling_done"
+    RELEASE_DELAY_STARTED = "release_delay_started"
+    RELEASE_DELAY_COMPLETED = "release_delay_completed"
     GROUP_COMPLETED = "group_completed"
     GROUP_READY = "group_ready"
     REMOVED = "removed"
@@ -75,6 +79,18 @@ class RolloutLifecycleEvent:
     truncated: Optional[bool]
     generation_duration_ns: Optional[int]
     environment_duration_ns: Optional[int]
+    release_arm: Optional[str]
+    release_delay_seconds: Optional[float]
+    release_arm_mass: Optional[int]
+    release_total_mass: Optional[int]
+    release_global_ordinal: Optional[int]
+    release_draw: Optional[int]
+    release_nonce: Optional[int]
+    generation_inflight: Optional[int]
+    active_release_holds: Optional[int]
+    reserved_buffer_occupancy: Optional[int]
+    ready_buffer_depth: Optional[int]
+    buffer_admission_stalls: Optional[int]
 
     def to_dict(self) -> dict[str, Any]:
         """Return a JSON-compatible representation."""
@@ -105,6 +121,18 @@ class RolloutLifecycleEvent:
             "truncated": self.truncated,
             "generation_duration_ns": self.generation_duration_ns,
             "environment_duration_ns": self.environment_duration_ns,
+            "release_arm": self.release_arm,
+            "release_delay_seconds": self.release_delay_seconds,
+            "release_arm_mass": self.release_arm_mass,
+            "release_total_mass": self.release_total_mass,
+            "release_global_ordinal": self.release_global_ordinal,
+            "release_draw": self.release_draw,
+            "release_nonce": self.release_nonce,
+            "generation_inflight": self.generation_inflight,
+            "active_release_holds": self.active_release_holds,
+            "reserved_buffer_occupancy": self.reserved_buffer_occupancy,
+            "ready_buffer_depth": self.ready_buffer_depth,
+            "buffer_admission_stalls": self.buffer_admission_stalls,
         }
 
 
@@ -148,6 +176,18 @@ class RolloutLifecycleRecorder:
         truncated: Optional[bool] = None,
         generation_duration_ns: Optional[int] = None,
         environment_duration_ns: Optional[int] = None,
+        release_arm: Optional[str] = None,
+        release_delay_seconds: Optional[float] = None,
+        release_arm_mass: Optional[int] = None,
+        release_total_mass: Optional[int] = None,
+        release_global_ordinal: Optional[int] = None,
+        release_draw: Optional[int] = None,
+        release_nonce: Optional[int] = None,
+        generation_inflight: Optional[int] = None,
+        active_release_holds: Optional[int] = None,
+        reserved_buffer_occupancy: Optional[int] = None,
+        ready_buffer_depth: Optional[int] = None,
+        buffer_admission_stalls: Optional[int] = None,
     ) -> RolloutLifecycleEvent:
         """Append and return one lifecycle event."""
         if stage is RolloutLifecycleStage.REMOVED and removal_reason is None:
@@ -164,8 +204,72 @@ class RolloutLifecycleRecorder:
                 "trajectory_id and sibling_idx are valid only for sibling_done events"
             )
 
+        release_stages = {
+            RolloutLifecycleStage.RELEASE_DELAY_ASSIGNED,
+            RolloutLifecycleStage.RELEASE_DELAY_STARTED,
+            RolloutLifecycleStage.RELEASE_DELAY_COMPLETED,
+        }
+        release_fields = (
+            release_arm,
+            release_delay_seconds,
+            release_arm_mass,
+            release_total_mass,
+            release_global_ordinal,
+            release_draw,
+            release_nonce,
+        )
+        if stage in release_stages and any(value is None for value in release_fields):
+            raise ValueError(
+                "release-delay lifecycle events require complete assignment fields"
+            )
+        if stage in release_stages:
+            assert release_arm is not None
+            assert release_delay_seconds is not None
+            assert release_arm_mass is not None
+            assert release_total_mass is not None
+            assert release_global_ordinal is not None
+            assert release_draw is not None
+            assert release_nonce is not None
+            if not release_arm or not release_arm.isascii():
+                raise ValueError("release_arm must be nonempty ASCII")
+            if not math.isfinite(release_delay_seconds) or release_delay_seconds < 0:
+                raise ValueError("release_delay_seconds must be finite and nonnegative")
+            if release_arm_mass <= 0 or release_total_mass <= 0:
+                raise ValueError("release assignment masses must be positive")
+            if not 0 <= release_draw < release_total_mass:
+                raise ValueError("release_draw must fall within release_total_mass")
+            if release_global_ordinal < 0 or release_nonce < 0:
+                raise ValueError("release ordinal and nonce must be nonnegative")
+            diagnostic_counts = (
+                generation_inflight,
+                active_release_holds,
+                reserved_buffer_occupancy,
+                ready_buffer_depth,
+                buffer_admission_stalls,
+            )
+            if any(value is None for value in diagnostic_counts):
+                raise ValueError(
+                    "release-delay lifecycle events require complete diagnostics"
+                )
+            if any(value is not None and value < 0 for value in diagnostic_counts):
+                raise ValueError("release-delay diagnostic counts must be nonnegative")
+        if stage not in release_stages and any(
+            value is not None
+            for value in (
+                *release_fields,
+                generation_inflight,
+                active_release_holds,
+                reserved_buffer_occupancy,
+                ready_buffer_depth,
+                buffer_admission_stalls,
+            )
+        ):
+            raise ValueError(
+                "release-delay fields are valid only for release-delay events"
+            )
+
         event = RolloutLifecycleEvent(
-            schema_version=1,
+            schema_version=2,
             run_id=self.run_id,
             clock_domain_id=self.clock_domain_id,
             sequence=len(self._events),
@@ -193,6 +297,18 @@ class RolloutLifecycleRecorder:
             truncated=truncated,
             generation_duration_ns=generation_duration_ns,
             environment_duration_ns=environment_duration_ns,
+            release_arm=release_arm,
+            release_delay_seconds=release_delay_seconds,
+            release_arm_mass=release_arm_mass,
+            release_total_mass=release_total_mass,
+            release_global_ordinal=release_global_ordinal,
+            release_draw=release_draw,
+            release_nonce=release_nonce,
+            generation_inflight=generation_inflight,
+            active_release_holds=active_release_holds,
+            reserved_buffer_occupancy=reserved_buffer_occupancy,
+            ready_buffer_depth=ready_buffer_depth,
+            buffer_admission_stalls=buffer_admission_stalls,
         )
         self._events.append(event)
         return event

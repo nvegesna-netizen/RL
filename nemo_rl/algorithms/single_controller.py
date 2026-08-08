@@ -164,6 +164,8 @@ class SingleControllerActor:
 
         # Count of in-flight generate_and_push calls
         self._inflight_rollouts: int = 0
+        # Cumulative attempts that found the controlled-release buffer full.
+        self._buffer_admission_stalls: int = 0
 
         # Cancellation handles for in-flight rollout dispatches.
         self._dispatched_rollouts: set[asyncio.Task[None]] = set()
@@ -302,6 +304,11 @@ class SingleControllerActor:
           5. Decrement _inflight_rollouts
         """
         sem = asyncio.Semaphore(self._async_cfg.max_inflight_prompts)
+        controlled_release_enabled = bool(
+            getattr(self._rollout_manager, "controlled_release_enabled", False)
+        )
+        if not hasattr(self, "_buffer_admission_stalls"):
+            self._buffer_admission_stalls = 0
         self._rollout_exhausted.clear()
         print("rollout_pump: starting", flush=True)
 
@@ -312,18 +319,53 @@ class SingleControllerActor:
         ) -> None:
             task_started_event.set()
             self._inflight_rollouts += 1
-            try:
-                await self._rollout_manager.generate_and_push(
-                    prompt, target_step=target_step
-                )
-            except BaseException:
-                # On success ownership transfers to the train pump, which
-                # releases this permit after consuming the committed group.
-                self._buffer_capacity.release()
-                raise
-            finally:
-                self._inflight_rollouts -= 1
-                sem.release()
+            if controlled_release_enabled:
+                pending = None
+                try:
+                    try:
+                        pending = await self._rollout_manager.generate_pending(
+                            prompt,
+                            target_step=target_step,
+                            generation_inflight=self._inflight_rollouts,
+                            buffer_admission_stalls=self._buffer_admission_stalls,
+                        )
+                    finally:
+                        # A controlled hold owns its reserved buffer slot but no
+                        # longer consumes generation admission.
+                        self._inflight_rollouts -= 1
+                        sem.release()
+                    await self._rollout_manager.release_and_commit(
+                        pending,
+                        generation_inflight_fn=lambda: self._inflight_rollouts,
+                        buffer_admission_stalls_fn=(
+                            lambda: self._buffer_admission_stalls
+                        ),
+                    )
+                except BaseException as error:
+                    if pending is not None:
+                        await self._rollout_manager.abort_pending(
+                            pending,
+                            reason=(
+                                RolloutRemovalReason.CANCELLED
+                                if isinstance(error, asyncio.CancelledError)
+                                else RolloutRemovalReason.FAILED
+                            ),
+                        )
+                    self._buffer_capacity.release()
+                    raise
+            else:
+                try:
+                    await self._rollout_manager.generate_and_push(
+                        prompt, target_step=target_step
+                    )
+                except BaseException:
+                    # On success ownership transfers to the train pump, which
+                    # releases this permit after consuming the committed group.
+                    self._buffer_capacity.release()
+                    raise
+                finally:
+                    self._inflight_rollouts -= 1
+                    sem.release()
 
             if self._async_cfg.diagnostics:
                 content = ""
@@ -355,7 +397,13 @@ class SingleControllerActor:
                             k: v[prompt_idx] for k, v in prompt_batch.items()
                         }
 
-                        # check if buffer is full
+                        # Check if buffer is full. This diagnostic is evaluated
+                        # only on the enabled research path.
+                        if (
+                            controlled_release_enabled
+                            and self._buffer_capacity.locked()
+                        ):
+                            self._buffer_admission_stalls += 1
                         await self._buffer_capacity.acquire()
                         # check if inflight rollouts is full
                         await sem.acquire()

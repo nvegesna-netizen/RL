@@ -21,6 +21,9 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 import nemo_rl.algorithms.single_controller_utils.setup as sc_setup_mod
+from nemo_rl.algorithms.async_utils.controlled_release import (
+    ControlledReleaseDelayConfig,
+)
 from nemo_rl.algorithms.grpo import GRPOConfig
 from nemo_rl.algorithms.loss import ClippedPGLossConfig
 from nemo_rl.algorithms.single_controller_utils import (
@@ -284,6 +287,20 @@ class TestSetup:
         assert actor_args.partition_id == "rollout_data"
         assert actor_args.tq_buffer._partition_id == "rollout_data"
         assert actor_args.tq_buffer._require_routed_experts is False
+
+    def test_forwards_controlled_release_config_to_rollout_manager(
+        self, patched_factories
+    ):
+        mc = _make_master_config(colocated=True)
+        release_config = ControlledReleaseDelayConfig(enabled=True)
+        mc.async_rl.controlled_release_delay = release_config
+        mc.async_rl.lifecycle_audit_path = "m3-audit.jsonl"
+
+        actor_args = setup_single_controller(mc, MagicMock(pad_token_id=0))
+
+        assert actor_args.rollout_manager._controlled_release_config == release_config
+        assert actor_args.rollout_manager.controlled_release_enabled
+        assert actor_args.rollout_manager._impl._defer_group_completed is True
 
     def test_router_replay_requires_routes_in_tq_buffer(self, patched_factories):
         mc = _make_master_config(colocated=True)

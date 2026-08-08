@@ -128,7 +128,7 @@ def test_flush_jsonl_is_machine_readable(tmp_path):
             "removal_reason": None,
             "run_id": "run",
             "sample_ids": [],
-            "schema_version": 1,
+            "schema_version": 2,
             "sequence": 0,
             "sibling_idx": None,
             "stage": "reserved",
@@ -140,5 +140,63 @@ def test_flush_jsonl_is_machine_readable(tmp_path):
             "truncated": None,
             "turn_count": None,
             "reward": None,
+            "release_arm": None,
+            "release_delay_seconds": None,
+            "release_arm_mass": None,
+            "release_total_mass": None,
+            "release_global_ordinal": None,
+            "release_draw": None,
+            "release_nonce": None,
+            "generation_inflight": None,
+            "active_release_holds": None,
+            "reserved_buffer_occupancy": None,
+            "ready_buffer_depth": None,
+            "buffer_admission_stalls": None,
         }
     ]
+
+
+def test_release_delay_stage_requires_and_serializes_assignment_fields() -> None:
+    recorder = RolloutLifecycleRecorder(clock_ns=lambda: 10)
+    assignment_fields = {
+        "release_arm": "d30",
+        "release_delay_seconds": 30.0,
+        "release_arm_mass": 1,
+        "release_total_mass": 6,
+        "release_global_ordinal": 4,
+        "release_draw": 4,
+        "release_nonce": 0,
+    }
+
+    event = recorder.record(
+        group_id="group",
+        stage=RolloutLifecycleStage.RELEASE_DELAY_STARTED,
+        start_weight_version=2,
+        generation_inflight=3,
+        active_release_holds=1,
+        reserved_buffer_occupancy=5,
+        ready_buffer_depth=2,
+        buffer_admission_stalls=7,
+        **assignment_fields,
+    )
+
+    assert event.schema_version == 2
+    assert event.release_arm == "d30"
+    assert event.release_draw == 4
+    assert event.active_release_holds == 1
+    assert event.to_dict()["release_global_ordinal"] == 4
+
+    with pytest.raises(ValueError, match="complete assignment fields"):
+        recorder.record(
+            group_id="missing",
+            stage=RolloutLifecycleStage.RELEASE_DELAY_ASSIGNED,
+            start_weight_version=0,
+        )
+
+    with pytest.raises(ValueError, match="only for release-delay"):
+        recorder.record(
+            group_id="wrong-stage",
+            stage=RolloutLifecycleStage.RESERVED,
+            start_weight_version=0,
+            **assignment_fields,
+        )
