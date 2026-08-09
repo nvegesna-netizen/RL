@@ -7,10 +7,41 @@ import json
 import pytest
 
 from nemo_rl.algorithms.async_utils.rollout_lifecycle import (
+    ControllerEventSequencer,
     RolloutLifecycleRecorder,
     RolloutLifecycleStage,
     RolloutRemovalReason,
 )
+
+
+def test_shared_controller_sequencer_orders_equal_clock_events() -> None:
+    sequencer = ControllerEventSequencer(clock_ns=lambda: 10)
+    first = RolloutLifecycleRecorder(
+        run_id="run",
+        clock_domain_id="controller",
+        controller_sequencer=sequencer,
+    )
+    second = RolloutLifecycleRecorder(
+        run_id="run",
+        clock_domain_id="controller",
+        controller_sequencer=sequencer,
+    )
+
+    event0 = first.record(
+        group_id="g0",
+        stage=RolloutLifecycleStage.RESERVED,
+        start_weight_version=0,
+    )
+    event1 = second.record(
+        group_id="g1",
+        stage=RolloutLifecycleStage.RESERVED,
+        start_weight_version=0,
+    )
+
+    assert event0.schema_version == event1.schema_version == 4
+    assert event0.timestamp_ns == event1.timestamp_ns == 10
+    assert (event0.controller_sequence, event1.controller_sequence) == (0, 1)
+    assert event0.to_dict()["controller_sequence"] == 0
 
 
 def test_records_one_monotonic_clock_domain_and_mixed_version_status():

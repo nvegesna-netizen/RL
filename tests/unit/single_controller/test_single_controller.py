@@ -28,6 +28,7 @@ from nemo_rl.algorithms.single_controller import SingleControllerActor
 from nemo_rl.algorithms.single_controller_utils.config import (
     AdvantageConfig,
     AsyncRLConfig,
+    GradientOpportunityAuditConfig,
     MasterConfig,
     validate_single_controller_config,
 )
@@ -81,6 +82,90 @@ def test_controlled_release_rejects_nemo_gym() -> None:
     )
 
     with pytest.raises(ValueError, match="only by native async rollouts"):
+        validate_single_controller_config(config)
+
+
+def test_gradient_opportunity_audit_requires_controlled_release() -> None:
+    config = _controlled_release_master_config(lifecycle_audit_path="lifecycle.jsonl")
+    config.async_rl.controlled_release_delay = ControlledReleaseDelayConfig()
+    config.async_rl.gradient_opportunity_audit = GradientOpportunityAuditConfig(
+        enabled=True,
+        output_path="opportunity.jsonl",
+    )
+
+    with pytest.raises(ValueError, match="requires.*controlled_release_delay"):
+        validate_single_controller_config(config)
+
+
+@pytest.mark.parametrize("output_path", [None, ""])
+def test_gradient_opportunity_audit_requires_output_path(
+    output_path: str | None,
+) -> None:
+    config = _controlled_release_master_config(lifecycle_audit_path="lifecycle.jsonl")
+    config.async_rl.gradient_opportunity_audit = GradientOpportunityAuditConfig(
+        enabled=True,
+        output_path=output_path,
+    )
+
+    with pytest.raises(ValueError, match="requires.*output_path"):
+        validate_single_controller_config(config)
+
+
+def test_gradient_opportunity_audit_requires_distinct_resolved_path() -> None:
+    config = _controlled_release_master_config(lifecycle_audit_path="audit.jsonl")
+    config.async_rl.gradient_opportunity_audit = GradientOpportunityAuditConfig(
+        enabled=True,
+        output_path="./audit.jsonl",
+    )
+
+    with pytest.raises(ValueError, match="distinct paths"):
+        validate_single_controller_config(config)
+
+
+def test_gradient_opportunity_audit_accepts_supported_configuration() -> None:
+    config = _controlled_release_master_config(lifecycle_audit_path="lifecycle.jsonl")
+    config.async_rl.gradient_opportunity_audit = GradientOpportunityAuditConfig(
+        enabled=True,
+        output_path="opportunity.jsonl",
+    )
+
+    validate_single_controller_config(config)
+
+
+def test_gradient_opportunity_audit_rejects_non_grpo_estimator() -> None:
+    config = _controlled_release_master_config(lifecycle_audit_path="lifecycle.jsonl")
+    config.async_rl.gradient_opportunity_audit = GradientOpportunityAuditConfig(
+        enabled=True,
+        output_path="opportunity.jsonl",
+    )
+    config.grpo.adv_estimator.name = "gdpo"
+
+    with pytest.raises(ValueError, match="native GRPO"):
+        validate_single_controller_config(config)
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    [
+        ("disable_ppo_ratio", True),
+        ("token_level_loss", False),
+        ("sequence_level_importance_ratios", True),
+        ("use_cispo", True),
+        ("positive_example_nll_weight", 0.1),
+    ],
+)
+def test_gradient_opportunity_audit_rejects_unsupported_loss(
+    field: str,
+    value: object,
+) -> None:
+    config = _controlled_release_master_config(lifecycle_audit_path="lifecycle.jsonl")
+    config.async_rl.gradient_opportunity_audit = GradientOpportunityAuditConfig(
+        enabled=True,
+        output_path="opportunity.jsonl",
+    )
+    setattr(config.loss_fn, field, value)
+
+    with pytest.raises(ValueError, match="ordinary token-level clipped PG"):
         validate_single_controller_config(config)
 
 
@@ -258,6 +343,18 @@ class _OneThenEmptySampler(_EmptySampler):
         return meta, 1
 
 
+class _FiniteSampler(_EmptySampler):
+    def __init__(self, metas: list[KVBatchMeta]) -> None:
+        self._metas = iter(metas)
+
+    async def select(self, **kwargs):
+        del kwargs
+        try:
+            return next(self._metas), 1
+        except StopIteration:
+            return None, 0
+
+
 class _EmptyBuffer:
     def __len__(self) -> int:
         return 0
@@ -293,6 +390,9 @@ class _NoOpTrainer:
     def train_microbatches_from_meta(self, meta: KVBatchMeta) -> None:
         del meta
 
+    def finish_train_step(self) -> dict[str, float]:
+        return {}
+
 
 class _NoOpDataPlane:
     def clear_samples(self, **kwargs) -> None:
@@ -327,6 +427,9 @@ def _train_pump_controller(*, sampler) -> object:
     ctrl._trainer_version = 0
     ctrl._train_steps = 0
     ctrl._lifecycle_recorder = None
+    ctrl._opportunity_recorder = None
+    ctrl._sync_weights = AsyncMock()
+    ctrl._logger = MagicMock()
     ctrl._step_log_dict = {
         "rewards": [],
         "masked_advantages": [],
@@ -363,6 +466,8 @@ def test_successful_train_step_advances_audited_learner_version() -> None:
     ctrl = object.__new__(controller_cls)
     ctrl._trainer_version = 4
     ctrl._lifecycle_recorder = MagicMock()
+    ctrl._opportunity_recorder = None
+    ctrl._rollout_manager = MagicMock()
 
     ctrl._advance_trainer_version()
 
@@ -383,10 +488,13 @@ def _run_lifecycle_controller(
     ctrl._train_pump = AsyncMock()
     ctrl._cancel_residual_buffer_groups = AsyncMock()
     ctrl._lifecycle_recorder = MagicMock()
+    ctrl._opportunity_recorder = None
+    ctrl._rollout_manager = MagicMock()
     ctrl._master_config = SimpleNamespace(grpo=SimpleNamespace(max_num_steps=128))
     ctrl._async_cfg = SimpleNamespace(
         lifecycle_audit_path="audit.jsonl",
         controlled_release_delay=SimpleNamespace(enabled=True),
+        gradient_opportunity_audit=SimpleNamespace(output_path=None),
     )
     ctrl._logger = MagicMock()
     ctrl._train_steps = train_steps
@@ -524,6 +632,17 @@ def test_run_finishes_logger_when_audit_flush_fails() -> None:
     ctrl._logger.finish.assert_called_once_with()
 
 
+def test_run_atomically_flushes_opportunity_ledger() -> None:
+    ctrl = _run_lifecycle_controller()
+    ctrl._opportunity_recorder = MagicMock()
+    ctrl._async_cfg.gradient_opportunity_audit.output_path = "opportunity.jsonl"
+
+    asyncio.run(ctrl.run())
+
+    ctrl._opportunity_recorder.flush_jsonl.assert_called_once_with("opportunity.jsonl")
+    ctrl._lifecycle_recorder.flush_jsonl.assert_called_once_with("audit.jsonl")
+
+
 def test_train_pump_stops_after_rollout_exhaustion_and_buffer_drain() -> None:
     ctrl = _train_pump_controller(sampler=_EmptySampler())
 
@@ -551,3 +670,59 @@ def test_train_pump_fails_if_rollout_exhausts_during_partial_step() -> None:
         ),
     ):
         asyncio.run(asyncio.wait_for(ctrl._train_pump(), timeout=1.0))
+
+
+def _training_meta(sample_id: str) -> KVBatchMeta:
+    return KVBatchMeta(
+        partition_id="rollout_data",
+        task_name="train",
+        sample_ids=[sample_id],
+        fields=[],
+        sequence_lengths=[1],
+        tags=[{"weight_version": 0}],
+    )
+
+
+def test_completed_step_ledger_is_emitted_after_version_advance(monkeypatch) -> None:
+    monkeypatch.setattr(single_controller.ray, "cluster_resources", lambda: {})
+    ctrl = _train_pump_controller(
+        sampler=_FiniteSampler([_training_meta("sample-0"), _training_meta("sample-1")])
+    )
+    ctrl._opportunity_recorder = MagicMock()
+
+    asyncio.run(asyncio.wait_for(ctrl._train_pump(), timeout=1.0))
+
+    ctrl._opportunity_recorder.append_train_step_completed.assert_called_once_with(
+        previous_learner_version=0,
+        learner_version=1,
+        sample_ids=["sample-0", "sample-1"],
+    )
+    assert ctrl._train_steps == 1
+
+
+@pytest.mark.parametrize(
+    "failure_stage",
+    [
+        "begin_train_step",
+        "train_microbatches_from_meta",
+        "finish_train_step",
+        "advance",
+    ],
+)
+def test_completed_step_ledger_is_not_emitted_for_failed_step(
+    failure_stage: str,
+) -> None:
+    ctrl = _train_pump_controller(
+        sampler=_FiniteSampler([_training_meta("sample-0"), _training_meta("sample-1")])
+    )
+    ctrl._opportunity_recorder = MagicMock()
+    failure = RuntimeError(f"injected {failure_stage} failure")
+    if failure_stage == "advance":
+        ctrl._advance_trainer_version = MagicMock(side_effect=failure)
+    else:
+        setattr(ctrl._trainer, failure_stage, MagicMock(side_effect=failure))
+
+    with pytest.raises(RuntimeError, match=f"injected {failure_stage} failure"):
+        asyncio.run(asyncio.wait_for(ctrl._train_pump(), timeout=1.0))
+
+    ctrl._opportunity_recorder.append_train_step_completed.assert_not_called()

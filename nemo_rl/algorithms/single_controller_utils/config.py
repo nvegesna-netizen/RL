@@ -15,6 +15,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any, Optional
 
 from pydantic import BaseModel, Field
@@ -38,6 +39,13 @@ from nemo_rl.utils.checkpoint import CheckpointingConfig
 # ── User-facing SingleController configs ────────────────────────────────────
 
 
+class GradientOpportunityAuditConfig(BaseModel, frozen=True):
+    """Default-off pre-release GRPO coefficient-opportunity audit."""
+
+    enabled: bool = False
+    output_path: Optional[str] = None
+
+
 class AsyncRLConfig(BaseModel, extra="allow"):
     # Staleness policy shared by the rollout and train pumps.
     sampler: SamplerConfig = Field(
@@ -58,6 +66,10 @@ class AsyncRLConfig(BaseModel, extra="allow"):
     # Default-off research intervention applied after sibling generation.
     controlled_release_delay: ControlledReleaseDelayConfig = Field(
         default_factory=ControlledReleaseDelayConfig
+    )
+    # Default-off all-group GRPO coefficient-opportunity ledger.
+    gradient_opportunity_audit: GradientOpportunityAuditConfig = Field(
+        default_factory=GradientOpportunityAuditConfig
     )
 
 
@@ -97,6 +109,7 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
     """Validate cross-section SingleController constraints before setup."""
     async_config = master_config.async_rl
     release_config = async_config.controlled_release_delay
+    opportunity_config = async_config.gradient_opportunity_audit
     if release_config.enabled:
         if not async_config.lifecycle_audit_path:
             raise ValueError(
@@ -106,6 +119,44 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
         if bool(master_config.env.get("should_use_nemo_gym")):
             raise ValueError(
                 "controlled release delay is supported only by native async rollouts"
+            )
+    if opportunity_config.enabled:
+        if not release_config.enabled:
+            raise ValueError(
+                "async_rl.gradient_opportunity_audit.enabled=true requires "
+                "async_rl.controlled_release_delay.enabled=true"
+            )
+        if not opportunity_config.output_path:
+            raise ValueError(
+                "async_rl.gradient_opportunity_audit.enabled=true requires "
+                "async_rl.gradient_opportunity_audit.output_path"
+            )
+        assert async_config.lifecycle_audit_path is not None
+        if (
+            Path(opportunity_config.output_path).resolve()
+            == Path(async_config.lifecycle_audit_path).resolve()
+        ):
+            raise ValueError(
+                "gradient opportunity and lifecycle audits require distinct paths"
+            )
+        if master_config.grpo.adv_estimator.name != "grpo":
+            raise ValueError(
+                "gradient opportunity audit currently requires the native GRPO "
+                "advantage estimator"
+            )
+        loss_config = master_config.loss_fn
+        unsupported_loss = (
+            loss_config.disable_ppo_ratio
+            or not loss_config.token_level_loss
+            or loss_config.sequence_level_importance_ratios
+            or loss_config.use_cispo
+            or loss_config.positive_example_nll_weight != 0
+        )
+        if unsupported_loss:
+            raise ValueError(
+                "gradient opportunity audit requires ordinary token-level clipped "
+                "PG (PPO ratio enabled, no sequence-level ratio, CISPO, or "
+                "positive-example NLL)"
             )
     num_prompts_per_step = master_config.grpo.num_prompts_per_step
     if num_prompts_per_step < async_config.min_groups_for_streaming_train:

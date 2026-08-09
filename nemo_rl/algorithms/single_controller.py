@@ -42,11 +42,19 @@ from typing import Any, Optional, Union
 import ray
 import torch
 
+from nemo_rl.algorithms.advantage_estimator import GRPOAdvantageEstimator
+from nemo_rl.algorithms.async_utils.gradient_opportunity import (
+    GRPOOpportunityInputs,
+    GradientOpportunityRecorder,
+    compute_grpo_gradient_opportunity,
+)
 from nemo_rl.algorithms.async_utils.staleness_sampler import create_sampler
 from nemo_rl.algorithms.async_utils.rollout_lifecycle import (
+    ControllerEventSequencer,
     RolloutLifecycleRecorder,
     RolloutRemovalReason,
 )
+from nemo_rl.algorithms.loss import ClippedPGLossFn
 from nemo_rl.algorithms.single_controller_utils.config import (
     AdvantageConfig,
     MasterConfig,
@@ -56,10 +64,10 @@ from nemo_rl.algorithms.single_controller_utils.config import (
 from nemo_rl.algorithms.single_controller_utils.setup import SingleControllerActorArgs
 from nemo_rl.algorithms.single_controller_utils.utils import (
     aggregate_step_metrics,
+    compute_advantages_from_data,
     fields_for_put,
+    prepare_advantage_inputs_from_data,
     reduce_advantage_pump_metrics,
-    squeeze_trailing_unit_dim,
-    tensor_field,
 )
 from nemo_rl.data.interfaces import DatumSpec
 from nemo_rl.data_plane import KVBatchMeta
@@ -125,10 +133,96 @@ class SingleControllerActor:
         # when Ray deserializes rollout_manager and tq_buffer separately.
         self._rollout_manager._tq_buffer = self._buffer
         self._lifecycle_recorder: Optional[RolloutLifecycleRecorder] = None
+        self._opportunity_recorder: Optional[GradientOpportunityRecorder] = None
         if self._async_cfg.lifecycle_audit_path is not None:
-            self._lifecycle_recorder = RolloutLifecycleRecorder()
+            opportunity_enabled = self._async_cfg.gradient_opportunity_audit.enabled
+            controller_sequencer = (
+                ControllerEventSequencer() if opportunity_enabled else None
+            )
+            self._lifecycle_recorder = RolloutLifecycleRecorder(
+                controller_sequencer=controller_sequencer
+            )
             self._buffer.set_lifecycle_recorder(self._lifecycle_recorder)
             self._rollout_manager.set_lifecycle_recorder(self._lifecycle_recorder)
+            if opportunity_enabled:
+                assert controller_sequencer is not None
+                if not isinstance(
+                    self._advantage_estimator, GRPOAdvantageEstimator
+                ) or not isinstance(self._loss_fn, ClippedPGLossFn):
+                    raise TypeError(
+                        "gradient opportunity audit requires native GRPO advantages "
+                        "and ClippedPGLossFn"
+                    )
+                self._opportunity_recorder = GradientOpportunityRecorder(
+                    run_id=self._lifecycle_recorder.run_id,
+                    clock_domain_id=self._lifecycle_recorder.clock_domain_id,
+                    sequencer=controller_sequencer,
+                )
+                self._opportunity_recorder.append_header(
+                    estimator_name=type(self._advantage_estimator).__name__,
+                    estimator_settings={
+                        "baseline_algorithm": "nemo_rl_grpo_v1",
+                        "normalize_rewards": self._advantage_estimator.normalize_rewards,
+                        "normalization_epsilon": 1e-6,
+                        "reduction_dtype": "float32",
+                        "reward_dtype": "float32",
+                        "use_leave_one_out_baseline": (
+                            self._advantage_estimator.use_leave_one_out_baseline
+                        ),
+                    },
+                    loss_settings={
+                        "disable_ppo_ratio": master_config.loss_fn.disable_ppo_ratio,
+                        "positive_example_nll_weight": (
+                            master_config.loss_fn.positive_example_nll_weight
+                        ),
+                        "sequence_level_importance_ratios": (
+                            master_config.loss_fn.sequence_level_importance_ratios
+                        ),
+                        "token_level_loss": master_config.loss_fn.token_level_loss,
+                        "use_cispo": master_config.loss_fn.use_cispo,
+                    },
+                )
+
+                def _record_prepared_opportunity(
+                    *,
+                    group_id: str,
+                    record: Any,
+                    train_batch: Any,
+                    sample_ids: tuple[str, ...],
+                    start_weight_version: int,
+                ) -> None:
+                    prepared_inputs = prepare_advantage_inputs_from_data(
+                        train_batch,
+                        advantage_config=self._advantage_cfg,
+                        policy_logprobs_required=False,
+                        reference_logprobs_required=False,
+                    )
+
+                    def _use_prepared_inputs(_: Any) -> GRPOOpportunityInputs:
+                        return GRPOOpportunityInputs(
+                            prompt_ids=prepared_inputs.prompt_ids,
+                            rewards=prepared_inputs.rewards,
+                            actor_mask=prepared_inputs.actor_mask,
+                            repeated_batch=prepared_inputs.repeated_batch,
+                            estimator_kwargs=prepared_inputs.estimator_kwargs,
+                        )
+
+                    summary = compute_grpo_gradient_opportunity(
+                        train_batch,
+                        group_id=group_id,
+                        sample_ids=sample_ids,
+                        start_weight_version=start_weight_version,
+                        truncation=tuple(
+                            bool(completion.truncated)
+                            for completion in record.completions
+                        ),
+                        estimator=self._advantage_estimator,
+                        prepare_inputs=_use_prepared_inputs,
+                    )
+                    assert self._opportunity_recorder is not None
+                    self._opportunity_recorder.append_group(summary)
+
+                self._buffer.set_prepare_observer(_record_prepared_opportunity)
 
         # Built here, not on the driver: Logger backends (wandb/tb/...) hold
         # _thread.lock that Ray can't cloudpickle into the actor.
@@ -237,6 +331,11 @@ class SingleControllerActor:
             ):
                 cleanup_reason = RolloutRemovalReason.BOUNDED_SHUTDOWN
         finally:
+            set_cancellation_reason = getattr(
+                self._rollout_manager, "set_cancellation_removal_reason", None
+            )
+            if set_cancellation_reason is not None:
+                set_cancellation_reason(cleanup_reason)
             rollout_task.cancel()
             train_task.cancel()
             await asyncio.gather(rollout_task, train_task, return_exceptions=True)
@@ -250,7 +349,15 @@ class SingleControllerActor:
                             self._async_cfg.lifecycle_audit_path
                         )
                 finally:
-                    self._logger.finish()
+                    try:
+                        if self._opportunity_recorder is not None:
+                            opportunity_path = (
+                                self._async_cfg.gradient_opportunity_audit.output_path
+                            )
+                            assert opportunity_path is not None
+                            self._opportunity_recorder.flush_jsonl(opportunity_path)
+                    finally:
+                        self._logger.finish()
 
         return {
             "train_steps": self._train_steps,
@@ -480,6 +587,7 @@ class SingleControllerActor:
             groups_dispatched = 0
             min_sample_version = None
             step_open = False
+            completed_step_sample_ids: list[str] = []
             calibration_batches: list[BatchedDataDict[Any]] = []
 
             with self._timer.time("total_step_time"):
@@ -578,6 +686,7 @@ class SingleControllerActor:
                             self._trainer.train_microbatches_from_meta,
                             train_meta,
                         )
+                        completed_step_sample_ids.extend(train_meta.sample_ids)
 
                     if train_meta.sequence_lengths:
                         self._step_log_dict["sequence_lengths"].extend(
@@ -628,7 +737,14 @@ class SingleControllerActor:
                 )
                 self._step_log_dict = {k: [] for k in self._step_log_dict}
 
+                previous_trainer_version = self._trainer_version
                 self._advance_trainer_version()
+                if self._opportunity_recorder is not None:
+                    self._opportunity_recorder.append_train_step_completed(
+                        previous_learner_version=previous_trainer_version,
+                        learner_version=self._trainer_version,
+                        sample_ids=completed_step_sample_ids,
+                    )
                 self._train_steps += 1
                 with self._timer.time("weight_sync"):
                     calibration_data = (
@@ -754,45 +870,18 @@ class SingleControllerActor:
             select_fields=self._advantage_input_fields(),
         )
 
-        prompt_ids = tensor_field(data, adv_cfg.prompt_ids_field)
-        rewards = squeeze_trailing_unit_dim(
-            tensor_field(data, adv_cfg.reward_field)
-        ).float()
-        token_mask = tensor_field(data, adv_cfg.token_mask_field).float()
-        sample_mask = squeeze_trailing_unit_dim(
-            tensor_field(data, adv_cfg.sample_mask_field)
-        ).float()
-        mask = token_mask * sample_mask.unsqueeze(-1)
-
-        repeated_batch: dict[str, torch.Tensor] = {
-            "total_reward": rewards,
-        }
-        for field_name in adv_cfg.repeated_batch_fields:
-            repeated_batch[field_name] = squeeze_trailing_unit_dim(
-                tensor_field(data, field_name)
-            )
-
-        kwargs: dict[str, torch.Tensor] = {}
-        if self._policy_logprobs_required:
-            kwargs["logprobs_policy"] = tensor_field(
-                data,
-                adv_cfg.policy_logprobs_field,
-            )
-        if self._reference_logprobs_required:
-            kwargs["logprobs_reference"] = tensor_field(
-                data,
-                adv_cfg.reference_logprobs_field,
-            )
-
-        advantages = self._advantage_estimator.compute_advantage(
-            prompt_ids=prompt_ids,
-            rewards=rewards,
-            mask=mask,
-            repeated_batch=repeated_batch,
-            **kwargs,
+        computed = compute_advantages_from_data(
+            data,
+            advantage_config=adv_cfg,
+            advantage_estimator=self._advantage_estimator,
+            policy_logprobs_required=self._policy_logprobs_required,
+            reference_logprobs_required=self._reference_logprobs_required,
         )
-        response_advantages = torch.masked_select(advantages, mask.bool())
-        self._step_log_dict["rewards"].append(rewards.detach().cpu())
+        advantages = computed.advantages
+        response_advantages = torch.masked_select(
+            advantages, computed.actor_mask.bool()
+        )
+        self._step_log_dict["rewards"].append(computed.rewards.detach().cpu())
         self._step_log_dict["masked_advantages"].append(
             response_advantages.detach().cpu()
         )

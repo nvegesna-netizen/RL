@@ -35,10 +35,12 @@ from nemo_rl.utils.config import (
 
 
 def test_exact_assignment_vector_and_ordinal_progression() -> None:
-    assigner = ControlledReleaseAssigner(ControlledReleaseDelayConfig())
+    config = ControlledReleaseDelayConfig()
+    assigner = ControlledReleaseAssigner(config)
 
     assignments = [assigner.assign() for _ in range(16)]
 
+    assert config.assignment_domain == "m3-release-v2"
     assert [assignment.global_ordinal for assignment in assignments] == list(range(16))
     assert [assignment.draw for assignment in assignments] == [
         5,
@@ -59,6 +61,31 @@ def test_exact_assignment_vector_and_ordinal_progression() -> None:
         0,
     ]
     assert assigner.next_ordinal == 16
+
+
+def test_custom_assignment_domain_has_exact_distinct_draw_vector() -> None:
+    arms = (
+        ControlledReleaseArmConfig(label="control", delay_seconds=0, mass=5),
+        ControlledReleaseArmConfig(label="d5", delay_seconds=5, mass=5),
+        ControlledReleaseArmConfig(label="d10", delay_seconds=10, mass=2),
+    )
+    legacy_assigner = ControlledReleaseAssigner(
+        ControlledReleaseDelayConfig(seed=20260810, arms=arms)
+    )
+    m5_assigner = ControlledReleaseAssigner(
+        ControlledReleaseDelayConfig(
+            seed=20260810,
+            assignment_domain="m5a-opportunity-v1",
+            arms=arms,
+        )
+    )
+
+    legacy_draws = [legacy_assigner.assign().draw for _ in range(16)]
+    m5_draws = [m5_assigner.assign().draw for _ in range(16)]
+
+    assert legacy_draws == [8, 4, 11, 9, 8, 6, 1, 3, 2, 10, 10, 6, 8, 7, 8, 4]
+    assert m5_draws == [5, 9, 0, 8, 8, 11, 8, 4, 4, 11, 9, 6, 1, 6, 5, 9]
+    assert m5_draws != legacy_draws
 
 
 def test_rejection_sampling_uses_next_nonce_and_configured_mapping() -> None:
@@ -134,6 +161,12 @@ def test_invalid_arm_is_rejected(kwargs: dict[str, object]) -> None:
         ControlledReleaseArmConfig(**kwargs)
 
 
+@pytest.mark.parametrize("assignment_domain", ["", "m5a-opportunité-v1", "m5a\0v1"])
+def test_invalid_assignment_domain_is_rejected(assignment_domain: str) -> None:
+    with pytest.raises(ValidationError, match="assignment domain"):
+        ControlledReleaseDelayConfig(assignment_domain=assignment_domain)
+
+
 def test_digest_must_be_exactly_32_bytes() -> None:
     assigner = ControlledReleaseAssigner(
         ControlledReleaseDelayConfig(), digest_fn=lambda _: b"short"
@@ -164,6 +197,7 @@ def test_single_controller_yaml_composes_with_enabled_cli_overrides() -> None:
     release = master_config.async_rl.controlled_release_delay
     assert release.enabled is True
     assert release.seed == 20260808
+    assert release.assignment_domain == "m3-release-v2"
     assert [arm.label for arm in release.arms] == ["control", "d30", "d60"]
     assert [arm.mass for arm in release.arms] == [4, 1, 1]
     assert [arm.delay_seconds for arm in release.arms] == [0.0, 30.0, 60.0]

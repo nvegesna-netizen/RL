@@ -34,6 +34,7 @@ import pytest
 import torch
 
 from nemo_rl.algorithms.async_utils.rollout_lifecycle import (
+    ControllerEventSequencer,
     RolloutLifecycleRecorder,
     RolloutLifecycleStage,
     RolloutRemovalReason,
@@ -51,6 +52,7 @@ from nemo_rl.experience.interfaces import Completion, PromptGroupRecord
 from nemo_rl.experience.rollout_manager import (
     AsyncNemoGymRolloutImpl,
     AsyncRolloutImpl,
+    PreparedPendingPromptGroup,
     RolloutManager,
 )
 from nemo_rl.experience.rollouts import (
@@ -172,6 +174,7 @@ def _make_manager(buffer: _FakeBuffer, impl: _FakeImpl) -> RolloutManager:
         mgr._controlled_release_config
     )
     mgr._active_release_holds = 0
+    mgr._cancellation_removal_reason = RolloutRemovalReason.CANCELLED
     return mgr
 
 
@@ -212,6 +215,91 @@ class TestGenerateAndPushFlow:
 
 
 class TestControlledReleaseFlow:
+    def test_audit_enabled_path_prepares_before_hold_and_commits_exact_payload(
+        self, monkeypatch
+    ):
+        events: list[str] = []
+        opportunity_sequences: list[int] = []
+        sequencer = ControllerEventSequencer(clock_ns=lambda: 0)
+        recorder = RolloutLifecycleRecorder(controller_sequencer=sequencer)
+
+        class _SiblingRecordingImpl(_FakeImpl):
+            async def run_rollout(
+                self,
+                input_sample,
+                *,
+                group_id=None,
+                start_weight_version=-1,
+            ):
+                del input_sample
+                assert group_id is not None
+                recorder.record(
+                    group_id=group_id,
+                    stage=RolloutLifecycleStage.SIBLING_DONE,
+                    start_weight_version=start_weight_version,
+                    trajectory_id=f"{group_id}_g0",
+                    sibling_idx=0,
+                )
+                return self._record
+
+        class _PreparedBuffer(_FakeBuffer):
+            prepare_observer_enabled = True
+
+            def prepare_commit(self, group_id, record, *, start_weight_version):
+                events.append("prepare")
+                sequence, _ = sequencer.next_stamp()
+                opportunity_sequences.append(sequence)
+                return (group_id, record, start_weight_version)
+
+            async def commit_prepared(self, prepared, *, end_weight_version):
+                events.append("commit_prepared")
+                self.commit_calls.append((*prepared, end_weight_version))
+                return prepared
+
+        async def _sleep(_delay: float) -> None:
+            events.append("sleep")
+
+        monkeypatch.setattr(asyncio, "sleep", _sleep)
+        buffer = _PreparedBuffer()
+        manager = _make_controlled_manager(buffer, _SiblingRecordingImpl(), recorder)
+
+        async def _main() -> None:
+            pending = await manager.generate_pending(
+                {"prompt": "p"},
+                generation_inflight=1,
+                buffer_admission_stalls=0,
+            )
+            assert isinstance(pending, PreparedPendingPromptGroup)
+            await manager.release_and_commit(
+                pending,
+                generation_inflight_fn=lambda: 0,
+                buffer_admission_stalls_fn=lambda: 0,
+            )
+
+        _run(_main())
+
+        assert events == ["prepare", "sleep", "commit_prepared"]
+        assert len(buffer.commit_calls) == 1
+        release_started = next(
+            event
+            for event in recorder.snapshot()
+            if event.stage is RolloutLifecycleStage.RELEASE_DELAY_STARTED
+        )
+        sibling_done = next(
+            event
+            for event in recorder.snapshot()
+            if event.stage is RolloutLifecycleStage.SIBLING_DONE
+        )
+        assert sibling_done.controller_sequence is not None
+        assert release_started.controller_sequence is not None
+        assert (
+            sibling_done.controller_sequence
+            < opportunity_sequences[0]
+            < release_started.controller_sequence
+        )
+        assert sibling_done.timestamp_ns == 0
+        assert release_started.timestamp_ns == 0
+
     def test_zero_dose_traverses_without_becoming_an_active_hold(self, monkeypatch):
         buffer = _FakeBuffer()
         recorder = RolloutLifecycleRecorder(clock_ns=lambda: 0)
@@ -322,6 +410,37 @@ class TestControlledReleaseFlow:
         assert buffer.remove_calls[0][1] is RolloutRemovalReason.CANCELLED
         assert buffer.commit_calls == []
 
+    def test_bounded_shutdown_during_generation_uses_terminal_reason(self):
+        started = asyncio.Event()
+
+        async def _blocked_rollout(_sample):
+            started.set()
+            await asyncio.Event().wait()
+
+        buffer = _FakeBuffer()
+        recorder = RolloutLifecycleRecorder(clock_ns=lambda: 0)
+        manager = _make_controlled_manager(
+            buffer, _FakeImpl(on_run=_blocked_rollout), recorder
+        )
+        manager.set_cancellation_removal_reason(RolloutRemovalReason.BOUNDED_SHUTDOWN)
+
+        async def _main() -> None:
+            task = asyncio.create_task(
+                manager.generate_pending(
+                    {"prompt": "p"},
+                    generation_inflight=1,
+                    buffer_admission_stalls=0,
+                )
+            )
+            await started.wait()
+            task.cancel()
+            with pytest.raises(asyncio.CancelledError):
+                await task
+
+        _run(_main())
+
+        assert buffer.remove_calls[0][1] is RolloutRemovalReason.BOUNDED_SHUTDOWN
+
     def test_assignment_generation_hold_completion_and_commit_order(self, monkeypatch):
         events: list[str] = []
         buffer = _FakeBuffer()
@@ -418,6 +537,41 @@ class TestControlledReleaseFlow:
         assert buffer.commit_calls == []
         assert manager._active_release_holds == 0
 
+    def test_bounded_shutdown_cancellation_uses_terminal_reason(self, monkeypatch):
+        buffer = _FakeBuffer()
+        recorder = RolloutLifecycleRecorder(clock_ns=lambda: 0)
+        manager = _make_controlled_manager(buffer, _FakeImpl(), recorder)
+        manager.set_cancellation_removal_reason(RolloutRemovalReason.BOUNDED_SHUTDOWN)
+        sleep_started = asyncio.Event()
+
+        async def _blocked_sleep(_delay: float) -> None:
+            sleep_started.set()
+            await asyncio.Event().wait()
+
+        monkeypatch.setattr(asyncio, "sleep", _blocked_sleep)
+
+        async def _main() -> None:
+            pending = await manager.generate_pending(
+                {"prompt": "p"},
+                generation_inflight=1,
+                buffer_admission_stalls=0,
+            )
+            task = asyncio.create_task(
+                manager.release_and_commit(
+                    pending,
+                    generation_inflight_fn=lambda: 0,
+                    buffer_admission_stalls_fn=lambda: 0,
+                )
+            )
+            await sleep_started.wait()
+            task.cancel()
+            with pytest.raises(asyncio.CancelledError):
+                await task
+
+        _run(_main())
+
+        assert buffer.remove_calls[0][1] is RolloutRemovalReason.BOUNDED_SHUTDOWN
+
     def test_commit_cancellation_keeps_completed_prefix(self, monkeypatch):
         class _CommitCancelsBuffer(_FakeBuffer):
             async def commit(self, *args, **kwargs):
@@ -454,6 +608,46 @@ class TestControlledReleaseFlow:
             RolloutLifecycleStage.GROUP_COMPLETED,
         ]
         assert buffer.remove_calls[0][1] is RolloutRemovalReason.CANCELLED
+
+    def test_bounded_shutdown_during_commit_uses_terminal_reason(self, monkeypatch):
+        commit_started = asyncio.Event()
+
+        class _BlockedCommitBuffer(_FakeBuffer):
+            async def commit(self, *args, **kwargs):
+                del args, kwargs
+                commit_started.set()
+                await asyncio.Event().wait()
+
+        async def _no_sleep(_delay: float) -> None:
+            return None
+
+        monkeypatch.setattr(asyncio, "sleep", _no_sleep)
+        buffer = _BlockedCommitBuffer()
+        recorder = RolloutLifecycleRecorder(clock_ns=lambda: 0)
+        manager = _make_controlled_manager(buffer, _FakeImpl(), recorder)
+        manager.set_cancellation_removal_reason(RolloutRemovalReason.BOUNDED_SHUTDOWN)
+
+        async def _main() -> None:
+            pending = await manager.generate_pending(
+                {"prompt": "p"},
+                generation_inflight=1,
+                buffer_admission_stalls=0,
+            )
+            task = asyncio.create_task(
+                manager.release_and_commit(
+                    pending,
+                    generation_inflight_fn=lambda: 0,
+                    buffer_admission_stalls_fn=lambda: 0,
+                )
+            )
+            await commit_started.wait()
+            task.cancel()
+            with pytest.raises(asyncio.CancelledError):
+                await task
+
+        _run(_main())
+
+        assert buffer.remove_calls[0][1] is RolloutRemovalReason.BOUNDED_SHUTDOWN
 
     def test_rollout_cancellation_records_distinct_reason(self):
         async def _cancel_rollout(_sample):

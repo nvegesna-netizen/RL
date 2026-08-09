@@ -18,6 +18,7 @@ import threading as _threading
 import uuid
 from collections import Counter
 from collections.abc import Mapping
+from dataclasses import dataclass, field
 from typing import Any, Iterable, Optional
 
 import ray
@@ -33,6 +34,40 @@ from nemo_rl.data_plane.schema import ROUTED_EXPERTS_FIELD
 from nemo_rl.experience.interfaces import PromptGroupRecord
 from nemo_rl.experience.payload import pack_payload, record_to_train_batch
 from nemo_rl.utils.r3_trace import trace_rollout_payload
+
+
+def _tensor_payload_state(fields: Any) -> tuple[tuple[Any, ...], ...]:
+    """Return cheap mutation metadata for a packed TensorDict payload."""
+    state: list[tuple[Any, ...]] = []
+    for key, value in fields.items():
+        state.append(
+            (
+                str(key),
+                id(value),
+                getattr(value, "_version", None),
+                tuple(value.shape),
+                str(value.dtype),
+                str(value.device),
+            )
+        )
+    return tuple(sorted(state))
+
+
+@dataclass(frozen=True)
+class PreparedTQCommit:
+    """Owner-bound, single-use capability for one definitive packed payload."""
+
+    group_id: str
+    partition_id: str
+    start_weight_version: int
+    sample_ids: tuple[str, ...]
+    fields: Any = field(repr=False)
+    tags: tuple[dict[str, Any], ...]
+    tag_state: tuple[tuple[tuple[str, Any], ...], ...] = field(repr=False)
+    sequence_lengths: tuple[int, ...]
+    payload_state: tuple[tuple[Any, ...], ...] = field(repr=False)
+    _owner: object = field(repr=False)
+    _capability: object = field(repr=False)
 
 
 # Classes with @ray.remote can't be inherited from, so we split the implementation out.
@@ -663,6 +698,9 @@ class TQReplayBuffer:
         self._pad_value_dict = dict(pad_value_dict)
         self._require_routed_experts = require_routed_experts
         self._lifecycle_recorder = lifecycle_recorder
+        self._owner_capability = object()
+        self._prepared_capabilities: dict[str, object] = {}
+        self._prepare_observer: Optional[Any] = None
         self.meta_list: list[Optional[KVBatchMeta]] = []
         self.start_weight_list: list[int] = []
         self.end_weight_list: list[int] = []
@@ -690,6 +728,8 @@ class TQReplayBuffer:
         """
         if group_id is None:
             group_id = str(uuid.uuid4())
+        if group_id in self._group_ids:
+            raise ValueError(f"duplicate live group_id={group_id!r}")
         self.meta_list.append(None)
         self.start_weight_list.append(weight_version)
         self.end_weight_list.append(-1)
@@ -710,6 +750,82 @@ class TQReplayBuffer:
     ) -> None:
         """Attach or detach the controller-local lifecycle recorder."""
         self._lifecycle_recorder = recorder
+
+    def set_prepare_observer(self, observer: Optional[Any]) -> None:
+        """Attach a synchronous observer of definitive pre-commit train batches."""
+        self._prepare_observer = observer
+
+    @property
+    def prepare_observer_enabled(self) -> bool:
+        """Whether controlled release must prepare its payload before the hold."""
+        return self._prepare_observer is not None
+
+    def prepare_commit(
+        self,
+        group_id: str,
+        record: PromptGroupRecord,
+        *,
+        start_weight_version: int,
+    ) -> PreparedTQCommit:
+        """Synchronously mint the definitive packed payload for one reserved slot."""
+        try:
+            idx = self._group_ids.index(group_id)
+        except ValueError as error:
+            raise ValueError(
+                f"prepare called with unknown group_id={group_id!r}"
+            ) from error
+        if self.ready_list[idx] or self.meta_list[idx] is not None:
+            raise ValueError(f"group_id={group_id!r} is already ready")
+        if self.start_weight_list[idx] != start_weight_version:
+            raise ValueError(
+                f"start version mismatch for group_id={group_id!r}: "
+                f"reserved={self.start_weight_list[idx]} prepared={start_weight_version}"
+            )
+        if group_id in self._prepared_capabilities:
+            raise ValueError(f"group_id={group_id!r} already has a prepared payload")
+
+        train_batch = record_to_train_batch(record, pad_value_dict=self._pad_value_dict)
+        sample_ids, fields, tags = pack_payload(
+            train_batch, weight_version=start_weight_version, group_id=group_id
+        )
+        if self._require_routed_experts and ROUTED_EXPERTS_FIELD not in fields:
+            raise RuntimeError(
+                "policy.router_replay.enabled=true requires routed_experts in "
+                "the SingleController rollout payload, but payload packing did "
+                "not produce that field. Check vLLM routed-expert capture and "
+                "the async message-log flattening path."
+            )
+        trace_rollout_payload(keys=sample_ids, data=train_batch)
+        payload_state = _tensor_payload_state(fields)
+        if self._prepare_observer is not None:
+            self._prepare_observer(
+                group_id=group_id,
+                record=record,
+                train_batch=train_batch,
+                sample_ids=tuple(sample_ids),
+                start_weight_version=start_weight_version,
+            )
+            if _tensor_payload_state(fields) != payload_state:
+                raise RuntimeError(
+                    "prepare observer mutated the packed training payload"
+                )
+
+        capability = object()
+        self._prepared_capabilities[group_id] = capability
+        lengths = train_batch["input_lengths"]
+        return PreparedTQCommit(
+            group_id=group_id,
+            partition_id=self._partition_id,
+            start_weight_version=start_weight_version,
+            sample_ids=tuple(sample_ids),
+            fields=fields,
+            tags=tuple(dict(tag) for tag in tags),
+            tag_state=tuple(tuple(sorted(tag.items())) for tag in tags),
+            sequence_lengths=tuple(int(value) for value in lengths.tolist()),
+            payload_state=payload_state,
+            _owner=self._owner_capability,
+            _capability=capability,
+        )
 
     async def commit(
         self,
@@ -734,62 +850,87 @@ class TQReplayBuffer:
             ValueError: group_id has no live slot (removed or never reserved).
             RuntimeError: router replay is enabled but the payload has no routes.
         """
-        # Precondition: reserve() must have registered this group_id. Raise
-        # before any side effects so a stray commit doesn't leak orphan DP rows.
-        if group_id not in self._group_ids:
-            raise ValueError(
-                f"commit called with unknown group_id={group_id!r}; "
-                f"reserve() must precede commit() (or the slot was already removed)"
-            )
-        train_batch = record_to_train_batch(record, pad_value_dict=self._pad_value_dict)
-        sample_ids, fields, tags = pack_payload(
-            train_batch, weight_version=start_weight_version, group_id=group_id
+        prepared = self.prepare_commit(
+            group_id,
+            record,
+            start_weight_version=start_weight_version,
         )
-        if self._require_routed_experts and ROUTED_EXPERTS_FIELD not in fields:
-            raise RuntimeError(
-                "policy.router_replay.enabled=true requires routed_experts in "
-                "the SingleController rollout payload, but payload packing did "
-                "not produce that field. Check vLLM routed-expert capture and "
-                "the async message-log flattening path."
+        return await self.commit_prepared(
+            prepared, end_weight_version=end_weight_version
+        )
+
+    async def commit_prepared(
+        self,
+        prepared: PreparedTQCommit,
+        *,
+        end_weight_version: int,
+    ) -> KVBatchMeta:
+        """Transactionally publish one owner-bound prepared payload exactly once."""
+        if prepared._owner is not self._owner_capability:
+            raise ValueError("prepared payload belongs to another replay buffer")
+        if prepared.partition_id != self._partition_id:
+            raise ValueError("prepared payload partition no longer matches its owner")
+        capability = self._prepared_capabilities.get(prepared.group_id)
+        if capability is not prepared._capability:
+            raise ValueError("prepared payload is stale, unknown, or already consumed")
+        try:
+            idx = self._group_ids.index(prepared.group_id)
+        except ValueError as error:
+            raise ValueError(
+                f"prepared payload has unknown group_id={prepared.group_id!r}"
+            ) from error
+        if self.start_weight_list[idx] != prepared.start_weight_version:
+            raise ValueError(
+                "prepared payload start version no longer matches its slot"
             )
-        trace_rollout_payload(keys=sample_ids, data=train_batch)
+        if self.ready_list[idx] or self.meta_list[idx] is not None:
+            raise ValueError("prepared payload slot is already ready")
+        if _tensor_payload_state(prepared.fields) != prepared.payload_state:
+            raise ValueError("prepared payload was mutated after preparation")
+        if tuple(tuple(sorted(tag.items())) for tag in prepared.tags) != (
+            prepared.tag_state
+        ):
+            raise ValueError("prepared payload tags were mutated after preparation")
+
+        # Consume before the first side effect: a failed transaction is never retried.
+        del self._prepared_capabilities[prepared.group_id]
+        sample_ids = list(prepared.sample_ids)
+        tags = [dict(tag) for tag in prepared.tags]
         try:
             await self._call_dp(
                 "put_samples",
                 sample_ids=sample_ids,
                 partition_id=self._partition_id,
-                fields=fields,
+                fields=prepared.fields,
                 tags=tags,
             )
 
-            # mirrors kv_first_write
-            lengths = train_batch["input_lengths"]
             meta = KVBatchMeta(
                 partition_id=self._partition_id,
                 task_name="train",
                 sample_ids=list(sample_ids),
-                fields=list(fields.keys()),
-                sequence_lengths=[int(s) for s in lengths.tolist()],
+                fields=list(prepared.fields.keys()),
+                sequence_lengths=list(prepared.sequence_lengths),
                 tags=[dict(t) for t in tags],
             )
 
-            idx = self._group_ids.index(group_id)
-            self.meta_list[idx] = meta
-            self.end_weight_list[idx] = end_weight_version
-            self.ready_list[idx] = True
             if self._lifecycle_recorder is not None:
                 self._lifecycle_recorder.record(
-                    group_id=group_id,
+                    group_id=prepared.group_id,
                     stage=RolloutLifecycleStage.GROUP_READY,
-                    start_weight_version=start_weight_version,
+                    start_weight_version=prepared.start_weight_version,
                     end_weight_version=end_weight_version,
                     target_step=self.target_step_list[idx],
                     sample_ids=sample_ids,
                 )
+            self.meta_list[idx] = meta
+            self.end_weight_list[idx] = end_weight_version
+            self.ready_list[idx] = True
             return meta
         except BaseException as commit_error:
-            # put_samples may have written rows before raising. Roll back by the
-            # deterministic IDs known here; the caller removes the reserved slot.
+            self.meta_list[idx] = None
+            self.end_weight_list[idx] = -1
+            self.ready_list[idx] = False
             try:
                 await self._call_dp(
                     "clear_samples",
@@ -800,7 +941,8 @@ class TQReplayBuffer:
                 if isinstance(commit_error, asyncio.CancelledError):
                     raise commit_error from rollback_error
                 raise BaseExceptionGroup(
-                    f"commit and rollback both failed for group_id={group_id!r}",
+                    "commit and rollback both failed for "
+                    f"group_id={prepared.group_id!r}",
                     [commit_error, rollback_error],
                 )
             raise
@@ -885,6 +1027,7 @@ class TQReplayBuffer:
                     sample_ids,
                 )
             )
+            self._prepared_capabilities.pop(self._group_ids[i], None)
         for i in drop_idxs:
             del self.meta_list[i]
             del self.start_weight_list[i]

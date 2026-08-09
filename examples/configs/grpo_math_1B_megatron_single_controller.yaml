@@ -24,6 +24,7 @@ async_rl:
   controlled_release_delay:
     enabled: false
     seed: 20260808
+    assignment_domain: m3-release-v2
     arms:
       - label: control
         delay_seconds: 0.0
@@ -34,6 +35,10 @@ async_rl:
       - label: d60
         delay_seconds: 60.0
         mass: 1
+  # Default-off pre-release GRPO coefficient-opportunity audit.
+  gradient_opportunity_audit:
+    enabled: false
+    output_path: null
 
 # SC does not support checkpointing yet.
 checkpointing:

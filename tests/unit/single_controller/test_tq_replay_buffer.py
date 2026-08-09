@@ -17,6 +17,7 @@
 from __future__ import annotations
 
 import asyncio
+from dataclasses import replace
 from typing import Any
 
 import pytest
@@ -121,6 +122,19 @@ class FailAfterPutDataPlaneClient(FakeDataPlaneClient):
         raise RuntimeError("injected put failure")
 
 
+class FailPutAndClearDataPlaneClient(FailAfterPutDataPlaneClient):
+    def clear_samples(self, sample_ids: list[str] | None, partition_id: str) -> None:
+        del sample_ids, partition_id
+        raise RuntimeError("injected clear failure")
+
+
+class FailOnReadyRecorder(RolloutLifecycleRecorder):
+    def record(self, *, stage: RolloutLifecycleStage, **kwargs: Any):
+        if stage is RolloutLifecycleStage.GROUP_READY:
+            raise RuntimeError("injected lifecycle failure")
+        return super().record(stage=stage, **kwargs)
+
+
 def _run(coro):
     return asyncio.run(coro)
 
@@ -169,6 +183,221 @@ def _add_group(
 
 
 class TestTQReplayBufferReserveCommit:
+    def test_prepare_tensorizes_and_packs_exactly_once(self, monkeypatch):
+        calls = {"tensorize": 0, "pack": 0}
+        original_pack = _replay_buffer_module.pack_payload
+
+        def _count_tensorize(*args, **kwargs):
+            calls["tensorize"] += 1
+            return _stub_record_to_train_batch(*args, **kwargs)
+
+        def _count_pack(*args, **kwargs):
+            calls["pack"] += 1
+            return original_pack(*args, **kwargs)
+
+        monkeypatch.setattr(
+            _replay_buffer_module, "record_to_train_batch", _count_tensorize
+        )
+        monkeypatch.setattr(_replay_buffer_module, "pack_payload", _count_pack)
+        buf = _make_buffer(FakeDataPlaneClient())
+        group_id = buf.reserve(weight_version=3)
+
+        prepared = buf.prepare_commit(group_id, _make_record(), start_weight_version=3)
+        _run(buf.commit_prepared(prepared, end_weight_version=4))
+
+        assert calls == {"tensorize": 1, "pack": 1}
+
+    def test_reserve_rejects_duplicate_live_group_id(self):
+        buf = _make_buffer(FakeDataPlaneClient())
+        buf.reserve(weight_version=1, group_id="fixed")
+
+        with pytest.raises(ValueError, match="duplicate live group_id"):
+            buf.reserve(weight_version=1, group_id="fixed")
+
+    def test_prepare_observer_runs_before_single_use_commit(self):
+        dp = FakeDataPlaneClient()
+        buf = _make_buffer(dp)
+        observed: list[tuple[str, tuple[str, ...], int]] = []
+        buf.set_prepare_observer(
+            lambda **kwargs: observed.append(
+                (
+                    kwargs["group_id"],
+                    kwargs["sample_ids"],
+                    kwargs["start_weight_version"],
+                )
+            )
+        )
+        group_id = buf.reserve(weight_version=3)
+
+        prepared = buf.prepare_commit(
+            group_id,
+            _make_record(),
+            start_weight_version=3,
+        )
+
+        assert observed == [(group_id, prepared.sample_ids, 3)]
+        assert dp.put_calls == []
+        meta = _run(buf.commit_prepared(prepared, end_weight_version=4))
+        assert meta.sample_ids == list(prepared.sample_ids)
+        with pytest.raises(ValueError, match="already consumed"):
+            _run(buf.commit_prepared(prepared, end_weight_version=4))
+
+    def test_prepared_payload_is_byte_equal_at_put_after_async_hold(self):
+        dp = FakeDataPlaneClient()
+        buf = _make_buffer(dp)
+        observer_snapshots: list[dict[str, torch.Tensor]] = []
+        buf.set_prepare_observer(
+            lambda **kwargs: observer_snapshots.append(
+                {
+                    name: value.detach().clone()
+                    for name, value in kwargs["train_batch"].items()
+                    if isinstance(value, torch.Tensor)
+                }
+            )
+        )
+        group_id = buf.reserve(weight_version=3)
+        prepared = buf.prepare_commit(group_id, _make_record(), start_weight_version=3)
+        packed_before_hold = {
+            name: value.detach().clone() for name, value in prepared.fields.items()
+        }
+        tags_before_hold = tuple(dict(tag) for tag in prepared.tags)
+
+        async def _hold_then_commit() -> None:
+            await asyncio.sleep(0)
+            await buf.commit_prepared(prepared, end_weight_version=4)
+
+        _run(_hold_then_commit())
+
+        assert len(observer_snapshots) == 1
+        assert dp.put_calls[0]["fields"] is prepared.fields
+        assert tuple(dp.put_calls[0]["tags"]) == tags_before_hold
+        assert set(dp.put_calls[0]["fields"].keys()) == set(packed_before_hold)
+
+        def _row_bytes(value: torch.Tensor) -> tuple[bytes, ...]:
+            rows = value.unbind() if value.is_nested else (value,)
+            return tuple(
+                row.detach().cpu().contiguous().numpy().tobytes() for row in rows
+            )
+
+        for name, expected in packed_before_hold.items():
+            actual = dp.put_calls[0]["fields"][name]
+            assert actual.dtype == expected.dtype
+            assert actual.shape == expected.shape
+            assert _row_bytes(actual) == _row_bytes(expected)
+
+    def test_prepare_rejects_unknown_ready_and_version_mismatch(self):
+        buf = _make_buffer(FakeDataPlaneClient())
+        group_id = buf.reserve(weight_version=3)
+
+        with pytest.raises(ValueError, match="unknown group_id"):
+            buf.prepare_commit("missing", _make_record(), start_weight_version=3)
+        with pytest.raises(ValueError, match="start version mismatch"):
+            buf.prepare_commit(group_id, _make_record(), start_weight_version=2)
+        prepared = buf.prepare_commit(group_id, _make_record(), start_weight_version=3)
+        _run(buf.commit_prepared(prepared, end_weight_version=3))
+        with pytest.raises(ValueError, match="already ready"):
+            buf.prepare_commit(group_id, _make_record(), start_weight_version=3)
+
+    def test_prepared_payload_rejects_wrong_owner_and_mutation(self):
+        first = _make_buffer(FakeDataPlaneClient())
+        second = _make_buffer(FakeDataPlaneClient())
+        group_id = first.reserve(weight_version=3)
+        prepared = first.prepare_commit(
+            group_id, _make_record(), start_weight_version=3
+        )
+
+        with pytest.raises(ValueError, match="another replay buffer"):
+            _run(second.commit_prepared(prepared, end_weight_version=3))
+
+        first_tensor = next(iter(prepared.fields.values()))
+        first_tensor.add_(1)
+        with pytest.raises(ValueError, match="mutated"):
+            _run(first.commit_prepared(prepared, end_weight_version=3))
+
+    def test_prepared_payload_rejects_partition_group_and_stale_capability(self):
+        buf = _make_buffer(FakeDataPlaneClient())
+        group_id = buf.reserve(weight_version=3)
+        prepared = buf.prepare_commit(group_id, _make_record(), start_weight_version=3)
+
+        with pytest.raises(ValueError, match="partition"):
+            _run(
+                buf.commit_prepared(
+                    replace(prepared, partition_id="other"), end_weight_version=3
+                )
+            )
+        with pytest.raises(ValueError, match="stale, unknown"):
+            _run(
+                buf.commit_prepared(
+                    replace(prepared, group_id="other"), end_weight_version=3
+                )
+            )
+
+        _run(
+            buf.remove(
+                [0],
+                remove_in_dp=True,
+                reason=RolloutRemovalReason.FAILED,
+                learner_weight_version=3,
+            )
+        )
+        with pytest.raises(ValueError, match="stale, unknown"):
+            _run(buf.commit_prepared(prepared, end_weight_version=3))
+
+    def test_failed_prepared_commit_restores_slot_and_cannot_retry(self):
+        dp = FailAfterPutDataPlaneClient()
+        buf = _make_buffer(dp)
+        group_id = buf.reserve(weight_version=3)
+        prepared = buf.prepare_commit(group_id, _make_record(), start_weight_version=3)
+
+        with pytest.raises(RuntimeError, match="injected put failure"):
+            _run(buf.commit_prepared(prepared, end_weight_version=4))
+
+        assert buf.meta_list == [None]
+        assert buf.end_weight_list == [-1]
+        assert buf.ready_list == [False]
+        assert dp.depth() == 0
+        with pytest.raises(ValueError, match="already consumed"):
+            _run(buf.commit_prepared(prepared, end_weight_version=4))
+
+    def test_lifecycle_failure_rolls_back_but_preserves_prepared_observation(self):
+        observed: list[str] = []
+        dp = FakeDataPlaneClient()
+        recorder = FailOnReadyRecorder(clock_ns=lambda: 0)
+        buf = _make_buffer(dp, lifecycle_recorder=recorder)
+        buf.set_prepare_observer(lambda **kwargs: observed.append(kwargs["group_id"]))
+        group_id = buf.reserve(weight_version=3)
+        prepared = buf.prepare_commit(group_id, _make_record(), start_weight_version=3)
+
+        with pytest.raises(RuntimeError, match="injected lifecycle failure"):
+            _run(buf.commit_prepared(prepared, end_weight_version=4))
+
+        assert observed == [group_id]
+        assert dp.depth() == 0
+        assert buf.meta_list == [None]
+        assert buf.end_weight_list == [-1]
+        assert buf.ready_list == [False]
+        assert all(
+            event.stage is not RolloutLifecycleStage.GROUP_READY
+            for event in recorder.snapshot()
+        )
+
+    def test_commit_and_rollback_failure_restores_local_slot_and_groups_errors(self):
+        dp = FailPutAndClearDataPlaneClient()
+        buf = _make_buffer(dp)
+        group_id = buf.reserve(weight_version=3)
+        prepared = buf.prepare_commit(group_id, _make_record(), start_weight_version=3)
+
+        with pytest.raises(BaseExceptionGroup) as error:
+            _run(buf.commit_prepared(prepared, end_weight_version=4))
+
+        assert [str(exc) for exc in error.value.exceptions] == [
+            "injected put failure",
+            "injected clear failure",
+        ]
+        assert buf.meta_list == [None]
+        assert buf.end_weight_list == [-1]
+        assert buf.ready_list == [False]
+
     def test_lifecycle_records_reserve_ready_and_selected(self):
         timestamps = iter((10, 20, 30))
         recorder = RolloutLifecycleRecorder(

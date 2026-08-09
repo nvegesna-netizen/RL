@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import json
 import math
+import threading
 import time
 import uuid
 from collections.abc import Callable, Sequence
@@ -52,6 +53,26 @@ class RolloutRemovalReason(str, Enum):
     UNKNOWN = "unknown"
 
 
+class ControllerEventSequencer:
+    """Issue total-order stamps for controller-local research audit streams."""
+
+    def __init__(self, *, clock_ns: Callable[[], int] = time.monotonic_ns) -> None:
+        self._clock_ns = clock_ns
+        self._next_sequence = 0
+        self._lock = threading.Lock()
+
+    def next_stamp(self) -> tuple[int, int]:
+        """Return `(controller_sequence, timestamp_ns)` in a single total order."""
+        with self._lock:
+            sequence = self._next_sequence
+            self._next_sequence += 1
+            return sequence, self._clock_ns()
+
+    def __call__(self) -> tuple[int, int]:
+        """Issue a stamp; allows direct injection into sibling recorders."""
+        return self.next_stamp()
+
+
 @dataclass(frozen=True)
 class RolloutLifecycleEvent:
     """One prompt-group lifecycle event from a single monotonic clock domain."""
@@ -60,6 +81,7 @@ class RolloutLifecycleEvent:
     run_id: str
     clock_domain_id: str
     sequence: int
+    controller_sequence: Optional[int]
     timestamp_ns: int
     group_id: str
     stage: RolloutLifecycleStage
@@ -95,7 +117,7 @@ class RolloutLifecycleEvent:
 
     def to_dict(self) -> dict[str, Any]:
         """Return a JSON-compatible representation."""
-        return {
+        result = {
             "schema_version": self.schema_version,
             "run_id": self.run_id,
             "clock_domain_id": self.clock_domain_id,
@@ -135,6 +157,9 @@ class RolloutLifecycleEvent:
             "ready_buffer_depth": self.ready_buffer_depth,
             "buffer_admission_stalls": self.buffer_admission_stalls,
         }
+        if self.controller_sequence is not None:
+            result["controller_sequence"] = self.controller_sequence
+        return result
 
 
 class RolloutLifecycleRecorder:
@@ -150,10 +175,12 @@ class RolloutLifecycleRecorder:
         run_id: Optional[str] = None,
         clock_domain_id: Optional[str] = None,
         clock_ns: Callable[[], int] = time.monotonic_ns,
+        controller_sequencer: Optional[ControllerEventSequencer] = None,
     ) -> None:
         self.run_id = run_id or str(uuid.uuid4())
         self.clock_domain_id = clock_domain_id or str(uuid.uuid4())
         self._clock_ns = clock_ns
+        self._controller_sequencer = controller_sequencer
         self._events: list[RolloutLifecycleEvent] = []
 
     def record(
@@ -269,12 +296,18 @@ class RolloutLifecycleRecorder:
                 "release-delay fields are valid only for release-delay events"
             )
 
+        if self._controller_sequencer is None:
+            controller_sequence = None
+            timestamp_ns = self._clock_ns()
+        else:
+            controller_sequence, timestamp_ns = self._controller_sequencer.next_stamp()
         event = RolloutLifecycleEvent(
-            schema_version=3,
+            schema_version=4 if controller_sequence is not None else 3,
             run_id=self.run_id,
             clock_domain_id=self.clock_domain_id,
             sequence=len(self._events),
-            timestamp_ns=self._clock_ns(),
+            controller_sequence=controller_sequence,
+            timestamp_ns=timestamp_ns,
             group_id=group_id,
             stage=stage,
             start_weight_version=start_weight_version,

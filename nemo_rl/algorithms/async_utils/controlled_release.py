@@ -59,10 +59,20 @@ class ControlledReleaseDelayConfig(BaseModel, frozen=True):
 
     enabled: bool = False
     seed: Annotated[int, Field(ge=0)] = 20260808
+    assignment_domain: str = "m3-release-v2"
     arms: tuple[ControlledReleaseArmConfig, ...] = Field(default_factory=_default_arms)
 
     @model_validator(mode="after")
     def validate_assignment(self) -> ControlledReleaseDelayConfig:
+        if (
+            not self.assignment_domain
+            or not self.assignment_domain.isascii()
+            or "\0" in self.assignment_domain
+        ):
+            raise ValueError(
+                "controlled-release assignment domain must be nonempty ASCII "
+                "without NUL"
+            )
         if not self.arms:
             raise ValueError("controlled-release assignment requires at least one arm")
         labels = [arm.label for arm in self.arms]
@@ -112,6 +122,9 @@ class ControlledReleaseAssigner:
     ) -> None:
         self._config = config
         self._digest_fn = digest_fn
+        self._assignment_domain_prefix = (
+            config.assignment_domain.encode("ascii") + b"\0"
+        )
         self._next_ordinal = 0
 
     @property
@@ -126,8 +139,10 @@ class ControlledReleaseAssigner:
         limit = _DIGEST_CARDINALITY - (_DIGEST_CARDINALITY % total_mass)
         nonce = 0
         while True:
-            payload = (f"m3-release-v2\0{self._config.seed}|{ordinal}|{nonce}").encode(
-                "ascii"
+            payload = self._assignment_domain_prefix + (
+                f"{self._config.seed}|{ordinal}|{nonce}"
+            ).encode(
+                "ascii",
             )
             digest = self._digest_fn(payload)
             if len(digest) != 32:

@@ -28,7 +28,10 @@ from nemo_rl.algorithms.async_utils.controlled_release import (
     ControlledReleaseAssignment,
     ControlledReleaseDelayConfig,
 )
-from nemo_rl.algorithms.async_utils.replay_buffer import TQReplayBuffer
+from nemo_rl.algorithms.async_utils.replay_buffer import (
+    PreparedTQCommit,
+    TQReplayBuffer,
+)
 from nemo_rl.algorithms.async_utils.rollout_lifecycle import (
     RolloutLifecycleRecorder,
     RolloutLifecycleStage,
@@ -57,14 +60,30 @@ TokenizerType = PreTrainedTokenizerBase
 
 
 @dataclass(frozen=True)
-class PendingPromptGroup:
+class PendingPromptGroupBase:
     """Generated prompt group that still owns its reserved buffer slot."""
 
     group_id: str
-    record: PromptGroupRecord
     start_weight_version: int
     target_step: Optional[int]
     assignment: ControlledReleaseAssignment
+
+
+@dataclass(frozen=True)
+class RawPendingPromptGroup(PendingPromptGroupBase):
+    """Controlled group retaining its raw record through the assigned hold."""
+
+    record: PromptGroupRecord
+
+
+@dataclass(frozen=True)
+class PreparedPendingPromptGroup(PendingPromptGroupBase):
+    """Audit-enabled controlled group retaining one definitive packed payload."""
+
+    prepared: PreparedTQCommit
+
+
+PendingPromptGroup = RawPendingPromptGroup | PreparedPendingPromptGroup
 
 
 class AsyncRolloutImpl:
@@ -850,6 +869,7 @@ class RolloutManager:
             self._controlled_release_config
         )
         self._active_release_holds = 0
+        self._cancellation_removal_reason = RolloutRemovalReason.CANCELLED
         if self._controlled_release_config.enabled:
             assert isinstance(self._impl, AsyncRolloutImpl)
             self._impl.set_defer_group_completed(True)
@@ -868,6 +888,10 @@ class RolloutManager:
         """Attach a controller-local lifecycle recorder to the rollout path."""
         self._lifecycle_recorder = recorder
         self._impl.set_lifecycle_recorder(recorder)
+
+    def set_cancellation_removal_reason(self, reason: RolloutRemovalReason) -> None:
+        """Set the reason used when controller shutdown cancels controlled tasks."""
+        self._cancellation_removal_reason = reason
 
     @property
     def controlled_release_enabled(self) -> bool:
@@ -940,16 +964,29 @@ class RolloutManager:
                 group_id=group_id,
                 start_weight_version=start_version,
             )
-            return PendingPromptGroup(
+            if bool(getattr(self._tq_buffer, "prepare_observer_enabled", False)):
+                prepared = self._tq_buffer.prepare_commit(
+                    group_id,
+                    record,
+                    start_weight_version=start_version,
+                )
+                return PreparedPendingPromptGroup(
+                    group_id=group_id,
+                    start_weight_version=start_version,
+                    target_step=target_step,
+                    assignment=assignment,
+                    prepared=prepared,
+                )
+            return RawPendingPromptGroup(
                 group_id=group_id,
-                record=record,
                 start_weight_version=start_version,
                 target_step=target_step,
                 assignment=assignment,
+                record=record,
             )
         except asyncio.CancelledError:
             await self._tq_buffer.remove_group(
-                group_id, reason=RolloutRemovalReason.CANCELLED
+                group_id, reason=self._cancellation_removal_reason
             )
             raise
         except BaseException:
@@ -967,10 +1004,9 @@ class RolloutManager:
     ) -> None:
         """Apply the assigned hold, emit completion, and commit the reserved slot."""
         assert self._tq_buffer is not None
-        hold_active = pending.assignment.delay_seconds > 0
-        if hold_active:
-            self._active_release_holds += 1
+        hold_count = int(pending.assignment.delay_seconds > 0)
         try:
+            self._active_release_holds += hold_count
             self._record_release_event(
                 group_id=pending.group_id,
                 start_weight_version=pending.start_weight_version,
@@ -990,9 +1026,8 @@ class RolloutManager:
                 generation_inflight=generation_inflight_fn(),
                 buffer_admission_stalls=buffer_admission_stalls_fn(),
             )
-            if hold_active:
-                self._active_release_holds -= 1
-                hold_active = False
+            self._active_release_holds -= hold_count
+            hold_count = 0
 
             end_version = self._weight_version
             if self._lifecycle_recorder is not None:
@@ -1003,15 +1038,21 @@ class RolloutManager:
                     end_weight_version=end_version,
                     target_step=pending.target_step,
                 )
-            await self._tq_buffer.commit(
-                pending.group_id,
-                pending.record,
-                start_weight_version=pending.start_weight_version,
-                end_weight_version=end_version,
-            )
+            if isinstance(pending, PreparedPendingPromptGroup):
+                await self._tq_buffer.commit_prepared(
+                    pending.prepared,
+                    end_weight_version=end_version,
+                )
+            else:
+                await self._tq_buffer.commit(
+                    pending.group_id,
+                    pending.record,
+                    start_weight_version=pending.start_weight_version,
+                    end_weight_version=end_version,
+                )
         except asyncio.CancelledError:
             await self._tq_buffer.remove_group(
-                pending.group_id, reason=RolloutRemovalReason.CANCELLED
+                pending.group_id, reason=self._cancellation_removal_reason
             )
             raise
         except BaseException:
@@ -1020,14 +1061,15 @@ class RolloutManager:
             )
             raise
         finally:
-            if hold_active:
-                self._active_release_holds -= 1
+            self._active_release_holds -= hold_count
 
     async def abort_pending(
         self, pending: PendingPromptGroup, *, reason: RolloutRemovalReason
     ) -> None:
         """Idempotently clean a pending slot across the generation/release boundary."""
         assert self._tq_buffer is not None
+        if reason is RolloutRemovalReason.CANCELLED:
+            reason = self._cancellation_removal_reason
         if self._tq_buffer.has_group(pending.group_id):
             await self._tq_buffer.remove_group(pending.group_id, reason=reason)
 

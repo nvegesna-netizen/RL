@@ -16,13 +16,18 @@
 
 from __future__ import annotations
 
-from typing import Any
+from dataclasses import dataclass
+from collections.abc import Mapping
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 import torch
 from tensordict import TensorDict
 
 from nemo_rl.data_plane import KVBatchMeta
+
+if TYPE_CHECKING:
+    from nemo_rl.algorithms.single_controller_utils.config import AdvantageConfig
 
 # Reduction rules for all_mb_metrics. Mirror grpo.py / grpo_sync.py.
 _MB_METRIC_MIN: frozenset[str] = frozenset(
@@ -123,11 +128,11 @@ def reduce_advantage_pump_metrics(
     return out
 
 
-def tensor_field(data: TensorDict, field_name: str) -> torch.Tensor:
-    """Read a tensor column from a TensorDict, depadding if nested.
+def tensor_field(data: Mapping[str, Any], field_name: str) -> torch.Tensor:
+    """Read a tensor column from a tensor mapping, depadding if nested.
 
     Args:
-        data: TensorDict returned by the data plane.
+        data: Tensor mapping returned by the data plane or payload converter.
         field_name: Column name to fetch.
 
     Returns:
@@ -153,6 +158,105 @@ def squeeze_trailing_unit_dim(value: torch.Tensor) -> torch.Tensor:
     if value.dim() >= 2 and value.shape[-1] == 1:
         return value.squeeze(-1)
     return value
+
+
+@dataclass
+class PreparedAdvantageInputs:
+    """Production-normalized inputs for advantage computation."""
+
+    prompt_ids: torch.Tensor
+    rewards: torch.Tensor
+    token_mask: torch.Tensor
+    sample_mask: torch.Tensor
+    actor_mask: torch.Tensor
+    repeated_batch: dict[str, torch.Tensor]
+    estimator_kwargs: dict[str, torch.Tensor]
+
+
+@dataclass
+class ComputedAdvantageInputs(PreparedAdvantageInputs):
+    """Prepared advantage inputs plus the configured estimator output."""
+
+    advantages: torch.Tensor
+
+
+def prepare_advantage_inputs_from_data(
+    data: Mapping[str, Any],
+    *,
+    advantage_config: "AdvantageConfig",
+    policy_logprobs_required: bool,
+    reference_logprobs_required: bool,
+) -> PreparedAdvantageInputs:
+    """Apply the exact shared production casts and mask construction."""
+    prompt_ids = tensor_field(data, advantage_config.prompt_ids_field)
+    rewards = squeeze_trailing_unit_dim(
+        tensor_field(data, advantage_config.reward_field)
+    ).float()
+    token_mask = tensor_field(data, advantage_config.token_mask_field).float()
+    sample_mask = squeeze_trailing_unit_dim(
+        tensor_field(data, advantage_config.sample_mask_field)
+    ).float()
+    actor_mask = token_mask * sample_mask.unsqueeze(-1)
+
+    repeated_batch: dict[str, torch.Tensor] = {"total_reward": rewards}
+    for field_name in advantage_config.repeated_batch_fields:
+        repeated_batch[field_name] = squeeze_trailing_unit_dim(
+            tensor_field(data, field_name)
+        )
+
+    estimator_kwargs: dict[str, torch.Tensor] = {}
+    if policy_logprobs_required:
+        estimator_kwargs["logprobs_policy"] = tensor_field(
+            data, advantage_config.policy_logprobs_field
+        )
+    if reference_logprobs_required:
+        estimator_kwargs["logprobs_reference"] = tensor_field(
+            data, advantage_config.reference_logprobs_field
+        )
+
+    return PreparedAdvantageInputs(
+        prompt_ids=prompt_ids,
+        rewards=rewards,
+        token_mask=token_mask,
+        sample_mask=sample_mask,
+        actor_mask=actor_mask,
+        repeated_batch=repeated_batch,
+        estimator_kwargs=estimator_kwargs,
+    )
+
+
+def compute_advantages_from_data(
+    data: Mapping[str, Any],
+    *,
+    advantage_config: "AdvantageConfig",
+    advantage_estimator: Any,
+    policy_logprobs_required: bool,
+    reference_logprobs_required: bool,
+) -> ComputedAdvantageInputs:
+    """Prepare and compute advantages through one shared production path."""
+    prepared = prepare_advantage_inputs_from_data(
+        data,
+        advantage_config=advantage_config,
+        policy_logprobs_required=policy_logprobs_required,
+        reference_logprobs_required=reference_logprobs_required,
+    )
+    advantages = advantage_estimator.compute_advantage(
+        prompt_ids=prepared.prompt_ids,
+        rewards=prepared.rewards,
+        mask=prepared.actor_mask,
+        repeated_batch=prepared.repeated_batch,
+        **prepared.estimator_kwargs,
+    )
+    return ComputedAdvantageInputs(
+        prompt_ids=prepared.prompt_ids,
+        rewards=prepared.rewards,
+        token_mask=prepared.token_mask,
+        sample_mask=prepared.sample_mask,
+        actor_mask=prepared.actor_mask,
+        repeated_batch=prepared.repeated_batch,
+        estimator_kwargs=prepared.estimator_kwargs,
+        advantages=advantages,
+    )
 
 
 def fields_for_put(meta: KVBatchMeta, fields: dict[str, torch.Tensor]) -> TensorDict:
