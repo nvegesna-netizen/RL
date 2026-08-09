@@ -792,6 +792,51 @@ class TestControlledReleaseFlow:
 
 
 class TestSiblingLifecycle:
+    def test_native_rollout_coerces_float_termination_to_bool(self, monkeypatch):
+        impl = object.__new__(AsyncRolloutImpl)
+        impl._max_rollout_turns = 1
+        impl._max_seq_len = 32
+        impl._lifecycle_recorder = None
+        impl._task_to_env = {}
+
+        async def _generate_response(_message_log, _stop_strings):
+            return (
+                {"role": "assistant", "content": "answer", "token_ids": [1]},
+                1,
+                {},
+            )
+
+        class _Tokenized:
+            input_ids = torch.tensor([[2]])
+
+        class _EnvironmentOutput:
+            rewards = torch.tensor([1.0])
+            terminateds = torch.tensor([1.0])
+            observations = [{"role": "environment", "content": "done"}]
+            next_stop_strings = [None]
+            metadata = [None]
+
+        impl._generate_response = _generate_response
+        impl._tokenizer = lambda *_args, **_kwargs: _Tokenized()
+        monkeypatch.setattr(
+            "nemo_rl.experience.rollout_manager.calculate_rewards",
+            lambda *_args, **_kwargs: _EnvironmentOutput(),
+        )
+
+        _, sample_metrics = _run(
+            impl._run_single_rollout(
+                {
+                    "idx": 0,
+                    "message_log": [],
+                    "extra_env_info": None,
+                    "task_name": "math",
+                },
+                0,
+            )
+        )
+
+        assert sample_metrics["terminated"] is True
+
     def test_native_rollout_records_individual_completion_order(self):
         impl = object.__new__(AsyncRolloutImpl)
         impl._num_generations_per_prompt = 3

@@ -323,7 +323,7 @@ class AsyncRolloutImpl:
             # https://github.com/NVIDIA-NeMo/RL/issues/2625 for more details.
             assert isinstance(env_output.rewards, torch.Tensor)
             total_reward += float(env_output.rewards[0].item())
-            terminated = env_output.terminateds[0].item()
+            terminated = bool(env_output.terminateds[0].item())
             env_obs_content = env_output.observations[0]["content"]
             tokenized_obs = self._tokenizer(
                 env_obs_content, return_tensors="pt", add_special_tokens=False
