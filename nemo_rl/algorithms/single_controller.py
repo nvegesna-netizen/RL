@@ -83,7 +83,7 @@ Generation = Union[VllmGeneration, SGLangGeneration]
 
 def _resolved_generation_trace_summaries(
     master_config: MasterConfig,
-) -> dict[str, str | int]:
+) -> dict[str, str | int | float | bool]:
     """Return provenance-critical values from the resolved runtime config."""
     generation = master_config.policy.get("generation")
     if generation is None:
@@ -95,11 +95,88 @@ def _resolved_generation_trace_summaries(
         context_length = generation["sglang_cfg"]["context_length"]
     else:
         context_length = generation["max_new_tokens"]
+    stop_token_ids = generation.get("stop_token_ids") or []
+    stop_strings = generation.get("stop_strings") or []
+    tokenizer_eos_token_id = generation.get("_tokenizer_eos_token_id")
+    stop_token_ids_json = json.dumps(stop_token_ids, separators=(",", ":"))
+    stop_strings_json = json.dumps(stop_strings, separators=(",", ":"))
+    speculative_config = (
+        generation.get("vllm_kwargs", {}).get("speculative_config")
+        if backend == "vllm"
+        else None
+    )
+    speculative_config_json = json.dumps(
+        speculative_config, separators=(",", ":"), sort_keys=True
+    )
+    tokenizer_name_json = json.dumps(
+        master_config.policy["tokenizer"]["name"], separators=(",", ":")
+    )
+    model_name_json = json.dumps(
+        master_config.policy["model_name"], separators=(",", ":")
+    )
     return {
         "generation_backend": backend,
         "max_total_sequence_length": master_config.policy["max_total_sequence_length"],
         "configured_max_new_tokens": generation["max_new_tokens"],
         "generation_context_length": context_length,
+        "tokenizer_eos_token_present": isinstance(tokenizer_eos_token_id, int),
+        "tokenizer_eos_token_id": (
+            tokenizer_eos_token_id if isinstance(tokenizer_eos_token_id, int) else -1
+        ),
+        "effective_stop_token_count": len(stop_token_ids),
+        "effective_stop_token_ids_sha256": hashlib.sha256(
+            stop_token_ids_json.encode("utf-8")
+        ).hexdigest(),
+        "effective_single_stop_token_id": (
+            stop_token_ids[0]
+            if len(stop_token_ids) == 1 and isinstance(stop_token_ids[0], int)
+            else -1
+        ),
+        "effective_stop_string_count": len(stop_strings),
+        "effective_stop_strings_sha256": hashlib.sha256(
+            stop_strings_json.encode("utf-8")
+        ).hexdigest(),
+        "vllm_skip_tokenizer_init": (
+            bool(generation["vllm_cfg"].get("skip_tokenizer_init", False))
+            if backend == "vllm"
+            else False
+        ),
+        "generation_ignore_eos": bool(generation.get("ignore_eos", False)),
+        "generation_temperature": generation["temperature"],
+        "generation_top_p": generation["top_p"],
+        "generation_top_k": (
+            generation.get("top_k") if generation.get("top_k") is not None else -1
+        ),
+        "generation_use_async_rollouts": (
+            bool(generation["vllm_cfg"].get("async_engine", False))
+            if backend == "vllm"
+            else bool(generation.get("use_async_rollouts", False))
+        ),
+        "generation_study_seed": (
+            int(study_seed)
+            if backend == "vllm"
+            and isinstance(
+                (study_seed := generation["vllm_cfg"].get("study_seed")), int
+            )
+            else -1
+        ),
+        "generation_speculative_config_sha256": hashlib.sha256(
+            speculative_config_json.encode("utf-8")
+        ).hexdigest(),
+        "policy_tokenizer_name_sha256": hashlib.sha256(
+            tokenizer_name_json.encode("utf-8")
+        ).hexdigest(),
+        "policy_model_name_sha256": hashlib.sha256(
+            model_name_json.encode("utf-8")
+        ).hexdigest(),
+        "grpo_seed": master_config.grpo.seed,
+        "num_generations_per_prompt": master_config.grpo.num_generations_per_prompt,
+        "max_rollout_turns": master_config.grpo.max_rollout_turns,
+        "num_prompts_per_step": master_config.grpo.num_prompts_per_step,
+        "max_inflight_prompts": master_config.async_rl.max_inflight_prompts,
+        "max_buffered_rollouts": master_config.async_rl.max_buffered_rollouts,
+        "vllm_include_stop_str_in_output": True,
+        "finish_reason_code_schema_version": 1,
     }
 
 
@@ -310,6 +387,11 @@ class SingleControllerActor:
                             len(self._fixed_pool_manifest.items)
                             if self._fixed_pool_manifest is not None
                             else 0
+                        ),
+                        "fixed_pool_design_id": (
+                            self._async_cfg.fixed_pool.design_id
+                            if self._fixed_pool_manifest is not None
+                            else "none"
                         ),
                         **_resolved_generation_trace_summaries(self._master_config),
                     },

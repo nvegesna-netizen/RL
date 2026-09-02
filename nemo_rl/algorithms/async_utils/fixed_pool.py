@@ -874,7 +874,10 @@ def validate_fixed_pool_manifest_design(
     """Dispatch strict validation for a declared fixed-pool study design."""
     if design_id == "ready_bias_v1":
         validate_ready_bias_manifest_design(manifest)
-    elif design_id == "openmath_latency_feasibility_v1":
+    elif design_id in {
+        "openmath_latency_feasibility_v1",
+        "openmath_termination_headroom_v1",
+    }:
         validate_openmath_latency_feasibility_manifest_design(manifest)
     else:
         raise FixedPoolManifestError(f"unsupported fixed-pool design_id: {design_id!r}")

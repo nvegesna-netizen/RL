@@ -41,6 +41,7 @@ from nemo_rl.distributed.batched_data_dict import BatchedDataDict
 from nemo_rl.experience.interfaces import Completion, PromptGroupRecord
 from nemo_rl.algorithms.async_utils.scheduler_trace import SchedulerEventType
 from nemo_rl.experience.rollout_manager import (
+    AsyncRolloutImpl,
     AsyncNemoGymRolloutImpl,
     RolloutManager,
 )
@@ -151,6 +152,67 @@ class _TraceSink:
         self.event_fields.append(fields)
         if event_type is self.fail_on:
             raise RuntimeError(f"injected trace failure: {event_type.value}")
+
+
+def test_async_rollout_aggregates_exact_finish_and_cap_diagnostics() -> None:
+    impl = object.__new__(AsyncRolloutImpl)
+    completions = [
+        Completion([], None, False, 1.0),
+        Completion([], None, True, 0.0),
+    ]
+    common = {
+        "turn_count": 1,
+        "total_tokens": 100,
+        "assistant_tokens": 80,
+        "env_tokens": 20,
+        "terminated": True,
+        "backend_abort_terminated": False,
+        "backend_other_terminated": False,
+        "backend_context_exhausted": False,
+        "backend_stop_reason_string": False,
+        "backend_stop_reason_matches_tokenizer_eos": False,
+        "backend_finish_reason_available": True,
+        "effective_max_new_tokens": 924,
+        "max_turns_reached": False,
+        "turn_gen_tokens": [80],
+        "turn_input_tokens": [100],
+        "turn_total_tokens": [180],
+        "per_worker_token_counts": {0: 80},
+    }
+    metrics = impl._aggregate_rollout_metrics(
+        completions,
+        [
+            {
+                **common,
+                "backend_length_terminated": False,
+                "backend_stop_terminated": True,
+                "backend_stop_reason_token": True,
+                "backend_stop_reason_matches_tokenizer_eos": True,
+                "effective_engine_seed": 52001,
+                "generated_at_effective_cap": False,
+                "generated_near_effective_cap": False,
+            },
+            {
+                **common,
+                "backend_length_terminated": True,
+                "backend_stop_terminated": False,
+                "backend_stop_reason_token": False,
+                "effective_engine_seed": 52001,
+                "generated_at_effective_cap": True,
+                "generated_near_effective_cap": True,
+            },
+        ],
+    )
+
+    assert metrics["backend_finish_reason_availability_rate"] == 1.0
+    assert metrics["backend_stop_termination_rate"] == 0.5
+    assert metrics["backend_length_termination_rate"] == 0.5
+    assert metrics["effective_max_new_tokens/min"] == 924
+    assert metrics["effective_max_new_tokens/max"] == 924
+    assert metrics["effective_engine_seed/min"] == 52001
+    assert metrics["effective_engine_seed/max"] == 52001
+    assert metrics["generated_at_effective_cap_rate"] == 0.5
+    assert metrics["generated_near_effective_cap_rate"] == 0.5
 
 
 class TestGenerateAndPushFlow:
@@ -267,6 +329,19 @@ class TestGenerateAndPushFlow:
                 "truncation_rate": 0.0,
                 "backend_length_termination_rate": 0.0,
                 "backend_finish_reason_availability_rate": 1.0,
+                "backend_stop_termination_rate": 1.0,
+                "backend_abort_termination_rate": 0.0,
+                "backend_other_termination_rate": 0.0,
+                "backend_context_exhausted_rate": 0.0,
+                "backend_stop_reason_token_rate": 1.0,
+                "backend_stop_reason_string_rate": 0.0,
+                "backend_stop_reason_matches_tokenizer_eos_rate": 1.0,
+                "effective_max_new_tokens/min": 384,
+                "effective_max_new_tokens/max": 384,
+                "effective_engine_seed/min": 52001,
+                "effective_engine_seed/max": 52001,
+                "generated_at_effective_cap_rate": 0.0,
+                "generated_near_effective_cap_rate": 0.0,
                 "natural_termination_rate": 1.0,
             },
         )
@@ -292,6 +367,19 @@ class TestGenerateAndPushFlow:
             "truncation_rate": 0.0,
             "backend_length_termination_rate": 0.0,
             "backend_finish_reason_availability_rate": 1.0,
+            "backend_stop_termination_rate": 1.0,
+            "backend_abort_termination_rate": 0.0,
+            "backend_other_termination_rate": 0.0,
+            "backend_context_exhausted_rate": 0.0,
+            "backend_stop_reason_token_rate": 1.0,
+            "backend_stop_reason_string_rate": 0.0,
+            "backend_stop_reason_matches_tokenizer_eos_rate": 1.0,
+            "effective_max_new_tokens/min": 384,
+            "effective_max_new_tokens/max": 384,
+            "effective_engine_seed/min": 52001,
+            "effective_engine_seed/max": 52001,
+            "generated_at_effective_cap_rate": 0.0,
+            "generated_near_effective_cap_rate": 0.0,
             "natural_termination_rate": 1.0,
         }
 

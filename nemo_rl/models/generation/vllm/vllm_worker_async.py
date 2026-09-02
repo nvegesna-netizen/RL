@@ -36,8 +36,18 @@ from nemo_rl.distributed.virtual_cluster import (
 )
 from nemo_rl.distributed.worker_group_utils import get_nsight_config_if_pattern_matches
 from nemo_rl.models.generation.interfaces import (
+    FINISH_REASON_ABORT,
+    FINISH_REASON_CONTEXT_EXHAUSTED,
+    FINISH_REASON_LENGTH,
+    FINISH_REASON_OTHER,
+    FINISH_REASON_STOP,
+    FINISH_REASON_UNAVAILABLE,
     GenerationDatumSpec,
     GenerationOutputSpec,
+    STOP_REASON_NONE,
+    STOP_REASON_OTHER,
+    STOP_REASON_STRING,
+    STOP_REASON_TOKEN_ID,
     verify_right_padding,
 )
 from nemo_rl.models.generation.vllm.checkpoint_engine import (
@@ -55,6 +65,32 @@ from nemo_rl.models.generation.openai_server_utils import (
 )
 
 LOGGER = logging.getLogger(__name__)
+
+
+def _finish_reason_code(reason: object) -> int:
+    """Map backend finish reasons to a stable, metadata-only code."""
+    if reason is None:
+        return FINISH_REASON_UNAVAILABLE
+    if reason == "stop":
+        return FINISH_REASON_STOP
+    if reason == "length":
+        return FINISH_REASON_LENGTH
+    if reason == "abort":
+        return FINISH_REASON_ABORT
+    return FINISH_REASON_OTHER
+
+
+def _stop_reason_codes(reason: object) -> tuple[int, int]:
+    """Classify stop-reason type without retaining strings or prompt content."""
+    if reason is None:
+        return STOP_REASON_NONE, -1
+    if isinstance(reason, bool):
+        return STOP_REASON_OTHER, -1
+    if isinstance(reason, int):
+        return STOP_REASON_TOKEN_ID, reason
+    if isinstance(reason, str):
+        return STOP_REASON_STRING, -1
+    return STOP_REASON_OTHER, -1
 
 
 class VllmAsyncGenerationWorkerImpl(
@@ -1007,6 +1043,31 @@ class VllmAsyncGenerationWorkerImpl(
                         "generation_lengths": generation_lengths_tensor,
                         "unpadded_sequence_lengths": unpadded_sequence_lengths_tensor,
                         "truncated": truncated_tensor,
+                        "finish_reason_code": torch.tensor(
+                            [FINISH_REASON_CONTEXT_EXHAUSTED],
+                            dtype=torch.int16,
+                            device=input_ids_single_row.device,
+                        ),
+                        "stop_reason_kind_code": torch.tensor(
+                            [STOP_REASON_NONE],
+                            dtype=torch.int16,
+                            device=input_ids_single_row.device,
+                        ),
+                        "stop_reason_token_id": torch.tensor(
+                            [-1], dtype=torch.long, device=input_ids_single_row.device
+                        ),
+                        "effective_max_new_tokens": torch.tensor(
+                            [0], dtype=torch.long, device=input_ids_single_row.device
+                        ),
+                        "effective_engine_seed": torch.tensor(
+                            [
+                                self._effective_engine_seed
+                                if self._effective_engine_seed is not None
+                                else -1
+                            ],
+                            dtype=torch.long,
+                            device=input_ids_single_row.device,
+                        ),
                     }
                 )
 
@@ -1114,6 +1175,10 @@ class VllmAsyncGenerationWorkerImpl(
                 dtype=torch.bool,
                 device=original_input_ids_single_row.device,
             )
+            finish_reason_code = _finish_reason_code(generation_details.finish_reason)
+            stop_reason_kind, stop_reason_token_id = _stop_reason_codes(
+                getattr(generation_details, "stop_reason", None)
+            )
 
             result_dict = {
                 "output_ids": output_ids_single_item_batched,
@@ -1121,6 +1186,35 @@ class VllmAsyncGenerationWorkerImpl(
                 "generation_lengths": generation_lengths_tensor,
                 "unpadded_sequence_lengths": unpadded_sequence_lengths_tensor,
                 "truncated": truncated_tensor,
+                "finish_reason_code": torch.tensor(
+                    [finish_reason_code],
+                    dtype=torch.int16,
+                    device=original_input_ids_single_row.device,
+                ),
+                "stop_reason_kind_code": torch.tensor(
+                    [stop_reason_kind],
+                    dtype=torch.int16,
+                    device=original_input_ids_single_row.device,
+                ),
+                "stop_reason_token_id": torch.tensor(
+                    [stop_reason_token_id],
+                    dtype=torch.long,
+                    device=original_input_ids_single_row.device,
+                ),
+                "effective_max_new_tokens": torch.tensor(
+                    [allowed_new_tokens],
+                    dtype=torch.long,
+                    device=original_input_ids_single_row.device,
+                ),
+                "effective_engine_seed": torch.tensor(
+                    [
+                        self._effective_engine_seed
+                        if self._effective_engine_seed is not None
+                        else -1
+                    ],
+                    dtype=torch.long,
+                    device=original_input_ids_single_row.device,
+                ),
             }
             routed_experts, r3_stats = pad_and_align_routed_expert_indices(
                 final_request_output,

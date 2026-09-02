@@ -40,6 +40,7 @@ def configure_generation_config(
             UserWarning,
         )
     config["_pad_token_id"] = tokenizer.pad_token_id
+    config["_tokenizer_eos_token_id"] = tokenizer.eos_token_id
     if config["stop_token_ids"] is None:
         config["stop_token_ids"] = [tokenizer.eos_token_id]
 

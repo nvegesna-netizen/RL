@@ -19,6 +19,18 @@ import torch
 
 from nemo_rl.distributed.batched_data_dict import BatchedDataDict
 
+FINISH_REASON_UNAVAILABLE = 0
+FINISH_REASON_STOP = 1
+FINISH_REASON_LENGTH = 2
+FINISH_REASON_ABORT = 3
+FINISH_REASON_OTHER = 4
+FINISH_REASON_CONTEXT_EXHAUSTED = 5
+
+STOP_REASON_NONE = 0
+STOP_REASON_TOKEN_ID = 1
+STOP_REASON_STRING = 2
+STOP_REASON_OTHER = 3
+
 # Routed-expert index tensors ([seq, layers, topk]) are carried in the narrowest
 # signed dtype that fits ids 0..num_experts-1 plus the -1 missing-route sentinel:
 # int8 for <=128 experts (e.g. Qwen3-MoE), int16 for <=32768 (e.g. DeepSeek-V3),
@@ -211,6 +223,8 @@ class GenerationConfig(TypedDict):
     use_async_rollouts: NotRequired[bool]
     # This isn't meant to be passed by the user, but is populated by nemo_rl.models.generation.__init__.configure_generation_config
     _pad_token_id: NotRequired[int]
+    # Runtime provenance populated by configure_generation_config.
+    _tokenizer_eos_token_id: NotRequired[int | None]
     # MTP draft weights arrive via refit if the trainer trains the MTP layer.
     _mtp_weights_from_refit: NotRequired[bool]
 
@@ -304,6 +318,13 @@ class GenerationOutputSpec(TypedDict):
     truncated: NotRequired[
         torch.Tensor
     ]  # Whether each sequence was truncated and hit max_tokens without stop token
+    # Privacy-safe vLLM termination diagnostics. Codes are defined in
+    # vllm_worker_async.py; -1 denotes an unavailable stop token id.
+    finish_reason_code: NotRequired[torch.Tensor]
+    stop_reason_kind_code: NotRequired[torch.Tensor]
+    stop_reason_token_id: NotRequired[torch.Tensor]
+    effective_max_new_tokens: NotRequired[torch.Tensor]
+    effective_engine_seed: NotRequired[torch.Tensor]
     __extra__: Any
 
 

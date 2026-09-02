@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import asyncio
 import importlib.util
 import json
 import os
@@ -44,6 +45,8 @@ from nemo_rl.models.generation.vllm.vllm_worker import (
 )
 from nemo_rl.models.generation.vllm.vllm_worker_async import (
     VllmAsyncGenerationWorkerImpl,
+    _finish_reason_code,
+    _stop_reason_codes,
 )
 from nemo_rl.models.policy import LoRAConfig, PolicyConfig
 from nemo_rl.models.policy.lm_policy import Policy
@@ -3109,3 +3112,48 @@ def test_vllm_megatron_weight_update_with_packing(cluster, test_input_data):
             megatron_policy.shutdown()
         if vllm_generation:
             vllm_generation.shutdown()
+
+
+@pytest.mark.parametrize(
+    ("reason", "expected"),
+    [(None, 0), ("stop", 1), ("length", 2), ("abort", 3), ("unknown", 4)],
+)
+def test_async_vllm_finish_reason_codes(reason, expected) -> None:
+    assert _finish_reason_code(reason) == expected
+
+
+@pytest.mark.parametrize(
+    ("reason", "expected"),
+    [(None, (0, -1)), (151643, (1, 151643)), ("</action>", (2, -1))],
+)
+def test_async_vllm_stop_reason_codes(reason, expected) -> None:
+    assert _stop_reason_codes(reason) == expected
+
+
+def test_async_vllm_context_exhausted_emits_diagnostic_tensors() -> None:
+    worker = VllmAsyncGenerationWorkerImpl.__new__(VllmAsyncGenerationWorkerImpl)
+    worker.cfg = {
+        "_pad_token_id": 0,
+        "max_new_tokens": 4,
+        "stop_strings": None,
+        "vllm_cfg": {"async_engine": True, "max_model_len": 4},
+        "vllm_kwargs": {},
+    }
+    worker._effective_engine_seed = 52001
+    data = BatchedDataDict[GenerationDatumSpec](
+        {
+            "input_ids": torch.tensor([[1, 2, 3, 4]]),
+            "input_lengths": torch.tensor([4]),
+            "stop_strings": [None],
+        }
+    )
+
+    async def collect():
+        return [value async for value in worker.generate_async(data)]
+
+    outputs = asyncio.run(collect())
+    assert len(outputs) == 1
+    _, output = outputs[0]
+    assert output["finish_reason_code"].tolist() == [5]
+    assert output["effective_max_new_tokens"].tolist() == [0]
+    assert output["effective_engine_seed"].tolist() == [52001]

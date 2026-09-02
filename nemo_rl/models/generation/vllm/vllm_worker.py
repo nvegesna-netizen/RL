@@ -286,6 +286,7 @@ class BaseVllmGenerationWorker:
             seed,
             config["vllm_cfg"].get("study_seed"),
         )
+        self._effective_engine_seed = seed
 
         # Only bind single-GPU workers to their GPU's NUMA node.
         # For TP>1 workers, the parent process spans multiple NUMA nodes;

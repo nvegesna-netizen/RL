@@ -39,6 +39,7 @@ from nemo_rl.utils.checkpoint import CheckpointingConfig
 FixedPoolDesignId: TypeAlias = Literal[
     "ready_bias_v1",
     "openmath_latency_feasibility_v1",
+    "openmath_termination_headroom_v1",
 ]
 
 

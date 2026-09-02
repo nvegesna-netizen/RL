@@ -253,6 +253,7 @@ project-includes = [
   "tools/model_diagnostics/6.vllm_routed_experts_completeness.py",
   "tools/refit_bandwidth_calculator.py",
   "tools/analyze_openmath_latency_feasibility.py",
+  "tools/analyze_openmath_termination_headroom.py",
   "tools/materialize_openmath_latency_pool.py",
   "tools/materialize_ready_bias_pool.py",
   "tools/x_token/__init__.py",

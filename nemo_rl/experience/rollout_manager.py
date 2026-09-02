@@ -43,6 +43,12 @@ from nemo_rl.experience.rollouts import (
     calculate_rewards,
 )
 from nemo_rl.models.generation.interfaces import (
+    FINISH_REASON_ABORT,
+    FINISH_REASON_CONTEXT_EXHAUSTED,
+    FINISH_REASON_LENGTH,
+    FINISH_REASON_OTHER,
+    FINISH_REASON_STOP,
+    FINISH_REASON_UNAVAILABLE,
     GenerationConfig,
     GenerationDatumSpec,
     GenerationInterface,
@@ -154,6 +160,17 @@ class AsyncRolloutImpl:
         backend_length_terminated = False
         backend_finish_reason_available = True
         saw_backend_response = False
+        backend_stop_terminated = False
+        backend_abort_terminated = False
+        backend_other_terminated = False
+        backend_context_exhausted = False
+        backend_stop_reason_token = False
+        backend_stop_reason_string = False
+        backend_stop_reason_matches_tokenizer_eos = False
+        effective_max_new_tokens: Optional[int] = None
+        effective_engine_seed: Optional[int] = None
+        generated_at_effective_cap = False
+        generated_near_effective_cap = False
         max_turns_reached = False
 
         # Track per-turn metrics
@@ -183,16 +200,56 @@ class AsyncRolloutImpl:
 
                 # Check if response was truncated (hit max_tokens without stop token)
                 response_truncated = gen_metrics.pop("_response_truncated", None)
+                finish_reason_code = gen_metrics.pop(
+                    "_finish_reason_code", FINISH_REASON_UNAVAILABLE
+                )
+                stop_reason_kind_code = gen_metrics.pop("_stop_reason_kind_code", 0)
+                stop_reason_token_id = gen_metrics.pop("_stop_reason_token_id", -1)
+                request_cap = gen_metrics.pop("_effective_max_new_tokens", None)
+                request_engine_seed = gen_metrics.pop("_effective_engine_seed", None)
                 saw_backend_response = True
-                if response_truncated is not None:
-                    if response_truncated[0]:
-                        backend_length_terminated = True
-                        truncated = True
+                if finish_reason_code == FINISH_REASON_UNAVAILABLE:
+                    backend_finish_reason_available = False
+                elif finish_reason_code == FINISH_REASON_STOP:
+                    backend_stop_terminated = True
+                elif finish_reason_code == FINISH_REASON_LENGTH:
+                    backend_length_terminated = True
+                    truncated = True
+                elif finish_reason_code == FINISH_REASON_ABORT:
+                    backend_abort_terminated = True
+                elif finish_reason_code == FINISH_REASON_OTHER:
+                    backend_other_terminated = True
+                elif finish_reason_code == FINISH_REASON_CONTEXT_EXHAUSTED:
+                    backend_context_exhausted = True
                 else:
+                    raise ValueError(
+                        f"unknown backend finish reason code: {finish_reason_code}"
+                    )
+                if response_truncated is None or bool(response_truncated[0]) != (
+                    finish_reason_code == FINISH_REASON_LENGTH
+                ):
                     backend_finish_reason_available = False
 
                 # Update token counts
                 gen_token_count = len(assistant_message["token_ids"])
+                if isinstance(request_cap, int):
+                    effective_max_new_tokens = request_cap
+                    generated_at_effective_cap = gen_token_count == request_cap
+                    generated_near_effective_cap = (
+                        request_cap > 0 and gen_token_count >= 0.9 * request_cap
+                    )
+                else:
+                    backend_finish_reason_available = False
+                if isinstance(request_engine_seed, int) and request_engine_seed >= 0:
+                    effective_engine_seed = request_engine_seed
+                else:
+                    backend_finish_reason_available = False
+                backend_stop_reason_token = stop_reason_kind_code == 1
+                backend_stop_reason_string = stop_reason_kind_code == 2
+                backend_stop_reason_matches_tokenizer_eos = (
+                    backend_stop_reason_token
+                    and stop_reason_token_id == self._tokenizer.eos_token_id
+                )
                 assistant_token_count += gen_token_count
                 total_token_count += gen_token_count
                 turn_gen_tokens.append(gen_token_count)
@@ -293,9 +350,22 @@ class AsyncRolloutImpl:
             "env_tokens": env_token_count,
             "terminated": terminated,
             "backend_length_terminated": backend_length_terminated,
+            "backend_stop_terminated": backend_stop_terminated,
+            "backend_abort_terminated": backend_abort_terminated,
+            "backend_other_terminated": backend_other_terminated,
+            "backend_context_exhausted": backend_context_exhausted,
+            "backend_stop_reason_token": backend_stop_reason_token,
+            "backend_stop_reason_string": backend_stop_reason_string,
+            "backend_stop_reason_matches_tokenizer_eos": (
+                backend_stop_reason_matches_tokenizer_eos
+            ),
             "backend_finish_reason_available": (
                 saw_backend_response and backend_finish_reason_available
             ),
+            "effective_max_new_tokens": effective_max_new_tokens,
+            "effective_engine_seed": effective_engine_seed,
+            "generated_at_effective_cap": generated_at_effective_cap,
+            "generated_near_effective_cap": generated_near_effective_cap,
             "max_turns_reached": max_turns_reached,
             "turn_gen_tokens": turn_gen_tokens,
             "turn_input_tokens": turn_input_tokens,
@@ -372,6 +442,26 @@ class AsyncRolloutImpl:
                 print(f"Error extracting gen_leader_worker_idx: {e}")
         if "truncated" in output:
             gen_metrics["_response_truncated"] = output["truncated"]
+        if "finish_reason_code" in output:
+            gen_metrics["_finish_reason_code"] = int(
+                output["finish_reason_code"][0].item()
+            )
+        if "stop_reason_kind_code" in output:
+            gen_metrics["_stop_reason_kind_code"] = int(
+                output["stop_reason_kind_code"][0].item()
+            )
+        if "stop_reason_token_id" in output:
+            gen_metrics["_stop_reason_token_id"] = int(
+                output["stop_reason_token_id"][0].item()
+            )
+        if "effective_max_new_tokens" in output:
+            gen_metrics["_effective_max_new_tokens"] = int(
+                output["effective_max_new_tokens"][0].item()
+            )
+        if "effective_engine_seed" in output:
+            gen_metrics["_effective_engine_seed"] = int(
+                output["effective_engine_seed"][0].item()
+            )
 
         return assistant_message, input_lengths, gen_metrics
 
@@ -394,6 +484,31 @@ class AsyncRolloutImpl:
         ]
         backend_finish_reason_available = [
             m["backend_finish_reason_available"] for m in all_sample_metrics
+        ]
+        backend_stop_terminated = [
+            m["backend_stop_terminated"] for m in all_sample_metrics
+        ]
+        backend_abort_terminated = [
+            m["backend_abort_terminated"] for m in all_sample_metrics
+        ]
+        backend_other_terminated = [
+            m["backend_other_terminated"] for m in all_sample_metrics
+        ]
+        backend_context_exhausted = [
+            m["backend_context_exhausted"] for m in all_sample_metrics
+        ]
+        backend_stop_reason_token = [
+            m["backend_stop_reason_token"] for m in all_sample_metrics
+        ]
+        backend_stop_reason_string = [
+            m["backend_stop_reason_string"] for m in all_sample_metrics
+        ]
+        backend_stop_reason_matches_tokenizer_eos = [
+            m["backend_stop_reason_matches_tokenizer_eos"] for m in all_sample_metrics
+        ]
+        effective_caps = [m["effective_max_new_tokens"] for m in all_sample_metrics]
+        effective_engine_seeds = [
+            m["effective_engine_seed"] for m in all_sample_metrics
         ]
         max_turns_reached = [m["max_turns_reached"] for m in all_sample_metrics]
 
@@ -427,9 +542,35 @@ class AsyncRolloutImpl:
                 backend_finish_reason_available
             )
             / n,
+            "backend_stop_termination_rate": sum(backend_stop_terminated) / n,
+            "backend_abort_termination_rate": sum(backend_abort_terminated) / n,
+            "backend_other_termination_rate": sum(backend_other_terminated) / n,
+            "backend_context_exhausted_rate": sum(backend_context_exhausted) / n,
+            "backend_stop_reason_token_rate": sum(backend_stop_reason_token) / n,
+            "backend_stop_reason_string_rate": sum(backend_stop_reason_string) / n,
+            "backend_stop_reason_matches_tokenizer_eos_rate": sum(
+                backend_stop_reason_matches_tokenizer_eos
+            )
+            / n,
+            "generated_at_effective_cap_rate": sum(
+                m["generated_at_effective_cap"] for m in all_sample_metrics
+            )
+            / n,
+            "generated_near_effective_cap_rate": sum(
+                m["generated_near_effective_cap"] for m in all_sample_metrics
+            )
+            / n,
             "natural_termination_rate": sum(terminated) / n,
             "max_turns_reached_rate": sum(max_turns_reached) / n,
         }
+        if all(isinstance(value, int) for value in effective_caps):
+            int_effective_caps = [int(value) for value in effective_caps]
+            rollout_metrics["effective_max_new_tokens/min"] = min(int_effective_caps)
+            rollout_metrics["effective_max_new_tokens/max"] = max(int_effective_caps)
+        if all(isinstance(value, int) for value in effective_engine_seeds):
+            int_engine_seeds = [int(value) for value in effective_engine_seeds]
+            rollout_metrics["effective_engine_seed/min"] = min(int_engine_seeds)
+            rollout_metrics["effective_engine_seed/max"] = max(int_engine_seeds)
 
         if "per_worker_token_counts" in all_sample_metrics[0]:
             per_worker_token_counts: dict[int, int] = {}
@@ -913,7 +1054,24 @@ class RolloutManager:
                 "truncation_rate",
                 "backend_length_termination_rate",
                 "backend_finish_reason_availability_rate",
+                "backend_stop_termination_rate",
+                "backend_abort_termination_rate",
+                "backend_other_termination_rate",
+                "backend_context_exhausted_rate",
+                "backend_stop_reason_token_rate",
+                "backend_stop_reason_string_rate",
+                "backend_stop_reason_matches_tokenizer_eos_rate",
+                "effective_max_new_tokens/min",
+                "effective_max_new_tokens/max",
+                "effective_engine_seed/min",
+                "effective_engine_seed/max",
+                "generated_at_effective_cap_rate",
+                "generated_near_effective_cap_rate",
                 "natural_termination_rate",
+                "max_turns_reached_rate",
+                "max_gen_tokens_per_turn/max",
+                "env_tokens_per_sample/min",
+                "env_tokens_per_sample/max",
                 "timing/rollout/total",
                 "total_turns",
                 "avg_turns_per_sample",

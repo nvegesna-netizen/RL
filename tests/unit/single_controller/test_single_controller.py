@@ -15,6 +15,8 @@
 """Tests for SingleController initialization and pump lifecycle."""
 
 import asyncio
+import hashlib
+import json
 from types import SimpleNamespace
 from unittest.mock import MagicMock
 
@@ -45,21 +47,80 @@ class FakeWeightSynchronizer:
 def test_generation_trace_summaries_use_resolved_runtime_config() -> None:
     master_config = MasterConfig.model_construct(
         policy={
+            "model_name": "/models/qwen",
             "max_total_sequence_length": 512,
+            "tokenizer": {"name": "/models/qwen"},
             "generation": {
                 "backend": "vllm",
                 "max_new_tokens": 512,
-                "vllm_cfg": {"max_model_len": 512},
+                "temperature": 1.0,
+                "top_p": 1.0,
+                "top_k": None,
+                "stop_token_ids": [151643],
+                "stop_strings": None,
+                "_tokenizer_eos_token_id": 151643,
+                "vllm_cfg": {
+                    "async_engine": True,
+                    "max_model_len": 512,
+                    "skip_tokenizer_init": True,
+                    "study_seed": 52001,
+                },
             },
-        }
+        },
+        grpo=GRPOConfig.model_construct(
+            seed=20260901,
+            num_generations_per_prompt=2,
+            max_rollout_turns=1,
+            num_prompts_per_step=4,
+        ),
+        async_rl=AsyncRLConfig(
+            max_inflight_prompts=4,
+            max_buffered_rollouts=8,
+        ),
     )
 
-    assert _resolved_generation_trace_summaries(master_config) == {
+    summaries = _resolved_generation_trace_summaries(master_config)
+    assert summaries == {
         "generation_backend": "vllm",
         "max_total_sequence_length": 512,
         "configured_max_new_tokens": 512,
         "generation_context_length": 512,
+        "tokenizer_eos_token_present": True,
+        "tokenizer_eos_token_id": 151643,
+        "effective_stop_token_count": 1,
+        "effective_stop_token_ids_sha256": hashlib.sha256(b"[151643]").hexdigest(),
+        "effective_single_stop_token_id": 151643,
+        "effective_stop_string_count": 0,
+        "effective_stop_strings_sha256": hashlib.sha256(b"[]").hexdigest(),
+        "vllm_skip_tokenizer_init": True,
+        "generation_ignore_eos": False,
+        "generation_temperature": 1.0,
+        "generation_top_p": 1.0,
+        "generation_top_k": -1,
+        "generation_use_async_rollouts": True,
+        "generation_study_seed": 52001,
+        "generation_speculative_config_sha256": hashlib.sha256(b"null").hexdigest(),
+        "policy_tokenizer_name_sha256": hashlib.sha256(
+            json.dumps("/models/qwen", separators=(",", ":")).encode("utf-8")
+        ).hexdigest(),
+        "policy_model_name_sha256": hashlib.sha256(
+            json.dumps("/models/qwen", separators=(",", ":")).encode("utf-8")
+        ).hexdigest(),
+        "grpo_seed": 20260901,
+        "num_generations_per_prompt": 2,
+        "max_rollout_turns": 1,
+        "num_prompts_per_step": 4,
+        "max_inflight_prompts": 4,
+        "max_buffered_rollouts": 8,
+        "vllm_include_stop_str_in_output": True,
+        "finish_reason_code_schema_version": 1,
     }
+
+    master_config.policy["generation"]["vllm_cfg"].pop("study_seed")
+    assert (
+        _resolved_generation_trace_summaries(master_config)["generation_study_seed"]
+        == -1
+    )
 
 
 def test_generation_trace_summaries_require_generation_config() -> None:
