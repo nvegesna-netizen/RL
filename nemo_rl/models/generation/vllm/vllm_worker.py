@@ -64,6 +64,21 @@ from nemo_rl.weight_sync.checkpoint_engine_config import (
 logger = logging.getLogger(__name__)
 
 
+def resolve_vllm_engine_seed(
+    topology_seed: Optional[int], study_seed: Optional[int]
+) -> Optional[int]:
+    """Combine a reproducible study seed with the per-engine topology seed."""
+    if study_seed is None:
+        return topology_seed
+    if (
+        not isinstance(study_seed, int)
+        or isinstance(study_seed, bool)
+        or study_seed < 0
+    ):
+        raise ValueError("vllm_cfg.study_seed must be a non-negative integer")
+    return study_seed + (topology_seed or 0)
+
+
 def _context_capped_max_new_tokens(
     *, configured_max_new_tokens: int, input_length: int, max_model_len: int
 ) -> int:
@@ -266,6 +281,11 @@ class BaseVllmGenerationWorker:
                 enables overlapping vLLM model loading with NeMo Gym init.
         """
         from nemo_rl.distributed.numa_utils import bind_to_gpu_numa
+
+        seed = resolve_vllm_engine_seed(
+            seed,
+            config["vllm_cfg"].get("study_seed"),
+        )
 
         # Only bind single-GPU workers to their GPU's NUMA node.
         # For TP>1 workers, the parent process spans multiple NUMA nodes;

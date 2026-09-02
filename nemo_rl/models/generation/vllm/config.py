@@ -69,6 +69,10 @@ class VllmSpecificArgs(TypedDict):
     # for per-recipe knobs (e.g. forcing a specific fused-MoE backend) without
     # affecting other test cases.
     env_vars: NotRequired[dict[str, str]]
+    # Optional experiment-level offset added to the topology-derived engine
+    # seed. This preserves distinct DP-engine seeds while making independent
+    # collection replicates explicit and reproducible.
+    study_seed: NotRequired[int]
     # A filepath that can be imported to register a vLLM reasoning parser
     reasoning_parser_plugin: NotRequired[str]
 
