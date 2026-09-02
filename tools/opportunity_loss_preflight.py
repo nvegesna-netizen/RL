@@ -47,6 +47,8 @@ CONFIG_PATH = (
 )
 PIPELINE_PATH = "tools/opportunity_loss_pipeline.py"
 PIPELINE_TEST_PATH = "tests/unit/tools/test_opportunity_loss_pipeline.py"
+MECHANISM_PATH = "tools/opportunity_loss_mechanism.py"
+MECHANISM_TEST_PATH = "tests/unit/tools/test_opportunity_loss_mechanism.py"
 
 
 class OpportunityLossPreflightError(ValueError):
@@ -176,7 +178,13 @@ def build_preflight_lock(
     if protocol_value.get("m4_evidence_commit") != M4_EVIDENCE_COMMIT:
         raise OpportunityLossPreflightError("protocol M4 evidence binding disagrees")
     files = {}
-    for name in (CONFIG_PATH, PIPELINE_PATH, PIPELINE_TEST_PATH):
+    for name in (
+        CONFIG_PATH,
+        PIPELINE_PATH,
+        PIPELINE_TEST_PATH,
+        MECHANISM_PATH,
+        MECHANISM_TEST_PATH,
+    ):
         raw = (repo / name).read_bytes()
         files[name] = {"sha256": _sha(raw), "size": len(raw)}
     return {

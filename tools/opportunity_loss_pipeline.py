@@ -34,6 +34,7 @@ from tools.opportunity_ledger_join import (
     join_opportunity_ledgers,
 )
 from tools.opportunity_loss_inference import infer_opportunity_loss
+from tools.opportunity_loss_mechanism import assess_mechanism_replication
 
 
 class OpportunityLossPipelineError(ValueError):
@@ -316,6 +317,10 @@ def _parse_protocol(
             instrumentation.get("corrected_observer_duty_portability_target"),
             name="observer duty target",
         ),
+        "max_staleness_versions": _integer(
+            runtime.get("max_staleness_versions"), name="max_staleness_versions"
+        ),
+        "mechanism_replication": raw.get("mechanism_replication"),
     }
     return raw, join_protocol, options
 
@@ -362,6 +367,12 @@ def build_result(
         bootstrap_draws=int(options["bootstrap_draws"]),
         bootstrap_seed=int(options["bootstrap_seed"]),
     )
+    mechanism = assess_mechanism_replication(
+        lifecycle_rows=lifecycle_rows,
+        assignments=rows,
+        contract=options["mechanism_replication"],
+        max_staleness_versions=int(options["max_staleness_versions"]),
+    )
     group_count = sum(row.get("event_type") == "group" for row in opportunity_rows)
     duty = assess_observer_duty(
         _parse_canonical_object(duty_data, name="observer duty"),
@@ -374,7 +385,7 @@ def build_result(
     )
     return {
         "schema_version": 1,
-        "result_scope": "primary_opportunity_loss_and_observer_duty",
+        "result_scope": "primary_opportunity_loss_mechanism_and_observer_duty",
         "protocol": _sha_size(protocol_data),
         "inputs": {
             "lifecycle": {
@@ -391,6 +402,9 @@ def build_result(
         "primary_assignment_count": len(rows),
         "causal_conclusion": causal.conclusion,
         "causal_inference": causal.to_dict(),
+        "mechanism_replication_conclusion": mechanism.conclusion,
+        "mechanism_replication": mechanism.to_dict(),
+        "mechanism_is_support_condition_not_primary_endpoint": True,
         "portability_qualifier": duty.conclusion,
         "observer_duty": duty.to_dict(),
         "portability_does_not_modify_causal_conclusion": True,

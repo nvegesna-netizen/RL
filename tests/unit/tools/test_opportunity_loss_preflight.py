@@ -26,6 +26,7 @@ from tools.opportunity_loss_preflight import (
     CONFIG_PATH,
     IMAGE_COMMIT,
     IMAGE_SHA256,
+    MECHANISM_PATH,
     OpportunityLossPreflightError,
     build_preflight_lock,
     validate_acquisition_config,
@@ -87,6 +88,7 @@ def test_lock_is_no_training_and_binds_exact_image_and_pending_m4() -> None:
     assert result["image"]["sha256"] == IMAGE_SHA256
     assert result["image"]["embedded_commit"] == IMAGE_COMMIT
     assert result["m4_mechanism_replication"]["current_acquisition_status"] == "PENDING"
+    assert MECHANISM_PATH in result["files"]
     encoded = json.dumps(result, sort_keys=True)
     assert "run_grpo_single_controller" not in encoded
     assert "jet submit" not in encoded

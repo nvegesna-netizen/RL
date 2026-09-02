@@ -47,7 +47,27 @@ def _protocol() -> dict[str, object]:
             {"delay_seconds": 10, "label": "d10", "mass": 2},
         ],
         "windows": {"primary_start_versions": [0, 1]},
-        "runtime": {"generations_per_prompt": 2, "train_global_batch_size": 2},
+        "runtime": {
+            "generations_per_prompt": 2,
+            "max_staleness_versions": 1,
+            "train_global_batch_size": 2,
+        },
+        "mechanism_replication": {
+            "accepted_predecessor_commit": "a6be6971b79ad0d6b48c0dc85bb7f09682c2f7dd",
+            "role": "support_condition_not_primary_endpoint",
+            "score_window": "primary_start_versions",
+            "thresholds": {
+                "maximum_control_direct_chain_rate": 0.02,
+                "maximum_delay_overshoot_p99_seconds": 2.0,
+                "minimum_d10_d5_direct_chain_contrast": 0.2,
+                "minimum_d10_d5_version_advance_contrast": 0.25,
+                "minimum_d10_direct_chain_rate": 0.4,
+                "minimum_d5_control_direct_chain_contrast": 0.1,
+                "minimum_d5_control_version_advance_contrast": 0.2,
+                "minimum_d5_direct_chain_rate": 0.1,
+                "minimum_nonzero_delay_compliance": 0.99,
+            },
+        },
         "instrumentation": {
             "common_in_all_arms": True,
             "off_on_abba": False,
@@ -159,6 +179,9 @@ def test_pipeline_reconstructs_causal_result_and_separate_portability(tmp_path) 
     assert result["primary_assignment_count"] == 12
     assert result["causal_conclusion"] == "NOT_MATERIAL"
     assert result["portability_qualifier"] == "AMBER_OBSERVER_DUTY"
+    assert result["mechanism_replication_conclusion"] == (
+        "INSUFFICIENT_MECHANISM_EVIDENCE"
+    )
     assert result["portability_does_not_modify_causal_conclusion"] is True
     assert result["inputs"]["opportunity"]["group_count"] == 12
 
