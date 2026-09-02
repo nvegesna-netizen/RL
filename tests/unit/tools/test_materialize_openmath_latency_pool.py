@@ -6,6 +6,7 @@ from pathlib import Path
 
 import pytest
 
+from nemo_rl.algorithms.async_utils import fixed_pool as fixed_pool_module
 from nemo_rl.algorithms.async_utils.fixed_pool import (
     load_fixed_pool_manifest,
     validate_fixed_pool_manifest_design,
@@ -91,14 +92,16 @@ def _patch_external_dependencies(
     prompt_file: Path,
 ) -> None:
     weights = b"synthetic pinned weights"
+    prompt_sha = hashlib.sha256(prompt_file.read_bytes()).hexdigest()
+    weights_sha = hashlib.sha256(weights).hexdigest()
     monkeypatch.setattr(materializer, "DATASET_CARDINALITY", len(dataset))
+    monkeypatch.setattr(materializer, "PROMPT_FILE_SHA256", prompt_sha)
+    monkeypatch.setattr(materializer, "MODEL_WEIGHTS_SHA256", weights_sha)
+    monkeypatch.setattr(fixed_pool_module, "OPENMATH_PROMPT_FILE_SHA256", prompt_sha)
     monkeypatch.setattr(
-        materializer,
-        "PROMPT_FILE_SHA256",
-        hashlib.sha256(prompt_file.read_bytes()).hexdigest(),
-    )
-    monkeypatch.setattr(
-        materializer, "MODEL_WEIGHTS_SHA256", hashlib.sha256(weights).hexdigest()
+        fixed_pool_module,
+        "OPENMATH_MODEL_WEIGHTS_SHA256",
+        weights_sha,
     )
 
     def fake_snapshot_download(*, repo_id: str, revision: str, local_dir: Path) -> None:
