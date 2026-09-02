@@ -17,8 +17,10 @@
 from __future__ import annotations
 
 import math
+import random
 from collections.abc import Mapping, Sequence
 from dataclasses import asdict, dataclass
+from statistics import NormalDist
 from typing import Any, Literal
 
 from tools.opportunity_ledger_join import JoinedOpportunityAssignment
@@ -39,6 +41,9 @@ class AdjustedEndpointInference:
     hac_standard_error: float
     numerator: float
     pooled_mean_opportunity: float
+    hac_interval: tuple[float, float]
+    bootstrap_interval: tuple[float, float]
+    envelope: tuple[float, float]
 
 
 @dataclass(frozen=True)
@@ -51,10 +56,51 @@ class AdjustedOpportunityLossInference:
     hac_lag: int
     covariates: tuple[str, ...]
     denominator: str
+    identification_interval: tuple[float, float]
+    confidence_envelope: tuple[float, float]
+    material_threshold: float
+    material_p_value: float
+    max_missing_fraction: float
+    coverage_gate_passed: bool
+    conclusion: str
+    confidence: float
+    material_alpha: float
+    bootstrap_draws: int
+    bootstrap_seed: int
+    block_size: int
 
     def to_dict(self) -> dict[str, Any]:
         """Return a JSON-compatible result."""
         return asdict(self)
+
+
+@dataclass(frozen=True)
+class _EndpointWork:
+    estimate: float
+    hac_standard_error: float
+    numerator: float
+    pooled_mean_opportunity: float
+    scores: tuple[float, ...]
+
+
+def _probability(value: float, *, name: str) -> float:
+    if not math.isfinite(value) or not 0.0 < value < 1.0:
+        raise AdjustedOpportunityLossError(f"{name} must be in (0, 1)")
+    return value
+
+
+def _type7(values: Sequence[float], probability: float) -> float:
+    if not values:
+        raise AdjustedOpportunityLossError("quantile requires values")
+    _probability(probability, name="quantile probability")
+    ordered = sorted(values)
+    location = (len(ordered) - 1) * probability
+    lower = math.floor(location)
+    upper = math.ceil(location)
+    if lower == upper:
+        return ordered[lower]
+    weight = location - lower
+    return ordered[lower] * (1.0 - weight) + ordered[upper] * weight
 
 
 def _solve(matrix: Sequence[Sequence[float]], target: Sequence[float]) -> list[float]:
@@ -188,7 +234,7 @@ def _endpoint(
     folds: int,
     hac_lag: int,
     opportunity_scale: float,
-) -> AdjustedEndpointInference:
+) -> _EndpointWork:
     outcomes = [
         _outcome(
             row,
@@ -246,11 +292,80 @@ def _endpoint(
         for row, pseudo in zip(rows, pseudo_outcomes, strict=True)
     ]
     standard_error = _hac_standard_error(rows, scores, versions=versions, lag=hac_lag)
-    return AdjustedEndpointInference(
+    return _EndpointWork(
         estimate=estimate,
         hac_standard_error=standard_error,
         numerator=numerator,
         pooled_mean_opportunity=mean_opportunity,
+        scores=tuple(scores),
+    )
+
+
+def _bootstrap_shifts(
+    rows: Sequence[JoinedOpportunityAssignment],
+    scores: Sequence[float],
+    *,
+    versions: Sequence[int],
+    block_size: int,
+    draws: int,
+    seed: int,
+) -> list[float]:
+    if block_size <= 0 or block_size > len(versions):
+        raise AdjustedOpportunityLossError("invalid circular bootstrap block size")
+    if draws <= 0:
+        raise AdjustedOpportunityLossError("bootstrap draws must be positive")
+    by_version: dict[int, list[float]] = {version: [] for version in versions}
+    for row, score in zip(rows, scores, strict=True):
+        by_version[row.start_version].append(score)
+    rng = random.Random(seed)
+    block_count = math.ceil(len(versions) / block_size)
+    shifts = []
+    for _draw in range(draws):
+        sampled_versions = []
+        for _block in range(block_count):
+            start = rng.randrange(len(versions))
+            sampled_versions.extend(
+                versions[(start + offset) % len(versions)]
+                for offset in range(block_size)
+            )
+        sampled_scores = [
+            score
+            for version in sampled_versions[: len(versions)]
+            for score in by_version[version]
+        ]
+        if not sampled_scores:
+            raise AdjustedOpportunityLossError("bootstrap sample has no assignments")
+        shifts.append(math.fsum(sampled_scores) / len(sampled_scores))
+    return shifts
+
+
+def _finalize_endpoint(
+    work: _EndpointWork,
+    *,
+    shifts: Sequence[float],
+    confidence: float,
+) -> AdjustedEndpointInference:
+    tail = (1.0 - confidence) / 2.0
+    z = NormalDist().inv_cdf(0.5 + confidence / 2.0)
+    hac_interval = (
+        work.estimate - z * work.hac_standard_error,
+        work.estimate + z * work.hac_standard_error,
+    )
+    bootstrap_interval = (
+        work.estimate - _type7(shifts, 1.0 - tail),
+        work.estimate - _type7(shifts, tail),
+    )
+    return AdjustedEndpointInference(
+        estimate=work.estimate,
+        hac_standard_error=work.hac_standard_error,
+        numerator=work.numerator,
+        pooled_mean_opportunity=work.pooled_mean_opportunity,
+        hac_interval=hac_interval,
+        bootstrap_interval=bootstrap_interval,
+        envelope=(
+            min(hac_interval[0], bootstrap_interval[0]),
+            max(hac_interval[1], bootstrap_interval[1]),
+        ),
     )
 
 
@@ -264,6 +379,13 @@ def infer_adjusted_opportunity_loss(
     treatment_arm: str = "d5",
     folds: int = 8,
     hac_lag: int = 4,
+    confidence: float = 0.95,
+    material_threshold: float = 0.2,
+    material_alpha: float = 0.05,
+    max_missing_fraction: float = 0.01,
+    block_size: int = 8,
+    bootstrap_draws: int = 20_000,
+    bootstrap_seed: int = 20260903,
 ) -> AdjustedOpportunityLossInference:
     """Estimate the same population contrast with pre-delay adjustment.
 
@@ -285,6 +407,15 @@ def infer_adjusted_opportunity_loss(
             or not 0.0 < propensity < 1.0
         ):
             raise AdjustedOpportunityLossError(f"invalid propensity for {arm}")
+    confidence = _probability(confidence, name="confidence")
+    material_alpha = _probability(material_alpha, name="material alpha")
+    if (
+        not math.isfinite(material_threshold)
+        or material_threshold < 0.0
+        or not math.isfinite(max_missing_fraction)
+        or not 0.0 <= max_missing_fraction <= 1.0
+    ):
+        raise AdjustedOpportunityLossError("invalid threshold or missingness limit")
     if primary_start_version < 0 or primary_end_version <= primary_start_version:
         raise AdjustedOpportunityLossError("invalid primary version window")
     versions = tuple(range(primary_start_version, primary_end_version + 1))
@@ -298,7 +429,7 @@ def infer_adjusted_opportunity_loss(
     )
     if not math.isfinite(opportunity_scale) or opportunity_scale <= 0.0:
         raise AdjustedOpportunityLossError("opportunity scale must be positive")
-    lower = _endpoint(
+    lower_work = _endpoint(
         rows,
         endpoint="lower",
         control_arm=control_arm,
@@ -308,7 +439,7 @@ def infer_adjusted_opportunity_loss(
         hac_lag=hac_lag,
         opportunity_scale=opportunity_scale,
     )
-    upper = _endpoint(
+    upper_work = _endpoint(
         rows,
         endpoint="upper",
         control_arm=control_arm,
@@ -318,8 +449,58 @@ def infer_adjusted_opportunity_loss(
         hac_lag=hac_lag,
         opportunity_scale=opportunity_scale,
     )
-    if lower.estimate > upper.estimate + 1e-12:
+    if lower_work.estimate > upper_work.estimate + 1e-12:
         raise AdjustedOpportunityLossError("adjusted sharp endpoints are reversed")
+    lower_shifts = _bootstrap_shifts(
+        rows,
+        lower_work.scores,
+        versions=versions,
+        block_size=block_size,
+        draws=bootstrap_draws,
+        seed=bootstrap_seed,
+    )
+    upper_shifts = _bootstrap_shifts(
+        rows,
+        upper_work.scores,
+        versions=versions,
+        block_size=block_size,
+        draws=bootstrap_draws,
+        seed=bootstrap_seed,
+    )
+    lower = _finalize_endpoint(lower_work, shifts=lower_shifts, confidence=confidence)
+    upper = _finalize_endpoint(upper_work, shifts=upper_shifts, confidence=confidence)
+    if lower.hac_standard_error == 0.0:
+        p_hac = 0.0 if lower.estimate > material_threshold else 1.0
+    else:
+        p_hac = 1.0 - NormalDist().cdf(
+            (lower.estimate - material_threshold) / lower.hac_standard_error
+        )
+    p_bootstrap = (
+        1 + sum(shift >= lower.estimate - material_threshold for shift in lower_shifts)
+    ) / (len(lower_shifts) + 1)
+    material_p_value = max(p_hac, p_bootstrap)
+    arm_missing = {
+        arm: (
+            sum(row.delivered is None for row in rows if row.arm == arm)
+            / sum(row.arm == arm for row in rows)
+        )
+        for arm in (control_arm, treatment_arm)
+    }
+    coverage_gate_passed = all(
+        fraction <= max_missing_fraction for fraction in arm_missing.values()
+    )
+    confidence_envelope = (lower.envelope[0], upper.envelope[1])
+    if not coverage_gate_passed:
+        conclusion = "INSUFFICIENT_TERMINAL_COVERAGE"
+    elif (
+        confidence_envelope[0] > material_threshold
+        and material_p_value <= material_alpha
+    ):
+        conclusion = "MATERIAL"
+    elif confidence_envelope[1] <= material_threshold:
+        conclusion = "NOT_MATERIAL"
+    else:
+        conclusion = "INCONCLUSIVE"
     return AdjustedOpportunityLossInference(
         lower_endpoint=lower,
         upper_endpoint=upper,
@@ -327,4 +508,16 @@ def infer_adjusted_opportunity_loss(
         hac_lag=hac_lag,
         covariates=("opportunity_Q", "opportunity_is_zero"),
         denominator="pooled_pre_delay_mean_opportunity",
+        identification_interval=(lower.estimate, upper.estimate),
+        confidence_envelope=confidence_envelope,
+        material_threshold=material_threshold,
+        material_p_value=material_p_value,
+        max_missing_fraction=max_missing_fraction,
+        coverage_gate_passed=coverage_gate_passed,
+        conclusion=conclusion,
+        confidence=confidence,
+        material_alpha=material_alpha,
+        bootstrap_draws=bootstrap_draws,
+        bootstrap_seed=bootstrap_seed,
+        block_size=block_size,
     )

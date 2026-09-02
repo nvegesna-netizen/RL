@@ -46,6 +46,9 @@ def _infer(rows: list[JoinedOpportunityAssignment]):
         primary_end_version=15,
         folds=4,
         hac_lag=2,
+        block_size=4,
+        bootstrap_draws=199,
+        bootstrap_seed=23,
     )
 
 
@@ -57,6 +60,7 @@ def test_matched_arm_outcomes_have_zero_adjusted_effect() -> None:
     assert result.lower_endpoint.hac_standard_error == pytest.approx(0.0, abs=1e-12)
     assert result.covariates == ("opportunity_Q", "opportunity_is_zero")
     assert result.denominator == "pooled_pre_delay_mean_opportunity"
+    assert result.conclusion == "NOT_MATERIAL"
 
 
 def test_complete_treatment_loss_is_positive() -> None:
@@ -68,6 +72,8 @@ def test_complete_treatment_loss_is_positive() -> None:
 
     assert result.lower_endpoint == result.upper_endpoint
     assert result.lower_endpoint.estimate == pytest.approx(1.0)
+    assert result.conclusion == "MATERIAL"
+    assert result.confidence_envelope[0] > result.material_threshold
 
 
 def test_missing_terminal_preserves_sharp_endpoint_order() -> None:
@@ -88,6 +94,8 @@ def test_missing_terminal_preserves_sharp_endpoint_order() -> None:
     result = _infer(rows)
 
     assert result.lower_endpoint.estimate < result.upper_endpoint.estimate
+    assert result.coverage_gate_passed is False
+    assert result.conclusion == "INSUFFICIENT_TERMINAL_COVERAGE"
 
 
 def test_row_order_does_not_change_result() -> None:
@@ -99,6 +107,12 @@ def test_row_order_does_not_change_result() -> None:
     )
     assert reverse.lower_endpoint.hac_standard_error == pytest.approx(
         forward.lower_endpoint.hac_standard_error, abs=1e-12
+    )
+    assert reverse.lower_endpoint.bootstrap_interval == pytest.approx(
+        forward.lower_endpoint.bootstrap_interval, abs=1e-12
+    )
+    assert reverse.material_p_value == pytest.approx(
+        forward.material_p_value, abs=1e-12
     )
 
 
@@ -123,6 +137,20 @@ def test_invalid_propensity_fails_closed() -> None:
             primary_end_version=15,
             folds=4,
             hac_lag=2,
+        )
+
+
+def test_invalid_bootstrap_contract_fails_closed() -> None:
+    with pytest.raises(AdjustedOpportunityLossError, match="block size"):
+        infer_adjusted_opportunity_loss(
+            _rows(),
+            propensities=_PROPENSITIES,
+            primary_start_version=0,
+            primary_end_version=15,
+            folds=4,
+            hac_lag=2,
+            block_size=17,
+            bootstrap_draws=19,
         )
 
 
@@ -156,6 +184,9 @@ def test_sharp_null_randomization_has_bounded_false_positive_rate() -> None:
             primary_end_version=31,
             folds=4,
             hac_lag=2,
+            block_size=4,
+            bootstrap_draws=49,
+            bootstrap_seed=draw,
         )
         endpoint = result.lower_endpoint
         if endpoint.hac_standard_error > 0.0:
