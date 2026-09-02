@@ -151,6 +151,9 @@ class AsyncRolloutImpl:
         # truncated statistics
         terminated = False
         truncated = False
+        backend_length_terminated = False
+        backend_finish_reason_available = True
+        saw_backend_response = False
         max_turns_reached = False
 
         # Track per-turn metrics
@@ -180,8 +183,13 @@ class AsyncRolloutImpl:
 
                 # Check if response was truncated (hit max_tokens without stop token)
                 response_truncated = gen_metrics.pop("_response_truncated", None)
-                if response_truncated is not None and response_truncated[0]:
-                    truncated = True
+                saw_backend_response = True
+                if response_truncated is not None:
+                    if response_truncated[0]:
+                        backend_length_terminated = True
+                        truncated = True
+                else:
+                    backend_finish_reason_available = False
 
                 # Update token counts
                 gen_token_count = len(assistant_message["token_ids"])
@@ -284,6 +292,10 @@ class AsyncRolloutImpl:
             "assistant_tokens": assistant_token_count,
             "env_tokens": env_token_count,
             "terminated": terminated,
+            "backend_length_terminated": backend_length_terminated,
+            "backend_finish_reason_available": (
+                saw_backend_response and backend_finish_reason_available
+            ),
             "max_turns_reached": max_turns_reached,
             "turn_gen_tokens": turn_gen_tokens,
             "turn_input_tokens": turn_input_tokens,
@@ -377,6 +389,12 @@ class AsyncRolloutImpl:
         # truncated metrics
         truncated = [c.truncated for c in completions]
         terminated = [m["terminated"] for m in all_sample_metrics]
+        backend_length_terminated = [
+            m["backend_length_terminated"] for m in all_sample_metrics
+        ]
+        backend_finish_reason_available = [
+            m["backend_finish_reason_available"] for m in all_sample_metrics
+        ]
         max_turns_reached = [m["max_turns_reached"] for m in all_sample_metrics]
 
         # max_gen_tokens_per_turn: Diagnostic for long single generations
@@ -404,6 +422,11 @@ class AsyncRolloutImpl:
             "max_gen_tokens_per_turn/p95": pct(max_gen_tokens_per_turn, 95),
             # truncated metrics
             "truncation_rate": sum(truncated) / n,
+            "backend_length_termination_rate": sum(backend_length_terminated) / n,
+            "backend_finish_reason_availability_rate": sum(
+                backend_finish_reason_available
+            )
+            / n,
             "natural_termination_rate": sum(terminated) / n,
             "max_turns_reached_rate": sum(max_turns_reached) / n,
         }
@@ -885,6 +908,12 @@ class RolloutManager:
                 )
             for metric_name in (
                 "mean_gen_tokens_per_sample",
+                "gen_tokens_per_sample/min",
+                "gen_tokens_per_sample/max",
+                "truncation_rate",
+                "backend_length_termination_rate",
+                "backend_finish_reason_availability_rate",
+                "natural_termination_rate",
                 "timing/rollout/total",
                 "total_turns",
                 "avg_turns_per_sample",

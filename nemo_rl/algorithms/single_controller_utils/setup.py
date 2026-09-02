@@ -36,8 +36,8 @@ from nemo_rl.algorithms.async_utils.fixed_pool import (
     FixedPoolManifest,
     fixed_pool_collate_fn,
     load_fixed_pool_manifest,
+    validate_fixed_pool_manifest_design,
     validate_fixed_pool_materialization,
-    validate_ready_bias_manifest_design,
 )
 from nemo_rl.algorithms.grpo import MasterConfig as GrpoMasterConfig
 from nemo_rl.algorithms.grpo import (
@@ -336,7 +336,7 @@ def setup_single_controller(
     if fixed_pool_config.enabled:
         manifest = load_fixed_pool_manifest(fixed_pool_config.manifest_path)  # type: ignore[arg-type]
         validate_fixed_pool_materialization(manifest)
-        validate_ready_bias_manifest_design(manifest)
+        validate_fixed_pool_manifest_design(manifest, fixed_pool_config.design_id)
         expected_model_path = (
             manifest.manifest_path.parent / manifest.model_snapshot_path
         ).resolve()

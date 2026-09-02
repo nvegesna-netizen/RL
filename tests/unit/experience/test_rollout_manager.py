@@ -250,6 +250,51 @@ class TestGenerateAndPushFlow:
             assert fields["dispatch_cohort"] == 1
         assert buf.remove_in_dp_calls == [True]
 
+    def test_completion_trace_preserves_length_and_termination_diagnostics(self):
+        record = PromptGroupRecord(
+            prompt_idx=1,
+            prompt=[],
+            extra_env_info=None,
+            metadata={"task_name": "openmath_long"},
+            completions=[
+                Completion([], None, False, 1.0),
+                Completion([], None, False, 0.0),
+            ],
+            rollout_metrics={
+                "mean_gen_tokens_per_sample": 96.0,
+                "gen_tokens_per_sample/min": 64,
+                "gen_tokens_per_sample/max": 128,
+                "truncation_rate": 0.0,
+                "backend_length_termination_rate": 0.0,
+                "backend_finish_reason_availability_rate": 1.0,
+                "natural_termination_rate": 1.0,
+            },
+        )
+        buf = _FakeBuffer()
+        mgr = _make_manager(buf, _FakeImpl(record=record))
+        sink = _TraceSink()
+        mgr._scheduler_trace = sink
+
+        _run(mgr.generate_and_push({"idx": 1, "task_name": "openmath_long"}))
+
+        completed = sink.event_fields[
+            sink.events.index(SchedulerEventType.ROLLOUT_COMPLETED)
+        ]["scalar_summaries"]
+        assert completed == {
+            "completion_count": 2,
+            "reward_mean": 0.5,
+            "reward_min": 0.0,
+            "reward_max": 1.0,
+            "tool_calls_per_sample/mean": 0.0,
+            "mean_gen_tokens_per_sample": 96.0,
+            "gen_tokens_per_sample/min": 64,
+            "gen_tokens_per_sample/max": 128,
+            "truncation_rate": 0.0,
+            "backend_length_termination_rate": 0.0,
+            "backend_finish_reason_availability_rate": 1.0,
+            "natural_termination_rate": 1.0,
+        }
+
     def test_rollout_failure_removes_reserved_group(self):
         async def _fail_rollout(_sample):
             raise RuntimeError("injected rollout failure")

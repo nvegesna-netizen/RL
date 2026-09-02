@@ -24,7 +24,10 @@ import torch
 import nemo_rl.algorithms.single_controller as single_controller
 from nemo_rl.algorithms.grpo import GRPOConfig
 from nemo_rl.algorithms.loss import ClippedPGLossConfig
-from nemo_rl.algorithms.single_controller import SingleControllerActor
+from nemo_rl.algorithms.single_controller import (
+    SingleControllerActor,
+    _resolved_generation_trace_summaries,
+)
 from nemo_rl.algorithms.single_controller_utils.config import (
     AdvantageConfig,
     AsyncRLConfig,
@@ -37,6 +40,35 @@ from nemo_rl.utils.timer import Timer
 
 class FakeWeightSynchronizer:
     pass
+
+
+def test_generation_trace_summaries_use_resolved_runtime_config() -> None:
+    master_config = MasterConfig.model_construct(
+        policy={
+            "max_total_sequence_length": 512,
+            "generation": {
+                "backend": "vllm",
+                "max_new_tokens": 512,
+                "vllm_cfg": {"max_model_len": 512},
+            },
+        }
+    )
+
+    assert _resolved_generation_trace_summaries(master_config) == {
+        "generation_backend": "vllm",
+        "max_total_sequence_length": 512,
+        "configured_max_new_tokens": 512,
+        "generation_context_length": 512,
+    }
+
+
+def test_generation_trace_summaries_require_generation_config() -> None:
+    master_config = MasterConfig.model_construct(
+        policy={"max_total_sequence_length": 512}
+    )
+
+    with pytest.raises(ValueError, match="policy.generation"):
+        _resolved_generation_trace_summaries(master_config)
 
 
 def test_rejects_multiple_optimizer_steps_per_rl_step(monkeypatch) -> None:

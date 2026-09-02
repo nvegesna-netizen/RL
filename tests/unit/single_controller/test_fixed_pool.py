@@ -6,6 +6,8 @@ import asyncio
 import copy
 import hashlib
 import json
+from collections.abc import Callable
+from dataclasses import replace
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -19,8 +21,10 @@ from nemo_rl.algorithms.async_utils.fixed_pool import (
     compute_fixed_pool_id,
     fixed_pool_collate_fn,
     load_fixed_pool_manifest,
+    validate_fixed_pool_manifest_design,
     validate_fixed_pool_materialization,
     validate_fixed_pool_trace,
+    validate_openmath_latency_feasibility_manifest_design,
 )
 from nemo_rl.algorithms.async_utils.scheduler_trace import (
     JsonlSchedulerTraceSink,
@@ -119,6 +123,125 @@ def _write_manifest(path: Path, record: dict[str, object]) -> bytes:
     return raw
 
 
+def _write_openmath_manifest(
+    tmp_path: Path,
+    *,
+    record_mutation: Callable[[str, int, dict[str, object]], None] | None = None,
+) -> Path:
+    sources = []
+    items = []
+    rows_by_source: dict[str, list[dict[str, object]]] = {}
+    source_ids = ("openmath_short", "openmath_long")
+    for source_offset, source_id in enumerate(source_ids):
+        rows = []
+        for row_index in range(8):
+            record = {
+                "input": f"private problem {source_id} {row_index}",
+                "output": str(row_index),
+                "source_id": source_id,
+                "source_dataset_id": "nvidia/OpenMathInstruct-2",
+                "source_revision": "469216e3f46f4dacf476b382e192485ea51a143e",
+                "source_split": "train_1M",
+                "source_dataset_index": source_offset * 100 + row_index,
+                "source_prompt_id": _digest(f"{source_id}-prompt-{row_index}"),
+                "repeated_prompt_cluster_id": _digest(
+                    f"{source_id}-cluster-{row_index}"
+                ),
+                "reference_solution_token_count": (
+                    64 + row_index if source_id == "openmath_short" else 300 + row_index
+                ),
+                "reference_answer_token_count": (
+                    3 + row_index if source_id == "openmath_short" else 6 + row_index
+                ),
+                "normalized_problem_sha256": _digest(
+                    f"{source_id}-problem-{row_index}"
+                ),
+                "problem_source": "synthetic_math",
+                "selection_stratum": source_id,
+                "matching_pair_id": f"pair-{row_index}",
+                "input_token_count": 100 + row_index + 5 * source_offset,
+                "input_token_ids_sha256": _digest(
+                    f"openmath-input-tokens-{source_offset}-{row_index}"
+                ),
+                "selection_seed": 20260902,
+                "model_revision": "8faed761d45a263340a0528343f099c05c9a4323",
+                "prompt_file_sha256": (
+                    "a3575cc34f8bbd8ed5107a0d58003acf4277baf18d29409c7e61e0946e25b031"
+                ),
+            }
+            if record_mutation is not None:
+                record_mutation(source_id, row_index, record)
+            rows.append(record)
+        rows_by_source[source_id] = rows
+        raw = b"".join(
+            json.dumps(row, sort_keys=True, separators=(",", ":")).encode() + b"\n"
+            for row in rows
+        )
+        materialized_file = f"{source_id}.jsonl"
+        (tmp_path / materialized_file).write_bytes(raw)
+        sources.append(
+            {
+                "source_id": source_id,
+                "dataset_id": "nvidia/OpenMathInstruct-2",
+                "revision": "469216e3f46f4dacf476b382e192485ea51a143e",
+                "split": "train_1M",
+                "materialized_file": materialized_file,
+                "content_sha256": hashlib.sha256(raw).hexdigest(),
+            }
+        )
+
+    ordinal = 0
+    for cohort in range(4):
+        for row_index in (cohort * 2, cohort * 2 + 1):
+            for source_offset, source_id in enumerate(source_ids):
+                record = rows_by_source[source_id][row_index]
+                items.append(
+                    {
+                        "ordinal": ordinal,
+                        "pool_item_id": _digest(f"openmath-item-{ordinal}"),
+                        "source_prompt_id": record["source_prompt_id"],
+                        "source_id": source_id,
+                        "source_dataset_index": record["source_dataset_index"],
+                        "dataset_index": source_offset * 8 + row_index,
+                        "task_name": source_id,
+                        "repeated_prompt_cluster_id": record[
+                            "repeated_prompt_cluster_id"
+                        ],
+                        "dispatch_cohort": cohort,
+                        "decorrelation_block": f"cohort-{cohort}",
+                        "matching_pair_id": f"pair-{row_index}",
+                        "materialized_source_row": row_index,
+                        "materialized_record_sha256": hashlib.sha256(
+                            json.dumps(
+                                record, sort_keys=True, separators=(",", ":")
+                            ).encode()
+                        ).hexdigest(),
+                        "input_token_count": record["input_token_count"],
+                        "input_token_ids_sha256": record["input_token_ids_sha256"],
+                    }
+                )
+                ordinal += 1
+
+    manifest_record: dict[str, object] = {
+        "schema_version": 1,
+        "id_namespace_fingerprint": _digest("openmath-id-namespace"),
+        "design_protocol_sha256": _digest("openmath-design-protocol"),
+        "order_seed": 43001,
+        "model_revision": "8faed761d45a263340a0528343f099c05c9a4323",
+        "model_weights_sha256": (
+            "a961db72e75d52b18e6b0c9d379e51a26973b233385e0e127fdda7d648aec796"
+        ),
+        "model_snapshot_manifest_sha256": _digest("model-snapshot-manifest"),
+        "model_snapshot_path": "model_snapshot",
+        "sources": sources,
+        "items": items,
+    }
+    manifest_record["pool_id"] = compute_fixed_pool_id(manifest_record)
+    path = tmp_path / "openmath_pool.json"
+    _write_manifest(path, manifest_record)
+    return path
+
+
 def test_manifest_round_trip_and_exact_file_digest(tmp_path: Path) -> None:
     path = tmp_path / "pool.json"
     record = _manifest_record()
@@ -132,6 +255,243 @@ def test_manifest_round_trip_and_exact_file_digest(tmp_path: Path) -> None:
     assert manifest.num_dispatch_cohorts == 2
     assert manifest.cohort_sizes == (1, 1)
     assert [source.source_id for source in manifest.sources] == ["gsm8k", "aime2024"]
+
+
+def test_openmath_latency_feasibility_design_accepts_bound_pool(
+    tmp_path: Path,
+) -> None:
+    manifest = load_fixed_pool_manifest(_write_openmath_manifest(tmp_path))
+
+    validate_openmath_latency_feasibility_manifest_design(manifest)
+    validate_fixed_pool_manifest_design(manifest, "openmath_latency_feasibility_v1")
+
+
+def test_openmath_latency_feasibility_design_rejects_source_revision(
+    tmp_path: Path,
+) -> None:
+    manifest = load_fixed_pool_manifest(_write_openmath_manifest(tmp_path))
+    sources = (
+        manifest.sources[0].model_copy(update={"revision": "wrong-revision"}),
+        manifest.sources[1],
+    )
+
+    with pytest.raises(FixedPoolManifestError, match="pinned dataset revision"):
+        validate_openmath_latency_feasibility_manifest_design(
+            replace(manifest, sources=sources)
+        )
+
+
+@pytest.mark.parametrize(
+    ("field", "value", "match"),
+    [
+        ("order_seed", 43002, "order_seed must be 43001"),
+        ("model_revision", _digest("wrong-model-revision"), "pinned model"),
+        ("model_weights_sha256", _digest("wrong-model-weights"), "pinned model"),
+    ],
+)
+def test_openmath_latency_feasibility_design_rejects_manifest_provenance(
+    tmp_path: Path, field: str, value: object, match: str
+) -> None:
+    manifest = load_fixed_pool_manifest(_write_openmath_manifest(tmp_path))
+
+    with pytest.raises(FixedPoolManifestError, match=match):
+        validate_openmath_latency_feasibility_manifest_design(
+            replace(manifest, **{field: value})
+        )
+
+
+def test_openmath_latency_feasibility_design_rejects_unbalanced_cohort(
+    tmp_path: Path,
+) -> None:
+    manifest = load_fixed_pool_manifest(_write_openmath_manifest(tmp_path))
+    items = list(manifest.items)
+    short_index = next(
+        index
+        for index, item in enumerate(items)
+        if item.dispatch_cohort == 0 and item.task_name == "openmath_short"
+    )
+    long_index = next(
+        index
+        for index, item in enumerate(items)
+        if item.dispatch_cohort == 1 and item.task_name == "openmath_long"
+    )
+    items[short_index] = items[short_index].model_copy(
+        update={"dispatch_cohort": 1, "decorrelation_block": "cohort-1"}
+    )
+    items[long_index] = items[long_index].model_copy(
+        update={"dispatch_cohort": 0, "decorrelation_block": "cohort-0"}
+    )
+
+    with pytest.raises(FixedPoolManifestError, match=r"balanced 2\+2 block"):
+        validate_openmath_latency_feasibility_manifest_design(
+            replace(manifest, items=tuple(items))
+        )
+
+
+def test_openmath_latency_feasibility_design_rejects_input_caliper(
+    tmp_path: Path,
+) -> None:
+    def mutate(source_id: str, row_index: int, record: dict[str, object]) -> None:
+        if source_id == "openmath_long" and row_index == 0:
+            record["input_token_count"] = 109
+
+    manifest = load_fixed_pool_manifest(
+        _write_openmath_manifest(tmp_path, record_mutation=mutate)
+    )
+
+    with pytest.raises(FixedPoolManifestError, match="input-token caliper"):
+        validate_openmath_latency_feasibility_manifest_design(manifest)
+
+
+def test_openmath_latency_feasibility_design_rejects_pair_across_cohorts(
+    tmp_path: Path,
+) -> None:
+    manifest = load_fixed_pool_manifest(_write_openmath_manifest(tmp_path))
+    items = list(manifest.items)
+    first_long = next(
+        index
+        for index, item in enumerate(items)
+        if item.matching_pair_id == "pair-0" and item.task_name == "openmath_long"
+    )
+    second_long = next(
+        index
+        for index, item in enumerate(items)
+        if item.matching_pair_id == "pair-2" and item.task_name == "openmath_long"
+    )
+    first_cohort = items[first_long].dispatch_cohort
+    second_cohort = items[second_long].dispatch_cohort
+    items[first_long] = items[first_long].model_copy(
+        update={
+            "dispatch_cohort": second_cohort,
+            "decorrelation_block": f"cohort-{second_cohort}",
+        }
+    )
+    items[second_long] = items[second_long].model_copy(
+        update={
+            "dispatch_cohort": first_cohort,
+            "decorrelation_block": f"cohort-{first_cohort}",
+        }
+    )
+
+    with pytest.raises(FixedPoolManifestError, match="crosses dispatch cohorts"):
+        validate_openmath_latency_feasibility_manifest_design(
+            replace(manifest, items=tuple(items))
+        )
+
+
+@pytest.mark.parametrize(
+    ("field", "value", "match"),
+    [
+        ("reference_solution_token_count", 97, "outside the openmath_short band"),
+        ("reference_answer_token_count", 11, "answer-token caliper"),
+        ("normalized_problem_sha256", "not-a-hash", "lowercase SHA-256"),
+        ("problem_source", "", "requires problem_source"),
+        ("source_revision", "wrong-revision", "bound source metadata mismatch"),
+        ("selection_seed", 20260903, "bound source metadata mismatch"),
+        ("model_revision", _digest("wrong-model-revision"), "bound source metadata"),
+        ("prompt_file_sha256", _digest("wrong-prompt"), "bound source metadata"),
+    ],
+)
+def test_openmath_latency_feasibility_design_rejects_bound_metadata(
+    tmp_path: Path, field: str, value: object, match: str
+) -> None:
+    def mutate(source_id: str, row_index: int, record: dict[str, object]) -> None:
+        if source_id == "openmath_short" and row_index == 0:
+            record[field] = value
+
+    manifest = load_fixed_pool_manifest(
+        _write_openmath_manifest(tmp_path, record_mutation=mutate)
+    )
+
+    with pytest.raises(FixedPoolManifestError, match=match):
+        validate_openmath_latency_feasibility_manifest_design(manifest)
+
+
+@pytest.mark.parametrize("schema_change", ["extra", "missing"])
+def test_openmath_latency_feasibility_design_rejects_record_schema_drift(
+    tmp_path: Path, schema_change: str
+) -> None:
+    def mutate(source_id: str, row_index: int, record: dict[str, object]) -> None:
+        if source_id == "openmath_short" and row_index == 0:
+            if schema_change == "extra":
+                record["unregistered_metadata"] = "unexpected"
+            else:
+                del record["output"]
+
+    manifest = load_fixed_pool_manifest(
+        _write_openmath_manifest(tmp_path, record_mutation=mutate)
+    )
+
+    with pytest.raises(FixedPoolManifestError, match="record schema mismatch"):
+        validate_openmath_latency_feasibility_manifest_design(manifest)
+
+
+def test_openmath_latency_feasibility_design_rejects_cross_source_pair(
+    tmp_path: Path,
+) -> None:
+    def mutate(source_id: str, row_index: int, record: dict[str, object]) -> None:
+        if source_id == "openmath_long" and row_index == 0:
+            record["problem_source"] = "different_source"
+
+    manifest = load_fixed_pool_manifest(
+        _write_openmath_manifest(tmp_path, record_mutation=mutate)
+    )
+
+    with pytest.raises(FixedPoolManifestError, match="crosses problem sources"):
+        validate_openmath_latency_feasibility_manifest_design(manifest)
+
+
+def test_openmath_latency_feasibility_design_rejects_duplicate_problem(
+    tmp_path: Path,
+) -> None:
+    def mutate(source_id: str, row_index: int, record: dict[str, object]) -> None:
+        if source_id == "openmath_long" and row_index == 0:
+            record["normalized_problem_sha256"] = _digest("openmath_short-problem-0")
+
+    manifest = load_fixed_pool_manifest(
+        _write_openmath_manifest(tmp_path, record_mutation=mutate)
+    )
+
+    with pytest.raises(FixedPoolManifestError, match="16 distinct normalized"):
+        validate_openmath_latency_feasibility_manifest_design(manifest)
+
+
+def test_openmath_latency_feasibility_design_rejects_long_input(
+    tmp_path: Path,
+) -> None:
+    def mutate(source_id: str, row_index: int, record: dict[str, object]) -> None:
+        if source_id == "openmath_short" and row_index == 0:
+            record["input_token_count"] = 257
+
+    manifest = load_fixed_pool_manifest(
+        _write_openmath_manifest(tmp_path, record_mutation=mutate)
+    )
+
+    with pytest.raises(FixedPoolManifestError, match="256-token bound"):
+        validate_openmath_latency_feasibility_manifest_design(manifest)
+
+
+def test_openmath_latency_feasibility_design_rejects_median_ratio(
+    tmp_path: Path,
+) -> None:
+    def mutate(source_id: str, _row_index: int, record: dict[str, object]) -> None:
+        record["reference_solution_token_count"] = (
+            96 if source_id == "openmath_short" else 256
+        )
+
+    manifest = load_fixed_pool_manifest(
+        _write_openmath_manifest(tmp_path, record_mutation=mutate)
+    )
+
+    with pytest.raises(FixedPoolManifestError, match="median ratio is below 3.0"):
+        validate_openmath_latency_feasibility_manifest_design(manifest)
+
+
+def test_fixed_pool_design_dispatch_rejects_unknown_design(tmp_path: Path) -> None:
+    manifest = load_fixed_pool_manifest(_write_openmath_manifest(tmp_path))
+
+    with pytest.raises(FixedPoolManifestError, match="unsupported fixed-pool"):
+        validate_fixed_pool_manifest_design(manifest, "unknown")
 
 
 @pytest.mark.parametrize(
@@ -403,6 +763,27 @@ def test_fixed_pool_config_rejects_incompatible_modes(mutation, match: str) -> N
 def test_fixed_pool_config_requires_manifest_path() -> None:
     with pytest.raises(ValidationError, match="manifest_path is required"):
         FixedPoolCollectionConfig(enabled=True)
+
+
+def test_fixed_pool_config_preserves_ready_bias_default() -> None:
+    config = FixedPoolCollectionConfig()
+
+    assert config.design_id == "ready_bias_v1"
+
+
+def test_fixed_pool_config_accepts_openmath_design() -> None:
+    config = FixedPoolCollectionConfig(
+        enabled=True,
+        manifest_path="pool.json",
+        design_id="openmath_latency_feasibility_v1",
+    )
+
+    assert config.design_id == "openmath_latency_feasibility_v1"
+
+
+def test_fixed_pool_config_rejects_unknown_design() -> None:
+    with pytest.raises(ValidationError, match="literal_error"):
+        FixedPoolCollectionConfig(design_id="unknown")  # type: ignore[arg-type]
 
 
 def _write_complete_fixed_pool_trace(

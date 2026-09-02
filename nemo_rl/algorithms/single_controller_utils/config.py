@@ -15,7 +15,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Optional
+from typing import Any, Literal, Optional, TypeAlias
 
 from pydantic import BaseModel, Field, PositiveInt, model_validator
 
@@ -35,6 +35,11 @@ from nemo_rl.models.policy import PolicyConfig
 from nemo_rl.utils.checkpoint import CheckpointingConfig
 
 # ── User-facing SingleController configs ────────────────────────────────────
+
+FixedPoolDesignId: TypeAlias = Literal[
+    "ready_bias_v1",
+    "openmath_latency_feasibility_v1",
+]
 
 
 class SchedulerTraceConfig(BaseModel, extra="forbid"):
@@ -57,6 +62,8 @@ class FixedPoolCollectionConfig(BaseModel, extra="forbid"):
 
     enabled: bool = False
     manifest_path: Optional[str] = None
+    # Strict manifest design contract; ready_bias_v1 preserves the original default.
+    design_id: FixedPoolDesignId = "ready_bias_v1"
 
     @model_validator(mode="after")
     def _require_manifest_when_enabled(self) -> "FixedPoolCollectionConfig":

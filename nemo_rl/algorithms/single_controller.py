@@ -81,6 +81,28 @@ from nemo_rl.utils.timer import Timer
 Generation = Union[VllmGeneration, SGLangGeneration]
 
 
+def _resolved_generation_trace_summaries(
+    master_config: MasterConfig,
+) -> dict[str, str | int]:
+    """Return provenance-critical values from the resolved runtime config."""
+    generation = master_config.policy.get("generation")
+    if generation is None:
+        raise ValueError("policy.generation is required for scheduler tracing")
+    backend = generation["backend"]
+    if backend == "vllm":
+        context_length = generation["vllm_cfg"]["max_model_len"]
+    elif backend == "sglang":
+        context_length = generation["sglang_cfg"]["context_length"]
+    else:
+        context_length = generation["max_new_tokens"]
+    return {
+        "generation_backend": backend,
+        "max_total_sequence_length": master_config.policy["max_total_sequence_length"],
+        "configured_max_new_tokens": generation["max_new_tokens"],
+        "generation_context_length": context_length,
+    }
+
+
 @ray.remote(num_cpus=1, num_gpus=0)  # pragma: no cover
 class SingleControllerActor:
     """CPU-only Ray actor that orchestrates the RL training loop.
@@ -289,6 +311,7 @@ class SingleControllerActor:
                             if self._fixed_pool_manifest is not None
                             else 0
                         ),
+                        **_resolved_generation_trace_summaries(self._master_config),
                     },
                 )
             # Synchronize weights before starting the pumps

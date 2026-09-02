@@ -24,6 +24,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import statistics
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
@@ -52,6 +53,52 @@ FIXED_POOL_MANIFEST_SCHEMA_VERSION: Final[int] = 1
 MAX_FIXED_POOL_MANIFEST_BYTES: Final[int] = 16 * 1024 * 1024
 MAX_FIXED_POOL_SOURCE_BYTES: Final[int] = 64 * 1024 * 1024
 MAX_FIXED_POOL_ITEMS: Final[int] = 1_000_000
+OPENMATH_DATASET_ID: Final[str] = "nvidia/OpenMathInstruct-2"
+OPENMATH_DATASET_REVISION: Final[str] = "469216e3f46f4dacf476b382e192485ea51a143e"
+OPENMATH_DATASET_SPLIT: Final[str] = "train_1M"
+OPENMATH_ORDER_SEED: Final[int] = 43001
+OPENMATH_SELECTION_SEED: Final[int] = 20260902
+OPENMATH_MODEL_REVISION: Final[str] = "8faed761d45a263340a0528343f099c05c9a4323"
+OPENMATH_MODEL_WEIGHTS_SHA256: Final[str] = (
+    "a961db72e75d52b18e6b0c9d379e51a26973b233385e0e127fdda7d648aec796"
+)
+OPENMATH_PROMPT_FILE_SHA256: Final[str] = (
+    "a3575cc34f8bbd8ed5107a0d58003acf4277baf18d29409c7e61e0946e25b031"
+)
+OPENMATH_SOURCE_IDS: Final[tuple[str, str]] = (
+    "openmath_short",
+    "openmath_long",
+)
+OPENMATH_REFERENCE_SOLUTION_BANDS: Final[dict[str, tuple[int, int]]] = {
+    "openmath_short": (32, 96),
+    "openmath_long": (256, 384),
+}
+OPENMATH_INPUT_TOKEN_CALIPER: Final[int] = 8
+OPENMATH_ANSWER_TOKEN_CALIPER: Final[int] = 4
+OPENMATH_MATERIALIZED_RECORD_FIELDS: Final[frozenset[str]] = frozenset(
+    {
+        "input",
+        "output",
+        "source_id",
+        "source_dataset_id",
+        "source_revision",
+        "source_split",
+        "source_dataset_index",
+        "source_prompt_id",
+        "repeated_prompt_cluster_id",
+        "selection_stratum",
+        "problem_source",
+        "matching_pair_id",
+        "normalized_problem_sha256",
+        "input_token_count",
+        "input_token_ids_sha256",
+        "reference_solution_token_count",
+        "reference_answer_token_count",
+        "selection_seed",
+        "model_revision",
+        "prompt_file_sha256",
+    }
+)
 
 Sha256Hex: TypeAlias = Annotated[
     str,
@@ -373,6 +420,58 @@ def load_fixed_pool_manifest(path: str | Path) -> FixedPoolManifest:
     )
 
 
+def _load_materialized_source_rows(
+    manifest: FixedPoolManifest,
+) -> tuple[dict[str, list[dict[str, object]]], dict[str, int]]:
+    """Load and hash-check every manifest-bound materialized JSONL source."""
+    base = manifest.manifest_path.parent
+    source_rows: dict[str, list[dict[str, object]]] = {}
+    global_offsets: dict[str, int] = {}
+    offset = 0
+    for source in manifest.sources:
+        path = (base / source.materialized_file).resolve()
+        if path.parent != base and base not in path.parents:
+            raise FixedPoolManifestError(
+                "materialized source escapes manifest directory"
+            )
+        try:
+            raw = path.read_bytes()
+        except OSError as error:
+            raise FixedPoolManifestError(
+                f"cannot read materialized source {path}: {error}"
+            ) from error
+        if not raw or len(raw) > MAX_FIXED_POOL_SOURCE_BYTES:
+            raise FixedPoolManifestError(
+                f"materialized source {path} is empty or exceeds the size limit"
+            )
+        if hashlib.sha256(raw).hexdigest() != source.content_sha256:
+            raise FixedPoolManifestError(
+                f"materialized source SHA mismatch for {source.source_id}"
+            )
+        rows: list[dict[str, object]] = []
+        for line_number, line in enumerate(raw.splitlines(), start=1):
+            if not line:
+                raise FixedPoolManifestError(
+                    f"blank JSONL row in {source.materialized_file}:{line_number}"
+                )
+            try:
+                record = json.loads(
+                    line.decode("utf-8"),
+                    object_pairs_hook=_reject_duplicate_json_keys,
+                )
+            except (UnicodeDecodeError, json.JSONDecodeError) as error:
+                raise FixedPoolManifestError(
+                    f"invalid JSONL row in {source.materialized_file}:{line_number}"
+                ) from error
+            if not isinstance(record, dict):
+                raise FixedPoolManifestError("materialized JSONL rows must be objects")
+            rows.append(record)
+        global_offsets[source.source_id] = offset
+        offset += len(rows)
+        source_rows[source.source_id] = rows
+    return source_rows, global_offsets
+
+
 def validate_fixed_pool_materialization(manifest: FixedPoolManifest) -> None:
     """Bind source claims and item coordinates to exact local JSONL bytes."""
     base = manifest.manifest_path.parent
@@ -443,50 +542,7 @@ def validate_fixed_pool_materialization(manifest: FixedPoolManifest) -> None:
             raise FixedPoolManifestError(
                 f"model snapshot asset SHA mismatch: {relative}"
             )
-    source_rows: dict[str, list[dict[str, object]]] = {}
-    global_offsets: dict[str, int] = {}
-    offset = 0
-    for source in manifest.sources:
-        path = (base / source.materialized_file).resolve()
-        if path.parent != base and base not in path.parents:
-            raise FixedPoolManifestError(
-                "materialized source escapes manifest directory"
-            )
-        try:
-            raw = path.read_bytes()
-        except OSError as error:
-            raise FixedPoolManifestError(
-                f"cannot read materialized source {path}: {error}"
-            ) from error
-        if not raw or len(raw) > MAX_FIXED_POOL_SOURCE_BYTES:
-            raise FixedPoolManifestError(
-                f"materialized source {path} is empty or exceeds the size limit"
-            )
-        if hashlib.sha256(raw).hexdigest() != source.content_sha256:
-            raise FixedPoolManifestError(
-                f"materialized source SHA mismatch for {source.source_id}"
-            )
-        rows: list[dict[str, object]] = []
-        for line_number, line in enumerate(raw.splitlines(), start=1):
-            if not line:
-                raise FixedPoolManifestError(
-                    f"blank JSONL row in {source.materialized_file}:{line_number}"
-                )
-            try:
-                record = json.loads(
-                    line.decode("utf-8"),
-                    object_pairs_hook=_reject_duplicate_json_keys,
-                )
-            except (UnicodeDecodeError, json.JSONDecodeError) as error:
-                raise FixedPoolManifestError(
-                    f"invalid JSONL row in {source.materialized_file}:{line_number}"
-                ) from error
-            if not isinstance(record, dict):
-                raise FixedPoolManifestError("materialized JSONL rows must be objects")
-            rows.append(record)
-        global_offsets[source.source_id] = offset
-        offset += len(rows)
-        source_rows[source.source_id] = rows
+    source_rows, global_offsets = _load_materialized_source_rows(manifest)
 
     for item in manifest.items:
         rows = source_rows[item.source_id]
@@ -559,6 +615,269 @@ def validate_ready_bias_manifest_design(manifest: FixedPoolManifest) -> None:
             raise FixedPoolManifestError(f"invalid cross-task matching pair {pair_id}")
         if abs(items[0].input_token_count - items[1].input_token_count) > 16:
             raise FixedPoolManifestError(f"token caliper exceeded for pair {pair_id}")
+
+
+def _require_nonnegative_record_int(
+    record: Mapping[str, object], field: str, *, ordinal: int
+) -> int:
+    value = record.get(field)
+    if not isinstance(value, int) or isinstance(value, bool) or value < 0:
+        raise FixedPoolManifestError(
+            f"OpenMath materialized record {ordinal} requires nonnegative integer "
+            f"{field}"
+        )
+    return value
+
+
+def _require_record_sha256(
+    record: Mapping[str, object], field: str, *, ordinal: int
+) -> str:
+    value = record.get(field)
+    if (
+        not isinstance(value, str)
+        or len(value) != 64
+        or any(character not in "0123456789abcdef" for character in value)
+    ):
+        raise FixedPoolManifestError(
+            f"OpenMath materialized record {ordinal} requires lowercase SHA-256 {field}"
+        )
+    return value
+
+
+def validate_openmath_latency_feasibility_manifest_design(
+    manifest: FixedPoolManifest,
+) -> None:
+    """Enforce the preregistered 16-prompt OpenMath latency feasibility design."""
+    if manifest.order_seed != OPENMATH_ORDER_SEED:
+        raise FixedPoolManifestError(
+            f"OpenMath order_seed must be {OPENMATH_ORDER_SEED}"
+        )
+    if (
+        manifest.model_revision != OPENMATH_MODEL_REVISION
+        or manifest.model_weights_sha256 != OPENMATH_MODEL_WEIGHTS_SHA256
+    ):
+        raise FixedPoolManifestError(
+            "OpenMath manifest must use the pinned model revision and weights"
+        )
+    source_ids = tuple(source.source_id for source in manifest.sources)
+    if source_ids != OPENMATH_SOURCE_IDS:
+        raise FixedPoolManifestError(
+            "OpenMath sources must be ordered openmath_short, openmath_long"
+        )
+    expected_files = tuple(f"{source_id}.jsonl" for source_id in OPENMATH_SOURCE_IDS)
+    if tuple(source.materialized_file for source in manifest.sources) != expected_files:
+        raise FixedPoolManifestError(
+            "OpenMath materialized files must match the fixed source ordering"
+        )
+    expected_source_identity = (
+        OPENMATH_DATASET_ID,
+        OPENMATH_DATASET_REVISION,
+        OPENMATH_DATASET_SPLIT,
+    )
+    if any(
+        (source.dataset_id, source.revision, source.split) != expected_source_identity
+        for source in manifest.sources
+    ):
+        raise FixedPoolManifestError(
+            "OpenMath sources must use the pinned dataset revision and split"
+        )
+
+    counts = {
+        source_id: sum(item.task_name == source_id for item in manifest.items)
+        for source_id in OPENMATH_SOURCE_IDS
+    }
+    if len(manifest.items) != 16 or counts != {
+        source_id: 8 for source_id in OPENMATH_SOURCE_IDS
+    }:
+        raise FixedPoolManifestError(
+            "OpenMath feasibility pool must contain 8 short and 8 long prompts"
+        )
+    if any(item.source_id != item.task_name for item in manifest.items):
+        raise FixedPoolManifestError(
+            "OpenMath item source_id and task_name must identify the same stratum"
+        )
+    if len({item.source_prompt_id for item in manifest.items}) != 16:
+        raise FixedPoolManifestError(
+            "OpenMath feasibility pool must contain 16 distinct prompts"
+        )
+
+    by_cohort: dict[int, list[FixedPoolManifestItem]] = {}
+    by_pair: dict[str, list[FixedPoolManifestItem]] = {}
+    for item in manifest.items:
+        by_cohort.setdefault(item.dispatch_cohort, []).append(item)
+        by_pair.setdefault(item.matching_pair_id, []).append(item)
+        if item.input_token_count > 256:
+            raise FixedPoolManifestError(
+                "OpenMath feasibility input exceeds 256-token bound"
+            )
+    if len(by_cohort) != 4:
+        raise FixedPoolManifestError(
+            "OpenMath feasibility pool must contain four dispatch cohorts"
+        )
+    for cohort, items in by_cohort.items():
+        task_counts = {
+            source_id: sum(item.task_name == source_id for item in items)
+            for source_id in OPENMATH_SOURCE_IDS
+        }
+        if (
+            len(items) != 4
+            or task_counts != {source_id: 2 for source_id in OPENMATH_SOURCE_IDS}
+            or len({item.decorrelation_block for item in items}) != 1
+        ):
+            raise FixedPoolManifestError(
+                f"OpenMath dispatch cohort {cohort} must be one balanced 2+2 block"
+            )
+    if len(by_pair) != 8:
+        raise FixedPoolManifestError(
+            "OpenMath feasibility pool must contain eight matched pairs"
+        )
+
+    source_rows, _ = _load_materialized_source_rows(manifest)
+    if any(len(source_rows[source_id]) != 8 for source_id in OPENMATH_SOURCE_IDS):
+        raise FixedPoolManifestError(
+            "OpenMath materialized sources must contain exactly 8 rows each"
+        )
+    materialized_records: dict[int, dict[str, object]] = {}
+    solution_token_counts: dict[int, int] = {}
+    normalized_problem_hashes: set[str] = set()
+    for item in manifest.items:
+        rows = source_rows[item.source_id]
+        if item.materialized_source_row >= len(rows):
+            raise FixedPoolManifestError(
+                f"OpenMath materialized row is out of range at ordinal {item.ordinal}"
+            )
+        record = rows[item.materialized_source_row]
+        if set(record) != OPENMATH_MATERIALIZED_RECORD_FIELDS:
+            raise FixedPoolManifestError(
+                f"OpenMath materialized record schema mismatch at ordinal {item.ordinal}"
+            )
+        canonical = json.dumps(
+            record,
+            allow_nan=False,
+            separators=(",", ":"),
+            sort_keys=True,
+        ).encode("utf-8")
+        if hashlib.sha256(canonical).hexdigest() != item.materialized_record_sha256:
+            raise FixedPoolManifestError(
+                f"OpenMath materialized record SHA mismatch at ordinal {item.ordinal}"
+            )
+        solution_tokens = _require_nonnegative_record_int(
+            record, "reference_solution_token_count", ordinal=item.ordinal
+        )
+        lower, upper = OPENMATH_REFERENCE_SOLUTION_BANDS[item.task_name]
+        if not lower <= solution_tokens <= upper:
+            raise FixedPoolManifestError(
+                f"OpenMath reference solution is outside the {item.task_name} band "
+                f"at ordinal {item.ordinal}"
+            )
+        solution_token_counts[item.ordinal] = solution_tokens
+        _require_nonnegative_record_int(
+            record, "reference_answer_token_count", ordinal=item.ordinal
+        )
+        normalized_problem_hashes.add(
+            _require_record_sha256(
+                record, "normalized_problem_sha256", ordinal=item.ordinal
+            )
+        )
+        problem_source = record.get("problem_source")
+        if not isinstance(problem_source, str) or not problem_source:
+            raise FixedPoolManifestError(
+                f"OpenMath materialized record {item.ordinal} requires problem_source"
+            )
+        expected_record_fields = {
+            "source_id": item.source_id,
+            "source_dataset_id": OPENMATH_DATASET_ID,
+            "source_revision": OPENMATH_DATASET_REVISION,
+            "source_split": OPENMATH_DATASET_SPLIT,
+            "source_dataset_index": item.source_dataset_index,
+            "source_prompt_id": item.source_prompt_id,
+            "repeated_prompt_cluster_id": item.repeated_prompt_cluster_id,
+            "selection_stratum": item.task_name,
+            "matching_pair_id": item.matching_pair_id,
+            "input_token_count": item.input_token_count,
+            "input_token_ids_sha256": item.input_token_ids_sha256,
+            "selection_seed": OPENMATH_SELECTION_SEED,
+            "model_revision": OPENMATH_MODEL_REVISION,
+            "prompt_file_sha256": OPENMATH_PROMPT_FILE_SHA256,
+        }
+        if any(
+            record.get(field) != value
+            for field, value in expected_record_fields.items()
+        ):
+            raise FixedPoolManifestError(
+                f"OpenMath bound source metadata mismatch at ordinal {item.ordinal}"
+            )
+        materialized_records[item.ordinal] = record
+    if len(normalized_problem_hashes) != 16:
+        raise FixedPoolManifestError(
+            "OpenMath feasibility pool must contain 16 distinct normalized problems"
+        )
+    median_solution_tokens = {
+        source_id: statistics.median(
+            solution_token_counts[item.ordinal]
+            for item in manifest.items
+            if item.task_name == source_id
+        )
+        for source_id in OPENMATH_SOURCE_IDS
+    }
+    if (
+        median_solution_tokens["openmath_long"]
+        / median_solution_tokens["openmath_short"]
+        < 3.0
+    ):
+        raise FixedPoolManifestError(
+            "OpenMath long/short reference-solution median ratio is below 3.0"
+        )
+
+    for pair_id, items in by_pair.items():
+        if len(items) != 2 or {item.task_name for item in items} != set(
+            OPENMATH_SOURCE_IDS
+        ):
+            raise FixedPoolManifestError(f"invalid OpenMath matched pair {pair_id}")
+        if len({item.dispatch_cohort for item in items}) != 1:
+            raise FixedPoolManifestError(
+                f"OpenMath matched pair {pair_id} crosses dispatch cohorts"
+            )
+        if (
+            len(
+                {materialized_records[item.ordinal]["problem_source"] for item in items}
+            )
+            != 1
+        ):
+            raise FixedPoolManifestError(
+                f"OpenMath matched pair {pair_id} crosses problem sources"
+            )
+        if (
+            abs(items[0].input_token_count - items[1].input_token_count)
+            > OPENMATH_INPUT_TOKEN_CALIPER
+        ):
+            raise FixedPoolManifestError(
+                f"OpenMath input-token caliper exceeded for pair {pair_id}"
+            )
+        answer_counts = [
+            _require_nonnegative_record_int(
+                materialized_records[item.ordinal],
+                "reference_answer_token_count",
+                ordinal=item.ordinal,
+            )
+            for item in items
+        ]
+        if abs(answer_counts[0] - answer_counts[1]) > OPENMATH_ANSWER_TOKEN_CALIPER:
+            raise FixedPoolManifestError(
+                f"OpenMath answer-token caliper exceeded for pair {pair_id}"
+            )
+
+
+def validate_fixed_pool_manifest_design(
+    manifest: FixedPoolManifest, design_id: str
+) -> None:
+    """Dispatch strict validation for a declared fixed-pool study design."""
+    if design_id == "ready_bias_v1":
+        validate_ready_bias_manifest_design(manifest)
+    elif design_id == "openmath_latency_feasibility_v1":
+        validate_openmath_latency_feasibility_manifest_design(manifest)
+    else:
+        raise FixedPoolManifestError(f"unsupported fixed-pool design_id: {design_id!r}")
 
 
 class _DatumDataset(Protocol):
