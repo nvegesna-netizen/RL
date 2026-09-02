@@ -72,7 +72,7 @@ def _observations() -> tuple[GroupObservation, ...]:
         for stratum in ("short", "long"):
             ordinal = pair * 2 + (stratum == "long")
             is_long = stratum == "long"
-            dispatch = ordinal * 1_000
+            dispatch = (ordinal // 4) * 1_000 + (ordinal % 4) * 10
             latency = 150 if is_long else 100
             tokens = 160 if is_long else 100
             item = DesignItem(
