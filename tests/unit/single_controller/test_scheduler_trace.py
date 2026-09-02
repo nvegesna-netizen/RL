@@ -155,7 +155,7 @@ class SchedulerTraceTests(unittest.TestCase):
                         )
                     )
                 ),
-                1,
+                3,
             )
 
 
