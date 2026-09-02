@@ -360,7 +360,7 @@ def _median_ratio(long_values: Sequence[float], short_values: Sequence[float]) -
 
 def _positive_ratio(numerator: float, denominator: float) -> float:
     if numerator < 0 or denominator <= 0:
-        raise FeasibilityAnalysisError("paired ratio requires positive denominator")
+        raise FeasibilityAnalysisError("paired ratio denominator must be positive")
     return numerator / denominator
 
 
