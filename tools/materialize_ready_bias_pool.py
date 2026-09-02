@@ -323,7 +323,14 @@ def materialize(output_dir: Path, prompt_file: Path, key: bytes) -> None:
     aime = load_dataset(AIME_REPO, split="train", revision=AIME_REVISION)
     if len(gsm) != 7473 or set(gsm.column_names) != {"question", "answer"}:
         raise RuntimeError("pinned GSM8K split cardinality/schema mismatch")
-    if len(aime) != 30 or set(aime.column_names) != {"problem", "answer"}:
+    if len(aime) != 30 or set(aime.column_names) != {
+        "id",
+        "problem",
+        "solution",
+        "answer",
+        "url",
+        "year",
+    }:
         raise RuntimeError("pinned AIME2024 split cardinality/schema mismatch")
     gsm_tokens = {
         index: _render_tokens(tokenizer, prompt_template, str(row["question"]))
