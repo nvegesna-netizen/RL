@@ -48,12 +48,13 @@ class ResponseDataset(RawDataset):
         split: Optional[str] = None,
         split_validation_size: float = 0,
         seed: int = 42,
+        task_name: Optional[str] = None,
         **kwargs,
     ):
         self.input_key = input_key
         self.output_key = output_key
 
-        self.task_name = "-".join(data_path.split("/")[-2:]).split(".")[0]
+        self.task_name = task_name or "-".join(data_path.split("/")[-2:]).split(".")[0]
         if self.task_name[0] == "-":
             self.task_name = self.task_name[1:]
 

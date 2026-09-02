@@ -663,6 +663,7 @@ class TQReplayBuffer:
         self.target_step_list: list[Optional[int]] = []
         self.ready_list: list[bool] = []
         self._group_ids: list[str] = []
+        self._remove_lock = asyncio.Lock()
 
     def reserve(
         self,
@@ -789,11 +790,12 @@ class TQReplayBuffer:
         Raises:
             ValueError: ``group_id`` has no live slot.
         """
-        try:
-            idx = self._group_ids.index(group_id)
-        except ValueError as error:
-            raise ValueError(f"unknown group_id={group_id!r}") from error
-        return await self.remove([idx], remove_in_dp=remove_in_dp)
+        async with self._remove_lock:
+            try:
+                idx = self._group_ids.index(group_id)
+            except ValueError as error:
+                raise ValueError(f"unknown group_id={group_id!r}") from error
+            return await self._remove_locked([idx], remove_in_dp=remove_in_dp)
 
     async def remove(self, idxs: list[int], remove_in_dp: bool) -> int:
         """Drop entries at the given indices and optionally clear them from DataPlane.
@@ -805,6 +807,11 @@ class TQReplayBuffer:
         Returns:
             Number of group entries removed from the buffer.
         """
+        async with self._remove_lock:
+            return await self._remove_locked(idxs, remove_in_dp=remove_in_dp)
+
+    async def _remove_locked(self, idxs: list[int], *, remove_in_dp: bool) -> int:
+        """Remove indices while ``_remove_lock`` is held by the caller."""
         if len(idxs) == 0:
             return 0
 
@@ -820,19 +827,24 @@ class TQReplayBuffer:
             meta = self.meta_list[i]
             if meta is not None:
                 dropped_sample_ids.extend(meta.sample_ids)
-            del self.meta_list[i]
-            del self.start_weight_list[i]
-            del self.end_weight_list[i]
-            del self.target_step_list[i]
-            del self.ready_list[i]
-            del self._group_ids[i]
 
+        # Preserve the local recovery ledger until DataPlane cleanup has
+        # succeeded. This makes failed archival retryable and prevents a
+        # silent orphan from looking locally complete.
         if remove_in_dp:
             await self._call_dp(
                 "clear_samples",
                 sample_ids=dropped_sample_ids,
                 partition_id=self._partition_id,
             )
+
+        for i in drop_idxs:
+            del self.meta_list[i]
+            del self.start_weight_list[i]
+            del self.end_weight_list[i]
+            del self.target_step_list[i]
+            del self.ready_list[i]
+            del self._group_ids[i]
 
         return len(drop_idxs)
 

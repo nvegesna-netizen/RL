@@ -144,9 +144,11 @@ class _TraceSink:
     def __init__(self, fail_on: SchedulerEventType | None = None) -> None:
         self.fail_on = fail_on
         self.events: list[SchedulerEventType] = []
+        self.event_fields: list[dict[str, object]] = []
 
-    def emit(self, event_type: SchedulerEventType, **_fields) -> None:
+    def emit(self, event_type: SchedulerEventType, **fields) -> None:
         self.events.append(event_type)
+        self.event_fields.append(fields)
         if event_type is self.fail_on:
             raise RuntimeError(f"injected trace failure: {event_type.value}")
 
@@ -163,7 +165,11 @@ class TestGenerateAndPushFlow:
         mgr = _make_manager(buf, _FakeImpl(record="unused"))
         mgr._scheduler_trace = _TraceSink(SchedulerEventType.ATTEMPT_DISPATCHED)
         with pytest.raises(RuntimeError, match="injected trace failure"):
-            _run(mgr.generate_and_push({"task_name": "math"}, admission_id="admit"))
+            _run(
+                mgr.generate_and_push(
+                    {"idx": 1, "task_name": "math"}, admission_id="admit"
+                )
+            )
         assert buf._slots == []
         assert buf.remove_in_dp_calls == [False]
 
@@ -189,8 +195,59 @@ class TestGenerateAndPushFlow:
         mgr = _make_manager(buf, _FakeImpl(record=record))
         mgr._scheduler_trace = _TraceSink(SchedulerEventType.GROUP_READY)
         with pytest.raises(RuntimeError, match="injected trace failure"):
-            _run(mgr.generate_and_push({"task_name": "math"}, admission_id="admit"))
+            _run(
+                mgr.generate_and_push(
+                    {"idx": 1, "task_name": "math"}, admission_id="admit"
+                )
+            )
         assert buf._slots == []
+        assert buf.remove_in_dp_calls == [True]
+
+    def test_fixed_pool_identity_propagates_and_archives(self):
+        record = PromptGroupRecord(
+            prompt_idx=17,
+            prompt=[],
+            extra_env_info=None,
+            metadata={"task_name": "aime"},
+            completions=[
+                Completion(
+                    message_log=[{"role": "assistant", "content": "ok"}],
+                    env_extras=None,
+                    truncated=False,
+                    reward=1.0,
+                )
+            ],
+            rollout_metrics={},
+        )
+        buf = _FakeBuffer()
+        mgr = _make_manager(buf, _FakeImpl(record=record))
+        sink = _TraceSink()
+        mgr._scheduler_trace = sink
+        sample = {
+            "idx": 17,
+            "task_name": "aime",
+            "source_prompt_id": "a" * 64,
+            "repeated_prompt_cluster_id": "b" * 64,
+            "source_pool_ordinal": 3,
+            "dispatch_cohort": 1,
+        }
+
+        handle = _run(
+            mgr.generate_and_push(sample, target_step=2, admission_id="cohort-1")
+        )
+        assert handle is not None
+        _run(mgr.archive_fixed_pool_group(handle))
+
+        assert sink.events == [
+            SchedulerEventType.ATTEMPT_DISPATCHED,
+            SchedulerEventType.ROLLOUT_COMPLETED,
+            SchedulerEventType.GROUP_READY,
+            SchedulerEventType.GROUP_ARCHIVED,
+        ]
+        for fields in sink.event_fields:
+            assert fields["prompt_idx"] == 17
+            assert fields["source_prompt_id"] == "a" * 64
+            assert fields["dispatch_cohort"] == 1
         assert buf.remove_in_dp_calls == [True]
 
     def test_rollout_failure_removes_reserved_group(self):

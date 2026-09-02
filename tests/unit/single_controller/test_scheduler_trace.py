@@ -82,9 +82,7 @@ class SchedulerTraceTests(unittest.TestCase):
             self.assertNotEqual(events[2].attempt_id, events[6].attempt_id)
             report = validate_scheduler_trace(path)
             self.assertEqual(report.events, 10)
-            self.assertEqual(
-                report.administratively_censored_group_ids, ("g-0", "g-1")
-            )
+            self.assertEqual(report.administratively_censored_group_ids, ("g-0", "g-1"))
 
     def test_existing_file_is_never_appended(self) -> None:
         async def exercise(path: Path) -> None:
@@ -96,6 +94,91 @@ class SchedulerTraceTests(unittest.TestCase):
             path = Path(directory) / "trace.jsonl"
             path.write_text("existing\n")
             asyncio.run(exercise(path))
+
+    def test_fixed_pool_group_archives_after_ready(self) -> None:
+        async def exercise(path: Path) -> None:
+            sink = JsonlSchedulerTraceSink(path, trace_run_id="r", process_epoch="p")
+            await sink.start()
+            sink.emit(
+                SchedulerEventType.RUN_STARTED,
+                run_mode="fixed_pool",
+                pool_id="pool",
+                pool_manifest_sha256="a" * 64,
+            )
+            sink.emit(
+                SchedulerEventType.ADMISSION_GRANTED,
+                admission_id="cohort-0",
+                scalar_summaries={"expected_prompt_groups": 1},
+            )
+            identity = {
+                "logical_group_id": "g",
+                "attempt_id": "a",
+                "admission_id": "cohort-0",
+                "prompt_idx": 7,
+                "task_name": "math",
+                "source_prompt_id": "b" * 64,
+                "repeated_prompt_cluster_id": "c" * 64,
+                "source_pool_ordinal": 0,
+                "dispatch_cohort": 0,
+            }
+            sink.emit(SchedulerEventType.ATTEMPT_DISPATCHED, **identity)
+            sink.emit(SchedulerEventType.ROLLOUT_COMPLETED, **identity)
+            sink.emit(SchedulerEventType.GROUP_READY, **identity)
+            sink.emit(
+                SchedulerEventType.GROUP_ARCHIVED,
+                **identity,
+                terminal_reason="fixed_pool_archive",
+            )
+            sink.emit(
+                SchedulerEventType.RUN_ENDED,
+                run_mode="fixed_pool",
+                pool_id="pool",
+                pool_manifest_sha256="a" * 64,
+                terminal_reason="fixed_pool_complete",
+            )
+            await sink.close()
+
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "trace.jsonl"
+            asyncio.run(exercise(path))
+            report = validate_scheduler_trace(path)
+            self.assertEqual(report.incomplete_attempt_ids, ())
+            self.assertEqual(report.administratively_censored_group_ids, ())
+
+    def test_attempt_source_identity_cannot_change(self) -> None:
+        async def exercise(path: Path) -> None:
+            sink = JsonlSchedulerTraceSink(path, trace_run_id="r", process_epoch="p")
+            await sink.start()
+            self._start_run(sink)
+            sink.emit(
+                SchedulerEventType.ADMISSION_GRANTED,
+                admission_id="admit",
+                scalar_summaries={"expected_prompt_groups": 1},
+            )
+            sink.emit(
+                SchedulerEventType.ATTEMPT_DISPATCHED,
+                logical_group_id="g",
+                attempt_id="a",
+                admission_id="admit",
+                source_prompt_id="b" * 64,
+            )
+            sink.emit(
+                SchedulerEventType.ROLLOUT_COMPLETED,
+                logical_group_id="g",
+                attempt_id="a",
+                admission_id="admit",
+                source_prompt_id="c" * 64,
+            )
+            self._end_run(sink)
+            await sink.close()
+
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "trace.jsonl"
+            asyncio.run(exercise(path))
+            with self.assertRaisesRegex(
+                SchedulerTraceValidationError, "source identity changed"
+            ):
+                validate_scheduler_trace(path)
 
     def test_incomplete_lifecycle_is_reported(self) -> None:
         async def exercise(path: Path) -> None:
@@ -150,9 +233,7 @@ class SchedulerTraceTests(unittest.TestCase):
             self.assertEqual(
                 len(
                     list(
-                        iter_scheduler_trace(
-                            path, tolerate_truncated_final_record=True
-                        )
+                        iter_scheduler_trace(path, tolerate_truncated_final_record=True)
                     )
                 ),
                 3,

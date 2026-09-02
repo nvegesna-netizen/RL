@@ -20,6 +20,16 @@ async_rl:
   max_buffered_rollouts: 64
   # Enable per-rollout diagnostic prints (prompt content / completion previews).
   diagnostics: false
+  # Metadata-only controller lifecycle trace. A path is required when enabled.
+  scheduler_trace:
+    enabled: false
+    path: null
+    max_queue_events: 4096
+    flush_every: 64
+  # Scheduler-neutral generation-only collection over a strict source manifest.
+  fixed_pool:
+    enabled: false
+    manifest_path: null
 
 # SC does not support checkpointing yet.
 checkpointing:

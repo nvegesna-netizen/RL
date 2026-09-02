@@ -1,0 +1,829 @@
+# Copyright (c) 2026, NVIDIA CORPORATION.  All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+"""Strict manifests and data plumbing for fixed-pool rollout collection.
+
+The manifest contains only source coordinates and opaque, precomputed IDs. It
+must never contain prompt or completion text. Prompt IDs are expected to be
+generated upstream with a study-specific keyed hash; the key is not an input to
+this module and must not be persisted with the manifest or scheduler trace.
+"""
+
+from __future__ import annotations
+
+import hashlib
+import json
+from collections.abc import Mapping, Sequence
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Annotated, Any, Final, Literal, Protocol, TypeAlias, cast
+
+from pydantic import (
+    BaseModel,
+    Field,
+    StringConstraints,
+    ValidationError,
+    model_validator,
+)
+
+from nemo_rl.data.collate_fn import rl_collate_fn
+from nemo_rl.data.interfaces import DatumSpec
+from nemo_rl.distributed.batched_data_dict import BatchedDataDict
+from nemo_rl.algorithms.async_utils.scheduler_trace import (
+    SchedulerEventType,
+    SchedulerTraceValidationError,
+    iter_scheduler_trace,
+    validate_scheduler_trace,
+)
+
+
+FIXED_POOL_MANIFEST_SCHEMA_VERSION: Final[int] = 1
+MAX_FIXED_POOL_MANIFEST_BYTES: Final[int] = 16 * 1024 * 1024
+MAX_FIXED_POOL_SOURCE_BYTES: Final[int] = 64 * 1024 * 1024
+MAX_FIXED_POOL_ITEMS: Final[int] = 1_000_000
+
+Sha256Hex: TypeAlias = Annotated[
+    str,
+    StringConstraints(pattern=r"^[0-9a-f]{64}$"),
+]
+Identifier: TypeAlias = Annotated[
+    str,
+    StringConstraints(min_length=1, max_length=256, pattern=r"^[^\r\n]+$"),
+]
+SourceIdentifier: TypeAlias = Annotated[
+    str,
+    StringConstraints(min_length=1, max_length=1024, pattern=r"^[^\r\n]+$"),
+]
+NonNegativeStrictInt: TypeAlias = Annotated[int, Field(strict=True, ge=0)]
+
+
+class FixedPoolManifestError(ValueError):
+    """A fixed-pool manifest is unreadable or violates its strict contract."""
+
+
+@dataclass(frozen=True, slots=True)
+class FixedPoolTraceValidationReport:
+    """Exact lifecycle coverage for an evidentiary source collection."""
+
+    planned_prompt_groups: int
+    dispatched_prompt_groups: int
+    completed_prompt_groups: int
+    ready_prompt_groups: int
+    archived_prompt_groups: int
+    physical_weight_version: int
+
+
+class FixedPoolSource(BaseModel, extra="forbid", frozen=True):
+    """Immutable source dataset identity for every item in a pool."""
+
+    source_id: Identifier
+    dataset_id: SourceIdentifier
+    revision: Identifier
+    split: Identifier
+    materialized_file: Identifier
+    content_sha256: Sha256Hex
+
+    @model_validator(mode="after")
+    def _validate_materialized_file(self) -> "FixedPoolSource":
+        path = Path(self.materialized_file)
+        if path.is_absolute() or ".." in path.parts:
+            raise ValueError("materialized_file must be a safe relative path")
+        return self
+
+
+class FixedPoolManifestItem(BaseModel, extra="forbid", frozen=True):
+    """One planned prompt-group occurrence in dispatch order."""
+
+    ordinal: NonNegativeStrictInt
+    pool_item_id: Sha256Hex
+    source_prompt_id: Sha256Hex
+    source_id: Identifier
+    source_dataset_index: NonNegativeStrictInt
+    dataset_index: NonNegativeStrictInt
+    task_name: Identifier
+    repeated_prompt_cluster_id: Sha256Hex
+    dispatch_cohort: NonNegativeStrictInt
+    decorrelation_block: Identifier
+    matching_pair_id: Identifier
+    materialized_source_row: NonNegativeStrictInt
+    materialized_record_sha256: Sha256Hex
+    input_token_count: NonNegativeStrictInt
+    input_token_ids_sha256: Sha256Hex
+
+
+class _FixedPoolManifestContent(BaseModel, extra="forbid", frozen=True):
+    """Canonical manifest fields covered by ``pool_id``."""
+
+    schema_version: Literal[FIXED_POOL_MANIFEST_SCHEMA_VERSION]
+    id_namespace_fingerprint: Sha256Hex
+    design_protocol_sha256: Sha256Hex
+    order_seed: NonNegativeStrictInt
+    model_revision: Identifier
+    model_weights_sha256: Sha256Hex
+    model_snapshot_manifest_sha256: Sha256Hex
+    model_snapshot_path: Identifier
+    sources: tuple[FixedPoolSource, ...]
+    items: tuple[FixedPoolManifestItem, ...]
+
+    @model_validator(mode="before")
+    @classmethod
+    def _validate_model_snapshot_path(cls, values: object) -> object:
+        if isinstance(values, Mapping):
+            raw_path = values.get("model_snapshot_path")
+            if isinstance(raw_path, str):
+                path = Path(raw_path)
+                if path.is_absolute() or ".." in path.parts:
+                    raise ValueError("model_snapshot_path must be a safe relative path")
+        return values
+
+    @model_validator(mode="after")
+    def _validate_pool_contract(self) -> "_FixedPoolManifestContent":
+        if not self.items:
+            raise ValueError("fixed-pool manifest must contain at least one item")
+        if len(self.items) > MAX_FIXED_POOL_ITEMS:
+            raise ValueError(
+                f"fixed-pool manifest exceeds {MAX_FIXED_POOL_ITEMS} items"
+            )
+        if not self.sources:
+            raise ValueError("fixed-pool manifest must declare at least one source")
+        source_ids = [source.source_id for source in self.sources]
+        if len(source_ids) != len(set(source_ids)):
+            raise ValueError("fixed-pool source_id values must be unique")
+        known_sources = set(source_ids)
+        unknown_sources = sorted(
+            {item.source_id for item in self.items} - known_sources
+        )
+        if unknown_sources:
+            raise ValueError(
+                f"fixed-pool items reference unknown sources: {unknown_sources}"
+            )
+
+        ordinals = [item.ordinal for item in self.items]
+        if ordinals != list(range(len(self.items))):
+            raise ValueError(
+                "fixed-pool item ordinals must be contiguous and match file order"
+            )
+
+        pool_item_ids = [item.pool_item_id for item in self.items]
+        if len(pool_item_ids) != len(set(pool_item_ids)):
+            raise ValueError("fixed-pool pool_item_id values must be unique")
+
+        cohorts = [item.dispatch_cohort for item in self.items]
+        if cohorts != sorted(cohorts):
+            raise ValueError("dispatch cohorts must be contiguous blocks in file order")
+        if sorted(set(cohorts)) != list(range(max(cohorts) + 1)):
+            raise ValueError("dispatch cohort IDs must be contiguous and start at zero")
+
+        source_identity: dict[int, tuple[str, int, str, str, str]] = {}
+        coordinate_identity: dict[tuple[str, int], tuple[str, str, str]] = {}
+        prompt_identity: dict[str, tuple[str, int, str, str]] = {}
+        for item in self.items:
+            identity = (
+                item.source_id,
+                item.source_dataset_index,
+                item.source_prompt_id,
+                item.task_name,
+                item.repeated_prompt_cluster_id,
+            )
+            previous = source_identity.setdefault(item.dataset_index, identity)
+            if previous != identity:
+                raise ValueError(
+                    "repeated dataset_index values must preserve source prompt, "
+                    "task, and repeated-prompt cluster identity"
+                )
+            coordinate = (item.source_id, item.source_dataset_index)
+            coordinate_value = (
+                item.source_prompt_id,
+                item.task_name,
+                item.repeated_prompt_cluster_id,
+            )
+            previous_coordinate = coordinate_identity.setdefault(
+                coordinate, coordinate_value
+            )
+            if previous_coordinate != coordinate_value:
+                raise ValueError(
+                    "repeated source coordinates must preserve prompt, task, and "
+                    "repeated-prompt cluster identity"
+                )
+            prompt_value = (
+                item.source_id,
+                item.source_dataset_index,
+                item.task_name,
+                item.repeated_prompt_cluster_id,
+            )
+            previous_prompt = prompt_identity.setdefault(
+                item.source_prompt_id, prompt_value
+            )
+            if previous_prompt != prompt_value:
+                raise ValueError(
+                    "source_prompt_id must identify exactly one source coordinate, "
+                    "task, and repeated-prompt cluster"
+                )
+
+        return self
+
+
+class _FixedPoolManifestPayload(_FixedPoolManifestContent):
+    """On-disk manifest schema before the verified file digest is attached."""
+
+    pool_id: Sha256Hex
+
+    @model_validator(mode="after")
+    def _validate_pool_id(self) -> "_FixedPoolManifestPayload":
+        if self.pool_id != _compute_pool_id(self):
+            raise ValueError("pool_id does not match the canonical manifest payload")
+        return self
+
+
+@dataclass(frozen=True, slots=True)
+class FixedPoolManifest:
+    """Validated fixed-pool manifest plus its exact raw-file SHA-256."""
+
+    schema_version: int
+    pool_id: str
+    id_namespace_fingerprint: str
+    design_protocol_sha256: str
+    order_seed: int
+    model_revision: str
+    model_weights_sha256: str
+    model_snapshot_manifest_sha256: str
+    model_snapshot_path: str
+    sources: tuple[FixedPoolSource, ...]
+    items: tuple[FixedPoolManifestItem, ...]
+    manifest_sha256: str
+    manifest_path: Path
+
+    @property
+    def num_dispatch_cohorts(self) -> int:
+        """Return the number of predeclared dispatch cohorts."""
+        return self.items[-1].dispatch_cohort + 1
+
+    @property
+    def cohort_sizes(self) -> tuple[int, ...]:
+        """Return manifest item counts for each contiguous dispatch cohort."""
+        counts = [0] * self.num_dispatch_cohorts
+        for item in self.items:
+            counts[item.dispatch_cohort] += 1
+        return tuple(counts)
+
+
+def _canonical_pool_payload(payload: _FixedPoolManifestContent) -> bytes:
+    record = payload.model_dump(mode="json", exclude={"pool_id"})
+    return json.dumps(
+        record,
+        allow_nan=False,
+        separators=(",", ":"),
+        sort_keys=True,
+    ).encode("utf-8")
+
+
+def _compute_pool_id(payload: _FixedPoolManifestContent) -> str:
+    return hashlib.sha256(_canonical_pool_payload(payload)).hexdigest()
+
+
+def compute_fixed_pool_id(record: Mapping[str, object]) -> str:
+    """Compute the canonical pool ID for a manifest record under construction.
+
+    The input may omit ``pool_id``. All other fields are validated before the
+    digest is returned, except for cross-checking the digest itself.
+    """
+    values = {key: value for key, value in record.items() if key != "pool_id"}
+    try:
+        payload = _FixedPoolManifestContent.model_validate(values)
+    except ValidationError as error:
+        raise FixedPoolManifestError(str(error)) from error
+    return _compute_pool_id(payload)
+
+
+def _reject_duplicate_json_keys(
+    pairs: list[tuple[str, object]],
+) -> dict[str, object]:
+    record: dict[str, object] = {}
+    for key, value in pairs:
+        if key in record:
+            raise FixedPoolManifestError(f"duplicate JSON key: {key!r}")
+        record[key] = value
+    return record
+
+
+def load_fixed_pool_manifest(path: str | Path) -> FixedPoolManifest:
+    """Read and strictly validate a fixed-pool JSON manifest.
+
+    Args:
+        path: Manifest path. The exact raw bytes are hashed for provenance.
+
+    Returns:
+        A validated immutable manifest.
+
+    Raises:
+        FixedPoolManifestError: The file cannot be read or violates the schema.
+    """
+    manifest_path = Path(path)
+    try:
+        raw = manifest_path.read_bytes()
+    except OSError as error:
+        raise FixedPoolManifestError(
+            f"cannot read manifest {manifest_path}: {error}"
+        ) from error
+    if not raw:
+        raise FixedPoolManifestError("fixed-pool manifest is empty")
+    if len(raw) > MAX_FIXED_POOL_MANIFEST_BYTES:
+        raise FixedPoolManifestError(
+            f"fixed-pool manifest exceeds {MAX_FIXED_POOL_MANIFEST_BYTES} bytes"
+        )
+    try:
+        record = json.loads(
+            raw.decode("utf-8"), object_pairs_hook=_reject_duplicate_json_keys
+        )
+    except (UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise FixedPoolManifestError(
+            "fixed-pool manifest is not valid UTF-8 JSON"
+        ) from error
+    if not isinstance(record, dict):
+        raise FixedPoolManifestError("fixed-pool manifest root must be a JSON object")
+    try:
+        payload = _FixedPoolManifestPayload.model_validate(record)
+    except ValidationError as error:
+        raise FixedPoolManifestError(str(error)) from error
+    return FixedPoolManifest(
+        schema_version=payload.schema_version,
+        pool_id=payload.pool_id,
+        id_namespace_fingerprint=payload.id_namespace_fingerprint,
+        design_protocol_sha256=payload.design_protocol_sha256,
+        order_seed=payload.order_seed,
+        model_revision=payload.model_revision,
+        model_weights_sha256=payload.model_weights_sha256,
+        model_snapshot_manifest_sha256=payload.model_snapshot_manifest_sha256,
+        model_snapshot_path=payload.model_snapshot_path,
+        sources=payload.sources,
+        items=payload.items,
+        manifest_sha256=hashlib.sha256(raw).hexdigest(),
+        manifest_path=manifest_path.resolve(),
+    )
+
+
+def validate_fixed_pool_materialization(manifest: FixedPoolManifest) -> None:
+    """Bind source claims and item coordinates to exact local JSONL bytes."""
+    base = manifest.manifest_path.parent
+    snapshot_manifest_path = base / "model_snapshot_manifest.v1.json"
+    try:
+        snapshot_manifest_raw = snapshot_manifest_path.read_bytes()
+    except OSError as error:
+        raise FixedPoolManifestError(
+            f"cannot read model snapshot manifest: {error}"
+        ) from error
+    if (
+        hashlib.sha256(snapshot_manifest_raw).hexdigest()
+        != manifest.model_snapshot_manifest_sha256
+    ):
+        raise FixedPoolManifestError("model snapshot manifest SHA mismatch")
+    model_root = (base / manifest.model_snapshot_path).resolve()
+    if model_root.parent != base:
+        raise FixedPoolManifestError("model snapshot path escapes manifest directory")
+    weights_path = model_root / "model.safetensors"
+    try:
+        weights_digest = hashlib.sha256()
+        with weights_path.open("rb") as handle:
+            while chunk := handle.read(8 * 1024 * 1024):
+                weights_digest.update(chunk)
+    except OSError as error:
+        raise FixedPoolManifestError(
+            f"cannot read pinned model weights: {error}"
+        ) from error
+    if weights_digest.hexdigest() != manifest.model_weights_sha256:
+        raise FixedPoolManifestError("pinned model weights SHA mismatch")
+    try:
+        snapshot_records = json.loads(snapshot_manifest_raw)
+    except json.JSONDecodeError as error:
+        raise FixedPoolManifestError("invalid model snapshot manifest JSON") from error
+    if not isinstance(snapshot_records, list) or not snapshot_records:
+        raise FixedPoolManifestError("model snapshot manifest must be a nonempty list")
+    for record in snapshot_records:
+        if not isinstance(record, dict):
+            raise FixedPoolManifestError("invalid model snapshot manifest record")
+        relative = record.get("path")
+        expected_size = record.get("bytes")
+        expected_sha = record.get("sha256")
+        if not isinstance(relative, str):
+            raise FixedPoolManifestError("model snapshot record lacks a path")
+        path = Path(relative)
+        if path.is_absolute() or ".." in path.parts:
+            raise FixedPoolManifestError("unsafe model snapshot record path")
+        asset = model_root / path
+        try:
+            stat = asset.stat()
+        except OSError as error:
+            raise FixedPoolManifestError(
+                f"missing model snapshot asset {relative}: {error}"
+            ) from error
+        if stat.st_size != expected_size:
+            raise FixedPoolManifestError(
+                f"model snapshot asset size mismatch: {relative}"
+            )
+        if relative == "model.safetensors":
+            observed_sha = weights_digest.hexdigest()
+        else:
+            digest = hashlib.sha256()
+            with asset.open("rb") as handle:
+                while chunk := handle.read(8 * 1024 * 1024):
+                    digest.update(chunk)
+            observed_sha = digest.hexdigest()
+        if observed_sha != expected_sha:
+            raise FixedPoolManifestError(
+                f"model snapshot asset SHA mismatch: {relative}"
+            )
+    source_rows: dict[str, list[dict[str, object]]] = {}
+    global_offsets: dict[str, int] = {}
+    offset = 0
+    for source in manifest.sources:
+        path = (base / source.materialized_file).resolve()
+        if path.parent != base and base not in path.parents:
+            raise FixedPoolManifestError(
+                "materialized source escapes manifest directory"
+            )
+        try:
+            raw = path.read_bytes()
+        except OSError as error:
+            raise FixedPoolManifestError(
+                f"cannot read materialized source {path}: {error}"
+            ) from error
+        if not raw or len(raw) > MAX_FIXED_POOL_SOURCE_BYTES:
+            raise FixedPoolManifestError(
+                f"materialized source {path} is empty or exceeds the size limit"
+            )
+        if hashlib.sha256(raw).hexdigest() != source.content_sha256:
+            raise FixedPoolManifestError(
+                f"materialized source SHA mismatch for {source.source_id}"
+            )
+        rows: list[dict[str, object]] = []
+        for line_number, line in enumerate(raw.splitlines(), start=1):
+            if not line:
+                raise FixedPoolManifestError(
+                    f"blank JSONL row in {source.materialized_file}:{line_number}"
+                )
+            try:
+                record = json.loads(
+                    line.decode("utf-8"),
+                    object_pairs_hook=_reject_duplicate_json_keys,
+                )
+            except (UnicodeDecodeError, json.JSONDecodeError) as error:
+                raise FixedPoolManifestError(
+                    f"invalid JSONL row in {source.materialized_file}:{line_number}"
+                ) from error
+            if not isinstance(record, dict):
+                raise FixedPoolManifestError("materialized JSONL rows must be objects")
+            rows.append(record)
+        global_offsets[source.source_id] = offset
+        offset += len(rows)
+        source_rows[source.source_id] = rows
+
+    for item in manifest.items:
+        rows = source_rows[item.source_id]
+        if item.materialized_source_row >= len(rows):
+            raise FixedPoolManifestError(
+                f"materialized row is out of range at ordinal {item.ordinal}"
+            )
+        record = rows[item.materialized_source_row]
+        canonical = json.dumps(
+            record,
+            allow_nan=False,
+            separators=(",", ":"),
+            sort_keys=True,
+        ).encode("utf-8")
+        if hashlib.sha256(canonical).hexdigest() != item.materialized_record_sha256:
+            raise FixedPoolManifestError(
+                f"materialized record SHA mismatch at ordinal {item.ordinal}"
+            )
+        expected_identity = {
+            "source_id": item.source_id,
+            "source_dataset_index": item.source_dataset_index,
+            "source_prompt_id": item.source_prompt_id,
+            "repeated_prompt_cluster_id": item.repeated_prompt_cluster_id,
+        }
+        if any(record.get(key) != value for key, value in expected_identity.items()):
+            raise FixedPoolManifestError(
+                f"materialized source identity mismatch at ordinal {item.ordinal}"
+            )
+        expected_dataset_index = (
+            global_offsets[item.source_id] + item.materialized_source_row
+        )
+        if item.dataset_index != expected_dataset_index:
+            raise FixedPoolManifestError(
+                f"merged dataset index mismatch at ordinal {item.ordinal}"
+            )
+
+
+def validate_ready_bias_manifest_design(manifest: FixedPoolManifest) -> None:
+    """Enforce the preregistered 48-group heterogeneous calibration design."""
+    tasks = ("AIME2024", "gsm8k")
+    counts = {
+        task: sum(item.task_name == task for item in manifest.items) for task in tasks
+    }
+    if len(manifest.items) != 48 or counts != {task: 24 for task in tasks}:
+        raise FixedPoolManifestError("ready-bias pool must contain 24 prompts per task")
+    by_cohort: dict[int, list[FixedPoolManifestItem]] = {}
+    by_pair: dict[str, list[FixedPoolManifestItem]] = {}
+    for item in manifest.items:
+        by_cohort.setdefault(item.dispatch_cohort, []).append(item)
+        by_pair.setdefault(item.matching_pair_id, []).append(item)
+        if item.input_token_count > 256:
+            raise FixedPoolManifestError("ready-bias input exceeds 256-token bound")
+    for cohort, items in by_cohort.items():
+        task_counts = {
+            task: sum(item.task_name == task for item in items) for task in tasks
+        }
+        blocks = {item.decorrelation_block for item in items}
+        if (
+            len(items) != 4
+            or task_counts != {task: 2 for task in tasks}
+            or len(blocks) != 1
+        ):
+            raise FixedPoolManifestError(
+                f"dispatch cohort {cohort} must contain a single balanced 2+2 block"
+            )
+    if len(by_pair) != 24:
+        raise FixedPoolManifestError("ready-bias pool must contain 24 matching pairs")
+    for pair_id, items in by_pair.items():
+        if {item.task_name for item in items} != set(tasks) or len(items) != 2:
+            raise FixedPoolManifestError(f"invalid cross-task matching pair {pair_id}")
+        if abs(items[0].input_token_count - items[1].input_token_count) > 16:
+            raise FixedPoolManifestError(f"token caliper exceeded for pair {pair_id}")
+
+
+class _DatumDataset(Protocol):
+    def __len__(self) -> int: ...
+
+    def __getitem__(self, index: int) -> DatumSpec: ...
+
+
+class FixedPoolDataset(Sequence[DatumSpec]):
+    """Select and label a processed dataset in exact manifest order."""
+
+    def __init__(self, dataset: _DatumDataset, manifest: FixedPoolManifest) -> None:
+        dataset_size = len(dataset)
+        for item in manifest.items:
+            if item.dataset_index >= dataset_size:
+                raise FixedPoolManifestError(
+                    f"dataset_index {item.dataset_index} is outside dataset size "
+                    f"{dataset_size}"
+                )
+        self._dataset = dataset
+        self._manifest = manifest
+
+    def __len__(self) -> int:
+        return len(self._manifest.items)
+
+    def __getitem__(self, index: int | slice) -> DatumSpec | Sequence[DatumSpec]:
+        if isinstance(index, slice):
+            return [self[i] for i in range(*index.indices(len(self)))]
+        item = self._manifest.items[index]
+        datum = dict(self._dataset[item.dataset_index])
+        actual_idx = datum.get("idx")
+        if actual_idx != item.dataset_index:
+            raise FixedPoolManifestError(
+                f"manifest item {item.ordinal} expected dataset idx "
+                f"{item.dataset_index}, got {actual_idx!r}"
+            )
+        actual_task = datum.get("task_name")
+        if actual_task != item.task_name:
+            raise FixedPoolManifestError(
+                f"manifest item {item.ordinal} expected task {item.task_name!r}, "
+                f"got {actual_task!r}"
+            )
+        token_ids: list[int] = []
+        for message in datum["message_log"]:
+            values = message["token_ids"]
+            if hasattr(values, "tolist"):
+                values = values.tolist()
+            token_ids.extend(int(value) for value in values)
+        token_digest = hashlib.sha256(
+            json.dumps(token_ids, separators=(",", ":")).encode("utf-8")
+        ).hexdigest()
+        if len(token_ids) != item.input_token_count:
+            raise FixedPoolManifestError(
+                f"input token count mismatch at ordinal {item.ordinal}"
+            )
+        if token_digest != item.input_token_ids_sha256:
+            raise FixedPoolManifestError(
+                f"input token IDs SHA mismatch at ordinal {item.ordinal}"
+            )
+        datum.update(
+            source_pool_ordinal=item.ordinal,
+            source_prompt_id=item.source_prompt_id,
+            repeated_prompt_cluster_id=item.repeated_prompt_cluster_id,
+            dispatch_cohort=item.dispatch_cohort,
+        )
+        return cast(DatumSpec, datum)
+
+
+def fixed_pool_collate_fn(data_batch: list[DatumSpec]) -> BatchedDataDict[Any]:
+    """Collate normal RL fields plus required fixed-pool identity metadata."""
+    if not data_batch:
+        raise FixedPoolManifestError("cannot collate an empty fixed-pool batch")
+    required = (
+        "source_pool_ordinal",
+        "source_prompt_id",
+        "repeated_prompt_cluster_id",
+        "dispatch_cohort",
+    )
+    for datum in data_batch:
+        missing = [field for field in required if field not in datum]
+        if missing:
+            raise FixedPoolManifestError(
+                f"fixed-pool datum is missing identity fields: {missing}"
+            )
+    cohorts = {datum["dispatch_cohort"] for datum in data_batch}
+    if len(cohorts) != 1:
+        raise FixedPoolManifestError(
+            "a fixed-pool dataloader batch must not cross a dispatch-cohort boundary"
+        )
+    batch = rl_collate_fn(data_batch)
+    for field in required:
+        batch[field] = [datum[field] for datum in data_batch]  # type: ignore[literal-required]
+    return batch
+
+
+def validate_fixed_pool_trace(
+    trace_path: str | Path,
+    manifest: FixedPoolManifest,
+    *,
+    expected_completions_per_group: int,
+) -> FixedPoolTraceValidationReport:
+    """Validate a complete scheduler-neutral, fixed-policy source collection."""
+    if expected_completions_per_group < 1:
+        raise ValueError("expected_completions_per_group must be positive")
+    generic_report = validate_scheduler_trace(trace_path)
+    if generic_report.incomplete_attempt_ids:
+        raise SchedulerTraceValidationError("fixed-pool trace has incomplete attempts")
+    if generic_report.administratively_censored_group_ids:
+        raise SchedulerTraceValidationError(
+            "fixed-pool trace has administrative horizon censoring"
+        )
+    events = list(iter_scheduler_trace(trace_path))
+    run_start, run_end = events[0], events[-1]
+    for boundary in (run_start, run_end):
+        if boundary.run_mode != "fixed_pool":
+            raise SchedulerTraceValidationError("fixed-pool run mode is missing")
+        if boundary.pool_id != manifest.pool_id:
+            raise SchedulerTraceValidationError("fixed-pool pool ID mismatch")
+        if boundary.pool_manifest_sha256 != manifest.manifest_sha256:
+            raise SchedulerTraceValidationError("fixed-pool manifest SHA mismatch")
+        if boundary.model_revision != manifest.model_revision:
+            raise SchedulerTraceValidationError("fixed-pool model revision mismatch")
+        if boundary.model_weights_sha256 != manifest.model_weights_sha256:
+            raise SchedulerTraceValidationError("fixed-pool model weights SHA mismatch")
+    if run_end.terminal_reason != "fixed_pool_complete":
+        raise SchedulerTraceValidationError("fixed-pool run did not complete cleanly")
+    if run_end.live_logical_group_ids:
+        raise SchedulerTraceValidationError("fixed-pool run ended with live groups")
+    if run_end.scalar_summaries.get("completed_train_steps") != 0:
+        raise SchedulerTraceValidationError("fixed-pool collection performed training")
+    if run_start.scalar_summaries.get("planned_prompt_groups") != len(manifest.items):
+        raise SchedulerTraceValidationError("fixed-pool planned count mismatch")
+    if run_end.scalar_summaries.get("collected_prompt_groups") != len(manifest.items):
+        raise SchedulerTraceValidationError("fixed-pool collected count mismatch")
+
+    forbidden = {
+        SchedulerEventType.SELECT_DECISION,
+        SchedulerEventType.GROUP_EVICTED,
+        SchedulerEventType.ATTEMPT_FAILED,
+        SchedulerEventType.ATTEMPT_REMOVED,
+        SchedulerEventType.ABORT_REQUESTED,
+        SchedulerEventType.PROMPT_SKIPPED,
+        SchedulerEventType.GROUP_REPLACED,
+        SchedulerEventType.GROUP_PROMOTED,
+    }
+    bad_events = [
+        event.event_type.value for event in events if event.event_type in forbidden
+    ]
+    if bad_events:
+        raise SchedulerTraceValidationError(
+            f"fixed-pool trace contains forbidden lifecycle events: {bad_events}"
+        )
+
+    manifest_by_ordinal = {item.ordinal: item for item in manifest.items}
+    expected_cohorts: dict[int, list[int]] = {}
+    for item in manifest.items:
+        expected_cohorts.setdefault(item.dispatch_cohort, []).append(item.ordinal)
+    admission_cohorts: dict[str, int] = {}
+    lifecycle: dict[int, list[SchedulerEventType]] = {}
+    dispatch_order: list[int] = []
+    physical_versions: set[int] = set()
+    trainer_versions = {
+        event.trainer_version for event in events if event.trainer_version is not None
+    }
+    if len(trainer_versions) != 1:
+        raise SchedulerTraceValidationError(
+            "fixed-pool trainer version changed during collection"
+        )
+
+    for event in events:
+        if event.event_type is SchedulerEventType.ADMISSION_GRANTED:
+            assert event.admission_id is not None
+            cohort = event.sampler_dispatch_index
+            if cohort is None or cohort not in expected_cohorts:
+                raise SchedulerTraceValidationError(
+                    "fixed-pool admission has an unknown dispatch cohort"
+                )
+            if event.admission_id in admission_cohorts:
+                raise SchedulerTraceValidationError(
+                    "fixed-pool dispatch cohort was admitted more than once"
+                )
+            if event.scalar_summaries.get("expected_prompt_groups") != len(
+                expected_cohorts[cohort]
+            ):
+                raise SchedulerTraceValidationError(
+                    "fixed-pool admission cohort size mismatch"
+                )
+            admission_cohorts[event.admission_id] = cohort
+        if event.event_type not in {
+            SchedulerEventType.ATTEMPT_DISPATCHED,
+            SchedulerEventType.ROLLOUT_COMPLETED,
+            SchedulerEventType.GROUP_READY,
+            SchedulerEventType.GROUP_ARCHIVED,
+        }:
+            continue
+        ordinal = event.source_pool_ordinal
+        if ordinal is None or ordinal not in manifest_by_ordinal:
+            raise SchedulerTraceValidationError(
+                "fixed-pool lifecycle event is not in the manifest"
+            )
+        item = manifest_by_ordinal[ordinal]
+        if (
+            event.prompt_idx != item.dataset_index
+            or event.task_name != item.task_name
+            or event.source_prompt_id != item.source_prompt_id
+            or event.repeated_prompt_cluster_id != item.repeated_prompt_cluster_id
+            or event.dispatch_cohort != item.dispatch_cohort
+        ):
+            raise SchedulerTraceValidationError(
+                f"fixed-pool manifest identity mismatch at ordinal {ordinal}"
+            )
+        if admission_cohorts.get(event.admission_id) != item.dispatch_cohort:
+            raise SchedulerTraceValidationError(
+                f"fixed-pool admission mismatch at ordinal {ordinal}"
+            )
+        lifecycle.setdefault(ordinal, []).append(event.event_type)
+        if event.event_type is SchedulerEventType.ATTEMPT_DISPATCHED:
+            dispatch_order.append(ordinal)
+            if event.start_weight_version is None:
+                raise SchedulerTraceValidationError(
+                    "fixed-pool dispatch lacks physical weight version"
+                )
+            physical_versions.add(event.start_weight_version)
+        elif event.event_type is SchedulerEventType.ROLLOUT_COMPLETED:
+            if event.scalar_summaries.get("completion_count") != (
+                expected_completions_per_group
+            ):
+                raise SchedulerTraceValidationError(
+                    f"completion count mismatch at ordinal {ordinal}"
+                )
+        elif event.event_type is SchedulerEventType.GROUP_READY:
+            if (
+                event.start_weight_version is None
+                or event.end_weight_version is None
+                or event.start_weight_version != event.end_weight_version
+            ):
+                raise SchedulerTraceValidationError(
+                    f"physical policy changed during ordinal {ordinal}"
+                )
+            physical_versions.add(event.start_weight_version)
+
+    if set(admission_cohorts.values()) != set(expected_cohorts):
+        raise SchedulerTraceValidationError("fixed-pool cohort coverage mismatch")
+    if dispatch_order != list(range(len(manifest.items))):
+        raise SchedulerTraceValidationError("fixed-pool dispatch order mismatch")
+    expected_lifecycle = [
+        SchedulerEventType.ATTEMPT_DISPATCHED,
+        SchedulerEventType.ROLLOUT_COMPLETED,
+        SchedulerEventType.GROUP_READY,
+        SchedulerEventType.GROUP_ARCHIVED,
+    ]
+    if any(
+        lifecycle.get(item.ordinal) != expected_lifecycle for item in manifest.items
+    ):
+        raise SchedulerTraceValidationError("fixed-pool lifecycle coverage mismatch")
+    if len(physical_versions) != 1:
+        raise SchedulerTraceValidationError(
+            "fixed-pool source collection used multiple physical policy versions"
+        )
+    physical_weight_version = next(iter(physical_versions))
+    return FixedPoolTraceValidationReport(
+        planned_prompt_groups=len(manifest.items),
+        dispatched_prompt_groups=len(dispatch_order),
+        completed_prompt_groups=len(manifest.items),
+        ready_prompt_groups=len(manifest.items),
+        archived_prompt_groups=len(manifest.items),
+        physical_weight_version=physical_weight_version,
+    )

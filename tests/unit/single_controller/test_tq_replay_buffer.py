@@ -116,6 +116,12 @@ class FailAfterPutDataPlaneClient(FakeDataPlaneClient):
         raise RuntimeError("injected put failure")
 
 
+class FailClearDataPlaneClient(FakeDataPlaneClient):
+    def clear_samples(self, sample_ids: list[str] | None, partition_id: str) -> None:
+        del sample_ids, partition_id
+        raise RuntimeError("injected clear failure")
+
+
 def _run(coro):
     return asyncio.run(coro)
 
@@ -323,6 +329,19 @@ class TestTQReplayBufferReserveCommit:
 
 
 class TestTQReplayBufferRemove:
+    def test_remove_retains_local_recovery_ledger_when_dp_clear_fails(self):
+        dp = FailClearDataPlaneClient()
+        buf = _make_buffer(dp)
+        meta = _add_group(buf, weight=3)
+        group_id = buf.group_ids[0]
+
+        with pytest.raises(RuntimeError, match="injected clear failure"):
+            _run(buf.remove_group(group_id, remove_in_dp=True))
+
+        assert buf.group_ids == (group_id,)
+        assert buf.meta_list[0].sample_ids == meta.sample_ids
+        assert dp.depth() == _N_GENS
+
     def test_remove_drops_indices_and_clears_dp_when_requested(self):
         dp = FakeDataPlaneClient()
         buf = _make_buffer(dp)

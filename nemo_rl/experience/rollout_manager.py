@@ -17,6 +17,7 @@ import copy
 import json
 import statistics
 import uuid
+from dataclasses import dataclass
 from typing import Any, Optional
 
 import torch
@@ -49,6 +50,21 @@ from nemo_rl.models.generation.interfaces import (
 from nemo_rl.utils.timer import Timer
 
 TokenizerType = PreTrainedTokenizerBase
+
+
+@dataclass(frozen=True, slots=True)
+class RolloutGroupHandle:
+    """Identity needed to archive a completed fixed-pool prompt group."""
+
+    logical_group_id: str
+    attempt_id: str
+    admission_id: Optional[str]
+    prompt_idx: int
+    task_name: Optional[str]
+    source_prompt_id: Optional[str]
+    repeated_prompt_cluster_id: Optional[str]
+    source_pool_ordinal: Optional[int]
+    dispatch_cohort: Optional[int]
 
 
 class AsyncRolloutImpl:
@@ -744,7 +760,8 @@ class RolloutManager:
         *,
         target_step: Optional[int] = None,
         admission_id: Optional[str] = None,
-    ) -> None:
+        dispatch_started_event: Optional[asyncio.Event] = None,
+    ) -> Optional[RolloutGroupHandle]:
         """Reserve a buffer slot, run one prompt's rollout, then commit the slot.
 
         Args:
@@ -775,7 +792,10 @@ class RolloutManager:
             except BaseException:
                 await self._tq_buffer.remove_group(group_id)
                 raise
-            return
+            finally:
+                if dispatch_started_event is not None:
+                    dispatch_started_event.set()
+            return None
 
         start_version = self._weight_version
         group_id = self._tq_buffer.reserve(
@@ -784,13 +804,38 @@ class RolloutManager:
         attempt_id = str(uuid.uuid4())
         task_value = input_sample.get("task_name")
         task_name = task_value if isinstance(task_value, str) else None
+        prompt_idx = input_sample["idx"]
+        source_prompt_value = input_sample.get("source_prompt_id")
+        source_prompt_id = (
+            source_prompt_value if isinstance(source_prompt_value, str) else None
+        )
+        repeated_prompt_value = input_sample.get("repeated_prompt_cluster_id")
+        repeated_prompt_cluster_id = (
+            repeated_prompt_value if isinstance(repeated_prompt_value, str) else None
+        )
+        source_pool_value = input_sample.get("source_pool_ordinal")
+        source_pool_ordinal = (
+            source_pool_value if isinstance(source_pool_value, int) else None
+        )
+        dispatch_cohort_value = input_sample.get("dispatch_cohort")
+        dispatch_cohort = (
+            dispatch_cohort_value if isinstance(dispatch_cohort_value, int) else None
+        )
+        trace_identity = {
+            "logical_group_id": group_id,
+            "attempt_id": attempt_id,
+            "admission_id": admission_id,
+            "prompt_idx": prompt_idx,
+            "task_name": task_name,
+            "source_prompt_id": source_prompt_id,
+            "repeated_prompt_cluster_id": repeated_prompt_cluster_id,
+            "source_pool_ordinal": source_pool_ordinal,
+            "dispatch_cohort": dispatch_cohort,
+        }
         try:
             self._scheduler_trace.emit(
                 SchedulerEventType.ATTEMPT_DISPATCHED,
-                logical_group_id=group_id,
-                attempt_id=attempt_id,
-                admission_id=admission_id,
-                task_name=task_name,
+                **trace_identity,
                 target_step=target_step,
                 start_weight_version=start_version,
             )
@@ -803,14 +848,21 @@ class RolloutManager:
                     [error, cleanup_error],
                 ) from None
             raise
+        finally:
+            if dispatch_started_event is not None:
+                dispatch_started_event.set()
 
         committed = False
         try:
             record = await self.run_rollout(input_sample)
-            record_task_value = record.metadata.get("task_name", task_name)
-            record_task_name = (
-                record_task_value if isinstance(record_task_value, str) else task_name
-            )
+            if record.prompt_idx != prompt_idx:
+                raise ValueError(
+                    "rollout prompt index does not match the dispatched prompt"
+                )
+            if record.metadata.get("task_name") != task_name:
+                raise ValueError(
+                    "rollout task name does not match the dispatched prompt"
+                )
             rewards = [float(completion.reward) for completion in record.completions]
             summaries: dict[str, float | int] = {"completion_count": len(rewards)}
             if rewards:
@@ -843,10 +895,7 @@ class RolloutManager:
                     summaries[metric_name] = value
             self._scheduler_trace.emit(
                 SchedulerEventType.ROLLOUT_COMPLETED,
-                logical_group_id=group_id,
-                attempt_id=attempt_id,
-                admission_id=admission_id,
-                task_name=record_task_name,
+                **trace_identity,
                 target_step=target_step,
                 start_weight_version=start_version,
                 scalar_summaries=summaries,
@@ -861,10 +910,7 @@ class RolloutManager:
             committed = True
             self._scheduler_trace.emit(
                 SchedulerEventType.GROUP_READY,
-                logical_group_id=group_id,
-                attempt_id=attempt_id,
-                admission_id=admission_id,
-                task_name=record_task_name,
+                **trace_identity,
                 target_step=target_step,
                 start_weight_version=start_version,
                 end_weight_version=end_version,
@@ -874,10 +920,7 @@ class RolloutManager:
             try:
                 self._scheduler_trace.emit(
                     SchedulerEventType.ATTEMPT_FAILED,
-                    logical_group_id=group_id,
-                    attempt_id=attempt_id,
-                    admission_id=admission_id,
-                    task_name=task_name,
+                    **trace_identity,
                     target_step=target_step,
                     start_weight_version=start_version,
                     failure_class=(
@@ -902,9 +945,7 @@ class RolloutManager:
                 try:
                     self._scheduler_trace.emit(
                         SchedulerEventType.ATTEMPT_REMOVED,
-                        logical_group_id=group_id,
-                        attempt_id=attempt_id,
-                        admission_id=admission_id,
+                        **trace_identity,
                         terminal_reason="failed_attempt_cleanup",
                     )
                 except BaseException as emit_error:
@@ -919,3 +960,37 @@ class RolloutManager:
                     "rollout/trace failure and buffer cleanup failed", failures
                 ) from None
             raise
+        return RolloutGroupHandle(
+            logical_group_id=group_id,
+            attempt_id=attempt_id,
+            admission_id=admission_id,
+            prompt_idx=prompt_idx,
+            task_name=task_name,
+            source_prompt_id=source_prompt_id,
+            repeated_prompt_cluster_id=repeated_prompt_cluster_id,
+            source_pool_ordinal=source_pool_ordinal,
+            dispatch_cohort=dispatch_cohort,
+        )
+
+    async def archive_fixed_pool_group(self, handle: RolloutGroupHandle) -> None:
+        """Remove a ready fixed-pool group after its traceable commit point."""
+        assert self._tq_buffer is not None, (
+            "archive_fixed_pool_group requires tq_buffer to be set at __init__"
+        )
+        await self._tq_buffer.remove_group(
+            handle.logical_group_id,
+            remove_in_dp=True,
+        )
+        self._scheduler_trace.emit(
+            SchedulerEventType.GROUP_ARCHIVED,
+            logical_group_id=handle.logical_group_id,
+            attempt_id=handle.attempt_id,
+            admission_id=handle.admission_id,
+            prompt_idx=handle.prompt_idx,
+            task_name=handle.task_name,
+            source_prompt_id=handle.source_prompt_id,
+            repeated_prompt_cluster_id=handle.repeated_prompt_cluster_id,
+            source_pool_ordinal=handle.source_pool_ordinal,
+            dispatch_cohort=handle.dispatch_cohort,
+            terminal_reason="fixed_pool_archive",
+        )

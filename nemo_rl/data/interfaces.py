@@ -39,6 +39,10 @@ class DatumSpec(TypedDict):
     loss_multiplier: float  # multiplier for the loss for this datum. 0 to mask out (say the sample is invalid)
     idx: int
     task_name: NotRequired[str]
+    source_prompt_id: NotRequired[str]
+    repeated_prompt_cluster_id: NotRequired[str]
+    source_pool_ordinal: NotRequired[int]
+    dispatch_cohort: NotRequired[int]
     stop_strings: NotRequired[list[str]]  # Optional stop strings for generation
     __extra__: NotRequired[Any]  # This allows additional fields of any type
 

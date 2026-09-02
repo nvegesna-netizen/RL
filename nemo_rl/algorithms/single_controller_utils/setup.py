@@ -23,6 +23,7 @@ from __future__ import annotations
 
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any, Optional, cast
 
 from torchdata.stateful_dataloader import StatefulDataLoader
@@ -30,6 +31,14 @@ from transformers import AutoProcessor
 from transformers.tokenization_utils_base import PreTrainedTokenizerBase
 
 from nemo_rl.algorithms.async_utils.replay_buffer import TQReplayBuffer
+from nemo_rl.algorithms.async_utils.fixed_pool import (
+    FixedPoolDataset,
+    FixedPoolManifest,
+    fixed_pool_collate_fn,
+    load_fixed_pool_manifest,
+    validate_fixed_pool_materialization,
+    validate_ready_bias_manifest_design,
+)
 from nemo_rl.algorithms.grpo import MasterConfig as GrpoMasterConfig
 from nemo_rl.algorithms.grpo import (
     _create_advantage_estimator,
@@ -86,6 +95,7 @@ class SingleControllerActorArgs:
     rollout_manager: RolloutManager
     tq_buffer: TQReplayBuffer
     partition_id: str
+    fixed_pool_manifest: Optional[FixedPoolManifest] = None
 
 
 def _build_clusters(
@@ -321,6 +331,53 @@ def setup_single_controller(
     # ==========================
     # Setup Dataset & Environments
     # ==========================
+    fixed_pool_config = master_config.async_rl.fixed_pool
+    manifest: Optional[FixedPoolManifest] = None
+    if fixed_pool_config.enabled:
+        manifest = load_fixed_pool_manifest(fixed_pool_config.manifest_path)  # type: ignore[arg-type]
+        validate_fixed_pool_materialization(manifest)
+        validate_ready_bias_manifest_design(manifest)
+        expected_model_path = (
+            manifest.manifest_path.parent / manifest.model_snapshot_path
+        ).resolve()
+        observed_model_path = Path(master_config.policy["model_name"]).resolve()
+        observed_tokenizer_path = Path(
+            master_config.policy["tokenizer"]["name"]
+        ).resolve()
+        if observed_model_path != expected_model_path or (
+            observed_tokenizer_path != expected_model_path
+        ):
+            raise ValueError(
+                "fixed-pool policy.model_name and tokenizer.name must reference "
+                "the manifest-bound local model snapshot"
+            )
+        train_configs = data_config["train"]
+        if isinstance(train_configs, dict):
+            train_configs = [train_configs]
+        expected_sources = [
+            (
+                source.source_id,
+                (manifest.manifest_path.parent / source.materialized_file).resolve(),
+            )
+            for source in manifest.sources
+        ]
+        observed_sources = [
+            (
+                config.get("task_name"),
+                Path(config["data_path"]).resolve()
+                if config.get("data_path") is not None
+                else None,
+            )
+            for config in train_configs
+        ]
+        if observed_sources != expected_sources or any(
+            config.get("dataset_name") != "ResponseDataset" for config in train_configs
+        ):
+            raise ValueError(
+                "fixed-pool data.train must list the manifest materialized files "
+                "in source order as ResponseDataset entries with exact task_name values"
+            )
+
     # TODO: add validate dataset wiring.
     use_nemo_gym = _should_use_nemo_gym(cast(GrpoMasterConfig, master_config))
     if use_nemo_gym and generation_config["backend"] != "vllm":
@@ -341,14 +398,35 @@ def setup_single_controller(
         )
         assert len(response_data) == 4
         dataset, _val_dataset, env_handles, _val_env_handles = response_data
-    dataloader = StatefulDataLoader(
-        dataset,
-        batch_size=grpo_config.num_prompts_per_step,
-        shuffle=data_config["shuffle"],
-        collate_fn=rl_collate_fn,
-        drop_last=True,
-        num_workers=data_config["num_workers"],
-    )
+    if fixed_pool_config.enabled:
+        assert manifest is not None
+        if any(
+            cohort_size != grpo_config.num_prompts_per_step
+            for cohort_size in manifest.cohort_sizes
+        ):
+            raise ValueError(
+                "every fixed-pool dispatch cohort must contain exactly "
+                f"grpo.num_prompts_per_step={grpo_config.num_prompts_per_step} "
+                f"items; got {manifest.cohort_sizes}"
+            )
+        dataset = FixedPoolDataset(dataset, manifest)
+        dataloader = StatefulDataLoader(
+            dataset,
+            batch_size=grpo_config.num_prompts_per_step,
+            shuffle=False,
+            collate_fn=fixed_pool_collate_fn,
+            drop_last=False,
+            num_workers=data_config["num_workers"],
+        )
+    else:
+        dataloader = StatefulDataLoader(
+            dataset,
+            batch_size=grpo_config.num_prompts_per_step,
+            shuffle=data_config["shuffle"],
+            collate_fn=rl_collate_fn,
+            drop_last=True,
+            num_workers=data_config["num_workers"],
+        )
 
     _clamp_max_num_steps(master_config, dataloader)
     _maybe_inject_megatron_train_iters(master_config)
@@ -457,4 +535,5 @@ def setup_single_controller(
         rollout_manager=rollout_manager,
         tq_buffer=tq_buffer,
         partition_id=partition_id,
+        fixed_pool_manifest=manifest if fixed_pool_config.enabled else None,
     )

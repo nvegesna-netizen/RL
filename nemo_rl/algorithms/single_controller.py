@@ -45,6 +45,9 @@ from typing import Any, Optional, Union
 import ray
 import torch
 
+from nemo_rl.algorithms.async_utils.fixed_pool import (
+    FixedPoolManifest,
+)
 from nemo_rl.algorithms.async_utils.staleness_sampler import create_sampler
 from nemo_rl.algorithms.async_utils.scheduler_trace import (
     JsonlSchedulerTraceSink,
@@ -109,6 +112,15 @@ class SingleControllerActor:
 
         self._master_config = master_config
         self._async_cfg = master_config.async_rl
+        self._fixed_pool_manifest: Optional[FixedPoolManifest] = (
+            actor_args.fixed_pool_manifest
+        )
+        if self._async_cfg.fixed_pool.enabled != (
+            self._fixed_pool_manifest is not None
+        ):
+            raise ValueError(
+                "fixed-pool config and setup manifest must be enabled together"
+            )
         self._policy_logprobs_required = not (
             master_config.loss_fn.force_on_policy_ratio
             and master_config.grpo.seq_logprob_error_threshold is None
@@ -140,15 +152,25 @@ class SingleControllerActor:
         self._inference_cluster = actor_args.inference_cluster
 
         num_prompts_per_step = self._master_config.grpo.num_prompts_per_step
-        self._sampler = create_sampler(
-            self._buffer,
-            self._async_cfg.sampler,
+        self._sampler: Any = (
+            None
+            if self._fixed_pool_manifest is not None
+            else create_sampler(self._buffer, self._async_cfg.sampler)
         )
         trace_cfg = self._async_cfg.scheduler_trace
         self._trace_enabled = trace_cfg.enabled
+        fingerprint_record = (
+            {
+                "mode": "fixed_pool",
+                "pool_id": self._fixed_pool_manifest.pool_id,
+                "manifest_sha256": self._fixed_pool_manifest.manifest_sha256,
+            }
+            if self._fixed_pool_manifest is not None
+            else self._async_cfg.sampler.model_dump()
+        )
         self._sampler_fingerprint = hashlib.sha256(
             json.dumps(
-                self._async_cfg.sampler.model_dump(),
+                fingerprint_record,
                 sort_keys=True,
                 separators=(",", ":"),
             ).encode()
@@ -164,12 +186,15 @@ class SingleControllerActor:
         )
         if self._trace_enabled:
             self._rollout_manager.set_scheduler_trace_sink(self._scheduler_trace)
-        required_capacity = self._sampler.required_buffer_capacity(num_prompts_per_step)
-        validate_sampler_buffer_capacity(
-            self._async_cfg,
-            required_capacity=required_capacity,
-            sampler_name=type(self._sampler).__name__,
-        )
+        if self._sampler is not None:
+            required_capacity = self._sampler.required_buffer_capacity(
+                num_prompts_per_step
+            )
+            validate_sampler_buffer_capacity(
+                self._async_cfg,
+                required_capacity=required_capacity,
+                sampler_name=type(self._sampler).__name__,
+            )
 
         # ── asyncio state ──────────────────────────────────────────────────
         # Gate: cleared during _sync_weights, set when generation may proceed
@@ -196,6 +221,7 @@ class SingleControllerActor:
 
         self._trainer_version: int = 0
         self._train_steps: int = 0
+        self._collected_groups: int = 0
         self._current_epoch: int = 0
         self._step_log_dict: dict[str, list] = {
             "rewards": [],
@@ -224,27 +250,64 @@ class SingleControllerActor:
             if getattr(self, "_trace_enabled", False):
                 self._scheduler_trace.emit(
                     SchedulerEventType.RUN_STARTED,
-                    sampler_name=self._async_cfg.sampler.name,
+                    sampler_name=(
+                        "fixed_pool"
+                        if self._fixed_pool_manifest is not None
+                        else self._async_cfg.sampler.name
+                    ),
                     sampler_fingerprint=self._sampler_fingerprint,
                     trainer_version=self._trainer_version,
+                    run_mode=(
+                        "fixed_pool"
+                        if self._fixed_pool_manifest is not None
+                        else "training"
+                    ),
+                    pool_id=(
+                        self._fixed_pool_manifest.pool_id
+                        if self._fixed_pool_manifest is not None
+                        else None
+                    ),
+                    pool_manifest_sha256=(
+                        self._fixed_pool_manifest.manifest_sha256
+                        if self._fixed_pool_manifest is not None
+                        else None
+                    ),
+                    model_revision=(
+                        self._fixed_pool_manifest.model_revision
+                        if self._fixed_pool_manifest is not None
+                        else None
+                    ),
+                    model_weights_sha256=(
+                        self._fixed_pool_manifest.model_weights_sha256
+                        if self._fixed_pool_manifest is not None
+                        else None
+                    ),
                     scalar_summaries={
-                        "planned_train_steps": self._master_config.grpo.max_num_steps
+                        "planned_train_steps": self._master_config.grpo.max_num_steps,
+                        "planned_prompt_groups": (
+                            len(self._fixed_pool_manifest.items)
+                            if self._fixed_pool_manifest is not None
+                            else 0
+                        ),
                     },
                 )
             # Synchronize weights before starting the pumps
             await self._sync_weights()
 
-            # Start the rollout and train pumps
-            rollout_task = asyncio.create_task(self._rollout_pump())
-            train_task = asyncio.create_task(self._train_pump())
-            done, _ = await asyncio.wait(
-                {rollout_task, train_task}, return_when=asyncio.FIRST_COMPLETED
-            )
-            if rollout_task in done:
-                # Propagate rollout failures immediately. A normally exhausted
-                # rollout pump leaves the train pump to drain committed groups.
-                await rollout_task
-            await train_task
+            if self._fixed_pool_manifest is not None:
+                await self._collect_fixed_pool()
+            else:
+                # Start the rollout and train pumps
+                rollout_task = asyncio.create_task(self._rollout_pump())
+                train_task = asyncio.create_task(self._train_pump())
+                done, _ = await asyncio.wait(
+                    {rollout_task, train_task}, return_when=asyncio.FIRST_COMPLETED
+                )
+                if rollout_task in done:
+                    # Propagate rollout failures immediately. A normally exhausted
+                    # rollout pump leaves the train pump to drain committed groups.
+                    await rollout_task
+                await train_task
         except BaseException as error:
             run_error = error
             raise
@@ -258,12 +321,46 @@ class SingleControllerActor:
                 if trace_started and getattr(self, "_trace_enabled", False):
                     self._scheduler_trace.emit(
                         SchedulerEventType.RUN_ENDED,
-                        sampler_name=self._async_cfg.sampler.name,
+                        sampler_name=(
+                            "fixed_pool"
+                            if self._fixed_pool_manifest is not None
+                            else self._async_cfg.sampler.name
+                        ),
                         sampler_fingerprint=self._sampler_fingerprint,
                         trainer_version=self._trainer_version,
                         live_logical_group_ids=tuple(self._buffer.group_ids),
+                        run_mode=(
+                            "fixed_pool"
+                            if self._fixed_pool_manifest is not None
+                            else "training"
+                        ),
+                        pool_id=(
+                            self._fixed_pool_manifest.pool_id
+                            if self._fixed_pool_manifest is not None
+                            else None
+                        ),
+                        pool_manifest_sha256=(
+                            self._fixed_pool_manifest.manifest_sha256
+                            if self._fixed_pool_manifest is not None
+                            else None
+                        ),
+                        model_revision=(
+                            self._fixed_pool_manifest.model_revision
+                            if self._fixed_pool_manifest is not None
+                            else None
+                        ),
+                        model_weights_sha256=(
+                            self._fixed_pool_manifest.model_weights_sha256
+                            if self._fixed_pool_manifest is not None
+                            else None
+                        ),
                         terminal_reason=(
-                            "max_train_steps"
+                            "fixed_pool_complete"
+                            if run_error is None
+                            and self._fixed_pool_manifest is not None
+                            and self._collected_groups
+                            == len(self._fixed_pool_manifest.items)
+                            else "max_train_steps"
                             if run_error is None
                             and self._train_steps
                             >= self._master_config.grpo.max_num_steps
@@ -276,7 +373,10 @@ class SingleControllerActor:
                         exception_class=(
                             type(run_error).__name__ if run_error is not None else None
                         ),
-                        scalar_summaries={"completed_train_steps": self._train_steps},
+                        scalar_summaries={
+                            "completed_train_steps": self._train_steps,
+                            "collected_prompt_groups": self._collected_groups,
+                        },
                     )
             except BaseException as error:
                 trace_error = error
@@ -305,6 +405,7 @@ class SingleControllerActor:
         return {
             "train_steps": self._train_steps,
             "trainer_version": self._trainer_version,
+            "collected_prompt_groups": self._collected_groups,
         }
 
     async def ping(self) -> dict[str, Any]:
@@ -319,6 +420,98 @@ class SingleControllerActor:
         }
 
     # ── internal helpers ───────────────────────────────────────────────────
+
+    async def _collect_fixed_pool(self) -> None:
+        """Generate and archive every predeclared group without training."""
+        manifest = self._fixed_pool_manifest
+        if manifest is None:
+            raise RuntimeError("fixed-pool collection requires a loaded manifest")
+
+        semaphore = asyncio.Semaphore(self._async_cfg.max_inflight_prompts)
+        tasks: list[asyncio.Task[None]] = []
+
+        async def collect_one(
+            prompt: DatumSpec,
+            admission_id: str,
+            dispatch_started_event: asyncio.Event,
+        ) -> None:
+            buffer_acquired = False
+            semaphore_acquired = False
+            try:
+                await self._buffer_capacity.acquire()
+                buffer_acquired = True
+                await semaphore.acquire()
+                semaphore_acquired = True
+                handle = await self._rollout_manager.generate_and_push(
+                    prompt,
+                    target_step=prompt["dispatch_cohort"],
+                    admission_id=admission_id,
+                    dispatch_started_event=dispatch_started_event,
+                )
+                if handle is None:
+                    raise RuntimeError(
+                        "fixed-pool collection requires scheduler tracing"
+                    )
+                await self._rollout_manager.archive_fixed_pool_group(handle)
+                self._collected_groups += 1
+            finally:
+                dispatch_started_event.set()
+                if semaphore_acquired:
+                    semaphore.release()
+                if buffer_acquired:
+                    self._buffer_capacity.release()
+
+        try:
+            for prompt_batch in self._dataloader:
+                cohorts = tuple(prompt_batch["dispatch_cohort"])
+                if not cohorts or len(set(cohorts)) != 1:
+                    raise RuntimeError(
+                        "a fixed-pool dataloader batch must contain exactly one cohort"
+                    )
+                cohort = int(cohorts[0])
+                admission_id = f"fixed-pool-cohort-{cohort}"
+                self._scheduler_trace.emit(
+                    SchedulerEventType.ADMISSION_GRANTED,
+                    admission_id=admission_id,
+                    sampler_name="fixed_pool",
+                    sampler_fingerprint=self._sampler_fingerprint,
+                    trainer_version=self._trainer_version,
+                    sampler_dispatch_index=cohort,
+                    target_step=cohort,
+                    pool_id=manifest.pool_id,
+                    pool_manifest_sha256=manifest.manifest_sha256,
+                    run_mode="fixed_pool",
+                    scalar_summaries={"expected_prompt_groups": prompt_batch.size},
+                )
+                for prompt_offset in range(prompt_batch.size):
+                    prompt: DatumSpec = {  # type: ignore[assignment]
+                        key: value[prompt_offset] for key, value in prompt_batch.items()
+                    }
+                    dispatch_started_event = asyncio.Event()
+                    task = asyncio.create_task(
+                        collect_one(prompt, admission_id, dispatch_started_event),
+                        name=f"fixed-pool-{prompt['source_pool_ordinal']}",
+                    )
+                    tasks.append(task)
+                    await dispatch_started_event.wait()
+                    if task.done() and (error := task.exception()) is not None:
+                        raise error
+
+            results = await asyncio.gather(*tasks, return_exceptions=True)
+        except BaseException:
+            for task in tasks:
+                if not task.done():
+                    task.cancel()
+            await asyncio.gather(*tasks, return_exceptions=True)
+            raise
+        failures = [result for result in results if isinstance(result, BaseException)]
+        if failures:
+            raise BaseExceptionGroup("fixed-pool collection failed", failures)
+        if self._collected_groups != len(manifest.items):
+            raise RuntimeError(
+                "fixed-pool dataloader coverage mismatch: collected "
+                f"{self._collected_groups}/{len(manifest.items)} groups"
+            )
 
     async def _ray_get(self, obj_ref: Any) -> Any:
         """Await a Ray ObjectRef without blocking the asyncio event loop."""

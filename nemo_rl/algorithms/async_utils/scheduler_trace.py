@@ -48,6 +48,7 @@ class SchedulerEventType(StrEnum):
     ATTEMPT_DISPATCHED = "attempt_dispatched"
     ROLLOUT_COMPLETED = "rollout_completed"
     GROUP_READY = "group_ready"
+    GROUP_ARCHIVED = "group_archived"
     ATTEMPT_FAILED = "attempt_failed"
     ATTEMPT_REMOVED = "attempt_removed"
     SELECT_DECISION = "select_decision"
@@ -63,6 +64,7 @@ _ATTEMPT_EVENTS: Final = frozenset(
         SchedulerEventType.ATTEMPT_DISPATCHED,
         SchedulerEventType.ROLLOUT_COMPLETED,
         SchedulerEventType.GROUP_READY,
+        SchedulerEventType.GROUP_ARCHIVED,
         SchedulerEventType.ATTEMPT_FAILED,
         SchedulerEventType.ATTEMPT_REMOVED,
         SchedulerEventType.ABORT_REQUESTED,
@@ -106,6 +108,15 @@ class SchedulerTraceEvent:
     admission_id: Optional[str] = None
     prompt_idx: Optional[int] = None
     task_name: Optional[str] = None
+    source_prompt_id: Optional[str] = None
+    repeated_prompt_cluster_id: Optional[str] = None
+    source_pool_ordinal: Optional[int] = None
+    dispatch_cohort: Optional[int] = None
+    pool_id: Optional[str] = None
+    pool_manifest_sha256: Optional[str] = None
+    model_revision: Optional[str] = None
+    model_weights_sha256: Optional[str] = None
+    run_mode: Optional[str] = None
     sampler_name: Optional[str] = None
     sampler_fingerprint: Optional[str] = None
     trainer_version: Optional[int] = None
@@ -142,6 +153,13 @@ class SchedulerTraceEvent:
         for name in (
             "admission_id",
             "task_name",
+            "source_prompt_id",
+            "repeated_prompt_cluster_id",
+            "pool_id",
+            "pool_manifest_sha256",
+            "model_revision",
+            "model_weights_sha256",
+            "run_mode",
             "sampler_name",
             "sampler_fingerprint",
             "terminal_reason",
@@ -157,19 +175,39 @@ class SchedulerTraceEvent:
             for group_id in getattr(self, field_name):
                 _identifier(field_name, group_id, required=True)
         _summaries(self.scalar_summaries)
+        for name in (
+            "prompt_idx",
+            "source_pool_ordinal",
+            "dispatch_cohort",
+        ):
+            value = getattr(self, name)
+            if value is not None and (not isinstance(value, int) or value < 0):
+                raise ValueError(f"{name} must be a non-negative integer")
         if self.event_type is SchedulerEventType.SELECT_DECISION:
             if self.min_prompt_groups is None or self.max_prompt_groups is None:
                 raise ValueError("select_decision requires min/max prompt groups")
-            if self.min_prompt_groups < 1 or self.max_prompt_groups < self.min_prompt_groups:
+            if (
+                self.min_prompt_groups < 1
+                or self.max_prompt_groups < self.min_prompt_groups
+            ):
                 raise ValueError("invalid select_decision prompt-group bounds")
             if self.eligible_prompt_groups != len(self.eligible_logical_group_ids):
                 raise ValueError("eligible count does not match eligible IDs")
         if self.event_type is SchedulerEventType.GROUP_EVICTED:
             _identifier("logical_group_id", self.logical_group_id, required=True)
+        if self.event_type is SchedulerEventType.GROUP_ARCHIVED:
+            if self.terminal_reason != "fixed_pool_archive":
+                raise ValueError(
+                    "group_archived requires terminal_reason=fixed_pool_archive"
+                )
         if self.event_type is SchedulerEventType.ADMISSION_GRANTED:
             _identifier("admission_id", self.admission_id, required=True)
             expected = self.scalar_summaries.get("expected_prompt_groups")
-            if not isinstance(expected, int) or isinstance(expected, bool) or expected < 1:
+            if (
+                not isinstance(expected, int)
+                or isinstance(expected, bool)
+                or expected < 1
+            ):
                 raise ValueError(
                     "admission_granted requires positive integer expected_prompt_groups"
                 )
@@ -276,7 +314,9 @@ class JsonlSchedulerTraceSink:
         try:
             handle = self.path.open("xb", buffering=0)
         except FileExistsError as error:
-            raise SchedulerTraceWriteError(f"refusing to append to {self.path}") from error
+            raise SchedulerTraceWriteError(
+                f"refusing to append to {self.path}"
+            ) from error
         self._loop = asyncio.get_running_loop()
         self._task = asyncio.create_task(self._writer(handle), name="scheduler-trace")
 
@@ -374,13 +414,19 @@ def iter_scheduler_trace(
             if not line.endswith(b"\n"):
                 if tolerate_truncated_final_record and handle.tell() == size:
                     break
-                raise SchedulerTraceValidationError(f"unterminated record at byte {offset}")
+                raise SchedulerTraceValidationError(
+                    f"unterminated record at byte {offset}"
+                )
             try:
                 record = json.loads(line)
             except (UnicodeDecodeError, json.JSONDecodeError) as error:
-                raise SchedulerTraceValidationError(f"invalid JSON at byte {offset}") from error
+                raise SchedulerTraceValidationError(
+                    f"invalid JSON at byte {offset}"
+                ) from error
             if not isinstance(record, dict):
-                raise SchedulerTraceValidationError(f"non-object record at byte {offset}")
+                raise SchedulerTraceValidationError(
+                    f"non-object record at byte {offset}"
+                )
             event = SchedulerTraceEvent.from_record(record)
             if prior_seq is None and event.event_seq != 0:
                 raise SchedulerTraceValidationError("event sequence must start at zero")
@@ -393,10 +439,14 @@ def iter_scheduler_trace(
                 trace_run_id,
                 process_epoch,
             ):
-                raise SchedulerTraceValidationError("trace contains multiple run identities")
+                raise SchedulerTraceValidationError(
+                    "trace contains multiple run identities"
+                )
             previous = prior_clock.get(event.process_epoch)
             if previous is not None and event.monotonic_ns < previous:
-                raise SchedulerTraceValidationError("clock moved backwards within an epoch")
+                raise SchedulerTraceValidationError(
+                    "clock moved backwards within an epoch"
+                )
             prior_clock[event.process_epoch] = event.monotonic_ns
             yield event
 
@@ -417,12 +467,16 @@ def validate_scheduler_trace(
         raise SchedulerTraceValidationError("trace must begin with run_started")
     if events[-1].event_type is not SchedulerEventType.RUN_ENDED:
         raise SchedulerTraceValidationError("trace must end with run_ended")
-    if sum(e.event_type is SchedulerEventType.RUN_STARTED for e in events) != 1 or sum(
-        e.event_type is SchedulerEventType.RUN_ENDED for e in events
-    ) != 1:
-        raise SchedulerTraceValidationError("trace requires exactly one run boundary pair")
+    if (
+        sum(e.event_type is SchedulerEventType.RUN_STARTED for e in events) != 1
+        or sum(e.event_type is SchedulerEventType.RUN_ENDED for e in events) != 1
+    ):
+        raise SchedulerTraceValidationError(
+            "trace requires exactly one run boundary pair"
+        )
 
     dispatched: dict[str, str] = {}
+    attempt_identity: dict[str, tuple[object, ...]] = {}
     admissions: dict[str, int] = {}
     admission_dispatches: dict[str, int] = {}
     live_dispatched_groups: set[str] = set()
@@ -451,22 +505,54 @@ def validate_scheduler_trace(
             live_dispatched_groups.add(event.logical_group_id)
             dispatched[event.attempt_id] = event.logical_group_id
             attempt_state[event.attempt_id] = "dispatched"
+            attempt_identity[event.attempt_id] = (
+                event.admission_id,
+                event.prompt_idx,
+                event.task_name,
+                event.source_prompt_id,
+                event.repeated_prompt_cluster_id,
+                event.source_pool_ordinal,
+                event.dispatch_cohort,
+            )
         elif event.event_type in _ATTEMPT_EVENTS - {
             SchedulerEventType.ATTEMPT_DISPATCHED
         }:
             assert event.attempt_id is not None and event.logical_group_id is not None
             if dispatched.get(event.attempt_id) != event.logical_group_id:
                 raise SchedulerTraceValidationError("attempt/group identity mismatch")
+            if attempt_identity[event.attempt_id] != (
+                event.admission_id,
+                event.prompt_idx,
+                event.task_name,
+                event.source_prompt_id,
+                event.repeated_prompt_cluster_id,
+                event.source_pool_ordinal,
+                event.dispatch_cohort,
+            ):
+                raise SchedulerTraceValidationError(
+                    "attempt source identity changed across lifecycle events"
+                )
             state = attempt_state.get(event.attempt_id)
             if event.event_type is SchedulerEventType.ROLLOUT_COMPLETED:
                 if state != "dispatched":
-                    raise SchedulerTraceValidationError("illegal rollout completion order")
+                    raise SchedulerTraceValidationError(
+                        "illegal rollout completion order"
+                    )
                 attempt_state[event.attempt_id] = "completed"
             elif event.event_type is SchedulerEventType.GROUP_READY:
                 if state != "completed":
                     raise SchedulerTraceValidationError("group ready before completion")
                 attempt_state[event.attempt_id] = "ready"
                 ready_groups.add(event.logical_group_id)
+            elif event.event_type is SchedulerEventType.GROUP_ARCHIVED:
+                if state != "ready" or event.logical_group_id not in ready_groups:
+                    raise SchedulerTraceValidationError(
+                        "group archived before becoming live and ready"
+                    )
+                attempt_state[event.attempt_id] = "archived"
+                ready_groups.remove(event.logical_group_id)
+                live_dispatched_groups.discard(event.logical_group_id)
+                terminal_groups.add(event.logical_group_id)
             elif event.event_type is SchedulerEventType.ATTEMPT_FAILED:
                 if state not in {"dispatched", "completed"}:
                     raise SchedulerTraceValidationError("illegal attempt failure order")
@@ -484,7 +570,9 @@ def validate_scheduler_trace(
         elif event.event_type is SchedulerEventType.SELECT_DECISION:
             eligible = set(event.eligible_logical_group_ids)
             if not eligible <= ready_groups or eligible & terminal_groups:
-                raise SchedulerTraceValidationError("eligible IDs are not live ready groups")
+                raise SchedulerTraceValidationError(
+                    "eligible IDs are not live ready groups"
+                )
             if not set(event.selected_logical_group_ids) <= eligible:
                 raise SchedulerTraceValidationError("selected IDs were not eligible")
             selected_count = len(event.selected_logical_group_ids)
@@ -493,7 +581,9 @@ def validate_scheduler_trace(
             ):
                 raise SchedulerTraceValidationError("selected count violates bounds")
             if event.ready_prompt_groups != len(ready_groups):
-                raise SchedulerTraceValidationError("ready count does not match lifecycle")
+                raise SchedulerTraceValidationError(
+                    "ready count does not match lifecycle"
+                )
             reported_selected = event.scalar_summaries.get("selected_prompt_groups")
             if reported_selected != selected_count:
                 raise SchedulerTraceValidationError("selected count summary mismatch")
@@ -506,7 +596,9 @@ def validate_scheduler_trace(
         elif event.event_type is SchedulerEventType.GROUP_EVICTED:
             assert event.logical_group_id is not None
             if event.logical_group_id not in ready_groups:
-                raise SchedulerTraceValidationError("evicted group was not live and ready")
+                raise SchedulerTraceValidationError(
+                    "evicted group was not live and ready"
+                )
             ready_groups.remove(event.logical_group_id)
             live_dispatched_groups.discard(event.logical_group_id)
             terminal_groups.add(event.logical_group_id)
@@ -523,7 +615,7 @@ def validate_scheduler_trace(
         sorted(
             attempt_id
             for attempt_id, state in attempt_state.items()
-            if state not in {"ready", "removed"}
+            if state not in {"ready", "removed", "archived"}
         )
     )
     if require_complete_attempts and incomplete:

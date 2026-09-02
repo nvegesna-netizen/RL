@@ -52,6 +52,21 @@ class SchedulerTraceConfig(BaseModel, extra="forbid"):
         return self
 
 
+class FixedPoolCollectionConfig(BaseModel, extra="forbid"):
+    """Scheduler-neutral, fixed-policy source-pool collection."""
+
+    enabled: bool = False
+    manifest_path: Optional[str] = None
+
+    @model_validator(mode="after")
+    def _require_manifest_when_enabled(self) -> "FixedPoolCollectionConfig":
+        if self.enabled and not self.manifest_path:
+            raise ValueError(
+                "async_rl.fixed_pool.manifest_path is required when enabled"
+            )
+        return self
+
+
 class AsyncRLConfig(BaseModel, extra="allow"):
     # Staleness policy shared by the rollout and train pumps.
     sampler: SamplerConfig = Field(
@@ -70,6 +85,10 @@ class AsyncRLConfig(BaseModel, extra="allow"):
     # Versioned group lifecycle trace. Disabled is a task/file-free no-op.
     scheduler_trace: SchedulerTraceConfig = Field(
         default_factory=SchedulerTraceConfig,
+    )
+    # Finite, no-training collection over a predeclared prompt-group manifest.
+    fixed_pool: FixedPoolCollectionConfig = Field(
+        default_factory=FixedPoolCollectionConfig,
     )
 
 
@@ -108,6 +127,47 @@ def validate_sampler_buffer_capacity(
 def validate_single_controller_config(master_config: MasterConfig) -> None:
     """Validate cross-section SingleController constraints before setup."""
     async_config = master_config.async_rl
+    if async_config.fixed_pool.enabled:
+        if not async_config.scheduler_trace.enabled:
+            raise ValueError(
+                "async_rl.scheduler_trace.enabled must be true for fixed-pool "
+                "collection"
+            )
+        if master_config.data["shuffle"]:
+            raise ValueError("data.shuffle must be false for fixed-pool collection")
+        if master_config.data.get("use_multiple_dataloader"):
+            raise ValueError(
+                "data.use_multiple_dataloader is unsupported for fixed-pool collection"
+            )
+        if master_config.grpo.use_dynamic_sampling:
+            raise ValueError(
+                "grpo.use_dynamic_sampling must be false for fixed-pool collection"
+            )
+        if (
+            master_config.grpo.val_period > 0
+            or master_config.grpo.val_at_start
+            or master_config.grpo.val_at_end
+            or master_config.grpo.stop_at_validation_metric is not None
+        ):
+            raise ValueError(
+                "validation and validation-based early stopping must be disabled "
+                "for fixed-pool collection"
+            )
+        if master_config.checkpointing["enabled"]:
+            raise ValueError("checkpointing must be disabled for fixed-pool collection")
+        if async_config.max_inflight_prompts < 1:
+            raise ValueError(
+                "async_rl.max_inflight_prompts must be positive for fixed-pool "
+                "collection"
+            )
+        if async_config.max_buffered_rollouts < async_config.max_inflight_prompts:
+            raise ValueError(
+                "async_rl.max_buffered_rollouts must be at least "
+                "async_rl.max_inflight_prompts for fixed-pool collection"
+            )
+        # Collection performs one initial weight sync and no learner or sampler
+        # operations, so training-only batch/sampler/loss constraints do not apply.
+        return
     if async_config.scheduler_trace.enabled and isinstance(
         async_config.sampler, CustomSamplerConfig
     ):

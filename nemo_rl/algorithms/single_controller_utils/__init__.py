@@ -17,6 +17,7 @@
 from nemo_rl.algorithms.single_controller_utils.config import (
     AdvantageConfig,
     AsyncRLConfig,
+    FixedPoolCollectionConfig,
     MasterConfig,
 )
 from nemo_rl.algorithms.single_controller_utils.setup import (
@@ -27,6 +28,7 @@ from nemo_rl.algorithms.single_controller_utils.setup import (
 __all__ = [
     "AdvantageConfig",
     "AsyncRLConfig",
+    "FixedPoolCollectionConfig",
     "MasterConfig",
     "SingleControllerActorArgs",
     "setup_single_controller",
