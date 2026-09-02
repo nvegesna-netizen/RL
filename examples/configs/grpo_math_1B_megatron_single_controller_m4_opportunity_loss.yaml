@@ -1,0 +1,64 @@
+# M4 opportunity-loss confirmatory acquisition. Do not launch without review.
+defaults: grpo_math_1B_megatron_single_controller.yaml
+
+grpo:
+  max_num_steps: 224
+  seed: 42
+  num_prompts_per_step: 4
+  num_generations_per_prompt: 8
+
+policy:
+  model_name: Qwen/Qwen3-0.6B
+  train_global_batch_size: 32
+  train_micro_batch_size: 1
+  max_total_sequence_length: 2048
+  generation:
+    max_new_tokens: 1792
+
+async_rl:
+  sampler:
+    name: windowed
+    max_staleness_versions: 1
+    sample_freshest_first: false
+  min_groups_for_streaming_train: 4
+  max_inflight_prompts: 16
+  max_buffered_rollouts: 64
+  lifecycle_audit_path: results/m4-opportunity-loss/lifecycle.jsonl
+  controlled_release_delay:
+    enabled: true
+    seed: 20260810
+    assignment_domain: m4-opportunity-loss-confirmatory-v1
+    arms:
+      - label: control
+        delay_seconds: 0.0
+        mass: 5
+      - label: d5
+        delay_seconds: 5.0
+        mass: 5
+      - label: d10
+        delay_seconds: 10.0
+        mass: 2
+  gradient_opportunity_audit:
+    enabled: true
+    output_path: results/m4-opportunity-loss/opportunity.jsonl
+    observer_duty_path: results/m4-opportunity-loss/observer-duty.json
+
+checkpointing:
+  enabled: false
+
+logger:
+  log_dir: results/m4-opportunity-loss/metrics
+  wandb_enabled: false
+  tensorboard_enabled: false
+  mlflow_enabled: false
+  swanlab_enabled: false
+  monitor_gpus: false
+
+data_plane:
+  enabled: true
+  impl: transfer_queue
+  backend: simple
+
+cluster:
+  gpus_per_node: 2
+  num_nodes: 1
