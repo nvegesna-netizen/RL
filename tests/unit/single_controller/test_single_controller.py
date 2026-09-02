@@ -91,6 +91,7 @@ def test_gradient_opportunity_audit_requires_controlled_release() -> None:
     config.async_rl.gradient_opportunity_audit = GradientOpportunityAuditConfig(
         enabled=True,
         output_path="opportunity.jsonl",
+        observer_duty_path="duty.json",
     )
 
     with pytest.raises(ValueError, match="requires.*controlled_release_delay"):
@@ -105,6 +106,7 @@ def test_gradient_opportunity_audit_requires_output_path(
     config.async_rl.gradient_opportunity_audit = GradientOpportunityAuditConfig(
         enabled=True,
         output_path=output_path,
+        observer_duty_path="duty.json",
     )
 
     with pytest.raises(ValueError, match="requires.*output_path"):
@@ -116,6 +118,19 @@ def test_gradient_opportunity_audit_requires_distinct_resolved_path() -> None:
     config.async_rl.gradient_opportunity_audit = GradientOpportunityAuditConfig(
         enabled=True,
         output_path="./audit.jsonl",
+        observer_duty_path="duty.json",
+    )
+
+    with pytest.raises(ValueError, match="distinct paths"):
+        validate_single_controller_config(config)
+
+
+def test_observer_duty_requires_distinct_resolved_path() -> None:
+    config = _controlled_release_master_config(lifecycle_audit_path="lifecycle.jsonl")
+    config.async_rl.gradient_opportunity_audit = GradientOpportunityAuditConfig(
+        enabled=True,
+        output_path="opportunity.jsonl",
+        observer_duty_path="./opportunity.jsonl",
     )
 
     with pytest.raises(ValueError, match="distinct paths"):
@@ -127,9 +142,25 @@ def test_gradient_opportunity_audit_accepts_supported_configuration() -> None:
     config.async_rl.gradient_opportunity_audit = GradientOpportunityAuditConfig(
         enabled=True,
         output_path="opportunity.jsonl",
+        observer_duty_path="duty.json",
     )
 
     validate_single_controller_config(config)
+
+
+@pytest.mark.parametrize("duty_path", [None, ""])
+def test_gradient_opportunity_audit_requires_observer_duty_path(
+    duty_path: str | None,
+) -> None:
+    config = _controlled_release_master_config(lifecycle_audit_path="lifecycle.jsonl")
+    config.async_rl.gradient_opportunity_audit = GradientOpportunityAuditConfig(
+        enabled=True,
+        output_path="opportunity.jsonl",
+        observer_duty_path=duty_path,
+    )
+
+    with pytest.raises(ValueError, match="requires.*observer_duty_path"):
+        validate_single_controller_config(config)
 
 
 def test_gradient_opportunity_audit_rejects_non_grpo_estimator() -> None:
@@ -137,6 +168,7 @@ def test_gradient_opportunity_audit_rejects_non_grpo_estimator() -> None:
     config.async_rl.gradient_opportunity_audit = GradientOpportunityAuditConfig(
         enabled=True,
         output_path="opportunity.jsonl",
+        observer_duty_path="duty.json",
     )
     config.grpo.adv_estimator.name = "gdpo"
 
@@ -162,6 +194,7 @@ def test_gradient_opportunity_audit_rejects_unsupported_loss(
     config.async_rl.gradient_opportunity_audit = GradientOpportunityAuditConfig(
         enabled=True,
         output_path="opportunity.jsonl",
+        observer_duty_path="duty.json",
     )
     setattr(config.loss_fn, field, value)
 
@@ -467,6 +500,7 @@ def test_successful_train_step_advances_audited_learner_version() -> None:
     ctrl._trainer_version = 4
     ctrl._lifecycle_recorder = MagicMock()
     ctrl._opportunity_recorder = None
+    ctrl._observer_duty_meter = None
     ctrl._rollout_manager = MagicMock()
 
     ctrl._advance_trainer_version()
@@ -489,12 +523,15 @@ def _run_lifecycle_controller(
     ctrl._cancel_residual_buffer_groups = AsyncMock()
     ctrl._lifecycle_recorder = MagicMock()
     ctrl._opportunity_recorder = None
+    ctrl._observer_duty_meter = None
     ctrl._rollout_manager = MagicMock()
     ctrl._master_config = SimpleNamespace(grpo=SimpleNamespace(max_num_steps=128))
     ctrl._async_cfg = SimpleNamespace(
         lifecycle_audit_path="audit.jsonl",
         controlled_release_delay=SimpleNamespace(enabled=True),
-        gradient_opportunity_audit=SimpleNamespace(output_path=None),
+        gradient_opportunity_audit=SimpleNamespace(
+            output_path=None, observer_duty_path=None
+        ),
     )
     ctrl._logger = MagicMock()
     ctrl._train_steps = train_steps
@@ -511,6 +548,18 @@ def test_run_uses_bounded_shutdown_only_at_configured_boundary() -> None:
     ctrl._cancel_residual_buffer_groups.assert_awaited_once_with(
         reason=single_controller.RolloutRemovalReason.BOUNDED_SHUTDOWN
     )
+
+
+def test_run_bounds_and_flushes_common_observer_duty() -> None:
+    ctrl = _run_lifecycle_controller()
+    ctrl._observer_duty_meter = MagicMock()
+    ctrl._async_cfg.gradient_opportunity_audit.observer_duty_path = "duty.json"
+
+    asyncio.run(ctrl.run())
+
+    ctrl._observer_duty_meter.begin_active_window.assert_called_once_with()
+    ctrl._observer_duty_meter.end_active_window.assert_called_once_with()
+    ctrl._observer_duty_meter.flush_json.assert_called_once_with("duty.json")
 
 
 @pytest.mark.parametrize(

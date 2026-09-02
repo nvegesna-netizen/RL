@@ -44,6 +44,7 @@ class GradientOpportunityAuditConfig(BaseModel, frozen=True):
 
     enabled: bool = False
     output_path: Optional[str] = None
+    observer_duty_path: Optional[str] = None
 
 
 class AsyncRLConfig(BaseModel, extra="allow"):
@@ -131,13 +132,21 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
                 "async_rl.gradient_opportunity_audit.enabled=true requires "
                 "async_rl.gradient_opportunity_audit.output_path"
             )
-        assert async_config.lifecycle_audit_path is not None
-        if (
-            Path(opportunity_config.output_path).resolve()
-            == Path(async_config.lifecycle_audit_path).resolve()
-        ):
+        if not opportunity_config.observer_duty_path:
             raise ValueError(
-                "gradient opportunity and lifecycle audits require distinct paths"
+                "async_rl.gradient_opportunity_audit.enabled=true requires "
+                "async_rl.gradient_opportunity_audit.observer_duty_path"
+            )
+        assert async_config.lifecycle_audit_path is not None
+        audit_paths = (
+            Path(async_config.lifecycle_audit_path).resolve(),
+            Path(opportunity_config.output_path).resolve(),
+            Path(opportunity_config.observer_duty_path).resolve(),
+        )
+        if len(set(audit_paths)) != len(audit_paths):
+            raise ValueError(
+                "lifecycle, opportunity, and observer-duty audits require "
+                "distinct paths"
             )
         if master_config.grpo.adv_estimator.name != "grpo":
             raise ValueError(

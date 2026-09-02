@@ -39,6 +39,7 @@ async_rl:
   gradient_opportunity_audit:
     enabled: false
     output_path: null
+    observer_duty_path: null
 
 # SC does not support checkpointing yet.
 checkpointing:

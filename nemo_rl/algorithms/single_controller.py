@@ -48,6 +48,7 @@ from nemo_rl.algorithms.async_utils.gradient_opportunity import (
     GradientOpportunityRecorder,
     compute_grpo_gradient_opportunity,
 )
+from nemo_rl.algorithms.async_utils.observer_duty import CommonObserverDutyMeter
 from nemo_rl.algorithms.async_utils.staleness_sampler import create_sampler
 from nemo_rl.algorithms.async_utils.rollout_lifecycle import (
     ControllerEventSequencer,
@@ -134,6 +135,7 @@ class SingleControllerActor:
         self._rollout_manager._tq_buffer = self._buffer
         self._lifecycle_recorder: Optional[RolloutLifecycleRecorder] = None
         self._opportunity_recorder: Optional[GradientOpportunityRecorder] = None
+        self._observer_duty_meter: Optional[CommonObserverDutyMeter] = None
         if self._async_cfg.lifecycle_audit_path is not None:
             opportunity_enabled = self._async_cfg.gradient_opportunity_audit.enabled
             controller_sequencer = (
@@ -157,6 +159,15 @@ class SingleControllerActor:
                     run_id=self._lifecycle_recorder.run_id,
                     clock_domain_id=self._lifecycle_recorder.clock_domain_id,
                     sequencer=controller_sequencer,
+                )
+                self._observer_duty_meter = CommonObserverDutyMeter(
+                    assignment_domain=(
+                        self._async_cfg.controlled_release_delay.assignment_domain
+                    ),
+                    release_arm_labels=tuple(
+                        arm.label
+                        for arm in self._async_cfg.controlled_release_delay.arms
+                    ),
                 )
                 self._opportunity_recorder.append_header(
                     estimator_name=type(self._advantage_estimator).__name__,
@@ -191,36 +202,38 @@ class SingleControllerActor:
                     sample_ids: tuple[str, ...],
                     start_weight_version: int,
                 ) -> None:
-                    prepared_inputs = prepare_advantage_inputs_from_data(
-                        train_batch,
-                        advantage_config=self._advantage_cfg,
-                        policy_logprobs_required=False,
-                        reference_logprobs_required=False,
-                    )
-
-                    def _use_prepared_inputs(_: Any) -> GRPOOpportunityInputs:
-                        return GRPOOpportunityInputs(
-                            prompt_ids=prepared_inputs.prompt_ids,
-                            rewards=prepared_inputs.rewards,
-                            actor_mask=prepared_inputs.actor_mask,
-                            repeated_batch=prepared_inputs.repeated_batch,
-                            estimator_kwargs=prepared_inputs.estimator_kwargs,
+                    assert self._observer_duty_meter is not None
+                    with self._observer_duty_meter.observe():
+                        prepared_inputs = prepare_advantage_inputs_from_data(
+                            train_batch,
+                            advantage_config=self._advantage_cfg,
+                            policy_logprobs_required=False,
+                            reference_logprobs_required=False,
                         )
 
-                    summary = compute_grpo_gradient_opportunity(
-                        train_batch,
-                        group_id=group_id,
-                        sample_ids=sample_ids,
-                        start_weight_version=start_weight_version,
-                        truncation=tuple(
-                            bool(completion.truncated)
-                            for completion in record.completions
-                        ),
-                        estimator=self._advantage_estimator,
-                        prepare_inputs=_use_prepared_inputs,
-                    )
-                    assert self._opportunity_recorder is not None
-                    self._opportunity_recorder.append_group(summary)
+                        def _use_prepared_inputs(_: Any) -> GRPOOpportunityInputs:
+                            return GRPOOpportunityInputs(
+                                prompt_ids=prepared_inputs.prompt_ids,
+                                rewards=prepared_inputs.rewards,
+                                actor_mask=prepared_inputs.actor_mask,
+                                repeated_batch=prepared_inputs.repeated_batch,
+                                estimator_kwargs=prepared_inputs.estimator_kwargs,
+                            )
+
+                        summary = compute_grpo_gradient_opportunity(
+                            train_batch,
+                            group_id=group_id,
+                            sample_ids=sample_ids,
+                            start_weight_version=start_weight_version,
+                            truncation=tuple(
+                                bool(completion.truncated)
+                                for completion in record.completions
+                            ),
+                            estimator=self._advantage_estimator,
+                            prepare_inputs=_use_prepared_inputs,
+                        )
+                        assert self._opportunity_recorder is not None
+                        self._opportunity_recorder.append_group(summary)
 
                 self._buffer.set_prepare_observer(_record_prepared_opportunity)
 
@@ -295,6 +308,8 @@ class SingleControllerActor:
         """Main entry point. Runs until max_train_steps is reached."""
         # Synchronize weights before starting the pumps
         await self._sync_weights()
+        if self._observer_duty_meter is not None:
+            self._observer_duty_meter.begin_active_window()
 
         # Start the rollout and train pumps
         rollout_task = asyncio.create_task(self._rollout_pump())
@@ -342,6 +357,8 @@ class SingleControllerActor:
             try:
                 await self._cancel_residual_buffer_groups(reason=cleanup_reason)
             finally:
+                if self._observer_duty_meter is not None:
+                    self._observer_duty_meter.end_active_window()
                 try:
                     if self._lifecycle_recorder is not None:
                         assert self._async_cfg.lifecycle_audit_path is not None
@@ -357,7 +374,13 @@ class SingleControllerActor:
                             assert opportunity_path is not None
                             self._opportunity_recorder.flush_jsonl(opportunity_path)
                     finally:
-                        self._logger.finish()
+                        try:
+                            if self._observer_duty_meter is not None:
+                                duty_path = self._async_cfg.gradient_opportunity_audit.observer_duty_path
+                                assert duty_path is not None
+                                self._observer_duty_meter.flush_json(duty_path)
+                        finally:
+                            self._logger.finish()
 
         return {
             "train_steps": self._train_steps,
