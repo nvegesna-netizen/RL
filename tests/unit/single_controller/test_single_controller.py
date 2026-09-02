@@ -63,6 +63,7 @@ def test_rejects_multiple_optimizer_steps_per_rl_step(monkeypatch) -> None:
         rollout_manager=SimpleNamespace(_tq_buffer=None),
         train_cluster=None,
         inference_cluster=None,
+        fixed_pool_manifest=None,
     )
     controller_cls = SingleControllerActor.__ray_metadata__.modified_class
 
@@ -111,6 +112,7 @@ def test_logs_hyperparameters_and_concrete_weight_synchronizer(
         rollout_manager=SimpleNamespace(_tq_buffer=None),
         train_cluster=None,
         inference_cluster=None,
+        fixed_pool_manifest=None,
     )
     controller_cls = SingleControllerActor.__ray_metadata__.modified_class
 
