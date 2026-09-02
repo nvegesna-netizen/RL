@@ -51,6 +51,7 @@ project-includes = [
   "nemo_rl/algorithms/async_utils/fixed_pool.py",
   "nemo_rl/algorithms/async_utils/replay_buffer.py",
   "nemo_rl/algorithms/async_utils/scheduler_replay.py",
+  "nemo_rl/algorithms/async_utils/scheduler_replay_plan.py",
   "nemo_rl/algorithms/async_utils/scheduler_trace.py",
   "nemo_rl/algorithms/async_utils/staleness_sampler.py",
   "nemo_rl/algorithms/async_utils/trajectory_collector.py",

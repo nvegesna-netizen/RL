@@ -14,7 +14,7 @@ native scheduler's throughput or of a trained-policy counterfactual.
 from __future__ import annotations
 
 import math
-import random
+import hashlib
 from collections import defaultdict
 from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass, field
@@ -66,6 +66,7 @@ class ReplayGroup:
     ready_ns: int
     nominal_start_version: int
     target_step: Optional[int]
+    archived_ns: Optional[int] = None
     physical_start_version: Optional[int] = None
     physical_end_version: Optional[int] = None
     scalar_summaries: Mapping[str, float | int] = field(default_factory=dict)
@@ -79,6 +80,7 @@ class ReplayGroup:
             self.slot_order < 0
             or self.dispatch_ns < 0
             or self.ready_ns < self.dispatch_ns
+            or (self.archived_ns is not None and self.archived_ns < self.ready_ns)
         ):
             raise SchedulerReplayError("invalid group order or controller timestamps")
         if self.nominal_start_version < 0:
@@ -133,8 +135,24 @@ class ReleaseSchedule:
     kind: Literal["natural", "decorrelated"]
     ready_ns_by_group: Mapping[str, int]
     seed: Optional[int] = None
-    fixed_points: int = 0
+    assignments: tuple["ReleaseAssignment", ...] = ()
+    assignment_fixed_points: int = 0
+    unchanged_latency_values: int = 0
     blocks: int = 0
+
+
+@dataclass(frozen=True, slots=True)
+class ReleaseAssignment:
+    """One source-latency assignment in a blockwise release intervention."""
+
+    block_id: str
+    destination_group_id: str
+    destination_prompt_uid: str
+    source_group_id: str
+    source_prompt_uid: str
+    latency_ns: int
+    assignment_fixed_point: bool
+    unchanged_latency_value: bool
 
 
 @dataclass(frozen=True, slots=True)
@@ -173,6 +191,7 @@ def groups_from_trace(
     dispatched: dict[str, SchedulerTraceEvent] = {}
     completed: dict[str, SchedulerTraceEvent] = {}
     ready: dict[str, SchedulerTraceEvent] = {}
+    archived: dict[str, SchedulerTraceEvent] = {}
     saw_matching_run = False
     for event in events:
         group_id = event.logical_group_id
@@ -198,6 +217,10 @@ def groups_from_trace(
             if group_id is None or group_id in ready:
                 raise SchedulerReplayError("missing or duplicate ready group ID")
             ready[group_id] = event
+        elif event.event_type is SchedulerEventType.GROUP_ARCHIVED:
+            if group_id is None or group_id in archived:
+                raise SchedulerReplayError("missing or duplicate archived group ID")
+            archived[group_id] = event
         elif event.event_type in {
             SchedulerEventType.ATTEMPT_FAILED,
             SchedulerEventType.ATTEMPT_REMOVED,
@@ -211,9 +234,13 @@ def groups_from_trace(
         raise SchedulerReplayError(
             "source trace lacks matching fixed-pool run identity"
         )
-    if set(dispatched) != set(ready) or set(dispatched) != set(completed):
+    if (
+        set(dispatched) != set(ready)
+        or set(dispatched) != set(completed)
+        or set(dispatched) != set(archived)
+    ):
         raise SchedulerReplayError(
-            "every dispatched source group must complete and become ready"
+            "every dispatched source group must complete, become ready, and archive"
         )
     observed_ordinals = [event.source_pool_ordinal for event in dispatched.values()]
     if len(observed_ordinals) != len(set(observed_ordinals)) or set(
@@ -229,6 +256,7 @@ def groups_from_trace(
         entry = manifest_by_ordinal[dispatch.source_pool_ordinal]
         completion = completed[group_id]
         release = ready[group_id]
+        archive = archived[group_id]
         _validate_trace_manifest_identity(dispatch, entry)
         groups.append(
             ReplayGroup(
@@ -244,6 +272,7 @@ def groups_from_trace(
                 slot_order=slot_order,
                 dispatch_ns=dispatch.monotonic_ns,
                 ready_ns=release.monotonic_ns,
+                archived_ns=archive.monotonic_ns,
                 nominal_start_version=entry.dispatch_cohort,
                 target_step=entry.dispatch_cohort,
                 physical_start_version=dispatch.start_weight_version,
@@ -280,18 +309,28 @@ def _validate_trace_manifest_identity(
 
 
 def load_groups_from_trace(
-    trace_path: str | Path, manifest_path: str | Path
+    trace_path: str | Path,
+    manifest_path: str | Path,
+    *,
+    expected_completions_per_group: int,
 ) -> tuple[ReplayGroup, ...]:
     """Validate and load a complete source-pool trace."""
     # Keep the analysis kernel importable without model/data dependencies.
-    from nemo_rl.algorithms.async_utils.fixed_pool import load_fixed_pool_manifest
+    from nemo_rl.algorithms.async_utils.fixed_pool import (
+        load_fixed_pool_manifest,
+        validate_fixed_pool_trace,
+    )
 
+    manifest = load_fixed_pool_manifest(manifest_path)
+    validate_fixed_pool_trace(
+        trace_path,
+        manifest,
+        expected_completions_per_group=expected_completions_per_group,
+    )
     report = validate_scheduler_trace(trace_path)
     if report.administratively_censored_group_ids:
         raise SchedulerReplayError("source trace has administratively censored groups")
-    return groups_from_trace(
-        iter_scheduler_trace(trace_path), load_fixed_pool_manifest(manifest_path)
-    )
+    return groups_from_trace(iter_scheduler_trace(trace_path), manifest)
 
 
 def ticks_from_trace(events: Iterable[SchedulerTraceEvent]) -> tuple[ReplayTick, ...]:
@@ -328,33 +367,62 @@ def natural_releases(groups: Sequence[ReplayGroup]) -> ReleaseSchedule:
 
 
 def decorrelated_releases(
-    groups: Sequence[ReplayGroup], *, seed: int
+    groups: Sequence[ReplayGroup], *, seed: int, namespace: str = ""
 ) -> ReleaseSchedule:
-    """Permute latency values within predeclared, task-overlapping blocks."""
+    """Uniformly permute latencies within task-overlapping design blocks.
+
+    Identity assignments and fixed points are intentionally allowed. Source
+    ordering is derived from SHA-256 rather than a Python RNG implementation,
+    making a plan stable across supported Python versions.
+    """
     _validate_groups(groups)
     by_block: dict[str, list[ReplayGroup]] = defaultdict(list)
     for group in groups:
         by_block[group.decorrelation_block].append(group)
-    rng = random.Random(seed)
     releases: dict[str, int] = {}
-    fixed_points = 0
+    assignments: list[ReleaseAssignment] = []
+    assignment_fixed_points = 0
+    unchanged_latency_values = 0
     for block_id in sorted(by_block):
         block = sorted(by_block[block_id], key=lambda group: group.slot_order)
         if len(block) < 2 or len({group.task_stratum for group in block}) < 2:
             raise SchedulerReplayError(
                 f"decorrelation block {block_id!r} lacks task overlap"
             )
-        original = [group.natural_latency_ns for group in block]
-        permuted = list(original)
-        rng.shuffle(permuted)
-        fixed_points += sum(a == b for a, b in zip(original, permuted))
-        for group, latency in zip(block, permuted):
-            releases[group.logical_group_id] = group.dispatch_ns + latency
+        sources = sorted(
+            block,
+            key=lambda group: hashlib.sha256(
+                (f"{namespace}\0{seed}\0{block_id}\0{group.prompt_uid}").encode()
+            ).digest(),
+        )
+        for destination, source in zip(block, sources):
+            latency = source.natural_latency_ns
+            is_assignment_fixed = (
+                destination.logical_group_id == source.logical_group_id
+            )
+            is_latency_unchanged = destination.natural_latency_ns == latency
+            assignment_fixed_points += int(is_assignment_fixed)
+            unchanged_latency_values += int(is_latency_unchanged)
+            releases[destination.logical_group_id] = destination.dispatch_ns + latency
+            assignments.append(
+                ReleaseAssignment(
+                    block_id=block_id,
+                    destination_group_id=destination.logical_group_id,
+                    destination_prompt_uid=destination.prompt_uid,
+                    source_group_id=source.logical_group_id,
+                    source_prompt_uid=source.prompt_uid,
+                    latency_ns=latency,
+                    assignment_fixed_point=is_assignment_fixed,
+                    unchanged_latency_value=is_latency_unchanged,
+                )
+            )
     return ReleaseSchedule(
         kind="decorrelated",
         ready_ns_by_group=releases,
         seed=seed,
-        fixed_points=fixed_points,
+        assignments=tuple(assignments),
+        assignment_fixed_points=assignment_fixed_points,
+        unchanged_latency_values=unchanged_latency_values,
         blocks=len(by_block),
     )
 
@@ -380,12 +448,28 @@ def replay_schedule(
     _validate_groups(groups)
     if not ticks:
         raise SchedulerReplayError("learner tick plan is empty")
+    if [tick.tick_id for tick in ticks] != list(range(len(ticks))):
+        raise SchedulerReplayError("learner tick IDs must be contiguous from zero")
     if any(b.monotonic_ns < a.monotonic_ns for a, b in zip(ticks, ticks[1:])):
         raise SchedulerReplayError("learner tick clocks must be monotonic")
+    if any(
+        b.nominal_trainer_version < a.nominal_trainer_version
+        for a, b in zip(ticks, ticks[1:])
+    ):
+        raise SchedulerReplayError("nominal trainer versions must be nondecreasing")
     release_schedule = releases or natural_releases(groups)
     expected_ids = {group.logical_group_id for group in groups}
     if set(release_schedule.ready_ns_by_group) != expected_ids:
         raise SchedulerReplayError("release schedule/group coverage mismatch")
+    if any(
+        release_schedule.ready_ns_by_group[group.logical_group_id] < group.dispatch_ns
+        for group in groups
+    ):
+        raise SchedulerReplayError("release schedule contains a pre-dispatch release")
+    if release_schedule.kind == "natural" and release_schedule.seed is not None:
+        raise SchedulerReplayError("natural release schedules cannot have a seed")
+    if release_schedule.kind == "decorrelated" and release_schedule.seed is None:
+        raise SchedulerReplayError("decorrelated release schedules require a seed")
     by_id = {group.logical_group_id: group for group in groups}
     ordered = sorted(groups, key=lambda group: group.slot_order)
     terminal: set[str] = set()
@@ -665,7 +749,8 @@ def latency_diagnostics(
         "task_eta_squared": between / total if total else 0.0,
         "max_pairwise_smd": None if degenerate_smd else max_smd,
         "degenerate_smd": degenerate_smd,
-        "fixed_points": releases.fixed_points,
+        "assignment_fixed_points": releases.assignment_fixed_points,
+        "unchanged_latency_values": releases.unchanged_latency_values,
         "blocks": releases.blocks,
     }
 

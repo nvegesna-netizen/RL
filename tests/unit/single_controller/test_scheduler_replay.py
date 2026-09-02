@@ -111,6 +111,9 @@ def event(
         dispatch_cohort=0,
         start_weight_version=0,
         end_weight_version=0 if kind is SchedulerEventType.GROUP_READY else None,
+        terminal_reason=(
+            "fixed_pool_archive" if kind is SchedulerEventType.GROUP_ARCHIVED else None
+        ),
         scalar_summaries=summaries or {},
     )
 
@@ -242,6 +245,15 @@ def test_decorrelation_is_deterministic_and_preserves_each_block_multiset():
 
     assert left.ready_ns_by_group == right.ready_ns_by_group
     assert left.ready_ns_by_group != other.ready_ns_by_group
+    assert {item.source_group_id for item in left.assignments} == {
+        item.logical_group_id for item in groups
+    }
+    assert {item.destination_group_id for item in left.assignments} == {
+        item.logical_group_id for item in groups
+    }
+    assert left.assignment_fixed_points == sum(
+        item.assignment_fixed_point for item in left.assignments
+    )
     for block in ("x", "y"):
         members = [item for item in groups if item.decorrelation_block == block]
         natural = Counter(item.natural_latency_ns for item in members)
@@ -343,6 +355,7 @@ def test_trace_join_requires_stable_prompt_index_and_exact_coverage():
             summaries={"reward_mean": 0.5},
         ),
         event(3, 3, SchedulerEventType.GROUP_READY, group_id="g"),
+        event(4, 4, SchedulerEventType.GROUP_ARCHIVED, group_id="g"),
     )
     groups = groups_from_trace(events, manifest)
     assert groups[0].prompt_uid == "6" * 64
@@ -374,3 +387,37 @@ def test_release_coverage_and_negative_counterfactual_latency_fail():
         )
     with pytest.raises(SchedulerReplayError, match="release precedes dispatch"):
         latency_diagnostics(groups, ReleaseSchedule("natural", {"g": 1}))
+
+    with pytest.raises(SchedulerReplayError, match="pre-dispatch"):
+        replay_schedule(
+            groups,
+            (tick(0, 3, 0),),
+            ReplayPolicy("ready_first"),
+            ReleaseSchedule("decorrelated", {"g": 1}, seed=7),
+        )
+
+
+def test_replay_rejects_invalid_tick_identity_and_version_order():
+    groups = (group("g", "a", slot=0, ready=1),)
+    with pytest.raises(SchedulerReplayError, match="contiguous"):
+        replay_schedule(groups, (tick(1, 1, 0),), ReplayPolicy("ready_first"))
+    with pytest.raises(SchedulerReplayError, match="nondecreasing"):
+        replay_schedule(
+            groups,
+            (tick(0, 1, 1), tick(1, 2, 0)),
+            ReplayPolicy("ready_first"),
+        )
+
+
+def test_permutation_distinguishes_identity_from_equal_latency():
+    groups = (
+        group("a", "a", slot=0, ready=10),
+        group("b", "b", slot=1, ready=10),
+    )
+    releases = decorrelated_releases(groups, seed=0, namespace="pool")
+    assert releases.unchanged_latency_values == 2
+    assert releases.assignment_fixed_points in {0, 2}
+    assert releases.assignment_fixed_points == sum(
+        item.destination_group_id == item.source_group_id
+        for item in releases.assignments
+    )
