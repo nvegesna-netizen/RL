@@ -17,10 +17,12 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, PositiveInt, model_validator
 
 from nemo_rl.algorithms.async_utils.staleness_sampler import (
+    CustomSamplerConfig,
     InOrderSamplerConfig,
+    ReadyFirstSamplerConfig,
     SamplerConfig,
     required_buffer_capacity_for_config,
 )
@@ -33,6 +35,21 @@ from nemo_rl.models.policy import PolicyConfig
 from nemo_rl.utils.checkpoint import CheckpointingConfig
 
 # ── User-facing SingleController configs ────────────────────────────────────
+
+
+class SchedulerTraceConfig(BaseModel, extra="forbid"):
+    """Controller-local, metadata-only scheduler lifecycle trace."""
+
+    enabled: bool = False
+    path: Optional[str] = None
+    max_queue_events: PositiveInt = 4096
+    flush_every: PositiveInt = 64
+
+    @model_validator(mode="after")
+    def _require_path_when_enabled(self) -> "SchedulerTraceConfig":
+        if self.enabled and not self.path:
+            raise ValueError("async_rl.scheduler_trace.path is required when enabled")
+        return self
 
 
 class AsyncRLConfig(BaseModel, extra="allow"):
@@ -50,6 +67,10 @@ class AsyncRLConfig(BaseModel, extra="allow"):
     max_buffered_rollouts: int = 64
     # Enable per-rollout diagnostic prints (prompt content / completion previews).
     diagnostics: bool = False
+    # Versioned group lifecycle trace. Disabled is a task/file-free no-op.
+    scheduler_trace: SchedulerTraceConfig = Field(
+        default_factory=SchedulerTraceConfig,
+    )
 
 
 class MasterConfig(BaseModel, extra="allow"):
@@ -87,6 +108,13 @@ def validate_sampler_buffer_capacity(
 def validate_single_controller_config(master_config: MasterConfig) -> None:
     """Validate cross-section SingleController constraints before setup."""
     async_config = master_config.async_rl
+    if async_config.scheduler_trace.enabled and isinstance(
+        async_config.sampler, CustomSamplerConfig
+    ):
+        raise ValueError(
+            "scheduler tracing currently requires a built-in sampler so exact "
+            "eligible/selected/evicted group identities can be recorded"
+        )
     num_prompts_per_step = master_config.grpo.num_prompts_per_step
     if num_prompts_per_step < async_config.min_groups_for_streaming_train:
         raise ValueError(
@@ -117,6 +145,18 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
         required_capacity=required_capacity,
         sampler_name=async_config.sampler.name,
     )
+
+    if isinstance(async_config.sampler, ReadyFirstSamplerConfig):
+        if not master_config.loss_fn.use_importance_sampling_correction:
+            raise ValueError(
+                "the ready_first sampler requires "
+                "loss_fn.use_importance_sampling_correction=true"
+            )
+        if master_config.loss_fn.force_on_policy_ratio:
+            raise ValueError(
+                "the ready_first sampler requires "
+                "loss_fn.force_on_policy_ratio=false so prev_logprobs are used"
+            )
 
     # A non-zero reference-policy KL penalty makes the loss read
     # ``reference_policy_logprobs``, but the SC train pump only computes them

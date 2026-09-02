@@ -39,6 +39,7 @@ from nemo_rl.data.interfaces import DatumSpec
 from nemo_rl.data.processors import nemo_gym_data_processor
 from nemo_rl.distributed.batched_data_dict import BatchedDataDict
 from nemo_rl.experience.interfaces import Completion, PromptGroupRecord
+from nemo_rl.algorithms.async_utils.scheduler_trace import SchedulerEventType
 from nemo_rl.experience.rollout_manager import (
     AsyncNemoGymRolloutImpl,
     RolloutManager,
@@ -77,6 +78,7 @@ class _FakeBuffer:
         self.reserve_calls: list[int] = []  # weight_versions passed to reserve
         self.commit_calls: list[tuple[str, object, int, int]] = []
         self.remove_calls: list[str] = []
+        self.remove_in_dp_calls: list[bool] = []
         # reserve(weight_version=X) -> group_id; commit fills the slot.
         self._slots: list[str] = []
 
@@ -106,8 +108,8 @@ class _FakeBuffer:
         return record
 
     async def remove_group(self, group_id: str, *, remove_in_dp: bool = False) -> int:
-        del remove_in_dp
         self.remove_calls.append(group_id)
+        self.remove_in_dp_calls.append(remove_in_dp)
         self._slots.remove(group_id)
         return 1
 
@@ -136,7 +138,61 @@ def _make_manager(buffer: _FakeBuffer, impl: _FakeImpl) -> RolloutManager:
     return mgr
 
 
+class _TraceSink:
+    enabled = True
+
+    def __init__(self, fail_on: SchedulerEventType | None = None) -> None:
+        self.fail_on = fail_on
+        self.events: list[SchedulerEventType] = []
+
+    def emit(self, event_type: SchedulerEventType, **_fields) -> None:
+        self.events.append(event_type)
+        if event_type is self.fail_on:
+            raise RuntimeError(f"injected trace failure: {event_type.value}")
+
+
 class TestGenerateAndPushFlow:
+    def test_disabled_trace_is_legacy_noop_for_input_without_idx(self):
+        buf = _FakeBuffer()
+        mgr = _make_manager(buf, _FakeImpl(record="r0"))
+        _run(mgr.generate_and_push({"prompt": "legacy"}))
+        assert len(buf.commit_calls) == 1
+
+    def test_dispatch_trace_failure_always_removes_reserved_slot(self):
+        buf = _FakeBuffer()
+        mgr = _make_manager(buf, _FakeImpl(record="unused"))
+        mgr._scheduler_trace = _TraceSink(SchedulerEventType.ATTEMPT_DISPATCHED)
+        with pytest.raises(RuntimeError, match="injected trace failure"):
+            _run(mgr.generate_and_push({"task_name": "math"}, admission_id="admit"))
+        assert buf._slots == []
+        assert buf.remove_in_dp_calls == [False]
+
+    def test_ready_trace_failure_cleans_committed_dataplane_rows(self):
+        record = PromptGroupRecord(
+            prompt_idx=1,
+            prompt=[],
+            extra_env_info=None,
+            metadata={"task_name": "math"},
+            completions=[
+                Completion(
+                    message_log=[
+                        {"role": "assistant", "content": "ok", "tool_calls": []}
+                    ],
+                    env_extras=None,
+                    truncated=False,
+                    reward=1.0,
+                )
+            ],
+            rollout_metrics={"turns_per_sample/mean": 1.0},
+        )
+        buf = _FakeBuffer()
+        mgr = _make_manager(buf, _FakeImpl(record=record))
+        mgr._scheduler_trace = _TraceSink(SchedulerEventType.GROUP_READY)
+        with pytest.raises(RuntimeError, match="injected trace failure"):
+            _run(mgr.generate_and_push({"task_name": "math"}, admission_id="admit"))
+        assert buf._slots == []
+        assert buf.remove_in_dp_calls == [True]
+
     def test_rollout_failure_removes_reserved_group(self):
         async def _fail_rollout(_sample):
             raise RuntimeError("injected rollout failure")

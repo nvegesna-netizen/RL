@@ -85,6 +85,18 @@ def main() -> None:
     config = MasterConfig(**config)
     print("Applied CLI overrides")
 
+    resolved_config_path = os.environ.get("NEMO_RL_RESOLVED_CONFIG_PATH")
+    if resolved_config_path:
+        resolved_path = os.path.abspath(resolved_config_path)
+        os.makedirs(os.path.dirname(resolved_path), exist_ok=True)
+        # Persist the validated, fully resolved input before Ray/model setup and
+        # independently of checkpointing.
+        OmegaConf.save(
+            OmegaConf.create(config.model_dump(mode="json")),
+            resolved_path,
+        )
+        print(f"Saved resolved configuration to: {resolved_path}")
+
     dp_cfg = config.data_plane
     if not dp_cfg.get("enabled", False):
         raise ValueError(

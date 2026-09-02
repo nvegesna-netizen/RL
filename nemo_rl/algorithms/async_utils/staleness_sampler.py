@@ -28,12 +28,12 @@ loop in one object, injected into both pumps:
     knobs, so those consumers can't drift out of sync with the sampler.
 
 ``PromptGroupSampler`` is the interface; ``WindowedSampler`` /
-``WeightFifoSampler`` / ``InOrderSampler`` are the built-in policies, one per
-behavior, each owning only the args that apply to it.  ``create_sampler`` builds
-one from a discriminated-union config (or a ``module:ClassName`` FQN for a
-policy defined outside this repo) — the config's ``name`` is the single source
-of truth for which behavior runs, so there are no cross-field knob combinations
-to validate.
+``ReadyFirstSampler`` / ``WeightFifoSampler`` / ``InOrderSampler`` are the
+built-in policies, one per behavior, each owning only the args that apply to it.
+``create_sampler`` builds one from a discriminated-union config (or a
+``module:ClassName`` FQN for a policy defined outside this repo) — the config's
+``name`` is the single source of truth for which behavior runs, so there are no
+cross-field knob combinations to validate.
 """
 
 from __future__ import annotations
@@ -118,6 +118,24 @@ class BaseSampler(abc.ABC):
         # Pre-incremented before each admitted batch, so -1 lets the first
         # batch through a zero-staleness gate.
         self._dispatch_index: int = -1
+        self._last_selected_group_ids: tuple[str, ...] = ()
+        self._last_evicted_group_ids: tuple[str, ...] = ()
+
+    @property
+    def dispatch_index(self) -> int:
+        return self._dispatch_index
+
+    def take_last_selected_group_ids(self) -> tuple[str, ...]:
+        value, self._last_selected_group_ids = self._last_selected_group_ids, ()
+        return value
+
+    def take_last_evicted_group_ids(self) -> tuple[str, ...]:
+        value, self._last_evicted_group_ids = self._last_evicted_group_ids, ()
+        return value
+
+    def eligible_group_ids(self, *, current_train_weight: int) -> tuple[str, ...]:
+        """IDs eligible for the next selection, in sampler selection order."""
+        return ()
 
     # ── rollout-pump side ────────────────────────────────────────────────
     @abc.abstractmethod
@@ -149,6 +167,9 @@ class BaseSampler(abc.ABC):
             for i, weight in enumerate(self._buffer.start_weight_list)
             if weight < min_valid_version and self._buffer.ready_list[i]
         ]
+        self._last_evicted_group_ids = tuple(
+            self._buffer.group_ids[i] for i in stale_idxs
+        )
         if not stale_idxs:
             return 0
         return await self._buffer.remove(stale_idxs, remove_in_dp=True)
@@ -189,9 +210,13 @@ class BaseSampler(abc.ABC):
         or ``(None, 0)`` below ``min_prompt_groups``.
         """
         if len(valid_idxs) < min_prompt_groups:
+            self._last_selected_group_ids = ()
             return None, 0
         requested_groups = min(len(valid_idxs), max_prompt_groups)
         selected_idxs = valid_idxs[:requested_groups]
+        self._last_selected_group_ids = tuple(
+            self._buffer.group_ids[i] for i in selected_idxs
+        )
         selected_metas = [self._buffer.meta_list[i] for i in selected_idxs]
         await self._buffer.remove(selected_idxs, remove_in_dp=False)
         return (
@@ -258,6 +283,22 @@ class WindowedSampler(BaseSampler):
             valid_idxs, min_prompt_groups, max_prompt_groups
         )
 
+    def eligible_group_ids(self, *, current_train_weight: int) -> tuple[str, ...]:
+        min_valid_version = max(0, current_train_weight - self.max_staleness_versions)
+        valid_idxs = [
+            i
+            for i, weight in enumerate(self._buffer.start_weight_list)
+            if min_valid_version <= weight <= current_train_weight
+            and self._buffer.ready_list[i]
+        ]
+        if self.sample_freshest_first:
+            valid_idxs.sort(
+                key=lambda i: (
+                    current_train_weight - self._buffer.start_weight_list[i], i
+                )
+            )
+        return tuple(self._buffer.group_ids[i] for i in valid_idxs)
+
 
 def _gated_required_buffer_capacity(
     groups_per_step: int,
@@ -301,6 +342,54 @@ class _GatedSampler(BaseSampler):
         return None
 
 
+class ReadyFirstSampler(_GatedSampler):
+    """Gated admission with readiness-conditioned, mixed-version selection.
+
+    Admission limits generation to ``max_staleness_versions`` dispatch batches
+    ahead of the trainer. Selection consumes every currently ready group no
+    newer than the trainer in replay-slot order. Late groups remain selectable
+    indefinitely, so this policy changes finite-horizon order but never censors.
+    """
+
+    def __init__(
+        self,
+        buffer: TQReplayBuffer,
+        *,
+        max_staleness_versions: int,
+    ) -> None:
+        super().__init__(buffer, gate_window=max_staleness_versions)
+        self.max_staleness_versions = max_staleness_versions
+
+    async def select(
+        self,
+        *,
+        current_train_weight: int,
+        min_prompt_groups: int,
+        max_prompt_groups: int,
+    ) -> tuple[Optional[KVBatchMeta], int]:
+        self._validate_group_bounds(min_prompt_groups, max_prompt_groups)
+        valid_idxs = [
+            i
+            for i, weight in enumerate(self._buffer.start_weight_list)
+            if weight <= current_train_weight and self._buffer.ready_list[i]
+        ]
+        return await self._finalize_selection(
+            valid_idxs, min_prompt_groups, max_prompt_groups
+        )
+
+    async def evict(self, *, current_train_weight: int) -> int:
+        # Every admitted group remains selectable after it becomes ready.
+        self._last_evicted_group_ids = ()
+        return 0
+
+    def eligible_group_ids(self, *, current_train_weight: int) -> tuple[str, ...]:
+        return tuple(
+            self._buffer.group_ids[i]
+            for i, weight in enumerate(self._buffer.start_weight_list)
+            if weight <= current_train_weight and self._buffer.ready_list[i]
+        )
+
+
 class WeightFifoSampler(_GatedSampler):
     """Gated, strict weight-version FIFO.
 
@@ -336,6 +425,22 @@ class WeightFifoSampler(_GatedSampler):
         ]
         return await self._finalize_selection(
             valid_idxs, min_prompt_groups, max_prompt_groups
+        )
+
+    def eligible_group_ids(self, *, current_train_weight: int) -> tuple[str, ...]:
+        min_valid_version = max(0, current_train_weight - self.max_staleness_versions)
+        in_window = [
+            weight
+            for weight in self._buffer.start_weight_list
+            if min_valid_version <= weight <= current_train_weight
+        ]
+        if not in_window:
+            return ()
+        target_version = min(in_window)
+        return tuple(
+            self._buffer.group_ids[i]
+            for i, weight in enumerate(self._buffer.start_weight_list)
+            if weight == target_version and self._buffer.ready_list[i]
         )
 
 
@@ -384,9 +489,19 @@ class InOrderSampler(_GatedSampler):
             and target < current_train_weight
             and self._buffer.ready_list[i]
         ]
+        self._last_evicted_group_ids = tuple(
+            self._buffer.group_ids[i] for i in stale_idxs
+        )
         if not stale_idxs:
             return 0
         return await self._buffer.remove(stale_idxs, remove_in_dp=True)
+
+    def eligible_group_ids(self, *, current_train_weight: int) -> tuple[str, ...]:
+        return tuple(
+            self._buffer.group_ids[i]
+            for i, target in enumerate(self._buffer.target_step_list)
+            if target == current_train_weight and self._buffer.ready_list[i]
+        )
 
 
 # ── config + factory ────────────────────────────────────────────────────────
@@ -398,6 +513,12 @@ class WindowedSamplerConfig(BaseModel, extra="allow"):
     max_staleness_versions: NonNegativeInt = 1
     # Prefer smallest lag when picking from the in-window set.
     sample_freshest_first: bool = False
+
+
+class ReadyFirstSamplerConfig(BaseModel, extra="allow"):
+    name: Literal["ready_first"] = "ready_first"
+    # How far generation may run ahead of the trainer, in dispatch batches.
+    max_staleness_versions: NonNegativeInt = 1
 
 
 class WeightFifoSamplerConfig(BaseModel, extra="allow"):
@@ -425,6 +546,7 @@ class CustomSamplerConfig(BaseModel, extra="allow"):
 SamplerConfig = Annotated[
     Union[
         WindowedSamplerConfig,
+        ReadyFirstSamplerConfig,
         WeightFifoSamplerConfig,
         InOrderSamplerConfig,
         CustomSamplerConfig,
@@ -438,6 +560,11 @@ def required_buffer_capacity_for_config(
     groups_per_step: int,
 ) -> Optional[int]:
     """Return a built-in sampler's required capacity without constructing it."""
+    if isinstance(cfg, ReadyFirstSamplerConfig):
+        return _gated_required_buffer_capacity(
+            groups_per_step,
+            gate_window=cfg.max_staleness_versions,
+        )
     if isinstance(cfg, WeightFifoSamplerConfig):
         return _gated_required_buffer_capacity(
             groups_per_step,
@@ -461,6 +588,11 @@ def create_sampler(
             buffer,
             max_staleness_versions=cfg.max_staleness_versions,
             sample_freshest_first=cfg.sample_freshest_first,
+        )
+    if isinstance(cfg, ReadyFirstSamplerConfig):
+        return ReadyFirstSampler(
+            buffer,
+            max_staleness_versions=cfg.max_staleness_versions,
         )
     if isinstance(cfg, WeightFifoSamplerConfig):
         return WeightFifoSampler(

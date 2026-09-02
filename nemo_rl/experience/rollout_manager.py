@@ -15,6 +15,8 @@
 import asyncio
 import copy
 import json
+import statistics
+import uuid
 from typing import Any, Optional
 
 import torch
@@ -22,6 +24,11 @@ from transformers import PreTrainedTokenizerBase
 from wandb import Table
 
 from nemo_rl.algorithms.async_utils.replay_buffer import TQReplayBuffer
+from nemo_rl.algorithms.async_utils.scheduler_trace import (
+    NoopSchedulerTraceSink,
+    SchedulerEventType,
+    SchedulerTraceSink,
+)
 from nemo_rl.data.interfaces import DatumSpec, LLMMessageLogType
 from nemo_rl.distributed.batched_data_dict import BatchedDataDict
 from nemo_rl.environments.interfaces import EnvironmentInterface
@@ -714,6 +721,11 @@ class RolloutManager:
         self._num_generations_per_prompt = num_generations_per_prompt
         self._tq_buffer = tq_buffer
         self._weight_version: int = 0
+        self._scheduler_trace: SchedulerTraceSink = NoopSchedulerTraceSink()
+
+    def set_scheduler_trace_sink(self, sink: SchedulerTraceSink) -> None:
+        """Bind the controller-owned trace sink after Ray deserialization."""
+        self._scheduler_trace = sink
 
     def set_weight_version(self, version: int) -> None:
         """Set the weight_version used for rollout tags.
@@ -727,7 +739,11 @@ class RolloutManager:
         return await self._impl.run_rollout(input_sample)
 
     async def generate_and_push(
-        self, input_sample: DatumSpec, *, target_step: Optional[int] = None
+        self,
+        input_sample: DatumSpec,
+        *,
+        target_step: Optional[int] = None,
+        admission_id: Optional[str] = None,
     ) -> None:
         """Reserve a buffer slot, run one prompt's rollout, then commit the slot.
 
@@ -738,12 +754,103 @@ class RolloutManager:
         assert self._tq_buffer is not None, (
             "generate_and_push requires tq_buffer to be set at __init__"
         )
+        # Preserve the pre-instrumentation path byte-for-byte in behavior:
+        # legacy inputs need no idx, and tracing-disabled runs do no UUID,
+        # metric-summary, or sink work.
+        trace_sink = getattr(self, "_scheduler_trace", None)
+        if trace_sink is None or not trace_sink.enabled:
+            start_version = self._weight_version
+            group_id = self._tq_buffer.reserve(
+                weight_version=start_version, target_step=target_step
+            )
+            try:
+                record = await self.run_rollout(input_sample)
+                end_version = self._weight_version
+                await self._tq_buffer.commit(
+                    group_id,
+                    record,
+                    start_weight_version=start_version,
+                    end_weight_version=end_version,
+                )
+            except BaseException:
+                await self._tq_buffer.remove_group(group_id)
+                raise
+            return
+
         start_version = self._weight_version
         group_id = self._tq_buffer.reserve(
             weight_version=start_version, target_step=target_step
         )
+        attempt_id = str(uuid.uuid4())
+        task_value = input_sample.get("task_name")
+        task_name = task_value if isinstance(task_value, str) else None
+        try:
+            self._scheduler_trace.emit(
+                SchedulerEventType.ATTEMPT_DISPATCHED,
+                logical_group_id=group_id,
+                attempt_id=attempt_id,
+                admission_id=admission_id,
+                task_name=task_name,
+                target_step=target_step,
+                start_weight_version=start_version,
+            )
+        except BaseException as error:
+            try:
+                await self._tq_buffer.remove_group(group_id)
+            except BaseException as cleanup_error:
+                raise BaseExceptionGroup(
+                    "trace dispatch and reserved-slot cleanup both failed",
+                    [error, cleanup_error],
+                ) from None
+            raise
+
+        committed = False
         try:
             record = await self.run_rollout(input_sample)
+            record_task_value = record.metadata.get("task_name", task_name)
+            record_task_name = (
+                record_task_value if isinstance(record_task_value, str) else task_name
+            )
+            rewards = [float(completion.reward) for completion in record.completions]
+            summaries: dict[str, float | int] = {"completion_count": len(rewards)}
+            if rewards:
+                summaries.update(
+                    reward_mean=statistics.fmean(rewards),
+                    reward_min=min(rewards),
+                    reward_max=max(rewards),
+                )
+            tool_call_counts = [
+                sum(
+                    len(message.get("tool_calls") or [])
+                    for message in completion.message_log
+                    if message.get("role") == "assistant"
+                )
+                for completion in record.completions
+            ]
+            if tool_call_counts:
+                summaries["tool_calls_per_sample/mean"] = statistics.fmean(
+                    tool_call_counts
+                )
+            for metric_name in (
+                "mean_gen_tokens_per_sample",
+                "timing/rollout/total",
+                "total_turns",
+                "avg_turns_per_sample",
+                "turns_per_sample/mean",
+            ):
+                value = record.rollout_metrics.get(metric_name)
+                if isinstance(value, (int, float)):
+                    summaries[metric_name] = value
+            self._scheduler_trace.emit(
+                SchedulerEventType.ROLLOUT_COMPLETED,
+                logical_group_id=group_id,
+                attempt_id=attempt_id,
+                admission_id=admission_id,
+                task_name=record_task_name,
+                target_step=target_step,
+                start_weight_version=start_version,
+                scalar_summaries=summaries,
+            )
             end_version = self._weight_version
             await self._tq_buffer.commit(
                 group_id,
@@ -751,8 +858,64 @@ class RolloutManager:
                 start_weight_version=start_version,
                 end_weight_version=end_version,
             )
-        except BaseException:
-            # A failed rollout must not leave an unready slot that can block an
-            # in-order sampler. commit() rolls back any DataPlane rows it wrote.
-            await self._tq_buffer.remove_group(group_id)
+            committed = True
+            self._scheduler_trace.emit(
+                SchedulerEventType.GROUP_READY,
+                logical_group_id=group_id,
+                attempt_id=attempt_id,
+                admission_id=admission_id,
+                task_name=record_task_name,
+                target_step=target_step,
+                start_weight_version=start_version,
+                end_weight_version=end_version,
+            )
+        except BaseException as error:
+            trace_error: Optional[BaseException] = None
+            try:
+                self._scheduler_trace.emit(
+                    SchedulerEventType.ATTEMPT_FAILED,
+                    logical_group_id=group_id,
+                    attempt_id=attempt_id,
+                    admission_id=admission_id,
+                    task_name=task_name,
+                    target_step=target_step,
+                    start_weight_version=start_version,
+                    failure_class=(
+                        "cancelled"
+                        if isinstance(error, asyncio.CancelledError)
+                        else "trace_after_commit"
+                        if committed
+                        else "rollout_or_commit"
+                    ),
+                    exception_class=type(error).__name__,
+                )
+            except BaseException as emit_error:
+                trace_error = emit_error
+            # Cleanup is unconditional. If commit succeeded, its DataPlane rows
+            # must also be removed because GROUP_READY was not durably accepted.
+            cleanup_error: Optional[BaseException] = None
+            try:
+                await self._tq_buffer.remove_group(group_id, remove_in_dp=committed)
+            except BaseException as remove_error:
+                cleanup_error = remove_error
+            if trace_error is None and cleanup_error is None:
+                try:
+                    self._scheduler_trace.emit(
+                        SchedulerEventType.ATTEMPT_REMOVED,
+                        logical_group_id=group_id,
+                        attempt_id=attempt_id,
+                        admission_id=admission_id,
+                        terminal_reason="failed_attempt_cleanup",
+                    )
+                except BaseException as emit_error:
+                    trace_error = emit_error
+            if trace_error is not None and trace_error is not error:
+                error.add_note(f"scheduler trace also failed: {trace_error!r}")
+            if cleanup_error is not None:
+                failures = [error, cleanup_error]
+                if trace_error is not None and trace_error is not error:
+                    failures.append(trace_error)
+                raise BaseExceptionGroup(
+                    "rollout/trace failure and buffer cleanup failed", failures
+                ) from None
             raise

@@ -840,6 +840,11 @@ class TQReplayBuffer:
         """Return the number of prompt-group entries currently held."""
         return len(self.meta_list)
 
+    @property
+    def group_ids(self) -> tuple[str, ...]:
+        """Return an immutable controller-loop snapshot of logical group IDs."""
+        return tuple(self._group_ids)
+
     def __len__(self) -> int:
         return len(self.meta_list)
 

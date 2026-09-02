@@ -35,7 +35,10 @@ Data flow:
 from __future__ import annotations
 
 import asyncio
+import hashlib
+import json
 import time
+import uuid
 from functools import partial
 from typing import Any, Optional, Union
 
@@ -43,6 +46,11 @@ import ray
 import torch
 
 from nemo_rl.algorithms.async_utils.staleness_sampler import create_sampler
+from nemo_rl.algorithms.async_utils.scheduler_trace import (
+    JsonlSchedulerTraceSink,
+    NoopSchedulerTraceSink,
+    SchedulerEventType,
+)
 from nemo_rl.algorithms.single_controller_utils.config import (
     AdvantageConfig,
     MasterConfig,
@@ -136,6 +144,25 @@ class SingleControllerActor:
             self._buffer,
             self._async_cfg.sampler,
         )
+        trace_cfg = self._async_cfg.scheduler_trace
+        self._trace_enabled = trace_cfg.enabled
+        self._sampler_fingerprint = hashlib.sha256(
+            json.dumps(
+                self._async_cfg.sampler.model_dump(),
+                sort_keys=True,
+                separators=(",", ":"),
+            ).encode()
+        ).hexdigest()
+        self._scheduler_trace = (
+            JsonlSchedulerTraceSink(
+                trace_cfg.path,  # type: ignore[arg-type]
+                max_queue_events=trace_cfg.max_queue_events,
+                flush_every=trace_cfg.flush_every,
+            )
+            if trace_cfg.enabled
+            else NoopSchedulerTraceSink()
+        )
+        self._rollout_manager.set_scheduler_trace_sink(self._scheduler_trace)
         required_capacity = self._sampler.required_buffer_capacity(num_prompts_per_step)
         validate_sampler_buffer_capacity(
             self._async_cfg,
@@ -188,13 +215,27 @@ class SingleControllerActor:
 
     async def run(self) -> dict[str, Any]:
         """Main entry point. Runs until max_train_steps is reached."""
-        # Synchronize weights before starting the pumps
-        await self._sync_weights()
-
-        # Start the rollout and train pumps
-        rollout_task = asyncio.create_task(self._rollout_pump())
-        train_task = asyncio.create_task(self._train_pump())
+        run_error: Optional[BaseException] = None
+        trace_started = False
         try:
+            await self._scheduler_trace.start()
+            trace_started = True
+            if getattr(self, "_trace_enabled", False):
+                self._scheduler_trace.emit(
+                    SchedulerEventType.RUN_STARTED,
+                    sampler_name=self._async_cfg.sampler.name,
+                    sampler_fingerprint=self._sampler_fingerprint,
+                    trainer_version=self._trainer_version,
+                    scalar_summaries={
+                        "planned_train_steps": self._master_config.grpo.max_num_steps
+                    },
+                )
+            # Synchronize weights before starting the pumps
+            await self._sync_weights()
+
+            # Start the rollout and train pumps
+            rollout_task = asyncio.create_task(self._rollout_pump())
+            train_task = asyncio.create_task(self._train_pump())
             done, _ = await asyncio.wait(
                 {rollout_task, train_task}, return_when=asyncio.FIRST_COMPLETED
             )
@@ -203,11 +244,62 @@ class SingleControllerActor:
                 # rollout pump leaves the train pump to drain committed groups.
                 await rollout_task
             await train_task
+        except BaseException as error:
+            run_error = error
+            raise
         finally:
-            rollout_task.cancel()
-            train_task.cancel()
-            await asyncio.gather(rollout_task, train_task, return_exceptions=True)
-            self._logger.finish()
+            if "rollout_task" in locals():
+                rollout_task.cancel()
+                train_task.cancel()
+                await asyncio.gather(rollout_task, train_task, return_exceptions=True)
+            trace_error: Optional[BaseException] = None
+            try:
+                if trace_started and getattr(self, "_trace_enabled", False):
+                    self._scheduler_trace.emit(
+                        SchedulerEventType.RUN_ENDED,
+                        sampler_name=self._async_cfg.sampler.name,
+                        sampler_fingerprint=self._sampler_fingerprint,
+                        trainer_version=self._trainer_version,
+                        live_logical_group_ids=tuple(self._buffer.group_ids),
+                        terminal_reason=(
+                            "max_train_steps"
+                            if run_error is None
+                            and self._train_steps
+                            >= self._master_config.grpo.max_num_steps
+                            else "rollout_exhausted"
+                            if run_error is None
+                            else "cancelled"
+                            if isinstance(run_error, asyncio.CancelledError)
+                            else "error"
+                        ),
+                        exception_class=(
+                            type(run_error).__name__ if run_error is not None else None
+                        ),
+                        scalar_summaries={"completed_train_steps": self._train_steps},
+                    )
+            except BaseException as error:
+                trace_error = error
+            finally:
+                if trace_started:
+                    try:
+                        await self._scheduler_trace.close()
+                    except BaseException as close_error:
+                        if trace_error is None:
+                            trace_error = close_error
+                        else:
+                            trace_error = BaseExceptionGroup(
+                                "scheduler trace final event and close both failed",
+                                [trace_error, close_error],
+                            )
+            try:
+                if trace_error is not None:
+                    if run_error is None:
+                        raise trace_error
+                    run_error.add_note(
+                        f"scheduler trace shutdown also failed: {trace_error!r}"
+                    )
+            finally:
+                self._logger.finish()
 
         return {
             "train_steps": self._train_steps,
@@ -267,14 +359,22 @@ class SingleControllerActor:
         async def _dispatch_one_prompt(
             prompt: DatumSpec,
             target_step: Optional[int],
+            admission_id: Optional[str],
             task_started_event: asyncio.Event,
         ) -> None:
             task_started_event.set()
             self._inflight_rollouts += 1
             try:
-                await self._rollout_manager.generate_and_push(
-                    prompt, target_step=target_step
-                )
+                if getattr(self, "_trace_enabled", False):
+                    await self._rollout_manager.generate_and_push(
+                        prompt,
+                        target_step=target_step,
+                        admission_id=admission_id,
+                    )
+                else:
+                    await self._rollout_manager.generate_and_push(
+                        prompt, target_step=target_step
+                    )
             except BaseException:
                 # On success ownership transfers to the train pump, which
                 # releases this permit after consuming the committed group.
@@ -308,6 +408,24 @@ class SingleControllerActor:
                     target_step = await self._sampler.admit(
                         trainer_version_fn=lambda: self._trainer_version
                     )
+                    admission_id = (
+                        str(uuid.uuid4())
+                        if getattr(self, "_trace_enabled", False)
+                        else None
+                    )
+                    if getattr(self, "_trace_enabled", False):
+                        self._scheduler_trace.emit(
+                            SchedulerEventType.ADMISSION_GRANTED,
+                            admission_id=admission_id,
+                            sampler_name=self._async_cfg.sampler.name,
+                            sampler_fingerprint=self._sampler_fingerprint,
+                            trainer_version=self._trainer_version,
+                            sampler_dispatch_index=self._sampler.dispatch_index,
+                            target_step=target_step,
+                            scalar_summaries={
+                                "expected_prompt_groups": prompt_batch.size
+                            },
+                        )
 
                     for prompt_idx in range(prompt_batch.size):
                         prompt: DatumSpec = {  # type: ignore
@@ -325,7 +443,10 @@ class SingleControllerActor:
                         # dispatch rollout
                         task = rollout_tasks.create_task(
                             _dispatch_one_prompt(
-                                prompt, target_step, task_started_event
+                                prompt,
+                                target_step,
+                                admission_id,
+                                task_started_event,
                             )
                         )
                         self._dispatched_rollouts.add(task)
@@ -379,6 +500,23 @@ class SingleControllerActor:
                         evicted = await self._sampler.evict(
                             current_train_weight=self._trainer_version,
                         )
+                        if getattr(self, "_trace_enabled", False):
+                            evicted_group_ids = (
+                                self._sampler.take_last_evicted_group_ids()
+                            )
+                            for group_id in evicted_group_ids:
+                                self._scheduler_trace.emit(
+                                    SchedulerEventType.GROUP_EVICTED,
+                                    logical_group_id=group_id,
+                                    sampler_name=self._async_cfg.sampler.name,
+                                    sampler_fingerprint=self._sampler_fingerprint,
+                                    trainer_version=self._trainer_version,
+                                    terminal_reason="ready_group_weight_window",
+                                )
+                            if evicted != len(evicted_group_ids):
+                                raise RuntimeError(
+                                    "sampler eviction count does not match removed group IDs"
+                                )
                         if evicted:
                             print(
                                 f"  evicted {evicted} stale prompt group(s)",
@@ -395,11 +533,42 @@ class SingleControllerActor:
                             self._async_cfg.min_groups_for_streaming_train,
                             max_prompt_groups,
                         )
+                        if getattr(self, "_trace_enabled", False):
+                            buffered_before_select = len(self._buffer)
+                            ready_before_select = sum(self._buffer.ready_list)
+                            eligible_group_ids = self._sampler.eligible_group_ids(
+                                current_train_weight=self._trainer_version
+                            )
                         train_meta, num_groups = await self._sampler.select(
                             current_train_weight=self._trainer_version,
                             min_prompt_groups=min_prompt_groups,
                             max_prompt_groups=max_prompt_groups,
                         )
+                        if getattr(self, "_trace_enabled", False):
+                            selected_group_ids = (
+                                self._sampler.take_last_selected_group_ids()
+                            )
+                            self._scheduler_trace.emit(
+                                SchedulerEventType.SELECT_DECISION,
+                                sampler_name=self._async_cfg.sampler.name,
+                                sampler_fingerprint=self._sampler_fingerprint,
+                                trainer_version=self._trainer_version,
+                                sampler_dispatch_index=self._sampler.dispatch_index,
+                                min_prompt_groups=min_prompt_groups,
+                                max_prompt_groups=max_prompt_groups,
+                                ready_prompt_groups=ready_before_select,
+                                eligible_prompt_groups=len(eligible_group_ids),
+                                eligible_logical_group_ids=eligible_group_ids,
+                                selected_logical_group_ids=selected_group_ids,
+                                scalar_summaries={
+                                    "buffered_prompt_groups": buffered_before_select,
+                                    "selected_prompt_groups": num_groups,
+                                },
+                            )
+                            if num_groups != len(selected_group_ids):
+                                raise RuntimeError(
+                                    "sampler selection count does not match removed group IDs"
+                                )
 
                         # If no batch is selectable, sleep and retry
                         if train_meta is None:
