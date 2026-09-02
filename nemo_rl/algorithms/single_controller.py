@@ -162,7 +162,8 @@ class SingleControllerActor:
             if trace_cfg.enabled
             else NoopSchedulerTraceSink()
         )
-        self._rollout_manager.set_scheduler_trace_sink(self._scheduler_trace)
+        if self._trace_enabled:
+            self._rollout_manager.set_scheduler_trace_sink(self._scheduler_trace)
         required_capacity = self._sampler.required_buffer_capacity(num_prompts_per_step)
         validate_sampler_buffer_capacity(
             self._async_cfg,
