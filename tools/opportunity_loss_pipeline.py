@@ -164,6 +164,7 @@ def _parse_protocol(
     if protocol_identity not in {
         "m4-opportunity-loss-common-instrumentation-v1",
         "m4-opportunity-loss-adjusted-followup-v1",
+        "m4-opportunity-loss-qwen3-1p7b-transport-v1",
     }:
         raise OpportunityLossPipelineError("protocol identity disagrees")
     assignment = _mapping(raw.get("assignment"), name="assignment")
@@ -331,7 +332,10 @@ def _parse_protocol(
         "mechanism_followup": raw.get("mechanism_followup"),
         "protocol_identity": protocol_identity,
     }
-    if protocol_identity == "m4-opportunity-loss-adjusted-followup-v1":
+    if protocol_identity in {
+        "m4-opportunity-loss-adjusted-followup-v1",
+        "m4-opportunity-loss-qwen3-1p7b-transport-v1",
+    }:
         if (
             analysis.get("primary_estimator")
             != "cross_fitted_generalized_regression_q_and_zero_indicator_v1"

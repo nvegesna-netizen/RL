@@ -1,0 +1,64 @@
+# Prospective Qwen3-1.7B transport test of the accepted M4 opportunity-loss
+# instrument. Do not launch without its frozen protocol and green preflight.
+defaults: grpo_math_1B_megatron_single_controller.yaml
+
+grpo:
+  max_num_steps: 558
+  seed: 42
+  num_prompts_per_step: 4
+  num_generations_per_prompt: 8
+
+policy:
+  model_name: Qwen/Qwen3-1.7B
+  tokenizer:
+    name: Qwen/Qwen3-1.7B
+  train_global_batch_size: 32
+  train_micro_batch_size: 1
+  max_total_sequence_length: 2048
+  generation:
+    max_new_tokens: 1792
+
+async_rl:
+  sampler:
+    name: windowed
+    max_staleness_versions: 1
+    sample_freshest_first: false
+  min_groups_for_streaming_train: 4
+  max_inflight_prompts: 16
+  max_buffered_rollouts: 64
+  lifecycle_audit_path: results/m4-qwen3-1p7b-transport/lifecycle.jsonl
+  controlled_release_delay:
+    enabled: true
+    seed: 20260907
+    assignment_domain: m4-opportunity-loss-qwen3-1p7b-transport-v1
+    arms:
+      - label: control
+        delay_seconds: 0.0
+        mass: 1
+      - label: d5
+        delay_seconds: 5.0
+        mass: 1
+  gradient_opportunity_audit:
+    enabled: true
+    output_path: results/m4-qwen3-1p7b-transport/opportunity.jsonl
+    observer_duty_path: results/m4-qwen3-1p7b-transport/observer-duty.json
+
+checkpointing:
+  enabled: false
+
+logger:
+  log_dir: results/m4-qwen3-1p7b-transport/metrics
+  wandb_enabled: false
+  tensorboard_enabled: false
+  mlflow_enabled: false
+  swanlab_enabled: false
+  monitor_gpus: false
+
+data_plane:
+  enabled: true
+  impl: transfer_queue
+  backend: simple
+
+cluster:
+  gpus_per_node: 2
+  num_nodes: 1
