@@ -1,0 +1,105 @@
+{
+  "artifact": {
+    "embedded_files": {
+      "gate_log_sha256": "915b5efb0c964b8a8530d933b30074455e2a758ca061e45e4f460c21d8b4377a",
+      "lifecycle_sha256": "6156bde73a3bd4f8e14d27119c7dd6b9f703594c99b1050cffc9d416afeaff88",
+      "observer_duty_sha256": "0719607871b089d920782ba0159c68b8dcbcb5cdb72257fd1650f505fa3661f2",
+      "opportunity_sha256": "ed1454ffdbcf0c29c3ec45988bdb32f3b7f589fd86fb0ec68eaef4db171edb10",
+      "run_log_sha256": "924f9366f99927e337633f1ed372016e9479daf1fe83307c7d0e3a8fd43d3d30",
+      "summary_sha256": "f356d8bc327e83b4818f04244d57bc2f261aef87dc5439e4f83ea391cbbed344"
+    },
+    "filename": "qualification-66124571-job-424883273.zip",
+    "sha256": "5cf1acb1729abb104497fa78740b9cc329e4532dedb7e8ecb6237b099004ee51",
+    "size_bytes": 47645903
+  },
+  "confirmatory_planning": {
+    "acquisition_authorized": false,
+    "burn_in_start_versions": [
+      0,
+      7
+    ],
+    "conservative_assignments_per_primary_version": 15.0,
+    "gpu_hour_cap": 12.0,
+    "gpus": 2,
+    "preferred_assignment_target": 7500,
+    "primary_start_versions": [
+      8,
+      507
+    ],
+    "primary_version_count": 500,
+    "projected_gpu_hours_band": [
+      4.528520890595,
+      9.538192404750312
+    ],
+    "projected_wall_hours_band": [
+      2.2642604452975,
+      4.769096202375156
+    ],
+    "terminal_guard_start_versions": [
+      508,
+      557
+    ],
+    "terminal_guard_version_count": 50,
+    "total_trainer_steps": 558,
+    "wall_clock_cap_hours": 6.0
+  },
+  "gate": {
+    "decision": "GO_TO_PROSPECTIVE_CONFIRMATORY_DESIGN",
+    "qualification_data_allowed_in_confirmatory_estimator": false,
+    "reason": "The smallest two-GPU non-colocated topology fit, the run completed its frozen window, observer duty was below threshold, and the conservative information target fits a proportionate fixed budget.",
+    "separate_frozen_protocol_and_authority_required_before_acquisition": true
+  },
+  "pipeline": {
+    "compute_duration_seconds": 1216.054262,
+    "downstream_finished_at": "2026-09-03T15:36:01.457-07:00",
+    "downstream_pipeline_id": 66124571,
+    "downstream_pipeline_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/66124571",
+    "eos_compute_finished_at": "2026-09-03T15:31:50.340-07:00",
+    "eos_compute_job_id": 424883273,
+    "eos_compute_started_at": "2026-09-03T15:11:34.286-07:00",
+    "generator_job_id": 424881866,
+    "parent_finished_at": "2026-09-03T15:36:01.780-07:00",
+    "parent_pipeline_id": 66124355,
+    "parent_pipeline_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/66124355",
+    "status": "SUCCESS",
+    "submission_attempt_count": 1,
+    "workload": "basic/m4-qwen3-1p7b-neutral-resource-qualification dgxh100_eos 00 [2 dgxh100_eos]"
+  },
+  "qualification": {
+    "acquisition_started": false,
+    "assignment_count": 544,
+    "assignments_per_observed_start_version": 17.0,
+    "automatic_extension": false,
+    "automatic_retry": false,
+    "causal_estimate_produced": false,
+    "controlled_release_arms": [
+      {
+        "delay_seconds": 0.0,
+        "label": "neutral",
+        "mass": 1
+      }
+    ],
+    "corrected_observer_duty": 0.001712875154452103,
+    "gpus": 2,
+    "interior_assignments_per_start_version": 16.433333333333334,
+    "model": "Qwen/Qwen3-1.7B",
+    "observed_start_version_count": 32,
+    "observer_duty_conclusion": "SUPPORTED",
+    "qualification_complete": true,
+    "resource_fit": true,
+    "steady_step_max_seconds": 34.1,
+    "steady_step_mean_seconds": 13.625,
+    "steady_step_median_seconds": 12.62,
+    "trainer_steps": 32,
+    "wall_time_seconds": 984.587603071,
+    "whole_run_seconds_per_step": 30.76836259596875
+  },
+  "schema": "m4-qwen3-1p7b-neutral-resource-qualification-terminal-result-v1",
+  "source": {
+    "manifest_sha256": "fbae4213355a3f4a21e86e8185e7451529f44e3d3a9be65c387a29364143764c",
+    "preflight_artifact_sha256": "e3cccb5ad47efcc028ca52334d155b2919c254a877c019c45721cc7653ea8c3f",
+    "preflight_lock_sha256": "b45bf7a041e1b9c7a3bf08032c4c4959b34c8dab9062965a77603c3a1e0a4fb1",
+    "source_archive_sha256": "64fb1b2460c93a8121cd3af532c92584303a4ac4e6e02d656f11b7336f3d4cd3",
+    "source_commit": "21292309a256205aefc73830638bb241d7e133da"
+  }
+}
