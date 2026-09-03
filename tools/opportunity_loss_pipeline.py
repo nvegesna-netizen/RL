@@ -160,7 +160,11 @@ def _parse_protocol(
     data: bytes,
 ) -> tuple[Mapping[str, object], LedgerJoinProtocol, dict[str, object]]:
     raw = _mapping(_decode_json(data, name="protocol"), name="protocol")
-    if raw.get("protocol") != "m4-opportunity-loss-common-instrumentation-v1":
+    protocol_identity = raw.get("protocol")
+    if protocol_identity not in {
+        "m4-opportunity-loss-common-instrumentation-v1",
+        "m4-opportunity-loss-adjusted-followup-v1",
+    }:
         raise OpportunityLossPipelineError("protocol identity disagrees")
     assignment = _mapping(raw.get("assignment"), name="assignment")
     if assignment.get("algorithm") != "sha256-rejection-sampling" or _boolean(
@@ -261,9 +265,12 @@ def _parse_protocol(
     pair = _array(analysis.get("primary_pair"), name="primary_pair")
     if pair != ["d5", "control"]:
         raise OpportunityLossPipelineError("primary pair disagrees")
-    if analysis.get("primary_estimand") != (
+    expected_estimand = (
         "(mean_d5(Q_times_D)-mean_control(Q_times_D))/mean_control(Q)"
-    ):
+        if protocol_identity == "m4-opportunity-loss-common-instrumentation-v1"
+        else "(mean_d5(Q_times_D)-mean_control(Q_times_D))/pooled_pre_delay_mean_Q"
+    )
+    if analysis.get("primary_estimand") != expected_estimand:
         raise OpportunityLossPipelineError("primary estimand disagrees")
     missingness = _mapping(analysis.get("missingness"), name="missingness")
     inference = _mapping(analysis.get("inference"), name="inference")
@@ -321,7 +328,20 @@ def _parse_protocol(
             runtime.get("max_staleness_versions"), name="max_staleness_versions"
         ),
         "mechanism_replication": raw.get("mechanism_replication"),
+        "mechanism_followup": raw.get("mechanism_followup"),
+        "protocol_identity": protocol_identity,
     }
+    if protocol_identity == "m4-opportunity-loss-adjusted-followup-v1":
+        if (
+            analysis.get("primary_estimator")
+            != "cross_fitted_generalized_regression_q_and_zero_indicator_v1"
+            or analysis.get("supporting_estimator")
+            != "original_unadjusted_registered_estimator_v1"
+        ):
+            raise OpportunityLossPipelineError("follow-up estimator identity disagrees")
+        options["cross_fit_folds"] = _integer(
+            inference.get("cross_fit_folds"), name="cross-fit folds"
+        )
     return raw, join_protocol, options
 
 
@@ -335,6 +355,8 @@ def build_result(
     """Strictly reconstruct and analyze one detached evidence bundle."""
     protocol_data = Path(protocol_path).read_bytes()
     _, protocol, options = _parse_protocol(protocol_data)
+    if options["protocol_identity"] != "m4-opportunity-loss-common-instrumentation-v1":
+        raise OpportunityLossPipelineError("registered pipeline requires v1 protocol")
     lifecycle_data = Path(lifecycle_path).read_bytes()
     opportunity_data = Path(opportunity_path).read_bytes()
     duty_data = Path(observer_duty_path).read_bytes()

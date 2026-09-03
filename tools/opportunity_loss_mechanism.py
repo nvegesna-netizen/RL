@@ -288,3 +288,177 @@ def assess_mechanism_replication(
         contrasts=contrasts,
         checks=checks,
     )
+
+
+def assess_followup_mechanism(
+    *,
+    lifecycle_rows: Sequence[Mapping[str, Any]],
+    assignments: Sequence[JoinedOpportunityAssignment],
+    contract: object,
+    max_staleness_versions: int,
+) -> MechanismReplicationResult:
+    """Score the prospectively registered control:d5 mechanism support condition."""
+    value = _mapping(contract, name="mechanism_followup")
+    expected_thresholds = {
+        "maximum_control_direct_chain_rate": 0.02,
+        "maximum_delay_overshoot_p99_seconds": 2.0,
+        "minimum_d5_control_direct_chain_contrast": 0.10,
+        "minimum_d5_control_version_advance_contrast": 0.20,
+        "minimum_d5_direct_chain_rate": 0.10,
+        "minimum_nonzero_delay_compliance": 0.99,
+    }
+    if set(value) != {
+        "historical_dose_order_result_sha256",
+        "role",
+        "score_window",
+        "thresholds",
+    }:
+        raise OpportunityLossMechanismError("follow-up mechanism keyset disagrees")
+    if (
+        value.get("historical_dose_order_result_sha256")
+        != "6c3fc0cf0567d4dab63153769c075dc7d491e41cb2ceb982b569649f5b42ced3"
+        or value.get("role") != "d5_control_support_condition_not_primary_endpoint"
+        or value.get("score_window") != "primary_start_versions"
+    ):
+        raise OpportunityLossMechanismError("follow-up mechanism provenance disagrees")
+    raw_thresholds = _mapping(value.get("thresholds"), name="follow-up thresholds")
+    if set(raw_thresholds) != set(expected_thresholds):
+        raise OpportunityLossMechanismError("follow-up threshold keyset disagrees")
+    thresholds = {
+        name: _number(raw_thresholds.get(name), name=name)
+        for name in expected_thresholds
+    }
+    if thresholds != expected_thresholds or max_staleness_versions != 1:
+        raise OpportunityLossMechanismError("follow-up mechanism contract disagrees")
+
+    by_group: dict[str, list[Mapping[str, Any]]] = defaultdict(list)
+    for row in lifecycle_rows:
+        if row.get("stage") != "learner_version_advanced":
+            group_id = row.get("group_id")
+            if isinstance(group_id, str) and group_id:
+                by_group[group_id].append(row)
+    scored: dict[str, list[tuple[float, bool, float | None]]] = defaultdict(list)
+    unscored = 0
+    for assignment in assignments:
+        stages: dict[str, list[Mapping[str, Any]]] = defaultdict(list)
+        for row in by_group.get(assignment.assignment_id, []):
+            stage = row.get("stage")
+            if isinstance(stage, str):
+                stages[stage].append(row)
+        started = _one(stages, "release_delay_started")
+        completed = _one(stages, "release_delay_completed")
+        group_completed = _one(stages, "group_completed")
+        ready = _one(stages, "group_ready")
+        removed = _one(stages, "removed")
+        if started is None or completed is None:
+            unscored += 1
+            continue
+        start_version = started.get("learner_weight_version")
+        end_version = completed.get("learner_weight_version")
+        if (
+            isinstance(start_version, bool)
+            or not isinstance(start_version, int)
+            or isinstance(end_version, bool)
+            or not isinstance(end_version, int)
+            or end_version < start_version
+        ):
+            unscored += 1
+            continue
+        direct_chain = False
+        if group_completed is not None and ready is not None and removed is not None:
+            sequences = [
+                completed.get("controller_sequence"),
+                group_completed.get("controller_sequence"),
+                ready.get("controller_sequence"),
+                removed.get("controller_sequence"),
+            ]
+            if all(
+                isinstance(item, int) and not isinstance(item, bool)
+                for item in sequences
+            ):
+                boundary = assignment.start_version + max_staleness_versions
+                direct_chain = bool(
+                    start_version <= boundary < end_version
+                    and sequences == sorted(sequences)
+                    and len(set(sequences)) == 4
+                    and removed.get("removal_reason") == "stale_evicted"
+                )
+        elapsed = (
+            _integer(completed.get("timestamp_ns"), name="delay completed timestamp")
+            - _integer(started.get("timestamp_ns"), name="delay started timestamp")
+        ) / 1e9
+        requested = _number(started.get("release_delay_seconds"), name="release delay")
+        scored[assignment.arm].append(
+            (
+                float(end_version - start_version),
+                direct_chain,
+                elapsed - requested if requested > 0 else None,
+            )
+        )
+
+    summaries: dict[str, dict[str, int | float]] = {}
+    for arm in ("control", "d5"):
+        arm_rows = scored.get(arm, [])
+        if arm_rows:
+            summaries[arm] = {
+                "assignment_count": len(arm_rows),
+                "direct_chain_count": sum(item[1] for item in arm_rows),
+                "direct_chain_rate": statistics.mean(item[1] for item in arm_rows),
+                "mean_version_advance": statistics.mean(item[0] for item in arm_rows),
+            }
+    complete = (
+        unscored == 0 and bool(assignments) and set(summaries) == {"control", "d5"}
+    )
+    contrasts = (
+        {
+            "d5_minus_control_direct_chain": float(summaries["d5"]["direct_chain_rate"])
+            - float(summaries["control"]["direct_chain_rate"]),
+            "d5_minus_control_version_advance": float(
+                summaries["d5"]["mean_version_advance"]
+            )
+            - float(summaries["control"]["mean_version_advance"]),
+        }
+        if complete
+        else {}
+    )
+    overshoots = [
+        item[2] for rows in scored.values() for item in rows if item[2] is not None
+    ]
+    compliance = (
+        statistics.mean(value >= 0 for value in overshoots) if overshoots else 0.0
+    )
+    overshoot_p99 = _quantile_99(overshoots) if overshoots else math.inf
+    checks = {
+        "complete_primary_scoring": complete,
+        "control_direct_chain_rate": complete
+        and float(summaries["control"]["direct_chain_rate"])
+        <= thresholds["maximum_control_direct_chain_rate"],
+        "d5_direct_chain_rate": complete
+        and float(summaries["d5"]["direct_chain_rate"])
+        >= thresholds["minimum_d5_direct_chain_rate"],
+        "d5_control_direct_chain_ordering": complete
+        and contrasts.get("d5_minus_control_direct_chain", -math.inf)
+        >= thresholds["minimum_d5_control_direct_chain_contrast"],
+        "d5_control_version_advance_ordering": complete
+        and contrasts.get("d5_minus_control_version_advance", -math.inf)
+        >= thresholds["minimum_d5_control_version_advance_contrast"],
+        "nonzero_delay_compliance": complete
+        and compliance >= thresholds["minimum_nonzero_delay_compliance"],
+        "delay_overshoot_p99": complete
+        and overshoot_p99 <= thresholds["maximum_delay_overshoot_p99_seconds"],
+    }
+    conclusion = (
+        "INSUFFICIENT_MECHANISM_EVIDENCE"
+        if not complete
+        else "REPLICATED"
+        if all(checks.values())
+        else "NOT_REPLICATED"
+    )
+    return MechanismReplicationResult(
+        conclusion=conclusion,
+        assignment_count=len(assignments),
+        unscored_assignment_count=unscored,
+        arm_summaries=summaries,
+        contrasts=contrasts,
+        checks=checks,
+    )

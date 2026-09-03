@@ -1,0 +1,143 @@
+{
+  "analysis": {
+    "inference": {
+      "bootstrap_draws": 20000,
+      "bootstrap_seed": 20260903,
+      "circular_block_size_start_versions": 8,
+      "confidence": 0.95,
+      "cross_fit_folds": 8,
+      "endpoint_interval": "outer_envelope_of_hac_and_bootstrap",
+      "hac_bartlett_lag_start_versions": 4,
+      "material_alpha": 0.05,
+      "material_p_value": "max_hac_normal_and_centered_bootstrap_lower_endpoint",
+      "sampling_unit": "assignment_clustered_by_start_weight_version"
+    },
+    "material_threshold_delta_l": 0.2,
+    "missingness": {
+      "maximum_terminal_missing_fraction_each_primary_arm": 0.01,
+      "missing_opportunity": "RED",
+      "missing_terminal_lower_qd": 0,
+      "missing_terminal_upper_qd": "observed_Q",
+      "terminal_bound_required_for_material_claim": "lower_gt_material_threshold",
+      "terminal_bound_required_for_nonmaterial_claim": "upper_lte_material_threshold"
+    },
+    "primary_estimand": "(mean_d5(Q_times_D)-mean_control(Q_times_D))/pooled_pre_delay_mean_Q",
+    "primary_estimator": "cross_fitted_generalized_regression_q_and_zero_indicator_v1",
+    "primary_pair": [
+      "d5",
+      "control"
+    ],
+    "supporting_estimator": "original_unadjusted_registered_estimator_v1"
+  },
+  "arms": [
+    {
+      "delay_seconds": 0,
+      "label": "control",
+      "mass": 1
+    },
+    {
+      "delay_seconds": 5,
+      "label": "d5",
+      "mass": 1
+    }
+  ],
+  "assignment": {
+    "algorithm": "sha256-rejection-sampling",
+    "domain": "m4-opportunity-loss-followup-v1",
+    "rerandomization": false,
+    "seed": 20260905
+  },
+  "design_evidence": {
+    "adjusted_inference_commit": "1bf0eb89666128139863ef09acd14dd8313d9b48",
+    "empirical_power_draws": 20000,
+    "empirical_power_sha256": "96901dac5392923d36b03d7a27f74c466c6904b4c5325031e7ab018a38f354c9",
+    "power_at_delta_l_0_25": 0.81555,
+    "planning_variance_reduction": 0.5,
+    "source_artifact_sha256": "e81a29747628b6f0490323207f317755de411d0f8e7527f715368919aee12fb7"
+  },
+  "instrumentation": {
+    "arm_dependent_pre_opportunity_branch_forbidden": true,
+    "common_in_all_arms": true,
+    "corrected_observer_duty_portability_target": 0.01,
+    "duty_artifact": {
+      "active_window_end": "after_pumps_and_residual_cleanup_stop",
+      "active_window_start": "after_initial_weight_sync_before_pumps",
+      "clock": "perf_counter_ns",
+      "clock_overhead_correction": "subtract_minimum_of_64_paired_reads_per_observation",
+      "measurement_scope": "complete_pre_delay_prepare_observer_callback",
+      "observation_count_must_equal": "all_opportunity_group_records",
+      "output_path_must_be_distinct": true,
+      "schema_version": 1
+    },
+    "duty_role": "external_validity_qualifier_not_causal_correction",
+    "off_on_abba": false,
+    "opportunity_coverage_required": 1.0,
+    "opportunity_replay": {
+      "allowed_reward_values": [
+        0,
+        1
+      ],
+      "baseline_algorithm": "nemo_rl_grpo_v1",
+      "comparison": "ieee754_binary32_bit_exact",
+      "estimator": "GRPOAdvantageEstimator",
+      "normalization_epsilon": 1e-6,
+      "normalize_rewards": true,
+      "reduction_dtype": "float32",
+      "reward_dtype": "float32",
+      "sibling_order": "ascending_sibling_index",
+      "use_leave_one_out_baseline": true
+    },
+    "loss_replay": {
+      "disable_ppo_ratio": false,
+      "positive_example_nll_weight": 0.0,
+      "sequence_level_importance_ratios": false,
+      "token_level_loss": true,
+      "use_cispo": false
+    },
+    "terminal_semantics": {
+      "cancelled_bounded_shutdown_failed_stale": "D=1",
+      "completed_learner_step": "D=0",
+      "missing_removal_or_selected_without_completed_step": "D=null",
+      "partial_split_unknown_or_contradictory": "RED"
+    }
+  },
+  "mechanism_followup": {
+    "historical_dose_order_result_sha256": "6c3fc0cf0567d4dab63153769c075dc7d491e41cb2ceb982b569649f5b42ced3",
+    "role": "d5_control_support_condition_not_primary_endpoint",
+    "score_window": "primary_start_versions",
+    "thresholds": {
+      "maximum_control_direct_chain_rate": 0.02,
+      "maximum_delay_overshoot_p99_seconds": 2.0,
+      "minimum_d5_control_direct_chain_contrast": 0.1,
+      "minimum_d5_control_version_advance_contrast": 0.2,
+      "minimum_d5_direct_chain_rate": 0.1,
+      "minimum_nonzero_delay_compliance": 0.99
+    }
+  },
+  "protocol": "m4-opportunity-loss-adjusted-followup-v1",
+  "runtime": {
+    "buffer_capacity": 64,
+    "generations_per_prompt": 8,
+    "inflight_prompts": 16,
+    "max_staleness_versions": 1,
+    "model": "Qwen3-0.6B",
+    "sampler": "windowed_fifo",
+    "train_global_batch_size": 32,
+    "trainer_steps": 448
+  },
+  "status": "FROZEN_LOCAL_PROTOCOL_PENDING_NO_TRAINING_PREFLIGHT",
+  "windows": {
+    "burn_in_start_versions": [
+      0,
+      7
+    ],
+    "primary_start_versions": [
+      8,
+      407
+    ],
+    "terminal_guard_start_versions": [
+      408,
+      447
+    ]
+  }
+}

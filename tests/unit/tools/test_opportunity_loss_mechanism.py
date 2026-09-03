@@ -21,6 +21,7 @@ import pytest
 from tools.opportunity_ledger_join import JoinedOpportunityAssignment
 from tools.opportunity_loss_mechanism import (
     OpportunityLossMechanismError,
+    assess_followup_mechanism,
     assess_mechanism_replication,
 )
 
@@ -98,6 +99,24 @@ def _fixture() -> tuple[list[dict[str, object]], list[JoinedOpportunityAssignmen
     return lifecycle, assignments
 
 
+def _followup_contract() -> dict[str, object]:
+    return {
+        "historical_dose_order_result_sha256": (
+            "6c3fc0cf0567d4dab63153769c075dc7d491e41cb2ceb982b569649f5b42ced3"
+        ),
+        "role": "d5_control_support_condition_not_primary_endpoint",
+        "score_window": "primary_start_versions",
+        "thresholds": {
+            "maximum_control_direct_chain_rate": 0.02,
+            "maximum_delay_overshoot_p99_seconds": 2.0,
+            "minimum_d5_control_direct_chain_contrast": 0.1,
+            "minimum_d5_control_version_advance_contrast": 0.2,
+            "minimum_d5_direct_chain_rate": 0.1,
+            "minimum_nonzero_delay_compliance": 0.99,
+        },
+    }
+
+
 def test_registered_m4_mechanism_replication_is_green() -> None:
     lifecycle, assignments = _fixture()
 
@@ -113,6 +132,53 @@ def test_registered_m4_mechanism_replication_is_green() -> None:
     assert result.arm_summaries["d5"]["direct_chain_rate"] == 0.2
     assert result.arm_summaries["d10"]["direct_chain_rate"] == 0.5
     assert all(result.checks.values())
+
+
+def test_followup_mechanism_uses_only_control_and_d5() -> None:
+    lifecycle, assignments = _fixture()
+    assignments = [row for row in assignments if row.arm != "d10"]
+    ids = {row.assignment_id for row in assignments}
+    lifecycle = [row for row in lifecycle if row["group_id"] in ids]
+
+    result = assess_followup_mechanism(
+        lifecycle_rows=lifecycle,
+        assignments=assignments,
+        contract=_followup_contract(),
+        max_staleness_versions=1,
+    )
+
+    assert result.conclusion == "REPLICATED"
+    assert set(result.arm_summaries) == {"control", "d5"}
+    assert all(result.checks.values())
+
+
+def test_followup_mechanism_rejects_missing_or_mutated_contract() -> None:
+    lifecycle, assignments = _fixture()
+    assignments = [row for row in assignments if row.arm != "d10"]
+    ids = {row.assignment_id for row in assignments}
+    lifecycle = [row for row in lifecycle if row["group_id"] in ids]
+    lifecycle = [
+        row
+        for row in lifecycle
+        if not (row["group_id"] == "d5-0" and row["stage"] == "release_delay_started")
+    ]
+    result = assess_followup_mechanism(
+        lifecycle_rows=lifecycle,
+        assignments=assignments,
+        contract=_followup_contract(),
+        max_staleness_versions=1,
+    )
+    assert result.conclusion == "INSUFFICIENT_MECHANISM_EVIDENCE"
+
+    contract = copy.deepcopy(_followup_contract())
+    contract["thresholds"]["minimum_d5_direct_chain_rate"] = 0.09
+    with pytest.raises(OpportunityLossMechanismError, match="contract"):
+        assess_followup_mechanism(
+            lifecycle_rows=lifecycle,
+            assignments=assignments,
+            contract=contract,
+            max_staleness_versions=1,
+        )
 
 
 def test_broken_dose_order_is_not_replicated() -> None:
