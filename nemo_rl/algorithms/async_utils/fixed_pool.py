@@ -108,6 +108,12 @@ SLIDING_PUZZLE_MODEL_REVISION: Final[str] = "989aa7980e4cf806f80c7fef2b1adb7bc71
 SLIDING_PUZZLE_MODEL_WEIGHTS_SHA256: Final[str] = (
     "dd924a11b4c220f385b51ffa522daea7c9f3d850e31b162bb5661df483c6d3ee"
 )
+SLIDING_PUZZLE_7B_MODEL_REVISION: Final[str] = (
+    "a09a35458c702b33eeacc393d103063234e8bc28"
+)
+SLIDING_PUZZLE_7B_MODEL_WEIGHTS_SHA256: Final[str] = (
+    "456f5eff514d78f7b0ef52a057118046acf15d86606655767db068cabf5f49f7"
+)
 SLIDING_PUZZLE_SOURCE_IDS: Final[tuple[str, str]] = (
     "sliding_puzzle_easy",
     "sliding_puzzle_hard",
@@ -533,24 +539,13 @@ def validate_fixed_pool_materialization(manifest: FixedPoolManifest) -> None:
     model_root = (base / manifest.model_snapshot_path).resolve()
     if model_root.parent != base:
         raise FixedPoolManifestError("model snapshot path escapes manifest directory")
-    weights_path = model_root / "model.safetensors"
-    try:
-        weights_digest = hashlib.sha256()
-        with weights_path.open("rb") as handle:
-            while chunk := handle.read(8 * 1024 * 1024):
-                weights_digest.update(chunk)
-    except OSError as error:
-        raise FixedPoolManifestError(
-            f"cannot read pinned model weights: {error}"
-        ) from error
-    if weights_digest.hexdigest() != manifest.model_weights_sha256:
-        raise FixedPoolManifestError("pinned model weights SHA mismatch")
     try:
         snapshot_records = json.loads(snapshot_manifest_raw)
     except json.JSONDecodeError as error:
         raise FixedPoolManifestError("invalid model snapshot manifest JSON") from error
     if not isinstance(snapshot_records, list) or not snapshot_records:
         raise FixedPoolManifestError("model snapshot manifest must be a nonempty list")
+    weight_records: list[dict[str, object]] = []
     for record in snapshot_records:
         if not isinstance(record, dict):
             raise FixedPoolManifestError("invalid model snapshot manifest record")
@@ -573,18 +568,38 @@ def validate_fixed_pool_materialization(manifest: FixedPoolManifest) -> None:
             raise FixedPoolManifestError(
                 f"model snapshot asset size mismatch: {relative}"
             )
-        if relative == "model.safetensors":
-            observed_sha = weights_digest.hexdigest()
-        else:
+        try:
             digest = hashlib.sha256()
             with asset.open("rb") as handle:
                 while chunk := handle.read(8 * 1024 * 1024):
                     digest.update(chunk)
             observed_sha = digest.hexdigest()
+        except OSError as error:
+            raise FixedPoolManifestError(
+                f"cannot hash model snapshot asset {relative}: {error}"
+            ) from error
         if observed_sha != expected_sha:
             raise FixedPoolManifestError(
                 f"model snapshot asset SHA mismatch: {relative}"
             )
+        if relative.endswith(".safetensors"):
+            weight_records.append(
+                {"path": relative, "bytes": expected_size, "sha256": expected_sha}
+            )
+    if not weight_records:
+        raise FixedPoolManifestError("model snapshot contains no safetensor weights")
+    if len(weight_records) == 1 and weight_records[0]["path"] == "model.safetensors":
+        weights_sha256 = cast(str, weight_records[0]["sha256"])
+    else:
+        canonical_weights = json.dumps(
+            sorted(weight_records, key=lambda value: cast(str, value["path"])),
+            allow_nan=False,
+            separators=(",", ":"),
+            sort_keys=True,
+        ).encode("utf-8")
+        weights_sha256 = hashlib.sha256(canonical_weights).hexdigest()
+    if weights_sha256 != manifest.model_weights_sha256:
+        raise FixedPoolManifestError("pinned model weights SHA mismatch")
     source_rows, global_offsets = _load_materialized_source_rows(manifest)
 
     for item in manifest.items:
@@ -952,8 +967,11 @@ def _sliding_puzzle_permutation_rank(state: tuple[int, ...]) -> int:
     return rank
 
 
-def validate_sliding_puzzle_latency_feasibility_manifest_design(
+def _validate_sliding_puzzle_manifest_design(
     manifest: FixedPoolManifest,
+    *,
+    model_revision: str,
+    model_weights_sha256: str,
 ) -> None:
     """Enforce the frozen 16-board exact-distance puzzle feasibility design."""
     if manifest.order_seed != SLIDING_PUZZLE_ORDER_SEED:
@@ -961,8 +979,8 @@ def validate_sliding_puzzle_latency_feasibility_manifest_design(
             f"sliding-puzzle order_seed must be {SLIDING_PUZZLE_ORDER_SEED}"
         )
     if (
-        manifest.model_revision != SLIDING_PUZZLE_MODEL_REVISION
-        or manifest.model_weights_sha256 != SLIDING_PUZZLE_MODEL_WEIGHTS_SHA256
+        manifest.model_revision != model_revision
+        or manifest.model_weights_sha256 != model_weights_sha256
     ):
         raise FixedPoolManifestError(
             "sliding-puzzle manifest must use the pinned model revision and weights"
@@ -1078,7 +1096,7 @@ def validate_sliding_puzzle_latency_feasibility_manifest_design(
             "input_token_count": item.input_token_count,
             "input_token_ids_sha256": item.input_token_ids_sha256,
             "selection_seed": SLIDING_PUZZLE_SELECTION_SEED,
-            "model_revision": SLIDING_PUZZLE_MODEL_REVISION,
+            "model_revision": model_revision,
             "prompt_builder_version": SLIDING_PUZZLE_PROMPT_BUILDER_VERSION,
         }
         if any(record.get(key) != value for key, value in bound.items()):
@@ -1192,6 +1210,28 @@ def validate_sliding_puzzle_latency_feasibility_manifest_design(
             )
 
 
+def validate_sliding_puzzle_latency_feasibility_manifest_design(
+    manifest: FixedPoolManifest,
+) -> None:
+    """Enforce the frozen 1.5B sliding-puzzle feasibility design."""
+    _validate_sliding_puzzle_manifest_design(
+        manifest,
+        model_revision=SLIDING_PUZZLE_MODEL_REVISION,
+        model_weights_sha256=SLIDING_PUZZLE_MODEL_WEIGHTS_SHA256,
+    )
+
+
+def validate_sliding_puzzle_7b_competence_manifest_design(
+    manifest: FixedPoolManifest,
+) -> None:
+    """Enforce the exposed-pool 7B competence materialization design."""
+    _validate_sliding_puzzle_manifest_design(
+        manifest,
+        model_revision=SLIDING_PUZZLE_7B_MODEL_REVISION,
+        model_weights_sha256=SLIDING_PUZZLE_7B_MODEL_WEIGHTS_SHA256,
+    )
+
+
 def validate_fixed_pool_manifest_design(
     manifest: FixedPoolManifest, design_id: str
 ) -> None:
@@ -1205,6 +1245,8 @@ def validate_fixed_pool_manifest_design(
         validate_openmath_latency_feasibility_manifest_design(manifest)
     elif design_id == "sliding_puzzle_latency_feasibility_v1":
         validate_sliding_puzzle_latency_feasibility_manifest_design(manifest)
+    elif design_id == "sliding_puzzle_7b_competence_v1":
+        validate_sliding_puzzle_7b_competence_manifest_design(manifest)
     else:
         raise FixedPoolManifestError(f"unsupported fixed-pool design_id: {design_id!r}")
 

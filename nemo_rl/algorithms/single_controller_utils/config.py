@@ -41,6 +41,7 @@ FixedPoolDesignId: TypeAlias = Literal[
     "openmath_latency_feasibility_v1",
     "openmath_termination_headroom_v1",
     "sliding_puzzle_latency_feasibility_v1",
+    "sliding_puzzle_7b_competence_v1",
 ]
 
 

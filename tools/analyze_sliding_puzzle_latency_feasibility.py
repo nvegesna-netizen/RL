@@ -45,6 +45,31 @@ EXPECTED_LOCKED_GATES = {
     "ready_latency_rank_biserial_min": 0.3,
     "pair_ready_sign_count_min": 6,
 }
+EXPECTED_RUNTIME = {
+    "fixed_pool_design_id": "sliding_puzzle_latency_feasibility_v1",
+    "generation_backend": "vllm",
+    "max_total_sequence_length": 2048,
+    "configured_max_new_tokens": 128,
+    "generation_context_length": 2048,
+    "generation_temperature": 1.0,
+    "generation_top_p": 0.999,
+    "generation_top_k": 10_000,
+    "generation_study_seed": 53001,
+    "grpo_seed": 20260901,
+    "num_generations_per_prompt": 2,
+    "max_rollout_turns": 12,
+    "num_prompts_per_step": 4,
+    "max_inflight_prompts": 4,
+    "max_buffered_rollouts": 8,
+    "generation_use_async_rollouts": True,
+    "tokenizer_eos_token_present": True,
+    "effective_stop_token_count": 1,
+    "effective_stop_string_count": 0,
+    "generation_ignore_eos": False,
+    "vllm_skip_tokenizer_init": True,
+    "vllm_include_stop_str_in_output": True,
+    "finish_reason_code_schema_version": 1,
+}
 
 
 class PuzzleFeasibilityAnalysisError(ValueError):
@@ -239,33 +264,11 @@ def _validate_design_items(items: Sequence[DesignItem]) -> None:
             )
 
 
-def _runtime(start: SchedulerTraceEvent) -> Mapping[str, object]:
+def validate_runtime(
+    start: SchedulerTraceEvent, *, expected: Mapping[str, object]
+) -> Mapping[str, object]:
+    """Validate the exact runtime map and EOS/stop provenance."""
     values = start.scalar_summaries
-    expected = {
-        "fixed_pool_design_id": "sliding_puzzle_latency_feasibility_v1",
-        "generation_backend": "vllm",
-        "max_total_sequence_length": 2048,
-        "configured_max_new_tokens": 128,
-        "generation_context_length": 2048,
-        "generation_temperature": 1.0,
-        "generation_top_p": 0.999,
-        "generation_top_k": 10_000,
-        "generation_study_seed": 53001,
-        "grpo_seed": 20260901,
-        "num_generations_per_prompt": 2,
-        "max_rollout_turns": 12,
-        "num_prompts_per_step": 4,
-        "max_inflight_prompts": 4,
-        "max_buffered_rollouts": 8,
-        "generation_use_async_rollouts": True,
-        "tokenizer_eos_token_present": True,
-        "effective_stop_token_count": 1,
-        "effective_stop_string_count": 0,
-        "generation_ignore_eos": False,
-        "vllm_skip_tokenizer_init": True,
-        "vllm_include_stop_str_in_output": True,
-        "finish_reason_code_schema_version": 1,
-    }
     if any(values.get(key) != value for key, value in expected.items()):
         raise PuzzleFeasibilityAnalysisError(
             "runtime does not match frozen puzzle design"
@@ -286,7 +289,11 @@ def _runtime(start: SchedulerTraceEvent) -> Mapping[str, object]:
 
 
 def observations_from_events(
-    events: Iterable[SchedulerTraceEvent], items: Sequence[DesignItem]
+    events: Iterable[SchedulerTraceEvent],
+    items: Sequence[DesignItem],
+    *,
+    expected_runtime: Mapping[str, object],
+    generation_seed: int,
 ) -> tuple[GroupObservation, ...]:
     """Join complete lifecycle events and validate puzzle telemetry."""
     events = tuple(events)
@@ -295,7 +302,7 @@ def observations_from_events(
     ]
     if len(starts) != 1:
         raise PuzzleFeasibilityAnalysisError("trace requires exactly one run_started")
-    _runtime(starts[0])
+    validate_runtime(starts[0], expected=expected_runtime)
     by_ordinal = {item.source_pool_ordinal: item for item in items}
     event_maps = {
         kind: {}
@@ -372,8 +379,8 @@ def observations_from_events(
             or _count_from_rate(summaries, "backend_abort_termination_rate")
             or _count_from_rate(summaries, "backend_other_termination_rate")
             or _count_from_rate(summaries, "backend_context_exhausted_rate")
-            or _integer(summaries, "effective_engine_seed/min") != 53001
-            or _integer(summaries, "effective_engine_seed/max") != 53001
+            or _integer(summaries, "effective_engine_seed/min") != generation_seed
+            or _integer(summaries, "effective_engine_seed/max") != generation_seed
             or reward_min not in {0.0, 1.0}
             or reward_max not in {0.0, 1.0}
             or not math.isclose(solved, round(solved), abs_tol=1e-9)
@@ -656,7 +663,7 @@ def analyze(
     ]
     if len(starts) != 1:
         raise PuzzleFeasibilityAnalysisError("trace requires exactly one run_started")
-    runtime = _runtime(starts[0])
+    runtime = validate_runtime(starts[0], expected=EXPECTED_RUNTIME)
     expected_path = str(manifest_path.resolve().parent / "model_snapshot")
     expected_path_sha = hashlib.sha256(
         json.dumps(expected_path, separators=(",", ":")).encode()
@@ -668,7 +675,14 @@ def analyze(
         raise PuzzleFeasibilityAnalysisError(
             "runtime model/tokenizer do not match the manifest snapshot"
         )
-    result = analyze_observations(observations_from_events(events, items))
+    result = analyze_observations(
+        observations_from_events(
+            events,
+            items,
+            expected_runtime=EXPECTED_RUNTIME,
+            generation_seed=53001,
+        )
+    )
     result["runtime_binding"] = dict(runtime)
     result["source_artifacts"] = {
         "trace_sha256": _sha256(trace_path),
