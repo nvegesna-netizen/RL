@@ -1,0 +1,134 @@
+{
+  "accepted_instrument": {
+    "description": "Common opportunity instrumentation, detached inference, observer-duty accounting, and mechanism replication frozen before the first acquisition",
+    "frozen_source_commit": "9cc2e9c6e339f7cd3c0e83fa9abf80af9cf428a6",
+    "implementation_commits": [
+      "c0d12e61f0176337750fe6c010478950b097ed87",
+      "5940059c865a2e9a592ad64c8d63ce934d5622fd",
+      "766351123bad4f5e7f703a77c366680e8534b418",
+      "4e6f6a9939ce1aec43381b92abb4478568c4c868",
+      "9cc2e9c6e339f7cd3c0e83fa9abf80af9cf428a6"
+    ],
+    "status": "VALIDATED"
+  },
+  "first_confirmatory_acquisition": {
+    "artifact": {
+      "result_sha256": "6c3fc0cf0567d4dab63153769c075dc7d491e41cb2ceb982b569649f5b42ced3",
+      "sha256": "e81a29747628b6f0490323207f317755de411d0f8e7527f715368919aee12fb7"
+    },
+    "causal_result": {
+      "conclusion": "INCONCLUSIVE",
+      "confidence_envelope": [
+        0.11595931364118733,
+        0.30153760090313597
+      ],
+      "estimate": 0.20980682915795912,
+      "hac_standard_error": 0.04680227415847308,
+      "material_p_value": 0.42187890605469724,
+      "material_threshold": 0.2
+    },
+    "completion": {
+      "primary_assignments": 3298,
+      "trainer_steps": 224,
+      "unscored_assignments": 0
+    },
+    "mechanism_conclusion": "REPLICATED",
+    "pipelines": {
+      "downstream_pipeline_id": 65912780,
+      "eos_compute_job_id": 423068757,
+      "parent_pipeline_id": 65911886,
+      "parent_pipeline_packaging_status": "FAILED_AFTER_CANONICAL_RESULT"
+    },
+    "portability_qualifier": "SUPPORTED",
+    "protocol_sha256": "25ca26c07ebc6c52b3b67447803b3a73e0eca4306a6b5816c954415b0638acad",
+    "source_archive_sha256": "590eb919dee852e884e54eef61aa43767078dc24d77767d8e3df9117d5cdb56d",
+    "source_commit": "9cc2e9c6e339f7cd3c0e83fa9abf80af9cf428a6"
+  },
+  "prospective_followup_design": {
+    "allocation": "1:1 control:d5",
+    "analysis_freeze_commit": "1bf0eb89666128139863ef09acd14dd8313d9b48",
+    "design_target": {
+      "alternative": 0.25,
+      "empirical_power": 0.81555,
+      "material_threshold": 0.2,
+      "minimum_power": 0.8
+    },
+    "estimator_commit": "7403f11fb1a21f6f9b0e69c47460a1fca2db047f",
+    "protocol_commit": "3681e528b670ed7fb4fca7b4e738d38dacb1c9e0",
+    "source_commit": "47dc1a713cbf0e07813d31c4ba70a8262214e098",
+    "trainer_steps": 448
+  },
+  "prospective_followup_preflight": {
+    "artifact_sha256": "544bff5bd9ac5799b1890ab4807e598caea8a78c9bcda72bb549234d94852968",
+    "compute_job_id": 423347400,
+    "downstream_pipeline_id": 65942720,
+    "lock_sha256": "f226732e26175c963e57bb77ffc97ee37f1a4ddd2c82ccc9805901efa99b4a17",
+    "parent_pipeline_id": 65942089,
+    "protocol_sha256": "6631a4ca8cfc6010150d1c135a1f5821c717f0dea189a3309c5f0f58f9b0709c",
+    "selected_tests": {
+      "count": 111,
+      "status": "PASS"
+    },
+    "status": "SUCCESS",
+    "training_started": false
+  },
+  "prospective_followup_result": {
+    "artifact": {
+      "result_sha256": "01a5867753462c3d956c0c44f730ca6ae4d40859a5e580606544dba70c2c4344",
+      "sha256": "07cddc489ea20055161f9c435d44d0a52b91113fda9eac16472bdb531dc6ffb6",
+      "size_bytes": 54950561
+    },
+    "causal_result": {
+      "adjusted_estimate": 0.30542321077967627,
+      "adjusted_hac_standard_error": 0.015045534371067945,
+      "bootstrap_interval": [
+        0.27744917243896006,
+        0.3344227273157648
+      ],
+      "conclusion": "MATERIAL",
+      "confidence_envelope": [
+        0.2759345052842236,
+        0.33491191627512895
+      ],
+      "material_p_value": 0.00004999750012499375,
+      "material_threshold": 0.2,
+      "unadjusted_estimate": 0.3335223004662047
+    },
+    "completion": {
+      "control_assignments": 3520,
+      "d5_assignments": 3679,
+      "primary_assignments": 7199,
+      "trainer_steps": 448,
+      "unscored_assignments": 0
+    },
+    "mechanism": {
+      "conclusion": "REPLICATED",
+      "control_direct_chain_rate": 0.0,
+      "d5_direct_chain_rate": 0.24218537646099483,
+      "d5_minus_control_version_advance": 0.40527317205762436
+    },
+    "pipelines": {
+      "collector_job_id": 423739792,
+      "downstream_pipeline_id": 65986159,
+      "eos_compute_job_id": 423739790,
+      "generator_job_id": 423736909,
+      "parent_pipeline_id": 65985843
+    },
+    "portability": {
+      "corrected_observer_duty": 0.002173854540236628,
+      "maximum_corrected_observer_duty": 0.01,
+      "qualifier": "SUPPORTED"
+    },
+    "protocol_sha256": "6631a4ca8cfc6010150d1c135a1f5821c717f0dea189a3309c5f0f58f9b0709c",
+    "source_commit": "47dc1a713cbf0e07813d31c4ba70a8262214e098",
+    "status": "SUCCESS",
+    "transport_manifest_sha256": "f9b05559ea60d05875115ebe85dfa212e0525344199f5c4bc20ec9b4470f3769"
+  },
+  "schema": "m4-opportunity-loss-canonical-evidence-map-v1",
+  "study_conclusion": {
+    "claim": "The evidence supports a material M4 opportunity-loss effect in the tested setting.",
+    "generalization_beyond_tested_setting": "NOT_ESTABLISHED",
+    "historical_first_primary_result": "INCONCLUSIVE",
+    "terminal_followup_result": "MATERIAL"
+  }
+}

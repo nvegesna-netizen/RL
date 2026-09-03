@@ -1,5 +1,9 @@
 # M4 opportunity-loss prospective follow-up result
 
+The canonical study-level synthesis is in
+[`../integrated_report.md`](../integrated_report.md), with machine-readable
+provenance in [`../evidence_map.json`](../evidence_map.json).
+
 Status: complete. The registered prospective control:d5 acquisition found a
 `MATERIAL` opportunity-loss effect, replicated the M4 mechanism, and supported
 the portability qualifier. No retry or outcome-guided extension is authorized or
