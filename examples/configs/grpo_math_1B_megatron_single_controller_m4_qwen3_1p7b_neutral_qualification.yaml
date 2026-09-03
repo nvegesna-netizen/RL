@@ -1,0 +1,63 @@
+# Neutral resource qualification for the M4 Qwen3-1.7B transportability study.
+# This is not a causal acquisition: the sole arm has zero release delay.
+defaults: grpo_math_1B_megatron_single_controller.yaml
+
+grpo:
+  max_num_steps: 32
+  seed: 42
+  num_prompts_per_step: 4
+  num_generations_per_prompt: 8
+
+policy:
+  model_name: Qwen/Qwen3-1.7B
+  tokenizer:
+    name: Qwen/Qwen3-1.7B
+  train_global_batch_size: 32
+  train_micro_batch_size: 1
+  max_total_sequence_length: 2048
+  generation:
+    max_new_tokens: 1792
+
+async_rl:
+  sampler:
+    name: windowed
+    max_staleness_versions: 1
+    sample_freshest_first: false
+  min_groups_for_streaming_train: 4
+  max_inflight_prompts: 16
+  max_buffered_rollouts: 64
+  lifecycle_audit_path: results/m4-qwen3-1p7b-neutral-qualification/lifecycle.jsonl
+  controlled_release_delay:
+    enabled: true
+    seed: 20260906
+    assignment_domain: m4-opportunity-loss-qwen3-1p7b-neutral-qualification-v1
+    arms:
+      - label: neutral
+        delay_seconds: 0.0
+        mass: 1
+  gradient_opportunity_audit:
+    enabled: true
+    output_path: results/m4-qwen3-1p7b-neutral-qualification/opportunity.jsonl
+    observer_duty_path: results/m4-qwen3-1p7b-neutral-qualification/observer-duty.json
+
+checkpointing:
+  enabled: false
+
+logger:
+  log_dir: results/m4-qwen3-1p7b-neutral-qualification/metrics
+  wandb_enabled: false
+  tensorboard_enabled: false
+  mlflow_enabled: false
+  swanlab_enabled: false
+  monitor_gpus: false
+
+data_plane:
+  enabled: true
+  impl: transfer_queue
+  backend: simple
+
+# Smallest candidate topology. Passing the no-training preflight does not prove
+# runtime memory fit; that is the purpose of the neutral qualification itself.
+cluster:
+  gpus_per_node: 2
+  num_nodes: 1

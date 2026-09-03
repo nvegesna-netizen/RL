@@ -1,0 +1,96 @@
+{
+  "candidate": {
+    "changed_axis": "model_scale",
+    "control_model": "Qwen/Qwen3-0.6B",
+    "dataset": "OpenMathInstruct-2",
+    "proposed_model": "Qwen/Qwen3-1.7B",
+    "unchanged_scientific_contract": {
+      "allocation": "1:1 control:d5",
+      "delay_seconds": 5.0,
+      "material_threshold": 0.2,
+      "primary_estimator": "cross_fitted_generalized_regression_q_and_zero_indicator_v1"
+    }
+  },
+  "compatibility": {
+    "accepted_instrument_contains_model_specific_logic": false,
+    "detached_analyzer_requires_new_protocol_identity": true,
+    "existing_qwen3_1p7b_recipe_present": true,
+    "existing_two_gpu_single_controller_qwen3_1p7b_recipe_present": false,
+    "followup_preflight_is_correctly_model_locked_to_qwen3_0p6b": true,
+    "new_output_paths_required": true,
+    "new_randomization_domain_and_seed_required": true,
+    "protocol_semantics_can_remain_unchanged": true
+  },
+  "decision": {
+    "acquisition_authorized_by_this_audit": false,
+    "gpu_qualification_authorized_by_this_audit": false,
+    "next_step": "RUN_PINNED_CONTAINERIZED_NO_TRAINING_PREFLIGHT",
+    "status": "CONDITIONAL_GO",
+    "stop_reason_if_failed": "Qwen3-1.7B cannot preserve the accepted M4 semantics or cannot meet the information target within a proportionate GPU budget"
+  },
+  "information_design": {
+    "minimum_primary_assignments": 7395,
+    "preferred_primary_assignments": 7500,
+    "observed_qwen3_0p6b_assignments_per_primary_version": 17.9975,
+    "projected_primary_versions_at_unchanged_assignment_rate": {
+      "minimum": 411,
+      "preferred": 417
+    },
+    "stopping_rule": "freeze a start-version window after neutral throughput qualification; no outcome-dependent stopping"
+  },
+  "neutral_qualification_contract": {
+    "allowed_outputs": [
+      "configuration resolution",
+      "device-memory fit",
+      "observer duty",
+      "assignment throughput",
+      "step throughput",
+      "terminal completeness"
+    ],
+    "controlled_release_delay_enabled": false,
+    "forbidden_outputs": [
+      "control-versus-d5 effect estimate",
+      "materiality conclusion",
+      "outcome-guided sample-size change"
+    ],
+    "minimum_steps": 32,
+    "scientific_acquisition": false
+  },
+  "local_preflight_implementation": {
+    "config": "examples/configs/grpo_math_1B_megatron_single_controller_m4_qwen3_1p7b_neutral_qualification.yaml",
+    "full_config_resolution_pending_pinned_container": true,
+    "static_checks": {
+      "json": "PASS",
+      "python_compile": "PASS",
+      "ruff_check": "PASS",
+      "ruff_format": "PASS",
+      "yaml_syntax": "PASS"
+    },
+    "test": "tests/unit/tools/test_opportunity_loss_transport_preflight.py",
+    "tool": "tools/opportunity_loss_transport_preflight.py"
+  },
+  "resource_evidence": {
+    "completed_qwen3_0p6b_followup": {
+      "assignment_count": 7199,
+      "compute_duration_seconds": 10264.735831,
+      "gpu_count": 2,
+      "gpu_hours": 5.702631017222222,
+      "seconds_per_step": 22.912356765625,
+      "trainer_steps": 448
+    },
+    "naive_parameter_ratio_qwen3_1p7b_to_0p6b": 2.8333333333333335,
+    "naive_same_topology_projection_not_a_budget": {
+      "gpu_hours": 16.157454548796295,
+      "runtime_hours": 8.078727274398148,
+      "with_25_percent_gpu_hour_contingency": 20.19681818599537
+    },
+    "reason_projection_is_not_sufficient": "trainer, generation, memory, and overlap do not scale linearly with parameter count"
+  },
+  "schema": "m4-opportunity-loss-qwen3-1p7b-compatibility-audit-v1",
+  "source": {
+    "canonical_evidence_map": "reports/auto_research/2026-09-02-m4-opportunity-loss-followup/evidence_map.json",
+    "completed_followup_artifact_sha256": "07cddc489ea20055161f9c435d44d0a52b91113fda9eac16472bdb531dc6ffb6",
+    "completed_followup_protocol_sha256": "6631a4ca8cfc6010150d1c135a1f5821c717f0dea189a3309c5f0f58f9b0709c",
+    "starting_commit": "225e91454b91e736fb1a5c49487495dc739a3556"
+  }
+}
