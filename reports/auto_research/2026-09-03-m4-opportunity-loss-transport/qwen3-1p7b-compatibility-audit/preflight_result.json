@@ -1,0 +1,52 @@
+{
+  "artifact": {
+    "filename": "preflight-66114826-job-424793998.zip",
+    "sha256": "e3cccb5ad47efcc028ca52334d155b2919c254a877c019c45721cc7653ea8c3f",
+    "size_bytes": 47046815
+  },
+  "authorities": {
+    "automatic_retry": false,
+    "qualification_started": false,
+    "scientific_acquisition_started": false,
+    "training_started": false
+  },
+  "checks": {
+    "config_resolved": true,
+    "full_selected_tests_green": true,
+    "preflight_green": true,
+    "pytest": "120 passed, 17 warnings in 23.57s",
+    "python_compile": "PASS",
+    "ruff_check": "PASS",
+    "ruff_format": "PASS"
+  },
+  "environment_note": {
+    "classification": "NON_BLOCKING_FOR_THIS_NO_TRAINING_PREFLIGHT",
+    "detail": "The source archive intentionally omitted Git submodule worktrees, so the container fingerprint reported those submodules as missing. The pinned image supplied its dependency revisions; exact config resolution and all selected tests passed. This result does not establish runtime model fit or throughput."
+  },
+  "frozen_inputs": {
+    "compatibility_audit_sha256": "7bd26140e6bc8a9bc6f7bd62da3aff5d637a0ca9426c110fd50841cf4747cbd9",
+    "config_sha256": "ee5cddb81656407a383925b45b678f2a66b787f0bd25213dfb408cc49fe3e5bb",
+    "lock_sha256": "b45bf7a041e1b9c7a3bf08032c4c4959b34c8dab9062965a77603c3a1e0a4fb1",
+    "manifest_sha256": "1a2957e9f0df439c5c100e03db29d55450ec4fcaf6187ac3bb9cc4c3ddaf389e",
+    "source_archive_sha256": "64fb1b2460c93a8121cd3af532c92584303a4ac4e6e02d656f11b7336f3d4cd3",
+    "source_commit": "21292309a256205aefc73830638bb241d7e133da",
+    "test_sha256": "7b7f1c43da1cf3def306faa8f842320f14ed1db64a154be00a77bf809152813e",
+    "tool_sha256": "061c06bb2b6f1c0cfc8c3bb0e97d32ac33c3044175c6290e9f0fb4ef3b2d32c0"
+  },
+  "pipeline": {
+    "compute_duration_seconds": 272.142528,
+    "downstream_finished_at": "2026-09-03T14:15:49.133-07:00",
+    "downstream_pipeline_id": 66114826,
+    "downstream_pipeline_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/66114826",
+    "eos_compute_job_id": 424793998,
+    "generator_job_id": 424788512,
+    "parent_finished_at": "2026-09-03T14:15:49.504-07:00",
+    "parent_pipeline_id": 66114094,
+    "parent_pipeline_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/66114094",
+    "status": "SUCCESS",
+    "submission_attempt_count": 1,
+    "workload": "basic/m4-qwen3-1p7b-neutral-no-training-preflight dgxh100_eos 00 [2 dgxh100_eos]"
+  },
+  "result": "PREFLIGHT_GREEN_QUALIFICATION_NOT_STARTED",
+  "schema": "m4-qwen3-1p7b-neutral-no-training-preflight-terminal-receipt-v1"
+}
