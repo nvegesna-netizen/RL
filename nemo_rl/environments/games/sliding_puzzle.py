@@ -14,7 +14,7 @@
 
 import copy
 import random
-from typing import Any, Mapping, Optional, TypedDict
+from typing import Any, Mapping, NotRequired, Optional, TypedDict
 
 import ray
 import torch
@@ -36,6 +36,7 @@ class SlidingPuzzleMetadata(TypedDict):
     game_state: dict[str, Any]  # Stores the dict returned by SlidingPuzzleGame methods
     num_moves: int
     max_moves: int
+    optimal_distance: NotRequired[int]
 
 
 class SlidingPuzzleGameLogic:
@@ -293,7 +294,11 @@ class SlidingPuzzleRunner:
             )
             next_metadata = None
             return (
-                {"role": "environment", "content": next_observation_content},
+                {
+                    "role": "environment",
+                    "content": next_observation_content,
+                    "action_status": "max_moves_reached",
+                },
                 0.0,
                 is_terminated,
                 None,
@@ -311,10 +316,11 @@ class SlidingPuzzleRunner:
         if parsed_action is None:
             rendered_board = SlidingPuzzleGameLogic.render(game_state)
             next_observation_content = f"<environment>\n{rendered_board}\n\nInvalid response format no move made. Try <action></action> like this: <action>your_action</action></environment>"
-            next_metadata = None
+            action_status = "invalid_format"
         elif parsed_action == "view":
             rendered_board = SlidingPuzzleGameLogic.render(game_state)
             next_observation_content = f"<environment>\n{rendered_board}\n\nViewing the board. No move made.</environment>"
+            action_status = "view"
         else:
             # Execute the game step
             step_response, reward, game_over, next_game_state = (
@@ -327,13 +333,22 @@ class SlidingPuzzleRunner:
             next_metadata["num_moves"] = current_moves + 1
 
             next_observation_content = f"<environment>\n{step_response}\n</environment>"
+            action_status = (
+                "valid_move"
+                if next_game_state["grid"] != game_state["grid"]
+                else "invalid_move"
+            )
 
             if is_terminated:
                 next_metadata = None  # Clear metadata on termination
         # answers save the extracted answer, only assigned in the verify function
         next_answers = None
         return (
-            {"role": "environment", "content": next_observation_content + "\n"},
+            {
+                "role": "environment",
+                "content": next_observation_content + "\n",
+                "action_status": action_status,
+            },
             turn_reward,
             is_terminated,
             next_stop_strings,

@@ -172,6 +172,13 @@ class AsyncRolloutImpl:
         generated_at_effective_cap = False
         generated_near_effective_cap = False
         max_turns_reached = False
+        action_turn_count = 0
+        action_format_valid_count = 0
+        action_legal_move_count = 0
+        action_invalid_format_count = 0
+        action_invalid_move_count = 0
+        action_view_count = 0
+        action_status_available = True
 
         # Track per-turn metrics
         turn_gen_tokens = []
@@ -293,6 +300,26 @@ class AsyncRolloutImpl:
             total_reward += float(env_output.rewards[0].item())
             terminated = env_output.terminateds[0].item()
             env_obs_content = env_output.observations[0]["content"]
+            action_status = env_output.observations[0].get("action_status")
+            if action_status is None:
+                action_status_available = False
+            elif action_status == "valid_move":
+                action_turn_count += 1
+                action_format_valid_count += 1
+                action_legal_move_count += 1
+            elif action_status == "invalid_format":
+                action_turn_count += 1
+                action_invalid_format_count += 1
+            elif action_status == "invalid_move":
+                action_turn_count += 1
+                action_format_valid_count += 1
+                action_invalid_move_count += 1
+            elif action_status == "view":
+                action_turn_count += 1
+                action_format_valid_count += 1
+                action_view_count += 1
+            elif action_status != "max_moves_reached":
+                action_status_available = False
             tokenized_obs = self._tokenizer(
                 env_obs_content, return_tensors="pt", add_special_tokens=False
             ).input_ids[0]
@@ -367,6 +394,13 @@ class AsyncRolloutImpl:
             "generated_at_effective_cap": generated_at_effective_cap,
             "generated_near_effective_cap": generated_near_effective_cap,
             "max_turns_reached": max_turns_reached,
+            "action_turn_count": action_turn_count,
+            "action_format_valid_count": action_format_valid_count,
+            "action_legal_move_count": action_legal_move_count,
+            "action_invalid_format_count": action_invalid_format_count,
+            "action_invalid_move_count": action_invalid_move_count,
+            "action_view_count": action_view_count,
+            "action_status_available": action_status_available,
             "turn_gen_tokens": turn_gen_tokens,
             "turn_input_tokens": turn_input_tokens,
             "turn_total_tokens": turn_total_tokens,
@@ -511,6 +545,23 @@ class AsyncRolloutImpl:
             m["effective_engine_seed"] for m in all_sample_metrics
         ]
         max_turns_reached = [m["max_turns_reached"] for m in all_sample_metrics]
+        action_turn_count = sum(m["action_turn_count"] for m in all_sample_metrics)
+        action_format_valid_count = sum(
+            m["action_format_valid_count"] for m in all_sample_metrics
+        )
+        action_legal_move_count = sum(
+            m["action_legal_move_count"] for m in all_sample_metrics
+        )
+        action_invalid_format_count = sum(
+            m["action_invalid_format_count"] for m in all_sample_metrics
+        )
+        action_invalid_move_count = sum(
+            m["action_invalid_move_count"] for m in all_sample_metrics
+        )
+        action_view_count = sum(m["action_view_count"] for m in all_sample_metrics)
+        action_status_available = [
+            m["action_status_available"] for m in all_sample_metrics
+        ]
 
         # max_gen_tokens_per_turn: Diagnostic for long single generations
         max_gen_tokens_per_turn = [
@@ -562,6 +613,13 @@ class AsyncRolloutImpl:
             / n,
             "natural_termination_rate": sum(terminated) / n,
             "max_turns_reached_rate": sum(max_turns_reached) / n,
+            "action_turn_count": action_turn_count,
+            "action_format_valid_count": action_format_valid_count,
+            "action_legal_move_count": action_legal_move_count,
+            "action_invalid_format_count": action_invalid_format_count,
+            "action_invalid_move_count": action_invalid_move_count,
+            "action_view_count": action_view_count,
+            "action_status_availability_rate": sum(action_status_available) / n,
         }
         if all(isinstance(value, int) for value in effective_caps):
             int_effective_caps = [int(value) for value in effective_caps]
@@ -1076,6 +1134,15 @@ class RolloutManager:
                 "total_turns",
                 "avg_turns_per_sample",
                 "turns_per_sample/mean",
+                "turns_per_sample/min",
+                "turns_per_sample/max",
+                "action_turn_count",
+                "action_format_valid_count",
+                "action_legal_move_count",
+                "action_invalid_format_count",
+                "action_invalid_move_count",
+                "action_view_count",
+                "action_status_availability_rate",
             ):
                 value = record.rollout_metrics.get(metric_name)
                 if isinstance(value, (int, float)):

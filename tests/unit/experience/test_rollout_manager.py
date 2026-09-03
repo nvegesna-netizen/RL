@@ -174,6 +174,13 @@ def test_async_rollout_aggregates_exact_finish_and_cap_diagnostics() -> None:
         "backend_finish_reason_available": True,
         "effective_max_new_tokens": 924,
         "max_turns_reached": False,
+        "action_turn_count": 1,
+        "action_format_valid_count": 1,
+        "action_legal_move_count": 1,
+        "action_invalid_format_count": 0,
+        "action_invalid_move_count": 0,
+        "action_view_count": 0,
+        "action_status_available": True,
         "turn_gen_tokens": [80],
         "turn_input_tokens": [100],
         "turn_total_tokens": [180],
@@ -213,6 +220,10 @@ def test_async_rollout_aggregates_exact_finish_and_cap_diagnostics() -> None:
     assert metrics["effective_engine_seed/max"] == 52001
     assert metrics["generated_at_effective_cap_rate"] == 0.5
     assert metrics["generated_near_effective_cap_rate"] == 0.5
+    assert metrics["action_turn_count"] == 2
+    assert metrics["action_format_valid_count"] == 2
+    assert metrics["action_legal_move_count"] == 2
+    assert metrics["action_status_availability_rate"] == 1.0
 
 
 class TestGenerateAndPushFlow:

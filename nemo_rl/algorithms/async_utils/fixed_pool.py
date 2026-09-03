@@ -99,6 +99,49 @@ OPENMATH_MATERIALIZED_RECORD_FIELDS: Final[frozenset[str]] = frozenset(
         "prompt_file_sha256",
     }
 )
+SLIDING_PUZZLE_DATASET_ID: Final[str] = "generated/sliding-puzzle-3x3"
+SLIDING_PUZZLE_DATASET_REVISION: Final[str] = "bfs_exact_distance_v1"
+SLIDING_PUZZLE_DATASET_SPLIT: Final[str] = "feasibility"
+SLIDING_PUZZLE_ORDER_SEED: Final[int] = 44001
+SLIDING_PUZZLE_SELECTION_SEED: Final[int] = 20260903
+SLIDING_PUZZLE_MODEL_REVISION: Final[str] = "989aa7980e4cf806f80c7fef2b1adb7bc71aa306"
+SLIDING_PUZZLE_MODEL_WEIGHTS_SHA256: Final[str] = (
+    "dd924a11b4c220f385b51ffa522daea7c9f3d850e31b162bb5661df483c6d3ee"
+)
+SLIDING_PUZZLE_SOURCE_IDS: Final[tuple[str, str]] = (
+    "sliding_puzzle_easy",
+    "sliding_puzzle_hard",
+)
+SLIDING_PUZZLE_DISTANCE_SCHEDULES: Final[dict[str, tuple[int, ...]]] = {
+    "sliding_puzzle_easy": (1, 1, 2, 2, 2, 2, 3, 3),
+    "sliding_puzzle_hard": (10, 10, 10, 11, 11, 11, 12, 12),
+}
+SLIDING_PUZZLE_INPUT_TOKEN_CALIPER: Final[int] = 8
+SLIDING_PUZZLE_MAX_INPUT_TOKENS: Final[int] = 512
+SLIDING_PUZZLE_PROMPT_BUILDER_VERSION: Final[str] = "legacy_sliding_puzzle_prompt_v1"
+SLIDING_PUZZLE_MATERIALIZED_RECORD_FIELDS: Final[frozenset[str]] = frozenset(
+    {
+        "messages",
+        "extra_env_info",
+        "stop_strings",
+        "source_id",
+        "source_dataset_id",
+        "source_revision",
+        "source_split",
+        "source_dataset_index",
+        "source_prompt_id",
+        "repeated_prompt_cluster_id",
+        "selection_stratum",
+        "matching_pair_id",
+        "board_state_sha256",
+        "optimal_distance",
+        "input_token_count",
+        "input_token_ids_sha256",
+        "selection_seed",
+        "model_revision",
+        "prompt_builder_version",
+    }
+)
 
 Sha256Hex: TypeAlias = Annotated[
     str,
@@ -868,6 +911,287 @@ def validate_openmath_latency_feasibility_manifest_design(
             )
 
 
+def _sliding_puzzle_distance(state: tuple[int, ...]) -> int:
+    goal = (1, 2, 3, 4, 5, 6, 7, 8, 0)
+    if state == goal:
+        return 0
+    frontier = [state]
+    visited = {state}
+    for distance in range(1, 13):
+        next_frontier: list[tuple[int, ...]] = []
+        for current in frontier:
+            empty = current.index(0)
+            row, column = divmod(empty, 3)
+            for delta_row, delta_column in ((0, 1), (1, 0), (0, -1), (-1, 0)):
+                next_row, next_column = row + delta_row, column + delta_column
+                if not (0 <= next_row < 3 and 0 <= next_column < 3):
+                    continue
+                other = next_row * 3 + next_column
+                mutable = list(current)
+                mutable[empty], mutable[other] = mutable[other], mutable[empty]
+                candidate = tuple(mutable)
+                if candidate == goal:
+                    return distance
+                if candidate not in visited:
+                    visited.add(candidate)
+                    next_frontier.append(candidate)
+        frontier = next_frontier
+    raise FixedPoolManifestError("sliding-puzzle board exceeds distance-12 design")
+
+
+def _sliding_puzzle_permutation_rank(state: tuple[int, ...]) -> int:
+    rank = 0
+    remaining = list(range(9))
+    factorials = [1]
+    for value in range(1, 10):
+        factorials.append(factorials[-1] * value)
+    for index, value in enumerate(state):
+        position = remaining.index(value)
+        rank += position * factorials[8 - index]
+        remaining.pop(position)
+    return rank
+
+
+def validate_sliding_puzzle_latency_feasibility_manifest_design(
+    manifest: FixedPoolManifest,
+) -> None:
+    """Enforce the frozen 16-board exact-distance puzzle feasibility design."""
+    if manifest.order_seed != SLIDING_PUZZLE_ORDER_SEED:
+        raise FixedPoolManifestError(
+            f"sliding-puzzle order_seed must be {SLIDING_PUZZLE_ORDER_SEED}"
+        )
+    if (
+        manifest.model_revision != SLIDING_PUZZLE_MODEL_REVISION
+        or manifest.model_weights_sha256 != SLIDING_PUZZLE_MODEL_WEIGHTS_SHA256
+    ):
+        raise FixedPoolManifestError(
+            "sliding-puzzle manifest must use the pinned model revision and weights"
+        )
+    source_ids = tuple(source.source_id for source in manifest.sources)
+    if source_ids != SLIDING_PUZZLE_SOURCE_IDS:
+        raise FixedPoolManifestError(
+            "sliding-puzzle sources must be ordered easy, hard"
+        )
+    source_identity = (
+        SLIDING_PUZZLE_DATASET_ID,
+        SLIDING_PUZZLE_DATASET_REVISION,
+        SLIDING_PUZZLE_DATASET_SPLIT,
+    )
+    if any(
+        (source.dataset_id, source.revision, source.split) != source_identity
+        for source in manifest.sources
+    ):
+        raise FixedPoolManifestError(
+            "sliding-puzzle sources must use the frozen generated-source identity"
+        )
+    if tuple(source.materialized_file for source in manifest.sources) != tuple(
+        f"{source_id}.jsonl" for source_id in SLIDING_PUZZLE_SOURCE_IDS
+    ):
+        raise FixedPoolManifestError(
+            "sliding-puzzle materialized files do not match the source order"
+        )
+
+    task_counts = {
+        source_id: sum(item.task_name == source_id for item in manifest.items)
+        for source_id in SLIDING_PUZZLE_SOURCE_IDS
+    }
+    if len(manifest.items) != 16 or task_counts != {
+        source_id: 8 for source_id in SLIDING_PUZZLE_SOURCE_IDS
+    }:
+        raise FixedPoolManifestError(
+            "sliding-puzzle pool must contain exactly 8 easy and 8 hard boards"
+        )
+    if any(item.source_id != item.task_name for item in manifest.items):
+        raise FixedPoolManifestError(
+            "sliding-puzzle item source_id and task_name must match"
+        )
+
+    by_cohort: dict[int, list[FixedPoolManifestItem]] = {}
+    by_pair: dict[str, list[FixedPoolManifestItem]] = {}
+    for item in manifest.items:
+        by_cohort.setdefault(item.dispatch_cohort, []).append(item)
+        by_pair.setdefault(item.matching_pair_id, []).append(item)
+        if item.input_token_count > SLIDING_PUZZLE_MAX_INPUT_TOKENS:
+            raise FixedPoolManifestError(
+                "sliding-puzzle input exceeds the 512-token design bound"
+            )
+    if len(by_cohort) != 4:
+        raise FixedPoolManifestError(
+            "sliding-puzzle pool must contain exactly four cohorts"
+        )
+    for cohort, items in by_cohort.items():
+        counts = {
+            source_id: sum(item.task_name == source_id for item in items)
+            for source_id in SLIDING_PUZZLE_SOURCE_IDS
+        }
+        if (
+            len(items) != 4
+            or counts != {source_id: 2 for source_id in SLIDING_PUZZLE_SOURCE_IDS}
+            or {item.decorrelation_block for item in items} != {f"cohort-{cohort}"}
+        ):
+            raise FixedPoolManifestError(
+                f"sliding-puzzle cohort {cohort} must be one balanced 2+2 block"
+            )
+    if len(by_pair) != 8:
+        raise FixedPoolManifestError(
+            "sliding-puzzle pool must contain eight matched pairs"
+        )
+
+    source_rows, _ = _load_materialized_source_rows(manifest)
+    if any(len(source_rows[source_id]) != 8 for source_id in SLIDING_PUZZLE_SOURCE_IDS):
+        raise FixedPoolManifestError(
+            "sliding-puzzle materialized sources must contain eight rows each"
+        )
+    distances = {source_id: [] for source_id in SLIDING_PUZZLE_SOURCE_IDS}
+    board_hashes: set[str] = set()
+    for item in manifest.items:
+        rows = source_rows[item.source_id]
+        if item.materialized_source_row >= len(rows):
+            raise FixedPoolManifestError(
+                f"sliding-puzzle row out of range at ordinal {item.ordinal}"
+            )
+        record = rows[item.materialized_source_row]
+        if set(record) != SLIDING_PUZZLE_MATERIALIZED_RECORD_FIELDS:
+            raise FixedPoolManifestError(
+                f"sliding-puzzle record schema mismatch at ordinal {item.ordinal}"
+            )
+        canonical_record = json.dumps(
+            record, allow_nan=False, separators=(",", ":"), sort_keys=True
+        ).encode()
+        if (
+            hashlib.sha256(canonical_record).hexdigest()
+            != item.materialized_record_sha256
+        ):
+            raise FixedPoolManifestError(
+                f"sliding-puzzle record SHA mismatch at ordinal {item.ordinal}"
+            )
+        bound = {
+            "source_id": item.source_id,
+            "source_dataset_id": SLIDING_PUZZLE_DATASET_ID,
+            "source_revision": SLIDING_PUZZLE_DATASET_REVISION,
+            "source_split": SLIDING_PUZZLE_DATASET_SPLIT,
+            "source_dataset_index": item.source_dataset_index,
+            "source_prompt_id": item.source_prompt_id,
+            "repeated_prompt_cluster_id": item.repeated_prompt_cluster_id,
+            "selection_stratum": item.task_name,
+            "matching_pair_id": item.matching_pair_id,
+            "input_token_count": item.input_token_count,
+            "input_token_ids_sha256": item.input_token_ids_sha256,
+            "selection_seed": SLIDING_PUZZLE_SELECTION_SEED,
+            "model_revision": SLIDING_PUZZLE_MODEL_REVISION,
+            "prompt_builder_version": SLIDING_PUZZLE_PROMPT_BUILDER_VERSION,
+        }
+        if any(record.get(key) != value for key, value in bound.items()):
+            raise FixedPoolManifestError(
+                f"sliding-puzzle source binding mismatch at ordinal {item.ordinal}"
+            )
+        messages = record.get("messages")
+        if (
+            not isinstance(messages, list)
+            or len(messages) != 1
+            or not isinstance(messages[0], dict)
+            or set(messages[0]) != {"role", "content"}
+            or messages[0].get("role") != "user"
+            or not isinstance(messages[0].get("content"), str)
+            or not messages[0]["content"]
+        ):
+            raise FixedPoolManifestError(
+                f"invalid sliding-puzzle message at ordinal {item.ordinal}"
+            )
+        if record.get("stop_strings") != ["</action>"]:
+            raise FixedPoolManifestError(
+                f"invalid sliding-puzzle stop string at ordinal {item.ordinal}"
+            )
+        extra = record.get("extra_env_info")
+        if not isinstance(extra, dict) or set(extra) != {
+            "game_state",
+            "num_moves",
+            "max_moves",
+            "optimal_distance",
+        }:
+            raise FixedPoolManifestError(
+                f"invalid sliding-puzzle environment metadata at ordinal {item.ordinal}"
+            )
+        if extra.get("num_moves") != 0 or extra.get("max_moves") != 12:
+            raise FixedPoolManifestError(
+                f"invalid sliding-puzzle move bounds at ordinal {item.ordinal}"
+            )
+        game_state = extra.get("game_state")
+        grid = game_state.get("grid") if isinstance(game_state, dict) else None
+        if (
+            not isinstance(grid, list)
+            or len(grid) != 3
+            or any(not isinstance(row, list) or len(row) != 3 for row in grid)
+        ):
+            raise FixedPoolManifestError(
+                f"invalid sliding-puzzle grid at ordinal {item.ordinal}"
+            )
+        state = tuple(value for row in grid for value in row)
+        if any(not isinstance(value, int) for value in state) or set(state) != set(
+            range(9)
+        ):
+            raise FixedPoolManifestError(
+                f"invalid sliding-puzzle tile permutation at ordinal {item.ordinal}"
+            )
+        goal_grid = [[1, 2, 3], [4, 5, 6], [7, 8, 0]]
+        empty_position = list(divmod(state.index(0), 3))
+        if (
+            set(game_state) != {"size", "grid", "solution", "empty_pos", "commands"}
+            or game_state.get("size") != 3
+            or game_state.get("solution") != goal_grid
+            or game_state.get("empty_pos") != empty_position
+            or not isinstance(game_state.get("commands"), dict)
+        ):
+            raise FixedPoolManifestError(
+                f"inconsistent sliding-puzzle game state at ordinal {item.ordinal}"
+            )
+        distance = _sliding_puzzle_distance(state)
+        if (
+            record.get("optimal_distance") != distance
+            or extra.get("optimal_distance") != distance
+        ):
+            raise FixedPoolManifestError(
+                f"incorrect sliding-puzzle optimal distance at ordinal {item.ordinal}"
+            )
+        if _sliding_puzzle_permutation_rank(state) != item.source_dataset_index:
+            raise FixedPoolManifestError(
+                f"incorrect sliding-puzzle source index at ordinal {item.ordinal}"
+            )
+        board_sha = hashlib.sha256(
+            json.dumps(state, separators=(",", ":")).encode()
+        ).hexdigest()
+        if record.get("board_state_sha256") != board_sha:
+            raise FixedPoolManifestError(
+                f"incorrect sliding-puzzle board hash at ordinal {item.ordinal}"
+            )
+        board_hashes.add(board_sha)
+        distances[item.task_name].append(distance)
+    if len(board_hashes) != 16:
+        raise FixedPoolManifestError("sliding-puzzle boards must be unique")
+    if any(
+        tuple(sorted(distances[source_id]))
+        != tuple(sorted(SLIDING_PUZZLE_DISTANCE_SCHEDULES[source_id]))
+        for source_id in SLIDING_PUZZLE_SOURCE_IDS
+    ):
+        raise FixedPoolManifestError("sliding-puzzle distance schedule mismatch")
+    for pair_id, items in by_pair.items():
+        if (
+            len(items) != 2
+            or {item.task_name for item in items} != set(SLIDING_PUZZLE_SOURCE_IDS)
+            or len({item.dispatch_cohort for item in items}) != 1
+        ):
+            raise FixedPoolManifestError(
+                f"invalid sliding-puzzle matched pair {pair_id}"
+            )
+        if (
+            abs(items[0].input_token_count - items[1].input_token_count)
+            > SLIDING_PUZZLE_INPUT_TOKEN_CALIPER
+        ):
+            raise FixedPoolManifestError(
+                f"sliding-puzzle token caliper exceeded for pair {pair_id}"
+            )
+
+
 def validate_fixed_pool_manifest_design(
     manifest: FixedPoolManifest, design_id: str
 ) -> None:
@@ -879,6 +1203,8 @@ def validate_fixed_pool_manifest_design(
         "openmath_termination_headroom_v1",
     }:
         validate_openmath_latency_feasibility_manifest_design(manifest)
+    elif design_id == "sliding_puzzle_latency_feasibility_v1":
+        validate_sliding_puzzle_latency_feasibility_manifest_design(manifest)
     else:
         raise FixedPoolManifestError(f"unsupported fixed-pool design_id: {design_id!r}")
 

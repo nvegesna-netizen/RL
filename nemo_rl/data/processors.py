@@ -803,6 +803,68 @@ def nemo_gym_data_processor(
     return output
 
 
+def sliding_puzzle_fixed_pool_data_processor(
+    datum_dict: dict[str, Any],
+    task_data_spec: TaskDataSpec,
+    tokenizer: TokenizerType,
+    max_seq_length: int | None,
+    idx: int,
+) -> DatumSpec:
+    """Load one pre-rendered, manifest-bound sliding-puzzle prompt.
+
+    The materializer stores the exact chat-templated prompt and initial game
+    state. Reapplying a template here would change the manifest-bound token
+    sequence, so this processor only tokenizes the stored rendered content.
+    """
+    if task_data_spec.prompt is not None or task_data_spec.system_prompt is not None:
+        raise ValueError("fixed sliding-puzzle data must not add prompt templates")
+    if max_seq_length is None:
+        raise ValueError("fixed sliding-puzzle data requires max_input_seq_length")
+    messages = datum_dict.get("messages")
+    if (
+        not isinstance(messages, list)
+        or len(messages) != 1
+        or not isinstance(messages[0], dict)
+        or messages[0].get("role") != "user"
+        or not isinstance(messages[0].get("content"), str)
+    ):
+        raise ValueError(
+            "fixed sliding-puzzle record requires one rendered user message"
+        )
+    content = messages[0]["content"]
+    token_ids = tokenizer(
+        content,
+        return_tensors="pt",
+        add_special_tokens=False,
+    )["input_ids"][0]
+    if len(token_ids) >= max_seq_length:
+        raise ValueError("fixed sliding-puzzle prompt exceeds max_input_seq_length")
+    extra_env_info = datum_dict.get("extra_env_info")
+    if not isinstance(extra_env_info, dict):
+        raise ValueError("fixed sliding-puzzle record requires extra_env_info")
+    stop_strings = datum_dict.get("stop_strings")
+    if stop_strings != ["</action>"]:
+        raise ValueError("fixed sliding-puzzle record requires </action> stop string")
+    task_name = datum_dict.get("task_name")
+    if not isinstance(task_name, str):
+        raise ValueError("fixed sliding-puzzle record requires task_name")
+    return {
+        "message_log": [
+            {
+                "role": "user",
+                "content": content,
+                "token_ids": token_ids,
+            }
+        ],
+        "length": len(token_ids),
+        "extra_env_info": extra_env_info,
+        "loss_multiplier": 1.0,
+        "idx": idx,
+        "task_name": task_name,
+        "stop_strings": stop_strings,
+    }
+
+
 def kd_data_processor(
     datum_dict: dict[str, Any],
     task_data_spec: TaskDataSpec,
@@ -848,6 +910,9 @@ PROCESSOR_REGISTRY: Dict[str, TaskDataProcessFnCallable] = cast(
         "sft_processor": sft_processor,
         "vlm_hf_data_processor": vlm_hf_data_processor,
         "nemo_gym_data_processor": nemo_gym_data_processor,
+        "sliding_puzzle_fixed_pool_data_processor": (
+            sliding_puzzle_fixed_pool_data_processor
+        ),
     },
 )
 

@@ -16,6 +16,12 @@ import pytest
 from nemo_rl.environments.utils import ENV_REGISTRY, register_env
 
 
+def test_sliding_puzzle_environment_is_registered():
+    assert ENV_REGISTRY["sliding_puzzle_game"]["actor_class_fqn"] == (
+        "nemo_rl.environments.games.sliding_puzzle.SlidingPuzzleEnv"
+    )
+
+
 def test_register_new_env_success():
     """Test successfully registering a new environment."""
     # Save original registry state
