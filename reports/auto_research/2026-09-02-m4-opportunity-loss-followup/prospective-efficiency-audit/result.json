@@ -1,0 +1,63 @@
+{
+  "acquisition_complete": true,
+  "artifact": {
+    "sha256": "07cddc489ea20055161f9c435d44d0a52b91113fda9eac16472bdb531dc6ffb6",
+    "size_bytes": 54950561
+  },
+  "automatic_extension": false,
+  "automatic_retry": false,
+  "causal_result": {
+    "adjusted_estimate": 0.30542321077967627,
+    "adjusted_hac_se": 0.015045534371067945,
+    "bootstrap_interval": [
+      0.27744917243896006,
+      0.3344227273157648
+    ],
+    "conclusion": "MATERIAL",
+    "confidence_envelope": [
+      0.2759345052842236,
+      0.33491191627512895
+    ],
+    "coverage_gate_passed": true,
+    "identification_interval": [
+      0.30542321077967627,
+      0.30542321077967627
+    ],
+    "material_p_value": 0.00004999750012499375,
+    "material_threshold": 0.2,
+    "unadjusted_estimate": 0.3335223004662047
+  },
+  "mechanism_result": {
+    "conclusion": "REPLICATED",
+    "control_direct_chain_count": 0,
+    "control_direct_chain_rate": 0.0,
+    "d5_direct_chain_count": 891,
+    "d5_direct_chain_rate": 0.24218537646099483,
+    "direct_chain_rate_contrast": 0.24218537646099483,
+    "version_advance_contrast": 0.40527317205762436
+  },
+  "pipelines": {
+    "collector_job_id": 423739792,
+    "downstream_pipeline_id": 65986159,
+    "eos_compute_job_id": 423739790,
+    "generator_job_id": 423736909,
+    "parent_pipeline_id": 65985843
+  },
+  "portability_result": {
+    "conclusion": "SUPPORTED",
+    "corrected_observer_duty": 0.002173854540236628,
+    "observer_duty_threshold": 0.01
+  },
+  "primary_assignments": {
+    "control": 3520,
+    "d5": 3679,
+    "total": 7199,
+    "unscored": 0
+  },
+  "protocol_sha256": "6631a4ca8cfc6010150d1c135a1f5821c717f0dea189a3309c5f0f58f9b0709c",
+  "schema": "m4-opportunity-loss-followup-result-v1",
+  "source_commit": "47dc1a713cbf0e07813d31c4ba70a8262214e098",
+  "status": "SUCCESS",
+  "trainer_steps": 448,
+  "transport_manifest_sha256": "f9b05559ea60d05875115ebe85dfa212e0525344199f5c4bc20ec9b4470f3769"
+}
