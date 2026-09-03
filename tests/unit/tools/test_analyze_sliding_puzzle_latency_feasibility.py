@@ -66,10 +66,20 @@ def test_passing_screen_only_authorizes_fresh_calibration() -> None:
 
 def test_invalid_action_format_fails_locked_screen() -> None:
     observations = list(_observations())
-    observations[0] = replace(
-        observations[0], format_valid_actions=0, invalid_format_actions=4
-    )
+    easy_indices = [
+        index
+        for index, observation in enumerate(observations)
+        if observation.item.stratum == "easy"
+    ][:4]
+    for index in easy_indices:
+        observations[index] = replace(
+            observations[index],
+            format_valid_actions=0,
+            legal_moves=0,
+            invalid_format_actions=observations[index].action_turns,
+        )
     result = analyze_observations(observations)
+    assert result["actions"]["format_valid_rate"] == 0.875
     assert result["locked_checks"]["action_format_valid_rate_ge_0_9"] is False
     assert result["decision"] == "stop_no_replay"
 
