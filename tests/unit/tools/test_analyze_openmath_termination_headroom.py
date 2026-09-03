@@ -230,6 +230,11 @@ def _lifecycle_events() -> tuple[SchedulerTraceEvent, ...]:
                     event_seq=sequence,
                     monotonic_ns=timestamp,
                     event_type=event_type,
+                    terminal_reason=(
+                        "fixed_pool_archive"
+                        if event_type is SchedulerEventType.GROUP_ARCHIVED
+                        else None
+                    ),
                     scalar_summaries=summaries,
                     **identity,
                 )
