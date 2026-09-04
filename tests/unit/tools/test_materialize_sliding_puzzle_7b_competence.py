@@ -39,6 +39,18 @@ def _canonical(value: object) -> bytes:
     return json.dumps(value, sort_keys=True, separators=(",", ":")).encode()
 
 
+def test_retokenize_preserves_pre_rendered_prompt_bytes() -> None:
+    content = "<rendered> puzzle prompt </rendered>"
+    record = {"messages": [{"role": "user", "content": content}]}
+
+    updated = competence._retokenize(_Tokenizer(), record)
+
+    expected_ids = list(range(len(content.split())))
+    assert updated["messages"] == record["messages"]
+    assert updated["input_token_count"] == len(expected_ids)
+    assert updated["input_token_ids_sha256"] == _sha(_canonical(expected_ids))
+
+
 def _make_source(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
     weights = b"source model"
     weights_sha = _sha(weights)

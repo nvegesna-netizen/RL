@@ -236,17 +236,20 @@ def _load_source_rows(manifest: Any) -> dict[str, list[dict[str, object]]]:
 
 def _retokenize(tokenizer: Any, record: Mapping[str, object]) -> dict[str, object]:
     messages = record.get("messages")
-    if not isinstance(messages, list):
-        raise CompetenceMaterializationError("source record lacks messages")
-    rendered = tokenizer.apply_chat_template(
-        messages,
-        tokenize=False,
-        add_generation_prompt=True,
-        add_special_tokens=False,
-    ).strip()
-    input_ids = tokenizer(rendered, return_tensors=None, add_special_tokens=False)[
-        "input_ids"
-    ]
+    if (
+        not isinstance(messages, list)
+        or len(messages) != 1
+        or not isinstance(messages[0], dict)
+        or messages[0].get("role") != "user"
+        or not isinstance(messages[0].get("content"), str)
+    ):
+        raise CompetenceMaterializationError(
+            "source record requires one rendered user message"
+        )
+    rendered_content = messages[0]["content"]
+    input_ids = tokenizer(
+        rendered_content, return_tensors=None, add_special_tokens=False
+    )["input_ids"]
     updated = dict(record)
     updated["model_revision"] = MODEL_REVISION
     updated["input_token_count"] = len(input_ids)
