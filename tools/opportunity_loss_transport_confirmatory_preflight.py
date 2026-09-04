@@ -226,9 +226,7 @@ def build_transport_confirmatory_preflight_lock(
     if (
         qualification.get("gate", {}).get("decision")
         != "GO_TO_PROSPECTIVE_CONFIRMATORY_DESIGN"
-        or qualification.get("confirmatory_planning", {}).get(
-            "acquisition_authorized"
-        )
+        or qualification.get("confirmatory_planning", {}).get("acquisition_authorized")
         is not False
         or qualification.get("artifact", {}).get("sha256")
         != QUALIFICATION_ARTIFACT_SHA256

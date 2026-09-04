@@ -1,0 +1,37 @@
+{
+  "artifact": {
+    "filename": "confirmatory-replacement-preflight-66169109-job-425284574.zip",
+    "sha256": "3fefca25624e77931fab4364ea30432e6f0ad0cc3a9d78fdb13a6edd5da5215c",
+    "size_bytes": 47114959
+  },
+  "failure": {
+    "confirmatory_validator_tests_passed": true,
+    "failed_check": "ruff format --check",
+    "reason": "The corrected validator expression was semantically valid but had not been normalized by Ruff's formatter.",
+    "selected_tests_passed": 135,
+    "type": "SOURCE_FORMAT_GATE_ERROR"
+  },
+  "pipeline": {
+    "downstream_pipeline_id": 66169109,
+    "eos_compute_job_id": 425284574,
+    "eos_job_finished_at": "2026-09-03T22:37:24.136-07:00",
+    "eos_job_status": "failed",
+    "failure_reason": "script_failure",
+    "generator_job_id": 425281851,
+    "parent_pipeline_id": 66168827,
+    "submission_attempt_count": 1
+  },
+  "safety": {
+    "automatic_retry": false,
+    "scientific_acquisition_started": false,
+    "training_started": false
+  },
+  "schema": "m4-qwen3-1p7b-confirmatory-replacement-no-training-preflight-terminal-result-v1",
+  "source": {
+    "manifest_sha256": "9f9b092daedc1c89b2299d52b464dbbedd866cc38eb7d5de8e43204218f2624d",
+    "protocol_sha256": "eef87a5e26f2cc1a39428628b0c28288b17a297f49d449a80ed9699f9ee17cb7",
+    "source_archive_sha256": "357da7d189b8a68a7afa4c4cd80605970510668d63ef1274538dc1f301346018",
+    "source_commit": "bfb68379a031baf83cde6f765eab2e8fe02527ec"
+  },
+  "status": "FAILED_SOURCE_FORMAT_GATE_ERROR"
+}
