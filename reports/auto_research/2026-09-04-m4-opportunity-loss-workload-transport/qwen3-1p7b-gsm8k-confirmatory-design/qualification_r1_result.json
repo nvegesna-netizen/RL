@@ -1,0 +1,47 @@
+{
+  "automatic_extension": false,
+  "automatic_retry": false,
+  "failure": {
+    "class": "CONFIG_GATE_OVERSTRICT_CLUSTER_EQUALITY",
+    "failed_assertion": "c[\"cluster\"] == {\"gpus_per_node\": 2, \"num_nodes\": 1}",
+    "reason": "The resolved cluster mapping validly inherited master_port_range_low and master_port_range_high, so exact dictionary equality rejected additional schema fields before training."
+  },
+  "qualification": {
+    "causal_estimate_produced": false,
+    "lifecycle_records_created": false,
+    "opportunity_records_created": false,
+    "qualification_complete": false,
+    "summary_created": false,
+    "training_started": false
+  },
+  "release": {
+    "bridge_job_id": 426085048,
+    "compute_job_id": 426086494,
+    "compute_job_status": "failed",
+    "downstream_pipeline_id": 66264953,
+    "downstream_pipeline_status": "failed",
+    "generator_job_id": 426085047,
+    "generator_status": "success",
+    "logs_after_job_id": 426086496,
+    "logs_after_status": "success",
+    "logs_before_job_id": 426086492,
+    "logs_before_status": "success",
+    "manifest_sha256": "cb0a23720d218251662fd4a22b054a6e298eec1d8f538c999631a91cf25940b3",
+    "parent_pipeline_id": 66264517,
+    "parent_pipeline_status": "failed",
+    "parent_pipeline_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/66264517",
+    "submission_attempt_count": 1
+  },
+  "schema": "m4-qwen3-1p7b-gsm8k-neutral-qualification-r1-result-v1",
+  "slurm": {
+    "exit_code": 1,
+    "job_id": 5976209
+  },
+  "source_commit": "5073abfb2506392b1ee3d05d9789f931e31aa0af",
+  "status": "FAILED_CONFIG_GATE_OVERSTRICT",
+  "terminal_artifact": {
+    "filename": "gsm8k-qualification-r1-66264953-job-426086494.zip",
+    "sha256": "8570351a38755e838e47c11ad0614b0865505328988260cd63b73e3bfad6d752",
+    "size_bytes": 47206577
+  }
+}
