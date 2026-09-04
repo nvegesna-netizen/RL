@@ -40,7 +40,7 @@ import json
 import time
 import uuid
 from functools import partial
-from typing import Any, Optional, Union
+from typing import Any, Optional, Union, cast
 
 import ray
 import torch
@@ -88,6 +88,7 @@ def _resolved_generation_trace_summaries(
     generation = master_config.policy.get("generation")
     if generation is None:
         raise ValueError("policy.generation is required for scheduler tracing")
+    generation = cast(dict[str, Any], generation)
     backend = generation["backend"]
     if backend == "vllm":
         context_length = generation["vllm_cfg"]["max_model_len"]
@@ -363,6 +364,9 @@ class SingleControllerActor:
         """Main entry point. Runs until max_train_steps is reached."""
         run_error: Optional[BaseException] = None
         trace_started = False
+        rollout_task: Optional[asyncio.Task[Any]] = None
+        assay_task: Optional[asyncio.Task[Any]] = None
+        train_task: Optional[asyncio.Task[Any]] = None
         try:
             await self._scheduler_trace.start()
             trace_started = True
@@ -460,13 +464,16 @@ class SingleControllerActor:
             run_error = error
             raise
         finally:
-            if "rollout_task" in locals():
+            if rollout_task is not None:
                 rollout_task.cancel()
-                companion_task = assay_task if "assay_task" in locals() else train_task
-                companion_task.cancel()
-                await asyncio.gather(
-                    rollout_task, companion_task, return_exceptions=True
-                )
+                companion_task = assay_task if assay_task is not None else train_task
+                if companion_task is not None:
+                    companion_task.cancel()
+                    await asyncio.gather(
+                        rollout_task, companion_task, return_exceptions=True
+                    )
+                else:
+                    await asyncio.gather(rollout_task, return_exceptions=True)
             trace_error: Optional[BaseException] = None
             try:
                 if trace_started and getattr(self, "_trace_enabled", False):
@@ -736,6 +743,8 @@ class SingleControllerActor:
                 self._inflight_rollouts -= 1
                 sem.release()
 
+            push_task: Optional[asyncio.Task[Any]] = None
+            generation_wait_task: Optional[asyncio.Task[Any]] = None
             try:
                 generation_finished_event = (
                     asyncio.Event()
@@ -781,13 +790,10 @@ class SingleControllerActor:
                 self._buffer_capacity.release()
                 raise
             finally:
-                if "push_task" in locals() and not push_task.done():
+                if push_task is not None and not push_task.done():
                     push_task.cancel()
                     await asyncio.gather(push_task, return_exceptions=True)
-                if (
-                    "generation_wait_task" in locals()
-                    and not generation_wait_task.done()
-                ):
+                if generation_wait_task is not None and not generation_wait_task.done():
                     generation_wait_task.cancel()
                     await asyncio.gather(generation_wait_task, return_exceptions=True)
                 release_generation_slot()
@@ -1056,6 +1062,9 @@ class SingleControllerActor:
                             self._async_cfg.min_groups_for_streaming_train,
                             max_prompt_groups,
                         )
+                        buffered_before_select = 0
+                        ready_before_select = 0
+                        eligible_group_ids: tuple[str, ...] = ()
                         if getattr(self, "_trace_enabled", False):
                             buffered_before_select = len(self._buffer)
                             ready_before_select = sum(self._buffer.ready_list)

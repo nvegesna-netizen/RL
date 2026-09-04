@@ -24,6 +24,8 @@ from pydantic import (
 Sha256Hex = Annotated[str, StringConstraints(pattern=r"^[0-9a-f]{64}$")]
 GitCommitHex = Annotated[str, StringConstraints(pattern=r"^[0-9a-f]{40}$")]
 PositiveStrictInt = Annotated[int, Field(strict=True, gt=0)]
+UnitFloat = Annotated[float, Field(strict=True, ge=1.0, le=1.0)]
+ThirtySeconds = Annotated[float, Field(strict=True, ge=30.0, le=30.0)]
 
 
 class SchedulerAssayPlanError(ValueError):
@@ -84,12 +86,12 @@ class SchedulerAssayPlan(BaseModel, extra="forbid", frozen=True):
     completions_per_group: Literal[2]
     generation_study_seed: Literal[51001]
     max_total_sequence_length: Literal[512]
-    temperature: Literal[1.0]
-    top_p: Literal[1.0]
+    temperature: UnitFloat
+    top_p: UnitFloat
     max_inflight_prompts: Literal[4]
     max_buffered_rollouts: Literal[16]
     sampler_lookahead_versions: Literal[3]
-    release_delay_seconds: Literal[30.0]
+    release_delay_seconds: ThirtySeconds
     primary_horizon: Literal[8]
     replication_order: tuple[Literal[42001, 42002, 42003], ...]
     thresholds: SchedulerAssayThresholds

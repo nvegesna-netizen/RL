@@ -322,9 +322,13 @@ def analyze_block(
         for arm in plan.arms
     }
     contrasts = {}
-    for delayed in ("aime", "gsm8k"):
-        ready = results[f"ready_first_{delayed}_delayed"]["primary_undelayed_share"]
-        ordered = results[f"in_order_{delayed}_delayed"]["primary_undelayed_share"]
+    contrast_arms = (
+        ("aime", "ready_first_aime_delayed", "in_order_aime_delayed"),
+        ("gsm8k", "ready_first_gsm8k_delayed", "in_order_gsm8k_delayed"),
+    )
+    for delayed, ready_arm_id, ordered_arm_id in contrast_arms:
+        ready = results[ready_arm_id]["primary_undelayed_share"]
+        ordered = results[ordered_arm_id]["primary_undelayed_share"]
         difference = ready - ordered
         _require(
             difference >= plan.thresholds.ready_first_minus_in_order_min,

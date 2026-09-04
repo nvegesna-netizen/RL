@@ -275,7 +275,8 @@ def _maybe_inject_megatron_train_iters(master_config: MasterConfig) -> None:
     if not policy_config.get("megatron_cfg", {}).get("enabled", False):
         return
     grpo_config = master_config.grpo
-    policy_config["megatron_cfg"]["train_iters"] = grpo_config.max_num_steps
+    megatron_config = cast(dict[str, Any], policy_config["megatron_cfg"])
+    megatron_config["train_iters"] = grpo_config.max_num_steps
 
 
 def setup_single_controller(
@@ -361,9 +362,12 @@ def setup_single_controller(
                 "fixed-pool policy.model_name and tokenizer.name must reference "
                 "the manifest-bound local model snapshot"
             )
-        train_configs = data_config["train"]
-        if isinstance(train_configs, dict):
-            train_configs = [train_configs]
+        raw_train_configs = cast(Any, data_config["train"])
+        train_configs: list[dict[str, Any]] = (
+            [cast(dict[str, Any], config) for config in raw_train_configs]
+            if isinstance(raw_train_configs, list)
+            else [cast(dict[str, Any], raw_train_configs)]
+        )
         expected_sources = [
             (
                 source.source_id,
@@ -405,11 +409,13 @@ def setup_single_controller(
             if (
                 grpo_config.num_generations_per_prompt
                 != assay_plan.completions_per_group
-                or grpo_config.max_total_sequence_length
+                or master_config.policy["max_total_sequence_length"]
                 != assay_plan.max_total_sequence_length
                 or generation_config["temperature"] != assay_plan.temperature
                 or generation_config["top_p"] != assay_plan.top_p
-                or generation_config["vllm_cfg"].get("study_seed")
+                or cast(dict[str, Any], generation_config)
+                .get("vllm_cfg", {})
+                .get("study_seed")
                 != assay_plan.generation_study_seed
             ):
                 raise ValueError(
@@ -447,9 +453,9 @@ def setup_single_controller(
                 f"grpo.num_prompts_per_step={grpo_config.num_prompts_per_step} "
                 f"items; got {manifest.cohort_sizes}"
             )
-        dataset = FixedPoolDataset(dataset, manifest)
+        dataset = FixedPoolDataset(cast(Any, dataset), manifest)
         dataloader = StatefulDataLoader(
-            dataset,
+            cast(Any, dataset),
             batch_size=grpo_config.num_prompts_per_step,
             shuffle=False,
             collate_fn=fixed_pool_collate_fn,
@@ -458,7 +464,7 @@ def setup_single_controller(
         )
     else:
         dataloader = StatefulDataLoader(
-            dataset,
+            cast(Any, dataset),
             batch_size=grpo_config.num_prompts_per_step,
             shuffle=data_config["shuffle"],
             collate_fn=rl_collate_fn,
@@ -504,6 +510,8 @@ def setup_single_controller(
             if enable_router_replay
             else "int16"
         )
+        if not isinstance(generation, VllmGeneration):
+            raise TypeError("NeMo-Gym SingleController requires vLLM generation")
         env_handles["nemo_gym"] = spinup_nemo_gym_actor(
             env_configs=master_config.env,
             base_urls=generation.dp_openai_server_base_urls,

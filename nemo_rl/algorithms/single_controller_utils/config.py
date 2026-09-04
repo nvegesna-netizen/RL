@@ -230,9 +230,9 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
                 raise ValueError(
                     "scheduler assay requires grpo.num_generations_per_prompt=2"
                 )
-            if master_config.grpo.max_total_sequence_length != 512:
+            if master_config.policy["max_total_sequence_length"] != 512:
                 raise ValueError(
-                    "scheduler assay requires grpo.max_total_sequence_length=512"
+                    "scheduler assay requires policy.max_total_sequence_length=512"
                 )
             generation = master_config.policy["generation"]
             if generation["temperature"] != 1.0 or generation["top_p"] != 1.0:
