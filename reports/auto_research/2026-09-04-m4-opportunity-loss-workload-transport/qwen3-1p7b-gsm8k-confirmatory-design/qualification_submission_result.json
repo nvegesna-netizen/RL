@@ -1,0 +1,31 @@
+{
+  "automatic_retry": false,
+  "failure": {
+    "class": "JET_TEMPLATE_BRACE_ESCAPING",
+    "reason": "Literal braces in the workload script were not escaped before JET's assets_dir formatting pass."
+  },
+  "generator_artifact": {
+    "filename": "gsm8k-qualification-generator-failure-66257178-job-426025859.zip",
+    "sha256": "934ceaa73d0259effdea2a8c6343724371c42e775a091230adafbad16af25dc1",
+    "size_bytes": 9398265
+  },
+  "original_release": {
+    "bridge_job_id": 426025860,
+    "bridge_status": "skipped",
+    "generator_job_id": 426025859,
+    "generator_status": "failed",
+    "manifest_sha256": "2d3d2a889bddba32723058c8b89ddc1b0e8c530c5ce974e2c5abe367a36d3185",
+    "parent_pipeline_id": 66257178,
+    "parent_pipeline_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/66257178",
+    "submission_attempt_count": 1
+  },
+  "replacement": {
+    "local_validation_passed": true,
+    "manifest_sha256": "cb0a23720d218251662fd4a22b054a6e298eec1d8f538c999631a91cf25940b3",
+    "submission_authorized": false
+  },
+  "schema": "m4-qwen3-1p7b-gsm8k-neutral-qualification-submission-result-v1",
+  "scientific_acquisition_started": false,
+  "status": "FAILED_JET_TEMPLATE_BRACE_ESCAPING",
+  "training_started": false
+}
