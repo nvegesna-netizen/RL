@@ -1,0 +1,57 @@
+{
+  "automatic_extension": false,
+  "automatic_retry": false,
+  "failure": {
+    "class": "STALE_PREFLIGHT_TEST_LOCK",
+    "exception": "AssertionError in the frozen-evidence preflight-lock file comparison",
+    "mismatches": [
+      {
+        "path": "tests/unit/tools/test_opportunity_loss_gsm8k_transport_protocol.py",
+        "preflight_sha256": "d8f3e0df9bbfc59a9a225822e3e459f60e0fe91751e9e0efd95d1cf033d71044",
+        "preflight_size": 5789,
+        "r3_sha256": "51c82c09d0b729dd833d95e0fedad884d55779a2996c2771aff9d919464cb0e6",
+        "r3_size": 6928
+      }
+    ],
+    "reason": "The repaired R3 source intentionally added a validator regression test, but the runtime comparator still required that test file to equal the historical no-training preflight lock without an explicit delta attestation."
+  },
+  "qualification": {
+    "causal_estimate_produced": false,
+    "config_validation_reached": false,
+    "lifecycle_records_created": false,
+    "opportunity_records_created": false,
+    "qualification_complete": false,
+    "summary_created": false,
+    "training_started": false
+  },
+  "release": {
+    "bridge_job_id": 426363006,
+    "compute_job_id": 426364601,
+    "compute_job_status": "failed",
+    "downstream_pipeline_id": 66297538,
+    "downstream_pipeline_status": "failed",
+    "generator_job_id": 426363005,
+    "generator_status": "success",
+    "logs_after_job_id": 426364602,
+    "logs_after_status": "success",
+    "logs_before_job_id": 426364600,
+    "logs_before_status": "success",
+    "manifest_sha256": "2358d3572117c1cf9c582b945c4bb6995a7eff1552a584bec3de6b6e3c21f046",
+    "parent_pipeline_id": 66297406,
+    "parent_pipeline_status": "failed",
+    "parent_pipeline_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/66297406",
+    "submission_attempt_count": 1
+  },
+  "schema": "m4-qwen3-1p7b-gsm8k-neutral-qualification-r3-result-v1",
+  "slurm": {
+    "exit_code": 1,
+    "job_id": 5976892
+  },
+  "source_commit": "be0a56c37542f81a6413287fc110f291c07c5156",
+  "status": "FAILED_STALE_PREFLIGHT_TEST_LOCK",
+  "terminal_artifact": {
+    "filename": "gsm8k-qualification-r3-66297538-job-426364601.zip",
+    "sha256": "b26b3a64d672d0ab15bbaa1de9a7d2794d884996623d7dab1a4ee8ea272c6739",
+    "size_bytes": 47220492
+  }
+}
