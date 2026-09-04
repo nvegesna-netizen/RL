@@ -1,0 +1,36 @@
+{
+  "artifact": {
+    "filename": "confirmatory-preflight-66133112-job-424958292.zip",
+    "sha256": "9cf4059a672921c661e00639e8cae7a37573d632bd0e4d356020e83ea0a92e91",
+    "size_bytes": 47106955
+  },
+  "failure": {
+    "failed_check": "test_transport_config_resolves_and_lock_forbids_execution",
+    "reason": "The no-training preflight validator read acquisition_authorized from gate instead of confirmatory_planning.",
+    "selected_tests_passed_before_stop": 126,
+    "type": "VALIDATOR_FIELD_PATH_ERROR"
+  },
+  "pipeline": {
+    "downstream_pipeline_id": 66133112,
+    "eos_compute_job_id": 424958292,
+    "eos_job_finished_at": "2026-09-03T18:44:52.610-07:00",
+    "eos_job_status": "failed",
+    "failure_reason": "script_failure",
+    "generator_job_id": 424955614,
+    "parent_pipeline_id": 66132816,
+    "submission_attempt_count": 1
+  },
+  "safety": {
+    "automatic_retry": false,
+    "scientific_acquisition_started": false,
+    "training_started": false
+  },
+  "schema": "m4-qwen3-1p7b-confirmatory-no-training-preflight-terminal-result-v1",
+  "source": {
+    "manifest_sha256": "2ea9073856ccb3477e0c9cccef552bc13513d11f112ee7ee490a07cd1e3403ba",
+    "protocol_sha256": "eef87a5e26f2cc1a39428628b0c28288b17a297f49d449a80ed9699f9ee17cb7",
+    "source_archive_sha256": "99989a1d93205694f76cdcc7995339d3001b142fc73000fb8755b57557822068",
+    "source_commit": "212635674e88d2bb134104c550fbbcb435ad92a8"
+  },
+  "status": "FAILED_VALIDATOR_FIELD_PATH_ERROR"
+}
