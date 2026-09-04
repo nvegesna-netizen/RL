@@ -125,6 +125,7 @@ SLIDING_PUZZLE_DISTANCE_SCHEDULES: Final[dict[str, tuple[int, ...]]] = {
 SLIDING_PUZZLE_INPUT_TOKEN_CALIPER: Final[int] = 8
 SLIDING_PUZZLE_MAX_INPUT_TOKENS: Final[int] = 512
 SLIDING_PUZZLE_PROMPT_BUILDER_VERSION: Final[str] = "legacy_sliding_puzzle_prompt_v1"
+SLIDING_PUZZLE_COMPACT_PROMPT_BUILDER_VERSION: Final[str] = "compact_action_only_v2"
 SLIDING_PUZZLE_MATERIALIZED_RECORD_FIELDS: Final[frozenset[str]] = frozenset(
     {
         "messages",
@@ -972,6 +973,7 @@ def _validate_sliding_puzzle_manifest_design(
     *,
     model_revision: str,
     model_weights_sha256: str,
+    prompt_builder_version: str,
 ) -> None:
     """Enforce the frozen 16-board exact-distance puzzle feasibility design."""
     if manifest.order_seed != SLIDING_PUZZLE_ORDER_SEED:
@@ -1097,7 +1099,7 @@ def _validate_sliding_puzzle_manifest_design(
             "input_token_ids_sha256": item.input_token_ids_sha256,
             "selection_seed": SLIDING_PUZZLE_SELECTION_SEED,
             "model_revision": model_revision,
-            "prompt_builder_version": SLIDING_PUZZLE_PROMPT_BUILDER_VERSION,
+            "prompt_builder_version": prompt_builder_version,
         }
         if any(record.get(key) != value for key, value in bound.items()):
             raise FixedPoolManifestError(
@@ -1218,6 +1220,7 @@ def validate_sliding_puzzle_latency_feasibility_manifest_design(
         manifest,
         model_revision=SLIDING_PUZZLE_MODEL_REVISION,
         model_weights_sha256=SLIDING_PUZZLE_MODEL_WEIGHTS_SHA256,
+        prompt_builder_version=SLIDING_PUZZLE_PROMPT_BUILDER_VERSION,
     )
 
 
@@ -1229,6 +1232,19 @@ def validate_sliding_puzzle_7b_competence_manifest_design(
         manifest,
         model_revision=SLIDING_PUZZLE_7B_MODEL_REVISION,
         model_weights_sha256=SLIDING_PUZZLE_7B_MODEL_WEIGHTS_SHA256,
+        prompt_builder_version=SLIDING_PUZZLE_PROMPT_BUILDER_VERSION,
+    )
+
+
+def validate_sliding_puzzle_7b_compact_prompt_manifest_design(
+    manifest: FixedPoolManifest,
+) -> None:
+    """Enforce the exposed-pool 7B compact-action prompt design."""
+    _validate_sliding_puzzle_manifest_design(
+        manifest,
+        model_revision=SLIDING_PUZZLE_7B_MODEL_REVISION,
+        model_weights_sha256=SLIDING_PUZZLE_7B_MODEL_WEIGHTS_SHA256,
+        prompt_builder_version=SLIDING_PUZZLE_COMPACT_PROMPT_BUILDER_VERSION,
     )
 
 
@@ -1247,6 +1263,8 @@ def validate_fixed_pool_manifest_design(
         validate_sliding_puzzle_latency_feasibility_manifest_design(manifest)
     elif design_id == "sliding_puzzle_7b_competence_v1":
         validate_sliding_puzzle_7b_competence_manifest_design(manifest)
+    elif design_id == "sliding_puzzle_7b_compact_prompt_v2":
+        validate_sliding_puzzle_7b_compact_prompt_manifest_design(manifest)
     else:
         raise FixedPoolManifestError(f"unsupported fixed-pool design_id: {design_id!r}")
 
