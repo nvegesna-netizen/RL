@@ -4,6 +4,7 @@
 
 from __future__ import annotations
 
+import copy
 import hashlib
 import json
 from pathlib import Path
@@ -13,27 +14,27 @@ from omegaconf import OmegaConf
 
 from nemo_rl.utils.config import load_config, register_omegaconf_resolvers
 from tools.opportunity_loss_pipeline import _parse_protocol
+from tools.opportunity_loss_transport_pipeline import _validate_transport_contract
+from tools.opportunity_loss_workload_transport_pipeline import (
+    validate_workload_transport_contract,
+)
 
 
 _REPO = Path(__file__).resolve().parents[3]
 _BASE_CONFIG = (
-    _REPO
-    / "examples/configs/"
+    _REPO / "examples/configs/"
     "grpo_math_1B_megatron_single_controller_m4_qwen3_1p7b_transport.yaml"
 )
 _CONFIG = (
-    _REPO
-    / "examples/configs/"
+    _REPO / "examples/configs/"
     "grpo_math_1B_megatron_single_controller_m4_qwen3_1p7b_gsm8k_transport.yaml"
 )
 _AUDIT = (
-    _REPO
-    / "reports/auto_research/2026-09-04-m4-opportunity-loss-workload-transport/"
+    _REPO / "reports/auto_research/2026-09-04-m4-opportunity-loss-workload-transport/"
     "qwen3-1p7b-gsm8k-compatibility-audit/audit.json"
 )
 _PROTOCOL = (
-    _REPO
-    / "reports/auto_research/2026-09-04-m4-opportunity-loss-workload-transport/"
+    _REPO / "reports/auto_research/2026-09-04-m4-opportunity-loss-workload-transport/"
     "qwen3-1p7b-gsm8k-confirmatory-design/protocol_config.json"
 )
 
@@ -66,6 +67,7 @@ def test_gsm8k_overlay_is_dataset_only_plus_fresh_identity() -> None:
         ("async_rl", "lifecycle_audit_path"),
         ("data", "train", "dataset_name"),
         ("data", "train", "extract_answer"),
+        ("data", "train", "seed"),
         ("data", "train", "split"),
         ("data", "train", "split_validation_size"),
         ("data", "train", "subset"),
@@ -74,14 +76,12 @@ def test_gsm8k_overlay_is_dataset_only_plus_fresh_identity() -> None:
     assert candidate["data"]["train"] == {
         "dataset_name": "gsm8k",
         "extract_answer": True,
-        "seed": 42,
+        "seed": None,
         "split": "train",
         "split_validation_size": 0.0,
         "subset": "main",
     }
-    assert (
-        candidate["data"]["default"]["prompt_file"] == "examples/prompts/cot.txt"
-    )
+    assert candidate["data"]["default"]["prompt_file"] == "examples/prompts/cot.txt"
     assert candidate["data"]["default"]["processor"] == "math_hf_data_processor"
     assert candidate["data"]["default"]["env_name"] == "math"
     assert candidate["env"]["math"]["math_verify_impl"] == "hf_math_verify"
@@ -89,12 +89,11 @@ def test_gsm8k_overlay_is_dataset_only_plus_fresh_identity() -> None:
 
 def test_gsm8k_protocol_has_frozen_geometry_and_provenance() -> None:
     raw, protocol, options = _parse_protocol(_PROTOCOL.read_bytes())
+    validate_workload_transport_contract(raw, protocol, options)
     assert options["protocol_identity"] == (
         "m4-opportunity-loss-qwen3-1p7b-gsm8k-workload-transport-v1"
     )
-    assert (
-        protocol.assignment_domain == "m4-opportunity-loss-qwen3-1p7b-gsm8k-v1"
-    )
+    assert protocol.assignment_domain == "m4-opportunity-loss-qwen3-1p7b-gsm8k-v1"
     assert protocol.assignment_seed == 20260911
     assert protocol.primary_start_version == 8
     assert protocol.primary_end_version == 507
@@ -119,6 +118,7 @@ def test_gsm8k_protocol_has_frozen_geometry_and_provenance() -> None:
         "prompt_file": "examples/prompts/cot.txt",
         "reward_verifier": "hf_math_verify",
         "split": "train",
+        "split_seed": None,
         "split_validation_size": 0.0,
         "subset": "main",
         "task_name": "gsm8k",
@@ -126,3 +126,27 @@ def test_gsm8k_protocol_has_frozen_geometry_and_provenance() -> None:
     audit_sha256 = hashlib.sha256(_AUDIT.read_bytes()).hexdigest()
     assert raw["design_evidence"]["workload_compatibility_audit_sha256"] == audit_sha256
     assert raw["status"] == "FROZEN_LOCAL_PROTOCOL_PENDING_NO_TRAINING_PREFLIGHT"
+
+
+def test_gsm8k_contract_rejects_dataset_mutation() -> None:
+    mutated = copy.deepcopy(json.loads(_PROTOCOL.read_bytes()))
+    mutated["workload"]["subset"] = "socratic"
+    raw, protocol, options = _parse_protocol(
+        (json.dumps(mutated, sort_keys=True, separators=(",", ":")) + "\n").encode()
+    )
+    try:
+        validate_workload_transport_contract(raw, protocol, options)
+    except ValueError as error:
+        assert "dataset" in str(error)
+    else:
+        raise AssertionError("workload mutation was accepted")
+
+
+def test_gsm8k_protocol_is_rejected_by_openmath_transport_analyzer() -> None:
+    raw, protocol, options = _parse_protocol(_PROTOCOL.read_bytes())
+    try:
+        _validate_transport_contract(raw, protocol, options)
+    except ValueError as error:
+        assert "transport protocol" in str(error)
+    else:
+        raise AssertionError("GSM8K protocol entered the OpenMath transport analyzer")

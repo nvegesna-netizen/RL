@@ -336,6 +336,7 @@ def _parse_protocol(
     if protocol_identity in {
         "m4-opportunity-loss-adjusted-followup-v1",
         "m4-opportunity-loss-qwen3-1p7b-transport-v1",
+        "m4-opportunity-loss-qwen3-1p7b-gsm8k-workload-transport-v1",
     }:
         if (
             analysis.get("primary_estimator")

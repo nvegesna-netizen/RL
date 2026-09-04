@@ -15,6 +15,10 @@ dataset: explicit `openai/gsm8k`, subset `main`, split `train`. The model, GRPO
 contract, prompt, verifier, topology, release arms, replay semantics, estimator,
 thresholds, and fixed acquisition geometry remain unchanged.
 
+The inherited OpenMath validation split is disabled (`split_validation_size=0`)
+and its inactive split seed is explicitly null, because GSM8K directly supplies
+the registered training split and does not consume those OpenMath split controls.
+
 ## Frozen geometry
 
 - burn-in start versions: 0–7;

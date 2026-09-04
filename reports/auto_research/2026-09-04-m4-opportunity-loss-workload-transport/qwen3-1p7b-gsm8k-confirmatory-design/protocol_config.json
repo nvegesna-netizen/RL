@@ -163,6 +163,7 @@
     "prompt_file": "examples/prompts/cot.txt",
     "reward_verifier": "hf_math_verify",
     "split": "train",
+    "split_seed": null,
     "split_validation_size": 0.0,
     "subset": "main",
     "task_name": "gsm8k"
