@@ -214,8 +214,8 @@ class SingleControllerActor:
         self._fixed_pool_manifest: Optional[FixedPoolManifest] = (
             actor_args.fixed_pool_manifest
         )
-        self._scheduler_assay_plan = actor_args.scheduler_assay_plan
-        self._scheduler_assay_arm = actor_args.scheduler_assay_arm
+        self._scheduler_assay_plan = getattr(actor_args, "scheduler_assay_plan", None)
+        self._scheduler_assay_arm = getattr(actor_args, "scheduler_assay_arm", None)
         self._scheduler_assay_enabled = self._scheduler_assay_plan is not None
         if self._scheduler_assay_enabled != (self._scheduler_assay_arm is not None):
             raise ValueError("scheduler assay plan and arm must be configured together")
