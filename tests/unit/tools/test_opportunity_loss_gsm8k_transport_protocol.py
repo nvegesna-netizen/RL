@@ -11,9 +11,13 @@ from pathlib import Path
 from typing import Any
 
 from omegaconf import OmegaConf
+import pytest
 
 from nemo_rl.utils.config import load_config, register_omegaconf_resolvers
-from tools.opportunity_loss_pipeline import _parse_protocol
+from tools.opportunity_loss_pipeline import (
+    OpportunityLossPipelineError,
+    _parse_protocol,
+)
 from tools.opportunity_loss_transport_pipeline import _validate_transport_contract
 from tools.opportunity_loss_workload_transport_pipeline import (
     validate_workload_transport_contract,
@@ -144,9 +148,5 @@ def test_gsm8k_contract_rejects_dataset_mutation() -> None:
 
 def test_gsm8k_protocol_is_rejected_by_openmath_transport_analyzer() -> None:
     raw, protocol, options = _parse_protocol(_PROTOCOL.read_bytes())
-    try:
+    with pytest.raises(OpportunityLossPipelineError):
         _validate_transport_contract(raw, protocol, options)
-    except ValueError as error:
-        assert "transport protocol" in str(error)
-    else:
-        raise AssertionError("GSM8K protocol entered the OpenMath transport analyzer")

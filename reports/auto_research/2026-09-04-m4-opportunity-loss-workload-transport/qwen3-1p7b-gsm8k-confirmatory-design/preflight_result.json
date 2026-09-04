@@ -1,0 +1,36 @@
+{
+  "artifact": {
+    "filename": "gsm8k-workload-preflight-66250208-job-425970567.zip",
+    "sha256": "c4ab76f5ec9987568820a71acaa7fabffb6f9a96f1b8fb3155e51c1098f7960d",
+    "size_bytes": 47164579
+  },
+  "failure": {
+    "failed_test": "tests/unit/tools/test_opportunity_loss_gsm8k_transport_protocol.py::test_gsm8k_protocol_is_rejected_by_openmath_transport_analyzer",
+    "reason": "The OpenMath analyzer correctly rejected the GSM8K protocol, but the test overconstrained incidental exception wording.",
+    "safe_archive_gate_passed": true,
+    "selected_tests_failed": 1,
+    "selected_tests_passed_before_fail_fast": 111
+  },
+  "pipeline": {
+    "downstream_pipeline_id": 66250208,
+    "downstream_pipeline_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/66250208",
+    "eos_compute_job_id": 425970567,
+    "generator_job_id": 425965550,
+    "parent_pipeline_id": 66249474,
+    "parent_pipeline_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/66249474",
+    "slurm_job_id": 5975802,
+    "workload": "basic/m4-qwen3-1p7b-gsm8k-workload-no-training-preflight dgxh100_eos 00 [2 dgxh100_eos]"
+  },
+  "release": {
+    "automatic_extension": false,
+    "automatic_retry": false,
+    "manifest_sha256": "6bd6efe2672c10e78457bf53fee894173db0334350d8966e97f4f0a7292a0f5a",
+    "source_archive_sha256": "a3eda46512856b0ed4b12b2a45b51ac4799184703d3d4e1b4165d99cb421127e",
+    "source_commit": "6209de7e9900ef5f2adfe320903fd702b7029651",
+    "submission_attempt_count": 1
+  },
+  "schema": "m4-qwen3-1p7b-gsm8k-workload-no-training-preflight-terminal-result-v1",
+  "scientific_acquisition_started": false,
+  "status": "FAILED_TEST_ASSERTION_WORDING",
+  "training_started": false
+}
