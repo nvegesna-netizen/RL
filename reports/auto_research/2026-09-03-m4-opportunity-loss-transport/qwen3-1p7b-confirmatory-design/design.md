@@ -1,7 +1,9 @@
 # Qwen3-1.7B M4 confirmatory transport design
 
-Status: `FROZEN_LOCAL_PROTOCOL_PENDING_NO_TRAINING_PREFLIGHT`. This document
-does not authorize training or scientific acquisition.
+Status: terminal acquisition complete. The prospectively registered primary
+conclusion is `MATERIAL`, the mechanism conclusion is `REPLICATED`, and the
+portability qualifier is `SUPPORTED`. See `acquisition_result.md` for the
+preserved terminal evidence. This result applies only to the tested setting.
 
 ## Scientific question
 
@@ -52,3 +54,8 @@ Before acquisition, the dedicated parser, detached pipeline, configuration,
 protocol, and hashes must pass a containerized no-training preflight. A terminal
 green preflight permits an acquisition decision but does not itself authorize
 the 558-step run.
+
+All gates were subsequently satisfied. The authorized acquisition completed in
+downstream pipeline `66186620`. The initial six-hour scheduler submission failed
+before allocation and produced no scientific data; the successful recovery used
+EOS `batch`'s four-hour maximum without changing the frozen scientific protocol.

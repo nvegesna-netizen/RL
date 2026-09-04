@@ -1,0 +1,99 @@
+{
+  "artifact": {
+    "archive_sha256": "022e4d18f2eedd2339c3c7eb7decf6e21f929761de46bcd0f85a73f0a2700ac7",
+    "archive_size": 131003667,
+    "files": {
+      "acquisition_preflight_log": "17b8476b90b152ec36ede8cc2c1347680b992227cf41880cd52ad66930c0feba",
+      "acquisition_summary": "f792723849241d52d877cd07b53c5ff61033bd99a5b83ed5d8e286515cd4b574",
+      "lifecycle": "71238a4c2b7ba0aceeb206514e8564719688d594989f19396653de483c37ba47",
+      "observer_duty": "54c8687c4bb0d5e5688fdc25a3575506e291d4de03ad1586fda70632bd23c20c",
+      "opportunity": "170cf1cf3cf124b4248cf5173fe6f7e18eaed0eeac3792cb9367b66207184b2d",
+      "result": "74c3a836fcc27dd567f3c19ec8e2b8438a915eac53ecc9aa7ca6bb7b7769a3c7",
+      "run_log": "5af2e5e50b5c76dad208e76298fa3a6a8311bf0b26e74beb4151b935ffef6212"
+    },
+    "raw_artifact_tracked_in_git": false
+  },
+  "completion": {
+    "all_internal_hashes_reconciled": true,
+    "automatic_extension": false,
+    "automatic_retry": false,
+    "full_selected_tests_passed": 135,
+    "trainer_steps": 558,
+    "trainer_version": 558
+  },
+  "historical_failed_transport": {
+    "acquisition_started": false,
+    "artifact_sha256": "30fde5ac7218b849a1d14d6865441c2e9e4a6418d9e920962093ee9a5de97afb",
+    "downstream_pipeline_id": 66184233,
+    "eos_job_id": 425411785,
+    "reason": "EOS batch rejected the six-hour Slurm request before allocation",
+    "scientific_data_produced": false
+  },
+  "mechanism": {
+    "assignment_count": 8673,
+    "conclusion": "REPLICATED",
+    "control": {
+      "assignment_count": 4376,
+      "direct_chain_rate": 0.0,
+      "mean_version_advance": 0.0
+    },
+    "d5": {
+      "assignment_count": 4297,
+      "direct_chain_rate": 0.2229462415638818,
+      "mean_version_advance": 0.35978589713753784
+    },
+    "unscored_assignment_count": 0
+  },
+  "observer_duty": {
+    "conclusion": "SUPPORTED",
+    "corrected": 0.0018525392987851206,
+    "maximum": 0.01,
+    "observation_count": 9676
+  },
+  "pipeline": {
+    "downstream_pipeline_id": 66186620,
+    "downstream_status": "success",
+    "eos_compute_duration_seconds": 8709.859687,
+    "eos_compute_job_id": 425431228,
+    "generator_job_id": 425430729,
+    "logs_after_job_id": 425431229,
+    "parent_pipeline_id": 66186545,
+    "scheduler_time_limit_seconds": 14400,
+    "workload": "basic/m4-qwen3-1p7b-confirmatory-control-d5-acquisition-r1-transport dgxh100_eos 00 [2 dgxh100_eos]"
+  },
+  "primary_adjusted_inference": {
+    "assignment_count": 8673,
+    "bootstrap_draws": 20000,
+    "bootstrap_interval": [
+      0.2773762285744354,
+      0.32802206802449274
+    ],
+    "conclusion": "MATERIAL",
+    "confidence": 0.95,
+    "confidence_envelope": [
+      0.27688057033389485,
+      0.328106040188131
+    ],
+    "coverage_gate_passed": true,
+    "estimate": 0.3024933052610129,
+    "hac_standard_error": 0.01306796202845973,
+    "identification_interval": [
+      0.3024933052610129,
+      0.3024933052610129
+    ],
+    "material_p_value": 0.00004999750012499375,
+    "material_threshold": 0.2,
+    "missing_primary_assignments": 0
+  },
+  "provenance": {
+    "manifest_sha256": "0a865cafb6c25a29b03521c790e6d5d78a01045ccdfaffa3c1b1057198ca633d",
+    "preflight_artifact_sha256": "527a108ced08cad91516eaf144311942b8d18bc459378a9fd2b7e26fc4059d17",
+    "protocol_sha256": "eef87a5e26f2cc1a39428628b0c28288b17a297f49d449a80ed9699f9ee17cb7",
+    "source_archive_sha256": "2c8af8d67dd85d49f70bf71a58d3eb8e90e2cf56915eb8e1ca398e34024de2cf",
+    "source_commit": "a1c719177704b7d14cf1d503dc96f0f2f9f1701d"
+  },
+  "schema": "m4-qwen3-1p7b-confirmatory-transport-terminal-result-v1",
+  "scientific_conclusion": "The evidence supports a material M4 opportunity-loss effect for Qwen3-1.7B in the tested OpenMathInstruct-2, GRPO, two-H100 EOS setting.",
+  "scope_limit": "This one-axis model-scale transport result does not establish generalization to other model families, workloads, algorithms, hardware, or environments.",
+  "status": "MATERIAL"
+}
