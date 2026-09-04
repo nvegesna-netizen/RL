@@ -1,8 +1,15 @@
 {
+  "amendment": {
+    "accepted_neutral_qualification_artifact_sha256": "5cf1acb1729abb104497fa78740b9cc329e4532dedb7e8ecb6237b099004ee51",
+    "confirmatory_protocol_sha256_unchanged": "84c43e4fc32a7f647505729a556d5e0fb088a38fd7eedd1ea235dd51a4ec3fc7",
+    "historical_protocol_metadata_controlled_release_enabled": false,
+    "scope": "qualification_instrument_switch_and_lifecycle_gate_only",
+    "supersedes_historical_qualification_metadata": true
+  },
   "automatic_extension": false,
   "automatic_retry": false,
   "config": "examples/configs/grpo_math_1B_megatron_single_controller_m4_qwen3_1p7b_gsm8k_neutral_qualification.yaml",
-  "config_sha256": "b83adf0cc55ed094702b3d5009c3c3dd2dcc9eac1dd66097f8ef4c31f3c04a0d",
+  "config_sha256": "7e0a62ebcf2d8313a273bd337da2dd1d36507114dd1a7e1de18fc23e5ec0f59b",
   "dataset": {
     "name": "gsm8k",
     "path": "openai/gsm8k",
@@ -49,7 +56,7 @@
         "mass": 1
       }
     ],
-    "controlled_release_enabled": false,
+    "controlled_release_enabled": true,
     "domain": "m4-opportunity-loss-qwen3-1p7b-gsm8k-neutral-qualification-v1",
     "seed": 20260913
   },
@@ -73,5 +80,5 @@
     "wall_clock_cap_hours": 4.0
   },
   "schema": "m4-qwen3-1p7b-gsm8k-neutral-qualification-plan-v1",
-  "status": "FROZEN_LOCAL_DESIGN_PENDING_PACKAGE_AND_EXPLICIT_RELEASE"
+  "status": "AMENDED_LOCAL_DESIGN_PENDING_PACKAGE_AND_EXPLICIT_RELEASE"
 }

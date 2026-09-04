@@ -8,7 +8,9 @@ grpo:
 async_rl:
   lifecycle_audit_path: results/m4-qwen3-1p7b-gsm8k-neutral-qualification/lifecycle.jsonl
   controlled_release_delay:
-    enabled: false
+    # Enable the validated assignment instrument while applying no intervention:
+    # the sole arm below always assigns exactly zero seconds of release delay.
+    enabled: true
     seed: 20260913
     assignment_domain: m4-opportunity-loss-qwen3-1p7b-gsm8k-neutral-qualification-v1
     arms:

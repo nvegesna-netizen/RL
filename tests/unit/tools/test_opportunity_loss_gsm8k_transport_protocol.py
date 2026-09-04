@@ -13,6 +13,10 @@ from typing import Any
 from omegaconf import OmegaConf
 import pytest
 
+from nemo_rl.algorithms.single_controller_utils.config import (
+    MasterConfig,
+    validate_single_controller_config,
+)
 from nemo_rl.utils.config import load_config, register_omegaconf_resolvers
 from tools.opportunity_loss_pipeline import (
     OpportunityLossPipelineError,
@@ -32,6 +36,10 @@ _BASE_CONFIG = (
 _CONFIG = (
     _REPO / "examples/configs/"
     "grpo_math_1B_megatron_single_controller_m4_qwen3_1p7b_gsm8k_transport.yaml"
+)
+_QUALIFICATION_CONFIG = (
+    _REPO / "examples/configs/"
+    "grpo_math_1B_megatron_single_controller_m4_qwen3_1p7b_gsm8k_neutral_qualification.yaml"
 )
 _AUDIT = (
     _REPO / "reports/auto_research/2026-09-04-m4-opportunity-loss-workload-transport/"
@@ -89,6 +97,23 @@ def test_gsm8k_overlay_is_dataset_only_plus_fresh_identity() -> None:
     assert candidate["data"]["default"]["processor"] == "math_hf_data_processor"
     assert candidate["data"]["default"]["env_name"] == "math"
     assert candidate["env"]["math"]["math_verify_impl"] == "hf_math_verify"
+
+
+def test_gsm8k_neutral_qualification_uses_supported_zero_dose_instrument() -> None:
+    register_omegaconf_resolvers()
+    candidate = OmegaConf.to_container(load_config(_QUALIFICATION_CONFIG), resolve=True)
+    assert isinstance(candidate, dict)
+    release = candidate["async_rl"]["controlled_release_delay"]
+    assert release["enabled"] is True
+    assert release["assignment_domain"] == (
+        "m4-opportunity-loss-qwen3-1p7b-gsm8k-neutral-qualification-v1"
+    )
+    assert release["arms"] == [{"label": "neutral", "delay_seconds": 0.0, "mass": 1}]
+    assert candidate["async_rl"]["gradient_opportunity_audit"]["enabled"] is True
+    assert candidate["grpo"]["max_num_steps"] == 32
+    assert candidate["cluster"]["gpus_per_node"] == 2
+    assert candidate["cluster"]["num_nodes"] == 1
+    validate_single_controller_config(MasterConfig(**candidate))
 
 
 def test_gsm8k_protocol_has_frozen_geometry_and_provenance() -> None:
