@@ -1,0 +1,47 @@
+{
+  "artifact": {
+    "filename": "gsm8k-workload-replacement-preflight-66251989-job-425987171.zip",
+    "sha256": "94c21c7d8fea68e7c698df94d52c153ca6c7ce324edf0c87fa951c30d63d389d",
+    "size_bytes": 47176462
+  },
+  "checks": {
+    "canonical_lock_sha256": "5ced4c617c5f0154a2b03b89262583e94b884b6de2f683470cbac984eff99991",
+    "config_resolved": true,
+    "python_compilation_passed": true,
+    "ruff_check_passed": true,
+    "ruff_format_check_passed": true,
+    "safe_archive_gate_passed": true,
+    "selected_tests_failed": 0,
+    "selected_tests_passed": 123,
+    "terminal_marker": "M4_QWEN3_1P7B_GSM8K_WORKLOAD_PREFLIGHT_GREEN"
+  },
+  "pipeline": {
+    "downstream_pipeline_id": 66251989,
+    "downstream_pipeline_status": "success",
+    "downstream_pipeline_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/66251989",
+    "eos_compute_job_finished_at": "2026-09-04T09:29:53.623-07:00",
+    "eos_compute_job_id": 425987171,
+    "generator_job_id": 425986322,
+    "logs_after_job_id": 425987172,
+    "parent_pipeline_id": 66251881,
+    "parent_pipeline_status": "success",
+    "parent_pipeline_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/66251881",
+    "slurm_job_id": 5975864,
+    "workload": "basic/m4-qwen3-1p7b-gsm8k-workload-no-training-preflight dgxh100_eos 00 [2 dgxh100_eos]"
+  },
+  "release": {
+    "automatic_extension": false,
+    "automatic_retry": false,
+    "dataset_overlay_sha256": "b6ed0135388ceb7bb272fc6263f3d97955779949f22cd394696c05d764b9d3c7",
+    "manifest_sha256": "78d7985b3a167ba3081a2b3355348dfd31ef8d69159bd8d1b37adf7c20d40139",
+    "protocol_sha256": "84c43e4fc32a7f647505729a556d5e0fb088a38fd7eedd1ea235dd51a4ec3fc7",
+    "source_archive_sha256": "41d08ca7ebdd5fb7eaf1a62255d5ee4cd5e5091f12f5eaa0b3b928bd57201b11",
+    "source_commit": "933802498b3e5e0ce392bff7b448854a46f3ef44",
+    "submission_attempt_count": 1
+  },
+  "qualification_started": false,
+  "schema": "m4-qwen3-1p7b-gsm8k-workload-replacement-no-training-preflight-terminal-result-v1",
+  "scientific_acquisition_started": false,
+  "status": "TERMINAL_PREFLIGHT_GREEN",
+  "training_started": false
+}

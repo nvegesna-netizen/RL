@@ -1,7 +1,8 @@
 # Qwen3-1.7B GSM8K M4 confirmatory workload-transport design
 
-Status: `FROZEN_LOCAL_PROTOCOL_PENDING_NO_TRAINING_PREFLIGHT`. This document
-does not authorize training, GPU use, EOS submission, neutral qualification, or
+Status: `NO_TRAINING_PREFLIGHT_GREEN_PENDING_NEUTRAL_QUALIFICATION`. The
+replacement preflight result is recorded separately. This document does not
+authorize training, GPU use, EOS submission, neutral qualification, or
 scientific acquisition.
 
 ## Scientific question
