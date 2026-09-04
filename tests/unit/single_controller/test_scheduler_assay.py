@@ -31,6 +31,8 @@ def _plan_record() -> dict[str, object]:
         "replay_of_natural_workloads_authorized": False,
         "training_authorized": False,
         "analysis_code_commit": "a" * 40,
+        "expected_base_commit": "b" * 40,
+        "expected_image_sha256": "c" * 64,
         "source_design_id": "ready_bias_v1",
         "pools": [
             {
@@ -76,6 +78,10 @@ def _plan_record() -> dict[str, object]:
         "groups_per_cohort": 4,
         "groups_per_task_per_cohort": 2,
         "completions_per_group": 2,
+        "generation_study_seed": 51001,
+        "max_total_sequence_length": 512,
+        "temperature": 1.0,
+        "top_p": 1.0,
         "max_inflight_prompts": 4,
         "max_buffered_rollouts": 16,
         "sampler_lookahead_versions": 3,

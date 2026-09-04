@@ -402,6 +402,19 @@ def setup_single_controller(
                 raise ValueError("scheduler assay plan/source manifest mismatch")
             if master_config.async_rl.sampler.name != assay_arm.sampler:
                 raise ValueError("scheduler assay arm/sampler mismatch")
+            if (
+                grpo_config.num_generations_per_prompt
+                != assay_plan.completions_per_group
+                or grpo_config.max_total_sequence_length
+                != assay_plan.max_total_sequence_length
+                or generation_config["temperature"] != assay_plan.temperature
+                or generation_config["top_p"] != assay_plan.top_p
+                or generation_config["vllm_cfg"].get("study_seed")
+                != assay_plan.generation_study_seed
+            ):
+                raise ValueError(
+                    "scheduler assay generation config does not match frozen plan"
+                )
 
     # TODO: add validate dataset wiring.
     use_nemo_gym = _should_use_nemo_gym(cast(GrpoMasterConfig, master_config))

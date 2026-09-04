@@ -72,6 +72,8 @@ class SchedulerAssayPlan(BaseModel, extra="forbid", frozen=True):
     replay_of_natural_workloads_authorized: Literal[False]
     training_authorized: Literal[False]
     analysis_code_commit: GitCommitHex
+    expected_base_commit: GitCommitHex
+    expected_image_sha256: Sha256Hex
     source_design_id: Literal["ready_bias_v1"]
     pools: tuple[SchedulerAssayPool, ...]
     arms: tuple[SchedulerAssayArm, ...]
@@ -80,6 +82,10 @@ class SchedulerAssayPlan(BaseModel, extra="forbid", frozen=True):
     groups_per_cohort: Literal[4]
     groups_per_task_per_cohort: Literal[2]
     completions_per_group: Literal[2]
+    generation_study_seed: Literal[51001]
+    max_total_sequence_length: Literal[512]
+    temperature: Literal[1.0]
+    top_p: Literal[1.0]
     max_inflight_prompts: Literal[4]
     max_buffered_rollouts: Literal[16]
     sampler_lookahead_versions: Literal[3]

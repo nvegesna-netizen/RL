@@ -226,6 +226,19 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
                 raise ValueError("scheduler assay requires max_buffered_rollouts=16")
             if master_config.grpo.max_num_epochs != 1:
                 raise ValueError("scheduler assay requires grpo.max_num_epochs=1")
+            if master_config.grpo.num_generations_per_prompt != 2:
+                raise ValueError(
+                    "scheduler assay requires grpo.num_generations_per_prompt=2"
+                )
+            if master_config.grpo.max_total_sequence_length != 512:
+                raise ValueError(
+                    "scheduler assay requires grpo.max_total_sequence_length=512"
+                )
+            generation = master_config.policy["generation"]
+            if generation["temperature"] != 1.0 or generation["top_p"] != 1.0:
+                raise ValueError(
+                    "scheduler assay requires generation temperature=1.0 and top_p=1.0"
+                )
             lookahead = (
                 async_config.sampler.max_staleness_versions
                 if isinstance(async_config.sampler, ReadyFirstSamplerConfig)
