@@ -1,0 +1,47 @@
+{
+  "automatic_extension": false,
+  "automatic_retry": false,
+  "failure": {
+    "class": "INVALID_DISABLED_INSTRUMENT_AUDIT_COMBINATION",
+    "exception": "ValueError: async_rl.gradient_opportunity_audit.enabled=true requires async_rl.controlled_release_delay.enabled=true",
+    "reason": "The GSM8K qualification disabled controlled-release instrumentation while requiring the gradient-opportunity audit that depends on its zero-dose assignment metadata."
+  },
+  "qualification": {
+    "causal_estimate_produced": false,
+    "lifecycle_records_created": false,
+    "opportunity_records_created": false,
+    "qualification_complete": false,
+    "summary_created": false,
+    "training_started": false
+  },
+  "release": {
+    "bridge_job_id": 426126477,
+    "compute_job_id": 426127527,
+    "compute_job_status": "failed",
+    "downstream_pipeline_id": 66269740,
+    "downstream_pipeline_status": "failed",
+    "generator_job_id": 426126476,
+    "generator_status": "success",
+    "logs_after_job_id": 426127528,
+    "logs_after_status": "success",
+    "logs_before_job_id": 426127526,
+    "logs_before_status": "success",
+    "manifest_sha256": "d1dccd7ed62f4aee6fd0a32e1351e228a03dcada9c8ab27a55503774949c6818",
+    "parent_pipeline_id": 66269570,
+    "parent_pipeline_status": "failed",
+    "parent_pipeline_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/66269570",
+    "submission_attempt_count": 1
+  },
+  "schema": "m4-qwen3-1p7b-gsm8k-neutral-qualification-r2-result-v1",
+  "slurm": {
+    "exit_code": 1,
+    "job_id": 5976307
+  },
+  "source_commit": "5073abfb2506392b1ee3d05d9789f931e31aa0af",
+  "status": "FAILED_INVALID_DISABLED_INSTRUMENT_AUDIT_COMBINATION",
+  "terminal_artifact": {
+    "filename": "gsm8k-qualification-r2-66269740-job-426127527.zip",
+    "sha256": "428dc43c8b5c76e65dee40455d4b90ff26ad0da4da2ba38b62b1efa233330671",
+    "size_bytes": 47207749
+  }
+}
