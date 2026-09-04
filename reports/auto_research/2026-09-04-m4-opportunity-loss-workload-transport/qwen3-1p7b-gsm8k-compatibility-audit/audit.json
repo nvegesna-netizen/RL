@@ -1,0 +1,81 @@
+{
+  "baseline": {
+    "artifact_result_sha256": "74c3a836fcc27dd567f3c19ec8e2b8438a915eac53ecc9aa7ca6bb7b7769a3c7",
+    "conclusion": "MATERIAL",
+    "dataset": "OpenMathInstruct-2",
+    "downstream_pipeline_id": 66186620,
+    "eos_compute_duration_seconds": 8709.859687,
+    "model": "Qwen/Qwen3-1.7B",
+    "protocol_sha256": "eef87a5e26f2cc1a39428628b0c28288b17a297f49d449a80ed9699f9ee17cb7",
+    "result_record_sha256": "7eec5871da27004eb665c7662abe813ff990c1a8cdad4a45773af24d0b8f7ade"
+  },
+  "compatibility": {
+    "binary_reward_contract_preserved": true,
+    "controlled_release_dataset_agnostic": true,
+    "detached_analysis_dataset_agnostic": true,
+    "environment": "math",
+    "ground_truth_adapter": "answer text after ####",
+    "processor": "math_hf_data_processor",
+    "prompt_file": "examples/prompts/cot.txt",
+    "reward_verifier": "hf_math_verify",
+    "runtime_feasibility_proven": false,
+    "scientific_axis_count": 1
+  },
+  "decision": "CONDITIONAL_GO_TO_LOCAL_PROTOCOL",
+  "intended_change": {
+    "from": {
+      "dataset": "OpenMathInstruct-2"
+    },
+    "to": {
+      "dataset": "openai/gsm8k",
+      "split": "train",
+      "subset": "main"
+    }
+  },
+  "local_verification": {
+    "json_and_yaml_syntax": "PASS",
+    "python_compilation": "PASS",
+    "targeted_gsm8k_pytest": "BLOCKED_LOCAL_DEPENDENCY_RAY_ABSENT",
+    "targeted_gsm8k_pytest_is_scientific_failure": false,
+    "terminal_container_preflight_required": true
+  },
+  "must_remain_fixed": [
+    "Qwen/Qwen3-1.7B",
+    "GRPOAdvantageEstimator",
+    "examples/prompts/cot.txt",
+    "math_hf_data_processor",
+    "math environment with hf_math_verify",
+    "control:d5 equal allocation",
+    "five-second delay",
+    "cross_fitted_generalized_regression_q_and_zero_indicator_v1",
+    "material threshold 0.2",
+    "mechanism support thresholds",
+    "one-percent corrected observer-duty ceiling",
+    "two-GPU non-colocated single-controller topology"
+  ],
+  "new_identity_required": [
+    "protocol identity and hash",
+    "assignment domain and seed",
+    "output paths",
+    "preflight lock and artifact names"
+  ],
+  "provenance": {
+    "audit_parent_commit": "facdf4fca9cc26ee55f33d2858aa1a0b2366cd28",
+    "files": {
+      "examples/configs/grpo_math_1B_megatron_single_controller_m4_qwen3_1p7b_transport.yaml": "3b25f01ef579ffc8385ec0c3cc00eb007507fce0a6784a9496892c0ae2259449",
+      "examples/configs/grpo_smoke.yaml": "24791dde9c17ce795716d6d3f0dd9ec994b202d50217aff3894a28e505474a26",
+      "nemo_rl/data/datasets/response_datasets/gsm8k.py": "9cb636fb6e05d6f15cb55add43f8b755498b7240da32cf364fff201b90f7aa19",
+      "nemo_rl/data/processors.py": "d5da376754a748437638477a231c7e6e734d396ed16deceda63b062315988744",
+      "nemo_rl/environments/math_environment.py": "f603705d472354797d34b9514c17174e1220ff09807aaa123d75ecd7aa629d6c"
+    }
+  },
+  "qualification": {
+    "causal_estimation_allowed": false,
+    "required": true,
+    "scientific_acquisition_allowed": false,
+    "treatment_delay_enabled": false
+  },
+  "schema": "m4-qwen3-1p7b-gsm8k-workload-compatibility-audit-v1",
+  "scope": "local_static_audit_only_no_gpu_authority",
+  "status": "COMPLETE"
+}
