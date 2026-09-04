@@ -1,0 +1,40 @@
+{
+  "artifact": {
+    "filename": "confirmatory-preflight-66180605-job-425383261.zip",
+    "sha256": "527a108ced08cad91516eaf144311942b8d18bc459378a9fd2b7e26fc4059d17",
+    "size_bytes": 47122216
+  },
+  "pipeline": {
+    "downstream_pipeline_id": 66180605,
+    "downstream_pipeline_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/66180605",
+    "eos_compute_duration_seconds": 252.055876,
+    "eos_compute_finished_at": "2026-09-03T23:05:06.939-07:00",
+    "eos_compute_job_id": 425383261,
+    "eos_compute_started_at": "2026-09-03T23:00:54.883-07:00",
+    "parent_pipeline_id": 66180444,
+    "parent_pipeline_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/66180444",
+    "status": "SUCCESS",
+    "workload": "basic/m4-qwen3-1p7b-confirmatory-no-training-preflight dgxh100_eos 00 [2 dgxh100_eos]"
+  },
+  "preflight": {
+    "config_resolved": true,
+    "full_selected_tests_green": true,
+    "lock_sha256": "ce936dbddc2839f4a8c0542df36f2e5032206647964154fcc37fccdb356f2409",
+    "selected_tests_passed": 135,
+    "terminal_marker_observed": true
+  },
+  "safety": {
+    "automatic_extension": false,
+    "automatic_retry": false,
+    "scientific_acquisition_started": false,
+    "training_started": false
+  },
+  "schema": "m4-qwen3-1p7b-confirmatory-no-training-preflight-terminal-success-v1",
+  "source": {
+    "manifest_sha256": "c85982d3608afddfe5a994015b51040d6c148fdac7f65899c8979fc0fe09f14b",
+    "protocol_sha256": "eef87a5e26f2cc1a39428628b0c28288b17a297f49d449a80ed9699f9ee17cb7",
+    "source_archive_sha256": "2c8af8d67dd85d49f70bf71a58d3eb8e90e2cf56915eb8e1ca398e34024de2cf",
+    "source_commit": "a1c719177704b7d14cf1d503dc96f0f2f9f1701d"
+  },
+  "status": "TERMINAL_PREFLIGHT_GREEN"
+}
