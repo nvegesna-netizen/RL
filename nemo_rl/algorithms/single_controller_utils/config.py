@@ -78,6 +78,26 @@ class FixedPoolCollectionConfig(BaseModel, extra="forbid"):
         return self
 
 
+class SchedulerAssayConfig(BaseModel, extra="forbid"):
+    """Zero-update production-sampler assay over a fixed source pool."""
+
+    enabled: bool = False
+    plan_path: Optional[str] = None
+    arm_id: Optional[str] = None
+    order_seed: Optional[int] = None
+
+    @model_validator(mode="after")
+    def _require_identity_when_enabled(self) -> "SchedulerAssayConfig":
+        if self.enabled and (
+            not self.plan_path or not self.arm_id or self.order_seed is None
+        ):
+            raise ValueError(
+                "async_rl.scheduler_assay plan_path, arm_id, and order_seed are "
+                "required when enabled"
+            )
+        return self
+
+
 class AsyncRLConfig(BaseModel, extra="allow"):
     # Staleness policy shared by the rollout and train pumps.
     sampler: SamplerConfig = Field(
@@ -100,6 +120,10 @@ class AsyncRLConfig(BaseModel, extra="allow"):
     # Finite, no-training collection over a predeclared prompt-group manifest.
     fixed_pool: FixedPoolCollectionConfig = Field(
         default_factory=FixedPoolCollectionConfig,
+    )
+    # Controlled production-sampler selection with no learner updates.
+    scheduler_assay: SchedulerAssayConfig = Field(
+        default_factory=SchedulerAssayConfig,
     )
 
 
@@ -139,6 +163,7 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
     """Validate cross-section SingleController constraints before setup."""
     async_config = master_config.async_rl
     if async_config.fixed_pool.enabled:
+        assay_config = async_config.scheduler_assay
         if not async_config.scheduler_trace.enabled:
             raise ValueError(
                 "async_rl.scheduler_trace.enabled must be true for fixed-pool "
@@ -176,9 +201,46 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
                 "async_rl.max_buffered_rollouts must be at least "
                 "async_rl.max_inflight_prompts for fixed-pool collection"
             )
+        if assay_config.enabled:
+            if async_config.fixed_pool.design_id != "ready_bias_v1":
+                raise ValueError(
+                    "scheduler assay schema v1 requires fixed_pool.design_id="
+                    "ready_bias_v1"
+                )
+            if not isinstance(
+                async_config.sampler,
+                (ReadyFirstSamplerConfig, InOrderSamplerConfig),
+            ):
+                raise ValueError(
+                    "scheduler assay requires ready_first or in_order sampler"
+                )
+            if master_config.grpo.num_prompts_per_step != 4:
+                raise ValueError("scheduler assay requires grpo.num_prompts_per_step=4")
+            if async_config.min_groups_for_streaming_train != 4:
+                raise ValueError(
+                    "scheduler assay requires min_groups_for_streaming_train=4"
+                )
+            if async_config.max_inflight_prompts != 4:
+                raise ValueError("scheduler assay requires max_inflight_prompts=4")
+            if async_config.max_buffered_rollouts != 16:
+                raise ValueError("scheduler assay requires max_buffered_rollouts=16")
+            if master_config.grpo.max_num_epochs != 1:
+                raise ValueError("scheduler assay requires grpo.max_num_epochs=1")
+            lookahead = (
+                async_config.sampler.max_staleness_versions
+                if isinstance(async_config.sampler, ReadyFirstSamplerConfig)
+                else async_config.sampler.max_lookahead_versions
+            )
+            if lookahead != 3:
+                raise ValueError("scheduler assay requires sampler lookahead=3")
         # Collection performs one initial weight sync and no learner or sampler
-        # operations, so training-only batch/sampler/loss constraints do not apply.
+        # operations. Assay mode performs sampler operations but no learner or
+        # loss operations, so training-only batch/loss constraints do not apply.
         return
+    if async_config.scheduler_assay.enabled:
+        raise ValueError(
+            "async_rl.scheduler_assay.enabled=true requires fixed_pool.enabled=true"
+        )
     if async_config.scheduler_trace.enabled and isinstance(
         async_config.sampler, CustomSamplerConfig
     ):

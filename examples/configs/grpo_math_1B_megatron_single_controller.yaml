@@ -30,6 +30,12 @@ async_rl:
   fixed_pool:
     enabled: false
     manifest_path: null
+  # Production-sampler selection over a fixed pool with zero learner updates.
+  scheduler_assay:
+    enabled: false
+    plan_path: null
+    arm_id: null
+    order_seed: null
 
 # SC does not support checkpointing yet.
 checkpointing:

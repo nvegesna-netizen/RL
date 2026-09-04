@@ -196,6 +196,67 @@ def test_rollout_pump_failure_cancels_sibling_and_releases_capacity() -> None:
     asyncio.run(_main())
 
 
+def test_scheduler_assay_releases_generation_slot_before_delayed_commit() -> None:
+    class _DelayedCommitManager:
+        def __init__(self) -> None:
+            self.started = 0
+            self.second_started = asyncio.Event()
+
+        async def generate_and_push(
+            self,
+            prompt: Any,
+            *,
+            target_step: int | None = None,
+            admission_id: str | None = None,
+            generation_finished_event: asyncio.Event | None = None,
+        ) -> None:
+            del prompt, target_step, admission_id
+            assert generation_finished_event is not None
+            self.started += 1
+            generation_finished_event.set()
+            if self.started == 1:
+                await self.second_started.wait()
+            else:
+                self.second_started.set()
+
+    async def _main() -> None:
+        manager = _DelayedCommitManager()
+        controller_cls = SingleControllerActor.__ray_metadata__.modified_class
+        ctrl = object.__new__(controller_cls)
+        ctrl._async_cfg = SimpleNamespace(
+            max_inflight_prompts=1,
+            diagnostics=False,
+        )
+        ctrl._master_config = SimpleNamespace(
+            grpo=GRPOConfig.model_construct(max_num_epochs=1)
+        )
+        ctrl._rollout_manager = manager
+        ctrl._sampler = WindowedSampler(None, max_staleness_versions=1)
+        prompt_batch = BatchedDataDict(
+            {"message_log": [[{"role": "user", "content": "prompt"}]]}
+        )
+        ctrl._dataloader = [prompt_batch, prompt_batch]
+        ctrl._rollout_permitted = asyncio.Event()
+        ctrl._rollout_permitted.set()
+        ctrl._rollout_exhausted = asyncio.Event()
+        ctrl._buffer_capacity = asyncio.Semaphore(2)
+        ctrl._inflight_rollouts = 0
+        ctrl._dispatched_rollouts = set()
+        ctrl._trainer_version = 0
+        ctrl._assay_scheduler_step = 0
+        ctrl._current_epoch = 0
+        ctrl._scheduler_assay_enabled = True
+        ctrl._trace_enabled = False
+
+        await asyncio.wait_for(ctrl._rollout_pump(), timeout=1.0)
+
+        assert manager.started == 2
+        assert ctrl._inflight_rollouts == 0
+        assert ctrl._rollout_exhausted.is_set()
+
+    asyncio.run(_main())
+
+
 def test_rollout_pump_releases_permits_when_child_never_starts(monkeypatch) -> None:
     class _NeverCalledRolloutManager:
         async def generate_and_push(

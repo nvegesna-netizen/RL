@@ -214,6 +214,13 @@ class SingleControllerActor:
         self._fixed_pool_manifest: Optional[FixedPoolManifest] = (
             actor_args.fixed_pool_manifest
         )
+        self._scheduler_assay_plan = actor_args.scheduler_assay_plan
+        self._scheduler_assay_arm = actor_args.scheduler_assay_arm
+        self._scheduler_assay_enabled = self._scheduler_assay_plan is not None
+        if self._scheduler_assay_enabled != (self._scheduler_assay_arm is not None):
+            raise ValueError("scheduler assay plan and arm must be configured together")
+        if self._scheduler_assay_enabled and self._fixed_pool_manifest is None:
+            raise ValueError("scheduler assay requires a fixed-pool manifest")
         if self._async_cfg.fixed_pool.enabled != (
             self._fixed_pool_manifest is not None
         ):
@@ -254,12 +261,22 @@ class SingleControllerActor:
         self._sampler: Any = (
             None
             if self._fixed_pool_manifest is not None
+            and not self._scheduler_assay_enabled
             else create_sampler(self._buffer, self._async_cfg.sampler)
         )
         trace_cfg = self._async_cfg.scheduler_trace
         self._trace_enabled = trace_cfg.enabled
         fingerprint_record = (
             {
+                "mode": "scheduler_assay",
+                "plan_id": self._scheduler_assay_plan.plan_id,
+                "arm_id": self._scheduler_assay_arm.arm_id,
+                "pool_id": self._fixed_pool_manifest.pool_id,
+                "manifest_sha256": self._fixed_pool_manifest.manifest_sha256,
+                "sampler": self._async_cfg.sampler.model_dump(),
+            }
+            if self._scheduler_assay_enabled
+            else {
                 "mode": "fixed_pool",
                 "pool_id": self._fixed_pool_manifest.pool_id,
                 "manifest_sha256": self._fixed_pool_manifest.manifest_sha256,
@@ -320,6 +337,9 @@ class SingleControllerActor:
 
         self._trainer_version: int = 0
         self._train_steps: int = 0
+        self._assay_scheduler_step: int = 0
+        self._assay_selection_steps: int = 0
+        self._assay_selected_groups: int = 0
         self._collected_groups: int = 0
         self._current_epoch: int = 0
         self._step_log_dict: dict[str, list] = {
@@ -350,14 +370,18 @@ class SingleControllerActor:
                 self._scheduler_trace.emit(
                     SchedulerEventType.RUN_STARTED,
                     sampler_name=(
-                        "fixed_pool"
+                        self._async_cfg.sampler.name
+                        if self._scheduler_assay_enabled
+                        else "fixed_pool"
                         if self._fixed_pool_manifest is not None
                         else self._async_cfg.sampler.name
                     ),
                     sampler_fingerprint=self._sampler_fingerprint,
                     trainer_version=self._trainer_version,
                     run_mode=(
-                        "fixed_pool"
+                        "scheduler_assay"
+                        if self._scheduler_assay_enabled
+                        else "fixed_pool"
                         if self._fixed_pool_manifest is not None
                         else "training"
                     ),
@@ -393,13 +417,32 @@ class SingleControllerActor:
                             if self._fixed_pool_manifest is not None
                             else "none"
                         ),
+                        "scheduler_assay_plan_id": (
+                            self._scheduler_assay_plan.plan_id
+                            if self._scheduler_assay_enabled
+                            else "none"
+                        ),
+                        "scheduler_assay_arm_id": (
+                            self._scheduler_assay_arm.arm_id
+                            if self._scheduler_assay_enabled
+                            else "none"
+                        ),
                         **_resolved_generation_trace_summaries(self._master_config),
                     },
                 )
             # Synchronize weights before starting the pumps
             await self._sync_weights()
 
-            if self._fixed_pool_manifest is not None:
+            if self._scheduler_assay_enabled:
+                rollout_task = asyncio.create_task(self._rollout_pump())
+                assay_task = asyncio.create_task(self._scheduler_assay_pump())
+                done, _ = await asyncio.wait(
+                    {rollout_task, assay_task}, return_when=asyncio.FIRST_COMPLETED
+                )
+                if rollout_task in done:
+                    await rollout_task
+                await assay_task
+            elif self._fixed_pool_manifest is not None:
                 await self._collect_fixed_pool()
             else:
                 # Start the rollout and train pumps
@@ -419,15 +462,20 @@ class SingleControllerActor:
         finally:
             if "rollout_task" in locals():
                 rollout_task.cancel()
-                train_task.cancel()
-                await asyncio.gather(rollout_task, train_task, return_exceptions=True)
+                companion_task = assay_task if "assay_task" in locals() else train_task
+                companion_task.cancel()
+                await asyncio.gather(
+                    rollout_task, companion_task, return_exceptions=True
+                )
             trace_error: Optional[BaseException] = None
             try:
                 if trace_started and getattr(self, "_trace_enabled", False):
                     self._scheduler_trace.emit(
                         SchedulerEventType.RUN_ENDED,
                         sampler_name=(
-                            "fixed_pool"
+                            self._async_cfg.sampler.name
+                            if self._scheduler_assay_enabled
+                            else "fixed_pool"
                             if self._fixed_pool_manifest is not None
                             else self._async_cfg.sampler.name
                         ),
@@ -435,7 +483,9 @@ class SingleControllerActor:
                         trainer_version=self._trainer_version,
                         live_logical_group_ids=tuple(self._buffer.group_ids),
                         run_mode=(
-                            "fixed_pool"
+                            "scheduler_assay"
+                            if self._scheduler_assay_enabled
+                            else "fixed_pool"
                             if self._fixed_pool_manifest is not None
                             else "training"
                         ),
@@ -460,7 +510,12 @@ class SingleControllerActor:
                             else None
                         ),
                         terminal_reason=(
-                            "fixed_pool_complete"
+                            "scheduler_assay_complete"
+                            if run_error is None
+                            and self._scheduler_assay_enabled
+                            and self._assay_selected_groups
+                            == len(self._fixed_pool_manifest.items)
+                            else "fixed_pool_complete"
                             if run_error is None
                             and self._fixed_pool_manifest is not None
                             and self._collected_groups
@@ -480,7 +535,13 @@ class SingleControllerActor:
                         ),
                         scalar_summaries={
                             "completed_train_steps": self._train_steps,
+                            "final_physical_weight_version": self._trainer_version,
+                            "final_scheduler_assay_step": self._assay_scheduler_step,
                             "collected_prompt_groups": self._collected_groups,
+                            "assay_selection_steps": self._assay_selection_steps,
+                            "assay_selected_prompt_groups": (
+                                self._assay_selected_groups
+                            ),
                         },
                     )
             except BaseException as error:
@@ -511,6 +572,8 @@ class SingleControllerActor:
             "train_steps": self._train_steps,
             "trainer_version": self._trainer_version,
             "collected_prompt_groups": self._collected_groups,
+            "assay_selection_steps": self._assay_selection_steps,
+            "assay_selected_prompt_groups": self._assay_selected_groups,
         }
 
     async def ping(self) -> dict[str, Any]:
@@ -663,25 +726,71 @@ class SingleControllerActor:
         ) -> None:
             task_started_event.set()
             self._inflight_rollouts += 1
+            generation_slot_released = False
+
+            def release_generation_slot() -> None:
+                nonlocal generation_slot_released
+                if generation_slot_released:
+                    return
+                generation_slot_released = True
+                self._inflight_rollouts -= 1
+                sem.release()
+
             try:
-                if getattr(self, "_trace_enabled", False):
-                    await self._rollout_manager.generate_and_push(
+                generation_finished_event = (
+                    asyncio.Event()
+                    if getattr(self, "_scheduler_assay_enabled", False)
+                    else None
+                )
+                if getattr(self, "_scheduler_assay_enabled", False):
+                    push_coro = self._rollout_manager.generate_and_push(
+                        prompt,
+                        target_step=target_step,
+                        admission_id=admission_id,
+                        generation_finished_event=generation_finished_event,
+                    )
+                elif getattr(self, "_trace_enabled", False):
+                    push_coro = self._rollout_manager.generate_and_push(
                         prompt,
                         target_step=target_step,
                         admission_id=admission_id,
                     )
                 else:
-                    await self._rollout_manager.generate_and_push(
+                    push_coro = self._rollout_manager.generate_and_push(
                         prompt, target_step=target_step
                     )
+                push_task = asyncio.create_task(push_coro)
+                if generation_finished_event is not None:
+                    generation_wait_task = asyncio.create_task(
+                        generation_finished_event.wait()
+                    )
+                    done, _ = await asyncio.wait(
+                        {push_task, generation_wait_task},
+                        return_when=asyncio.FIRST_COMPLETED,
+                    )
+                    if generation_wait_task in done:
+                        release_generation_slot()
+                    await push_task
+                    generation_wait_task.cancel()
+                    await asyncio.gather(generation_wait_task, return_exceptions=True)
+                else:
+                    await push_task
             except BaseException:
                 # On success ownership transfers to the train pump, which
                 # releases this permit after consuming the committed group.
                 self._buffer_capacity.release()
                 raise
             finally:
-                self._inflight_rollouts -= 1
-                sem.release()
+                if "push_task" in locals() and not push_task.done():
+                    push_task.cancel()
+                    await asyncio.gather(push_task, return_exceptions=True)
+                if (
+                    "generation_wait_task" in locals()
+                    and not generation_wait_task.done()
+                ):
+                    generation_wait_task.cancel()
+                    await asyncio.gather(generation_wait_task, return_exceptions=True)
+                release_generation_slot()
 
             if self._async_cfg.diagnostics:
                 content = ""
@@ -705,7 +814,13 @@ class SingleControllerActor:
             while max_epochs is None or self._current_epoch < max_epochs:
                 for prompt_batch in self._dataloader:
                     target_step = await self._sampler.admit(
-                        trainer_version_fn=lambda: self._trainer_version
+                        trainer_version_fn=(
+                            lambda: (
+                                self._assay_scheduler_step
+                                if getattr(self, "_scheduler_assay_enabled", False)
+                                else self._trainer_version
+                            )
+                        )
                     )
                     admission_id = (
                         str(uuid.uuid4())
@@ -766,6 +881,115 @@ class SingleControllerActor:
 
         self._rollout_exhausted.set()
         print(f"rollout_pump: completed {self._current_epoch} epoch(s)", flush=True)
+
+    async def _scheduler_assay_pump(self) -> None:
+        """Drain a fixed pool through the live sampler without optimizer updates."""
+        manifest = self._fixed_pool_manifest
+        if manifest is None or not self._scheduler_assay_enabled:
+            raise RuntimeError("scheduler assay pump requires an enabled assay pool")
+        if not self._trace_enabled:
+            raise RuntimeError("scheduler assay requires scheduler tracing")
+
+        groups_per_step = self._master_config.grpo.num_prompts_per_step
+        expected_groups = len(manifest.items)
+        while self._assay_selected_groups < expected_groups:
+            await asyncio.sleep(0)
+            evicted = await self._sampler.evict(
+                current_train_weight=self._assay_scheduler_step,
+            )
+            evicted_group_ids = self._sampler.take_last_evicted_group_ids()
+            for group_id in evicted_group_ids:
+                self._scheduler_trace.emit(
+                    SchedulerEventType.GROUP_EVICTED,
+                    logical_group_id=group_id,
+                    sampler_name=self._async_cfg.sampler.name,
+                    sampler_fingerprint=self._sampler_fingerprint,
+                    trainer_version=self._trainer_version,
+                    terminal_reason="scheduler_assay_unexpected_eviction",
+                    scalar_summaries={
+                        "scheduler_assay_step": self._assay_scheduler_step
+                    },
+                )
+            if evicted != len(evicted_group_ids):
+                raise RuntimeError(
+                    "sampler eviction count does not match removed group IDs"
+                )
+            if evicted:
+                for _ in range(evicted):
+                    self._buffer_capacity.release()
+                raise RuntimeError(
+                    f"scheduler assay unexpectedly evicted {evicted} group(s)"
+                )
+
+            buffered_before_select = len(self._buffer)
+            ready_before_select = sum(self._buffer.ready_list)
+            eligible_group_ids = self._sampler.eligible_group_ids(
+                current_train_weight=self._assay_scheduler_step
+            )
+            selected_meta, num_groups = await self._sampler.select(
+                current_train_weight=self._assay_scheduler_step,
+                min_prompt_groups=groups_per_step,
+                max_prompt_groups=groups_per_step,
+            )
+            selected_group_ids = self._sampler.take_last_selected_group_ids()
+            self._scheduler_trace.emit(
+                SchedulerEventType.SELECT_DECISION,
+                sampler_name=self._async_cfg.sampler.name,
+                sampler_fingerprint=self._sampler_fingerprint,
+                trainer_version=self._trainer_version,
+                sampler_dispatch_index=self._sampler.dispatch_index,
+                min_prompt_groups=groups_per_step,
+                max_prompt_groups=groups_per_step,
+                ready_prompt_groups=ready_before_select,
+                eligible_prompt_groups=len(eligible_group_ids),
+                eligible_logical_group_ids=eligible_group_ids,
+                selected_logical_group_ids=selected_group_ids,
+                scalar_summaries={
+                    "buffered_prompt_groups": buffered_before_select,
+                    "selected_prompt_groups": num_groups,
+                    "scheduler_assay_step": self._assay_scheduler_step,
+                    "physical_weight_version": self._trainer_version,
+                },
+            )
+            if num_groups != len(selected_group_ids):
+                raise RuntimeError(
+                    "sampler selection count does not match removed group IDs"
+                )
+            if selected_meta is None:
+                if self._rollout_exhausted.is_set():
+                    raise RuntimeError(
+                        "scheduler assay rollout exhausted before all groups "
+                        f"were selected: {self._assay_selected_groups}/"
+                        f"{expected_groups}, buffered={len(self._buffer)}"
+                    )
+                await asyncio.sleep(0.005)
+                continue
+            if num_groups != groups_per_step:
+                raise RuntimeError(
+                    "scheduler assay selected a non-exact batch: "
+                    f"{num_groups}/{groups_per_step} groups"
+                )
+
+            await self._call_dp(
+                "clear_samples",
+                sample_ids=list(selected_meta.sample_ids),
+                partition_id=self._partition_id,
+            )
+            for _ in range(num_groups):
+                self._buffer_capacity.release()
+            self._assay_selected_groups += num_groups
+            self._assay_selection_steps += 1
+            self._assay_scheduler_step += 1
+
+        if len(self._buffer) != 0:
+            raise RuntimeError(
+                "scheduler assay reached its expected selection count with "
+                f"{len(self._buffer)} buffered group(s) remaining"
+            )
+        if self._trainer_version != 0 or self._train_steps != 0:
+            raise RuntimeError(
+                "scheduler assay changed physical weights or ran a train step"
+            )
 
     async def _train_pump(self) -> None:
         """Per-prompt-group streaming train loop.

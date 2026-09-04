@@ -477,6 +477,7 @@ def validate_scheduler_trace(
 
     dispatched: dict[str, str] = {}
     attempt_identity: dict[str, tuple[object, ...]] = {}
+    group_attempt: dict[str, str] = {}
     admissions: dict[str, int] = {}
     admission_dispatches: dict[str, int] = {}
     live_dispatched_groups: set[str] = set()
@@ -503,6 +504,7 @@ def validate_scheduler_trace(
             assert event.admission_id is not None
             admission_dispatches[event.admission_id] += 1
             live_dispatched_groups.add(event.logical_group_id)
+            group_attempt[event.logical_group_id] = event.attempt_id
             dispatched[event.attempt_id] = event.logical_group_id
             attempt_state[event.attempt_id] = "dispatched"
             attempt_identity[event.attempt_id] = (
@@ -593,6 +595,7 @@ def validate_scheduler_trace(
                 terminal_groups.add(group_id)
                 ready_groups.discard(group_id)
                 live_dispatched_groups.discard(group_id)
+                attempt_state[group_attempt[group_id]] = "selected"
         elif event.event_type is SchedulerEventType.GROUP_EVICTED:
             assert event.logical_group_id is not None
             if event.logical_group_id not in ready_groups:
@@ -615,7 +618,7 @@ def validate_scheduler_trace(
         sorted(
             attempt_id
             for attempt_id, state in attempt_state.items()
-            if state not in {"ready", "removed", "archived"}
+            if state not in {"ready", "removed", "archived", "selected"}
         )
     )
     if require_complete_attempts and incomplete:

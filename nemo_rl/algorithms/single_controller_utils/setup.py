@@ -31,6 +31,11 @@ from transformers import AutoProcessor
 from transformers.tokenization_utils_base import PreTrainedTokenizerBase
 
 from nemo_rl.algorithms.async_utils.replay_buffer import TQReplayBuffer
+from nemo_rl.algorithms.async_utils.scheduler_assay import (
+    SchedulerAssayArm,
+    SchedulerAssayPlan,
+    load_scheduler_assay_plan,
+)
 from nemo_rl.algorithms.async_utils.fixed_pool import (
     FixedPoolDataset,
     FixedPoolManifest,
@@ -96,6 +101,8 @@ class SingleControllerActorArgs:
     tq_buffer: TQReplayBuffer
     partition_id: str
     fixed_pool_manifest: Optional[FixedPoolManifest] = None
+    scheduler_assay_plan: Optional[SchedulerAssayPlan] = None
+    scheduler_assay_arm: Optional[SchedulerAssayArm] = None
 
 
 def _build_clusters(
@@ -332,7 +339,10 @@ def setup_single_controller(
     # Setup Dataset & Environments
     # ==========================
     fixed_pool_config = master_config.async_rl.fixed_pool
+    assay_config = master_config.async_rl.scheduler_assay
     manifest: Optional[FixedPoolManifest] = None
+    assay_plan: Optional[SchedulerAssayPlan] = None
+    assay_arm: Optional[SchedulerAssayArm] = None
     if fixed_pool_config.enabled:
         manifest = load_fixed_pool_manifest(fixed_pool_config.manifest_path)  # type: ignore[arg-type]
         validate_fixed_pool_materialization(manifest)
@@ -377,6 +387,21 @@ def setup_single_controller(
                 "fixed-pool data.train must list the manifest materialized files "
                 "in source order as ResponseDataset entries with exact task_name values"
             )
+        if assay_config.enabled:
+            assert assay_config.plan_path is not None
+            assert assay_config.arm_id is not None
+            assert assay_config.order_seed is not None
+            assay_plan = load_scheduler_assay_plan(assay_config.plan_path)
+            assay_arm = assay_plan.arm(assay_config.arm_id)
+            pool = assay_plan.pool(assay_config.order_seed)
+            if (
+                manifest.order_seed != pool.order_seed
+                or manifest.pool_id != pool.pool_id
+                or manifest.manifest_sha256 != pool.manifest_sha256
+            ):
+                raise ValueError("scheduler assay plan/source manifest mismatch")
+            if master_config.async_rl.sampler.name != assay_arm.sampler:
+                raise ValueError("scheduler assay arm/sampler mismatch")
 
     # TODO: add validate dataset wiring.
     use_nemo_gym = _should_use_nemo_gym(cast(GrpoMasterConfig, master_config))
@@ -519,6 +544,10 @@ def setup_single_controller(
         use_nemo_gym=use_nemo_gym,
         mask_env_flagged_samples=should_mask_flagged_samples(master_config.env),
         tq_buffer=tq_buffer,
+        scheduler_assay_arm=assay_arm,
+        scheduler_assay_delay_seconds=(
+            assay_plan.release_delay_seconds if assay_plan is not None else None
+        ),
     )
 
     return SingleControllerActorArgs(
@@ -536,4 +565,6 @@ def setup_single_controller(
         tq_buffer=tq_buffer,
         partition_id=partition_id,
         fixed_pool_manifest=manifest if fixed_pool_config.enabled else None,
+        scheduler_assay_plan=assay_plan,
+        scheduler_assay_arm=assay_arm,
     )

@@ -33,13 +33,14 @@ from copy import deepcopy
 import pytest
 import torch
 
+from nemo_rl.algorithms.async_utils.scheduler_assay import SchedulerAssayArm
+from nemo_rl.algorithms.async_utils.scheduler_trace import SchedulerEventType
 from nemo_rl.data.collate_fn import rl_collate_fn
 from nemo_rl.data.datasets.response_datasets import NemoGymDataset
 from nemo_rl.data.interfaces import DatumSpec
 from nemo_rl.data.processors import nemo_gym_data_processor
 from nemo_rl.distributed.batched_data_dict import BatchedDataDict
 from nemo_rl.experience.interfaces import Completion, PromptGroupRecord
-from nemo_rl.algorithms.async_utils.scheduler_trace import SchedulerEventType
 from nemo_rl.experience.rollout_manager import (
     AsyncRolloutImpl,
     AsyncNemoGymRolloutImpl,
@@ -322,6 +323,58 @@ class TestGenerateAndPushFlow:
             assert fields["source_prompt_id"] == "a" * 64
             assert fields["dispatch_cohort"] == 1
         assert buf.remove_in_dp_calls == [True]
+
+    def test_scheduler_assay_holds_delayed_task_after_generation(
+        self, monkeypatch
+    ) -> None:
+        record = PromptGroupRecord(
+            prompt_idx=17,
+            prompt=[],
+            extra_env_info=None,
+            metadata={"task_name": "AIME2024"},
+            completions=[Completion([], None, False, 1.0)],
+            rollout_metrics={},
+        )
+        buf = _FakeBuffer()
+        mgr = _make_manager(buf, _FakeImpl(record=record))
+        mgr._scheduler_trace = _TraceSink()
+        mgr._scheduler_assay_arm = SchedulerAssayArm(
+            arm_id="ready_first_aime_delayed",
+            sampler="ready_first",
+            delayed_task="AIME2024",
+        )
+        mgr._scheduler_assay_delay_seconds = 30.0
+        generation_finished = asyncio.Event()
+        sleeps: list[float] = []
+
+        async def _sleep(seconds: float) -> None:
+            sleeps.append(seconds)
+
+        monkeypatch.setattr(asyncio, "sleep", _sleep)
+        _run(
+            mgr.generate_and_push(
+                {
+                    "idx": 17,
+                    "task_name": "AIME2024",
+                    "source_prompt_id": "a" * 64,
+                    "repeated_prompt_cluster_id": "b" * 64,
+                    "source_pool_ordinal": 3,
+                    "dispatch_cohort": 1,
+                },
+                target_step=1,
+                admission_id="cohort-1",
+                generation_finished_event=generation_finished,
+            )
+        )
+
+        assert generation_finished.is_set()
+        assert sleeps == [30.0]
+        assert len(buf.commit_calls) == 1
+        completed_index = mgr._scheduler_trace.events.index(
+            SchedulerEventType.ROLLOUT_COMPLETED
+        )
+        ready_index = mgr._scheduler_trace.events.index(SchedulerEventType.GROUP_READY)
+        assert completed_index < ready_index
 
     def test_completion_trace_preserves_length_and_termination_diagnostics(self):
         record = PromptGroupRecord(

@@ -25,8 +25,10 @@ from transformers import PreTrainedTokenizerBase
 from wandb import Table
 
 from nemo_rl.algorithms.async_utils.replay_buffer import TQReplayBuffer
+from nemo_rl.algorithms.async_utils.scheduler_assay import SchedulerAssayArm
 from nemo_rl.algorithms.async_utils.scheduler_trace import (
     NoopSchedulerTraceSink,
+    Scalar,
     SchedulerEventType,
     SchedulerTraceSink,
 )
@@ -928,6 +930,8 @@ class RolloutManager:
         use_nemo_gym: bool = False,
         mask_env_flagged_samples: bool = True,
         tq_buffer: Optional[TQReplayBuffer] = None,
+        scheduler_assay_arm: Optional[SchedulerAssayArm] = None,
+        scheduler_assay_delay_seconds: Optional[float] = None,
     ) -> None:
         assert num_generations_per_prompt >= 1, (
             "num_generations_per_prompt must be >= 1"
@@ -960,6 +964,12 @@ class RolloutManager:
         self._tq_buffer = tq_buffer
         self._weight_version: int = 0
         self._scheduler_trace: SchedulerTraceSink = NoopSchedulerTraceSink()
+        if (scheduler_assay_arm is None) != (scheduler_assay_delay_seconds is None):
+            raise ValueError(
+                "scheduler assay arm and delay seconds must be configured together"
+            )
+        self._scheduler_assay_arm = scheduler_assay_arm
+        self._scheduler_assay_delay_seconds = scheduler_assay_delay_seconds
 
     def set_scheduler_trace_sink(self, sink: SchedulerTraceSink) -> None:
         """Bind the controller-owned trace sink after Ray deserialization."""
@@ -983,6 +993,7 @@ class RolloutManager:
         target_step: Optional[int] = None,
         admission_id: Optional[str] = None,
         dispatch_started_event: Optional[asyncio.Event] = None,
+        generation_finished_event: Optional[asyncio.Event] = None,
     ) -> Optional[RolloutGroupHandle]:
         """Reserve a buffer slot, run one prompt's rollout, then commit the slot.
 
@@ -998,6 +1009,8 @@ class RolloutManager:
         # metric-summary, or sink work.
         trace_sink = getattr(self, "_scheduler_trace", None)
         if trace_sink is None or not trace_sink.enabled:
+            if getattr(self, "_scheduler_assay_arm", None) is not None:
+                raise RuntimeError("scheduler assay requires scheduler tracing")
             start_version = self._weight_version
             group_id = self._tq_buffer.reserve(
                 weight_version=start_version, target_step=target_step
@@ -1086,12 +1099,24 @@ class RolloutManager:
                     "rollout task name does not match the dispatched prompt"
                 )
             rewards = [float(completion.reward) for completion in record.completions]
-            summaries: dict[str, float | int] = {"completion_count": len(rewards)}
+            summaries: dict[str, Scalar] = {"completion_count": len(rewards)}
             if rewards:
                 summaries.update(
                     reward_mean=statistics.fmean(rewards),
                     reward_min=min(rewards),
                     reward_max=max(rewards),
+                )
+            assay_arm = getattr(self, "_scheduler_assay_arm", None)
+            release_delay_seconds = (
+                getattr(self, "_scheduler_assay_delay_seconds", None)
+                if assay_arm is not None and task_name == assay_arm.delayed_task
+                else 0.0
+            )
+            if assay_arm is not None:
+                summaries.update(
+                    scheduler_assay_arm=assay_arm.arm_id,
+                    scheduler_assay_delayed_task=assay_arm.delayed_task,
+                    scheduler_assay_release_delay_seconds=release_delay_seconds,
                 )
             tool_call_counts = [
                 sum(
@@ -1154,6 +1179,10 @@ class RolloutManager:
                 start_weight_version=start_version,
                 scalar_summaries=summaries,
             )
+            if generation_finished_event is not None:
+                generation_finished_event.set()
+            if release_delay_seconds:
+                await asyncio.sleep(release_delay_seconds)
             end_version = self._weight_version
             await self._tq_buffer.commit(
                 group_id,
@@ -1168,6 +1197,17 @@ class RolloutManager:
                 target_step=target_step,
                 start_weight_version=start_version,
                 end_weight_version=end_version,
+                scalar_summaries=(
+                    {
+                        "scheduler_assay_arm": assay_arm.arm_id,
+                        "scheduler_assay_delayed_task": assay_arm.delayed_task,
+                        "scheduler_assay_release_delay_seconds": (
+                            release_delay_seconds
+                        ),
+                    }
+                    if assay_arm is not None
+                    else {}
+                ),
             )
         except BaseException as error:
             trace_error: Optional[BaseException] = None
