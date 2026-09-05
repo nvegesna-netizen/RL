@@ -1,6 +1,6 @@
 # Qwen3-1.7B GSM8K neutral qualification plan
 
-Status: `R6_SCHEDULER_DEADLINE_FAILURE_PENDING_SHORTER_R7_ALLOCATION`.
+Status: `R7_SCHEDULER_REPAIR_SUBMITTED_ONCE_PIPELINE_66390680`.
 
 ## Purpose
 
@@ -127,3 +127,10 @@ repair, not a scientific change: it gives priority queueing up to approximately
 qualification's 984.588-second workload duration and R5's observed
 initialization-to-first-result window. R6 authority is consumed, and this
 amendment authorizes no R7 submission.
+
+The distinct R7 release was subsequently authorized and submitted exactly once
+through `runllm.py --no_wait` as parent pipeline `66390680`. Frozen manifest
+SHA-256 is
+`0b532760600e290c65b524b5ba258a3e007c7568c5148fcf60ed4c89d4cfd1a8`.
+The one-shot guard is consumed; no retry, extension, or confirmatory acquisition
+is authorized.
