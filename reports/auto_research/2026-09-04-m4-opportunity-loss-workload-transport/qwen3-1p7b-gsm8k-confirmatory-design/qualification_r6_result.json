@@ -1,0 +1,51 @@
+{
+  "automatic_extension": false,
+  "automatic_retry": false,
+  "failure": {
+    "class": "SLURM_DEADLINE_BEFORE_ALLOCATION",
+    "reason": "The allocation remained pending for priority until the fixed JET eight-hour deadline could no longer accommodate the requested four-hour Slurm runtime.",
+    "scientific_or_runtime_failure": false
+  },
+  "qualification": {
+    "bootstrap_gate_reached": false,
+    "causal_estimate_produced": false,
+    "qualification_complete": false,
+    "scientific_acquisition_started": false,
+    "trainer_steps_completed": 0,
+    "training_started": false,
+    "workload_started": false
+  },
+  "release": {
+    "compute_job_id": 426667740,
+    "compute_job_status": "failed",
+    "downstream_pipeline_id": 66330524,
+    "downstream_pipeline_status": "failed",
+    "generator_job_id": 426666664,
+    "generator_status": "success",
+    "logs_after_job_id": 426667741,
+    "logs_after_status": "success",
+    "logs_before_job_id": 426667739,
+    "logs_before_status": "success",
+    "manifest_sha256": "514c369a0fa68dd110cff29806760092362df21467d5e46ecf3d3d78515ffc83",
+    "parent_pipeline_id": 66330380,
+    "parent_pipeline_status": "failed",
+    "parent_pipeline_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/66330380",
+    "submission_attempt_count": 1
+  },
+  "schema": "m4-qwen3-1p7b-gsm8k-neutral-qualification-r6-result-v1",
+  "slurm": {
+    "derived_exit_code": "0:0",
+    "exit_code": "1:0",
+    "job_id": 5978609,
+    "queue_time": "04:00:19",
+    "runtime": "00:00:00",
+    "state": "DEADLINE"
+  },
+  "source_commit": "be0a56c37542f81a6413287fc110f291c07c5156",
+  "status": "FAILED_SLURM_DEADLINE_BEFORE_ALLOCATION",
+  "terminal_artifact": {
+    "filename": "gsm8k-qualification-r6-66330524-job-426667740.zip",
+    "sha256": "28b5e3668850efda3b9fc26477e319cccdf2c180d4744d4c75ecad4de16bd5f7",
+    "size_bytes": 18926485
+  }
+}

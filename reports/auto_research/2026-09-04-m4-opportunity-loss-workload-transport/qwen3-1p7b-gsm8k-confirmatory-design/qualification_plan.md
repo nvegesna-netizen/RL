@@ -1,6 +1,6 @@
 # Qwen3-1.7B GSM8K neutral qualification plan
 
-Status: `R6_BOOTSTRAP_REPAIR_SUBMITTED_ONCE_PIPELINE_66330380`.
+Status: `R6_SCHEDULER_DEADLINE_FAILURE_PENDING_SHORTER_R7_ALLOCATION`.
 
 ## Purpose
 
@@ -112,3 +112,18 @@ through `runllm.py --no_wait` as parent pipeline `66330380`; manifest SHA-256 is
 `514c369a0fa68dd110cff29806760092362df21467d5e46ecf3d3d78515ffc83`.
 The one-shot guard is consumed. This submission does not authorize any retry,
 extension, or confirmatory acquisition.
+
+## Scheduler amendment after R6
+
+R6 never received an allocation. Slurm `5978609` remained pending for priority
+for `04:00:19`, accumulated zero runtime, and was canceled as `DEADLINE` when
+JET's fixed eight-hour deadline could no longer fit the requested four-hour
+runtime. No workload gate or training code executed.
+
+A successor qualification should request 90 minutes from Slurm while retaining
+the registered four-hour confirmatory ceiling. This is an operational scheduler
+repair, not a scientific change: it gives priority queueing up to approximately
+6.5 hours within JET's deadline and remains above both the accepted
+qualification's 984.588-second workload duration and R5's observed
+initialization-to-first-result window. R6 authority is consumed, and this
+amendment authorizes no R7 submission.

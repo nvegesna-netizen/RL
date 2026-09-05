@@ -1,10 +1,10 @@
 # Qwen3-1.7B GSM8K M4 confirmatory workload-transport design
 
-Status: `NO_TRAINING_PREFLIGHT_GREEN_R5_QUALIFICATION_BOOTSTRAP_FAILURE`.
-The replacement preflight and R5 terminal result are recorded separately. A
-bootstrap-only R6 repair is locally validated but not authorized. This document
-does not authorize training, GPU use, EOS submission, neutral qualification, or
-scientific acquisition.
+Status: `NO_TRAINING_PREFLIGHT_GREEN_R6_SCHEDULER_DEADLINE_FAILURE`. The
+replacement preflight and qualification terminal results are recorded
+separately. A shorter-allocation R7 scheduling repair is locally validated but
+not authorized. This document does not authorize training, GPU use, EOS
+submission, neutral qualification, or scientific acquisition.
 
 ## Scientific question
 
