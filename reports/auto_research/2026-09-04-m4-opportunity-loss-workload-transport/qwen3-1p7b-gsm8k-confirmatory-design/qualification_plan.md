@@ -1,6 +1,6 @@
 # Qwen3-1.7B GSM8K neutral qualification plan
 
-Status: `R5_BOOTSTRAP_FAILURE_REPAIRED_LOCALLY_PENDING_DISTINCT_R6_RELEASE`.
+Status: `R6_BOOTSTRAP_REPAIR_SUBMITTED_ONCE_PIPELINE_66330380`.
 
 ## Purpose
 
@@ -107,4 +107,8 @@ change. R5 artifact SHA-256 is
 `43aff533273fa96b0a3df523307fe4b6a1730ebcd197819d91363598c9a0ef47`;
 the authorization-independent R6 package contract SHA-256 is
 `0d448ade4b31a22f595c9df23b2cd43d78aac3c5ddca75c34546f07e23a37a6d`.
-No R6 manifest or launch is authorized by this amendment.
+The distinct R6 release was subsequently authorized and submitted exactly once
+through `runllm.py --no_wait` as parent pipeline `66330380`; manifest SHA-256 is
+`514c369a0fa68dd110cff29806760092362df21467d5e46ecf3d3d78515ffc83`.
+The one-shot guard is consumed. This submission does not authorize any retry,
+extension, or confirmatory acquisition.
