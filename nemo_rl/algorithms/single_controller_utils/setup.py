@@ -510,11 +510,10 @@ def setup_single_controller(
             if enable_router_replay
             else "int16"
         )
-        if not isinstance(generation, VllmGeneration):
-            raise TypeError("NeMo-Gym SingleController requires vLLM generation")
+        vllm_generation = cast(VllmGeneration, generation)
         env_handles["nemo_gym"] = spinup_nemo_gym_actor(
             env_configs=master_config.env,
-            base_urls=generation.dp_openai_server_base_urls,
+            base_urls=vllm_generation.dp_openai_server_base_urls,
             model_name=generation_config["model_name"],
             enable_router_replay=enable_router_replay,
             routed_experts_dtype=routed_experts_dtype,
