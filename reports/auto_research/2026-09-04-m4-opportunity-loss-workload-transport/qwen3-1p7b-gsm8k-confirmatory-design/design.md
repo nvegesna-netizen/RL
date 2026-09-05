@@ -1,8 +1,9 @@
 # Qwen3-1.7B GSM8K M4 confirmatory workload-transport design
 
-Status: `NO_TRAINING_PREFLIGHT_GREEN_PENDING_NEUTRAL_QUALIFICATION`. The
-replacement preflight result is recorded separately. This document does not
-authorize training, GPU use, EOS submission, neutral qualification, or
+Status: `NO_TRAINING_PREFLIGHT_GREEN_R5_QUALIFICATION_BOOTSTRAP_FAILURE`.
+The replacement preflight and R5 terminal result are recorded separately. A
+bootstrap-only R6 repair is locally validated but not authorized. This document
+does not authorize training, GPU use, EOS submission, neutral qualification, or
 scientific acquisition.
 
 ## Scientific question
@@ -57,8 +58,8 @@ and blocks a decisive claim; it does not authorize additional steps.
 2. A pinned containerized no-training preflight must resolve the exact config,
    run the complete selected test suite, and prove that no acquisition began.
 3. A separately authorized neutral 32-step qualification may test GSM8K
-   throughput, reward support, completeness, and observer duty with controlled
-   release disabled and causal analysis forbidden.
+   throughput, reward support, completeness, and observer duty with the
+   supported enabled one-arm zero-dose instrument and causal analysis forbidden.
 4. The fixed 558-step acquisition may be considered only if qualification
    projects at least 7,395 primary assignments and completion within four hours.
 

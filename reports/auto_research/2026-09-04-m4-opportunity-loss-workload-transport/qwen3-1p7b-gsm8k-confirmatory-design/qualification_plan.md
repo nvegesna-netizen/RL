@@ -1,6 +1,6 @@
 # Qwen3-1.7B GSM8K neutral qualification plan
 
-Status: `AMENDED_LOCAL_DESIGN_PENDING_PACKAGE_AND_EXPLICIT_RELEASE`.
+Status: `R5_BOOTSTRAP_FAILURE_REPAIRED_LOCALLY_PENDING_DISTINCT_R6_RELEASE`.
 
 ## Purpose
 
@@ -89,3 +89,22 @@ confirmatory protocol, estimator, thresholds, geometry, or acquisition status.
 The historical `protocol_config.json` qualification metadata remains immutable
 at its registered hash; its `controlled_release_enabled: false` field is
 superseded for qualification execution only by this amendment.
+
+## Bootstrap amendment after R5
+
+R5 passed the provenance and config gates and initialized both GPU workers, but
+failed before its first trainer step because its isolated run tree lacked the
+container's submodule contents. A Git archive carries the submodule mount-point
+directories, not the checked-out Megatron files. The accepted Qwen3-1.7B
+qualification avoided this by copying the pinned `/opt/nemo-rl` tree before
+overlaying frozen source.
+
+The R6 packaging repair adopts that accepted ordering and adds a fail-closed
+pre-training check that the dependency fingerprint matches the container and
+that `megatron` imports from the isolated run tree. The source archive, config,
+instrument, model, data, run length, thresholds, and scientific protocol do not
+change. R5 artifact SHA-256 is
+`43aff533273fa96b0a3df523307fe4b6a1730ebcd197819d91363598c9a0ef47`;
+the authorization-independent R6 package contract SHA-256 is
+`0d448ade4b31a22f595c9df23b2cd43d78aac3c5ddca75c34546f07e23a37a6d`.
+No R6 manifest or launch is authorized by this amendment.

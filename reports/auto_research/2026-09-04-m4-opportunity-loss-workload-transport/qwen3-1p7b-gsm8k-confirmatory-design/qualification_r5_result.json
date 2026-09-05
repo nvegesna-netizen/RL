@@ -1,0 +1,65 @@
+{
+  "automatic_extension": false,
+  "automatic_retry": false,
+  "failure": {
+    "class": "MISSING_CONTAINER_SUBMODULE_BASELINE",
+    "exception": "ModuleNotFoundError: No module named 'megatron'",
+    "location": "SingleControllerActor deserializing the first Megatron training result in tq_policy.finish_train_step",
+    "reason": "The R4 manifest extracted a Git archive into an empty isolated run tree. The archive preserved submodule mount-point directories but not their contents, so the SingleController actor could not import Megatron while unpickling an object returned by the successfully initialized MegatronPolicyWorker."
+  },
+  "qualification": {
+    "causal_estimate_produced": false,
+    "completed_opportunity_groups": 27,
+    "completed_trainer_steps": 0,
+    "lifecycle_record_count": 481,
+    "neutral_assignments": 43,
+    "observer_duty_corrected": 0.0022186539579803852,
+    "opportunity_record_count": 28,
+    "sibling_done_event_count": 244,
+    "qualification_complete": false,
+    "scientific_acquisition_started": false,
+    "training_started": true
+  },
+  "release": {
+    "bridge_job_id": 426524157,
+    "compute_job_id": 426529991,
+    "compute_job_status": "failed",
+    "downstream_pipeline_id": 66315280,
+    "downstream_pipeline_status": "failed",
+    "generator_job_id": 426524155,
+    "generator_status": "success",
+    "logs_after_job_id": 426529992,
+    "logs_after_status": "success",
+    "logs_before_job_id": 426529990,
+    "logs_before_status": "success",
+    "manifest_sha256": "f7e7a50f42a2841b3b83cae1bf341fd0361212f4d27a647931839248ee03eae9",
+    "parent_pipeline_id": 66314566,
+    "parent_pipeline_status": "failed",
+    "parent_pipeline_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/66314566",
+    "submission_attempt_count": 1
+  },
+  "repair": {
+    "accepted_precedent_manifest_sha256": "fbae4213355a3f4a21e86e8185e7451529f44e3d3a9be65c387a29364143764c",
+    "package_contract": "gsm8k-neutral-qualification-r6-package-contract.json",
+    "scientific_runtime_code_delta_count": 0,
+    "strategy": "Seed the isolated run tree from the pinned /opt/nemo-rl container baseline, overlay the unchanged frozen source archive, then fail closed unless the dependency fingerprint matches the container and Megatron imports from the isolated tree before training."
+  },
+  "schema": "m4-qwen3-1p7b-gsm8k-neutral-qualification-r5-result-v1",
+  "slurm": {
+    "exit_code": 1,
+    "job_id": 5977831
+  },
+  "source_commit": "be0a56c37542f81a6413287fc110f291c07c5156",
+  "status": "FAILED_MISSING_CONTAINER_SUBMODULE_BASELINE",
+  "terminal_artifact": {
+    "embedded_files": {
+      "lifecycle_sha256": "cf4a2999017309f111cc7cb38724b0b22843d194a2ea916ce16c6b4dc4a5c150",
+      "observer_duty_sha256": "07139f74c69073f2f8899d3ba3c695e960498885a6f306796220ddb53f06e4af",
+      "opportunity_sha256": "0df67a0c8ecadbd755b91dc17b3cfffb03ce31f6eed2ad54d87a5d2ec3eff15b",
+      "run_log_sha256": "ec93a01a5b9d9f7e62c5e4bd289fc148b3037504f4c990d31140402647798e87"
+    },
+    "filename": "gsm8k-qualification-r5-66315280-job-426529991.zip",
+    "sha256": "43aff533273fa96b0a3df523307fe4b6a1730ebcd197819d91363598c9a0ef47",
+    "size_bytes": 47318611
+  }
+}
