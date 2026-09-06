@@ -1,6 +1,6 @@
 # Qwen3-1.7B GSM8K M4 confirmatory workload-transport design
 
-Status: `R1_BOOTSTRAP_REPAIR_VALIDATED_AUTHORIZED_PENDING_SUBMISSION`.
+Status: `R1_SUBMITTED_DOWNSTREAM_IDENTITY_VERIFIED_AWAITING_TERMINAL`.
 The replacement preflight and terminal-green R7 qualification are recorded
 separately. The resource and information-yield gates support the now-frozen
 confirmatory package contract. This document does not authorize EOS submission
@@ -161,5 +161,10 @@ Validation parsed Bash and all five embedded Python blocks, proved the standalon
 bootstrap lines are exactly `import nemo_rl` then `import megatron`, confirmed a
 single training entrypoint, and proved the entire scientific execution tail from
 the acquisition-start marker onward is byte-identical to attempt 1. The distinct
-R1 guard is absent at this checkpoint. Submission must still be exactly once
-through `runllm.py --no_wait`, with no automatic retry or extension.
+R1 guard was absent at the pre-submission checkpoint. The package was then
+submitted exactly once through `runllm.py --no_wait`: parent pipeline
+`66508153`, successful generator job `428138575`, downstream pipeline
+`66508187`, and EOS compute job `428138883`. The compute job name exactly
+matches the R1 workload name and carries the `jet-eos` tag. The guard is now
+consumed. This verifies launch identity, not scientific success; terminal
+artifacts remain pending, with no automatic retry or extension permitted.

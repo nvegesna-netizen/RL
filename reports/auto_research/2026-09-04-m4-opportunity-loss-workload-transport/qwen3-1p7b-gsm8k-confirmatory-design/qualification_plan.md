@@ -1,6 +1,6 @@
 # Qwen3-1.7B GSM8K neutral qualification plan
 
-Status: `R1_BOOTSTRAP_REPAIR_VALIDATED_AUTHORIZED_PENDING_SUBMISSION`.
+Status: `R1_SUBMITTED_DOWNSTREAM_IDENTITY_VERIFIED_AWAITING_TERMINAL`.
 
 ## Purpose
 
@@ -177,5 +177,9 @@ terminal evidence and scientific interpretation.
 
 The authorized R1 repair restores R7's required `import nemo_rl` then
 `import megatron` bootstrap order. Its rendered scientific execution tail is
-byte-identical to attempt 1, and its distinct one-shot guard is absent. No
-scientific input changed; see `acquisition_r1_bootstrap_repair.json`.
+byte-identical to attempt 1. It was submitted exactly once through
+`runllm.py --no_wait`: parent `66508153`, successful generator `428138575`,
+downstream `66508187`, and exact `jet-eos` compute job `428138883`. The R1
+one-shot guard is consumed. This is verified launch identity only; the terminal
+scientific result and artifacts are pending. No scientific input changed, and
+retry or extension remains forbidden; see `acquisition_r1_bootstrap_repair.json`.
