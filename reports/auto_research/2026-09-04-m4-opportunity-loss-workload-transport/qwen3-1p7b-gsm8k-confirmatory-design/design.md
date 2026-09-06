@@ -1,10 +1,10 @@
 # Qwen3-1.7B GSM8K M4 confirmatory workload-transport design
 
-Status: `QUALIFICATION_GREEN_PENDING_CONFIRMATORY_PACKAGE_AND_AUTHORIZATION`.
+Status: `CONFIRMATORY_PACKAGE_CONTRACT_FROZEN_PENDING_EXPLICIT_AUTHORIZATION`.
 The replacement preflight and terminal-green R7 qualification are recorded
-separately. The resource and information-yield gates support freezing the fixed
-confirmatory package. This document does not authorize EOS submission or
-scientific acquisition.
+separately. The resource and information-yield gates support the now-frozen
+confirmatory package contract. This document does not authorize EOS submission
+or scientific acquisition.
 
 ## Scientific question
 
@@ -65,3 +65,34 @@ and blocks a decisive claim; it does not authorize additional steps.
 
 Every gate is fail-closed. A failed gate stops the sequence; it does not weaken
 the protocol.
+
+## Frozen confirmatory package boundary
+
+The authorization-independent acquisition package contract has SHA-256
+`a36972e575f31606d2fc38477fe4461ef76e42dc0d410efac4f5e90a041bae40`.
+It binds source commit `be0a56c37542f81a6413287fc110f291c07c5156`, source
+archive SHA-256
+`0130ed6a8af2ad9a37b8dad5d4b44c4cb72e5a5f43a1a6ac5d1066f99e652901`,
+protocol SHA-256
+`84c43e4fc32a7f647505729a556d5e0fb088a38fd7eedd1ea235dd51a4ec3fc7`,
+and terminal R7 artifact SHA-256
+`9e66f58c4a005fdb33673eb6741bb9b254bd5bc46f17828b7f5ec9ca559e51c4`.
+
+The package invokes the GSM8K-specific analyzer
+`tools/opportunity_loss_workload_transport_pipeline.py` (SHA-256
+`9a99af42e759ffb15ba095fecfcc0e07870ee47aa54e09e871636471e45344e3`),
+not the historical OpenMath transport analyzer. The authorization-gated builder
+has SHA-256
+`492377992a2a64b66a628e1ab620f76a015170dd93eb45745f233d8e9d21ed63`.
+It requires the accepted
+container-baseline/source-overlay bootstrap, exact fingerprint equality, a
+Megatron import from the isolated run tree, at least 7,395 primary assignments,
+and explicit exclusion of qualification observations from the estimator.
+
+The requested Slurm duration is 2.5 hours. This is above the R7 projection of
+1.68598 hours while leaving queueing room inside JET's fixed eight-hour
+deadline; the registered four-wall-hour/eight-GPU-hour scientific ceiling is
+unchanged. Retrying and extending remain disabled. No acquisition manifest,
+submission guard, or EOS launch was created while freezing this contract. A
+fresh, exact acquisition authorization is the next required gate, and any
+authorized launcher must use `runllm.py --no_wait`.

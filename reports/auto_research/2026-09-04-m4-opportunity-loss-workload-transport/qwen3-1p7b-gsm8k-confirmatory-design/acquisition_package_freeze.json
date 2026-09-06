@@ -1,0 +1,33 @@
+{
+  "acquisition_manifest_created": false,
+  "acquisition_submission_authorized": false,
+  "analysis_path": "tools/opportunity_loss_workload_transport_pipeline.py",
+  "analysis_sha256": "9a99af42e759ffb15ba095fecfcc0e07870ee47aa54e09e871636471e45344e3",
+  "automatic_extension": false,
+  "automatic_retry": false,
+  "builder_sha256": "492377992a2a64b66a628e1ab620f76a015170dd93eb45745f233d8e9d21ed63",
+  "config_sha256": "b6ed0135388ceb7bb272fc6263f3d97955779949f22cd394696c05d764b9d3c7",
+  "package_contract_sha256": "a36972e575f31606d2fc38477fe4461ef76e42dc0d410efac4f5e90a041bae40",
+  "preflight_artifact_sha256": "94c21c7d8fea68e7c698df94d52c153ca6c7ce324edf0c87fa951c30d63d389d",
+  "preflight_delta_attestation_sha256": "9265ff0747e2543cbbff3eaf9cfb7051290757e5c54f2a8fd4b5f0b817421a00",
+  "preflight_lock_sha256": "5ced4c617c5f0154a2b03b89262583e94b884b6de2f683470cbac984eff99991",
+  "protocol_sha256": "84c43e4fc32a7f647505729a556d5e0fb088a38fd7eedd1ea235dd51a4ec3fc7",
+  "qualification_result_sha256": "e5e04e266752fa252b4dca56eb6a21ec8dd1caf6623a036612db069d003f2bbe",
+  "qualification_terminal_artifact_sha256": "9e66f58c4a005fdb33673eb6741bb9b254bd5bc46f17828b7f5ec9ca559e51c4",
+  "required_launcher": "runllm.py --no_wait",
+  "resource_caps": {
+    "gpu_hour_cap": 8.0,
+    "gpus": 2,
+    "wall_clock_cap_hours": 4.0
+  },
+  "scheduler": {
+    "custom_config_sha256": "61f5f1dc60e22a0b1caea2a71ea760333ddef9b36d8467944763c6b02bafd1aa",
+    "slurm_time_limit_seconds": 9000
+  },
+  "schema": "m4-qwen3-1p7b-gsm8k-confirmatory-acquisition-package-freeze-v1",
+  "source_archive_sha256": "0130ed6a8af2ad9a37b8dad5d4b44c4cb72e5a5f43a1a6ac5d1066f99e652901",
+  "source_commit": "be0a56c37542f81a6413287fc110f291c07c5156",
+  "status": "CONFIRMATORY_PACKAGE_CONTRACT_FROZEN_PENDING_EXPLICIT_AUTHORIZATION",
+  "submission_guard_created": false,
+  "trainer_steps": 558
+}

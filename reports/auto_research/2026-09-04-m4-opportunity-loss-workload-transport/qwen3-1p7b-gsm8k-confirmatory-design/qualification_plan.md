@@ -1,6 +1,6 @@
 # Qwen3-1.7B GSM8K neutral qualification plan
 
-Status: `QUALIFICATION_GREEN_PENDING_CONFIRMATORY_PACKAGE_AND_AUTHORIZATION`.
+Status: `CONFIRMATORY_PACKAGE_CONTRACT_FROZEN_PENDING_EXPLICIT_AUTHORIZATION`.
 
 ## Purpose
 
@@ -148,3 +148,20 @@ GPU-hours.
 Qualification data remain excluded from the causal estimator. This result
 permits separately freezing the confirmatory acquisition package but does not
 authorize its submission.
+
+## Confirmatory package freeze
+
+The authorization-independent package contract is now frozen at SHA-256
+`a36972e575f31606d2fc38477fe4461ef76e42dc0d410efac4f5e90a041bae40`.
+Local validation reconciled the source archive, replacement-preflight artifact
+and 31/2 delta attestation, R7 result and terminal artifact, protocol,
+control:d5 acquisition config, 558-step geometry, resource caps, and the
+GSM8K-specific analysis entrypoint. The builder fails closed without a new
+exact acquisition authorization. No manifest, one-shot guard, submission, or
+acquisition exists at this boundary.
+
+The package requests 2.5 hours from Slurm, compared with R7's conservative
+1.68598-hour projection, and retains the registered four-hour/eight-GPU-hour
+scientific cap. Automatic retry and extension remain false. A future authorized
+submission must use `runllm.py --no_wait` and must not reuse any historical
+qualification or OpenMath acquisition authority.
