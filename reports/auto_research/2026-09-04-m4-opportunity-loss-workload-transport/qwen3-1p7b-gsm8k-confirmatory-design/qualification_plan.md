@@ -1,6 +1,6 @@
 # Qwen3-1.7B GSM8K neutral qualification plan
 
-Status: `CONFIRMATORY_PACKAGE_CONTRACT_FROZEN_PENDING_EXPLICIT_AUTHORIZATION`.
+Status: `CONFIRMATORY_ACQUISITION_SUBMITTED_AWAITING_TERMINAL_RESULT`.
 
 ## Purpose
 
@@ -165,3 +165,9 @@ The package requests 2.5 hours from Slurm, compared with R7's conservative
 scientific cap. Automatic retry and extension remain false. A future authorized
 submission must use `runllm.py --no_wait` and must not reuse any historical
 qualification or OpenMath acquisition authority.
+
+The distinct acquisition was subsequently authorized and submitted exactly
+once through `runllm.py --no_wait`. Parent pipeline `66461092`, generator job
+`427764393`, downstream pipeline `66461158`, and exact EOS compute job
+`427764750` are recorded in `acquisition_submission.json`. The one-shot guard is
+consumed; the run is not yet terminal, and retry or extension remains forbidden.

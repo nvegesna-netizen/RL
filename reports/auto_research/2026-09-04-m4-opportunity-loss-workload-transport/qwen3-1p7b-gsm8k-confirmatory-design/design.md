@@ -1,6 +1,6 @@
 # Qwen3-1.7B GSM8K M4 confirmatory workload-transport design
 
-Status: `CONFIRMATORY_PACKAGE_CONTRACT_FROZEN_PENDING_EXPLICIT_AUTHORIZATION`.
+Status: `CONFIRMATORY_ACQUISITION_SUBMITTED_AWAITING_TERMINAL_RESULT`.
 The replacement preflight and terminal-green R7 qualification are recorded
 separately. The resource and information-yield gates support the now-frozen
 confirmatory package contract. This document does not authorize EOS submission
@@ -96,3 +96,20 @@ unchanged. Retrying and extending remain disabled. No acquisition manifest,
 submission guard, or EOS launch was created while freezing this contract. A
 fresh, exact acquisition authorization is the next required gate, and any
 authorized launcher must use `runllm.py --no_wait`.
+
+## Confirmatory acquisition submission
+
+The user subsequently authorized exactly one acquisition bound to the frozen
+contract. Authorization SHA-256 is
+`2bd233d897d4bedcb1be8416476005a1dc3770a4f5efa6a1abf615eab7362ccf`;
+the validated, authorization-bound manifest SHA-256 is
+`18b817ec76f99b158010f1031f47f0e02c75912fe6b0896afde9e1649f80b9c5`.
+It was submitted once through `runllm.py --no_wait` as parent pipeline
+`66461092`. Generator job `427764393` succeeded and created downstream pipeline
+`66461158`. The exact two-GPU EOS compute identity is job `427764750`,
+`basic/m4-qwen3-1p7b-gsm8k-confirmatory-control-d5-acquisition dgxh100_eos 00
+[2 dgxh100_eos]`.
+
+The one-shot guard is consumed. The acquisition is not yet terminal, so no
+causal or materiality conclusion is available. No retry or extension is
+authorized.
