@@ -1,6 +1,6 @@
 # Qwen3-1.7B GSM8K neutral qualification plan
 
-Status: `CONFIRMATORY_ACQUISITION_SUBMITTED_AWAITING_TERMINAL_RESULT`.
+Status: `ATTEMPT_1_TERMINAL_FAILED_BEFORE_ACQUISITION_NO_SCIENTIFIC_RESULT`.
 
 ## Purpose
 
@@ -170,4 +170,7 @@ The distinct acquisition was subsequently authorized and submitted exactly
 once through `runllm.py --no_wait`. Parent pipeline `66461092`, generator job
 `427764393`, downstream pipeline `66461158`, and exact EOS compute job
 `427764750` are recorded in `acquisition_submission.json`. The one-shot guard is
-consumed; the run is not yet terminal, and retry or extension remains forbidden.
+consumed. The attempt subsequently failed at the pre-acquisition Megatron import
+gate before any training or scientific ledger was created; retry or extension
+remains forbidden. See `acquisition_attempt_1_failure.md` for the reconciled
+terminal evidence and scientific interpretation.

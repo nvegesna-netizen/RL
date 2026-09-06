@@ -1,0 +1,70 @@
+{
+  "acquisition_start_marker_present": false,
+  "automatic_extension": false,
+  "automatic_retry": false,
+  "causal_estimate_produced": false,
+  "compute_job": {
+    "duration_seconds_including_queue": 5192.070951,
+    "failure_reason": "script_failure",
+    "id": 427764750,
+    "status": "failed"
+  },
+  "downstream_pipeline": {
+    "id": 66461158,
+    "status": "failed"
+  },
+  "failure": {
+    "classification": "PRE_ACQUISITION_PACKAGE_GATE_IMPORT_ORDER_OMISSION",
+    "exception": "ModuleNotFoundError: No module named 'megatron'",
+    "failed_gate": "isolated_run_tree_fingerprint_and_megatron_import",
+    "repair_scope": "import_nemo_rl_before_import_megatron_as_in_terminal_green_r7_builder"
+  },
+  "generator_job": {
+    "id": 427764393,
+    "status": "success"
+  },
+  "logs_after_job": {
+    "id": 427764751,
+    "status": "success"
+  },
+  "logs_before_job": {
+    "id": 427764749,
+    "status": "success"
+  },
+  "markers": {
+    "acquisition_config_pass": false,
+    "acquisition_start": false,
+    "frozen_authority_pass": false,
+    "safe_archive_pass": true,
+    "single_controller_complete_558": false
+  },
+  "parent_pipeline": {
+    "id": 66461092,
+    "status": "failed",
+    "url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/66461092"
+  },
+  "produced_scientific_artifacts": {
+    "acquisition_run_log": false,
+    "causal_result": false,
+    "lifecycle_ledger": false,
+    "observer_duty": false,
+    "opportunity_ledger": false,
+    "summary": false
+  },
+  "qualification_data_entered_estimator": false,
+  "schema": "m4-qwen3-1p7b-gsm8k-confirmatory-acquisition-attempt-1-failure-v1",
+  "scientific_interpretation": "NO_SCIENTIFIC_RESULT_GSM8K_CONFIRMATORY_QUESTION_REMAINS_OPEN",
+  "slurm": {
+    "allocation_node": "eos0514",
+    "job_id": 5983488,
+    "rank_exit_code": 1,
+    "requested_time": "02:30:00"
+  },
+  "terminal_artifact": {
+    "output_log_sha256": "ab37b7617a19407d8ae0729af3352d942c58e7e2a5380e624a2c8942aac89857",
+    "sha256": "971c8479e55e5d4031ce6d09fe8c9dbff41f817d71c4ee76f6509c31c2716f01",
+    "size_bytes": 47241819,
+    "slurm_log_sha256": "f6d70805a5432e15caa890da5ebd884d3424250f1107a00a9bed1a641a55cea3"
+  },
+  "trainer_steps_completed": 0
+}

@@ -1,6 +1,6 @@
 # Qwen3-1.7B GSM8K M4 confirmatory workload-transport design
 
-Status: `CONFIRMATORY_ACQUISITION_SUBMITTED_AWAITING_TERMINAL_RESULT`.
+Status: `ATTEMPT_1_TERMINAL_FAILED_BEFORE_ACQUISITION_NO_SCIENTIFIC_RESULT`.
 The replacement preflight and terminal-green R7 qualification are recorded
 separately. The resource and information-yield gates support the now-frozen
 confirmatory package contract. This document does not authorize EOS submission
@@ -110,6 +110,35 @@ It was submitted once through `runllm.py --no_wait` as parent pipeline
 `basic/m4-qwen3-1p7b-gsm8k-confirmatory-control-d5-acquisition dgxh100_eos 00
 [2 dgxh100_eos]`.
 
-The one-shot guard is consumed. The acquisition is not yet terminal, so no
-causal or materiality conclusion is available. No retry or extension is
+The one-shot guard is consumed. The attempt terminated before acquisition, so
+no causal or materiality conclusion is available. No retry or extension is
 authorized.
+
+## Attempt 1 terminal result
+
+Parent pipeline `66461092`, downstream pipeline `66461158`, and EOS compute job
+`427764750` terminated failed; generator `427764393`, logs-before `427764749`,
+and logs-after `427764751` succeeded. The compute artifact is 47,241,819 bytes
+with SHA-256
+`971c8479e55e5d4031ce6d09fe8c9dbff41f817d71c4ee76f6509c31c2716f01`.
+Slurm job `5983488` received an allocation after approximately 1 hour 23
+minutes of queueing. The workload script then failed within about five seconds
+of starting its package gates, with rank exit code 1.
+
+All frozen input hashes and safe archive extraction passed. The next bootstrap
+check raised `ModuleNotFoundError: No module named 'megatron'`. The acquisition
+builder imported `megatron` directly, whereas the terminal-green R7 builder
+first imported `nemo_rl`, which registers the vendored Megatron path, and then
+imported `megatron`. This is a package-gate import-order omission, not a model,
+workload, intervention, estimator, or resource failure.
+
+The fingerprint/Megatron pass marker, frozen-authority pass, config pass,
+acquisition-start marker, and 558-step completion marker are all absent. The
+artifact also contains no acquisition run log, lifecycle ledger, opportunity
+ledger, observer-duty record, causal result, summary, or checksum ledger. Thus
+zero confirmatory observations entered an estimator, and this attempt provides
+no evidence for or against materiality on GSM8K. The R7 qualification remains
+green; the GSM8K confirmatory question remains open. Any operational repair
+would require a new package, validation that exactly reproduces the accepted
+R7 import order, and fresh explicit authorization. It would not be an automatic
+retry or a scientific protocol change.

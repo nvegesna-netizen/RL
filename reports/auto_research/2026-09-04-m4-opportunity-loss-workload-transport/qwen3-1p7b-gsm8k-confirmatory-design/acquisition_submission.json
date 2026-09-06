@@ -4,8 +4,10 @@
   "authorization_sha256": "2bd233d897d4bedcb1be8416476005a1dc3770a4f5efa6a1abf615eab7362ccf",
   "compute_job_id": 427764750,
   "compute_job_status_at_identity_check": "created",
+  "compute_job_terminal_status": "failed",
   "downstream_pipeline_id": 66461158,
   "downstream_pipeline_status_at_identity_check": "running",
+  "downstream_pipeline_terminal_status": "failed",
   "exact_compute_identity": "basic/m4-qwen3-1p7b-gsm8k-confirmatory-control-d5-acquisition dgxh100_eos 00 [2 dgxh100_eos]",
   "generator_job_id": 427764393,
   "generator_status_at_identity_check": "success",
@@ -19,7 +21,9 @@
   "required_launcher": "runllm.py --no_wait",
   "schema": "m4-qwen3-1p7b-gsm8k-confirmatory-acquisition-submission-v1",
   "slurm_time_limit": "02:30:00",
-  "status": "CONFIRMATORY_ACQUISITION_SUBMITTED_AWAITING_TERMINAL_RESULT",
+  "status": "ATTEMPT_1_TERMINAL_FAILED_BEFORE_ACQUISITION_NO_SCIENTIFIC_RESULT",
   "submission_attempt_count": 1,
+  "terminal_artifact_sha256": "971c8479e55e5d4031ce6d09fe8c9dbff41f817d71c4ee76f6509c31c2716f01",
+  "terminal_artifact_size_bytes": 47241819,
   "trainer_steps": 558
 }
