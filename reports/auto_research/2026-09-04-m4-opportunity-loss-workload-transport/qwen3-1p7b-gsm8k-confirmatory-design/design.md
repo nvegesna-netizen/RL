@@ -1,6 +1,6 @@
 # Qwen3-1.7B GSM8K M4 confirmatory workload-transport design
 
-Status: `ATTEMPT_1_TERMINAL_FAILED_BEFORE_ACQUISITION_NO_SCIENTIFIC_RESULT`.
+Status: `R1_BOOTSTRAP_REPAIR_VALIDATED_AUTHORIZED_PENDING_SUBMISSION`.
 The replacement preflight and terminal-green R7 qualification are recorded
 separately. The resource and information-yield gates support the now-frozen
 confirmatory package contract. This document does not authorize EOS submission
@@ -142,3 +142,24 @@ green; the GSM8K confirmatory question remains open. Any operational repair
 would require a new package, validation that exactly reproduces the accepted
 R7 import order, and fresh explicit authorization. It would not be an automatic
 retry or a scientific protocol change.
+
+## R1 bootstrap repair
+
+The user authorized a narrow successor repair and one EOS rerun. The repaired
+builder adds exactly the missing `import nemo_rl` before `import megatron`,
+matching terminal-green R7 and the path-registration behavior implemented in
+`nemo_rl/__init__.py`. No scientific runtime file, source archive, protocol,
+config, arm, assignment, window, estimator, threshold, or resource cap changed.
+
+The repaired package contract SHA-256 is
+`d36354e77bd5f206cc11f41d5a08b9182572096a0f451f9cf95b1e02ec9b09c0`;
+authorization SHA-256 is
+`aced07031b2969222948db6ca0e916f1c6c149f8be5ea03ae88d56b1aa508e16`;
+and the validated manifest SHA-256 is
+`65100dfa1b3a0b8525e32b9498d321f0dc2a66db52a202bd9d03a76227295c17`.
+Validation parsed Bash and all five embedded Python blocks, proved the standalone
+bootstrap lines are exactly `import nemo_rl` then `import megatron`, confirmed a
+single training entrypoint, and proved the entire scientific execution tail from
+the acquisition-start marker onward is byte-identical to attempt 1. The distinct
+R1 guard is absent at this checkpoint. Submission must still be exactly once
+through `runllm.py --no_wait`, with no automatic retry or extension.

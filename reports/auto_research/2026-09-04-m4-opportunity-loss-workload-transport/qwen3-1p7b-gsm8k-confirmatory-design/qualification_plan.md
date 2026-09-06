@@ -1,6 +1,6 @@
 # Qwen3-1.7B GSM8K neutral qualification plan
 
-Status: `ATTEMPT_1_TERMINAL_FAILED_BEFORE_ACQUISITION_NO_SCIENTIFIC_RESULT`.
+Status: `R1_BOOTSTRAP_REPAIR_VALIDATED_AUTHORIZED_PENDING_SUBMISSION`.
 
 ## Purpose
 
@@ -174,3 +174,8 @@ consumed. The attempt subsequently failed at the pre-acquisition Megatron import
 gate before any training or scientific ledger was created; retry or extension
 remains forbidden. See `acquisition_attempt_1_failure.md` for the reconciled
 terminal evidence and scientific interpretation.
+
+The authorized R1 repair restores R7's required `import nemo_rl` then
+`import megatron` bootstrap order. Its rendered scientific execution tail is
+byte-identical to attempt 1, and its distinct one-shot guard is absent. No
+scientific input changed; see `acquisition_r1_bootstrap_repair.json`.

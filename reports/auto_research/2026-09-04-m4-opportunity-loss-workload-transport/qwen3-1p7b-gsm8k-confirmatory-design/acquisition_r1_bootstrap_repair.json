@@ -1,0 +1,39 @@
+{
+  "acquisition_authorized": true,
+  "automatic_extension": false,
+  "automatic_retry": false,
+  "authorization_sha256": "aced07031b2969222948db6ca0e916f1c6c149f8be5ea03ae88d56b1aa508e16",
+  "builder_sha256": "489bb812ca0f78202945795686392fc02c4aa5d541f6e788840ed8ae2be91416",
+  "changed_scientific_runtime_files": 0,
+  "manifest_sha256": "65100dfa1b3a0b8525e32b9498d321f0dc2a66db52a202bd9d03a76227295c17",
+  "package_contract_sha256": "d36354e77bd5f206cc11f41d5a08b9182572096a0f451f9cf95b1e02ec9b09c0",
+  "predecessor_artifact_sha256": "971c8479e55e5d4031ce6d09fe8c9dbff41f817d71c4ee76f6509c31c2716f01",
+  "predecessor_failure": "ModuleNotFoundError: No module named 'megatron'",
+  "protocol_sha256": "84c43e4fc32a7f647505729a556d5e0fb088a38fd7eedd1ea235dd51a4ec3fc7",
+  "repair": {
+    "classification": "PACKAGE_GATE_IMPORT_ORDER_ONLY",
+    "new_sequence": [
+      "import nemo_rl",
+      "import megatron"
+    ],
+    "old_sequence": [
+      "import megatron"
+    ]
+  },
+  "required_launcher": "runllm.py --no_wait",
+  "schema": "m4-qwen3-1p7b-gsm8k-confirmatory-acquisition-r1-bootstrap-repair-v1",
+  "scientific_execution_tail_byte_identical_to_attempt_1": true,
+  "slurm_time_limit": "02:30:00",
+  "source_archive_sha256": "0130ed6a8af2ad9a37b8dad5d4b44c4cb72e5a5f43a1a6ac5d1066f99e652901",
+  "source_commit": "be0a56c37542f81a6413287fc110f291c07c5156",
+  "status": "R1_BOOTSTRAP_REPAIR_VALIDATED_AUTHORIZED_PENDING_SUBMISSION",
+  "submission_attempt_limit": 1,
+  "trainer_steps": 558,
+  "validation": {
+    "embedded_python_blocks": 5,
+    "r1_guard_absent": true,
+    "r7_bootstrap_import_order": true,
+    "shell_syntax": true,
+    "single_training_entrypoint": true
+  }
+}
