@@ -52,6 +52,7 @@ from nemo_rl.algorithms.async_utils.staleness_sampler import create_sampler
 from nemo_rl.algorithms.async_utils.scheduler_trace import (
     JsonlSchedulerTraceSink,
     NoopSchedulerTraceSink,
+    Scalar,
     SchedulerEventType,
 )
 from nemo_rl.algorithms.single_controller_utils.config import (
@@ -83,7 +84,7 @@ Generation = Union[VllmGeneration, SGLangGeneration]
 
 def _resolved_generation_trace_summaries(
     master_config: MasterConfig,
-) -> dict[str, str | int | float | bool]:
+) -> dict[str, Scalar]:
     """Return provenance-critical values from the resolved runtime config."""
     generation = master_config.policy.get("generation")
     if generation is None:
