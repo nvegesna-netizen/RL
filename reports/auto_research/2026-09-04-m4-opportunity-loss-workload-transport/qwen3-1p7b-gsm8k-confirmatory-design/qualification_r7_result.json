@@ -1,0 +1,88 @@
+{
+  "automatic_extension": false,
+  "automatic_retry": false,
+  "gate": {
+    "decision": "GO_TO_PROSPECTIVE_CONFIRMATORY_PACKAGING",
+    "qualification_data_allowed_in_confirmatory_estimator": false,
+    "separate_frozen_package_and_explicit_acquisition_authorization_required": true
+  },
+  "qualification": {
+    "acquisition_started": false,
+    "assignment_count": 550,
+    "automatic_extension": false,
+    "automatic_retry": false,
+    "causal_estimate_produced": false,
+    "checks": {
+      "binary_reward_support": true,
+      "complete_steps": true,
+      "gpu_hour_projection": true,
+      "group_ids_unique": true,
+      "information_yield": true,
+      "neutral_zero_dose_instrument": true,
+      "observer_duty": true,
+      "wall_time_projection": true
+    },
+    "controlled_release_arms": [
+      {
+        "delay_seconds": 0.0,
+        "label": "neutral",
+        "mass": 1
+      }
+    ],
+    "corrected_observer_duty": 0.0026049437256392186,
+    "fixed_overhead_seconds": 156.33757470400002,
+    "gpus": 2,
+    "mean_completed_step_interval_seconds": 8.421667702709678,
+    "observed_start_version_count": 32,
+    "opportunity_group_count": 534,
+    "projected_558_step_gpu_hours": 3.3719639950111113,
+    "projected_558_step_wall_hours": 1.6859819975055557,
+    "qualification_complete": true,
+    "reward_values": [
+      0.0,
+      1.0
+    ],
+    "trainer_steps": 32,
+    "wall_time_seconds": 417.409273488
+  },
+  "release": {
+    "compute_job_id": 427180439,
+    "compute_job_status": "success",
+    "downstream_pipeline_id": 66390878,
+    "downstream_pipeline_status": "success",
+    "generator_job_id": 427178514,
+    "generator_status": "success",
+    "logs_after_job_id": 427180440,
+    "logs_after_status": "success",
+    "logs_before_job_id": 427180438,
+    "logs_before_status": "success",
+    "manifest_sha256": "0b532760600e290c65b524b5ba258a3e007c7568c5148fcf60ed4c89d4cfd1a8",
+    "parent_pipeline_id": 66390680,
+    "parent_pipeline_status": "success",
+    "parent_pipeline_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/66390680",
+    "submission_attempt_count": 1
+  },
+  "schema": "m4-qwen3-1p7b-gsm8k-neutral-qualification-r7-result-v1",
+  "slurm": {
+    "derived_exit_code": "0:0",
+    "exit_code": "0:0",
+    "job_id": 5980958,
+    "queue_time": "02:43:49",
+    "runtime": "00:09:56",
+    "state": "COMPLETED"
+  },
+  "source_commit": "be0a56c37542f81a6413287fc110f291c07c5156",
+  "status": "QUALIFICATION_GREEN",
+  "terminal_artifact": {
+    "embedded_files": {
+      "lifecycle_sha256": "4ac19ece0924ed3eb723fcf46777c98ffe9d921f5f0c191bc03c2ca0359d40d3",
+      "observer_duty_sha256": "7e507e398bb7a88993c3e6b663fb4f83059f34fac8ddccc3489db58739288f2c",
+      "opportunity_sha256": "1a65c849316859fb2fb028e468d59f28737e79b7b83068a3f98002fe2deaa8aa",
+      "run_log_sha256": "d7fd67365b7a2acf25d796b0a2a23397b5c4697547dfbbf9ed9010d6ebf79607",
+      "summary_sha256": "9964695c7725b20b18ad425814795a0a8bcfab6bfad3e568161d354525aa3360"
+    },
+    "filename": "gsm8k-qualification-r7-66390878-job-427180439.zip",
+    "sha256": "9e66f58c4a005fdb33673eb6741bb9b254bd5bc46f17828b7f5ec9ca559e51c4",
+    "size_bytes": 47825046
+  }
+}

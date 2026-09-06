@@ -1,10 +1,10 @@
 # Qwen3-1.7B GSM8K M4 confirmatory workload-transport design
 
-Status: `NO_TRAINING_PREFLIGHT_GREEN_R6_SCHEDULER_DEADLINE_FAILURE`. The
-replacement preflight and qualification terminal results are recorded
-separately. A shorter-allocation R7 scheduling repair is locally validated but
-not authorized. This document does not authorize training, GPU use, EOS
-submission, neutral qualification, or scientific acquisition.
+Status: `QUALIFICATION_GREEN_PENDING_CONFIRMATORY_PACKAGE_AND_AUTHORIZATION`.
+The replacement preflight and terminal-green R7 qualification are recorded
+separately. The resource and information-yield gates support freezing the fixed
+confirmatory package. This document does not authorize EOS submission or
+scientific acquisition.
 
 ## Scientific question
 

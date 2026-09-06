@@ -1,6 +1,6 @@
 # Qwen3-1.7B GSM8K neutral qualification plan
 
-Status: `R7_SCHEDULER_REPAIR_SUBMITTED_ONCE_PIPELINE_66390680`.
+Status: `QUALIFICATION_GREEN_PENDING_CONFIRMATORY_PACKAGE_AND_AUTHORIZATION`.
 
 ## Purpose
 
@@ -134,3 +134,17 @@ SHA-256 is
 `0b532760600e290c65b524b5ba258a3e007c7568c5148fcf60ed4c89d4cfd1a8`.
 The one-shot guard is consumed; no retry, extension, or confirmatory acquisition
 is authorized.
+
+## R7 terminal result
+
+R7 is terminal green. Parent `66390680`, downstream `66390878`, EOS compute
+`427180439`, and Slurm `5980958` succeeded without retry. The fingerprint and
+Megatron bootstrap repair passed, all 32 steps completed, and all eight frozen
+qualification gates passed. The run produced 534 complete opportunity groups
+across 32 start versions, corrected observer duty 0.00260494, and binary reward
+support. It projects the fixed 558-step design at 1.68598 wall-hours and 3.37196
+GPU-hours.
+
+Qualification data remain excluded from the causal estimator. This result
+permits separately freezing the confirmatory acquisition package but does not
+authorize its submission.
