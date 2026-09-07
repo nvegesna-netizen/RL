@@ -1,0 +1,68 @@
+{
+  "artifact": {
+    "archive_members": 33,
+    "filename": "grid-preflight-66657895-job-429391919.zip",
+    "sha256": "d938bffc23c4eb3d14d22ceec0dd777202543fe5a64bf0e13d30aff7163e1e26",
+    "size_bytes": 104528110,
+    "zip_integrity": "PASS"
+  },
+  "container_evidence": {
+    "archive_members": 1950,
+    "archive_symlinks": 16,
+    "automatic_extension": false,
+    "automatic_retry": false,
+    "config_resolved": true,
+    "full_selected_tests_green": true,
+    "locked_files_reconciled_to_source_archive": 49,
+    "pytest_passed": 150,
+    "pytest_warnings": 17,
+    "ruff_check": "PASS",
+    "ruff_format_check": "PASS",
+    "source_files_compiled": true
+  },
+  "gate_interpretation": {
+    "acquisition_started": false,
+    "no_training_preflight_gate": "PASS",
+    "qualification_package_may_now_be_built": true,
+    "qualification_started": false,
+    "scientific_acquisition_authorized_by_this_result": false,
+    "training_started": false
+  },
+  "lock": {
+    "automatic_extension": false,
+    "automatic_retry": false,
+    "common_grid_versions": 400,
+    "files_reconciled_to_source_archive": 49,
+    "max_num_epochs": 2,
+    "minimum_primary_assignments": 7395,
+    "model": "Qwen3-0.6B",
+    "protocol_sha256": "b6682795071d12a5d6b3eddcdf73536e045949f08ce881885dd330fba9885db6",
+    "sha256": "fb8d0ee532bc8fc688154a9ce19bc9747be9ad5872254ebb9143311be99914ce",
+    "source_archive_sha256": "6152ed6c879241a68ccb0081ed7b886ca23e6b52aba52017400fa9327c3c0e36",
+    "source_commit": "3f2f959167ed4a4be1d353d8dafb45321aad95c3",
+    "trainer_steps": 558
+  },
+  "release": {
+    "compute_job_id": 429391918,
+    "compute_runtime_seconds": 251.23646,
+    "compute_status": "success",
+    "downstream_pipeline_duration_seconds": 550,
+    "downstream_pipeline_id": 66657895,
+    "downstream_status": "success",
+    "generator_job_id": 429391262,
+    "generator_status": "success",
+    "logs_after_job_id": 429391919,
+    "logs_after_status": "success",
+    "logs_before_job_id": 429391917,
+    "logs_before_status": "success",
+    "parent_pipeline_duration_seconds": 639,
+    "parent_pipeline_id": 66657829,
+    "parent_status": "success",
+    "slurm_exit_code": 0,
+    "slurm_job_id": 5989387,
+    "submission_attempt_count": 1
+  },
+  "schema": "m4-qwen3-0p6b-gsm8k-grid-no-training-preflight-terminal-result-v1",
+  "status": "SUCCESS_GRID_NO_TRAINING_PREFLIGHT_GREEN",
+  "summary_sha256": "3e515c115803b07d2a6b404a1ce3f6851d566ee6f4057f4618ca645edb7ff49e"
+}

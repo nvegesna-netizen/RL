@@ -1,6 +1,6 @@
 # Qwen3-0.6B/GSM8K M4 grid-completion design
 
-Status: `FROZEN_LOCAL_PACKAGE_PENDING_NO_TRAINING_PREFLIGHT`.
+Status: `NO_TRAINING_PREFLIGHT_GREEN_QUALIFICATION_PACKAGE_PENDING`.
 
 ## Scientific question
 
@@ -110,3 +110,24 @@ per independently seeded cell.
    required before one `runllm.py --no_wait` submission.
 
 This design creates no EOS or acquisition authority.
+
+## No-training preflight result
+
+The frozen package passed its single authorized containerized no-training
+preflight. Parent pipeline `66657829` and downstream pipeline `66657895` both
+succeeded. Slurm job `5989387` exited zero. The pinned environment resolved the
+configuration, safely unpacked all 1,950 source-archive members, passed 150
+selected tests, passed Ruff check and format validation, compiled the selected
+sources, and built the fail-closed lock.
+
+The terminal artifact SHA-256 is
+`d938bffc23c4eb3d14d22ceec0dd777202543fe5a64bf0e13d30aff7163e1e26`.
+The lock SHA-256 is
+`fb8d0ee532bc8fc688154a9ce19bc9747be9ad5872254ebb9143311be99914ce`.
+All 49 locked files were reconciled byte-for-byte to source archive
+`6152ed6c879241a68ccb0081ed7b886ca23e6b52aba52017400fa9327c3c0e36`
+at source commit `3f2f959167ed4a4be1d353d8dafb45321aad95c3`.
+
+The preflight trained nothing and acquired no scientific observations. It
+authorizes neither qualification nor acquisition. The next gate is to build,
+review, and separately authorize one neutral 32-step qualification package.
