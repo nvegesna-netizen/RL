@@ -245,3 +245,11 @@ assignments, and exclusion of R1 and qualification observations. The scheduler
 request remains 2.5 hours on two GPUs, within the four-hour/eight-GPU-hour cap;
 retry and extension are disabled. No acquisition submission release or guard
 exists at this checkpoint. See `acquisition_r2_package_freeze.json`.
+
+The separately authorized one-shot release was then submitted with
+`runllm.py --no_wait`. Parent pipeline `66570975` created downstream pipeline
+`66571072`, which contains the exact R2 acquisition workload: logs-before job
+`428679286`, EOS compute job `428679287`, and logs-after job `428679288`.
+The single-use guard is consumed and no retry is permitted. This records a
+correct launch only; the scientific status remains pending until the terminal
+artifact is retrieved and reconciled. See `acquisition_r2_submission.json`.

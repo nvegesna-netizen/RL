@@ -1,0 +1,52 @@
+{
+  "authority": {
+    "automatic_extension": false,
+    "automatic_retry": false,
+    "authorization_message": "I authorize",
+    "required_launcher": "runllm.py --no_wait",
+    "scope": "exactly_one_submission_of_frozen_qwen3_1p7b_gsm8k_r2_control_d5_558_step_acquisition",
+    "submission_attempt_limit": 1
+  },
+  "frozen_package": {
+    "manifest_sha256": "a7420a4252940cd1cfc6ab48883d1312d3d850fd1602830733b050abea438180",
+    "package_contract_sha256": "4ac2cd53c9ea1cec41849cde92d8b2d22ec49af9846e9eb4a3af1c3f6371c9fb",
+    "package_receipt_sha256": "892b8f340fe93318eeec8e4309a4867482a959b73789d0c55f1c8001ec362497",
+    "preflight_artifact_sha256": "6c2cb9ec94cf3ab944d6c8a6eb6c3686761c1d55c4580d9e99e7116c31ea69e4",
+    "protocol_sha256": "3413bde3718563157cee5d504f174710f65406dd7f1effd8ad2755a03d73b69e",
+    "source_archive_sha256": "a6f65efa8ce6ef00e22968c60c4ad169c6d7595dda28b013cd7716fa6066d1d9",
+    "source_commit": "b79e419aea95b5226ac4274c9a1535251658b5a5"
+  },
+  "release": {
+    "compute_job_id": 428679287,
+    "compute_status_at_record": "created",
+    "downstream_pipeline_id": 66571072,
+    "downstream_status_at_record": "running",
+    "generator_job_id": 428678428,
+    "generator_status": "success",
+    "logs_after_job_id": 428679288,
+    "logs_after_status_at_record": "created",
+    "logs_before_job_id": 428679286,
+    "logs_before_status_at_record": "running",
+    "parent_pipeline_id": 66570975,
+    "parent_status_at_record": "running",
+    "submission_attempt_count": 1,
+    "trigger_bridge_job_id": 428678429,
+    "workload_name": "basic/m4-qwen3-1p7b-gsm8k-confirmatory-control-d5-acquisition-r2 dgxh100_eos 00"
+  },
+  "release_evidence": {
+    "launcher_sha256": "c4555bd276ea6a74a93a03e8555f780a2f32fe26deafa93b81bed60d39d7549e",
+    "submission_authorization_sha256": "94b5e71a6910dcb37af5d190be408c2929645ca1c82b3116d47f915c776e85b3",
+    "submission_guard_sha256": "f9cc316561b3145a4d349d1554fa0ac628dec6319391f4ce801698fd073c2767"
+  },
+  "resource_caps": {
+    "automatic_extension": false,
+    "automatic_retry": false,
+    "gpu_hour_cap": 8.0,
+    "gpus": 2,
+    "scheduler_time_limit_seconds": 9000,
+    "wall_clock_cap_hours": 4.0
+  },
+  "schema": "m4-qwen3-1p7b-gsm8k-confirmatory-acquisition-r2-submission-v1",
+  "scientific_result": null,
+  "status": "SUBMITTED_RUNNING_RESULT_PENDING"
+}
