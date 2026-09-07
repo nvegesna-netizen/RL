@@ -166,6 +166,7 @@ def _parse_protocol(
         "m4-opportunity-loss-adjusted-followup-v1",
         "m4-opportunity-loss-qwen3-1p7b-transport-v1",
         "m4-opportunity-loss-qwen3-1p7b-gsm8k-workload-transport-v1",
+        "m4-opportunity-loss-qwen3-1p7b-gsm8k-workload-transport-r2-v1",
     }:
         raise OpportunityLossPipelineError("protocol identity disagrees")
     assignment = _mapping(raw.get("assignment"), name="assignment")
@@ -337,6 +338,7 @@ def _parse_protocol(
         "m4-opportunity-loss-adjusted-followup-v1",
         "m4-opportunity-loss-qwen3-1p7b-transport-v1",
         "m4-opportunity-loss-qwen3-1p7b-gsm8k-workload-transport-v1",
+        "m4-opportunity-loss-qwen3-1p7b-gsm8k-workload-transport-r2-v1",
     }:
         if (
             analysis.get("primary_estimator")

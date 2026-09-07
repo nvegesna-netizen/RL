@@ -29,18 +29,32 @@ def validate_workload_transport_contract(
     options: Mapping[str, object],
 ) -> None:
     """Validate the exact prospectively frozen GSM8K transport contract."""
-    if options["protocol_identity"] != (
-        "m4-opportunity-loss-qwen3-1p7b-gsm8k-workload-transport-v1"
-    ):
+    identity = options["protocol_identity"]
+    identities = {
+        "m4-opportunity-loss-qwen3-1p7b-gsm8k-workload-transport-v1": {
+            "assignment_domain": "m4-opportunity-loss-qwen3-1p7b-gsm8k-v1",
+            "assignment_seed": 20260911,
+            "bootstrap_seed": 20260912,
+            "max_num_epochs": None,
+        },
+        "m4-opportunity-loss-qwen3-1p7b-gsm8k-workload-transport-r2-v1": {
+            "assignment_domain": "m4-opportunity-loss-qwen3-1p7b-gsm8k-r2-v1",
+            "assignment_seed": 20260913,
+            "bootstrap_seed": 20260914,
+            "max_num_epochs": 2,
+        },
+    }
+    if identity not in identities:
         raise OpportunityLossPipelineError("workload transport protocol disagrees")
+    identity_contract = identities[identity]
     if tuple((arm.label, arm.delay_seconds, arm.mass) for arm in protocol.arms) != (
         ("control", 0.0, 1),
         ("d5", 5.0, 1),
     ):
         raise OpportunityLossPipelineError("workload transport arms disagree")
     if (
-        protocol.assignment_domain != "m4-opportunity-loss-qwen3-1p7b-gsm8k-v1"
-        or protocol.assignment_seed != 20260911
+        protocol.assignment_domain != identity_contract["assignment_domain"]
+        or protocol.assignment_seed != identity_contract["assignment_seed"]
         or protocol.primary_start_version != 8
         or protocol.primary_end_version != 507
     ):
@@ -52,7 +66,7 @@ def validate_workload_transport_contract(
         or options.get("hac_lag") != 4
         or options.get("block_size") != 8
         or options.get("bootstrap_draws") != 20000
-        or options.get("bootstrap_seed") != 20260912
+        or options.get("bootstrap_seed") != identity_contract["bootstrap_seed"]
         or options.get("max_staleness_versions") != 1
     ):
         raise OpportunityLossPipelineError(
@@ -64,7 +78,7 @@ def validate_workload_transport_contract(
         "terminal_guard_start_versions": [508, 557],
     }:
         raise OpportunityLossPipelineError("workload transport windows disagree")
-    if raw.get("runtime") != {
+    expected_runtime = {
         "buffer_capacity": 64,
         "generations_per_prompt": 8,
         "inflight_prompts": 16,
@@ -74,8 +88,19 @@ def validate_workload_transport_contract(
         "sampler": "windowed_fifo",
         "train_global_batch_size": 32,
         "trainer_steps": 558,
-    }:
+    }
+    if identity_contract["max_num_epochs"] is not None:
+        expected_runtime["max_num_epochs"] = identity_contract["max_num_epochs"]
+    if raw.get("runtime") != expected_runtime:
         raise OpportunityLossPipelineError("workload transport runtime disagrees")
+    if identity.endswith("-r2-v1") and raw.get("exposure") != {
+        "epoch_specific_group_instance_is_assignment_unit": True,
+        "max_num_epochs": 2,
+        "r1_observations_enter_estimator": False,
+        "repeated_prompt_exposure_declared": True,
+        "rollout_pump_cancelled_at_completed_step": 558,
+    }:
+        raise OpportunityLossPipelineError("workload transport exposure disagrees")
     if raw.get("resource_caps") != {
         "automatic_extension": False,
         "automatic_retry": False,
@@ -165,7 +190,11 @@ def build_workload_transport_result(
     )
     return {
         "schema_version": 1,
-        "result_scope": "qwen3_1p7b_gsm8k_workload_transport_checks",
+        "result_scope": (
+            "qwen3_1p7b_gsm8k_workload_transport_r2_checks"
+            if options["protocol_identity"].endswith("-r2-v1")
+            else "qwen3_1p7b_gsm8k_workload_transport_checks"
+        ),
         "protocol": _sha_size(protocol_data),
         "inputs": {
             "lifecycle": {

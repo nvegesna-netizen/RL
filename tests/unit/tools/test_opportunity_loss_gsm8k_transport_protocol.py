@@ -37,6 +37,10 @@ _CONFIG = (
     _REPO / "examples/configs/"
     "grpo_math_1B_megatron_single_controller_m4_qwen3_1p7b_gsm8k_transport.yaml"
 )
+_R2_CONFIG = (
+    _REPO / "examples/configs/"
+    "grpo_math_1B_megatron_single_controller_m4_qwen3_1p7b_gsm8k_transport_r2.yaml"
+)
 _QUALIFICATION_CONFIG = (
     _REPO / "examples/configs/"
     "grpo_math_1B_megatron_single_controller_m4_qwen3_1p7b_gsm8k_neutral_qualification.yaml"
@@ -48,6 +52,10 @@ _AUDIT = (
 _PROTOCOL = (
     _REPO / "reports/auto_research/2026-09-04-m4-opportunity-loss-workload-transport/"
     "qwen3-1p7b-gsm8k-confirmatory-design/protocol_config.json"
+)
+_R2_PROTOCOL = (
+    _REPO / "reports/auto_research/2026-09-04-m4-opportunity-loss-workload-transport/"
+    "qwen3-1p7b-gsm8k-confirmatory-design/protocol_config_r2.json"
 )
 
 
@@ -155,6 +163,69 @@ def test_gsm8k_protocol_has_frozen_geometry_and_provenance() -> None:
     audit_sha256 = hashlib.sha256(_AUDIT.read_bytes()).hexdigest()
     assert raw["design_evidence"]["workload_compatibility_audit_sha256"] == audit_sha256
     assert raw["status"] == "FROZEN_LOCAL_PROTOCOL_PENDING_NO_TRAINING_PREFLIGHT"
+
+
+def test_gsm8k_r2_is_capacity_only_plus_fresh_identity() -> None:
+    register_omegaconf_resolvers()
+    predecessor = OmegaConf.to_container(load_config(_CONFIG), resolve=True)
+    candidate = OmegaConf.to_container(load_config(_R2_CONFIG), resolve=True)
+    assert isinstance(predecessor, dict) and isinstance(candidate, dict)
+    assert _changed_paths(predecessor, candidate) == {
+        ("async_rl", "controlled_release_delay", "assignment_domain"),
+        ("async_rl", "controlled_release_delay", "seed"),
+        ("async_rl", "gradient_opportunity_audit", "observer_duty_path"),
+        ("async_rl", "gradient_opportunity_audit", "output_path"),
+        ("async_rl", "lifecycle_audit_path"),
+        ("grpo", "max_num_epochs"),
+        ("logger", "log_dir"),
+    }
+    assert candidate["grpo"]["max_num_epochs"] == 2
+    assert candidate["grpo"]["max_num_steps"] == 558
+    assert candidate["async_rl"]["controlled_release_delay"]["seed"] == 20260913
+    assert (
+        candidate["async_rl"]["controlled_release_delay"]["assignment_domain"]
+        == "m4-opportunity-loss-qwen3-1p7b-gsm8k-r2-v1"
+    )
+    validate_single_controller_config(MasterConfig(**candidate))
+
+
+def test_gsm8k_r2_protocol_preserves_inference_and_binds_capacity() -> None:
+    predecessor = json.loads(_PROTOCOL.read_bytes())
+    raw, protocol, options = _parse_protocol(_R2_PROTOCOL.read_bytes())
+    validate_workload_transport_contract(raw, protocol, options)
+    assert options["protocol_identity"] == (
+        "m4-opportunity-loss-qwen3-1p7b-gsm8k-workload-transport-r2-v1"
+    )
+    assert raw["analysis"] == (
+        predecessor["analysis"]
+        | {
+            "inference": predecessor["analysis"]["inference"]
+            | {"bootstrap_seed": 20260914}
+        }
+    )
+    assert raw["runtime"] == predecessor["runtime"] | {"max_num_epochs": 2}
+    assert raw["windows"] == predecessor["windows"]
+    assert raw["resource_caps"] == predecessor["resource_caps"]
+    assert raw["workload"] == predecessor["workload"]
+    assert raw["exposure"] == {
+        "epoch_specific_group_instance_is_assignment_unit": True,
+        "max_num_epochs": 2,
+        "r1_observations_enter_estimator": False,
+        "repeated_prompt_exposure_declared": True,
+        "rollout_pump_cancelled_at_completed_step": 558,
+    }
+    assert protocol.assignment_domain == ("m4-opportunity-loss-qwen3-1p7b-gsm8k-r2-v1")
+    assert protocol.assignment_seed == 20260913
+
+
+def test_gsm8k_r2_rejects_one_epoch_capacity_regression() -> None:
+    mutated = copy.deepcopy(json.loads(_R2_PROTOCOL.read_bytes()))
+    mutated["runtime"]["max_num_epochs"] = 1
+    raw, protocol, options = _parse_protocol(
+        (json.dumps(mutated, sort_keys=True, separators=(",", ":")) + "\n").encode()
+    )
+    with pytest.raises(OpportunityLossPipelineError, match="runtime"):
+        validate_workload_transport_contract(raw, protocol, options)
 
 
 def test_gsm8k_contract_rejects_dataset_mutation() -> None:

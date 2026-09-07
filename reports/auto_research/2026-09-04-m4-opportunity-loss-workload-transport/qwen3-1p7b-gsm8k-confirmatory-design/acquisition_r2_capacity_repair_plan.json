@@ -4,6 +4,16 @@
     "package_frozen": false,
     "submission_guard_created": false
   },
+  "implementation": {
+    "config_sha256": "9c424b2661cd24a673414aa0a4d37d242216294924026051182ff0a96af9923a",
+    "config": "examples/configs/grpo_math_1B_megatron_single_controller_m4_qwen3_1p7b_gsm8k_transport_r2.yaml",
+    "full_ray_test_suite": "REQUIRED_IN_PINNED_CONTAINER_PREFLIGHT",
+    "local_protocol_validation": "PASS",
+    "one_epoch_regression_rejected": true,
+    "protocol": "reports/auto_research/2026-09-04-m4-opportunity-loss-workload-transport/qwen3-1p7b-gsm8k-confirmatory-design/protocol_config_r2.json",
+    "protocol_sha256": "3413bde3718563157cee5d504f174710f65406dd7f1effd8ad2755a03d73b69e",
+    "ruff": "PASS"
+  },
   "empirical_capacity_evidence": {
     "one_epoch_completed_steps": 394,
     "projected_two_epoch_steps_at_observed_selection_rate": 788,
@@ -15,13 +25,13 @@
     "r1_outcomes_may_select_thresholds": false
   },
   "planned_changes": {
-    "assignment_domain": "fresh_r2_domain_required",
-    "assignment_seed": "fresh_r2_seed_required",
+    "assignment_domain": "m4-opportunity-loss-qwen3-1p7b-gsm8k-r2-v1",
+    "assignment_seed": 20260913,
     "max_num_epochs": {
       "from": 1,
       "to": 2
     },
-    "protocol_identity": "fresh_r2_identity_required",
+    "protocol_identity": "m4-opportunity-loss-qwen3-1p7b-gsm8k-workload-transport-r2-v1",
     "repeated_prompt_exposure_unit": "each epoch-specific group instance is a distinct randomized assignment"
   },
   "preserved_contract": {
@@ -64,5 +74,5 @@
     "terminal analyzer still requires at least 7395 primary assignments and all 558 steps"
   ],
   "schema": "m4-qwen3-1p7b-gsm8k-confirmatory-r2-capacity-repair-plan-v1",
-  "status": "LOCAL_PROSPECTIVE_REDESIGN_REQUIRED_NOT_AUTHORIZED"
+  "status": "LOCAL_R2_PROTOCOL_IMPLEMENTED_PENDING_PINNED_PREFLIGHT"
 }

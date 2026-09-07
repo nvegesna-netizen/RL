@@ -213,9 +213,13 @@ epoch; two epochs therefore provide a 230-step empirical margin over the
 cancels the rollout pump when step 558 completes, so it need not consume all of
 epoch two.
 
-The R2 protocol must explicitly define repeated prompt exposures as distinct
-randomized group instances, exclude every R1 observation, bind a capacity gate
-to the two-epoch setting, and independently validate the unchanged inference
-contract. No R2 package, authority, guard, or launch exists at this checkpoint.
-See `acquisition_r1_terminal_failure.json` and
+The local R2 protocol now explicitly defines repeated prompt exposures as
+distinct randomized group instances, excludes every R1 observation, binds the
+two-epoch capacity setting, preserves the unchanged inference contract, and
+uses fresh assignment seed `20260913` and domain
+`m4-opportunity-loss-qwen3-1p7b-gsm8k-r2-v1`. Static protocol parsing, exact
+contract validation, Python compilation, Ruff, and a negative one-epoch
+regression check pass. Full config resolution and Ray-backed tests require the
+pinned container. No R2 package, exact package-bound authority, guard, or launch
+exists at this checkpoint. See `acquisition_r1_terminal_failure.json` and
 `acquisition_r2_capacity_repair_plan.json`.
