@@ -1,0 +1,84 @@
+{
+  "automatic_extension": false,
+  "automatic_retry": false,
+  "config": "examples/configs/grpo_math_1B_megatron_single_controller_m4_qwen3_0p6b_gsm8k_grid_neutral_qualification.yaml",
+  "config_sha256": "956b76b5afd25f5455e1120f91329f9733a2b5169256e9b434720261656aea1c",
+  "dataset": {
+    "name": "gsm8k",
+    "path": "openai/gsm8k",
+    "split": "train",
+    "subset": "main"
+  },
+  "decision_gates": {
+    "binary_reward_support_required": [
+      0,
+      1
+    ],
+    "causal_estimate_allowed": false,
+    "corrected_observer_duty_maximum": 0.01,
+    "minimum_opportunity_groups_per_observed_start_version": 15,
+    "minimum_projected_primary_assignments": 7395,
+    "projection_safety_factor": 1.25,
+    "qualification_data_allowed_in_primary_or_grid_estimator": false,
+    "required_projected_primary_assignments": 7500,
+    "resource_fit_required": true,
+    "two_gpu_projected_gpu_hour_maximum": 8.0,
+    "whole_run_projected_wall_hour_maximum": 4.0
+  },
+  "frozen_acquisition_geometry": {
+    "burn_in_start_versions": [
+      0,
+      7
+    ],
+    "primary_start_versions": [
+      8,
+      507
+    ],
+    "primary_version_count": 500,
+    "terminal_guard_start_versions": [
+      508,
+      557
+    ],
+    "trainer_steps": 558
+  },
+  "neutral_release_configuration": {
+    "arms": [
+      {
+        "delay_seconds": 0.0,
+        "label": "neutral",
+        "mass": 1
+      }
+    ],
+    "controlled_release_enabled": true,
+    "domain": "m4-opportunity-loss-qwen3-0p6b-gsm8k-grid-neutral-qualification-v1",
+    "seed": 20260921
+  },
+  "preflight_evidence": {
+    "artifact_sha256": "d938bffc23c4eb3d14d22ceec0dd777202543fe5a64bf0e13d30aff7163e1e26",
+    "lock_sha256": "fb8d0ee532bc8fc688154a9ce19bc9747be9ad5872254ebb9143311be99914ce",
+    "result_record_sha256": "6f96716d80cb53eef26764f98bfdd84844042a4fe4ae5d836f023d0955d51997",
+    "summary_sha256": "3e515c115803b07d2a6b404a1ce3f6851d566ee6f4057f4618ca645edb7ff49e"
+  },
+  "qualification_instrument": {
+    "causal_intervention": false,
+    "prior_or_qualification_observations_enter_estimators": false,
+    "trainer_steps": 32
+  },
+  "release": {
+    "explicit_user_authority_required": true,
+    "qualification_authorized": true,
+    "required_launcher": "runllm.py --no_wait",
+    "scientific_acquisition_authorized": false,
+    "submission_attempt_limit": 1,
+    "user_authorization": "continue. I authorize"
+  },
+  "resources": {
+    "gpus": 2,
+    "nodes": 1,
+    "qualification_slurm_time_limit": "01:30:00",
+    "trainer_steps": 32,
+    "wall_clock_cap_hours": 4.0
+  },
+  "schema": "m4-qwen3-0p6b-gsm8k-grid-neutral-qualification-plan-v1",
+  "status": "AUTHORIZED_LOCAL_DESIGN_PENDING_PACKAGE_FREEZE"
+}

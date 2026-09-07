@@ -1,6 +1,6 @@
 # Qwen3-0.6B/GSM8K M4 grid-completion design
 
-Status: `NO_TRAINING_PREFLIGHT_GREEN_QUALIFICATION_PACKAGE_PENDING`.
+Status: `QUALIFICATION_DESIGN_AUTHORIZED_PACKAGE_FREEZE_PENDING`.
 
 ## Scientific question
 
@@ -131,3 +131,13 @@ at source commit `3f2f959167ed4a4be1d353d8dafb45321aad95c3`.
 The preflight trained nothing and acquired no scientific observations. It
 authorizes neither qualification nor acquisition. The next gate is to build,
 review, and separately authorize one neutral 32-step qualification package.
+
+## Neutral qualification design
+
+The neutral qualification was separately authorized for exactly one 32-step
+submission. Its resolved configuration differs from the frozen acquisition
+configuration only in the step limit, fresh neutral assignment identity, sole
+zero-second neutral arm, and isolated lifecycle, opportunity, observer-duty,
+and metrics paths. Qualification observations remain excluded from every
+primary and grid estimator. This authorization does not extend to the 558-step
+scientific acquisition.
