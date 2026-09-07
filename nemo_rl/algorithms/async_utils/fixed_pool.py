@@ -149,6 +149,53 @@ SLIDING_PUZZLE_MATERIALIZED_RECORD_FIELDS: Final[frozenset[str]] = frozenset(
         "prompt_builder_version",
     }
 )
+STRUCTURED_GENERATION_DATASET_ID: Final[str] = (
+    "generated/structured-addition-checks"
+)
+STRUCTURED_GENERATION_DATASET_REVISION: Final[str] = "v1"
+STRUCTURED_GENERATION_DATASET_SPLIT: Final[str] = "feasibility"
+STRUCTURED_GENERATION_ORDER_SEED: Final[int] = 45001
+STRUCTURED_GENERATION_SELECTION_SEED: Final[int] = 20260907
+STRUCTURED_GENERATION_MODEL_REVISION: Final[str] = (
+    "a09a35458c702b33eeacc393d103063234e8bc28"
+)
+STRUCTURED_GENERATION_MODEL_WEIGHTS_SHA256: Final[str] = (
+    "456f5eff514d78f7b0ef52a057118046acf15d86606655767db068cabf5f49f7"
+)
+STRUCTURED_GENERATION_PLAN_SHA256: Final[str] = (
+    "8aa2b4e40839b37331311eeda2d7875a922d73128930494dae4172102db71cda"
+)
+STRUCTURED_GENERATION_SOURCE_IDS: Final[tuple[str, str]] = (
+    "structured_short",
+    "structured_long",
+)
+STRUCTURED_GENERATION_CHECK_LINES: Final[dict[str, int]] = {
+    "structured_short": 2,
+    "structured_long": 16,
+}
+STRUCTURED_GENERATION_MATERIALIZED_RECORD_FIELDS: Final[frozenset[str]] = frozenset(
+    {
+        "input",
+        "output",
+        "source_id",
+        "source_dataset_id",
+        "source_revision",
+        "source_split",
+        "source_dataset_index",
+        "source_prompt_id",
+        "repeated_prompt_cluster_id",
+        "selection_stratum",
+        "matching_pair_id",
+        "left_operand",
+        "right_operand",
+        "expected_answer",
+        "required_check_lines",
+        "input_token_count",
+        "input_token_ids_sha256",
+        "selection_seed",
+        "model_revision",
+    }
+)
 
 Sha256Hex: TypeAlias = Annotated[
     str,
@@ -1248,6 +1295,145 @@ def validate_sliding_puzzle_7b_compact_prompt_manifest_design(
     )
 
 
+def validate_structured_generation_latency_manifest_design(
+    manifest: FixedPoolManifest,
+) -> None:
+    """Enforce the frozen structured-generation feasibility design."""
+    if manifest.order_seed != STRUCTURED_GENERATION_ORDER_SEED:
+        raise FixedPoolManifestError("structured-generation order seed mismatch")
+    if (
+        manifest.model_revision != STRUCTURED_GENERATION_MODEL_REVISION
+        or manifest.model_weights_sha256
+        != STRUCTURED_GENERATION_MODEL_WEIGHTS_SHA256
+        or manifest.design_protocol_sha256 != STRUCTURED_GENERATION_PLAN_SHA256
+    ):
+        raise FixedPoolManifestError("structured-generation model or plan mismatch")
+    source_ids = tuple(source.source_id for source in manifest.sources)
+    if source_ids != STRUCTURED_GENERATION_SOURCE_IDS:
+        raise FixedPoolManifestError("structured-generation source order mismatch")
+    expected_identity = (
+        STRUCTURED_GENERATION_DATASET_ID,
+        STRUCTURED_GENERATION_DATASET_REVISION,
+        STRUCTURED_GENERATION_DATASET_SPLIT,
+    )
+    if any(
+        (source.dataset_id, source.revision, source.split) != expected_identity
+        for source in manifest.sources
+    ):
+        raise FixedPoolManifestError("structured-generation source identity mismatch")
+    if tuple(source.materialized_file for source in manifest.sources) != tuple(
+        f"{source_id}.jsonl" for source_id in STRUCTURED_GENERATION_SOURCE_IDS
+    ):
+        raise FixedPoolManifestError("structured-generation filenames mismatch")
+    counts = {
+        source_id: sum(item.task_name == source_id for item in manifest.items)
+        for source_id in STRUCTURED_GENERATION_SOURCE_IDS
+    }
+    if len(manifest.items) != 16 or counts != {
+        source_id: 8 for source_id in STRUCTURED_GENERATION_SOURCE_IDS
+    }:
+        raise FixedPoolManifestError("structured-generation requires balanced 8+8")
+    if any(item.source_id != item.task_name for item in manifest.items):
+        raise FixedPoolManifestError("structured-generation source/task mismatch")
+    by_cohort: dict[int, list[FixedPoolManifestItem]] = {}
+    by_pair: dict[str, list[FixedPoolManifestItem]] = {}
+    for item in manifest.items:
+        by_cohort.setdefault(item.dispatch_cohort, []).append(item)
+        by_pair.setdefault(item.matching_pair_id, []).append(item)
+        if item.input_token_count > 256:
+            raise FixedPoolManifestError("structured-generation input exceeds 256 tokens")
+    if len(by_cohort) != 4 or len(by_pair) != 8:
+        raise FixedPoolManifestError("structured-generation cohort/pair count mismatch")
+    for cohort, items in by_cohort.items():
+        cohort_counts = {
+            source_id: sum(item.task_name == source_id for item in items)
+            for source_id in STRUCTURED_GENERATION_SOURCE_IDS
+        }
+        if (
+            len(items) != 4
+            or cohort_counts
+            != {source_id: 2 for source_id in STRUCTURED_GENERATION_SOURCE_IDS}
+            or {item.decorrelation_block for item in items} != {f"cohort-{cohort}"}
+        ):
+            raise FixedPoolManifestError(
+                f"structured-generation cohort {cohort} is not balanced"
+            )
+    source_rows, _ = _load_materialized_source_rows(manifest)
+    if any(
+        len(source_rows[source_id]) != 8
+        for source_id in STRUCTURED_GENERATION_SOURCE_IDS
+    ):
+        raise FixedPoolManifestError("structured-generation source row count mismatch")
+    records: dict[int, dict[str, object]] = {}
+    for item in manifest.items:
+        record = source_rows[item.source_id][item.materialized_source_row]
+        if set(record) != STRUCTURED_GENERATION_MATERIALIZED_RECORD_FIELDS:
+            raise FixedPoolManifestError(
+                f"structured-generation record schema mismatch at {item.ordinal}"
+            )
+        bound = {
+            "source_id": item.source_id,
+            "source_dataset_id": STRUCTURED_GENERATION_DATASET_ID,
+            "source_revision": STRUCTURED_GENERATION_DATASET_REVISION,
+            "source_split": STRUCTURED_GENERATION_DATASET_SPLIT,
+            "source_dataset_index": item.source_dataset_index,
+            "source_prompt_id": item.source_prompt_id,
+            "repeated_prompt_cluster_id": item.repeated_prompt_cluster_id,
+            "selection_stratum": item.task_name,
+            "matching_pair_id": item.matching_pair_id,
+            "input_token_count": item.input_token_count,
+            "input_token_ids_sha256": item.input_token_ids_sha256,
+            "selection_seed": STRUCTURED_GENERATION_SELECTION_SEED,
+            "model_revision": STRUCTURED_GENERATION_MODEL_REVISION,
+            "required_check_lines": STRUCTURED_GENERATION_CHECK_LINES[item.task_name],
+        }
+        if any(record.get(key) != value for key, value in bound.items()):
+            raise FixedPoolManifestError(
+                f"structured-generation source binding mismatch at {item.ordinal}"
+            )
+        left = _require_nonnegative_record_int(record, "left_operand", ordinal=item.ordinal)
+        right = _require_nonnegative_record_int(
+            record, "right_operand", ordinal=item.ordinal
+        )
+        answer = _require_nonnegative_record_int(
+            record, "expected_answer", ordinal=item.ordinal
+        )
+        if answer != left + right or record.get("output") != str(answer):
+            raise FixedPoolManifestError(
+                f"structured-generation arithmetic mismatch at {item.ordinal}"
+            )
+        if not isinstance(record.get("input"), str) or not record["input"]:
+            raise FixedPoolManifestError(
+                f"structured-generation prompt missing at {item.ordinal}"
+            )
+        records[item.ordinal] = record
+    for pair_id, items in by_pair.items():
+        if (
+            len(items) != 2
+            or {item.task_name for item in items}
+            != set(STRUCTURED_GENERATION_SOURCE_IDS)
+            or len({item.dispatch_cohort for item in items}) != 1
+            or len({item.repeated_prompt_cluster_id for item in items}) != 1
+        ):
+            raise FixedPoolManifestError(
+                f"invalid structured-generation pair {pair_id}"
+            )
+        pair_records = [records[item.ordinal] for item in items]
+        if len(
+            {
+                (record["left_operand"], record["right_operand"], record["expected_answer"])
+                for record in pair_records
+            }
+        ) != 1:
+            raise FixedPoolManifestError(
+                f"structured-generation arithmetic pair mismatch in {pair_id}"
+            )
+        if abs(items[0].input_token_count - items[1].input_token_count) > 4:
+            raise FixedPoolManifestError(
+                f"structured-generation input-token caliper exceeded in {pair_id}"
+            )
+
+
 def validate_fixed_pool_manifest_design(
     manifest: FixedPoolManifest, design_id: str
 ) -> None:
@@ -1265,6 +1451,8 @@ def validate_fixed_pool_manifest_design(
         validate_sliding_puzzle_7b_competence_manifest_design(manifest)
     elif design_id == "sliding_puzzle_7b_compact_prompt_v2":
         validate_sliding_puzzle_7b_compact_prompt_manifest_design(manifest)
+    elif design_id == "structured_generation_latency_v1":
+        validate_structured_generation_latency_manifest_design(manifest)
     else:
         raise FixedPoolManifestError(f"unsupported fixed-pool design_id: {design_id!r}")
 
