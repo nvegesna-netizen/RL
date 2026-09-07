@@ -1,8 +1,8 @@
 {
   "authorization": {
-    "exact_r2_package_release_authority_bound": false,
-    "package_frozen": false,
-    "submission_guard_created": false
+    "exact_r2_package_release_authority_bound": true,
+    "package_frozen": true,
+    "submission_guard_created": true
   },
   "implementation": {
     "config_sha256": "9c424b2661cd24a673414aa0a4d37d242216294924026051182ff0a96af9923a",
@@ -73,6 +73,19 @@
     "two-epoch capacity and 2.5-hour scheduler request fit the four-hour scientific cap",
     "terminal analyzer still requires at least 7395 primary assignments and all 558 steps"
   ],
+  "r2_no_training_preflight_release": {
+    "automatic_retry": false,
+    "compute_job_id": 428610191,
+    "downstream_pipeline_id": 66563008,
+    "logs_after_job_id": 428610192,
+    "logs_before_job_id": 428610190,
+    "manifest_sha256": "3094e8a170aa71883492669c5e92b550fc2cc55c3797e854df6835c3d8791ba2",
+    "parent_pipeline_id": 66562916,
+    "scientific_acquisition_started": false,
+    "source_commit": "b79e419aea95b5226ac4274c9a1535251658b5a5",
+    "submission_attempt_count": 1,
+    "training_started": false
+  },
   "schema": "m4-qwen3-1p7b-gsm8k-confirmatory-r2-capacity-repair-plan-v1",
-  "status": "LOCAL_R2_PROTOCOL_IMPLEMENTED_PENDING_PINNED_PREFLIGHT"
+  "status": "R2_PINNED_NO_TRAINING_PREFLIGHT_RUNNING"
 }

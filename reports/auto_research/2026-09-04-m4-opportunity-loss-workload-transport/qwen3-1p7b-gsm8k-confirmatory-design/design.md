@@ -220,6 +220,12 @@ uses fresh assignment seed `20260913` and domain
 `m4-opportunity-loss-qwen3-1p7b-gsm8k-r2-v1`. Static protocol parsing, exact
 contract validation, Python compilation, Ruff, and a negative one-epoch
 regression check pass. Full config resolution and Ray-backed tests require the
-pinned container. No R2 package, exact package-bound authority, guard, or launch
-exists at this checkpoint. See `acquisition_r1_terminal_failure.json` and
-`acquisition_r2_capacity_repair_plan.json`.
+pinned container. The separately authorized, exactly-once R2 no-training
+preflight was frozen at source commit
+`b79e419aea95b5226ac4274c9a1535251658b5a5` and submitted through
+`runllm.py --no_wait`: parent pipeline `66562916` created downstream pipeline
+`66563008` with the intended no-training workload. Its result remains pending;
+this submission neither starts training nor authorizes the R2 acquisition. See
+`acquisition_r1_terminal_failure.json`,
+`acquisition_r2_capacity_repair_plan.json`, and
+`acquisition_r2_preflight_submission.json`.

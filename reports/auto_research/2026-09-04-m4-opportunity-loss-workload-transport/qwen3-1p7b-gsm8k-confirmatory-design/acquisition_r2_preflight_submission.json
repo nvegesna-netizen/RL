@@ -1,0 +1,42 @@
+{
+  "authority": {
+    "automatic_extension": false,
+    "automatic_retry": false,
+    "required_launcher": "runllm.py --no_wait",
+    "scientific_acquisition_authorized": false,
+    "scope": "exactly_one_containerized_r2_no_training_eos_preflight",
+    "submission_attempt_limit": 1,
+    "training_authorized": false,
+    "user_message": "continue the next step. I authorize launches on eos as well"
+  },
+  "frozen_package": {
+    "manifest_sha256": "3094e8a170aa71883492669c5e92b550fc2cc55c3797e854df6835c3d8791ba2",
+    "package_authorization_sha256": "1e6980aac24edd4dbed4192144fa423ca3e7d27942e86b25a29c327b631badb9",
+    "package_receipt_sha256": "c9d2d0ec9a5c548bbd0dc4424517365401626bdba80ca2a73299d6cbe72d6366",
+    "protocol_sha256": "3413bde3718563157cee5d504f174710f65406dd7f1effd8ad2755a03d73b69e",
+    "r1_failure_sha256": "070e288335786fbd047ace303fb9046fc0bcf8e400a60228f08e1c4fd6518369",
+    "source_archive_sha256": "a6f65efa8ce6ef00e22968c60c4ad169c6d7595dda28b013cd7716fa6066d1d9",
+    "source_commit": "b79e419aea95b5226ac4274c9a1535251658b5a5",
+    "submission_authorization_sha256": "da5dacf1757244d1b92e014a189e8d68877ca12e295a9e00266eacde407d59ee",
+    "submission_guard_sha256": "e1fd35ea4c5690458662d67e07f18f3f82fdb56b590d3789d4bbfe18f0fe4a18"
+  },
+  "release": {
+    "compute_job_id": 428610191,
+    "compute_status_at_record": "created",
+    "downstream_pipeline_id": 66563008,
+    "downstream_status_at_record": "running",
+    "generator_job_id": 428609541,
+    "generator_status": "success",
+    "logs_after_job_id": 428610192,
+    "logs_after_status_at_record": "created",
+    "logs_before_job_id": 428610190,
+    "logs_before_status_at_record": "running",
+    "parent_pipeline_id": 66562916,
+    "parent_status_at_record": "running",
+    "submission_attempt_count": 1,
+    "trigger_bridge_job_id": 428609542,
+    "workload_name": "basic/m4-qwen3-1p7b-gsm8k-r2-no-training-preflight dgxh100_eos 00"
+  },
+  "schema": "m4-qwen3-1p7b-gsm8k-r2-no-training-preflight-submission-v1",
+  "status": "SUBMITTED_RUNNING_RESULT_PENDING"
+}
