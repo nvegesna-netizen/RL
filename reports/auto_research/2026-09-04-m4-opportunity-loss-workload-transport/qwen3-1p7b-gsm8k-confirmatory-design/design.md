@@ -1,6 +1,6 @@
 # Qwen3-1.7B GSM8K M4 confirmatory workload-transport design
 
-Status: `R1_SUBMITTED_DOWNSTREAM_IDENTITY_VERIFIED_AWAITING_TERMINAL`.
+Status: `R1_TERMINAL_INCOMPLETE_FINITE_EPOCH_EXHAUSTION`.
 The replacement preflight and terminal-green R7 qualification are recorded
 separately. The resource and information-yield gates support the now-frozen
 confirmatory package contract. This document does not authorize EOS submission
@@ -166,5 +166,56 @@ submitted exactly once through `runllm.py --no_wait`: parent pipeline
 `66508153`, successful generator job `428138575`, downstream pipeline
 `66508187`, and EOS compute job `428138883`. The compute job name exactly
 matches the R1 workload name and carries the `jet-eos` tag. The guard is now
-consumed. This verifies launch identity, not scientific success; terminal
-artifacts remain pending, with no automatic retry or extension permitted.
+consumed. At that checkpoint this verified launch identity, not scientific
+success; the terminal result is reconciled below.
+
+## R1 terminal result
+
+Parent `66508153`, downstream `66508187`, and EOS compute job `428138883`
+terminated failed; generator `428138575`, logs-before `428138882`, and
+logs-after `428138884` succeeded. Slurm job `5985036` ran for `01:06:50` and
+failed with exit `1:0`, well before its 2.5-hour limit. The logs-after artifact
+is 125,905,140 bytes with SHA-256
+`dae0b7ee0f13df156c205a336f2c5ff14cfff7093a92e337d8a88ecb25b14785`.
+
+The bootstrap repair worked and all frozen package gates passed. Training
+completed 394/558 steps before the inherited `max_num_epochs: 1` exhausted the
+finite 7,472-group opportunity stream. The controller then correctly rejected
+the three residual groups because a complete step requires four:
+`dispatched 0/4 prompt groups with 3 group(s) remaining in the buffer`.
+Accounting closes exactly at 1,576 selected groups, 5,893 stale evictions, and
+three cancelled residual groups.
+
+The preserved ledgers contain 112,474 lifecycle rows, 7,472 opportunity-group
+rows, and 394 train-step completion rows. Strict frozen joining yields only
+7,290 primary assignments over start versions 8–393 (`control=3,673`,
+`d5=3,617`), 105 below the preregistered minimum of 7,395; no terminal-guard
+version 508–557 exists. Corrected observer duty is 0.00301711. Because the
+completion and minimum-information gates both failed, no canonical result,
+summary, or checksum ledger was emitted. R1 is `INCOMPLETE`: it supports
+neither a material nor a non-material GSM8K conclusion, and its outcomes must
+not enter a successor confirmatory estimator.
+
+The operational defect is now the prospective capacity assumption, not the
+bootstrap, scheduler, model, or GPU runtime. The 32-step qualification
+extrapolated per-version yield without checking that one GSM8K epoch could
+supply the fixed 558-step window after stale eviction. Repeating the unchanged
+one-epoch package would deterministically fail again.
+
+## Prospective R2 capacity repair boundary
+
+The narrow capacity-safe successor is a new protocol, not a retry: retain the
+558 steps, windows, minimum assignment count, arms, estimator, thresholds,
+model, workload, and resource cap, but explicitly permit two GSM8K epochs and
+use a fresh assignment domain and seed. R1 observed 394 complete steps from one
+epoch; two epochs therefore provide a 230-step empirical margin over the
+558-step target at the observed selection rate. The bounded-run controller
+cancels the rollout pump when step 558 completes, so it need not consume all of
+epoch two.
+
+The R2 protocol must explicitly define repeated prompt exposures as distinct
+randomized group instances, exclude every R1 observation, bind a capacity gate
+to the two-epoch setting, and independently validate the unchanged inference
+contract. No R2 package, authority, guard, or launch exists at this checkpoint.
+See `acquisition_r1_terminal_failure.json` and
+`acquisition_r2_capacity_repair_plan.json`.

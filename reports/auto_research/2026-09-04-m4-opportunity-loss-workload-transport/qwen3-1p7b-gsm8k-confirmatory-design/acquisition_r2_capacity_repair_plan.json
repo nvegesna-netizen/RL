@@ -1,0 +1,68 @@
+{
+  "authorization": {
+    "exact_r2_package_release_authority_bound": false,
+    "package_frozen": false,
+    "submission_guard_created": false
+  },
+  "empirical_capacity_evidence": {
+    "one_epoch_completed_steps": 394,
+    "projected_two_epoch_steps_at_observed_selection_rate": 788,
+    "step_margin_above_target": 230,
+    "target_steps": 558
+  },
+  "excluded_evidence": {
+    "r1_observations_may_enter_estimator": false,
+    "r1_outcomes_may_select_thresholds": false
+  },
+  "planned_changes": {
+    "assignment_domain": "fresh_r2_domain_required",
+    "assignment_seed": "fresh_r2_seed_required",
+    "max_num_epochs": {
+      "from": 1,
+      "to": 2
+    },
+    "protocol_identity": "fresh_r2_identity_required",
+    "repeated_prompt_exposure_unit": "each epoch-specific group instance is a distinct randomized assignment"
+  },
+  "preserved_contract": {
+    "arms": [
+      "control:0s",
+      "d5:5s"
+    ],
+    "automatic_extension": false,
+    "automatic_retry": false,
+    "burn_in_start_versions": [
+      0,
+      7
+    ],
+    "estimator_and_inference": "unchanged_subject_to_independent_repeated_exposure_validity_review",
+    "material_threshold": 0.2,
+    "minimum_primary_assignments": 7395,
+    "primary_start_versions": [
+      8,
+      507
+    ],
+    "resource_caps": {
+      "gpu_hours": 8.0,
+      "gpus": 2,
+      "wall_hours": 4.0
+    },
+    "terminal_guard_start_versions": [
+      508,
+      557
+    ],
+    "trainer_steps": 558,
+    "workload": "Qwen3-1.7B/GSM8K main train"
+  },
+  "required_preflight_gates": [
+    "resolved config binds max_num_epochs=2 and max_num_steps=558",
+    "bounded controller cancels rollout production at completed step 558",
+    "fresh assignment identity cannot collide with R1",
+    "R1 ledgers are inaccessible to the R2 estimator",
+    "repeated prompt exposure is compatible with the registered group-instance estimand and inference",
+    "two-epoch capacity and 2.5-hour scheduler request fit the four-hour scientific cap",
+    "terminal analyzer still requires at least 7395 primary assignments and all 558 steps"
+  ],
+  "schema": "m4-qwen3-1p7b-gsm8k-confirmatory-r2-capacity-repair-plan-v1",
+  "status": "LOCAL_PROSPECTIVE_REDESIGN_REQUIRED_NOT_AUTHORIZED"
+}

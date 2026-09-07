@@ -1,6 +1,6 @@
 # Qwen3-1.7B GSM8K neutral qualification plan
 
-Status: `R1_SUBMITTED_DOWNSTREAM_IDENTITY_VERIFIED_AWAITING_TERMINAL`.
+Status: `R1_TERMINAL_INCOMPLETE_FINITE_EPOCH_EXHAUSTION`.
 
 ## Purpose
 
@@ -180,6 +180,16 @@ The authorized R1 repair restores R7's required `import nemo_rl` then
 byte-identical to attempt 1. It was submitted exactly once through
 `runllm.py --no_wait`: parent `66508153`, successful generator `428138575`,
 downstream `66508187`, and exact `jet-eos` compute job `428138883`. The R1
-one-shot guard is consumed. This is verified launch identity only; the terminal
-scientific result and artifacts are pending. No scientific input changed, and
-retry or extension remains forbidden; see `acquisition_r1_bootstrap_repair.json`.
+one-shot guard is consumed. That checkpoint established launch identity only;
+the terminal result is reconciled below. No scientific input changed, and retry
+or extension remains forbidden; see `acquisition_r1_bootstrap_repair.json`.
+
+R1 subsequently proved that the qualification's local throughput and
+information-yield extrapolation was incomplete. The one-epoch GSM8K stream
+ended after 394 complete steps, leaving three groups where four were required.
+Its strict primary join contains 7,290 assignments, below the frozen 7,395
+minimum, and it never entered the terminal-guard window. The qualification did
+not check finite-dataset capacity after stale eviction; its earlier green status
+therefore remains historical evidence for bootstrap, two-GPU fit, reward
+support, observer duty, and short-run throughput only—not for 558-step
+one-epoch completion. See `acquisition_r1_terminal_failure.json`.

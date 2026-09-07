@@ -26,7 +26,7 @@
   "slurm_time_limit": "02:30:00",
   "source_archive_sha256": "0130ed6a8af2ad9a37b8dad5d4b44c4cb72e5a5f43a1a6ac5d1066f99e652901",
   "source_commit": "be0a56c37542f81a6413287fc110f291c07c5156",
-  "status": "R1_SUBMITTED_DOWNSTREAM_IDENTITY_VERIFIED_AWAITING_TERMINAL",
+  "status": "R1_TERMINAL_INCOMPLETE_FINITE_EPOCH_EXHAUSTION",
   "submission": {
     "attempt_count": 1,
     "compute_job_id": 428138883,

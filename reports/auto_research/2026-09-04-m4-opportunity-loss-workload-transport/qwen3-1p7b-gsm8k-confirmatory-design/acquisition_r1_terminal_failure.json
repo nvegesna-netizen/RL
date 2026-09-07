@@ -1,0 +1,73 @@
+{
+  "analysis": {
+    "canonical_result_emitted": false,
+    "causal_conclusion": null,
+    "minimum_primary_assignments": 7395,
+    "primary_arm_counts": {
+      "control": 3673,
+      "d5": 3617
+    },
+    "primary_assignment_count": 7290,
+    "primary_assignment_shortfall": 105,
+    "primary_start_version_range_observed": [
+      8,
+      393
+    ],
+    "strict_frozen_join_passed": true,
+    "terminal_guard_assignment_count": 0
+  },
+  "automatic_extension": false,
+  "automatic_retry": false,
+  "failure": {
+    "class": "FINITE_DATASET_ONE_EPOCH_EXHAUSTION",
+    "complete_step_prompt_groups": 1576,
+    "completed_steps": 394,
+    "configured_max_num_epochs": 1,
+    "configured_steps": 558,
+    "error": "rollout exhausted before a complete training step was assembled: dispatched 0/4 prompt groups with 3 group(s) remaining in the buffer",
+    "opportunity_groups": 7472,
+    "residual_cancelled_groups": 3,
+    "stale_evicted_groups": 5893
+  },
+  "ledgers": {
+    "lifecycle_rows": 112474,
+    "lifecycle_sha256": "0df4c092c191bd2af375ecb7ae4a7a7e5d66e52a77896c213d3027dd5c940977",
+    "observer_duty_corrected": 0.0030171085422280573,
+    "observer_duty_sha256": "4236485e22d9e2a840e423ddd3a1e0ead10f1d1bebcc7773a5e4eaf80a9530bd",
+    "opportunity_group_rows": 7472,
+    "opportunity_rows": 7867,
+    "opportunity_sha256": "e6b0d7298436fb7a55889ba13c5aa09ac1ba53ecef60a15bb89751553b9b8346",
+    "run_log_sha256": "335a0f4cdc5edffec2106432d87a4f923d77230356e91deb009a7cee63374c40"
+  },
+  "release": {
+    "compute_job_id": 428138883,
+    "compute_status": "failed",
+    "downstream_pipeline_id": 66508187,
+    "downstream_status": "failed",
+    "generator_job_id": 428138575,
+    "generator_status": "success",
+    "logs_after_job_id": 428138884,
+    "logs_after_status": "success",
+    "logs_before_job_id": 428138882,
+    "logs_before_status": "success",
+    "parent_pipeline_id": 66508153,
+    "parent_status": "failed",
+    "submission_attempt_count": 1
+  },
+  "schema": "m4-qwen3-1p7b-gsm8k-confirmatory-acquisition-r1-terminal-failure-v1",
+  "scientific_interpretation": "INCOMPLETE_NO_MATERIALITY_CONCLUSION",
+  "slurm": {
+    "exit_code": "1:0",
+    "job_id": 5985036,
+    "queue_time": "01:04:19",
+    "runtime": "01:06:50",
+    "state": "FAILED",
+    "time_limit": "02:30:00"
+  },
+  "status": "TERMINAL_INCOMPLETE_FINITE_EPOCH_EXHAUSTION",
+  "terminal_artifact": {
+    "filename": "gsm8k-confirmatory-acquisition-r1-66508187-job-428138884.zip",
+    "sha256": "dae0b7ee0f13df156c205a336f2c5ff14cfff7093a92e337d8a88ecb25b14785",
+    "size_bytes": 125905140
+  }
+}

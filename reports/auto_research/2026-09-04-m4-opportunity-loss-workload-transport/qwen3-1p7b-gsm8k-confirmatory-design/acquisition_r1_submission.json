@@ -8,6 +8,7 @@
     "jet-eos"
   ],
   "downstream_pipeline_id": 66508187,
+  "downstream_pipeline_terminal_status": "failed",
   "downstream_pipeline_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/66508187",
   "generator_job_id": 428138575,
   "generator_status_at_identity_check": "success",
@@ -15,11 +16,12 @@
   "launcher": "runllm.py --no_wait",
   "manifest_sha256": "65100dfa1b3a0b8525e32b9498d321f0dc2a66db52a202bd9d03a76227295c17",
   "parent_pipeline_id": 66508153,
+  "parent_pipeline_terminal_status": "failed",
   "parent_pipeline_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/66508153",
   "schema": "m4-qwen3-1p7b-gsm8k-confirmatory-acquisition-r1-bootstrap-repair-submission-v1",
   "scientific_result_available": false,
   "slurm_time_limit": "02:30:00",
-  "status": "DOWNSTREAM_IDENTITY_VERIFIED_AWAITING_TERMINAL",
+  "status": "TERMINAL_INCOMPLETE_FINITE_EPOCH_EXHAUSTION",
   "submission_attempt_count": 1,
   "submission_attempt_limit": 1,
   "submission_authorization_sha256": "4df35f77f9ab0adba32b3040b14fab0d67a2b1035dc8b03d39e58d758f77faa8"
