@@ -1,0 +1,142 @@
+{
+  "candidate_next_cell": {
+    "model": "Qwen3-0.6B",
+    "recommendation": "PROCEED_TO_PREREGISTRATION_AND_NO_TRAINING_COMPATIBILITY_WORK_ONLY",
+    "workload": "GSM8K main train"
+  },
+  "comparability": {
+    "common_contract": {
+      "allocation": "1:1 control:d5",
+      "arms_seconds": {
+        "control": 0.0,
+        "d5": 5.0
+      },
+      "covariates": [
+        "opportunity_Q",
+        "opportunity_is_zero"
+      ],
+      "estimator": "cross_fitted_generalized_regression_q_and_zero_indicator_v1",
+      "inference": {
+        "bootstrap_draws": 20000,
+        "circular_block_size_start_versions": 8,
+        "confidence": 0.95,
+        "cross_fit_folds": 8,
+        "hac_bartlett_lag_start_versions": 4
+      },
+      "material_threshold": 0.2,
+      "primary_estimand": "(mean_d5(Q_times_D)-mean_control(Q_times_D))/pooled_pre_delay_mean_Q",
+      "terminal_semantics": "COMMON",
+      "training_contract": {
+        "generations_per_prompt": 8,
+        "max_staleness_versions": 1,
+        "train_global_batch_size": 32
+      }
+    },
+    "differences_requiring_control": {
+      "datasets": "OpenMathInstruct-2 versus openai/gsm8k main train",
+      "exposure": "GSM8K R2 permits two epoch-specific prompt exposures; prior OpenMath protocols do not use this capacity repair",
+      "models": "Qwen3-0.6B versus Qwen3-1.7B",
+      "primary_windows": {
+        "qwen3_0p6b_openmath": "start versions 8-407 (400 versions)",
+        "qwen3_1p7b_gsm8k": "start versions 8-507 (500 versions)",
+        "qwen3_1p7b_openmath": "start versions 8-507 (500 versions)"
+      },
+      "randomization": "Each study has an independent domain and seed",
+      "source_commits": "Each terminal study is bound to its own frozen source commit"
+    },
+    "formal_grid_inference_ready": false,
+    "required_repair": "Freeze a secondary common-window analysis over start versions 8-407 for all four cells and define independent cross-study uncertainty before observing Qwen3-0.6B/GSM8K outcomes."
+  },
+  "evidence_cells": {
+    "qwen3_0p6b_gsm8k": {
+      "status": "MISSING"
+    },
+    "qwen3_0p6b_openmath": {
+      "confidence_envelope": [
+        0.2759345052842236,
+        0.33491191627512895
+      ],
+      "conclusion": "MATERIAL",
+      "estimate": 0.30542321077967627,
+      "numerator": 1459.4456746164444,
+      "pooled_mean_opportunity": 4778.437339096823,
+      "primary_assignments": 7199,
+      "primary_versions": 400,
+      "trainer_steps": 448
+    },
+    "qwen3_1p7b_gsm8k": {
+      "confidence_envelope": [
+        0.1152334597572501,
+        0.1599156329494431
+      ],
+      "conclusion": "NOT_MATERIAL",
+      "estimate": 0.13779554558263188,
+      "numerator": 230.8862637263388,
+      "pooled_mean_opportunity": 1675.571316547988,
+      "primary_assignments": 9429,
+      "primary_versions": 500,
+      "trainer_steps": 558
+    },
+    "qwen3_1p7b_openmath": {
+      "confidence_envelope": [
+        0.27688057033389485,
+        0.328106040188131
+      ],
+      "conclusion": "MATERIAL",
+      "estimate": 0.3024933052610129,
+      "numerator": 1184.1087518222057,
+      "pooled_mean_opportunity": 3914.49573008061,
+      "primary_assignments": 8673,
+      "primary_versions": 500,
+      "trainer_steps": 558
+    }
+  },
+  "exploratory_distribution_audit": {
+    "qwen3_0p6b_openmath": {
+      "mean_sibling_reward": 0.36083136546742606,
+      "mean_valid_actor_tokens": 12405.435754965967,
+      "truncated_sibling_fraction": 0.6515835532712877,
+      "zero_opportunity_fraction": 0.5382692040561189
+    },
+    "qwen3_1p7b_gsm8k": {
+      "mean_sibling_reward": 0.8889463357726164,
+      "mean_valid_actor_tokens": 8656.722345953971,
+      "truncated_sibling_fraction": 0.12871195248700817,
+      "zero_opportunity_fraction": 0.8221444479796373
+    },
+    "qwen3_1p7b_openmath": {
+      "mean_sibling_reward": 0.44948403090049577,
+      "mean_valid_actor_tokens": 12961.43491294823,
+      "truncated_sibling_fraction": 0.7051625735039778,
+      "zero_opportunity_fraction": 0.6426841923209962
+    },
+    "role": "EXPLORATORY_EXPLANATION_AND_PROSPECTIVE_DESIGN_INPUT_ONLY"
+  },
+  "observed_contrasts": {
+    "gsm8k_to_openmath_denominator_ratio_at_qwen3_1p7b": 0.4280426987497272,
+    "gsm8k_to_openmath_effect_ratio_at_qwen3_1p7b": 0.4555325462946428,
+    "gsm8k_to_openmath_numerator_ratio_at_qwen3_1p7b": 0.19498738048429393,
+    "openmath_model_scale_difference_qwen3_1p7b_minus_0p6b": -0.002929905518663345,
+    "qwen3_1p7b_gsm8k_minus_openmath_direct_chain_rate": 0.1117888299247641,
+    "qwen3_1p7b_gsm8k_minus_openmath_mean_reward": 0.4394623048721206,
+    "qwen3_1p7b_gsm8k_minus_openmath_version_advance": 0.18499963692469934,
+    "qwen3_1p7b_gsm8k_minus_openmath_zero_opportunity_fraction": 0.1794602556586411,
+    "qwen3_1p7b_openmath_minus_gsm8k_effect": 0.16469775967838104
+  },
+  "provenance_check": {
+    "qwen3_0p6b_openmath_scientific_members_matching_embedded_ledger": 5,
+    "qwen3_1p7b_openmath_scientific_members_matching_embedded_ledger": 5,
+    "qwen3_1p7b_gsm8k_embedded_checksum_ledger_passed": true,
+    "raw_artifacts_tracked_in_git": false,
+    "unextracted_openmath_log_members": 2
+  },
+  "schema": "m4-opportunity-loss-cross-study-harmonization-audit-v1",
+  "scientific_decision": {
+    "acquisition_authorized": false,
+    "conclusion": "The missing Qwen3-0.6B/GSM8K cell is the smallest informative next experiment. The current evidence is sufficient to design it but not to claim a model-by-workload interaction.",
+    "next_gate": "PREREGISTER_PRIMARY_CELL_AND_COMMON_WINDOW_SECONDARY_ANALYSIS",
+    "repeated_completed_acquisition": "REJECT",
+    "third_workload_or_new_model_family_before_grid_completion": "DEFER"
+  },
+  "status": "OFFLINE_HARMONIZATION_COMPLETE_PROCEED_TO_PREREGISTRATION"
+}

@@ -1,10 +1,10 @@
 # Integrated M4 opportunity-loss study report
 
-Status: complete in the tested setting. The evidence supports a material M4
-opportunity-loss effect. The accepted instrument and mechanism findings remain
-valid, the first primary materiality test remains historically `INCONCLUSIVE`,
-and the separately registered prospective follow-up is the terminal `MATERIAL`
-result.
+Status: complete for the original tested setting, with subsequent one-axis
+transport evidence incorporated. The evidence supports a material M4
+opportunity-loss effect on OpenMath in the tested Qwen3-0.6B and Qwen3-1.7B
+settings, but the prospectively registered Qwen3-1.7B/GSM8K result is
+`NOT_MATERIAL`. The accepted instrument and mechanism findings remain valid.
 
 ## Final conclusion
 
@@ -134,8 +134,31 @@ The precise supported claim is:
 > The evidence supports a material M4 opportunity-loss effect in the tested
 > setting.
 
-The evidence does not yet support a claim of transportability across different
-models or workloads.
+The evidence supports model-scale transport from Qwen3-0.6B to Qwen3-1.7B on
+OpenMath. It does not support workload transport from OpenMath to GSM8K at the
+registered 0.20 threshold for Qwen3-1.7B.
+
+## Subsequent transport evidence
+
+The one-axis Qwen3-1.7B/OpenMath transport acquisition estimated adjusted
+opportunity loss of `0.3024933053`, with 95% envelope
+`[0.2768805703, 0.3281060402]`. It completed 558 steps and 8,673 primary
+assignments, replicated the mechanism, and supported observer duty. Its terminal
+conclusion is `MATERIAL` in that tested setting.
+
+The next one-axis study retained Qwen3-1.7B and changed the workload to GSM8K.
+Its prospective R2 acquisition completed 558 steps and 9,429 primary
+assignments. The adjusted estimate was `0.1377955456`, with 95% envelope
+`[0.1152334598, 0.1599156329]`, entirely below `0.20`; its conclusion is
+`NOT_MATERIAL`. The mechanism still `REPLICATED` and observer duty remained
+`SUPPORTED`, so this is a positive but sub-threshold workload result rather than
+an instrument failure or a zero-effect claim.
+
+The OpenMath model-scale difference is only `-0.0029299055` when expressed as
+Qwen3-1.7B minus Qwen3-0.6B. At Qwen3-1.7B, the OpenMath-minus-GSM8K difference
+is `0.1646977597`. These completed results support workload heterogeneity, but a
+formal model-by-workload interaction is not established: the Qwen3-0.6B/GSM8K
+cell is missing and the existing primary windows are not all identical.
 
 ## Provenance
 
@@ -148,8 +171,9 @@ Large raw artifacts remain outside Git and are bound by the SHA-256 values above
 
 ## Recommended next scientific direction
 
-Do not repeat this acquisition. If broader evidence is valuable, the next study
-should be a separately preregistered transportability test using the frozen M4
-instrument on an independent model or workload. Its environment, effect threshold,
-sample size, exclusion rules, and analysis must be fixed before acquisition. No
-such study is authorized or launched by this report.
+Do not repeat any completed acquisition. The smallest informative successor is a
+separately preregistered Qwen3-0.6B/GSM8K cell, which would complete the existing
+two-model-by-two-workload grid while changing only model scale relative to the
+completed GSM8K study. Before acquisition, an offline harmonization audit must
+fix a common-window secondary analysis, effect threshold, sample size, exclusion
+rules, and interaction-inference contract. This report authorizes no launch.

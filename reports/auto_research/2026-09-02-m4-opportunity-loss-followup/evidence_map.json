@@ -124,11 +124,113 @@
     "status": "SUCCESS",
     "transport_manifest_sha256": "f9b05559ea60d05875115ebe85dfa212e0525344199f5c4bc20ec9b4470f3769"
   },
-  "schema": "m4-opportunity-loss-canonical-evidence-map-v1",
+  "model_scale_transport_qwen3_1p7b_openmath": {
+    "artifact": {
+      "result_sha256": "74c3a836fcc27dd567f3c19ec8e2b8438a915eac53ecc9aa7ca6bb7b7769a3c7",
+      "sha256": "022e4d18f2eedd2339c3c7eb7decf6e21f929761de46bcd0f85a73f0a2700ac7",
+      "size_bytes": 131003667
+    },
+    "causal_result": {
+      "adjusted_estimate": 0.3024933052610129,
+      "adjusted_hac_standard_error": 0.01306796202845973,
+      "conclusion": "MATERIAL",
+      "confidence_envelope": [
+        0.27688057033389485,
+        0.328106040188131
+      ],
+      "material_p_value": 0.00004999750012499375,
+      "material_threshold": 0.2
+    },
+    "completion": {
+      "control_assignments": 4376,
+      "d5_assignments": 4297,
+      "primary_assignments": 8673,
+      "trainer_steps": 558,
+      "unscored_assignments": 0
+    },
+    "mechanism": {
+      "conclusion": "REPLICATED",
+      "control_direct_chain_rate": 0.0,
+      "d5_direct_chain_rate": 0.2229462415638818,
+      "d5_minus_control_version_advance": 0.35978589713753784
+    },
+    "pipelines": {
+      "downstream_pipeline_id": 66186620,
+      "eos_compute_job_id": 425431228,
+      "logs_after_job_id": 425431229,
+      "parent_pipeline_id": 66186545
+    },
+    "portability": {
+      "corrected_observer_duty": 0.0018525392987851206,
+      "maximum_corrected_observer_duty": 0.01,
+      "qualifier": "SUPPORTED"
+    },
+    "protocol_sha256": "eef87a5e26f2cc1a39428628b0c28288b17a297f49d449a80ed9699f9ee17cb7",
+    "source_commit": "a1c719177704b7d14cf1d503dc96f0f2f9f1701d",
+    "status": "MATERIAL"
+  },
+  "workload_transport_qwen3_1p7b_gsm8k": {
+    "artifact": {
+      "result_sha256": "706767a49f26873bfcb5a7c6cae4b029cf492ca6b461862b0d4aed0240136ee7",
+      "sha256": "966dfbf60548e5fd791d59d3baa2bc3b3a1b8d6b0b1a15de1ef510fc618720ca",
+      "size_bytes": 134908947
+    },
+    "causal_result": {
+      "adjusted_estimate": 0.13779554558263188,
+      "adjusted_hac_standard_error": 0.011004924917754445,
+      "conclusion": "NOT_MATERIAL",
+      "confidence_envelope": [
+        0.1152334597572501,
+        0.1599156329494431
+      ],
+      "material_p_value_one_sided": 1.0,
+      "material_threshold": 0.2
+    },
+    "completion": {
+      "control_assignments": 4673,
+      "d5_assignments": 4756,
+      "primary_assignments": 9429,
+      "r1_observations_entered_estimator": false,
+      "trainer_steps": 558,
+      "unscored_assignments": 0
+    },
+    "mechanism": {
+      "conclusion": "REPLICATED",
+      "control_direct_chain_rate": 0.0,
+      "d5_direct_chain_rate": 0.3347350714886459,
+      "d5_minus_control_version_advance": 0.5447855340622372
+    },
+    "pipelines": {
+      "downstream_pipeline_id": 66571072,
+      "eos_compute_job_id": 428679287,
+      "logs_after_job_id": 428679288,
+      "logs_before_job_id": 428679286,
+      "parent_pipeline_id": 66570975,
+      "slurm_job_id": 5986731
+    },
+    "portability": {
+      "corrected_observer_duty": 0.00294341256406523,
+      "maximum_corrected_observer_duty": 0.01,
+      "qualifier": "SUPPORTED"
+    },
+    "protocol_sha256": "3413bde3718563157cee5d504f174710f65406dd7f1effd8ad2755a03d73b69e",
+    "source_commit": "b79e419aea95b5226ac4274c9a1535251658b5a5",
+    "status": "NOT_MATERIAL"
+  },
+  "cross_setting_synthesis": {
+    "grid_status": "THREE_OF_FOUR_QWEN3_MODEL_BY_WORKLOAD_CELLS_COMPLETE",
+    "openmath_model_scale_difference_qwen3_1p7b_minus_0p6b": -0.002929905518663345,
+    "qwen3_1p7b_openmath_minus_gsm8k": 0.16469775967838104,
+    "supported_interpretation": "Materiality transported from Qwen3-0.6B to Qwen3-1.7B on OpenMath but did not transport from OpenMath to GSM8K at Qwen3-1.7B. This supports workload heterogeneity in the tested settings.",
+    "unsupported_interpretation": "A formal model-by-workload interaction is not yet established because the Qwen3-0.6B/GSM8K cell is missing and the existing primary windows are not all identical."
+  },
+  "schema": "m4-opportunity-loss-canonical-evidence-map-v2",
   "study_conclusion": {
     "claim": "The evidence supports a material M4 opportunity-loss effect in the tested setting.",
-    "generalization_beyond_tested_setting": "NOT_ESTABLISHED",
+    "generalization_beyond_tested_setting": "WORKLOAD_GENERALIZATION_NOT_SUPPORTED_AT_THE_0.20_THRESHOLD_BY_GSM8K_IN_THE_TESTED_QWEN3_1P7B_SETTING",
     "historical_first_primary_result": "INCONCLUSIVE",
-    "terminal_followup_result": "MATERIAL"
+    "model_scale_transport_on_openmath": "MATERIAL_AT_QWEN3_1P7B",
+    "prospective_followup_result": "MATERIAL",
+    "workload_transport_on_qwen3_1p7b": "NOT_MATERIAL_ON_GSM8K"
   }
 }
