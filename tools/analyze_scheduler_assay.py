@@ -70,6 +70,33 @@ def _one(events: Sequence[SchedulerTraceEvent], kind: SchedulerEventType):
     return matches[0]
 
 
+def _successful_selection_decisions(
+    events: Sequence[SchedulerTraceEvent],
+) -> tuple[SchedulerTraceEvent, ...]:
+    """Return the logical assay ticks, excluding non-mutating live poll attempts."""
+    decisions = tuple(
+        event
+        for event in events
+        if event.event_type is SchedulerEventType.SELECT_DECISION
+        and event.selected_logical_group_ids
+    )
+    _require(len(decisions) == 12, "assay requires exactly 12 successful selections")
+    for index, decision in enumerate(decisions):
+        _require(
+            len(decision.selected_logical_group_ids) == 4,
+            "assay successful selections must contain exactly four groups",
+        )
+        _require(
+            decision.scalar_summaries.get("selected_prompt_groups") == 4,
+            "assay successful selection summary must report exactly four groups",
+        )
+        _require(
+            decision.scalar_summaries.get("scheduler_assay_step") == index,
+            "scheduler assay steps must be contiguous",
+        )
+    return decisions
+
+
 def _groups_and_ticks(
     events: Sequence[SchedulerTraceEvent], manifest: FixedPoolManifest
 ) -> tuple[tuple[ReplayGroup, ...], tuple[ReplayTick, ...]]:
@@ -137,16 +164,9 @@ def _groups_and_ticks(
                 scalar_summaries={},
             )
         )
-    decisions = [
-        event
-        for event in events
-        if event.event_type is SchedulerEventType.SELECT_DECISION
-    ]
-    _require(len(decisions) == 12, "assay requires exactly 12 selection decisions")
+    decisions = _successful_selection_decisions(events)
     ticks = []
     for index, decision in enumerate(decisions):
-        logical_step = decision.scalar_summaries.get("scheduler_assay_step")
-        _require(logical_step == index, "scheduler assay steps must be contiguous")
         assert decision.min_prompt_groups is not None
         assert decision.max_prompt_groups is not None
         ticks.append(
@@ -259,11 +279,7 @@ def analyze_run(
 
     policy = ReplayPolicy(name=arm.sampler, max_staleness_versions=3)
     replay = replay_schedule(groups, ticks, policy, natural_releases(groups))
-    native_decisions = [
-        event
-        for event in events
-        if event.event_type is SchedulerEventType.SELECT_DECISION
-    ]
+    native_decisions = _successful_selection_decisions(events)
     for native, replayed in zip(native_decisions, replay.decisions):
         _require(
             native.selected_logical_group_ids == replayed.selected_group_ids
