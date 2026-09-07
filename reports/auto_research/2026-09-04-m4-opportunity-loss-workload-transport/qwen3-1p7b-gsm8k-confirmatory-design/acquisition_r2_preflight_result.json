@@ -1,0 +1,67 @@
+{
+  "artifact": {
+    "filename": "r2-preflight-66563008-job-428610192.zip",
+    "sha256": "6c2cb9ec94cf3ab944d6c8a6eb6c3686761c1d55c4580d9e99e7116c31ea69e4",
+    "size_bytes": 104246593,
+    "zip_integrity": "PASS"
+  },
+  "container_evidence": {
+    "archive_members": 1930,
+    "archive_symlinks": 16,
+    "automatic_extension": false,
+    "automatic_retry": false,
+    "config_resolved": true,
+    "container_code_version_warning_observed": true,
+    "container_code_version_warning_status": "EXPECTED_PINNED_IMAGE_PLUS_PINNED_SOURCE_ARCHIVE",
+    "full_selected_tests_green": true,
+    "pytest_passed": 136,
+    "pytest_warnings": 17,
+    "ruff_check": "PASS",
+    "ruff_format_check": "PASS",
+    "source_files_compiled": true
+  },
+  "gate_interpretation": {
+    "acquisition_capacity_empirically_demonstrated": false,
+    "acquisition_package_may_now_be_built": true,
+    "acquisition_started": false,
+    "no_training_preflight_gate": "PASS",
+    "scientific_acquisition_authorized_by_this_result": false,
+    "training_started": false
+  },
+  "lock": {
+    "automatic_extension": false,
+    "automatic_retry": false,
+    "epoch_specific_group_instance_is_assignment_unit": true,
+    "files_reconciled_to_source_commit": 37,
+    "max_num_epochs": 2,
+    "minimum_primary_assignments": 7395,
+    "protocol_sha256": "3413bde3718563157cee5d504f174710f65406dd7f1effd8ad2755a03d73b69e",
+    "r1_observations_enter_estimator": false,
+    "sha256": "db51df4da5309abeb4622604499aeed5f47066c0060bc491915b2ceef092b954",
+    "source_archive_sha256": "a6f65efa8ce6ef00e22968c60c4ad169c6d7595dda28b013cd7716fa6066d1d9",
+    "source_commit": "b79e419aea95b5226ac4274c9a1535251658b5a5",
+    "trainer_steps": 558
+  },
+  "release": {
+    "compute_job_id": 428610191,
+    "compute_runtime_seconds": 463.313517,
+    "compute_status": "success",
+    "downstream_pipeline_duration_seconds": 780,
+    "downstream_pipeline_id": 66563008,
+    "downstream_status": "success",
+    "generator_job_id": 428609541,
+    "generator_status": "success",
+    "logs_after_job_id": 428610192,
+    "logs_after_status": "success",
+    "logs_before_job_id": 428610190,
+    "logs_before_status": "success",
+    "parent_pipeline_id": 66562916,
+    "parent_status": "success",
+    "slurm_exit_code": 0,
+    "slurm_job_id": 5986527,
+    "submission_attempt_count": 1
+  },
+  "schema": "m4-qwen3-1p7b-gsm8k-r2-no-training-preflight-terminal-result-v1",
+  "status": "SUCCESS_R2_NO_TRAINING_PREFLIGHT_GREEN",
+  "summary_sha256": "68ce03122491cdf6590adf585bc81be449813a0e95014b3eb00c63290c8e891f"
+}

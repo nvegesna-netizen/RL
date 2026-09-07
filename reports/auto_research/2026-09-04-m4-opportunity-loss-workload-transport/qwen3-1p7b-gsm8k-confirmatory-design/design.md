@@ -224,8 +224,13 @@ pinned container. The separately authorized, exactly-once R2 no-training
 preflight was frozen at source commit
 `b79e419aea95b5226ac4274c9a1535251658b5a5` and submitted through
 `runllm.py --no_wait`: parent pipeline `66562916` created downstream pipeline
-`66563008` with the intended no-training workload. Its result remains pending;
-this submission neither starts training nor authorizes the R2 acquisition. See
+`66563008` with the intended no-training workload. Both pipelines and all three
+downstream jobs succeeded. The terminal artifact reports 136 selected tests
+passed, exact R2 config resolution, lock emission, and
+`preflight_green=true`; all 37 locked files reconcile to the source commit.
+Training and acquisition remained false. This closes the R2 no-training gate
+but does not authorize or demonstrate successful completion of the 558-step
+acquisition. See
 `acquisition_r1_terminal_failure.json`,
 `acquisition_r2_capacity_repair_plan.json`, and
-`acquisition_r2_preflight_submission.json`.
+`acquisition_r2_preflight_result.json`.
