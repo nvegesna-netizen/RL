@@ -1,0 +1,107 @@
+{
+  "gate": {
+    "decision": "GO_TO_ACQUISITION_PACKAGE_FREEZE_AND_REVIEW",
+    "qualification_data_allowed_in_primary_or_grid_estimator": false,
+    "reason": "The exact neutral 32-step qualification completed on the intended two-GPU topology, observed binary reward support and sufficient information yield, kept corrected observer duty below 1%, and projected the frozen 558-step geometry below both resource caps.",
+    "separate_frozen_package_and_explicit_acquisition_authorization_required": true
+  },
+  "qualification": {
+    "acquisition_started": false,
+    "automatic_extension": false,
+    "automatic_retry": false,
+    "causal_estimate_produced": false,
+    "checks": {
+      "artifact_hash_manifest": true,
+      "binary_reward_support": true,
+      "complete_steps": true,
+      "gpu_hour_projection": true,
+      "group_ids_unique": true,
+      "information_yield": true,
+      "neutral_zero_dose_instrument": true,
+      "observer_duty": true,
+      "wall_time_projection": true
+    },
+    "controlled_release_arms": [
+      {
+        "delay_seconds": 0.0,
+        "label": "neutral",
+        "mass": 1
+      }
+    ],
+    "controlled_release_assignment_count": 581,
+    "corrected_observer_duty": 0.002934918347246835,
+    "fixed_overhead_seconds": 156.67706039099997,
+    "gpus": 2,
+    "mean_completed_step_interval_seconds": 7.6587106171290324,
+    "observed_start_version_count": 32,
+    "observed_start_version_range": [
+      0,
+      31
+    ],
+    "opportunity_group_count": 565,
+    "opportunity_groups_per_observed_start_version": 17.65625,
+    "projected_558_step_gpu_hours": 3.0765538782979167,
+    "projected_558_step_wall_hours": 1.5382769391489584,
+    "qualification_complete": true,
+    "reward_values": [
+      0.0,
+      1.0
+    ],
+    "trainer_steps": 32,
+    "wall_time_seconds": 394.097089522
+  },
+  "release": {
+    "compute_duration_seconds": 627.367295,
+    "compute_job_id": 429468112,
+    "compute_job_status": "success",
+    "downstream_pipeline_duration_seconds": 942,
+    "downstream_pipeline_id": 66667017,
+    "downstream_pipeline_status": "success",
+    "downstream_pipeline_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/66667017",
+    "generator_job_id": 429466569,
+    "generator_status": "success",
+    "logs_after_duration_seconds": 241.832081,
+    "logs_after_job_id": 429468114,
+    "logs_after_status": "success",
+    "logs_before_job_id": 429468110,
+    "logs_before_status": "success",
+    "parent_pipeline_duration_seconds": 1029,
+    "parent_pipeline_id": 66666794,
+    "parent_pipeline_status": "success",
+    "parent_pipeline_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/66666794",
+    "submission_attempt_count": 1
+  },
+  "schema": "m4-qwen3-0p6b-gsm8k-grid-neutral-qualification-terminal-result-v1",
+  "slurm": {
+    "derived_exit_code": "0:0",
+    "exit_code": "0:0",
+    "job_id": 5989573,
+    "rank_0_exit_code": 0,
+    "runtime": "00:09:35",
+    "state": "COMPLETED",
+    "workload_step_runtime": "00:09:02"
+  },
+  "source": {
+    "manifest_sha256": "46fdb4423dd4d78f70fdf7b3af00bccf1eba3aa74129f6927cef95f6471e65e9",
+    "preflight_lock_sha256": "fb8d0ee532bc8fc688154a9ce19bc9747be9ad5872254ebb9143311be99914ce",
+    "preflight_summary_sha256": "3e515c115803b07d2a6b404a1ce3f6851d566ee6f4057f4618ca645edb7ff49e",
+    "source_archive_sha256": "ed3b959ea52640e71ccd960c66b4a00a3748c8c6623b6c06cf4970cb856812e1",
+    "source_commit": "6b2b4d5303f4ec21ef9815f3f0af4ad5f8c75475"
+  },
+  "status": "QUALIFICATION_GREEN",
+  "terminal_artifact": {
+    "archive_members": 38,
+    "embedded_files": {
+      "hash_manifest_sha256": "7310d70f8c9272bd8c159796d46741f64c04e345b4266ea080ef42e8ce5caf78",
+      "lifecycle_sha256": "b7550ddac5b8c2af11b8c6129679ccc6683f2d2feb01e0fef52758e76248d90b",
+      "observer_duty_sha256": "01310f07dabf9cf12e9dfb5d162ecc3c2cbf37f6b4010215c4931c0c58d8f55d",
+      "opportunity_sha256": "0ca711a75e1abcebd42b266b49f466aa19a7fe353d26132cbc31ddda42a0a7ca",
+      "run_log_sha256": "bb086faa7411bfb79e0232f8945059bff77c82a50ea1981999ea7fa926af18e7",
+      "summary_sha256": "b065b32b6a44b0cc13da6f0d168b8bc2d3a0f332166f29d365d3b0fe44546a72"
+    },
+    "filename": "grid-qualification-66667017-job-429468114.zip",
+    "sha256": "bc3931a37c8e9b510392806d552e4043c2af55bc3ed91fd3f864f4f768213677",
+    "size_bytes": 106453609,
+    "zip_integrity": "PASS"
+  }
+}

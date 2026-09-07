@@ -1,6 +1,6 @@
 # Qwen3-0.6B/GSM8K M4 grid-completion design
 
-Status: `QUALIFICATION_DESIGN_AUTHORIZED_PACKAGE_FREEZE_PENDING`.
+Status: `QUALIFICATION_GREEN_ACQUISITION_PACKAGE_FREEZE_PENDING`.
 
 ## Scientific question
 
@@ -141,3 +141,23 @@ zero-second neutral arm, and isolated lifecycle, opportunity, observer-duty,
 and metrics paths. Qualification observations remain excluded from every
 primary and grid estimator. This authorization does not extend to the 558-step
 scientific acquisition.
+
+## Neutral qualification result
+
+The single authorized qualification passed. Parent pipeline `66666794`,
+downstream pipeline `66667017`, and Slurm job `5989573` completed successfully.
+It completed 32 trainer steps, yielded 565 opportunity groups over 32 observed
+start versions, observed both binary reward values, and measured corrected
+observer duty `0.002934918347246835`. With the registered 1.25 safety factor,
+the 558-step projection is 1.538276939 wall-hours and 3.076553878 two-GPU-hours,
+below the frozen four-wall-hour and eight-GPU-hour caps.
+
+The terminal artifact SHA-256 is
+`bc3931a37c8e9b510392806d552e4043c2af55bc3ed91fd3f864f4f768213677`.
+Independent reconciliation from the raw lifecycle and opportunity streams
+matched the emitted summary and all embedded artifact hashes.
+
+The qualification remains non-causal: it used only the neutral zero-second arm,
+produced no causal estimate, and its observations cannot enter any primary or
+grid estimator. The next gate is acquisition-package freeze and review. A fresh
+exact authorization is required before the single 558-step submission.
