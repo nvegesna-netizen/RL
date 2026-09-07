@@ -1,0 +1,45 @@
+{
+  "acquisition_manifest_created": true,
+  "acquisition_submission_authorized": false,
+  "analysis_path": "tools/opportunity_loss_workload_transport_pipeline.py",
+  "analysis_sha256": "d8d0f3a294b98c988689e57839ced916c4ba12216ce64105b59de6c80565d52f",
+  "automatic_extension": false,
+  "automatic_retry": false,
+  "builder_sha256": "c8d8eb7e532084779f9f23b426410909bc72a5a39f6d28fc5421e85e4a0a618e",
+  "config_sha256": "9c424b2661cd24a673414aa0a4d37d242216294924026051182ff0a96af9923a",
+  "execution_contract": {
+    "bootstrap_import_order_validated": true,
+    "embedded_python_blocks_compiled": 5,
+    "manifest_bash_syntax_valid": true,
+    "minimum_primary_assignments": 7395,
+    "r1_observations_may_enter_estimator": false,
+    "single_training_entrypoint": true,
+    "trainer_steps": 558
+  },
+  "manifest_sha256": "a7420a4252940cd1cfc6ab48883d1312d3d850fd1602830733b050abea438180",
+  "package_authorization_sha256": "107e5141aa6664869579226a6f72927cac37254f901e06932704fff58344bda9",
+  "package_contract_sha256": "4ac2cd53c9ea1cec41849cde92d8b2d22ec49af9846e9eb4a3af1c3f6371c9fb",
+  "package_receipt_sha256": "892b8f340fe93318eeec8e4309a4867482a959b73789d0c55f1c8001ec362497",
+  "preflight_artifact_sha256": "6c2cb9ec94cf3ab944d6c8a6eb6c3686761c1d55c4580d9e99e7116c31ea69e4",
+  "preflight_lock_sha256": "db51df4da5309abeb4622604499aeed5f47066c0060bc491915b2ceef092b954",
+  "preflight_summary_sha256": "68ce03122491cdf6590adf585bc81be449813a0e95014b3eb00c63290c8e891f",
+  "protocol_sha256": "3413bde3718563157cee5d504f174710f65406dd7f1effd8ad2755a03d73b69e",
+  "qualification_result_sha256": "e5e04e266752fa252b4dca56eb6a21ec8dd1caf6623a036612db069d003f2bbe",
+  "qualification_terminal_artifact_sha256": "9e66f58c4a005fdb33673eb6741bb9b254bd5bc46f17828b7f5ec9ca559e51c4",
+  "required_launcher": "runllm.py --no_wait",
+  "resource_caps": {
+    "gpu_hour_cap": 8.0,
+    "gpus": 2,
+    "wall_clock_cap_hours": 4.0
+  },
+  "scheduler": {
+    "custom_config_sha256": "61f5f1dc60e22a0b1caea2a71ea760333ddef9b36d8467944763c6b02bafd1aa",
+    "slurm_time_limit_seconds": 9000
+  },
+  "schema": "m4-qwen3-1p7b-gsm8k-confirmatory-acquisition-r2-package-freeze-v1",
+  "scientific_source_delta_after_preflight": 0,
+  "source_archive_sha256": "a6f65efa8ce6ef00e22968c60c4ad169c6d7595dda28b013cd7716fa6066d1d9",
+  "source_commit": "b79e419aea95b5226ac4274c9a1535251658b5a5",
+  "status": "FROZEN_PENDING_EXPLICIT_SUBMISSION_RELEASE",
+  "submission_guard_created": false
+}

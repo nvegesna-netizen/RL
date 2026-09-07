@@ -234,3 +234,14 @@ acquisition. See
 `acquisition_r1_terminal_failure.json`,
 `acquisition_r2_capacity_repair_plan.json`, and
 `acquisition_r2_preflight_result.json`.
+
+The R2 acquisition package is now frozen and locally validated. It reuses the
+exact preflighted source archive and successful R1 bootstrap sequence, so the
+scientific source delta after preflight is zero. Manifest SHA-256
+`a7420a4252940cd1cfc6ab48883d1312d3d850fd1602830733b050abea438180`
+contains exactly one training entrypoint and binds two epochs, 558 steps, the
+R2 assignment identity, the R2 analyzer, a minimum of 7,395 primary
+assignments, and exclusion of R1 and qualification observations. The scheduler
+request remains 2.5 hours on two GPUs, within the four-hour/eight-GPU-hour cap;
+retry and extension are disabled. No acquisition submission release or guard
+exists at this checkpoint. See `acquisition_r2_package_freeze.json`.

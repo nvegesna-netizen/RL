@@ -1,7 +1,10 @@
 {
   "authorization": {
     "exact_r2_package_release_authority_bound": true,
-    "package_frozen": true,
+    "acquisition_package_frozen": true,
+    "acquisition_submission_guard_created": false,
+    "acquisition_submission_release_bound": false,
+    "preflight_package_frozen": true,
     "preflight_release_authority_consumed": true,
     "submission_guard_created": true
   },
@@ -97,5 +100,5 @@
     "training_started": false
   },
   "schema": "m4-qwen3-1p7b-gsm8k-confirmatory-r2-capacity-repair-plan-v1",
-  "status": "R2_NO_TRAINING_PREFLIGHT_GREEN_PENDING_ACQUISITION_PACKAGE_FREEZE"
+  "status": "R2_ACQUISITION_PACKAGE_FROZEN_PENDING_SUBMISSION_RELEASE"
 }
