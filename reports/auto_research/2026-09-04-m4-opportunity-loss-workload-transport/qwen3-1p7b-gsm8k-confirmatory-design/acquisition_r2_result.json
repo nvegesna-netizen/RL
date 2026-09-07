@@ -1,0 +1,128 @@
+{
+  "artifact": {
+    "archive_filename": "r2-acquisition-66571072-job-428679288.zip",
+    "archive_sha256": "966dfbf60548e5fd791d59d3baa2bc3b3a1b8d6b0b1a15de1ef510fc618720ca",
+    "archive_size_bytes": 134908947,
+    "archive_test": "PASS",
+    "checksum_ledger_sha256": "77778ca936ecd92c9ce572fa31b3b60c3243f36c8588cf326c4e85821de36d5d",
+    "embedded_checksums_verified": true,
+    "lifecycle_sha256": "aba8b910f0928a4776d58cc8ef56dac2acd13c1d90516dd5144fdadf90ed6b83",
+    "observer_duty_sha256": "50d5f3feb648a2ab70b84d51d2dc79582114983503144f73f3b1edfa1c22e8e8",
+    "opportunity_sha256": "1d6f39337a6b73756ce0548849f5cc50d40e7c9e159d4130f9c4df49676847a5",
+    "preflight_log_sha256": "f479daf7ee165286daf217cfa7377d459887b07eb6f5670816f630bae1c051ef",
+    "result_sha256": "706767a49f26873bfcb5a7c6cae4b029cf492ca6b461862b0d4aed0240136ee7",
+    "run_log_sha256": "42639d786e2f8dffd15e6c7f0e4b3aa94e2e4b657aa23f87129ead02f98aa4f9",
+    "summary_sha256": "1f0255b98ac6130211a00a75784bd39e78b1f69d954c5ae44e86788c2e8a5805"
+  },
+  "execution": {
+    "acquisition_complete": true,
+    "automatic_extension": false,
+    "automatic_retry": false,
+    "compute_duration_seconds": 7608.297769,
+    "compute_job_id": 428679287,
+    "compute_status": "success",
+    "downstream_duration_seconds": 8000,
+    "downstream_pipeline_id": 66571072,
+    "downstream_status": "success",
+    "logs_after_job_id": 428679288,
+    "logs_after_status": "success",
+    "logs_before_job_id": 428679286,
+    "logs_before_status": "success",
+    "parent_pipeline_id": 66570975,
+    "parent_status": "success",
+    "slurm_exit_code": 0,
+    "slurm_job_id": 5986731,
+    "trainer_steps": 558,
+    "trigger_bridge_job_id": 428678429,
+    "trigger_bridge_status": "success"
+  },
+  "frozen_identity": {
+    "manifest_sha256": "a7420a4252940cd1cfc6ab48883d1312d3d850fd1602830733b050abea438180",
+    "protocol_sha256": "3413bde3718563157cee5d504f174710f65406dd7f1effd8ad2755a03d73b69e",
+    "source_commit": "b79e419aea95b5226ac4274c9a1535251658b5a5"
+  },
+  "independent_reconciliation": {
+    "all_assignments_have_terminal_delivery_status": true,
+    "all_release_group_ids_and_ordinals_unique": true,
+    "assignment_counts": {
+      "burn_in": {
+        "control": 91,
+        "d5": 86
+      },
+      "primary": {
+        "control": 4673,
+        "d5": 4756
+      },
+      "terminal_guard": {
+        "control": 461,
+        "d5": 451
+      }
+    },
+    "final_learner_version": 558,
+    "joined_assignment_ids_unique": true,
+    "lifecycle_rows": 158136,
+    "opportunity_groups": 10502,
+    "opportunity_rows": 11061,
+    "primary_assignment_count": 9429,
+    "primary_versions_complete": "8-507",
+    "r1_observations_entered_estimator": false,
+    "strict_ledger_join": "PASS",
+    "train_step_rows": 558
+  },
+  "local_full_analyzer_replay": {
+    "completed": false,
+    "conflicting_output_produced": false,
+    "output_file_produced": false,
+    "reason": "The 20000-draw replay exceeded a 900-second local execution cap before writing output. This is recorded as an incomplete verification attempt, not as evidence against the terminal result."
+  },
+  "mechanism": {
+    "conclusion": "REPLICATED",
+    "control": {
+      "assignment_count": 4673,
+      "direct_chain_rate": 0.0,
+      "mean_version_advance": 0.0
+    },
+    "d5": {
+      "assignment_count": 4756,
+      "direct_chain_rate": 0.3347350714886459,
+      "mean_version_advance": 0.5447855340622372
+    },
+    "unscored_assignment_count": 0
+  },
+  "observer_duty": {
+    "conclusion": "SUPPORTED",
+    "corrected_observer_duty": 0.00294341256406523,
+    "maximum_corrected_observer_duty": 0.01,
+    "observation_count": 10502
+  },
+  "primary_adjusted_result": {
+    "bootstrap_draws": 20000,
+    "bootstrap_seed": 20260914,
+    "confidence": 0.95,
+    "confidence_envelope": [
+      0.1152334597572501,
+      0.1599156329494431
+    ],
+    "conclusion": "NOT_MATERIAL",
+    "coverage_gate_passed": true,
+    "estimate": 0.13779554558263188,
+    "hac_interval": [
+      0.11622628909126576,
+      0.159364802073998
+    ],
+    "hac_standard_error": 0.011004924917754445,
+    "material_p_value_one_sided": 1.0,
+    "material_threshold": 0.2,
+    "pooled_mean_opportunity": 1675.571316547988,
+    "primary_assignment_count": 9429
+  },
+  "schema": "m4-qwen3-1p7b-gsm8k-confirmatory-acquisition-r2-result-record-v1",
+  "scientific_interpretation": {
+    "accepted_openmath_result_remains": "MATERIAL_IN_ITS_TESTED_SETTING",
+    "claim": "POSITIVE_BUT_NOT_MATERIAL_M4_OPPORTUNITY_LOSS_ON_QWEN3_1P7B_GSM8K_UNDER_THE_REGISTERED_R2_DESIGN",
+    "generalization": "THE_OPENMATH_MATERIALITY_FINDING_DID_NOT_TRANSPORT_TO_GSM8K_AT_THE_PREREGISTERED_0.20_THRESHOLD",
+    "not_a_claim_of_zero_effect": true,
+    "supporting_unadjusted_result_cannot_override_primary": true
+  },
+  "status": "TERMINAL_COMPLETE_NOT_MATERIAL"
+}

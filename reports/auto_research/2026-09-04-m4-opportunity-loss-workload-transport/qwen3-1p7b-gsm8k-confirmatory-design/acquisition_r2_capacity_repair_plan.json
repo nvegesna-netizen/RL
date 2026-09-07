@@ -100,5 +100,12 @@
     "training_started": false
   },
   "schema": "m4-qwen3-1p7b-gsm8k-confirmatory-r2-capacity-repair-plan-v1",
-  "status": "R2_ACQUISITION_SUBMITTED_RUNNING"
+  "terminal_result": {
+    "causal_conclusion": "NOT_MATERIAL",
+    "pipeline_id": 66571072,
+    "primary_assignment_count": 9429,
+    "result_record": "acquisition_r2_result.json",
+    "terminal_artifact_sha256": "966dfbf60548e5fd791d59d3baa2bc3b3a1b8d6b0b1a15de1ef510fc618720ca"
+  },
+  "status": "R2_TERMINAL_COMPLETE_NOT_MATERIAL"
 }

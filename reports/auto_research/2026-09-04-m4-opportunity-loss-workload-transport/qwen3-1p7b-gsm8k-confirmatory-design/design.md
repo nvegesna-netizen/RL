@@ -1,6 +1,6 @@
 # Qwen3-1.7B GSM8K M4 confirmatory workload-transport design
 
-Status: `R1_TERMINAL_INCOMPLETE_FINITE_EPOCH_EXHAUSTION`.
+Status: `R2_TERMINAL_COMPLETE_NOT_MATERIAL`.
 The replacement preflight and terminal-green R7 qualification are recorded
 separately. The resource and information-yield gates support the now-frozen
 confirmatory package contract. This document does not authorize EOS submission
@@ -253,3 +253,23 @@ The separately authorized one-shot release was then submitted with
 The single-use guard is consumed and no retry is permitted. This records a
 correct launch only; the scientific status remains pending until the terminal
 artifact is retrieved and reconciled. See `acquisition_r2_submission.json`.
+
+## Terminal R2 result
+
+The acquisition completed successfully. Parent pipeline `66570975`, downstream
+pipeline `66571072`, all three downstream jobs, and Slurm job `5986731`
+succeeded without a retry or extension. The artifact completed 558 trainer
+steps and supplied 9,429 primary assignments, exceeding the frozen minimum.
+
+The preregistered adjusted estimate is 0.1377955 with 95% confidence envelope
+[0.1152335, 0.1599156]. Because the upper endpoint is below the frozen 0.20
+threshold, the terminal GSM8K causal conclusion is `NOT_MATERIAL`. The delay
+mechanism nevertheless replicated and observer duty was supported. This is a
+positive but sub-threshold effect, not a claim of zero effect.
+
+The result shows that the accepted material OpenMath finding does not transport
+to GSM8K at the preregistered threshold in this environment. It does not alter
+the OpenMath conclusion or assign scientific meaning to the earlier incomplete
+GSM8K attempts. The exact terminal evidence, reconciled counts, pipeline
+provenance, and artifact hashes are recorded in `acquisition_r2_result.json`
+and `acquisition_r2_result.md`.
