@@ -1,0 +1,55 @@
+{
+  "alternatives": {
+    "material": 0.25,
+    "near_material": 0.225,
+    "near_not_material": 0.175,
+    "not_material": 0.15
+  },
+  "capacity": {
+    "conservative_assignments_per_primary_version": 15.0,
+    "minimum_primary_assignments": 7395,
+    "preferred_primary_assignments": 7500,
+    "primary_versions": 500,
+    "qwen3_0p6b_openmath_observed_assignments_per_primary_version": 17.9975,
+    "qwen3_1p7b_gsm8k_observed_assignments_per_primary_version": 18.858,
+    "trainer_steps": 558
+  },
+  "classification_rule": {
+    "confidence": 0.95,
+    "inconclusive": "confidence envelope crosses 0.20",
+    "material": "lower confidence-envelope endpoint exceeds 0.20 and registered material p-value is at most 0.05",
+    "not_material": "upper confidence-envelope endpoint is at most 0.20",
+    "threshold": 0.2
+  },
+  "planning_precision": {
+    "base_assignment_count": 9429,
+    "base_hac_standard_error": 0.011004924917754445,
+    "inflation_factor_for_model_transport": 1.25,
+    "method": "Scale the completed Qwen3-1.7B/GSM8K HAC standard error by inverse square root information to 7395 assignments, then inflate it by 25 percent before applying the two-sided 95 percent envelope boundary.",
+    "planned_hac_standard_error": 0.015533196118821728,
+    "source_outcomes_enter_new_estimator": false
+  },
+  "power": {
+    "classification_power_at_0p15_not_material": 0.8959755455947895,
+    "classification_power_at_0p175_not_material": 0.3629788535181834,
+    "classification_power_at_0p225_material": 0.3629788535181834,
+    "classification_power_at_0p25_material": 0.8959755455947895,
+    "minimum_required_at_0p15_and_0p25": 0.8,
+    "normal_approximation": true,
+    "two_sided_critical_value": 1.9599639845400534
+  },
+  "qualification_gate": {
+    "data_enter_confirmatory_estimator": false,
+    "minimum_projected_primary_assignments": 7395,
+    "minimum_reward_support": [
+      0.0,
+      1.0
+    ],
+    "maximum_corrected_observer_duty": 0.01,
+    "maximum_gpu_hours": 8.0,
+    "maximum_wall_hours": 4.0,
+    "role": "resource_and_information_capacity_only"
+  },
+  "schema": "m4-qwen3-0p6b-gsm8k-grid-power-capacity-plan-v1",
+  "status": "PROSPECTIVE_PLANNING_PASS_NO_COMPUTE_AUTHORITY"
+}

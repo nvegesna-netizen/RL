@@ -1,0 +1,44 @@
+{
+  "common_primary_start_versions": [
+    8,
+    407
+  ],
+  "comparisons": {
+    "openmath_qwen3_1p7b_minus_0p6b": -0.007196902861431709,
+    "qwen3_1p7b_openmath_minus_gsm8k": 0.15516277888120514
+  },
+  "historical_cells": {
+    "qwen3_0p6b_openmath": {
+      "assignment_count": 7199,
+      "bootstrap_draws": 20000,
+      "bootstrap_seed": 20260903,
+      "estimate": 0.30542321077967627,
+      "hac_standard_error": 0.015045534371067945,
+      "source": "preserved terminal primary result already uses versions 8-407"
+    },
+    "qwen3_1p7b_gsm8k": {
+      "assignment_count": 7613,
+      "bootstrap_draws_for_reconstruction_check": 199,
+      "bootstrap_seed": 20260919,
+      "estimate": 0.14306352903703942,
+      "hac_standard_error": 0.012526463371385174,
+      "source": "strict raw-ledger reanalysis restricted before fourth-cell outcomes"
+    },
+    "qwen3_1p7b_openmath": {
+      "assignment_count": 6955,
+      "bootstrap_draws_for_reconstruction_check": 199,
+      "bootstrap_seed": 20260918,
+      "estimate": 0.29822630791824456,
+      "hac_standard_error": 0.014532831589409809,
+      "source": "strict raw-ledger reanalysis restricted before fourth-cell outcomes"
+    }
+  },
+  "limitations": {
+    "confidence_intervals_reported": false,
+    "fourth_cell_available": false,
+    "interaction_estimated": false,
+    "reason": "The 199-draw runs validate common-window reconstruction and exact point/HAC computation only. Frozen terminal secondary inference requires 20000 independently seeded draws per cell after the fourth cell exists."
+  },
+  "schema": "m4-opportunity-loss-historical-common-window-audit-v1",
+  "status": "PLANNING_RECONSTRUCTION_PASS_NOT_A_TERMINAL_GRID_RESULT"
+}

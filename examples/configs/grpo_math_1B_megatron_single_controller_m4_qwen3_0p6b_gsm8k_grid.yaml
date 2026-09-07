@@ -1,0 +1,20 @@
+# Prospective fourth cell in the Qwen3 model-scale by workload M4 grid.
+# Do not launch without a frozen protocol and a terminal green preflight.
+defaults: grpo_math_1B_megatron_single_controller_m4_qwen3_1p7b_gsm8k_transport_r2.yaml
+
+policy:
+  model_name: Qwen/Qwen3-0.6B
+  tokenizer:
+    name: Qwen/Qwen3-0.6B
+
+async_rl:
+  lifecycle_audit_path: results/m4-qwen3-0p6b-gsm8k-grid/lifecycle.jsonl
+  controlled_release_delay:
+    seed: 20260915
+    assignment_domain: m4-opportunity-loss-qwen3-0p6b-gsm8k-grid-v1
+  gradient_opportunity_audit:
+    output_path: results/m4-qwen3-0p6b-gsm8k-grid/opportunity.jsonl
+    observer_duty_path: results/m4-qwen3-0p6b-gsm8k-grid/observer-duty.json
+
+logger:
+  log_dir: results/m4-qwen3-0p6b-gsm8k-grid/metrics

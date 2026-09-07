@@ -1,6 +1,6 @@
 # Copyright (c) 2026, NVIDIA CORPORATION. All rights reserved.
 
-"""Detached analysis pipeline for the Qwen3-1.7B GSM8K M4 transport study."""
+"""Detached analysis pipeline for prospectively registered GSM8K M4 studies."""
 
 from __future__ import annotations
 
@@ -23,6 +23,52 @@ from tools.opportunity_loss_pipeline import (
 )
 
 
+WORKLOAD_TRANSPORT_IDENTITIES: Mapping[str, Mapping[str, object]] = {
+    "m4-opportunity-loss-qwen3-1p7b-gsm8k-workload-transport-v1": {
+        "assignment_domain": "m4-opportunity-loss-qwen3-1p7b-gsm8k-v1",
+        "assignment_seed": 20260911,
+        "bootstrap_seed": 20260912,
+        "max_num_epochs": None,
+        "model": "Qwen3-1.7B",
+        "result_scope": "qwen3_1p7b_gsm8k_workload_transport_checks",
+    },
+    "m4-opportunity-loss-qwen3-1p7b-gsm8k-workload-transport-r2-v1": {
+        "assignment_domain": "m4-opportunity-loss-qwen3-1p7b-gsm8k-r2-v1",
+        "assignment_seed": 20260913,
+        "bootstrap_seed": 20260914,
+        "max_num_epochs": 2,
+        "model": "Qwen3-1.7B",
+        "result_scope": "qwen3_1p7b_gsm8k_workload_transport_r2_checks",
+    },
+    "m4-opportunity-loss-qwen3-0p6b-gsm8k-grid-completion-v1": {
+        "assignment_domain": "m4-opportunity-loss-qwen3-0p6b-gsm8k-grid-v1",
+        "assignment_seed": 20260915,
+        "bootstrap_seed": 20260916,
+        "max_num_epochs": 2,
+        "model": "Qwen3-0.6B",
+        "result_scope": "qwen3_0p6b_gsm8k_grid_completion_primary_checks",
+    },
+}
+
+GRID_SECONDARY_CONTRACT: Mapping[str, object] = {
+    "bootstrap_draws": 20000,
+    "cell_bootstrap_seeds": {
+        "qwen3_0p6b_openmath": 20260917,
+        "qwen3_1p7b_openmath": 20260918,
+        "qwen3_1p7b_gsm8k": 20260919,
+        "qwen3_0p6b_gsm8k": 20260920,
+    },
+    "common_primary_start_versions": [8, 407],
+    "complete_terminal_scoring_required": True,
+    "confidence": 0.95,
+    "interaction": (
+        "(qwen3_0p6b_openmath-qwen3_0p6b_gsm8k)-(qwen3_1p7b_openmath-qwen3_1p7b_gsm8k)"
+    ),
+    "role": "secondary_grid_synthesis_cannot_override_primary_cell",
+    "uncertainty": "independent_cell_version_block_bootstrap_and_hac_envelope",
+}
+
+
 def validate_workload_transport_contract(
     raw: Mapping[str, object],
     protocol: LedgerJoinProtocol,
@@ -30,23 +76,9 @@ def validate_workload_transport_contract(
 ) -> None:
     """Validate the exact prospectively frozen GSM8K transport contract."""
     identity = options["protocol_identity"]
-    identities = {
-        "m4-opportunity-loss-qwen3-1p7b-gsm8k-workload-transport-v1": {
-            "assignment_domain": "m4-opportunity-loss-qwen3-1p7b-gsm8k-v1",
-            "assignment_seed": 20260911,
-            "bootstrap_seed": 20260912,
-            "max_num_epochs": None,
-        },
-        "m4-opportunity-loss-qwen3-1p7b-gsm8k-workload-transport-r2-v1": {
-            "assignment_domain": "m4-opportunity-loss-qwen3-1p7b-gsm8k-r2-v1",
-            "assignment_seed": 20260913,
-            "bootstrap_seed": 20260914,
-            "max_num_epochs": 2,
-        },
-    }
-    if identity not in identities:
+    if identity not in WORKLOAD_TRANSPORT_IDENTITIES:
         raise OpportunityLossPipelineError("workload transport protocol disagrees")
-    identity_contract = identities[identity]
+    identity_contract = WORKLOAD_TRANSPORT_IDENTITIES[identity]
     if tuple((arm.label, arm.delay_seconds, arm.mass) for arm in protocol.arms) != (
         ("control", 0.0, 1),
         ("d5", 5.0, 1),
@@ -83,7 +115,7 @@ def validate_workload_transport_contract(
         "generations_per_prompt": 8,
         "inflight_prompts": 16,
         "max_staleness_versions": 1,
-        "model": "Qwen3-1.7B",
+        "model": identity_contract["model"],
         "prompts_per_step": 4,
         "sampler": "windowed_fifo",
         "train_global_batch_size": 32,
@@ -101,6 +133,21 @@ def validate_workload_transport_contract(
         "rollout_pump_cancelled_at_completed_step": 558,
     }:
         raise OpportunityLossPipelineError("workload transport exposure disagrees")
+    if identity.endswith("-grid-completion-v1"):
+        if raw.get("exposure") != {
+            "epoch_specific_group_instance_is_assignment_unit": True,
+            "max_num_epochs": 2,
+            "prior_study_observations_enter_estimator": False,
+            "repeated_prompt_exposure_declared": True,
+            "rollout_pump_cancelled_at_completed_step": 558,
+        }:
+            raise OpportunityLossPipelineError(
+                "grid completion exposure contract disagrees"
+            )
+        if raw.get("grid_secondary_analysis") != GRID_SECONDARY_CONTRACT:
+            raise OpportunityLossPipelineError(
+                "grid completion secondary analysis disagrees"
+            )
     if raw.get("resource_caps") != {
         "automatic_extension": False,
         "automatic_retry": False,
@@ -190,11 +237,9 @@ def build_workload_transport_result(
     )
     return {
         "schema_version": 1,
-        "result_scope": (
-            "qwen3_1p7b_gsm8k_workload_transport_r2_checks"
-            if options["protocol_identity"].endswith("-r2-v1")
-            else "qwen3_1p7b_gsm8k_workload_transport_checks"
-        ),
+        "result_scope": WORKLOAD_TRANSPORT_IDENTITIES[
+            str(options["protocol_identity"])
+        ]["result_scope"],
         "protocol": _sha_size(protocol_data),
         "inputs": {
             "lifecycle": {

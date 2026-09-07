@@ -1,0 +1,54 @@
+{
+  "checks": {
+    "common_window_grid_unit_tests": {
+      "count": 8,
+      "status": "PASS"
+    },
+    "config_resolution": {
+      "assertions": [
+        "model and tokenizer are Qwen/Qwen3-0.6B",
+        "dataset is GSM8K",
+        "max_num_epochs is 2",
+        "max_num_steps is 558"
+      ],
+      "method": "uv no-project with OmegaConf, Hydra, and registered repository resolvers",
+      "status": "PASS"
+    },
+    "config_scientific_delta": {
+      "allowed_changes": [
+        "model and tokenizer identity",
+        "fresh assignment seed and domain",
+        "fresh lifecycle, opportunity, observer-duty, metrics paths"
+      ],
+      "status": "PASS_EXACT_EIGHT_LEAF_DELTA_FROM_QWEN3_1P7B_GSM8K_R2"
+    },
+    "historical_common_window_reconstruction": {
+      "qwen3_1p7b_gsm8k_assignments": 7613,
+      "qwen3_1p7b_openmath_assignments": 6955,
+      "status": "PASS_PLANNING_ONLY_199_BOOTSTRAP_DRAWS"
+    },
+    "json_syntax": "PASS",
+    "power_recalculation": "PASS",
+    "protocol_exact_contract_validation": "PASS",
+    "python_compilation": "PASS",
+    "registered_adjusted_inference_regression_tests": {
+      "count": 9,
+      "status": "PASS"
+    },
+    "ruff": "PASS"
+  },
+  "deferred_gate": {
+    "dependency_complete_test_suite": "REQUIRED_IN_PINNED_NO_TRAINING_PREFLIGHT",
+    "local_collection_attempt": "NOT_RUNNABLE_LOCAL_ENVIRONMENT_MISSING_RAY",
+    "scientific_test_failure_observed": false
+  },
+  "execution": {
+    "acquisition_started": false,
+    "eos_submission": false,
+    "gpu_compute": false,
+    "qualification_started": false,
+    "training_started": false
+  },
+  "schema": "m4-qwen3-0p6b-gsm8k-grid-local-validation-v1",
+  "status": "LOCAL_STATIC_GREEN_DEPENDENCY_COMPLETE_PREFLIGHT_REQUIRED"
+}
