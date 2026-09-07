@@ -27,6 +27,8 @@ def _decision(event_seq: int, step: int, *, selected: bool) -> SchedulerTraceEve
         event_type=SchedulerEventType.SELECT_DECISION,
         min_prompt_groups=4,
         max_prompt_groups=4,
+        eligible_prompt_groups=len(selected_ids),
+        eligible_logical_group_ids=selected_ids,
         selected_logical_group_ids=selected_ids,
         scalar_summaries={
             "scheduler_assay_step": step,
