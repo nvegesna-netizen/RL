@@ -1,6 +1,6 @@
 # NuminaMath-1.5 paired M4 generalization design
 
-Status: `PAIRED_ACQUISITION_PACKAGING_REPAIRED_PENDING_FRESH_RELEASE`.
+Status: `TERMINAL_SAME_DIRECTION_GENERALIZATION`.
 
 ## Scientific question
 
@@ -130,6 +130,22 @@ The scientific design and all 50 preflight-locked files remain unchanged.
 The packaging-only repair now escapes literal braces while retaining JET's
 `{assets_dir}` substitution. Both repaired manifests pass an explicit local
 evaluation of the same f-string semantics, Bash syntax, and all embedded Python
-syntax. Attempt 1's one-use authority is consumed; a repaired submission needs
-fresh explicit authority and still must launch both cells before either outcome
-is inspected.
+syntax. At the close of attempt 1, its one-use authority was consumed; a
+repaired submission still required fresh explicit authority and both cells had
+to launch before either outcome was inspected.
+
+## Repaired acquisition and terminal result
+
+Fresh authority was bound to replacement manifests and consumed by exactly one
+paired submission. Both downstream pipelines succeeded: `66843373` for 0.6B
+and `66843327` for 1.7B. Both terminal artifacts passed ZIP integrity, embedded
+checksums, source/protocol/config binding, rank and Slurm exit checks, fixed
+448-step completion, complete common-window scoring, and the 6,900-assignment
+minimum before analysis.
+
+The primary interaction estimate is `-0.0725802885`, with registered 95% outer
+envelope `[-0.1305496377, -0.0149320766]`. Because the envelope is wholly below
+zero, the terminal conclusion is `SAME_DIRECTION_GENERALIZATION`. Supporting
+adjusted cell estimates are `0.3154808674` at 0.6B and `0.2978592508` at 1.7B;
+both are `MATERIAL`, both mechanisms `REPLICATED`, and both observer-duty checks
+are `SUPPORTED`. Full compact evidence is preserved in `acquisition_result.json`.

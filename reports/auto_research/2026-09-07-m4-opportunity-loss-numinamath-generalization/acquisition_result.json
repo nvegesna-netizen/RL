@@ -1,0 +1,119 @@
+{
+  "analysis": {
+    "deterministic_executions": 2,
+    "grid_analysis_sha256": "43b75f84112f218f1f6837509f7fda2d8627d0518371218478b39c0c08711bc3",
+    "historical_gsm8k_input_sha256": "4a33668f332e250c71769ecc88b57972ecd08c6f5c69b38d31e53fa93240168f",
+    "protocol_sha256": "bbe2c07211952e3e46d4511524f68e864606a7c63f271ae8e064263044dad0c8",
+    "runner_sha256": "736645c6a72218f26e481d3938ff483f864ac5fccfc9b54445838f35a82faeb4",
+    "terminal_result_sha256": "0dfd265d788d6697cbfcabc1f39519b23191b8196279894de66f98aaee8af018"
+  },
+  "cells": {
+    "qwen3_0p6b_numinamath": {
+      "artifact_sha256": "ad7c556f435b0f9e30a65c201680bf6dab74e077af16e38f299bfc04af969c35",
+      "assignment_count": 7229,
+      "assignment_counts": {
+        "control": 3603,
+        "d5": 3626
+      },
+      "capture_summary_sha256": "ab7d774c6447251fed8bcdcffc8587502656100264b170ac2c03354934a4a7cf",
+      "corrected_observer_duty": 0.0021208679283728077,
+      "mechanism_conclusion": "REPLICATED",
+      "observer_duty_conclusion": "SUPPORTED",
+      "pipeline": {
+        "compute_job_id": 430968079,
+        "downstream_pipeline_id": 66843373,
+        "logs_after_job_id": 430968080,
+        "parent_pipeline_id": 66843216,
+        "slurm_job_id": 5996023
+      },
+      "supporting_materiality": {
+        "conclusion": "MATERIAL",
+        "estimate": 0.31548086738747205,
+        "hac_standard_error": 0.013967096728921035,
+        "material_p_value": 0.00004999750012499375,
+        "outer_confidence_envelope": [
+          0.2877998311316367,
+          0.3428558739447445
+        ],
+        "threshold": 0.2
+      },
+      "terminal_scoring_complete": true,
+      "trainer_steps": 448
+    },
+    "qwen3_1p7b_numinamath": {
+      "artifact_sha256": "6aa61968730833387a15b45a6d0f2be541c6f84b6d4f16a29e7dbf583981fc9b",
+      "assignment_count": 7050,
+      "assignment_counts": {
+        "control": 3537,
+        "d5": 3513
+      },
+      "capture_summary_sha256": "78abf4111c3526a2b0d743db7073b545fdb119143a5c95a02a8b0f0f7faf7704",
+      "corrected_observer_duty": 0.0017982186524049379,
+      "mechanism_conclusion": "REPLICATED",
+      "observer_duty_conclusion": "SUPPORTED",
+      "pipeline": {
+        "compute_job_id": 430967786,
+        "downstream_pipeline_id": 66843327,
+        "logs_after_job_id": 430967787,
+        "parent_pipeline_id": 66843180,
+        "slurm_job_id": 5996009
+      },
+      "supporting_materiality": {
+        "conclusion": "MATERIAL",
+        "estimate": 0.29785925081506975,
+        "hac_standard_error": 0.018450489889422404,
+        "material_p_value": 0.00004999750012499375,
+        "outer_confidence_envelope": [
+          0.2614689302151933,
+          0.33402154649545807
+        ],
+        "threshold": 0.2
+      },
+      "terminal_scoring_complete": true,
+      "trainer_steps": 448
+    }
+  },
+  "execution": {
+    "acquisition_attempts_each_cell": 1,
+    "automatic_extension": false,
+    "automatic_retry": false,
+    "both_artifacts_authenticated_before_analysis": true,
+    "qualification_observations_entered_estimator": false,
+    "source_commit": "02b0ad4abfedc80994f71f8a550473431154b823"
+  },
+  "limitations": {
+    "family_wide_generalization_supported": false,
+    "scope": "Qwen3-0.6B and Qwen3-1.7B, NuminaMath-1.5 versus immutable GSM8K common-window evidence, tested GRPO/two-H100 EOS environments",
+    "supporting_cell_materiality_can_override_primary_interaction": false
+  },
+  "primary_interaction": {
+    "bootstrap_draws_each_cell": 20000,
+    "bootstrap_interval": [
+      -0.1305496376894155,
+      -0.01493207655279414
+    ],
+    "cell_estimates": {
+      "qwen3_0p6b_gsm8k": 0.2332654341299639,
+      "qwen3_0p6b_numinamath": 0.31548086738747205,
+      "qwen3_1p7b_gsm8k": 0.14306352903703942,
+      "qwen3_1p7b_numinamath": 0.29785925081506975
+    },
+    "conclusion": "SAME_DIRECTION_GENERALIZATION",
+    "hac_interval": [
+      -0.1291134560829748,
+      -0.01604712095806953
+    ],
+    "hac_standard_error": 0.028843982852939685,
+    "interaction_estimate": -0.07258028852052217,
+    "outer_confidence_envelope": [
+      -0.1305496376894155,
+      -0.01493207655279414
+    ],
+    "workload_contrasts": {
+      "qwen3_0p6b_numinamath_minus_gsm8k": 0.08221543325750816,
+      "qwen3_1p7b_numinamath_minus_gsm8k": 0.15479572177803033
+    }
+  },
+  "schema": "m4-numinamath-paired-terminal-generalization-result-v1",
+  "status": "SAME_DIRECTION_GENERALIZATION"
+}
