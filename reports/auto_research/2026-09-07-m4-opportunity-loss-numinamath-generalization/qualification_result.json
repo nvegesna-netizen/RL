@@ -1,0 +1,106 @@
+{
+  "cells": {
+    "qwen3_0p6b_numinamath": {
+      "artifact": {
+        "members": 38,
+        "sha256": "9df74eaa4afb49b89ef069527d9f2fece5c94c410c0078b2fc3f732d0c9df5e6",
+        "summary_sha256": "e46822a3bc33873bd2b27afdf97eebcc828fc30ba68c716729360f60baa261e8",
+        "zip_integrity": "PASS"
+      },
+      "checks": {
+        "binary_reward_support": true,
+        "complete_steps": true,
+        "gpu_hour_projection": true,
+        "group_ids_unique": true,
+        "information_yield": true,
+        "neutral_zero_dose_instrument": true,
+        "observer_duty": true,
+        "wall_time_projection": true
+      },
+      "pipeline": {
+        "compute_job_id": 430702706,
+        "downstream_pipeline_id": 66812105,
+        "generator_job_id": 430700921,
+        "logs_after_job_id": 430702707,
+        "logs_before_job_id": 430702705,
+        "parent_pipeline_id": 66811941,
+        "slurm_job_id": 5994668,
+        "trigger_bridge_job_id": 430700922
+      },
+      "qualification": {
+        "corrected_observer_duty": 0.0023387151297210233,
+        "observed_start_versions": 32,
+        "opportunity_groups": 552,
+        "projected_448_step_gpu_hours": 3.731226477113261,
+        "projected_448_step_wall_hours": 1.8656132385566304,
+        "reward_values": [
+          0.0,
+          1.0
+        ],
+        "trainer_steps": 32,
+        "wall_time_seconds": 600.758296327
+      }
+    },
+    "qwen3_1p7b_numinamath": {
+      "artifact": {
+        "members": 38,
+        "sha256": "3e179fc030d8b2ced181b62817fa426b3b81f4ee02e599e195edef9db36549a7",
+        "summary_sha256": "8e05c45fd1e9a19ef971a0a6af3492d86e19ff6e97d2d44d67752f45ee0d4c1e",
+        "zip_integrity": "PASS"
+      },
+      "checks": {
+        "binary_reward_support": true,
+        "complete_steps": true,
+        "gpu_hour_projection": true,
+        "group_ids_unique": true,
+        "information_yield": true,
+        "neutral_zero_dose_instrument": true,
+        "observer_duty": true,
+        "wall_time_projection": true
+      },
+      "pipeline": {
+        "compute_job_id": 430703421,
+        "downstream_pipeline_id": 66812188,
+        "generator_job_id": 430701142,
+        "logs_after_job_id": 430703422,
+        "logs_before_job_id": 430703420,
+        "parent_pipeline_id": 66811965,
+        "slurm_job_id": 5994670,
+        "trigger_bridge_job_id": 430701143
+      },
+      "qualification": {
+        "corrected_observer_duty": 0.0017940087188015518,
+        "observed_start_versions": 31,
+        "opportunity_groups": 535,
+        "projected_448_step_gpu_hours": 4.189616982301389,
+        "projected_448_step_wall_hours": 2.0948084911506943,
+        "reward_values": [
+          0.0,
+          1.0
+        ],
+        "trainer_steps": 32,
+        "wall_time_seconds": 647.236489106
+      }
+    }
+  },
+  "decision": {
+    "paired_qualification_complete": true,
+    "qualification_data_allowed_in_any_causal_estimator": false,
+    "reason": "Both prospectively matched neutral 32-step qualifications passed topology, binary reward support, information yield, observer duty, and full-acquisition resource projections.",
+    "scientific_acquisition_authorized": false
+  },
+  "frozen_source": {
+    "archive_sha256": "876d508418bf2086e7b3e59276cac46543b4b682cb23899a109d39300cdab2ec",
+    "commit": "3a378653635a005f32629df01e9a18a61c992c39",
+    "preflight_locked_file_count": 50,
+    "preflight_locked_file_delta_count": 0
+  },
+  "prohibited_activity": {
+    "automatic_extension": false,
+    "automatic_retry": false,
+    "causal_estimate_produced": false,
+    "scientific_acquisition_started": false
+  },
+  "schema": "m4-numinamath-paired-neutral-qualification-terminal-result-v1",
+  "status": "PAIRED_QUALIFICATION_GREEN"
+}

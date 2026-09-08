@@ -1,6 +1,6 @@
 # NuminaMath-1.5 paired M4 generalization design
 
-Status: `REPAIRED_NO_TRAINING_PREFLIGHT_GREEN_PAIRED_QUALIFICATION_AUTHORIZED`.
+Status: `PAIRED_QUALIFICATION_GREEN_PENDING_ACQUISITION_PACKAGE_FREEZE`.
 
 ## Scientific question
 
@@ -102,3 +102,17 @@ frozen four-hour per-cell ceiling. Automatic retry and extension are forbidden.
 
 Qualification observations remain excluded from every causal estimator. This
 authorization does not permit either 448-step scientific acquisition.
+
+## Neutral qualification result
+
+Both authorized qualifications passed. The 0.6B cell completed 32 steps with
+552 opportunity groups, corrected observer duty `0.0023387151`, and a 448-step
+projection of 1.866 wall-hours and 3.731 two-GPU-hours. The 1.7B cell completed
+32 steps with 535 opportunity groups, corrected observer duty `0.0017940087`,
+and a projection of 2.095 wall-hours and 4.190 two-GPU-hours. Both observed
+binary reward support and passed every registered operational gate.
+
+These results are non-causal and remain excluded from all estimators. The next
+gate is paired acquisition-package freeze. Both 448-step packages must be
+frozen before either submission, and fresh explicit acquisition authority is
+required.
