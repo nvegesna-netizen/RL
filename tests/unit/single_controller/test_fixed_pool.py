@@ -781,6 +781,16 @@ def test_fixed_pool_config_accepts_openmath_design() -> None:
     assert config.design_id == "openmath_latency_feasibility_v1"
 
 
+def test_fixed_pool_config_accepts_structured_generation_design() -> None:
+    config = FixedPoolCollectionConfig(
+        enabled=True,
+        manifest_path="pool.json",
+        design_id="structured_generation_latency_v1",
+    )
+
+    assert config.design_id == "structured_generation_latency_v1"
+
+
 def test_fixed_pool_config_rejects_unknown_design() -> None:
     with pytest.raises(ValidationError, match="literal_error"):
         FixedPoolCollectionConfig(design_id="unknown")  # type: ignore[arg-type]
