@@ -1,6 +1,6 @@
 # Qwen3-0.6B/GSM8K M4 grid-completion design
 
-Status: `QUALIFICATION_GREEN_ACQUISITION_PACKAGE_FREEZE_PENDING`.
+Status: `PRIMARY_MATERIAL_GRID_SYNTHESIS_PENDING`.
 
 ## Scientific question
 
@@ -161,3 +161,26 @@ The qualification remains non-causal: it used only the neutral zero-second arm,
 produced no causal estimate, and its observations cannot enter any primary or
 grid estimator. The next gate is acquisition-package freeze and review. A fresh
 exact authorization is required before the single 558-step submission.
+
+## Acquisition result
+
+The single authorized acquisition completed all 558 trainer steps and produced
+9,573 primary assignments with zero missing terminal dispositions in either
+arm. Its adjusted primary estimate is `0.2323419953`, with registered 95% outer
+envelope `[0.2107693490, 0.2532757032]` and material p-value `0.0015999200`.
+The registered conclusion is `MATERIAL`.
+
+The supporting unadjusted result is `INCONCLUSIVE` and does not override the
+primary endpoint. The d5-vs-control mechanism conclusion is `REPLICATED`, and
+corrected observer duty `0.0032864855` supports portability under the registered
+ceiling.
+
+Pipelines `66675448` and `66675506` are red only because the manifest invoked
+the generic analyzer after acquisition; that entrypoint rejects the grid
+protocol identity. The already frozen workload-transport analyzer explicitly
+registered for this protocol recovered the exact 20,000-draw result from the
+immutable ledgers. No reacquisition, protocol change, retry, extension, or
+qualification observation entered the terminal result.
+
+The next gate is the preregistered secondary four-cell synthesis over common
+start versions 8–407. It cannot override this cell's primary conclusion.

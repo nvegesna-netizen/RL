@@ -1,0 +1,86 @@
+{
+  "acquisition": {
+    "arm_assignment_counts": {
+      "control": 4766,
+      "d5": 4807
+    },
+    "automatic_extension": false,
+    "automatic_retry": false,
+    "missing_terminal_counts": {
+      "control": 0,
+      "d5": 0
+    },
+    "opportunity_group_count": 10633,
+    "primary_assignment_count": 9573,
+    "prior_or_qualification_observations_entered_estimator": false,
+    "trainer_steps": 558
+  },
+  "analysis_recovery": {
+    "analyzer_path": "tools/opportunity_loss_workload_transport_pipeline.py",
+    "analyzer_sha256": "97cf95b95e340461d05edee30c9c81a5ec905e58d4292be63b997383953d56be",
+    "new_observations_acquired": false,
+    "outcome_informed_protocol_change": false,
+    "result_sha256": "26d1650143c502e5790f194ab7c703051820e47993c8fcd9206bbec2bd7f10c2"
+  },
+  "mechanism": {
+    "conclusion": "REPLICATED",
+    "control_direct_chain_rate": 0.0,
+    "d5_direct_chain_rate": 0.399833576034949,
+    "d5_minus_control_direct_chain_rate": 0.399833576034949,
+    "d5_minus_control_version_advance": 0.6461392547115119,
+    "unscored_assignment_count": 0
+  },
+  "primary_adjusted_inference": {
+    "bootstrap_draws": 20000,
+    "bootstrap_seed": 20260916,
+    "causal_conclusion": "MATERIAL",
+    "confidence": 0.95,
+    "confidence_envelope": [
+      0.21076934895420613,
+      0.25327570321828025
+    ],
+    "cross_fit_folds": 8,
+    "estimate": 0.2323419952969981,
+    "hac_interval": [
+      0.21225107512061073,
+      0.2524329154733854
+    ],
+    "hac_lag": 4,
+    "hac_standard_error": 0.010250657835991878,
+    "material_alpha": 0.05,
+    "material_p_value": 0.0015999200039998,
+    "material_threshold": 0.2,
+    "version_block_size": 8
+  },
+  "protocol": {
+    "identity": "m4-opportunity-loss-qwen3-0p6b-gsm8k-grid-completion-v1",
+    "sha256": "b6682795071d12a5d6b3eddcdf73536e045949f08ce881885dd330fba9885db6"
+  },
+  "raw_evidence": {
+    "lifecycle_row_count": 160086,
+    "lifecycle_sha256": "ac032de183ec3cb602e83afad92da587b664c3c5a8e20a4fb31eeaf333fa3c84",
+    "observer_duty_sha256": "136446252b1d075553974b14f244b715b316ea3a459c26cd746a46f33459affc",
+    "opportunity_row_count": 11192,
+    "opportunity_sha256": "bc110e951869e5b7b0aa68e6c78e2992f527f5553bb19b9e8e28db98231635eb",
+    "terminal_artifact_sha256": "6c2ebeb2b2bf67df16be815f372ea87cde8eeff4d23e63291d8a98ac94659075"
+  },
+  "schema": "m4-qwen3-0p6b-gsm8k-grid-acquisition-terminal-result-v1",
+  "source_commit": "bfcf8447ac2395520a4fc3805859f167fcbb2bb0",
+  "status": "MATERIAL",
+  "supporting_unadjusted_inference": {
+    "conclusion": "INCONCLUSIVE",
+    "confidence_envelope": [
+      0.18382690378196498,
+      0.3068576632860752
+    ],
+    "estimate": 0.2468378656126923,
+    "material_p_value": 0.06999650017499125,
+    "cannot_override_primary": true
+  },
+  "observer_duty": {
+    "conclusion": "SUPPORTED",
+    "corrected_observer_duty": 0.00328648550588239,
+    "maximum_corrected_observer_duty": 0.01,
+    "observation_count": 10633
+  }
+}

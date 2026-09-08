@@ -1,0 +1,51 @@
+{
+  "acquisition": {
+    "primary_assignment_count": 9573,
+    "raw_evidence_preserved": true,
+    "trainer_steps_completed": 558,
+    "trainer_steps_registered": 558
+  },
+  "failure": {
+    "boundary": "post_acquisition_analysis_invocation",
+    "exception": "OpportunityLossPipelineError: registered pipeline requires v1 protocol",
+    "incorrect_analyzer": {
+      "path": "tools/opportunity_loss_pipeline.py",
+      "sha256": "5e2dd8b476ee39bf61471ae9510b690b11c2946d1b353868be909324fa7e3d53"
+    },
+    "reason": "The manifest invoked the generic common-instrumentation-v1 analyzer, which intentionally rejects the prospectively frozen grid-completion protocol identity.",
+    "scientific_acquisition_failed": false
+  },
+  "pipeline": {
+    "compute_job_id": 429546152,
+    "compute_job_status": "failed",
+    "downstream_pipeline_id": 66675506,
+    "downstream_pipeline_status": "failed",
+    "logs_after_job_id": 429546153,
+    "logs_after_status": "success",
+    "parent_pipeline_id": 66675448,
+    "parent_pipeline_status": "failed",
+    "slurm_exit_code": "1:0",
+    "slurm_job_id": 5989853,
+    "slurm_runtime": "01:22:44"
+  },
+  "recovery": {
+    "correct_analyzer": {
+      "path": "tools/opportunity_loss_workload_transport_pipeline.py",
+      "sha256": "97cf95b95e340461d05edee30c9c81a5ec905e58d4292be63b997383953d56be"
+    },
+    "correct_analyzer_preregistered_for_protocol": true,
+    "new_gpu_acquisition_required": false,
+    "outcome_informed_protocol_change": false,
+    "registered_20000_draw_analysis_recovered": true,
+    "result_sha256": "26d1650143c502e5790f194ab7c703051820e47993c8fcd9206bbec2bd7f10c2"
+  },
+  "schema": "m4-qwen3-0p6b-gsm8k-grid-acquisition-attempt-1-failure-v1",
+  "status": "ACQUISITION_COMPLETE_POST_RUN_ANALYSIS_PACKAGING_FAILURE",
+  "terminal_artifact": {
+    "archive_members": 36,
+    "filename": "grid-acquisition-66675506-job-429546153.zip",
+    "sha256": "6c2ebeb2b2bf67df16be815f372ea87cde8eeff4d23e63291d8a98ac94659075",
+    "size_bytes": 137287850,
+    "zip_integrity": "PASS"
+  }
+}
