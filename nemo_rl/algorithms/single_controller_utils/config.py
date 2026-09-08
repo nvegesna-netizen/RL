@@ -44,6 +44,7 @@ FixedPoolDesignId: TypeAlias = Literal[
     "sliding_puzzle_7b_competence_v1",
     "sliding_puzzle_7b_compact_prompt_v2",
     "structured_generation_latency_v1",
+    "structured_generation_scheduler_crossover_v1",
 ]
 
 
@@ -203,10 +204,14 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
                 "async_rl.max_inflight_prompts for fixed-pool collection"
             )
         if assay_config.enabled:
-            if async_config.fixed_pool.design_id != "ready_bias_v1":
+            assay_design = async_config.fixed_pool.design_id
+            if assay_design not in {
+                "ready_bias_v1",
+                "structured_generation_scheduler_crossover_v1",
+            }:
                 raise ValueError(
-                    "scheduler assay schema v1 requires fixed_pool.design_id="
-                    "ready_bias_v1"
+                    "scheduler assay requires the controlled ready-bias or "
+                    "structured-crossover fixed-pool design"
                 )
             if not isinstance(
                 async_config.sampler,
@@ -223,30 +228,53 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
                 )
             if async_config.max_inflight_prompts != 4:
                 raise ValueError("scheduler assay requires max_inflight_prompts=4")
-            if async_config.max_buffered_rollouts != 16:
-                raise ValueError("scheduler assay requires max_buffered_rollouts=16")
+            expected_buffer = 16 if assay_design == "ready_bias_v1" else 8
+            if async_config.max_buffered_rollouts != expected_buffer:
+                raise ValueError(
+                    "scheduler assay requires max_buffered_rollouts="
+                    f"{expected_buffer} for {assay_design}"
+                )
             if master_config.grpo.max_num_epochs != 1:
                 raise ValueError("scheduler assay requires grpo.max_num_epochs=1")
             if master_config.grpo.num_generations_per_prompt != 2:
                 raise ValueError(
                     "scheduler assay requires grpo.num_generations_per_prompt=2"
                 )
-            if master_config.policy["max_total_sequence_length"] != 512:
+            expected_sequence_length = 512 if assay_design == "ready_bias_v1" else 768
+            if (
+                master_config.policy["max_total_sequence_length"]
+                != expected_sequence_length
+            ):
                 raise ValueError(
-                    "scheduler assay requires policy.max_total_sequence_length=512"
+                    "scheduler assay requires policy.max_total_sequence_length="
+                    f"{expected_sequence_length} for {assay_design}"
                 )
             generation = master_config.policy["generation"]
-            if generation["temperature"] != 1.0 or generation["top_p"] != 1.0:
+            sampling_matches = (
+                generation["temperature"] == 1.0 and generation["top_p"] == 1.0
+                if assay_design == "ready_bias_v1"
+                else (
+                    generation["temperature"],
+                    generation["top_p"],
+                    generation["top_k"],
+                )
+                == (0.7, 0.8, 20)
+            )
+            if not sampling_matches:
                 raise ValueError(
-                    "scheduler assay requires generation temperature=1.0 and top_p=1.0"
+                    f"scheduler assay generation sampling does not match {assay_design}"
                 )
             lookahead = (
                 async_config.sampler.max_staleness_versions
                 if isinstance(async_config.sampler, ReadyFirstSamplerConfig)
                 else async_config.sampler.max_lookahead_versions
             )
-            if lookahead != 3:
-                raise ValueError("scheduler assay requires sampler lookahead=3")
+            expected_lookahead = 3 if assay_design == "ready_bias_v1" else 1
+            if lookahead != expected_lookahead:
+                raise ValueError(
+                    "scheduler assay requires sampler lookahead="
+                    f"{expected_lookahead} for {assay_design}"
+                )
         # Collection performs one initial weight sync and no learner or sampler
         # operations. Assay mode performs sampler operations but no learner or
         # loss operations, so training-only batch/loss constraints do not apply.

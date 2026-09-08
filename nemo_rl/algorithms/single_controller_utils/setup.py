@@ -33,8 +33,12 @@ from transformers.tokenization_utils_base import PreTrainedTokenizerBase
 from nemo_rl.algorithms.async_utils.replay_buffer import TQReplayBuffer
 from nemo_rl.algorithms.async_utils.scheduler_assay import (
     SchedulerAssayArm,
-    SchedulerAssayPlan,
-    load_scheduler_assay_plan,
+)
+from nemo_rl.algorithms.async_utils.structured_scheduler_crossover import (
+    SchedulerProtocolArm,
+    SchedulerProtocolPlan,
+    StructuredSchedulerCrossoverPlan,
+    load_scheduler_protocol,
 )
 from nemo_rl.algorithms.async_utils.fixed_pool import (
     FixedPoolDataset,
@@ -101,8 +105,8 @@ class SingleControllerActorArgs:
     tq_buffer: TQReplayBuffer
     partition_id: str
     fixed_pool_manifest: Optional[FixedPoolManifest] = None
-    scheduler_assay_plan: Optional[SchedulerAssayPlan] = None
-    scheduler_assay_arm: Optional[SchedulerAssayArm] = None
+    scheduler_assay_plan: Optional[SchedulerProtocolPlan] = None
+    scheduler_assay_arm: Optional[SchedulerProtocolArm] = None
 
 
 def _build_clusters(
@@ -342,8 +346,8 @@ def setup_single_controller(
     fixed_pool_config = master_config.async_rl.fixed_pool
     assay_config = master_config.async_rl.scheduler_assay
     manifest: Optional[FixedPoolManifest] = None
-    assay_plan: Optional[SchedulerAssayPlan] = None
-    assay_arm: Optional[SchedulerAssayArm] = None
+    assay_plan: Optional[SchedulerProtocolPlan] = None
+    assay_arm: Optional[SchedulerProtocolArm] = None
     if fixed_pool_config.enabled:
         manifest = load_fixed_pool_manifest(fixed_pool_config.manifest_path)  # type: ignore[arg-type]
         validate_fixed_pool_materialization(manifest)
@@ -395,7 +399,7 @@ def setup_single_controller(
             assert assay_config.plan_path is not None
             assert assay_config.arm_id is not None
             assert assay_config.order_seed is not None
-            assay_plan = load_scheduler_assay_plan(assay_config.plan_path)
+            assay_plan = load_scheduler_protocol(assay_config.plan_path)
             assay_arm = assay_plan.arm(assay_config.arm_id)
             pool = assay_plan.pool(assay_config.order_seed)
             if (
@@ -406,6 +410,11 @@ def setup_single_controller(
                 raise ValueError("scheduler assay plan/source manifest mismatch")
             if master_config.async_rl.sampler.name != assay_arm.sampler:
                 raise ValueError("scheduler assay arm/sampler mismatch")
+            expected_generation_seed = (
+                pool.generation_study_seed
+                if isinstance(assay_plan, StructuredSchedulerCrossoverPlan)
+                else assay_plan.generation_study_seed
+            )
             if (
                 grpo_config.num_generations_per_prompt
                 != assay_plan.completions_per_group
@@ -416,10 +425,23 @@ def setup_single_controller(
                 or cast(dict[str, Any], generation_config)
                 .get("vllm_cfg", {})
                 .get("study_seed")
-                != assay_plan.generation_study_seed
+                != expected_generation_seed
             ):
                 raise ValueError(
                     "scheduler assay generation config does not match frozen plan"
+                )
+            if isinstance(assay_plan, StructuredSchedulerCrossoverPlan) and (
+                generation_config.get("top_k") != assay_plan.top_k
+                or generation_config.get("repetition_penalty")
+                != assay_plan.repetition_penalty
+                or generation_config.get("max_new_tokens") != assay_plan.max_new_tokens
+                or master_config.async_rl.max_inflight_prompts
+                != assay_plan.max_inflight_prompts
+                or master_config.async_rl.max_buffered_rollouts
+                != assay_plan.max_buffered_rollouts
+            ):
+                raise ValueError(
+                    "structured crossover runtime does not match frozen plan"
                 )
 
     # TODO: add validate dataset wiring.
@@ -564,9 +586,13 @@ def setup_single_controller(
         use_nemo_gym=use_nemo_gym,
         mask_env_flagged_samples=should_mask_flagged_samples(master_config.env),
         tq_buffer=tq_buffer,
-        scheduler_assay_arm=assay_arm,
+        scheduler_assay_arm=(
+            assay_arm if isinstance(assay_arm, SchedulerAssayArm) else None
+        ),
         scheduler_assay_delay_seconds=(
-            assay_plan.release_delay_seconds if assay_plan is not None else None
+            assay_plan.release_delay_seconds
+            if assay_plan is not None and isinstance(assay_arm, SchedulerAssayArm)
+            else None
         ),
     )
 

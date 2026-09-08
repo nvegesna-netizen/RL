@@ -149,9 +149,7 @@ SLIDING_PUZZLE_MATERIALIZED_RECORD_FIELDS: Final[frozenset[str]] = frozenset(
         "prompt_builder_version",
     }
 )
-STRUCTURED_GENERATION_DATASET_ID: Final[str] = (
-    "generated/structured-addition-checks"
-)
+STRUCTURED_GENERATION_DATASET_ID: Final[str] = "generated/structured-addition-checks"
 STRUCTURED_GENERATION_DATASET_REVISION: Final[str] = "v1"
 STRUCTURED_GENERATION_DATASET_SPLIT: Final[str] = "feasibility"
 STRUCTURED_GENERATION_ORDER_SEED: Final[int] = 45001
@@ -165,6 +163,15 @@ STRUCTURED_GENERATION_MODEL_WEIGHTS_SHA256: Final[str] = (
 STRUCTURED_GENERATION_PLAN_SHA256: Final[str] = (
     "8aa2b4e40839b37331311eeda2d7875a922d73128930494dae4172102db71cda"
 )
+STRUCTURED_CROSSOVER_PROTOCOL_SHA256: Final[str] = (
+    "ddd7536aa3d67351974629c2c56fbe41456b9e3b48b0d26e47ef7f7e2728f7ef"
+)
+STRUCTURED_CROSSOVER_SELECTION_SEEDS: Final[dict[int, int]] = {
+    46001: 2026090801,
+    46002: 2026090802,
+    46003: 2026090803,
+    46004: 2026090804,
+}
 STRUCTURED_GENERATION_SOURCE_IDS: Final[tuple[str, str]] = (
     "structured_short",
     "structured_long",
@@ -1299,13 +1306,46 @@ def validate_structured_generation_latency_manifest_design(
     manifest: FixedPoolManifest,
 ) -> None:
     """Enforce the frozen structured-generation feasibility design."""
-    if manifest.order_seed != STRUCTURED_GENERATION_ORDER_SEED:
+    _validate_structured_generation_manifest_design(
+        manifest,
+        expected_order_seed=STRUCTURED_GENERATION_ORDER_SEED,
+        expected_selection_seed=STRUCTURED_GENERATION_SELECTION_SEED,
+        expected_protocol_sha256=STRUCTURED_GENERATION_PLAN_SHA256,
+        expected_split=STRUCTURED_GENERATION_DATASET_SPLIT,
+    )
+
+
+def validate_structured_generation_scheduler_crossover_manifest_design(
+    manifest: FixedPoolManifest,
+) -> None:
+    """Enforce one confirmed fresh structured scheduler-crossover pool."""
+    selection_seed = STRUCTURED_CROSSOVER_SELECTION_SEEDS.get(manifest.order_seed)
+    if selection_seed is None:
+        raise FixedPoolManifestError("structured crossover order seed mismatch")
+    _validate_structured_generation_manifest_design(
+        manifest,
+        expected_order_seed=manifest.order_seed,
+        expected_selection_seed=selection_seed,
+        expected_protocol_sha256=STRUCTURED_CROSSOVER_PROTOCOL_SHA256,
+        expected_split="scheduler_crossover",
+    )
+
+
+def _validate_structured_generation_manifest_design(
+    manifest: FixedPoolManifest,
+    *,
+    expected_order_seed: int,
+    expected_selection_seed: int,
+    expected_protocol_sha256: str,
+    expected_split: str,
+) -> None:
+    """Validate shared immutable structure for generated short/long pairs."""
+    if manifest.order_seed != expected_order_seed:
         raise FixedPoolManifestError("structured-generation order seed mismatch")
     if (
         manifest.model_revision != STRUCTURED_GENERATION_MODEL_REVISION
-        or manifest.model_weights_sha256
-        != STRUCTURED_GENERATION_MODEL_WEIGHTS_SHA256
-        or manifest.design_protocol_sha256 != STRUCTURED_GENERATION_PLAN_SHA256
+        or manifest.model_weights_sha256 != STRUCTURED_GENERATION_MODEL_WEIGHTS_SHA256
+        or manifest.design_protocol_sha256 != expected_protocol_sha256
     ):
         raise FixedPoolManifestError("structured-generation model or plan mismatch")
     source_ids = tuple(source.source_id for source in manifest.sources)
@@ -1314,7 +1354,7 @@ def validate_structured_generation_latency_manifest_design(
     expected_identity = (
         STRUCTURED_GENERATION_DATASET_ID,
         STRUCTURED_GENERATION_DATASET_REVISION,
-        STRUCTURED_GENERATION_DATASET_SPLIT,
+        expected_split,
     )
     if any(
         (source.dataset_id, source.revision, source.split) != expected_identity
@@ -1341,7 +1381,9 @@ def validate_structured_generation_latency_manifest_design(
         by_cohort.setdefault(item.dispatch_cohort, []).append(item)
         by_pair.setdefault(item.matching_pair_id, []).append(item)
         if item.input_token_count > 256:
-            raise FixedPoolManifestError("structured-generation input exceeds 256 tokens")
+            raise FixedPoolManifestError(
+                "structured-generation input exceeds 256 tokens"
+            )
     if len(by_cohort) != 4 or len(by_pair) != 8:
         raise FixedPoolManifestError("structured-generation cohort/pair count mismatch")
     for cohort, items in by_cohort.items():
@@ -1375,7 +1417,7 @@ def validate_structured_generation_latency_manifest_design(
             "source_id": item.source_id,
             "source_dataset_id": STRUCTURED_GENERATION_DATASET_ID,
             "source_revision": STRUCTURED_GENERATION_DATASET_REVISION,
-            "source_split": STRUCTURED_GENERATION_DATASET_SPLIT,
+            "source_split": expected_split,
             "source_dataset_index": item.source_dataset_index,
             "source_prompt_id": item.source_prompt_id,
             "repeated_prompt_cluster_id": item.repeated_prompt_cluster_id,
@@ -1383,7 +1425,7 @@ def validate_structured_generation_latency_manifest_design(
             "matching_pair_id": item.matching_pair_id,
             "input_token_count": item.input_token_count,
             "input_token_ids_sha256": item.input_token_ids_sha256,
-            "selection_seed": STRUCTURED_GENERATION_SELECTION_SEED,
+            "selection_seed": expected_selection_seed,
             "model_revision": STRUCTURED_GENERATION_MODEL_REVISION,
             "required_check_lines": STRUCTURED_GENERATION_CHECK_LINES[item.task_name],
         }
@@ -1391,7 +1433,9 @@ def validate_structured_generation_latency_manifest_design(
             raise FixedPoolManifestError(
                 f"structured-generation source binding mismatch at {item.ordinal}"
             )
-        left = _require_nonnegative_record_int(record, "left_operand", ordinal=item.ordinal)
+        left = _require_nonnegative_record_int(
+            record, "left_operand", ordinal=item.ordinal
+        )
         right = _require_nonnegative_record_int(
             record, "right_operand", ordinal=item.ordinal
         )
@@ -1419,12 +1463,19 @@ def validate_structured_generation_latency_manifest_design(
                 f"invalid structured-generation pair {pair_id}"
             )
         pair_records = [records[item.ordinal] for item in items]
-        if len(
-            {
-                (record["left_operand"], record["right_operand"], record["expected_answer"])
-                for record in pair_records
-            }
-        ) != 1:
+        if (
+            len(
+                {
+                    (
+                        record["left_operand"],
+                        record["right_operand"],
+                        record["expected_answer"],
+                    )
+                    for record in pair_records
+                }
+            )
+            != 1
+        ):
             raise FixedPoolManifestError(
                 f"structured-generation arithmetic pair mismatch in {pair_id}"
             )
@@ -1453,6 +1504,8 @@ def validate_fixed_pool_manifest_design(
         validate_sliding_puzzle_7b_compact_prompt_manifest_design(manifest)
     elif design_id == "structured_generation_latency_v1":
         validate_structured_generation_latency_manifest_design(manifest)
+    elif design_id == "structured_generation_scheduler_crossover_v1":
+        validate_structured_generation_scheduler_crossover_manifest_design(manifest)
     else:
         raise FixedPoolManifestError(f"unsupported fixed-pool design_id: {design_id!r}")
 

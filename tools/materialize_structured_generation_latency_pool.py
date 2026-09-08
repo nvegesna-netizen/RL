@@ -12,6 +12,7 @@ import os
 import random
 import tempfile
 from collections.abc import Mapping, Sequence
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Final
 
@@ -20,9 +21,7 @@ from tools import materialize_sliding_puzzle_7b_competence as model_pin
 
 
 DESIGN_ID: Final[str] = "structured_generation_latency_v1"
-PLAN_ID: Final[str] = (
-    "161355945ba0d9b44726ce8fe2354b637ec3a75ef5f8fe08a2d21a3c82eaae2c"
-)
+PLAN_ID: Final[str] = "161355945ba0d9b44726ce8fe2354b637ec3a75ef5f8fe08a2d21a3c82eaae2c"
 PLAN_SHA256: Final[str] = (
     "8aa2b4e40839b37331311eeda2d7875a922d73128930494dae4172102db71cda"
 )
@@ -36,6 +35,34 @@ CHECK_LINES: Final[dict[str, int]] = {
     "structured_short": 2,
     "structured_long": 16,
 }
+
+
+@dataclass(frozen=True, slots=True)
+class StructuredGenerationMaterializationSpec:
+    """Parameters that distinguish one immutable structured prompt pool."""
+
+    design_id: str
+    analysis_status: str
+    protocol_id: str
+    selection_seed: int
+    order_seed: int
+    generation_seed: int
+    source_split: str
+    protocol_filename: str
+    identity_field: str
+
+
+DEFAULT_SPEC: Final = StructuredGenerationMaterializationSpec(
+    design_id=DESIGN_ID,
+    analysis_status="preregistered_controlled_generative_demand_feasibility",
+    protocol_id=PLAN_ID,
+    selection_seed=SELECTION_SEED,
+    order_seed=ORDER_SEED,
+    generation_seed=GENERATION_SEED,
+    source_split="feasibility",
+    protocol_filename="feasibility_plan.v1.json",
+    identity_field="plan_id",
+)
 
 
 class StructuredGenerationMaterializationError(ValueError):
@@ -77,7 +104,9 @@ def _load_plan(path: Path) -> tuple[dict[str, Any], bytes]:
     try:
         plan = json.loads(raw)
     except json.JSONDecodeError as error:
-        raise StructuredGenerationMaterializationError("plan is invalid JSON") from error
+        raise StructuredGenerationMaterializationError(
+            "plan is invalid JSON"
+        ) from error
     if not isinstance(plan, dict):
         raise StructuredGenerationMaterializationError("plan must be an object")
     without_id = {key: value for key, value in plan.items() if key != "plan_id"}
@@ -121,7 +150,10 @@ def _load_plan(path: Path) -> tuple[dict[str, Any], bytes]:
     }:
         raise StructuredGenerationMaterializationError("pool design mismatch")
     runtime = plan.get("runtime")
-    if not isinstance(runtime, dict) or runtime.get("generation_study_seed") != GENERATION_SEED:
+    if (
+        not isinstance(runtime, dict)
+        or runtime.get("generation_study_seed") != GENERATION_SEED
+    ):
         raise StructuredGenerationMaterializationError("runtime seed mismatch")
     return plan, raw
 
@@ -149,8 +181,12 @@ def _rendered_token_ids(tokenizer: Any, prompt: str) -> list[int]:
     ]
 
 
-def _make_records(tokenizer: Any, key: bytes) -> dict[str, list[dict[str, object]]]:
-    rng = random.Random(SELECTION_SEED)
+def _make_records(
+    tokenizer: Any,
+    key: bytes,
+    spec: StructuredGenerationMaterializationSpec = DEFAULT_SPEC,
+) -> dict[str, list[dict[str, object]]]:
+    rng = random.Random(spec.selection_seed)
     problems: list[tuple[int, int]] = []
     while len(problems) < PAIR_COUNT:
         candidate = (rng.randrange(101, 900), rng.randrange(101, 900))
@@ -158,7 +194,7 @@ def _make_records(tokenizer: Any, key: bytes) -> dict[str, list[dict[str, object
             problems.append(candidate)
     output = {source_id: [] for source_id in SOURCE_IDS}
     for pair_index, (left, right) in enumerate(problems):
-        cluster_id = _opaque(key, DESIGN_ID, "pair", pair_index, left, right)
+        cluster_id = _opaque(key, spec.design_id, "pair", pair_index, left, right)
         for source_id in SOURCE_IDS:
             check_lines = CHECK_LINES[source_id]
             prompt = _prompt(left, right, check_lines)
@@ -170,10 +206,10 @@ def _make_records(tokenizer: Any, key: bytes) -> dict[str, list[dict[str, object
                     "source_id": source_id,
                     "source_dataset_id": "generated/structured-addition-checks",
                     "source_revision": "v1",
-                    "source_split": "feasibility",
+                    "source_split": spec.source_split,
                     "source_dataset_index": pair_index,
                     "source_prompt_id": _opaque(
-                        key, DESIGN_ID, source_id, pair_index, left, right
+                        key, spec.design_id, source_id, pair_index, left, right
                     ),
                     "repeated_prompt_cluster_id": cluster_id,
                     "selection_stratum": source_id,
@@ -184,7 +220,7 @@ def _make_records(tokenizer: Any, key: bytes) -> dict[str, list[dict[str, object
                     "required_check_lines": check_lines,
                     "input_token_count": len(token_ids),
                     "input_token_ids_sha256": _sha_bytes(_canonical(token_ids)),
-                    "selection_seed": SELECTION_SEED,
+                    "selection_seed": spec.selection_seed,
                     "model_revision": model_pin.MODEL_REVISION,
                 }
             )
@@ -198,8 +234,9 @@ def _build_manifest(
     records: Mapping[str, Sequence[Mapping[str, object]]],
     raw_sources: Mapping[str, bytes],
     snapshot_sha: str,
+    spec: StructuredGenerationMaterializationSpec = DEFAULT_SPEC,
 ) -> dict[str, object]:
-    rng = random.Random(ORDER_SEED)
+    rng = random.Random(spec.order_seed)
     pair_order = list(range(PAIR_COUNT))
     rng.shuffle(pair_order)
     ordered: list[tuple[str, int]] = []
@@ -219,7 +256,7 @@ def _build_manifest(
         items.append(
             {
                 "ordinal": ordinal,
-                "pool_item_id": _opaque(key, DESIGN_ID, ORDER_SEED, ordinal),
+                "pool_item_id": _opaque(key, spec.design_id, spec.order_seed, ordinal),
                 "source_prompt_id": record["source_prompt_id"],
                 "source_id": source_id,
                 "source_dataset_index": row,
@@ -240,7 +277,7 @@ def _build_manifest(
             "source_id": source_id,
             "dataset_id": "generated/structured-addition-checks",
             "revision": "v1",
-            "split": "feasibility",
+            "split": spec.source_split,
             "materialized_file": f"{source_id}.jsonl",
             "content_sha256": _sha_bytes(raw_sources[source_id]),
         }
@@ -250,7 +287,7 @@ def _build_manifest(
         "schema_version": 1,
         "id_namespace_fingerprint": _sha_bytes(key),
         "design_protocol_sha256": plan_sha,
-        "order_seed": ORDER_SEED,
+        "order_seed": spec.order_seed,
         "model_revision": model_pin.MODEL_REVISION,
         "model_weights_sha256": model_pin.MODEL_WEIGHTS_SHA256,
         "model_snapshot_manifest_sha256": snapshot_sha,
@@ -263,7 +300,9 @@ def _build_manifest(
 
 
 def _selection_design(
-    manifest: Mapping[str, object], records: Mapping[str, Sequence[Mapping[str, object]]]
+    manifest: Mapping[str, object],
+    records: Mapping[str, Sequence[Mapping[str, object]]],
+    spec: StructuredGenerationMaterializationSpec = DEFAULT_SPEC,
 ) -> dict[str, object]:
     items = manifest["items"]
     if not isinstance(items, list):
@@ -288,22 +327,28 @@ def _selection_design(
                 "rendered_prompt_tokens": record["input_token_count"],
             }
         )
-    return {
+    result = {
         "schema_version": 1,
-        "analysis_status": "preregistered_controlled_generative_demand_feasibility",
+        "analysis_status": spec.analysis_status,
         "calibration_only": True,
         "confirmatory_eligible": False,
-        "plan_id": PLAN_ID,
         "fixed_pool_id": manifest["pool_id"],
         "items": output,
     }
+    result[spec.identity_field] = spec.protocol_id
+    return result
 
 
-def materialize(*, output_dir: Path, plan_path: Path, key: bytes) -> None:
-    """Create the private pool atomically and refuse an existing target."""
+def _materialize_from_protocol(
+    *,
+    output_dir: Path,
+    protocol_raw: bytes,
+    key: bytes,
+    spec: StructuredGenerationMaterializationSpec,
+) -> None:
+    """Create one private pool from already validated protocol bytes."""
     if len(key) < 32:
         raise StructuredGenerationMaterializationError("HMAC key is too short")
-    _, plan_raw = _load_plan(plan_path)
     if output_dir.exists():
         raise FileExistsError(f"refusing to overwrite {output_dir}")
     output_dir.parent.mkdir(parents=True, exist_ok=True)
@@ -313,25 +358,26 @@ def materialize(*, output_dir: Path, plan_path: Path, key: bytes) -> None:
         root = Path(temporary_name)
         root.chmod(0o700)
         tokenizer, snapshot_raw = model_pin._snapshot_model(root)
-        records = _make_records(tokenizer, key)
+        records = _make_records(tokenizer, key, spec)
         raw_sources = {
             source_id: b"".join(_canonical(row) + b"\n" for row in rows)
             for source_id, rows in records.items()
         }
         for source_id, raw in raw_sources.items():
             _write(root / f"{source_id}.jsonl", raw)
-        _write(root / "feasibility_plan.v1.json", plan_raw)
+        _write(root / spec.protocol_filename, protocol_raw)
         manifest = _build_manifest(
             key=key,
-            plan_sha=_sha_bytes(plan_raw),
+            plan_sha=_sha_bytes(protocol_raw),
             records=records,
             raw_sources=raw_sources,
             snapshot_sha=_sha_bytes(snapshot_raw),
+            spec=spec,
         )
         manifest_raw = json.dumps(manifest, indent=2, sort_keys=True).encode() + b"\n"
-        manifest_name = "fixed_pool_manifest.v1.45001.json"
+        manifest_name = f"fixed_pool_manifest.v1.{spec.order_seed}.json"
         _write(root / manifest_name, manifest_raw)
-        design = _selection_design(manifest, records)
+        design = _selection_design(manifest, records, spec)
         design_raw = json.dumps(design, indent=2, sort_keys=True).encode() + b"\n"
         _write(root / "selection_design.v1.json", design_raw)
         prompt_deltas = []
@@ -344,15 +390,13 @@ def materialize(*, output_dir: Path, plan_path: Path, key: bytes) -> None:
         report = {
             "schema_version": 1,
             "status": "passed",
-            "design_id": DESIGN_ID,
-            "plan_id": PLAN_ID,
-            "plan_sha256": _sha_bytes(plan_raw),
+            "design_id": spec.design_id,
             "selection_design_sha256": _sha_bytes(design_raw),
             "manifest": manifest_name,
             "manifest_sha256": _sha_bytes(manifest_raw),
             "pool_id": manifest["pool_id"],
-            "selection_seed": SELECTION_SEED,
-            "order_seed": ORDER_SEED,
+            "selection_seed": spec.selection_seed,
+            "order_seed": spec.order_seed,
             "pairs": PAIR_COUNT,
             "prompt_groups": 2 * PAIR_COUNT,
             "observed_max_input_pair_delta_tokens": max(prompt_deltas),
@@ -360,6 +404,10 @@ def materialize(*, output_dir: Path, plan_path: Path, key: bytes) -> None:
             "model_revision": model_pin.MODEL_REVISION,
             "model_weights_sha256": model_pin.MODEL_WEIGHTS_SHA256,
         }
+        report[spec.identity_field] = spec.protocol_id
+        report[
+            "plan_sha256" if spec.identity_field == "plan_id" else "protocol_sha256"
+        ] = _sha_bytes(protocol_raw)
         _write(
             root / "materialization_report.v1.json",
             json.dumps(report, indent=2, sort_keys=True).encode() + b"\n",
@@ -376,6 +424,17 @@ def materialize(*, output_dir: Path, plan_path: Path, key: bytes) -> None:
             if path.is_file():
                 path.chmod(0o600)
         root.rename(output_dir)
+
+
+def materialize(*, output_dir: Path, plan_path: Path, key: bytes) -> None:
+    """Create the frozen feasibility pool and refuse an existing target."""
+    _, plan_raw = _load_plan(plan_path)
+    _materialize_from_protocol(
+        output_dir=output_dir,
+        protocol_raw=plan_raw,
+        key=key,
+        spec=DEFAULT_SPEC,
+    )
 
 
 def main() -> None:
