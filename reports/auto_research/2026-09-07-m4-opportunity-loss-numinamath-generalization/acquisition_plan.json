@@ -1,0 +1,55 @@
+{
+  "analysis_freeze": {
+    "analyze_only_after_both_terminal_artifacts_are_frozen": true,
+    "bootstrap_draws_each_cell": 20000,
+    "common_primary_start_versions": [
+      8,
+      407
+    ],
+    "engine": {
+      "path": "tools/opportunity_loss_grid_analysis.py",
+      "sha256": "43b75f84112f218f1f6837509f7fda2d8627d0518371218478b39c0c08711bc3"
+    },
+    "primary_interaction": "(qwen3_0p6b_numinamath-qwen3_0p6b_gsm8k)-(qwen3_1p7b_numinamath-qwen3_1p7b_gsm8k)",
+    "qualification_observations_enter_any_causal_estimator": false
+  },
+  "cells": {
+    "qwen3_0p6b_numinamath": {
+      "assignment_domain": "m4-opportunity-loss-qwen3-0p6b-numinamath-generalization-v1",
+      "assignment_seed": 20260925,
+      "config": "examples/configs/grpo_math_1B_megatron_single_controller_m4_qwen3_0p6b_numinamath_generalization.yaml",
+      "config_sha256": "bbc134de9b6c590d76b2f6b7d63520435fae532793c16e6676eeb01aa7829e08",
+      "qualification_artifact_sha256": "9df74eaa4afb49b89ef069527d9f2fece5c94c410c0078b2fc3f732d0c9df5e6"
+    },
+    "qwen3_1p7b_numinamath": {
+      "assignment_domain": "m4-opportunity-loss-qwen3-1p7b-numinamath-generalization-v1",
+      "assignment_seed": 20260927,
+      "config": "examples/configs/grpo_math_1B_megatron_single_controller_m4_qwen3_1p7b_numinamath_generalization.yaml",
+      "config_sha256": "fc77637fe482262f5afb632297a1d4f7384b77d1ee8d5dc6bf7a597cbf36ea3c",
+      "qualification_artifact_sha256": "3e179fc030d8b2ced181b62817fa426b3b81f4ee02e599e195edef9db36549a7"
+    }
+  },
+  "execution": {
+    "automatic_extension": false,
+    "automatic_retry": false,
+    "both_packages_frozen_before_first_submission": true,
+    "failure_of_one_cell_permits_outcome_inspection": false,
+    "gpus_each_cell": 2,
+    "minimum_primary_assignments_each_cell": 6900,
+    "outcome_analysis_in_acquisition_pipeline": false,
+    "required_launcher": "runllm.py --no_wait",
+    "submission_attempt_limit_each_cell": 1,
+    "submit_both_before_inspecting_either_causal_outcome": true,
+    "trainer_steps_each_cell": 448,
+    "wall_clock_cap_hours_each_cell": 4.0
+  },
+  "frozen_evidence": {
+    "preflight_artifact_sha256": "f2de4a664c6ed15048fc13d009edc9dc65da897bdc48ab018c8211501818f58e",
+    "preflight_lock_sha256": "805d06573a6927c4ff773455b9e30d0c7651399b1e2070acb4d2642591db8915",
+    "preflight_locked_file_count": 50,
+    "protocol_sha256": "bbe2c07211952e3e46d4511524f68e864606a7c63f271ae8e064263044dad0c8",
+    "qualification_result_sha256": "c2b26ad1e259bb8b3af645c78868bb5e7411c69e9d03d876830504f69cd7f978"
+  },
+  "package_status": "FROZEN_PENDING_EXECUTABLE_PACKAGE_VALIDATION",
+  "schema": "m4-numinamath-paired-acquisition-plan-v1"
+}

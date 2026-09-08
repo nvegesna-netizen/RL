@@ -1,6 +1,6 @@
 # NuminaMath-1.5 paired M4 generalization design
 
-Status: `PAIRED_QUALIFICATION_GREEN_PENDING_ACQUISITION_PACKAGE_FREEZE`.
+Status: `PAIRED_ACQUISITION_PLAN_FROZEN_PENDING_PACKAGE_VALIDATION`.
 
 ## Scientific question
 
@@ -112,7 +112,9 @@ projection of 1.866 wall-hours and 3.731 two-GPU-hours. The 1.7B cell completed
 and a projection of 2.095 wall-hours and 4.190 two-GPU-hours. Both observed
 binary reward support and passed every registered operational gate.
 
-These results are non-causal and remain excluded from all estimators. The next
-gate is paired acquisition-package freeze. Both 448-step packages must be
-frozen before either submission, and fresh explicit acquisition authority is
-required.
+These results are non-causal and remain excluded from all estimators. The
+paired acquisition plan is now frozen in `acquisition_plan.json`. Each EOS
+pipeline is capture-only: it must preserve the raw lifecycle, opportunity, and
+observer-duty records but must not calculate or print a causal estimate. Both
+448-step packages must pass local validation before either is submitted, and
+both must be submitted before either causal outcome is inspected.
