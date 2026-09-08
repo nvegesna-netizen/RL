@@ -1,0 +1,28 @@
+# Prospective third-workload M4 generalization cell. Do not launch without the
+# paired frozen protocol and terminal green preflight.
+defaults: grpo_math_1B_megatron_single_controller_m4_qwen3_1p7b_transport.yaml
+
+grpo:
+  max_num_steps: 448
+
+data:
+  train:
+    dataset_name: tools.m4_numinamath_pinned_dataset.M4NuminaMathPinnedDataset
+  validation: null
+  default:
+    prompt_file: examples/prompts/cot.txt
+    system_prompt_file: null
+    processor: math_hf_data_processor
+    env_name: math
+
+async_rl:
+  lifecycle_audit_path: results/m4-qwen3-1p7b-numinamath-generalization/lifecycle.jsonl
+  controlled_release_delay:
+    seed: 20260927
+    assignment_domain: m4-opportunity-loss-qwen3-1p7b-numinamath-generalization-v1
+  gradient_opportunity_audit:
+    output_path: results/m4-qwen3-1p7b-numinamath-generalization/opportunity.jsonl
+    observer_duty_path: results/m4-qwen3-1p7b-numinamath-generalization/observer-duty.json
+
+logger:
+  log_dir: results/m4-qwen3-1p7b-numinamath-generalization/metrics

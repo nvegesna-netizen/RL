@@ -1,0 +1,57 @@
+{
+  "audit_timing": "OUTCOME_BLIND_BEFORE_ANY_NUMINAMATH_ACQUISITION",
+  "candidates": {
+    "dapomath17k": {
+      "observed_rows": 1791700,
+      "selection": "REJECTED_BEFORE_OUTCOME",
+      "reason": "The official artifact contains the historically disclosed roughly 100-fold prompt duplication."
+    },
+    "deepscaler": {
+      "conflicting_answer_groups": 171,
+      "duplicate_problem_groups": 612,
+      "observed_rows": 40315,
+      "observed_unique_problems": 39387,
+      "repository_revision": "4500022f6cb0a1456ea5eabe2ff366d4610ee339",
+      "selection": "REJECTED_AFTER_NO_TRAINING_PREFLIGHT_BEFORE_OUTCOME"
+    },
+    "numinamath_1p5": {
+      "dataset_repository": "AI-MO/NuminaMath-1.5",
+      "filtered_rows": 680787,
+      "filtered_unique_problems": 680787,
+      "filters": {
+        "answer_nonempty": true,
+        "answer_not_in": ["proof", "notfound"],
+        "problem_is_valid": "Yes",
+        "question_type_not": "proof",
+        "solution_is_valid": "Yes"
+      },
+      "official_source_rows": 896215,
+      "repository_revision": "1b05109f9e5c1ad06c0663519502416c30b300f8",
+      "selection": "SELECTED_PENDING_PINNED_PREFLIGHT",
+      "shards": {
+        "data/train-00000-of-00003.parquet": {
+          "bytes": 195064200,
+          "sha256": "1e37cedcc5104c0d5a9afbf8b26328a59d7005cd37c2bd08352419f5f0e03214"
+        },
+        "data/train-00001-of-00003.parquet": {
+          "bytes": 175917356,
+          "sha256": "bc48fdddc1ab4e559727ad4f1f03b0263785c1c16b7964fb885fba07e18d6a39"
+        },
+        "data/train-00002-of-00003.parquet": {
+          "bytes": 160374171,
+          "sha256": "951aa899fe2a1b64f5b40c6636372d35b9db4f0b9c922e874d4bf357db64da66"
+        }
+      },
+      "uniqueness_audit": {
+        "answer_conflict_groups": 0,
+        "duplicate_problem_groups": 0,
+        "excess_problem_rows": 0,
+        "maximum_problem_multiplicity": 1,
+        "solution_conflict_groups": 0
+      }
+    }
+  },
+  "decision": "USE_FILTERED_NUMINAMATH_1P5_FOR_A_MATCHED_TWO_MODEL_GENERALIZATION_PAIR",
+  "gpu_compute_observed": false,
+  "schema": "m4-third-workload-candidate-audit-v2"
+}

@@ -1,0 +1,33 @@
+{
+  "candidate_data_audit": {
+    "filtered_rows": 680787,
+    "official_lfs_hashes_match_local_files": true,
+    "unique_filtered_problems": 680787,
+    "uniqueness_and_label_conflicts": "PASS"
+  },
+  "checks": {
+    "design_evidence_sha256_bindings": "PASS",
+    "git_diff_check": "PASS",
+    "json_parse": "PASS",
+    "power_reconstruction": {
+      "classification_power": 0.801184367829084,
+      "combined_hac_standard_error": 0.029583154343559678,
+      "status": "PASS"
+    },
+    "python_ast_and_compile": "PASS",
+    "ruff_check": "PASS",
+    "ruff_format_check": "PASS"
+  },
+  "compute": {
+    "acquisition_launched": false,
+    "eos_submission": false,
+    "qualification_launched": false,
+    "training_launched": false
+  },
+  "full_pytest": {
+    "reason": "The repository lock supports Linux x86_64/aarch64 only and the local macOS host lacks the locked runtime dependencies.",
+    "status": "DEFERRED_TO_PINNED_NO_TRAINING_CONTAINER_PREFLIGHT"
+  },
+  "schema": "m4-numinamath-paired-generalization-local-validation-v1",
+  "status": "LOCAL_STATIC_VALIDATION_PASS_CONTAINER_PREFLIGHT_REQUIRED"
+}

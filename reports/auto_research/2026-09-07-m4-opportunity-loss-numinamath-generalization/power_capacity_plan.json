@@ -1,0 +1,65 @@
+{
+  "capacity": {
+    "burn_in_start_versions": [0, 7],
+    "minimum_primary_assignments_each_cell": 6900,
+    "primary_start_versions": [8, 407],
+    "terminal_guard_start_versions": [408, 447],
+    "trainer_steps_each_cell": 448
+  },
+  "historical_analog": {
+    "assignment_counts": {
+      "qwen3_0p6b_gsm8k": 7710,
+      "qwen3_0p6b_openmath": 7199,
+      "qwen3_1p7b_gsm8k": 7613,
+      "qwen3_1p7b_openmath": 6955
+    },
+    "interaction_estimate": -0.08300500223149276,
+    "interaction_hac_standard_error": 0.027093288415087197,
+    "role": "prospective_power_and_capacity_planning_only"
+  },
+  "planning_precision": {
+    "combined_hac_standard_error": 0.029583154343559678,
+    "fixed_historical_gsm8k_hac_standard_errors": {
+      "qwen3_0p6b": 0.011813665562868671,
+      "qwen3_1p7b": 0.012526463371385174
+    },
+    "method": "Retain the completed common-window GSM8K variances, use the scale-matched OpenMath HAC standard errors as proxies for the two new NuminaMath-1.5 cells, inflate each new-cell proxy standard error by 15 percent, and combine four independent cell variances.",
+    "new_numinamath_cell_proxy_hac_standard_errors_before_inflation": {
+      "qwen3_0p6b": 0.015045534371067945,
+      "qwen3_1p7b": 0.014532831589409809
+    },
+    "transport_inflation_factor": 1.15
+  },
+  "power": {
+    "classification_power_at_prior_interaction_magnitude": 0.801184367829084,
+    "minimum_required": 0.8,
+    "normal_approximation": "two-sided probability that the 95 percent interval excludes zero",
+    "prior_interaction_magnitude": 0.08300500223149276,
+    "two_sided_critical_value": 1.9599639845400534
+  },
+  "sensitivity": {
+    "new_cell_standard_error_inflation_1p10": {
+      "classification_power": 0.8233644912521682,
+      "combined_hac_standard_error": 0.028739106628976767
+    },
+    "new_cell_standard_error_inflation_1p15_frozen": {
+      "classification_power": 0.801184367829084,
+      "combined_hac_standard_error": 0.029583154343559678
+    },
+    "new_cell_standard_error_inflation_1p20": {
+      "classification_power": 0.7784306761430749,
+      "combined_hac_standard_error": 0.030439737983278328
+    }
+  },
+  "qualification_gate": {
+    "causal_outcome_may_be_inspected": false,
+    "data_enter_primary_estimator": false,
+    "maximum_corrected_observer_duty": 0.01,
+    "maximum_gpu_hours_each_cell": 8.0,
+    "maximum_wall_hours_each_cell": 4.0,
+    "minimum_projected_primary_assignments_each_cell": 6900,
+    "minimum_reward_support": [0.0, 1.0]
+  },
+  "schema": "m4-numinamath-paired-generalization-power-capacity-plan-v1",
+  "status": "PROSPECTIVE_PLANNING_PASS_NO_COMPUTE_AUTHORITY"
+}
