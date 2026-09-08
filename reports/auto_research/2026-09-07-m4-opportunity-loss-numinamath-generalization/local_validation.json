@@ -1,8 +1,9 @@
 {
   "candidate_data_audit": {
-    "filtered_rows": 680787,
+    "filtered_rows": 680786,
+    "nonempty_filtered_problems": 680786,
     "official_lfs_hashes_match_local_files": true,
-    "unique_filtered_problems": 680787,
+    "unique_filtered_problems": 680786,
     "uniqueness_and_label_conflicts": "PASS"
   },
   "checks": {
@@ -20,14 +21,21 @@
   },
   "compute": {
     "acquisition_launched": false,
-    "eos_submission": false,
+    "failed_no_training_eos_preflight_observed": true,
     "qualification_launched": false,
+    "replacement_eos_submission": false,
     "training_launched": false
   },
   "full_pytest": {
     "reason": "The repository lock supports Linux x86_64/aarch64 only and the local macOS host lacks the locked runtime dependencies.",
     "status": "DEFERRED_TO_PINNED_NO_TRAINING_CONTAINER_PREFLIGHT"
   },
-  "schema": "m4-numinamath-paired-generalization-local-validation-v1",
+  "outcome_blind_amendment": {
+    "causal_outcome_observed": false,
+    "failed_preflight_artifact_sha256": "77819e804d962581b0fcfc4927c3c39868ee8ab8d268346e3d4354c60f8b4ee5",
+    "repair": "EXCLUDE_BLANK_PROBLEMS",
+    "training_or_acquisition_observed": false
+  },
+  "schema": "m4-numinamath-paired-generalization-local-validation-v2",
   "status": "LOCAL_STATIC_VALIDATION_PASS_CONTAINER_PREFLIGHT_REQUIRED"
 }

@@ -30,7 +30,7 @@ DATA_FILE_SIZE = {
     "data/train-00002-of-00003.parquet": 160_374_171,
 }
 EXPECTED_SOURCE_ROWS = 896_215
-EXPECTED_FILTERED_ROWS = 680_787
+EXPECTED_FILTERED_ROWS = 680_786
 EXPECTED_COLUMNS = {
     "problem",
     "solution",
@@ -73,10 +73,12 @@ class M4NuminaMathPinnedDataset(RawDataset):
 
     @staticmethod
     def _is_valid_verifiable(data: dict[str, Any]) -> bool:
+        problem = (data.get("problem") or "").strip()
         answer = (data.get("answer") or "").strip()
         question_type = (data.get("question_type") or "").strip().lower()
         return (
-            bool(answer)
+            bool(problem)
+            and bool(answer)
             and answer.lower() not in NON_VERIFIABLE_ANSWERS
             and question_type != "proof"
             and data.get("problem_is_valid") == "Yes"

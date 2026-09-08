@@ -16,18 +16,30 @@
     },
     "numinamath_1p5": {
       "dataset_repository": "AI-MO/NuminaMath-1.5",
-      "filtered_rows": 680787,
-      "filtered_unique_problems": 680787,
+      "filtered_rows": 680786,
+      "filtered_unique_problems": 680786,
       "filters": {
         "answer_nonempty": true,
         "answer_not_in": ["proof", "notfound"],
+        "problem_nonempty": true,
         "problem_is_valid": "Yes",
         "question_type_not": "proof",
         "solution_is_valid": "Yes"
       },
       "official_source_rows": 896215,
       "repository_revision": "1b05109f9e5c1ad06c0663519502416c30b300f8",
-      "selection": "SELECTED_PENDING_PINNED_PREFLIGHT",
+      "preflight_amendment": {
+        "causal_outcome_observed": false,
+        "failed_compute_job_id": 430503332,
+        "failed_downstream_pipeline_id": 66787620,
+        "failed_parent_pipeline_id": 66787330,
+        "original_filtered_rows": 680787,
+        "reason": "The original filter admitted one empty problem string at source ordinal 279652; mapping failed closed before lock creation.",
+        "repair": "Exclude null, empty, and whitespace-only problems before cardinality and uniqueness checks.",
+        "terminal_artifact_sha256": "77819e804d962581b0fcfc4927c3c39868ee8ab8d268346e3d4354c60f8b4ee5",
+        "training_or_acquisition_observed": false
+      },
+      "selection": "SELECTED_PENDING_REPAIRED_PINNED_PREFLIGHT",
       "shards": {
         "data/train-00000-of-00003.parquet": {
           "bytes": 195064200,
@@ -52,6 +64,7 @@
     }
   },
   "decision": "USE_FILTERED_NUMINAMATH_1P5_FOR_A_MATCHED_TWO_MODEL_GENERALIZATION_PAIR",
-  "gpu_compute_observed": false,
-  "schema": "m4-third-workload-candidate-audit-v2"
+  "gpu_compute_observed": true,
+  "gpu_compute_role": "FAILED_NO_TRAINING_PREFLIGHT_ONLY",
+  "schema": "m4-third-workload-candidate-audit-v3"
 }

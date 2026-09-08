@@ -1,6 +1,6 @@
 # NuminaMath-1.5 paired M4 generalization design
 
-Status: `FROZEN_LOCAL_PROTOCOL_PENDING_NO_TRAINING_PREFLIGHT`.
+Status: `FROZEN_REPAIRED_LOCAL_PROTOCOL_PENDING_NO_TRAINING_PREFLIGHT`.
 
 ## Scientific question
 
@@ -22,8 +22,14 @@ queue geometry, two-GPU topology, common window, and terminal semantics.
 DAPOMath17K and DeepScaleR were rejected for duplicated prompts before any
 candidate causal outcome. NuminaMath-1.5 is pinned to revision
 `1b05109f9e5c1ad06c0663519502416c30b300f8`. The registered valid/verifiable
-filter yields 680,787 rows and 680,787 unique problems across three exact
+filter requires nonblank problems and yields 680,786 rows and 680,786 unique
+problems across three exact
 SHA-256-bound parquet shards.
+
+This is an outcome-blind amendment after the first no-training preflight found
+one empty problem string admitted by the original filter. That preflight created
+no lock and ran no training, qualification, acquisition, or causal analysis. No
+scientific design parameter changed.
 
 ## Fixed primary geometry
 

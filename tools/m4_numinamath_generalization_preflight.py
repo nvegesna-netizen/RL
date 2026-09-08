@@ -59,10 +59,10 @@ POWER_PATH = f"{REPORT_ROOT}/power_capacity_plan.json"
 CANDIDATE_AUDIT_PATH = f"{REPORT_ROOT}/candidate_audit.json"
 LOCAL_VALIDATION_PATH = f"{REPORT_ROOT}/local_validation.json"
 EXPECTED_HASHES = {
-    PROTOCOL_PATH: "444a57858b7293e3ad081ac90ca5819d47797c4d502c4a092b0617fc6f945642",
+    PROTOCOL_PATH: "bbe2c07211952e3e46d4511524f68e864606a7c63f271ae8e064263044dad0c8",
     POWER_PATH: "0066e02ad33c9d7141da019762318af18603464045cd6321b1c4e493c7dde89e",
-    CANDIDATE_AUDIT_PATH: "4eaa646a7897b1d89ed1cfec40dd70360e4f2baed4e36d2c322a778c257a7d7e",
-    LOCAL_VALIDATION_PATH: "8d184a24b9e14d69ec0d372a61e9cb790f5dde41ff34d3542886352efcf2a0ba",
+    CANDIDATE_AUDIT_PATH: "8f9dcc0fb25387e43f8f4bc32bd41c074431eb37b51997bde1c6c5139d7f4433",
+    LOCAL_VALIDATION_PATH: "8221a697dfd16a91a7404cc45e363a9a28d70d662727740d999d6fbb234b52ff",
     CONFIG_PATHS["qwen3_0p6b_numinamath"]: (
         "bbc134de9b6c590d76b2f6b7d63520435fae532793c16e6676eeb01aa7829e08"
     ),
@@ -70,7 +70,7 @@ EXPECTED_HASHES = {
         "fc77637fe482262f5afb632297a1d4f7384b77d1ee8d5dc6bf7a597cbf36ea3c"
     ),
     "tools/m4_numinamath_pinned_dataset.py": (
-        "b4a4fdc883881e78701919195c978858af9555b7ac87eca0e8e1c853b757cf92"
+        "5bb73e0736ccedc99f8f958c87edf48f47cf044556a9de457f10e1e7a5b26aaa"
     ),
 }
 PINNED_FILES = tuple(
@@ -264,11 +264,15 @@ def build_preflight_lock(
             raise WorkloadTransportPreflightError(f"frozen file moved: {name}")
     protocol = json.loads((repo / PROTOCOL_PATH).read_bytes())
     power = json.loads((repo / POWER_PATH).read_bytes())
+    amendment = protocol.get("amendment")
     if (
         protocol.get("protocol")
-        != "m4-opportunity-loss-numinamath-paired-generalization-v1"
+        != "m4-opportunity-loss-numinamath-paired-generalization-v2"
         or protocol.get("status")
-        != "FROZEN_LOCAL_PROTOCOL_PENDING_NO_TRAINING_PREFLIGHT"
+        != "FROZEN_REPAIRED_LOCAL_PROTOCOL_PENDING_NO_TRAINING_PREFLIGHT"
+        or not isinstance(amendment, Mapping)
+        or amendment.get("scientific_design_changed") is not False
+        or amendment.get("causal_outcome_observed_before_amendment") is not False
         or protocol.get("paired_acquisition_lock")
         != {
             "analyze_only_after_both_terminal_artifacts_are_frozen": True,
@@ -296,7 +300,7 @@ def build_preflight_lock(
         raw = (repo / name).read_bytes()
         files[name] = {"sha256": _sha(raw), "size": len(raw)}
     return {
-        "schema": "m4-numinamath-paired-generalization-no-training-lock-v1",
+        "schema": "m4-numinamath-paired-generalization-no-training-lock-v2",
         "source_commit": source_commit,
         "source_archive_sha256": source_archive_sha256,
         "files": files,

@@ -66,6 +66,6 @@ def test_lock_forbids_every_execution_path(monkeypatch) -> None:
     assert lock["design"]["models"] == ["Qwen3-0.6B", "Qwen3-1.7B"]
     assert lock["design"]["common_primary_versions"] == 400
     assert lock["dataset"]["source_rows"] == 896_215
-    assert lock["dataset"]["filtered_rows"] == 680_787
-    assert lock["dataset"]["filtered_unique_problems"] == 680_787
+    assert lock["dataset"]["filtered_rows"] == 680_786
+    assert lock["dataset"]["filtered_unique_problems"] == 680_786
     assert len(lock["dataset"]["shards"]) == 3

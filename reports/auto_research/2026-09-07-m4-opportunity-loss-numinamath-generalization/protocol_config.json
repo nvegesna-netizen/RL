@@ -48,10 +48,25 @@
       "mass": 1
     }
   ],
+  "amendment": {
+    "causal_outcome_observed_before_amendment": false,
+    "changed_fields": [
+      "workload.filter.problem_nonempty",
+      "workload.expected_filtered_rows",
+      "workload.expected_unique_filtered_problems"
+    ],
+    "failed_preflight_artifact_sha256": "77819e804d962581b0fcfc4927c3c39868ee8ab8d268346e3d4354c60f8b4ee5",
+    "failed_preflight_compute_job_id": 430503332,
+    "original_protocol_commit": "9b0c20ae58d018376eb24bf91d1d8a63cf1ed8c7",
+    "reason": "The original outcome-blind filter admitted one empty problem string and failed during mapping before lock creation.",
+    "scientific_design_changed": false,
+    "training_qualification_or_acquisition_observed": false,
+    "version": 2
+  },
   "design_evidence": {
-    "candidate_audit_sha256": "4eaa646a7897b1d89ed1cfec40dd70360e4f2baed4e36d2c322a778c257a7d7e",
+    "candidate_audit_sha256": "8f9dcc0fb25387e43f8f4bc32bd41c074431eb37b51997bde1c6c5139d7f4433",
     "completed_grid_synthesis_sha256": "4a33668f332e250c71769ecc88b57972ecd08c6f5c69b38d31e53fa93240168f",
-    "pinned_dataset_loader_sha256": "b4a4fdc883881e78701919195c978858af9555b7ac87eca0e8e1c853b757cf92",
+    "pinned_dataset_loader_sha256": "5bb73e0736ccedc99f8f958c87edf48f47cf044556a9de457f10e1e7a5b26aaa",
     "power_capacity_plan_sha256": "0066e02ad33c9d7141da019762318af18603464045cd6321b1c4e493c7dde89e",
     "qwen3_0p6b_config_sha256": "bbc134de9b6c590d76b2f6b7d63520435fae532793c16e6676eeb01aa7829e08",
     "qwen3_1p7b_config_sha256": "fc77637fe482262f5afb632297a1d4f7384b77d1ee8d5dc6bf7a597cbf36ea3c"
@@ -155,7 +170,7 @@
       "model": "Qwen/Qwen3-1.7B"
     }
   },
-  "protocol": "m4-opportunity-loss-numinamath-paired-generalization-v1",
+  "protocol": "m4-opportunity-loss-numinamath-paired-generalization-v2",
   "qualification": {
     "causal_analysis_allowed": false,
     "controlled_release_arms": [
@@ -197,7 +212,7 @@
       "GSM8K"
     ]
   },
-  "status": "FROZEN_LOCAL_PROTOCOL_PENDING_NO_TRAINING_PREFLIGHT",
+  "status": "FROZEN_REPAIRED_LOCAL_PROTOCOL_PENDING_NO_TRAINING_PREFLIGHT",
   "windows": {
     "burn_in_start_versions": [
       0,
@@ -214,7 +229,7 @@
   },
   "workload": {
     "dataset_name": "tools.m4_numinamath_pinned_dataset.M4NuminaMathPinnedDataset",
-    "expected_filtered_rows": 680787,
+    "expected_filtered_rows": 680786,
     "expected_source_columns": [
       "problem",
       "solution",
@@ -227,13 +242,14 @@
       "synthetic"
     ],
     "expected_source_rows": 896215,
-    "expected_unique_filtered_problems": 680787,
+    "expected_unique_filtered_problems": 680786,
     "filter": {
       "answer_nonempty": true,
       "answer_not_in": [
         "proof",
         "notfound"
       ],
+      "problem_nonempty": true,
       "problem_is_valid": "Yes",
       "question_type_not": "proof",
       "solution_is_valid": "Yes"

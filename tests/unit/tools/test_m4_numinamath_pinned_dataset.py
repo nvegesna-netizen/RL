@@ -49,12 +49,15 @@ def _patch_cardinality(monkeypatch, *, source: int = 4, filtered: int = 2) -> No
 
 
 def test_pinned_numinamath_loads_exact_revision_and_filters(monkeypatch) -> None:
-    _patch_cardinality(monkeypatch)
+    _patch_cardinality(monkeypatch, source=7, filtered=2)
     rows = [
         _row(0),
         _row(1),
         _row(2, answer="proof", question_type="proof"),
         _row(3, solution_is_valid="No"),
+        _row(4, problem=""),
+        _row(5, problem=None),
+        _row(6, problem=" \t"),
     ]
     calls = []
 
@@ -69,7 +72,9 @@ def test_pinned_numinamath_loads_exact_revision_and_filters(monkeypatch) -> None
     assert dataset.dataset[0]["messages"][0]["content"] == "problem-0"
 
 
-@pytest.mark.parametrize("mutation", ["row_count", "schema", "filtered", "duplicate"])
+@pytest.mark.parametrize(
+    "mutation", ["row_count", "schema", "filtered", "duplicate", "blank_problem"]
+)
 def test_pinned_numinamath_rejects_identity_mutation(monkeypatch, mutation) -> None:
     _patch_cardinality(monkeypatch)
     rows = [_row(0), _row(1), _row(2, answer="proof"), _row(3, answer="notfound")]
@@ -80,6 +85,8 @@ def test_pinned_numinamath_rejects_identity_mutation(monkeypatch, mutation) -> N
         dataset.column_names.remove("source")
     elif mutation == "filtered":
         dataset.rows[2]["answer"] = "2"
+    elif mutation == "blank_problem":
+        dataset.rows[1]["problem"] = ""
     else:
         dataset.rows[1]["problem"] = dataset.rows[0]["problem"]
     monkeypatch.setattr(subject, "load_dataset", lambda *args, **kwargs: dataset)

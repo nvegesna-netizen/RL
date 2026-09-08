@@ -60,7 +60,12 @@ def _changed_paths(
 def test_protocol_binds_candidate_dataset_configs_and_historical_inputs() -> None:
     protocol = json.loads(_PROTOCOL.read_bytes())
     evidence = protocol["design_evidence"]
-    assert protocol["status"] == ("FROZEN_LOCAL_PROTOCOL_PENDING_NO_TRAINING_PREFLIGHT")
+    assert protocol["protocol"] == (
+        "m4-opportunity-loss-numinamath-paired-generalization-v2"
+    )
+    assert protocol["status"] == (
+        "FROZEN_REPAIRED_LOCAL_PROTOCOL_PENDING_NO_TRAINING_PREFLIGHT"
+    )
     assert evidence["candidate_audit_sha256"] == _sha256(_AUDIT)
     assert evidence["power_capacity_plan_sha256"] == _sha256(_POWER)
     assert evidence["pinned_dataset_loader_sha256"] == _sha256(
@@ -78,10 +83,13 @@ def test_protocol_binds_candidate_dataset_configs_and_historical_inputs() -> Non
     } == pinned_dataset.DATA_FILE_SHA256
     assert workload["expected_source_rows"] == pinned_dataset.EXPECTED_SOURCE_ROWS
     assert workload["expected_filtered_rows"] == pinned_dataset.EXPECTED_FILTERED_ROWS
+    assert workload["filter"]["problem_nonempty"] is True
     assert (
         workload["expected_unique_filtered_problems"]
         == (audit["filtered_unique_problems"])
     )
+    assert protocol["amendment"]["causal_outcome_observed_before_amendment"] is False
+    assert protocol["amendment"]["scientific_design_changed"] is False
     assert protocol["historical_fixed_inputs"]["common_primary_start_versions"] == [
         8,
         407,
