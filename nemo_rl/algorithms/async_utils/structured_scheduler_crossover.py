@@ -101,14 +101,14 @@ class StructuredSchedulerCrossoverPlan(BaseModel, extra="forbid", frozen=True):
     completions_per_group: Literal[2]
     max_total_sequence_length: Literal[768]
     max_new_tokens: Literal[768]
-    temperature: Literal[0.7]
-    top_p: Literal[0.8]
+    temperature: float
+    top_p: float
     top_k: Literal[20]
-    repetition_penalty: Literal[1.0]
+    repetition_penalty: float
     max_inflight_prompts: Literal[4]
     max_buffered_rollouts: Literal[8]
     sampler_lookahead_versions: Literal[1]
-    release_delay_seconds: Literal[0.0]
+    release_delay_seconds: float
     primary_horizon: Literal[8]
     replication_order: tuple[Literal[46001, 46002, 46003, 46004], ...]
     thresholds: StructuredSchedulerCrossoverThresholds
@@ -145,6 +145,13 @@ class StructuredSchedulerCrossoverPlan(BaseModel, extra="forbid", frozen=True):
             ("in_order", "in_order"),
         ):
             raise ValueError("crossover plan requires the locked two-arm comparison")
+        if (
+            self.temperature,
+            self.top_p,
+            self.repetition_penalty,
+            self.release_delay_seconds,
+        ) != (0.7, 0.8, 1.0, 0.0):
+            raise ValueError("crossover plan generation constants mismatch")
         expected_thresholds = StructuredSchedulerCrossoverThresholds(
             backend_length_termination_rate_max_each_stratum_each_arm=0.125,
             in_order_short_share_at_primary_horizon=0.5,

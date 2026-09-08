@@ -400,8 +400,14 @@ def setup_single_controller(
             assert assay_config.arm_id is not None
             assert assay_config.order_seed is not None
             assay_plan = load_scheduler_protocol(assay_config.plan_path)
-            assay_arm = assay_plan.arm(assay_config.arm_id)
-            pool = assay_plan.pool(assay_config.order_seed)
+            if isinstance(assay_plan, StructuredSchedulerCrossoverPlan):
+                assay_arm = assay_plan.arm(assay_config.arm_id)
+                pool = assay_plan.pool(assay_config.order_seed)
+                expected_generation_seed = pool.generation_study_seed
+            else:
+                assay_arm = assay_plan.arm(assay_config.arm_id)
+                pool = assay_plan.pool(assay_config.order_seed)
+                expected_generation_seed = assay_plan.generation_study_seed
             if (
                 manifest.order_seed != pool.order_seed
                 or manifest.pool_id != pool.pool_id
@@ -410,11 +416,6 @@ def setup_single_controller(
                 raise ValueError("scheduler assay plan/source manifest mismatch")
             if master_config.async_rl.sampler.name != assay_arm.sampler:
                 raise ValueError("scheduler assay arm/sampler mismatch")
-            expected_generation_seed = (
-                pool.generation_study_seed
-                if isinstance(assay_plan, StructuredSchedulerCrossoverPlan)
-                else assay_plan.generation_study_seed
-            )
             if (
                 grpo_config.num_generations_per_prompt
                 != assay_plan.completions_per_group

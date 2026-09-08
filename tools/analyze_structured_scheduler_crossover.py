@@ -99,10 +99,10 @@ def _sha(path: Path) -> str:
 
 def _number(values: Mapping[str, object], key: str) -> float:
     value = values.get(key)
-    _require(
-        not isinstance(value, bool) and isinstance(value, (int, float)),
-        f"missing numeric summary {key}",
-    )
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise StructuredSchedulerCrossoverAnalysisError(
+            f"missing numeric summary {key}"
+        )
     number = float(value)
     _require(math.isfinite(number), f"non-finite summary {key}")
     return number
@@ -326,7 +326,10 @@ def _observations_and_replay(
             "completion summaries mismatch",
         )
         group_id = dispatch.logical_group_id
-        _require(group_id is not None, "logical group ID is missing")
+        if group_id is None:
+            raise StructuredSchedulerCrossoverAnalysisError(
+                "logical group ID is missing"
+            )
         observations.append(
             Observation(
                 item=item,

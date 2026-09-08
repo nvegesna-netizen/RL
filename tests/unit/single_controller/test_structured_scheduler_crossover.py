@@ -126,3 +126,29 @@ def test_crossover_plan_rejects_changed_execution_order(tmp_path: Path) -> None:
         match="replication bindings mismatch",
     ):
         load_structured_scheduler_crossover_plan(path)
+
+
+@pytest.mark.parametrize(
+    ("field", "value"),
+    (
+        ("temperature", 0.6),
+        ("top_p", 0.9),
+        ("repetition_penalty", 1.1),
+        ("release_delay_seconds", 0.1),
+    ),
+)
+def test_crossover_plan_rejects_changed_generation_constants(
+    tmp_path: Path, field: str, value: float
+) -> None:
+    record = _plan_record()
+    record[field] = value
+    draft = StructuredSchedulerCrossoverPlan.model_construct(**record)
+    record["plan_id"] = compute_structured_scheduler_crossover_plan_id(draft)
+    path = tmp_path / "plan.json"
+    path.write_text(json.dumps(record))
+
+    with pytest.raises(
+        StructuredSchedulerCrossoverPlanError,
+        match="generation constants mismatch",
+    ):
+        load_structured_scheduler_crossover_plan(path)
