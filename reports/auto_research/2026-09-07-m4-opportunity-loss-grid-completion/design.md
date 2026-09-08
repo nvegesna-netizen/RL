@@ -1,6 +1,6 @@
 # Qwen3-0.6B/GSM8K M4 grid-completion design
 
-Status: `PRIMARY_MATERIAL_GRID_SYNTHESIS_PENDING`.
+Status: `STUDY_COMPLETE_PRIMARY_MATERIAL_SECONDARY_INTERACTION_DETECTED`.
 
 ## Scientific question
 
@@ -182,5 +182,21 @@ registered for this protocol recovered the exact 20,000-draw result from the
 immutable ledgers. No reacquisition, protocol change, retry, extension, or
 qualification observation entered the terminal result.
 
-The next gate is the preregistered secondary four-cell synthesis over common
-start versions 8–407. It cannot override this cell's primary conclusion.
+The preregistered secondary four-cell synthesis over common start versions
+8–407 followed this primary analysis. It cannot override this cell's primary
+conclusion.
+
+## Secondary grid-synthesis result
+
+The preregistered four-cell synthesis completed with 20,000 independently
+seeded draws per cell and complete terminal scoring over common start versions
+8-407. The Qwen3-0.6B OpenMath-minus-GSM8K contrast is `0.0721577766`; the
+Qwen3-1.7B contrast is `0.1551627789`. Their registered difference is
+`-0.0830050022`, with 95% outer HAC/bootstrap envelope
+`[-0.1365688691, -0.0289398546]`. Because the envelope excludes zero, the
+secondary conclusion is `INTERACTION_DETECTED`.
+
+This interaction result does not override the Qwen3-0.6B/GSM8K primary
+`MATERIAL` conclusion or relabel any historical cell. It supports heterogeneity
+only across the four tested cells and does not establish generalization beyond
+the tested models, workloads, instruments, runtimes, or environments.

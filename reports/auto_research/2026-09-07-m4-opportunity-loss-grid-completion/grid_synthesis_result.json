@@ -1,0 +1,132 @@
+{
+  "analysis_implementation": {
+    "grid_analysis_path": "tools/opportunity_loss_grid_analysis.py",
+    "grid_analysis_sha256": "43b75f84112f218f1f6837509f7fda2d8627d0518371218478b39c0c08711bc3",
+    "runner_path": "session/20260907_m4_cross_study_harmonization/run_terminal_grid_synthesis.py",
+    "runner_sha256": "eb6404e5265b377659a5de6ccfacb77477538441a976e322d3644405b256a960"
+  },
+  "cell_evidence": {
+    "qwen3_0p6b_gsm8k": {
+      "assignment_count": 7710,
+      "bootstrap_draws": 20000,
+      "bootstrap_seed": 20260920,
+      "bootstrap_shifts_sha256": "a8782a98769f3210504f3bcc958866a16adfe57379cda08b6e83ea92fb7f6642",
+      "canonical_result_record_path": "reports/auto_research/2026-09-07-m4-opportunity-loss-grid-completion/acquisition_result.json",
+      "canonical_result_record_sha256": "79b2449a47c7b1bc1aeb470637b9e9712ed7931d7b1b2b8158bb6cf0644539d1",
+      "estimate": 0.2332654341299639,
+      "hac_standard_error": 0.011813665562868671,
+      "lifecycle_path": "session/20260907_m4_cross_study_harmonization/grid-acquisition-failure-terminal-artifact/workspace/assets/basic/m4-qwen3-0p6b-gsm8k-grid-control-d5-acquisition/m4-grid-lifecycle.jsonl",
+      "lifecycle_sha256": "ac032de183ec3cb602e83afad92da587b664c3c5a8e20a4fb31eeaf333fa3c84",
+      "opportunity_path": "session/20260907_m4_cross_study_harmonization/grid-acquisition-failure-terminal-artifact/workspace/assets/basic/m4-qwen3-0p6b-gsm8k-grid-control-d5-acquisition/m4-grid-opportunity.jsonl",
+      "opportunity_sha256": "bc110e951869e5b7b0aa68e6c78e2992f527f5553bb19b9e8e28db98231635eb",
+      "protocol_path": "reports/auto_research/2026-09-07-m4-opportunity-loss-grid-completion/protocol_config.json",
+      "protocol_sha256": "b6682795071d12a5d6b3eddcdf73536e045949f08ce881885dd330fba9885db6",
+      "terminal_result_path": "session/20260907_m4_cross_study_harmonization/grid-acquisition-recovered-result.json",
+      "terminal_result_sha256": "26d1650143c502e5790f194ab7c703051820e47993c8fcd9206bbec2bd7f10c2",
+      "terminal_scoring_complete": true
+    },
+    "qwen3_0p6b_openmath": {
+      "assignment_count": 7199,
+      "bootstrap_draws": 20000,
+      "bootstrap_seed": 20260917,
+      "bootstrap_shifts_sha256": "f5a78c3e9e169fdeaf2dea04394beed89877efac8f6a3c8c5b4a642d201908e6",
+      "canonical_result_record_path": "reports/auto_research/2026-09-02-m4-opportunity-loss-followup/prospective-efficiency-audit/result.json",
+      "canonical_result_record_sha256": "971ee49d367628a24dfa4e5fac4b8c24a12ef2b3e0835181b26f3e9fbfa3067e",
+      "estimate": 0.30542321077967627,
+      "hac_standard_error": 0.015045534371067945,
+      "lifecycle_path": "session/20260907_m4_cross_study_harmonization/qwen3_0p6b_openmath/m4-opportunity-loss-followup-lifecycle.jsonl",
+      "lifecycle_sha256": "1852d21b98125c2e07c3cfa20f09a33393e13bd656ed684846bafea29a3c06ec",
+      "opportunity_path": "session/20260907_m4_cross_study_harmonization/qwen3_0p6b_openmath/m4-opportunity-loss-followup-opportunity.jsonl",
+      "opportunity_sha256": "0a9a48abbd1a87b504e3b2e528695b38c5d7799636b830c4bcd809c23c94b8d6",
+      "protocol_path": "reports/auto_research/2026-09-02-m4-opportunity-loss-followup/protocol_config.json",
+      "protocol_sha256": "6631a4ca8cfc6010150d1c135a1f5821c717f0dea189a3309c5f0f58f9b0709c",
+      "terminal_result_path": "session/20260907_m4_cross_study_harmonization/qwen3_0p6b_openmath/m4-opportunity-loss-followup-result.json",
+      "terminal_result_sha256": "01a5867753462c3d956c0c44f730ca6ae4d40859a5e580606544dba70c2c4344",
+      "terminal_scoring_complete": true
+    },
+    "qwen3_1p7b_gsm8k": {
+      "assignment_count": 7613,
+      "bootstrap_draws": 20000,
+      "bootstrap_seed": 20260919,
+      "bootstrap_shifts_sha256": "6c3fb73a826d707bbc159c2134f599ae3467e49659f2a9ac02960c57371ca7b1",
+      "canonical_result_record_path": "reports/auto_research/2026-09-04-m4-opportunity-loss-workload-transport/qwen3-1p7b-gsm8k-confirmatory-design/acquisition_r2_result.json",
+      "canonical_result_record_sha256": "3204cd86c95723ea312396e98d7b2ee41d07ce2392e59ad76bdf5425cf2cc9d6",
+      "estimate": 0.14306352903703942,
+      "hac_standard_error": 0.012526463371385174,
+      "lifecycle_path": "session/20260906_m4_gsm8k_r2/acquisition-terminal-artifact/workspace/assets/basic/m4-qwen3-1p7b-gsm8k-confirmatory-control-d5-acquisition-r2/m4-gsm8k-r2-lifecycle.jsonl",
+      "lifecycle_sha256": "aba8b910f0928a4776d58cc8ef56dac2acd13c1d90516dd5144fdadf90ed6b83",
+      "opportunity_path": "session/20260906_m4_gsm8k_r2/acquisition-terminal-artifact/workspace/assets/basic/m4-qwen3-1p7b-gsm8k-confirmatory-control-d5-acquisition-r2/m4-gsm8k-r2-opportunity.jsonl",
+      "opportunity_sha256": "1d6f39337a6b73756ce0548849f5cc50d40e7c9e159d4130f9c4df49676847a5",
+      "protocol_path": "reports/auto_research/2026-09-04-m4-opportunity-loss-workload-transport/qwen3-1p7b-gsm8k-confirmatory-design/protocol_config_r2.json",
+      "protocol_sha256": "3413bde3718563157cee5d504f174710f65406dd7f1effd8ad2755a03d73b69e",
+      "terminal_result_path": "session/20260906_m4_gsm8k_r2/acquisition-terminal-artifact/workspace/assets/basic/m4-qwen3-1p7b-gsm8k-confirmatory-control-d5-acquisition-r2/m4-gsm8k-r2-result.json",
+      "terminal_result_sha256": "706767a49f26873bfcb5a7c6cae4b029cf492ca6b461862b0d4aed0240136ee7",
+      "terminal_scoring_complete": true
+    },
+    "qwen3_1p7b_openmath": {
+      "assignment_count": 6955,
+      "bootstrap_draws": 20000,
+      "bootstrap_seed": 20260918,
+      "bootstrap_shifts_sha256": "505a48928aeb0bff8e743c0c39d5f884c74040c3fc38d2a56c2ab27aec6d2abe",
+      "canonical_result_record_path": "reports/auto_research/2026-09-03-m4-opportunity-loss-transport/qwen3-1p7b-confirmatory-design/acquisition_result.json",
+      "canonical_result_record_sha256": "7eec5871da27004eb665c7662abe813ff990c1a8cdad4a45773af24d0b8f7ade",
+      "estimate": 0.29822630791824456,
+      "hac_standard_error": 0.014532831589409809,
+      "lifecycle_path": "session/20260907_m4_cross_study_harmonization/qwen3_1p7b_openmath/m4-qwen3-1p7b-confirmatory-lifecycle.jsonl",
+      "lifecycle_sha256": "71238a4c2b7ba0aceeb206514e8564719688d594989f19396653de483c37ba47",
+      "opportunity_path": "session/20260907_m4_cross_study_harmonization/qwen3_1p7b_openmath/m4-qwen3-1p7b-confirmatory-opportunity.jsonl",
+      "opportunity_sha256": "170cf1cf3cf124b4248cf5173fe6f7e18eaed0eeac3792cb9367b66207184b2d",
+      "protocol_path": "reports/auto_research/2026-09-03-m4-opportunity-loss-transport/qwen3-1p7b-confirmatory-design/protocol_config.json",
+      "protocol_sha256": "eef87a5e26f2cc1a39428628b0c28288b17a297f49d449a80ed9699f9ee17cb7",
+      "terminal_result_path": "session/20260907_m4_cross_study_harmonization/qwen3_1p7b_openmath/m4-qwen3-1p7b-confirmatory-result.json",
+      "terminal_result_sha256": "74c3a836fcc27dd567f3c19ec8e2b8438a915eac53ecc9aa7ca6bb7b7769a3c7",
+      "terminal_scoring_complete": true
+    }
+  },
+  "common_primary_start_versions": [
+    8,
+    407
+  ],
+  "grid_protocol_sha256": "b6682795071d12a5d6b3eddcdf73536e045949f08ce881885dd330fba9885db6",
+  "interaction": {
+    "bootstrap_draws": 20000,
+    "bootstrap_interval": [
+      -0.136568869092096,
+      -0.028939854587893145
+    ],
+    "cell_estimates": {
+      "qwen3_0p6b_gsm8k": 0.2332654341299639,
+      "qwen3_0p6b_openmath": 0.30542321077967627,
+      "qwen3_1p7b_gsm8k": 0.14306352903703942,
+      "qwen3_1p7b_openmath": 0.29822630791824456
+    },
+    "conclusion": "INTERACTION_DETECTED",
+    "confidence": 0.95,
+    "confidence_envelope": [
+      -0.136568869092096,
+      -0.028939854587893145
+    ],
+    "hac_interval": [
+      -0.13610687174781994,
+      -0.029903132715165592
+    ],
+    "hac_standard_error": 0.027093288415087197,
+    "interaction_estimate": -0.08300500223149276,
+    "model_scale_contrasts": {
+      "gsm8k_qwen3_1p7b_minus_0p6b": -0.09020190509292447,
+      "openmath_qwen3_1p7b_minus_0p6b": -0.007196902861431709
+    },
+    "role": "secondary_grid_synthesis_cannot_override_primary_cell",
+    "workload_contrasts": {
+      "qwen3_0p6b_openmath_minus_gsm8k": 0.07215777664971237,
+      "qwen3_1p7b_openmath_minus_gsm8k": 0.15516277888120514
+    }
+  },
+  "limitations": {
+    "can_override_primary_cells": false,
+    "family_wide_generalization_supported": false,
+    "scope": "two_qwen3_model_scales_by_two_workloads_in_tested_environments"
+  },
+  "schema": "m4-opportunity-loss-terminal-four-cell-grid-synthesis-v1",
+  "status": "INTERACTION_DETECTED"
+}

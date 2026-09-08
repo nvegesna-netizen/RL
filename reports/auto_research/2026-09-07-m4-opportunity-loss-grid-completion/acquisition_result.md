@@ -35,6 +35,6 @@ The recovered analysis result SHA-256 is
 `26d1650143c502e5790f194ab7c703051820e47993c8fcd9206bbec2bd7f10c2`.
 
 This conclusion is limited to the tested model, GSM8K workload, instrument,
-runtime, and environment. The next registered step is the secondary common-
-window four-cell grid synthesis; it cannot retroactively alter this primary
-cell conclusion.
+runtime, and environment. The subsequently completed secondary common-window
+four-cell grid synthesis detected an interaction, but cannot retroactively
+alter this primary cell conclusion.
