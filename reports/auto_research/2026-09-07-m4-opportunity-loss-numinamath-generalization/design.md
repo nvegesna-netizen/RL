@@ -1,6 +1,6 @@
 # NuminaMath-1.5 paired M4 generalization design
 
-Status: `REPAIRED_NO_TRAINING_PREFLIGHT_GREEN_PENDING_QUALIFICATION_DESIGN`.
+Status: `REPAIRED_NO_TRAINING_PREFLIGHT_GREEN_PAIRED_QUALIFICATION_AUTHORIZED`.
 
 ## Scientific question
 
@@ -89,3 +89,16 @@ All 121 selected tests passed, the 680,786-row dataset mapped successfully, and
 all 50 lock entries match the frozen source archive. No training,
 qualification, acquisition, or causal analysis occurred. The frozen protocol
 and its SHA-256 remain unchanged.
+
+## Neutral qualification design
+
+The paired qualification gate was separately authorized for exactly two
+32-step submissions: one for each prospective model cell. Each qualification
+inherits its frozen acquisition config and changes only the step limit, a fresh
+neutral assignment identity, the sole zero-second neutral arm, and isolated
+lifecycle, opportunity, observer-duty, and metrics paths. Each submission has
+one attempt, uses two GPUs, and has a 90-minute scheduler limit within the
+frozen four-hour per-cell ceiling. Automatic retry and extension are forbidden.
+
+Qualification observations remain excluded from every causal estimator. This
+authorization does not permit either 448-step scientific acquisition.

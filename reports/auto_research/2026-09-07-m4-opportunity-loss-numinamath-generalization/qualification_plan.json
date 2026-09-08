@@ -1,0 +1,101 @@
+{
+  "automatic_extension": false,
+  "automatic_retry": false,
+  "cells": {
+    "qwen3_0p6b_numinamath": {
+      "assignment_domain": "m4-opportunity-loss-qwen3-0p6b-numinamath-neutral-qualification-v1",
+      "assignment_seed": 20260929,
+      "config": "examples/configs/grpo_math_1B_megatron_single_controller_m4_qwen3_0p6b_numinamath_neutral_qualification.yaml",
+      "config_sha256": "a29245573d775afa733dd459d3361d1e52d1b2823ae43291bb0306e4ac9af7bd",
+      "model": "Qwen/Qwen3-0.6B"
+    },
+    "qwen3_1p7b_numinamath": {
+      "assignment_domain": "m4-opportunity-loss-qwen3-1p7b-numinamath-neutral-qualification-v1",
+      "assignment_seed": 20260930,
+      "config": "examples/configs/grpo_math_1B_megatron_single_controller_m4_qwen3_1p7b_numinamath_neutral_qualification.yaml",
+      "config_sha256": "7491562098fc14382b90d3a010e09a307eafb4cd68a7a5e7a0f10a735eebfdc2",
+      "model": "Qwen/Qwen3-1.7B"
+    }
+  },
+  "decision_gates_each_cell": {
+    "binary_reward_support_required": [
+      0,
+      1
+    ],
+    "causal_estimate_allowed": false,
+    "corrected_observer_duty_maximum": 0.01,
+    "minimum_opportunity_groups_per_observed_start_version": 15,
+    "minimum_projected_primary_assignments": 6900,
+    "projection_safety_factor": 1.25,
+    "qualification_data_allowed_in_any_causal_estimator": false,
+    "resource_fit_required": true,
+    "two_gpu_projected_gpu_hour_maximum": 8.0,
+    "whole_run_projected_wall_hour_maximum": 4.0
+  },
+  "frozen_acquisition_geometry_each_cell": {
+    "burn_in_start_versions": [
+      0,
+      7
+    ],
+    "primary_start_versions": [
+      8,
+      407
+    ],
+    "terminal_guard_start_versions": [
+      408,
+      447
+    ],
+    "trainer_steps": 448
+  },
+  "neutral_release_configuration": {
+    "arms": [
+      {
+        "delay_seconds": 0.0,
+        "label": "neutral",
+        "mass": 1
+      }
+    ],
+    "controlled_release_enabled": true
+  },
+  "preflight_evidence": {
+    "artifact_sha256": "f2de4a664c6ed15048fc13d009edc9dc65da897bdc48ab018c8211501818f58e",
+    "lock_sha256": "805d06573a6927c4ff773455b9e30d0c7651399b1e2070acb4d2642591db8915",
+    "result_record_sha256": "4106b4b0ebbef74135df72146db835df8a0e31cae80b7b9aaeaaea4043602fcf",
+    "summary_sha256": "105b0ea9fd68c84f0328f04677e36e4dd05649e4df7b971f574ea2cea1514e72"
+  },
+  "qualification_instrument": {
+    "causal_intervention": false,
+    "controlled_release_arms": [
+      {
+        "delay_seconds": 0.0,
+        "label": "neutral",
+        "mass": 1
+      }
+    ],
+    "qualification_observations_enter_estimators": false,
+    "trainer_steps_each_cell": 32
+  },
+  "release": {
+    "automatic_extension": false,
+    "automatic_retry": false,
+    "authorized_submission_count": 2,
+    "authorized_workloads": [
+      "qwen3_0p6b_numinamath_neutral_qualification",
+      "qwen3_1p7b_numinamath_neutral_qualification"
+    ],
+    "qualification_authorized": true,
+    "required_launcher": "runllm.py --no_wait",
+    "scientific_acquisition_authorized": false,
+    "submission_attempt_limit_each_cell": 1,
+    "user_authorization": "I authorize. do the next step."
+  },
+  "resources_each_cell": {
+    "gpus": 2,
+    "nodes": 1,
+    "qualification_slurm_time_limit": "01:30:00",
+    "trainer_steps": 32,
+    "wall_clock_cap_hours": 4.0
+  },
+  "schema": "m4-numinamath-paired-neutral-qualification-plan-v1",
+  "status": "AUTHORIZED_PAIRED_QUALIFICATION_DESIGN_PENDING_PACKAGE_FREEZE"
+}
