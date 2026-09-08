@@ -1,6 +1,6 @@
 # NuminaMath-1.5 paired M4 generalization design
 
-Status: `PAIRED_ACQUISITION_PLAN_FROZEN_PENDING_PACKAGE_VALIDATION`.
+Status: `PAIRED_ACQUISITION_PACKAGING_REPAIRED_PENDING_FRESH_RELEASE`.
 
 ## Scientific question
 
@@ -118,3 +118,18 @@ pipeline is capture-only: it must preserve the raw lifecycle, opportunity, and
 observer-duty records but must not calculate or print a causal estimate. Both
 448-step packages must pass local validation before either is submitted, and
 both must be submitted before either causal outcome is inspected.
+
+## Acquisition submission attempt 1
+
+The first paired submission failed in JET's workload-script generator before
+either bridge created a downstream pipeline. JET evaluated the embedded shell
+as a Python f-string and rejected unescaped literal braces. Consequently no EOS
+scheduler job, training, acquisition observation, or causal outcome existed.
+The scientific design and all 50 preflight-locked files remain unchanged.
+
+The packaging-only repair now escapes literal braces while retaining JET's
+`{assets_dir}` substitution. Both repaired manifests pass an explicit local
+evaluation of the same f-string semantics, Bash syntax, and all embedded Python
+syntax. Attempt 1's one-use authority is consumed; a repaired submission needs
+fresh explicit authority and still must launch both cells before either outcome
+is inspected.

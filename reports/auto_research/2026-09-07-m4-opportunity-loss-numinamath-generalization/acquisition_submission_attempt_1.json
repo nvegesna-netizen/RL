@@ -1,0 +1,35 @@
+{
+  "causal_outcome_observed": false,
+  "cells": {
+    "qwen3_0p6b_numinamath": {
+      "bridge_job_id": 430897612,
+      "downstream_pipeline_created": false,
+      "generator_job_id": 430897611,
+      "manifest_sha256": "3a917cd39f45ab7807e1ccc09d5bb16e3a87ed6a97c4fb321605453f5f4d6a87",
+      "parent_pipeline_id": 66835166,
+      "status": "GENERATOR_FAILED"
+    },
+    "qwen3_1p7b_numinamath": {
+      "bridge_job_id": 430897606,
+      "downstream_pipeline_created": false,
+      "generator_job_id": 430897603,
+      "manifest_sha256": "c461965d59b01e96c619402ba69e678fc06bf811c15d2331d838d638f0afdcfd",
+      "parent_pipeline_id": 66835164,
+      "status": "GENERATOR_FAILED"
+    }
+  },
+  "disposition": {
+    "automatic_retry_permitted": false,
+    "fresh_explicit_submission_authority_required": true,
+    "repair": "Escape literal braces before JET evaluates the workload script as a Python f-string.",
+    "scientific_design_changed": false
+  },
+  "failure": {
+    "eos_scheduler_job_created": false,
+    "exact_error": "SyntaxError encountered during substitution: f-string: invalid syntax. Perhaps you forgot a comma? (<string>, line 104).",
+    "layer": "JET workload-script generation",
+    "training_started": false
+  },
+  "schema": "m4-numinamath-paired-acquisition-submission-attempt-v1",
+  "status": "TERMINAL_PRE_EOS_PACKAGING_FAILURE"
+}
