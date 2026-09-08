@@ -1,6 +1,6 @@
 # NuminaMath-1.5 paired M4 generalization design
 
-Status: `FROZEN_REPAIRED_LOCAL_PROTOCOL_PENDING_NO_TRAINING_PREFLIGHT`.
+Status: `REPAIRED_NO_TRAINING_PREFLIGHT_GREEN_PENDING_QUALIFICATION_DESIGN`.
 
 ## Scientific question
 
@@ -79,3 +79,13 @@ and observer duty cannot override the interaction.
 6. Reconcile immutable artifacts and run the registered paired analysis.
 
 This local design creates no EOS, qualification, or acquisition authority.
+
+## Repaired preflight result
+
+The repaired shared no-training preflight succeeded as parent pipeline
+`66799474` and downstream pipeline `66799605`. The terminal artifact SHA-256 is
+`f2de4a664c6ed15048fc13d009edc9dc65da897bdc48ab018c8211501818f58e`.
+All 121 selected tests passed, the 680,786-row dataset mapped successfully, and
+all 50 lock entries match the frozen source archive. No training,
+qualification, acquisition, or causal analysis occurred. The frozen protocol
+and its SHA-256 remain unchanged.

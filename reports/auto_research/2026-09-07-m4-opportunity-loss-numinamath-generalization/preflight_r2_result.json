@@ -1,0 +1,50 @@
+{
+  "artifact": {
+    "members": 33,
+    "output_log_sha256": "6cbb7ae45282703cbaa4dbbff2a3029ed06458076747417e68d1102b25b51cc4",
+    "sha256": "f2de4a664c6ed15048fc13d009edc9dc65da897bdc48ab018c8211501818f58e",
+    "size_bytes": 104879724,
+    "zip_integrity": "PASS"
+  },
+  "checks": {
+    "archive_members": 1976,
+    "archive_safe_symlinks": 16,
+    "configuration_resolved": true,
+    "dataset_filtered_rows": 680786,
+    "dataset_unique_nonblank_problems": 680786,
+    "full_selected_tests_green": true,
+    "locked_file_count": 50,
+    "locked_files_match_source_archive": true,
+    "preflight_green": true,
+    "rank_zero_exit_code": 0,
+    "tests_passed": 121
+  },
+  "frozen_inputs": {
+    "candidate_audit_sha256": "8f9dcc0fb25387e43f8f4bc32bd41c074431eb37b51997bde1c6c5139d7f4433",
+    "lock_sha256": "805d06573a6927c4ff773455b9e30d0c7651399b1e2070acb4d2642591db8915",
+    "manifest_sha256": "29a3cd7803a75d6ca778d672262572ae90e8c486824622b0ae586a05d65a4157",
+    "protocol_sha256": "bbe2c07211952e3e46d4511524f68e864606a7c63f271ae8e064263044dad0c8",
+    "source_archive_sha256": "f208b1945ab349d06917069bb2b3adbebb115e1f9d5213a9a47861e0ea97bde6",
+    "source_commit": "d058efcf64560d6f822b92c7ff9e3a7e9f791128"
+  },
+  "pipeline": {
+    "compute_job_id": 430598831,
+    "downstream_pipeline_id": 66799605,
+    "generator_job_id": 430598102,
+    "logs_after_job_id": 430598832,
+    "logs_before_job_id": 430598830,
+    "parent_pipeline_id": 66799474,
+    "slurm_job_id": 5994386,
+    "trigger_bridge_job_id": 430598104
+  },
+  "prohibited_activity": {
+    "acquisition_started": false,
+    "automatic_extension": false,
+    "automatic_retry": false,
+    "causal_estimate_produced": false,
+    "qualification_started": false,
+    "training_started": false
+  },
+  "schema": "m4-numinamath-paired-generalization-r2-no-training-preflight-terminal-v1",
+  "status": "GREEN_NO_TRAINING_PREFLIGHT"
+}
