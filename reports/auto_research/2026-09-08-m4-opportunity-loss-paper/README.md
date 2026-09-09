@@ -16,8 +16,12 @@ file here.
 - `next_actions.md` — ordered submission sequence and new-compute decision.
 - `reproducibility_appendix.md` — hardware/software, protocol, acquisition,
   observer-duty, and provenance details.
-- `artifact_access_plan.md` — anonymized reviewer-artifact design and release
-  gates; it is a plan, not evidence that artifacts are already public.
+- `artifact_access_plan.md` — anonymized reviewer-artifact design, completed
+  local clean-room test, and remaining public-release gates.
+- `reviewer_artifact/` — scrubbed, standard-library-only compact reviewer
+  bundle with opaque provenance commitments and a synthetic replay path.
+- `build_reviewer_artifact.py` and `clean_room_test_reviewer_artifact.py` —
+  deterministic archive builder and credential-stripped extraction test.
 - `verified_sources.md` and `references.bib` — primary-record bibliography
   audit and BibTeX database.
 

@@ -134,7 +134,7 @@ training-outcome experiment.
 | Were retries outcome-guided? | One-use guards and result records state no automatic retry or extension. | Pass |
 | Are raw inputs immutable? | Each raw ledger and artifact is referenced by SHA-256. | Pass |
 | Can the six-cell synthesis double-count GSM uncertainty? | Shared GSM draws and analytic covariance are explicit. | Pass |
-| Can all code tests run on the local host? | Static checks pass; local environments lack pytest/Ray dependencies. Prior EOS preflights passed pinned suites. | Partial |
+| Can all compact-artifact tests run without project dependencies? | The archive's manifest, replay, figure renderer, and two standard-library tests pass after credential-stripped extraction. | Pass |
 | Are large artifacts publicly available? | They are outside Git and presently referenced by hashes. | Open distribution question |
 
 ## Editorial and presentation status
@@ -143,16 +143,17 @@ training-outcome experiment.
    LaTeX sources created against the official style contract.
 2. **Open human gate:** final author list, institutional affiliations,
    acknowledgments, and conflicts.
-3. **Complete source / open build gate:** four vector SVG sources exist; convert
-   them to PDF and inspect the compiled result in a TeX-capable environment.
-4. **Complete private record:** appendix table contains protocol/artifact hashes,
-   source commits, pipeline states, assignments, and observer duty. The blind
-   supplement uses opaque acquisition IDs.
+3. **Complete review build / open submission-font gate:** main and supplement
+   PDFs compile and pass text, metadata, pagination, and visual checks. Figure
+   PDFs still introduce non-Type-1 fonts that require conversion for upload.
+4. **Complete private and blind records:** the private record retains source and
+   execution mappings; the blind supplement exposes only opaque acquisition IDs
+   and protocol/artifact hash prefixes.
 5. **Complete:** related work verified against primary records and a 16-entry
    all-author BibTeX database created.
-6. **Planned / approval required:** anonymous reviewer bundle, scrub gates,
-   clean-room credential-free test, and controlled raw-ledger fallback are
-   specified; nothing has been externally released.
+6. **Complete local bundle / open release gate:** the deterministic anonymous
+   compact bundle passes credential-stripped replay and adversarial scans.
+   External hosting, link testing, and raw-ledger release remain pending.
 7. **Open evidence-recovery gate:** recover exact driver, CUDA, PyTorch, vLLM,
    Megatron, CPU, and memory details from authenticated logs where available;
    do not infer missing versions.

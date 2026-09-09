@@ -1,0 +1,29 @@
+{
+  "cell_estimates": {
+    "qwen3_0p6b_gsm8k": 0.75,
+    "qwen3_0p6b_numinamath": 0.75,
+    "qwen3_0p6b_openmath": 0.75,
+    "qwen3_1p7b_gsm8k": 0.25,
+    "qwen3_1p7b_numinamath": 0.5,
+    "qwen3_1p7b_openmath": 0.5
+  },
+  "cell_hac_se": {
+    "qwen3_0p6b_gsm8k": 0.0625,
+    "qwen3_0p6b_numinamath": 0.08838834764831845,
+    "qwen3_0p6b_openmath": 0.0625,
+    "qwen3_1p7b_gsm8k": 0.0625,
+    "qwen3_1p7b_numinamath": 0.0625,
+    "qwen3_1p7b_openmath": 0.0
+  },
+  "model_scale_effects": {
+    "gsm8k": -0.5,
+    "numinamath": -0.25,
+    "openmath": -0.25
+  },
+  "reference_interactions": {
+    "gsm8k_minus_numinamath": -0.25,
+    "gsm8k_minus_openmath": -0.25
+  },
+  "row_count": 192,
+  "shared_reference_bootstrap_correlation": 0.5133063324925617
+}

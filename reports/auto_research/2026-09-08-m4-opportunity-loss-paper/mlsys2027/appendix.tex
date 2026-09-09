@@ -22,7 +22,7 @@ This supplement reports reproducibility, provenance, mechanism, observer-duty, a
 \printAffiliationsAndNotice{}
 
 \section{Environment and Contract}
-Each acquisition used two H100 GPUs in one scheduled workload with visible devices 0 and 1. The pinned container and embedded NeMo RL revision are authenticated in the reviewer manifest. Frozen per-cell source archives were overlaid on that image; Table~\ref{tab:prov} gives shortened source identifiers. Preserved logs show Python 3.13, Megatron policy workers, and asynchronous vLLM generation. Exact driver, CUDA, PyTorch, vLLM, CPU, and GPU-memory versions were not captured in compact records and are not inferred.
+Each acquisition used two H100 GPUs in one scheduled workload with visible devices 0 and 1. The pinned container and embedded NeMo RL revision are authenticated in the private record. Frozen per-cell source archives were overlaid on that image; their revision mapping is withheld from the blind bundle and retained for deanonymization. Preserved logs show Python 3.13, Megatron policy workers, and asynchronous vLLM generation. Exact driver, CUDA, PyTorch, vLLM, CPU, and GPU-memory versions were not captured in compact records and are not inferred.
 
 Groups contain eight siblings. The definitive arms are control and an added five-second delay. The accepted design uses training batch 32, buffer capacity 64, 16 in-flight prompts, windowed FIFO sampling, and maximum staleness one. Opportunity is recorded before release. Analysis uses eight contiguous cross-fitting folds, lag-four HAC, and 20,000 circular-block bootstrap draws with block length eight versions.
 
@@ -37,16 +37,16 @@ Groups contain eight siblings. The definitive arms are control and an added five
 \caption{Definitive acquisition provenance. Hashes authenticate terminal archives.}
 \label{tab:prov}
 \centering\scriptsize
-\begin{tabular}{lllcll}
+\begin{tabular}{lllcl}
 \toprule
-ID & Model & Workload & State & Source & Protocol / artifact hash prefix \\
+ID & Model & Workload & State & Protocol / artifact hash prefix \\
 \midrule
-A1 & 0.6B & OpenMath & success & 47dc1a713c & 6631a4ca8c / 07cddc489e \\
-A2 & 1.7B & OpenMath & success & a1c7191777 & eef87a5e26 / 022e4d18f2 \\
-A3 & 0.6B & GSM8K & post-run fail & bfcf8447ac & b668279507 / 6c2ebeb2b2 \\
-A4 & 1.7B & GSM8K & success & b79e419aea & 3413bde371 / 966dfbf605 \\
-A5 & 0.6B & NuminaMath & success & 02b0ad4abf & bbe2c07211 / ad7c556f43 \\
-A6 & 1.7B & NuminaMath & success & 02b0ad4abf & bbe2c07211 / 6aa6196873 \\
+A1 & 0.6B & OpenMath & success & 6631a4ca8c / 07cddc489e \\
+A2 & 1.7B & OpenMath & success & eef87a5e26 / 022e4d18f2 \\
+A3 & 0.6B & GSM8K & post-run fail & b668279507 / 6c2ebeb2b2 \\
+A4 & 1.7B & GSM8K & success & 3413bde371 / 966dfbf605 \\
+A5 & 0.6B & NuminaMath & success & bbe2c07211 / ad7c556f43 \\
+A6 & 1.7B & NuminaMath & success & bbe2c07211 / 6aa6196873 \\
 \bottomrule
 \end{tabular}
 \end{table*}
@@ -114,8 +114,6 @@ ratio describes the fixed treatment's time scale; it does not redefine or
 renormalize the registered causal estimand.
 
 \section{Dataset and Artifact Notes}
-GSM8K uses \texttt{openai/gsm8k}, \texttt{main}, training split. NuminaMath-1.5 is pinned at revision \texttt{1b05109f9e5c1ad06c0663519502416c30b300f8}; 896,215 source rows were filtered to 680,786 retained unique problems, with shard hashes in the preflight lock. The anonymous reviewer bundle is planned to contain compact results, analysis code, protocols, a synthetic miniature ledger, and a SHA-256 manifest. Raw ledgers remain external pending privacy and anonymous-access review; this document does not claim they are public.
+GSM8K uses \texttt{openai/gsm8k}, \texttt{main}, training split. NuminaMath-1.5 is pinned at revision \texttt{1b05109f9e5c1ad06c0663519502416c30b300f8}; 896,215 source rows were filtered to 680,786 retained unique problems, with shard hashes in the preflight lock. A credential-free compact reviewer bundle contains results, public protocol projections, a synthetic miniature ledger, and a SHA-256 manifest; it passes a local credential-stripped replay. Raw ledgers and public hosting remain external pending privacy and anonymous-access review, so this document does not claim empirical re-estimation or public availability.
 
-\bibliography{../references}
-\bibliographystyle{mlsys2025}
 \end{document}

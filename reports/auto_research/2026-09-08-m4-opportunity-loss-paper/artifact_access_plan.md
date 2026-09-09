@@ -1,9 +1,16 @@
 # Anonymous artifact-access plan
 
-Status: **planned, not released**
+Status: **built and locally clean-room tested; not externally released**
 
 No external upload, repository publication, or access-policy change is
 authorized by this document.
+
+The compact archive was built deterministically and replayed after extraction
+into a fresh temporary directory under a four-variable environment containing
+only `PATH`, locale, and bytecode-control settings. Its manifest, secret and
+anonymity scans, standalone replay, and standard-library unit test pass. A
+second independent build is byte-identical. This local credential-stripped test
+does not claim that a public download URL or raw-ledger access exists.
 
 ## Reviewer bundle
 
@@ -40,11 +47,15 @@ evaluation committee under controlled access. Do not imply public availability.
 ## Release gates
 
 1. Legal/data-owner approval for each dataset-derived and log-derived field.
-2. Secret scan and manual privacy review of decompressed content.
+2. Secret scan and manual privacy review of decompressed content. **Complete
+   for the compact bundle; required again if raw ledgers are added.**
 3. Anonymity scan for organization, repository, pipeline, cluster, and user
-   identifiers.
-4. Clean-room download on a machine without NVIDIA-internal credentials.
-5. Hash verification and complete offline analysis replay.
+   identifiers. **Complete for the compact bundle.**
+4. Clean-room download on a machine without internal credentials. **Local
+   credential-stripped extraction/replay complete; external URL test pending.**
+5. Hash verification and complete offline analysis replay. **Complete for
+   compact-result verification and the synthetic end-to-end path; empirical
+   re-estimation remains unavailable without the external raw ledgers.**
 6. Link check from the exact submission PDF and supplementary README.
 7. Human-author approval of the final disclosure and access limitations.
 

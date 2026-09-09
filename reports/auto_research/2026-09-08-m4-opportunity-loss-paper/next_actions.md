@@ -20,13 +20,16 @@ clean scale extension.
    author roster, and related-work characterization.
 2. **Environment recovery.** Search authenticated logs for exact dependency and
    hardware metadata. Report what is found; mark the rest unavailable.
-3. **PDF build and fit.** Use the official MLSys style, convert SVGs to vector
-   PDFs, compile main and supplement, fit main text to 10 pages, inspect fonts,
-   and perform visual QA.
-4. **Anonymous artifact build.** Create the compact reviewer bundle, scrub it,
-   validate hashes, and test download/reanalysis without internal credentials.
-5. **Final adversarial review.** Re-run the claim/number verifier, inspect the
-   exact PDFs and archive, and ensure no primary evidence is appendix-only.
+3. **PDF build and fit.** **Complete for review:** the official-style paper and
+   supplement compile, fit, and pass visual QA. Convert figure fonts to
+   Type-1-compatible outlines before final upload.
+4. **Anonymous artifact build.** **Complete locally:** the compact reviewer
+   bundle is scrubbed, deterministic, hash-validated, and replayed under a
+   credential-stripped environment. External hosting/link testing remains a
+   separate release gate.
+5. **Final adversarial review.** **Complete:** claim/number verification, exact
+   PDF/archive inspection, anonymity attacks, and artifact replay pass with the
+   remaining release gates recorded separately.
 6. **Submit once.** Upload only after every author and anonymity gate passes.
 
 ## Optional downstream-quality study

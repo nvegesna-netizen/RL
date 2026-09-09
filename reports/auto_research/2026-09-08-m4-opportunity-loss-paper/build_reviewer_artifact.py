@@ -1,0 +1,593 @@
+#!/usr/bin/env python3
+"""Build a deterministic, anonymous M4 reviewer artifact using only stdlib."""
+
+from __future__ import annotations
+
+import argparse
+import gzip
+import hashlib
+import json
+import subprocess
+import sys
+import tarfile
+from pathlib import Path
+
+
+HERE = Path(__file__).resolve().parent
+
+CELL_IDS = {
+    "qwen3_0p6b_openmath": "A1",
+    "qwen3_1p7b_openmath": "A2",
+    "qwen3_0p6b_gsm8k": "A3",
+    "qwen3_1p7b_gsm8k": "A4",
+    "qwen3_0p6b_numinamath": "A5",
+    "qwen3_1p7b_numinamath": "A6",
+}
+
+EXTERNAL_ARTIFACTS = {
+    "A1": ("07cddc489ea20055161f9c435d44d0a52b91113fda9eac16472bdb531dc6ffb6", 54_950_561),
+    "A2": ("022e4d18f2eedd2339c3c7eb7decf6e21f929761de46bcd0f85a73f0a2700ac7", 131_003_667),
+    "A3": ("6c2ebeb2b2bf67df16be815f372ea87cde8eeff4d23e63291d8a98ac94659075", 137_287_850),
+    "A4": ("966dfbf60548e5fd791d59d3baa2bc3b3a1b8d6b0b1a15de1ef510fc618720ca", 134_908_947),
+    "A5": ("ad7c556f435b0f9e30a65c201680bf6dab74e077af16e38f299bfc04af969c35", 129_888_875),
+    "A6": ("6aa61968730833387a15b45a6d0f2be541c6f84b6d4f16a29e7dbf583981fc9b", 128_543_493),
+}
+
+PROTOCOL_SOURCES = {
+    "A1": HERE.parent / "2026-09-02-m4-opportunity-loss-followup/protocol_config.json",
+    "A2": HERE.parent / "2026-09-03-m4-opportunity-loss-transport/qwen3-1p7b-confirmatory-design/protocol_config.json",
+    "A3": HERE.parent / "2026-09-07-m4-opportunity-loss-grid-completion/protocol_config.json",
+    "A4": HERE.parent / "2026-09-04-m4-opportunity-loss-workload-transport/qwen3-1p7b-gsm8k-confirmatory-design/protocol_config_r2.json",
+    "A5": HERE.parent / "2026-09-07-m4-opportunity-loss-numinamath-generalization/protocol_config.json",
+    "A6": HERE.parent / "2026-09-07-m4-opportunity-loss-numinamath-generalization/protocol_config.json",
+}
+
+PROTOCOL_HASHES = {
+    "A1": "6631a4ca8cfc6010150d1c135a1f5821c717f0dea189a3309c5f0f58f9b0709c",
+    "A2": "eef87a5e26f2cc1a39428628b0c28288b17a297f49d449a80ed9699f9ee17cb7",
+    "A3": "b6682795071d12a5d6b3eddcdf73536e045949f08ce881885dd330fba9885db6",
+    "A4": "3413bde3718563157cee5d504f174710f65406dd7f1effd8ad2755a03d73b69e",
+    "A5": "bbe2c07211952e3e46d4511524f68e864606a7c63f271ae8e064263044dad0c8",
+    "A6": "bbe2c07211952e3e46d4511524f68e864606a7c63f271ae8e064263044dad0c8",
+}
+
+
+README = """# M4 anonymous reviewer artifact
+
+This credential-free bundle verifies the compact published M4 results and
+exercises the estimand and dependency-aware interaction path on a synthetic
+miniature ledger. It requires only Python 3.10+ and the standard library.
+
+Run from the extracted directory:
+
+```sh
+python3 analysis/replay.py --verify
+python3 analysis/render_figures.py --verify
+python3 -m unittest discover -s tests -v
+```
+
+`data/published_results.json` contains the six-cell common-window results after
+removal of private filesystem paths. `data/provenance.json` binds opaque
+acquisition IDs A1--A6 to the frozen protocol, compact ledgers, and external
+terminal archives by SHA-256. The large empirical ledgers are not included;
+therefore this bundle verifies compact results but does not independently
+re-estimate the empirical cells. The synthetic ledger contains no experimental
+observations and is used only to test the analysis structure.
+"""
+
+REPLAY = r'''#!/usr/bin/env python3
+"""Credential-free verification and synthetic M4 replay (stdlib only)."""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import math
+import random
+from collections import defaultdict
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def load(path: Path):
+    return json.loads(path.read_bytes())
+
+
+def sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def verify_manifest() -> None:
+    manifest = load(ROOT / "MANIFEST.json")
+    expected = {entry["path"] for entry in manifest["files"]}
+    actual = {
+        str(path.relative_to(ROOT))
+        for path in ROOT.rglob("*")
+        if path.is_file() and path.name != "MANIFEST.json" and "__pycache__" not in path.parts
+    }
+    assert actual == expected, (sorted(actual - expected), sorted(expected - actual))
+    for entry in manifest["files"]:
+        path = ROOT / entry["path"]
+        assert path.stat().st_size == entry["bytes"]
+        assert sha256(path) == entry["sha256"]
+
+
+def published_checks() -> dict[str, object]:
+    result = load(ROOT / "data/published_results.json")
+    cells = result["cell_results"]
+    assert len(cells) == 6
+    assert sum(cell["assignment_count"] for cell in cells.values()) == 43_756
+    assert all(cell["terminal_missing_count"] == 0 for cell in cells.values())
+    synthesis = result["dependency_aware_synthesis"]
+    assert math.isclose(synthesis["hac_correlation"], 0.3793770869832136)
+    assert math.isclose(synthesis["bootstrap_correlation"], 0.40530226396440766)
+    assert math.isclose(synthesis["global_heterogeneity_p_value"], 0.0031390066345424925)
+    provenance = load(ROOT / "data/provenance.json")
+    assert set(provenance["acquisitions"]) == {f"A{i}" for i in range(1, 7)}
+    assert sum(item["full_window_assignments"] for item in provenance["acquisitions"].values()) == 49_153
+    assert all(len(item["terminal_artifact_sha256"]) == 64 for item in provenance["acquisitions"].values())
+    return {
+        "common_window_assignments": 43_756,
+        "full_window_assignments": 49_153,
+        "hac_correlation": synthesis["hac_correlation"],
+        "bootstrap_correlation": synthesis["bootstrap_correlation"],
+    }
+
+
+def cell_estimates(rows: list[dict[str, object]]) -> tuple[dict[str, float], dict[str, list[float]]]:
+    grouped = defaultdict(lambda: defaultdict(lambda: defaultdict(list)))
+    for row in rows:
+        grouped[row["cell"]][int(row["start_version"])][row["arm"]].append(row)
+    estimates = {}
+    version_effects = {}
+    for cell, versions in grouped.items():
+        effects = []
+        for version in sorted(versions):
+            arms = versions[version]
+            pooled_q = sum(float(r["Q"]) for arm in arms.values() for r in arm) / sum(len(arm) for arm in arms.values())
+            d5 = sum(float(r["Q"]) * int(r["D"]) for r in arms["d5"]) / len(arms["d5"])
+            control = sum(float(r["Q"]) * int(r["D"]) for r in arms["control"]) / len(arms["control"])
+            effects.append((d5 - control) / pooled_q)
+        estimates[cell] = sum(effects) / len(effects)
+        version_effects[cell] = effects
+    return estimates, version_effects
+
+
+def hac_se(values: list[float], lag: int = 1) -> float:
+    n = len(values)
+    mean = sum(values) / n
+    centered = [value - mean for value in values]
+    long_run = sum(value * value for value in centered) / n
+    for offset in range(1, min(lag, n - 1) + 1):
+        covariance = sum(centered[i] * centered[i - offset] for i in range(offset, n)) / n
+        long_run += 2 * (1 - offset / (lag + 1)) * covariance
+    return math.sqrt(max(long_run, 0.0) / n)
+
+
+def circular_bootstrap(values: list[float], draws: int, seed: int) -> list[float]:
+    rng = random.Random(seed)
+    n = len(values)
+    observed = sum(values) / n
+    shifts = []
+    for _ in range(draws):
+        sampled = []
+        while len(sampled) < n:
+            start = rng.randrange(n)
+            sampled.extend((values[start], values[(start + 1) % n]))
+        shifts.append(sum(sampled[:n]) / n - observed)
+    return shifts
+
+
+def synthetic_replay() -> dict[str, object]:
+    rows = [json.loads(line) for line in (ROOT / "synthetic/miniature_ledger.jsonl").read_text().splitlines()]
+    estimates, effects = cell_estimates(rows)
+    shifts = {name: circular_bootstrap(values, 1_000, 7100 + index) for index, (name, values) in enumerate(sorted(effects.items()))}
+    scale = {
+        workload: estimates[f"qwen3_1p7b_{workload}"] - estimates[f"qwen3_0p6b_{workload}"]
+        for workload in ("openmath", "gsm8k", "numinamath")
+    }
+    interactions = {
+        "gsm8k_minus_openmath": scale["gsm8k"] - scale["openmath"],
+        "gsm8k_minus_numinamath": scale["gsm8k"] - scale["numinamath"],
+    }
+    paired = []
+    for index in range(1_000):
+        gsm = shifts["qwen3_1p7b_gsm8k"][index] - shifts["qwen3_0p6b_gsm8k"][index]
+        openmath = shifts["qwen3_1p7b_openmath"][index] - shifts["qwen3_0p6b_openmath"][index]
+        numina = shifts["qwen3_1p7b_numinamath"][index] - shifts["qwen3_0p6b_numinamath"][index]
+        paired.append((gsm - openmath, gsm - numina))
+    mean_x = sum(x for x, _ in paired) / len(paired)
+    mean_y = sum(y for _, y in paired) / len(paired)
+    covariance = sum((x - mean_x) * (y - mean_y) for x, y in paired) / (len(paired) - 1)
+    sd_x = math.sqrt(sum((x - mean_x) ** 2 for x, _ in paired) / (len(paired) - 1))
+    sd_y = math.sqrt(sum((y - mean_y) ** 2 for _, y in paired) / (len(paired) - 1))
+    summary = {
+        "row_count": len(rows),
+        "cell_estimates": estimates,
+        "cell_hac_se": {name: hac_se(values) for name, values in effects.items()},
+        "model_scale_effects": scale,
+        "reference_interactions": interactions,
+        "shared_reference_bootstrap_correlation": covariance / (sd_x * sd_y),
+    }
+    expected = load(ROOT / "synthetic/expected_summary.json")
+    assert summary == expected
+    return summary
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--verify", action="store_true", required=True)
+    parser.parse_args()
+    verify_manifest()
+    published = published_checks()
+    synthetic = synthetic_replay()
+    output = {"status": "PASS", "published": published, "synthetic": synthetic}
+    print(json.dumps(output, indent=2, sort_keys=True))
+
+
+if __name__ == "__main__":
+    main()
+'''
+
+FIGURES = r'''#!/usr/bin/env python3
+"""Render and verify publication SVGs from the compact six-cell results."""
+
+from __future__ import annotations
+
+import argparse
+import json
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def forest(cells: dict[str, dict[str, object]]) -> str:
+    labels = [
+        ("0.6B - OpenMath", "qwen3_0p6b_openmath"),
+        ("1.7B - OpenMath", "qwen3_1p7b_openmath"),
+        ("0.6B - GSM8K", "qwen3_0p6b_gsm8k"),
+        ("1.7B - GSM8K", "qwen3_1p7b_gsm8k"),
+        ("0.6B - NuminaMath", "qwen3_0p6b_numinamath"),
+        ("1.7B - NuminaMath", "qwen3_1p7b_numinamath"),
+    ]
+    left, right, top, row = 210, 850, 30, 55
+    x_min, x_max = 0.08, 0.37
+    x = lambda value: left + (value - x_min) / (x_max - x_min) * (right - left)
+    height = top + row * len(labels) + 70
+    parts = [
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="900" height="{height}" viewBox="0 0 900 {height}">',
+        '<rect width="100%" height="100%" fill="white"/>',
+        '<style>text{font-family:Helvetica,Arial,sans-serif;fill:#202124}.label{font-size:15px}.axis{font-size:13px}</style>',
+    ]
+    for tick in (0.1, 0.15, 0.2, 0.25, 0.3, 0.35):
+        parts.append(f'<line x1="{x(tick):.1f}" y1="42" x2="{x(tick):.1f}" y2="{height - 45}" stroke="#e5e7eb"/>')
+        parts.append(f'<text x="{x(tick):.1f}" y="{height - 20}" text-anchor="middle" class="axis">{tick:.2f}</text>')
+    parts.append(f'<line x1="{x(0.2):.1f}" y1="42" x2="{x(0.2):.1f}" y2="{height - 45}" stroke="#d93025" stroke-width="2" stroke-dasharray="6 5"/>')
+    for index, (label, name) in enumerate(labels):
+        y = top + index * row
+        record = cells[name]
+        low, high = record["outer_envelope"]
+        estimate = record["estimate"]
+        color = "#1769aa" if "0p6b" in name else "#7b1fa2"
+        parts.append(f'<text x="20" y="{y + 5}" class="label">{label}</text>')
+        parts.append(f'<line x1="{x(low):.1f}" y1="{y}" x2="{x(high):.1f}" y2="{y}" stroke="{color}" stroke-width="4"/>')
+        for endpoint in (low, high):
+            parts.append(f'<line x1="{x(endpoint):.1f}" y1="{y - 7}" x2="{x(endpoint):.1f}" y2="{y + 7}" stroke="{color}" stroke-width="2"/>')
+        parts.append(f'<circle cx="{x(estimate):.1f}" cy="{y}" r="7" fill="{color}"/>')
+    parts.append(f'<text x="{x(0.2) + 6:.1f}" y="{height - 49}" class="axis" fill="#d93025">registered materiality threshold</text>')
+    parts.append("</svg>")
+    return "\n".join(parts) + "\n"
+
+
+def interactions(synthesis: dict[str, object]) -> str:
+    items = [("GSM8K - OpenMath", "gsm8k_minus_openmath"), ("GSM8K - NuminaMath", "gsm8k_minus_numinamath")]
+    left, right = 220, 850
+    x_min, x_max = -0.16, 0.04
+    x = lambda value: left + (value - x_min) / (x_max - x_min) * (right - left)
+    parts = [
+        '<svg xmlns="http://www.w3.org/2000/svg" width="900" height="220" viewBox="0 0 900 220">',
+        '<rect width="100%" height="100%" fill="white"/>',
+        '<style>text{font-family:Helvetica,Arial,sans-serif;fill:#202124}.label{font-size:15px}.axis{font-size:13px}</style>',
+    ]
+    for tick in (-0.15, -0.10, -0.05, 0.0):
+        parts.append(f'<line x1="{x(tick):.1f}" y1="15" x2="{x(tick):.1f}" y2="180" stroke="#e5e7eb"/>')
+        parts.append(f'<text x="{x(tick):.1f}" y="205" text-anchor="middle" class="axis">{tick:.2f}</text>')
+    parts.append(f'<line x1="{x(0.0):.1f}" y1="15" x2="{x(0.0):.1f}" y2="180" stroke="#202124" stroke-width="2"/>')
+    for index, (label, key) in enumerate(items):
+        y = 60 + index * 80
+        record = synthesis["reference_interactions"][key]
+        low, high = record["simultaneous_bootstrap_interval"]
+        estimate = record["estimate"]
+        parts.append(f'<text x="20" y="{y + 5}" class="label">{label}</text>')
+        parts.append(f'<line x1="{x(low):.1f}" y1="{y}" x2="{x(high):.1f}" y2="{y}" stroke="#00897b" stroke-width="4"/>')
+        for endpoint in (low, high):
+            parts.append(f'<line x1="{x(endpoint):.1f}" y1="{y - 7}" x2="{x(endpoint):.1f}" y2="{y + 7}" stroke="#00897b" stroke-width="2"/>')
+        parts.append(f'<circle cx="{x(estimate):.1f}" cy="{y}" r="7" fill="#00695c"/>')
+    parts.append("</svg>")
+    return "\n".join(parts) + "\n"
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--verify", action="store_true")
+    args = parser.parse_args()
+    result = json.loads((ROOT / "data/published_results.json").read_bytes())
+    outputs = {
+        ROOT / "figures/cell_forest_plot.svg": forest(result["cell_results"]),
+        ROOT / "figures/interaction_plot.svg": interactions(result["dependency_aware_synthesis"]),
+    }
+    for path, content in outputs.items():
+        if args.verify:
+            assert path.read_text() == content
+        else:
+            path.parent.mkdir(exist_ok=True)
+            path.write_text(content)
+    print("FIGURE_RENDER_VERIFY_PASS" if args.verify else "FIGURE_RENDER_PASS")
+
+
+if __name__ == "__main__":
+    main()
+'''
+
+TEST = r'''import json
+import subprocess
+import sys
+import unittest
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+class ReviewerArtifactTest(unittest.TestCase):
+    def test_offline_replay(self) -> None:
+        result = subprocess.run(
+            [sys.executable, "analysis/replay.py", "--verify"],
+            cwd=ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        output = json.loads(result.stdout)
+        self.assertEqual(output["status"], "PASS")
+        self.assertEqual(output["published"]["full_window_assignments"], 49_153)
+        self.assertEqual(output["synthetic"]["row_count"], 192)
+
+    def test_figure_reproduction(self) -> None:
+        result = subprocess.run(
+            [sys.executable, "analysis/render_figures.py", "--verify"],
+            cwd=ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        self.assertIn("FIGURE_RENDER_VERIFY_PASS", result.stdout)
+
+
+if __name__ == "__main__":
+    unittest.main()
+'''
+
+
+def sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def write_json(path: Path, value: object) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n")
+
+
+def public_protocol(raw: dict[str, object], artifact_id: str) -> dict[str, object]:
+    result = {
+        "artifact_id": artifact_id,
+        "analysis": raw["analysis"],
+        "arms": raw["arms"],
+        "instrumentation": raw["instrumentation"],
+        "protocol": raw["protocol"],
+        "windows": raw["windows"],
+    }
+    if artifact_id in {"A5", "A6"}:
+        name = "qwen3_0p6b_numinamath" if artifact_id == "A5" else "qwen3_1p7b_numinamath"
+        result["assignment"] = {
+            "domain": raw["prospective_cells"][name]["assignment_domain"],
+            "seed": raw["prospective_cells"][name]["assignment_seed"],
+        }
+        result["runtime"] = raw["runtime_each_cell"]
+        result["model"] = raw["prospective_cells"][name]["model"]
+        result["workload"] = {
+            key: raw["workload"][key]
+            for key in ("huggingface_path", "repository_revision", "expected_source_rows", "expected_filtered_rows", "expected_unique_filtered_problems", "filter")
+        }
+    else:
+        result["assignment"] = raw["assignment"]
+        result["runtime"] = raw["runtime"]
+        if "workload" in raw:
+            result["workload"] = raw["workload"]
+        else:
+            result["workload"] = {"name": "OpenMath"}
+    return result
+
+
+def synthetic_rows() -> list[dict[str, object]]:
+    counts = {
+        "qwen3_0p6b_openmath": ([0, 1, 0, 1], [3, 4, 4, 3]),
+        "qwen3_1p7b_openmath": ([0, 1, 1, 0], [2, 3, 3, 2]),
+        "qwen3_0p6b_gsm8k": ([0, 0, 1, 1], [2, 4, 4, 4]),
+        "qwen3_1p7b_gsm8k": ([0, 1, 0, 1], [0, 3, 1, 2]),
+        "qwen3_0p6b_numinamath": ([1, 0, 1, 0], [4, 2, 4, 4]),
+        "qwen3_1p7b_numinamath": ([1, 0, 0, 1], [3, 1, 3, 3]),
+    }
+    rows = []
+    for cell, (control, d5) in counts.items():
+        for version in range(4):
+            for arm, lost_count in (("control", control[version]), ("d5", d5[version])):
+                for sibling in range(4):
+                    rows.append({
+                        "D": int(sibling < lost_count),
+                        "Q": 1.0,
+                        "arm": arm,
+                        "cell": cell,
+                        "start_version": version,
+                        "synthetic": True,
+                    })
+    return rows
+
+
+def create_archive(root: Path, archive: Path) -> None:
+    archive.parent.mkdir(parents=True, exist_ok=True)
+    with archive.open("wb") as raw:
+        with gzip.GzipFile(filename="", mode="wb", fileobj=raw, mtime=0) as zipped:
+            with tarfile.open(fileobj=zipped, mode="w") as tar:
+                for path in sorted(root.rglob("*")):
+                    if not path.is_file():
+                        continue
+                    info = tar.gettarinfo(str(path), arcname=f"m4-reviewer-artifact/{path.relative_to(root)}")
+                    info.uid = info.gid = 0
+                    info.uname = info.gname = ""
+                    info.mtime = 0
+                    with path.open("rb") as handle:
+                        tar.addfile(info, handle)
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--archive", type=Path, required=True)
+    args = parser.parse_args()
+    output = args.output.resolve()
+    if output.exists():
+        raise SystemExit(f"refusing to overwrite existing output: {output}")
+
+    (output / "analysis").mkdir(parents=True)
+    (output / "data").mkdir()
+    (output / "docs").mkdir()
+    (output / "figures").mkdir()
+    (output / "protocols").mkdir()
+    (output / "synthetic").mkdir()
+    (output / "tests").mkdir()
+    (output / "README.md").write_text(README)
+    (output / "analysis/replay.py").write_text(REPLAY)
+    (output / "analysis/render_figures.py").write_text(FIGURES)
+    (output / "tests/test_replay.py").write_text(TEST)
+
+    published = json.loads((HERE / "six_cell_synthesis.json").read_bytes())
+    evidence = published.pop("evidence")
+    published.pop("input_records")
+    published["evidence_commitments"] = {
+        CELL_IDS[name]: {
+            "cell": name,
+            "lifecycle_sha256": item["lifecycle_sha256"],
+            "opportunity_sha256": item["opportunity_sha256"],
+            "protocol_sha256": item["protocol_sha256"],
+        }
+        for name, item in evidence.items()
+    }
+    write_json(output / "data/published_results.json", published)
+    write_json(output / "data/robustness.json", json.loads((HERE / "robustness_results.json").read_bytes()))
+    cadence = json.loads((HERE / "cadence_results.json").read_bytes())
+    for item in cadence["cells"].values():
+        item.pop("lifecycle_path")
+    write_json(output / "data/cadence.json", cadence)
+    subprocess.run(
+        [sys.executable, str(output / "analysis/render_figures.py")],
+        cwd=output,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+
+    full_counts = {"A1": 7199, "A2": 8673, "A3": 9573, "A4": 9429, "A5": 7229, "A6": 7050}
+    provenance = {
+        "schema": "m4-anonymous-provenance-v1",
+        "access_scope": "compact_records_only_external_raw_archives_not_included",
+        "acquisitions": {
+            artifact_id: {
+                "cell": next(name for name, value in CELL_IDS.items() if value == artifact_id),
+                "full_window_assignments": full_counts[artifact_id],
+                "protocol_sha256": PROTOCOL_HASHES[artifact_id],
+                "terminal_artifact_sha256": EXTERNAL_ARTIFACTS[artifact_id][0],
+                "terminal_artifact_bytes": EXTERNAL_ARTIFACTS[artifact_id][1],
+            }
+            for artifact_id in sorted(EXTERNAL_ARTIFACTS)
+        },
+    }
+    write_json(output / "data/provenance.json", provenance)
+
+    protocols = {}
+    for artifact_id, source in PROTOCOL_SOURCES.items():
+        assert sha256(source) == PROTOCOL_HASHES[artifact_id]
+        protocols[artifact_id] = public_protocol(json.loads(source.read_bytes()), artifact_id)
+    write_json(output / "protocols/public_protocols.json", {"schema": "m4-public-protocol-projections-v1", "protocols": protocols})
+
+    claim_ledger = (HERE / "claim_ledger.md").read_text()
+    claim_ledger = claim_ledger.replace(
+        "`evidence_map.json`; implementation commits `c0d12e61f`, `5940059c8`, `766351123`, `4e6f6a993`, `9cc2e9c6e`",
+        "`protocols/public_protocols.json`; `data/provenance.json`",
+    ).replace(
+        "Tested scope is Qwen3-0.6B/1.7B, GRPO, two H100s, EOS, and three math workloads",
+        "Tested scope is Qwen3-0.6B/1.7B, GRPO, two H100s in one accelerator environment, and three math workloads",
+    )
+    (output / "docs/claim_ledger.md").write_text(claim_ledger)
+    (output / "docs/primary_table.md").write_bytes((HERE / "primary_table.md").read_bytes())
+    robustness_text = (HERE / "robustness.md").read_text()
+    robustness_text = robustness_text.replace(
+        "`robustness_results.json`; its SHA-256 is\n`4f12bafe8cca627a48b9ee21f9fb0d05a3964d2004994a5d28568f8d7c3b168a`",
+        f"`data/robustness.json`; its SHA-256 is\n`{sha256(output / 'data/robustness.json')}`",
+    )
+    (output / "docs/robustness.md").write_text(robustness_text)
+    rows = synthetic_rows()
+    (output / "synthetic/miniature_ledger.jsonl").write_text("".join(json.dumps(row, sort_keys=True) + "\n" for row in rows))
+
+    # Compute expected synthetic output by importing the just-written replay module.
+    namespace = {"__file__": str(output / "analysis/replay.py"), "__name__": "artifact_replay_build"}
+    exec(compile(REPLAY, str(output / "analysis/replay.py"), "exec"), namespace)
+    original_load = namespace["load"]
+    namespace["load"] = lambda path: {} if path.name == "expected_summary.json" else original_load(path)
+    # Temporarily duplicate the replay calculation without its final equality check.
+    estimates, effects = namespace["cell_estimates"](rows)
+    shifts = {name: namespace["circular_bootstrap"](values, 1_000, 7100 + index) for index, (name, values) in enumerate(sorted(effects.items()))}
+    scale = {workload: estimates[f"qwen3_1p7b_{workload}"] - estimates[f"qwen3_0p6b_{workload}"] for workload in ("openmath", "gsm8k", "numinamath")}
+    paired = []
+    for index in range(1_000):
+        gsm = shifts["qwen3_1p7b_gsm8k"][index] - shifts["qwen3_0p6b_gsm8k"][index]
+        openmath = shifts["qwen3_1p7b_openmath"][index] - shifts["qwen3_0p6b_openmath"][index]
+        numina = shifts["qwen3_1p7b_numinamath"][index] - shifts["qwen3_0p6b_numinamath"][index]
+        paired.append((gsm - openmath, gsm - numina))
+    mean_x = sum(x for x, _ in paired) / len(paired)
+    mean_y = sum(y for _, y in paired) / len(paired)
+    covariance = sum((x - mean_x) * (y - mean_y) for x, y in paired) / (len(paired) - 1)
+    sd_x = (sum((x - mean_x) ** 2 for x, _ in paired) / (len(paired) - 1)) ** 0.5
+    sd_y = (sum((y - mean_y) ** 2 for _, y in paired) / (len(paired) - 1)) ** 0.5
+    expected = {
+        "row_count": len(rows),
+        "cell_estimates": estimates,
+        "cell_hac_se": {name: namespace["hac_se"](values) for name, values in effects.items()},
+        "model_scale_effects": scale,
+        "reference_interactions": {"gsm8k_minus_openmath": scale["gsm8k"] - scale["openmath"], "gsm8k_minus_numinamath": scale["gsm8k"] - scale["numinamath"]},
+        "shared_reference_bootstrap_correlation": covariance / (sd_x * sd_y),
+    }
+    write_json(output / "synthetic/expected_summary.json", expected)
+
+    files = []
+    for path in sorted(output.rglob("*")):
+        if path.is_file() and path.name != "MANIFEST.json":
+            files.append({"path": str(path.relative_to(output)), "bytes": path.stat().st_size, "sha256": sha256(path)})
+    write_json(output / "MANIFEST.json", {"schema": "m4-reviewer-artifact-manifest-v1", "files": files, "external_artifacts": provenance["acquisitions"]})
+    create_archive(output, args.archive.resolve())
+    receipt = {
+        "archive": args.archive.name,
+        "archive_bytes": args.archive.stat().st_size,
+        "archive_sha256": sha256(args.archive),
+        "manifest_sha256": sha256(output / "MANIFEST.json"),
+    }
+    write_json(args.archive.with_suffix(args.archive.suffix + ".json"), receipt)
+    print(json.dumps(receipt, indent=2, sort_keys=True))
+
+
+if __name__ == "__main__":
+    main()

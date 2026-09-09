@@ -1,0 +1,48 @@
+{
+  "access_scope": "compact_records_only_external_raw_archives_not_included",
+  "acquisitions": {
+    "A1": {
+      "cell": "qwen3_0p6b_openmath",
+      "full_window_assignments": 7199,
+      "protocol_sha256": "6631a4ca8cfc6010150d1c135a1f5821c717f0dea189a3309c5f0f58f9b0709c",
+      "terminal_artifact_bytes": 54950561,
+      "terminal_artifact_sha256": "07cddc489ea20055161f9c435d44d0a52b91113fda9eac16472bdb531dc6ffb6"
+    },
+    "A2": {
+      "cell": "qwen3_1p7b_openmath",
+      "full_window_assignments": 8673,
+      "protocol_sha256": "eef87a5e26f2cc1a39428628b0c28288b17a297f49d449a80ed9699f9ee17cb7",
+      "terminal_artifact_bytes": 131003667,
+      "terminal_artifact_sha256": "022e4d18f2eedd2339c3c7eb7decf6e21f929761de46bcd0f85a73f0a2700ac7"
+    },
+    "A3": {
+      "cell": "qwen3_0p6b_gsm8k",
+      "full_window_assignments": 9573,
+      "protocol_sha256": "b6682795071d12a5d6b3eddcdf73536e045949f08ce881885dd330fba9885db6",
+      "terminal_artifact_bytes": 137287850,
+      "terminal_artifact_sha256": "6c2ebeb2b2bf67df16be815f372ea87cde8eeff4d23e63291d8a98ac94659075"
+    },
+    "A4": {
+      "cell": "qwen3_1p7b_gsm8k",
+      "full_window_assignments": 9429,
+      "protocol_sha256": "3413bde3718563157cee5d504f174710f65406dd7f1effd8ad2755a03d73b69e",
+      "terminal_artifact_bytes": 134908947,
+      "terminal_artifact_sha256": "966dfbf60548e5fd791d59d3baa2bc3b3a1b8d6b0b1a15de1ef510fc618720ca"
+    },
+    "A5": {
+      "cell": "qwen3_0p6b_numinamath",
+      "full_window_assignments": 7229,
+      "protocol_sha256": "bbe2c07211952e3e46d4511524f68e864606a7c63f271ae8e064263044dad0c8",
+      "terminal_artifact_bytes": 129888875,
+      "terminal_artifact_sha256": "ad7c556f435b0f9e30a65c201680bf6dab74e077af16e38f299bfc04af969c35"
+    },
+    "A6": {
+      "cell": "qwen3_1p7b_numinamath",
+      "full_window_assignments": 7050,
+      "protocol_sha256": "bbe2c07211952e3e46d4511524f68e864606a7c63f271ae8e064263044dad0c8",
+      "terminal_artifact_bytes": 128543493,
+      "terminal_artifact_sha256": "6aa61968730833387a15b45a6d0f2be541c6f84b6d4f16a29e7dbf583981fc9b"
+    }
+  },
+  "schema": "m4-anonymous-provenance-v1"
+}

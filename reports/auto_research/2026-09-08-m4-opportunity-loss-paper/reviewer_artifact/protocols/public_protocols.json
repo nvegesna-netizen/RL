@@ -1,0 +1,823 @@
+{
+  "protocols": {
+    "A1": {
+      "analysis": {
+        "inference": {
+          "bootstrap_draws": 20000,
+          "bootstrap_seed": 20260903,
+          "circular_block_size_start_versions": 8,
+          "confidence": 0.95,
+          "cross_fit_folds": 8,
+          "endpoint_interval": "outer_envelope_of_hac_and_bootstrap",
+          "hac_bartlett_lag_start_versions": 4,
+          "material_alpha": 0.05,
+          "material_p_value": "max_hac_normal_and_centered_bootstrap_lower_endpoint",
+          "sampling_unit": "assignment_clustered_by_start_weight_version"
+        },
+        "material_threshold_delta_l": 0.2,
+        "missingness": {
+          "maximum_terminal_missing_fraction_each_primary_arm": 0.01,
+          "missing_opportunity": "RED",
+          "missing_terminal_lower_qd": 0,
+          "missing_terminal_upper_qd": "observed_Q",
+          "terminal_bound_required_for_material_claim": "lower_gt_material_threshold",
+          "terminal_bound_required_for_nonmaterial_claim": "upper_lte_material_threshold"
+        },
+        "primary_estimand": "(mean_d5(Q_times_D)-mean_control(Q_times_D))/pooled_pre_delay_mean_Q",
+        "primary_estimator": "cross_fitted_generalized_regression_q_and_zero_indicator_v1",
+        "primary_pair": [
+          "d5",
+          "control"
+        ],
+        "supporting_estimator": "original_unadjusted_registered_estimator_v1"
+      },
+      "arms": [
+        {
+          "delay_seconds": 0,
+          "label": "control",
+          "mass": 1
+        },
+        {
+          "delay_seconds": 5,
+          "label": "d5",
+          "mass": 1
+        }
+      ],
+      "artifact_id": "A1",
+      "assignment": {
+        "algorithm": "sha256-rejection-sampling",
+        "domain": "m4-opportunity-loss-followup-v1",
+        "rerandomization": false,
+        "seed": 20260905
+      },
+      "instrumentation": {
+        "arm_dependent_pre_opportunity_branch_forbidden": true,
+        "common_in_all_arms": true,
+        "corrected_observer_duty_portability_target": 0.01,
+        "duty_artifact": {
+          "active_window_end": "after_pumps_and_residual_cleanup_stop",
+          "active_window_start": "after_initial_weight_sync_before_pumps",
+          "clock": "perf_counter_ns",
+          "clock_overhead_correction": "subtract_minimum_of_64_paired_reads_per_observation",
+          "measurement_scope": "complete_pre_delay_prepare_observer_callback",
+          "observation_count_must_equal": "all_opportunity_group_records",
+          "output_path_must_be_distinct": true,
+          "schema_version": 1
+        },
+        "duty_role": "external_validity_qualifier_not_causal_correction",
+        "loss_replay": {
+          "disable_ppo_ratio": false,
+          "positive_example_nll_weight": 0.0,
+          "sequence_level_importance_ratios": false,
+          "token_level_loss": true,
+          "use_cispo": false
+        },
+        "off_on_abba": false,
+        "opportunity_coverage_required": 1.0,
+        "opportunity_replay": {
+          "allowed_reward_values": [
+            0,
+            1
+          ],
+          "baseline_algorithm": "nemo_rl_grpo_v1",
+          "comparison": "ieee754_binary32_bit_exact",
+          "estimator": "GRPOAdvantageEstimator",
+          "normalization_epsilon": 1e-06,
+          "normalize_rewards": true,
+          "reduction_dtype": "float32",
+          "reward_dtype": "float32",
+          "sibling_order": "ascending_sibling_index",
+          "use_leave_one_out_baseline": true
+        },
+        "terminal_semantics": {
+          "cancelled_bounded_shutdown_failed_stale": "D=1",
+          "completed_learner_step": "D=0",
+          "missing_removal_or_selected_without_completed_step": "D=null",
+          "partial_split_unknown_or_contradictory": "RED"
+        }
+      },
+      "protocol": "m4-opportunity-loss-adjusted-followup-v1",
+      "runtime": {
+        "buffer_capacity": 64,
+        "generations_per_prompt": 8,
+        "inflight_prompts": 16,
+        "max_staleness_versions": 1,
+        "model": "Qwen3-0.6B",
+        "sampler": "windowed_fifo",
+        "train_global_batch_size": 32,
+        "trainer_steps": 448
+      },
+      "windows": {
+        "burn_in_start_versions": [
+          0,
+          7
+        ],
+        "primary_start_versions": [
+          8,
+          407
+        ],
+        "terminal_guard_start_versions": [
+          408,
+          447
+        ]
+      },
+      "workload": {
+        "name": "OpenMath"
+      }
+    },
+    "A2": {
+      "analysis": {
+        "inference": {
+          "bootstrap_draws": 20000,
+          "bootstrap_seed": 20260908,
+          "circular_block_size_start_versions": 8,
+          "confidence": 0.95,
+          "cross_fit_folds": 8,
+          "endpoint_interval": "outer_envelope_of_hac_and_bootstrap",
+          "hac_bartlett_lag_start_versions": 4,
+          "material_alpha": 0.05,
+          "material_p_value": "max_hac_normal_and_centered_bootstrap_lower_endpoint",
+          "sampling_unit": "assignment_clustered_by_start_weight_version"
+        },
+        "material_threshold_delta_l": 0.2,
+        "missingness": {
+          "maximum_terminal_missing_fraction_each_primary_arm": 0.01,
+          "missing_opportunity": "RED",
+          "missing_terminal_lower_qd": 0,
+          "missing_terminal_upper_qd": "observed_Q",
+          "terminal_bound_required_for_material_claim": "lower_gt_material_threshold",
+          "terminal_bound_required_for_nonmaterial_claim": "upper_lte_material_threshold"
+        },
+        "primary_estimand": "(mean_d5(Q_times_D)-mean_control(Q_times_D))/pooled_pre_delay_mean_Q",
+        "primary_estimator": "cross_fitted_generalized_regression_q_and_zero_indicator_v1",
+        "primary_pair": [
+          "d5",
+          "control"
+        ],
+        "supporting_estimator": "original_unadjusted_registered_estimator_v1"
+      },
+      "arms": [
+        {
+          "delay_seconds": 0,
+          "label": "control",
+          "mass": 1
+        },
+        {
+          "delay_seconds": 5,
+          "label": "d5",
+          "mass": 1
+        }
+      ],
+      "artifact_id": "A2",
+      "assignment": {
+        "algorithm": "sha256-rejection-sampling",
+        "domain": "m4-opportunity-loss-qwen3-1p7b-transport-v1",
+        "rerandomization": false,
+        "seed": 20260907
+      },
+      "instrumentation": {
+        "arm_dependent_pre_opportunity_branch_forbidden": true,
+        "common_in_all_arms": true,
+        "corrected_observer_duty_portability_target": 0.01,
+        "duty_artifact": {
+          "active_window_end": "after_pumps_and_residual_cleanup_stop",
+          "active_window_start": "after_initial_weight_sync_before_pumps",
+          "clock": "perf_counter_ns",
+          "clock_overhead_correction": "subtract_minimum_of_64_paired_reads_per_observation",
+          "measurement_scope": "complete_pre_delay_prepare_observer_callback",
+          "observation_count_must_equal": "all_opportunity_group_records",
+          "output_path_must_be_distinct": true,
+          "schema_version": 1
+        },
+        "duty_role": "external_validity_qualifier_not_causal_correction",
+        "loss_replay": {
+          "disable_ppo_ratio": false,
+          "positive_example_nll_weight": 0.0,
+          "sequence_level_importance_ratios": false,
+          "token_level_loss": true,
+          "use_cispo": false
+        },
+        "off_on_abba": false,
+        "opportunity_coverage_required": 1.0,
+        "opportunity_replay": {
+          "allowed_reward_values": [
+            0,
+            1
+          ],
+          "baseline_algorithm": "nemo_rl_grpo_v1",
+          "comparison": "ieee754_binary32_bit_exact",
+          "estimator": "GRPOAdvantageEstimator",
+          "normalization_epsilon": 1e-06,
+          "normalize_rewards": true,
+          "reduction_dtype": "float32",
+          "reward_dtype": "float32",
+          "sibling_order": "ascending_sibling_index",
+          "use_leave_one_out_baseline": true
+        },
+        "terminal_semantics": {
+          "cancelled_bounded_shutdown_failed_stale": "D=1",
+          "completed_learner_step": "D=0",
+          "missing_removal_or_selected_without_completed_step": "D=null",
+          "partial_split_unknown_or_contradictory": "RED"
+        }
+      },
+      "protocol": "m4-opportunity-loss-qwen3-1p7b-transport-v1",
+      "runtime": {
+        "buffer_capacity": 64,
+        "generations_per_prompt": 8,
+        "inflight_prompts": 16,
+        "max_staleness_versions": 1,
+        "model": "Qwen3-1.7B",
+        "sampler": "windowed_fifo",
+        "train_global_batch_size": 32,
+        "trainer_steps": 558
+      },
+      "windows": {
+        "burn_in_start_versions": [
+          0,
+          7
+        ],
+        "primary_start_versions": [
+          8,
+          507
+        ],
+        "terminal_guard_start_versions": [
+          508,
+          557
+        ]
+      },
+      "workload": {
+        "name": "OpenMath"
+      }
+    },
+    "A3": {
+      "analysis": {
+        "inference": {
+          "bootstrap_draws": 20000,
+          "bootstrap_seed": 20260916,
+          "circular_block_size_start_versions": 8,
+          "confidence": 0.95,
+          "cross_fit_folds": 8,
+          "endpoint_interval": "outer_envelope_of_hac_and_bootstrap",
+          "hac_bartlett_lag_start_versions": 4,
+          "material_alpha": 0.05,
+          "material_p_value": "max_hac_normal_and_centered_bootstrap_lower_endpoint",
+          "sampling_unit": "assignment_clustered_by_start_weight_version"
+        },
+        "material_threshold_delta_l": 0.2,
+        "missingness": {
+          "maximum_terminal_missing_fraction_each_primary_arm": 0.01,
+          "missing_opportunity": "RED",
+          "missing_terminal_lower_qd": 0,
+          "missing_terminal_upper_qd": "observed_Q",
+          "terminal_bound_required_for_material_claim": "lower_gt_material_threshold",
+          "terminal_bound_required_for_nonmaterial_claim": "upper_lte_material_threshold"
+        },
+        "primary_estimand": "(mean_d5(Q_times_D)-mean_control(Q_times_D))/pooled_pre_delay_mean_Q",
+        "primary_estimator": "cross_fitted_generalized_regression_q_and_zero_indicator_v1",
+        "primary_pair": [
+          "d5",
+          "control"
+        ],
+        "supporting_estimator": "original_unadjusted_registered_estimator_v1"
+      },
+      "arms": [
+        {
+          "delay_seconds": 0,
+          "label": "control",
+          "mass": 1
+        },
+        {
+          "delay_seconds": 5,
+          "label": "d5",
+          "mass": 1
+        }
+      ],
+      "artifact_id": "A3",
+      "assignment": {
+        "algorithm": "sha256-rejection-sampling",
+        "domain": "m4-opportunity-loss-qwen3-0p6b-gsm8k-grid-v1",
+        "rerandomization": false,
+        "seed": 20260915
+      },
+      "instrumentation": {
+        "arm_dependent_pre_opportunity_branch_forbidden": true,
+        "common_in_all_arms": true,
+        "corrected_observer_duty_portability_target": 0.01,
+        "duty_artifact": {
+          "active_window_end": "after_pumps_and_residual_cleanup_stop",
+          "active_window_start": "after_initial_weight_sync_before_pumps",
+          "clock": "perf_counter_ns",
+          "clock_overhead_correction": "subtract_minimum_of_64_paired_reads_per_observation",
+          "measurement_scope": "complete_pre_delay_prepare_observer_callback",
+          "observation_count_must_equal": "all_opportunity_group_records",
+          "output_path_must_be_distinct": true,
+          "schema_version": 1
+        },
+        "duty_role": "external_validity_qualifier_not_causal_correction",
+        "loss_replay": {
+          "disable_ppo_ratio": false,
+          "positive_example_nll_weight": 0.0,
+          "sequence_level_importance_ratios": false,
+          "token_level_loss": true,
+          "use_cispo": false
+        },
+        "off_on_abba": false,
+        "opportunity_coverage_required": 1.0,
+        "opportunity_replay": {
+          "allowed_reward_values": [
+            0,
+            1
+          ],
+          "baseline_algorithm": "nemo_rl_grpo_v1",
+          "comparison": "ieee754_binary32_bit_exact",
+          "estimator": "GRPOAdvantageEstimator",
+          "normalization_epsilon": 1e-06,
+          "normalize_rewards": true,
+          "reduction_dtype": "float32",
+          "reward_dtype": "float32",
+          "sibling_order": "ascending_sibling_index",
+          "use_leave_one_out_baseline": true
+        },
+        "terminal_semantics": {
+          "cancelled_bounded_shutdown_failed_stale": "D=1",
+          "completed_learner_step": "D=0",
+          "missing_removal_or_selected_without_completed_step": "D=null",
+          "partial_split_unknown_or_contradictory": "RED"
+        }
+      },
+      "protocol": "m4-opportunity-loss-qwen3-0p6b-gsm8k-grid-completion-v1",
+      "runtime": {
+        "buffer_capacity": 64,
+        "generations_per_prompt": 8,
+        "inflight_prompts": 16,
+        "max_num_epochs": 2,
+        "max_staleness_versions": 1,
+        "model": "Qwen3-0.6B",
+        "prompts_per_step": 4,
+        "sampler": "windowed_fifo",
+        "train_global_batch_size": 32,
+        "trainer_steps": 558
+      },
+      "windows": {
+        "burn_in_start_versions": [
+          0,
+          7
+        ],
+        "primary_start_versions": [
+          8,
+          507
+        ],
+        "terminal_guard_start_versions": [
+          508,
+          557
+        ]
+      },
+      "workload": {
+        "dataset_name": "gsm8k",
+        "extract_answer": true,
+        "huggingface_path": "openai/gsm8k",
+        "processor": "math_hf_data_processor",
+        "prompt_file": "examples/prompts/cot.txt",
+        "reward_verifier": "hf_math_verify",
+        "split": "train",
+        "split_seed": null,
+        "split_validation_size": 0.0,
+        "subset": "main",
+        "task_name": "gsm8k"
+      }
+    },
+    "A4": {
+      "analysis": {
+        "inference": {
+          "bootstrap_draws": 20000,
+          "bootstrap_seed": 20260914,
+          "circular_block_size_start_versions": 8,
+          "confidence": 0.95,
+          "cross_fit_folds": 8,
+          "endpoint_interval": "outer_envelope_of_hac_and_bootstrap",
+          "hac_bartlett_lag_start_versions": 4,
+          "material_alpha": 0.05,
+          "material_p_value": "max_hac_normal_and_centered_bootstrap_lower_endpoint",
+          "sampling_unit": "assignment_clustered_by_start_weight_version"
+        },
+        "material_threshold_delta_l": 0.2,
+        "missingness": {
+          "maximum_terminal_missing_fraction_each_primary_arm": 0.01,
+          "missing_opportunity": "RED",
+          "missing_terminal_lower_qd": 0,
+          "missing_terminal_upper_qd": "observed_Q",
+          "terminal_bound_required_for_material_claim": "lower_gt_material_threshold",
+          "terminal_bound_required_for_nonmaterial_claim": "upper_lte_material_threshold"
+        },
+        "primary_estimand": "(mean_d5(Q_times_D)-mean_control(Q_times_D))/pooled_pre_delay_mean_Q",
+        "primary_estimator": "cross_fitted_generalized_regression_q_and_zero_indicator_v1",
+        "primary_pair": [
+          "d5",
+          "control"
+        ],
+        "supporting_estimator": "original_unadjusted_registered_estimator_v1"
+      },
+      "arms": [
+        {
+          "delay_seconds": 0,
+          "label": "control",
+          "mass": 1
+        },
+        {
+          "delay_seconds": 5,
+          "label": "d5",
+          "mass": 1
+        }
+      ],
+      "artifact_id": "A4",
+      "assignment": {
+        "algorithm": "sha256-rejection-sampling",
+        "domain": "m4-opportunity-loss-qwen3-1p7b-gsm8k-r2-v1",
+        "rerandomization": false,
+        "seed": 20260913
+      },
+      "instrumentation": {
+        "arm_dependent_pre_opportunity_branch_forbidden": true,
+        "common_in_all_arms": true,
+        "corrected_observer_duty_portability_target": 0.01,
+        "duty_artifact": {
+          "active_window_end": "after_pumps_and_residual_cleanup_stop",
+          "active_window_start": "after_initial_weight_sync_before_pumps",
+          "clock": "perf_counter_ns",
+          "clock_overhead_correction": "subtract_minimum_of_64_paired_reads_per_observation",
+          "measurement_scope": "complete_pre_delay_prepare_observer_callback",
+          "observation_count_must_equal": "all_opportunity_group_records",
+          "output_path_must_be_distinct": true,
+          "schema_version": 1
+        },
+        "duty_role": "external_validity_qualifier_not_causal_correction",
+        "loss_replay": {
+          "disable_ppo_ratio": false,
+          "positive_example_nll_weight": 0.0,
+          "sequence_level_importance_ratios": false,
+          "token_level_loss": true,
+          "use_cispo": false
+        },
+        "off_on_abba": false,
+        "opportunity_coverage_required": 1.0,
+        "opportunity_replay": {
+          "allowed_reward_values": [
+            0,
+            1
+          ],
+          "baseline_algorithm": "nemo_rl_grpo_v1",
+          "comparison": "ieee754_binary32_bit_exact",
+          "estimator": "GRPOAdvantageEstimator",
+          "normalization_epsilon": 1e-06,
+          "normalize_rewards": true,
+          "reduction_dtype": "float32",
+          "reward_dtype": "float32",
+          "sibling_order": "ascending_sibling_index",
+          "use_leave_one_out_baseline": true
+        },
+        "terminal_semantics": {
+          "cancelled_bounded_shutdown_failed_stale": "D=1",
+          "completed_learner_step": "D=0",
+          "missing_removal_or_selected_without_completed_step": "D=null",
+          "partial_split_unknown_or_contradictory": "RED"
+        }
+      },
+      "protocol": "m4-opportunity-loss-qwen3-1p7b-gsm8k-workload-transport-r2-v1",
+      "runtime": {
+        "buffer_capacity": 64,
+        "generations_per_prompt": 8,
+        "inflight_prompts": 16,
+        "max_num_epochs": 2,
+        "max_staleness_versions": 1,
+        "model": "Qwen3-1.7B",
+        "prompts_per_step": 4,
+        "sampler": "windowed_fifo",
+        "train_global_batch_size": 32,
+        "trainer_steps": 558
+      },
+      "windows": {
+        "burn_in_start_versions": [
+          0,
+          7
+        ],
+        "primary_start_versions": [
+          8,
+          507
+        ],
+        "terminal_guard_start_versions": [
+          508,
+          557
+        ]
+      },
+      "workload": {
+        "dataset_name": "gsm8k",
+        "extract_answer": true,
+        "huggingface_path": "openai/gsm8k",
+        "processor": "math_hf_data_processor",
+        "prompt_file": "examples/prompts/cot.txt",
+        "reward_verifier": "hf_math_verify",
+        "split": "train",
+        "split_seed": null,
+        "split_validation_size": 0.0,
+        "subset": "main",
+        "task_name": "gsm8k"
+      }
+    },
+    "A5": {
+      "analysis": {
+        "cell_estimand": "(mean_d5(Q_times_D)-mean_control(Q_times_D))/pooled_pre_delay_mean_Q",
+        "cell_estimator": "cross_fitted_generalized_regression_q_and_zero_indicator_v1",
+        "cell_material_threshold_delta_l": 0.2,
+        "cell_materiality_role": "supporting_cannot_override_interaction",
+        "inference": {
+          "bootstrap_draws_each_cell": 20000,
+          "bootstrap_seeds": {
+            "qwen3_0p6b_gsm8k_historical": 20260920,
+            "qwen3_0p6b_numinamath": 20260926,
+            "qwen3_1p7b_gsm8k_historical": 20260919,
+            "qwen3_1p7b_numinamath": 20260928
+          },
+          "circular_block_size_start_versions": 8,
+          "confidence": 0.95,
+          "cross_fit_folds": 8,
+          "endpoint_interval": "outer_envelope_of_independent_cell_hac_and_block_bootstrap",
+          "hac_bartlett_lag_start_versions": 4,
+          "sampling_unit": "assignment_clustered_by_start_weight_version"
+        },
+        "missingness": {
+          "maximum_terminal_missing_fraction_each_prospective_arm": 0.01,
+          "missing_opportunity": "RED",
+          "missing_terminal_lower_qd": 0,
+          "missing_terminal_upper_qd": "observed_Q",
+          "primary_interaction_requires_complete_common_window_terminal_scoring": true
+        },
+        "primary_decision_rule": {
+          "inconclusive_generalization": "confidence envelope includes zero",
+          "opposite_direction_generalization": "confidence envelope entirely above zero",
+          "same_direction_generalization": "confidence envelope entirely below zero",
+          "unavailable": "either prospective cell lacks complete common-window terminal scoring"
+        },
+        "primary_interaction": "(qwen3_0p6b_numinamath-qwen3_0p6b_gsm8k)-(qwen3_1p7b_numinamath-qwen3_1p7b_gsm8k)",
+        "secondary": "descriptive comparisons to OpenMath and registered cell-level materiality",
+        "supporting_estimator": "original_unadjusted_registered_estimator_v1"
+      },
+      "arms": [
+        {
+          "delay_seconds": 0,
+          "label": "control",
+          "mass": 1
+        },
+        {
+          "delay_seconds": 5,
+          "label": "d5",
+          "mass": 1
+        }
+      ],
+      "artifact_id": "A5",
+      "assignment": {
+        "domain": "m4-opportunity-loss-qwen3-0p6b-numinamath-generalization-v1",
+        "seed": 20260925
+      },
+      "instrumentation": {
+        "arm_dependent_pre_opportunity_branch_forbidden": true,
+        "common_in_all_arms": true,
+        "corrected_observer_duty_portability_target": 0.01,
+        "duty_artifact": {
+          "active_window_end": "after_pumps_and_residual_cleanup_stop",
+          "active_window_start": "after_initial_weight_sync_before_pumps",
+          "clock": "perf_counter_ns",
+          "clock_overhead_correction": "subtract_minimum_of_64_paired_reads_per_observation",
+          "measurement_scope": "complete_pre_delay_prepare_observer_callback",
+          "observation_count_must_equal": "all_opportunity_group_records",
+          "output_path_must_be_distinct": true,
+          "schema_version": 1
+        },
+        "duty_role": "external_validity_qualifier_not_causal_correction",
+        "loss_replay": {
+          "disable_ppo_ratio": false,
+          "positive_example_nll_weight": 0,
+          "sequence_level_importance_ratios": false,
+          "token_level_loss": true,
+          "use_cispo": false
+        },
+        "off_on_abba": false,
+        "opportunity_coverage_required": 1,
+        "opportunity_replay": {
+          "allowed_reward_values": [
+            0,
+            1
+          ],
+          "baseline_algorithm": "nemo_rl_grpo_v1",
+          "comparison": "ieee754_binary32_bit_exact",
+          "estimator": "GRPOAdvantageEstimator",
+          "normalization_epsilon": 1e-06,
+          "normalize_rewards": true,
+          "reduction_dtype": "float32",
+          "reward_dtype": "float32",
+          "sibling_order": "ascending_sibling_index",
+          "use_leave_one_out_baseline": true
+        },
+        "terminal_semantics": {
+          "cancelled_bounded_shutdown_failed_stale": "D=1",
+          "completed_learner_step": "D=0",
+          "missing_removal_or_selected_without_completed_step": "D=null",
+          "partial_split_unknown_or_contradictory": "RED"
+        }
+      },
+      "model": "Qwen/Qwen3-0.6B",
+      "protocol": "m4-opportunity-loss-numinamath-paired-generalization-v2",
+      "runtime": {
+        "buffer_capacity": 64,
+        "generations_per_prompt": 8,
+        "inflight_prompts": 16,
+        "max_num_epochs": 1,
+        "max_staleness_versions": 1,
+        "prompts_per_step": 4,
+        "sampler": "windowed_fifo",
+        "train_global_batch_size": 32,
+        "trainer_steps": 448
+      },
+      "windows": {
+        "burn_in_start_versions": [
+          0,
+          7
+        ],
+        "primary_start_versions": [
+          8,
+          407
+        ],
+        "terminal_guard_start_versions": [
+          408,
+          447
+        ]
+      },
+      "workload": {
+        "expected_filtered_rows": 680786,
+        "expected_source_rows": 896215,
+        "expected_unique_filtered_problems": 680786,
+        "filter": {
+          "answer_nonempty": true,
+          "answer_not_in": [
+            "proof",
+            "notfound"
+          ],
+          "problem_is_valid": "Yes",
+          "problem_nonempty": true,
+          "question_type_not": "proof",
+          "solution_is_valid": "Yes"
+        },
+        "huggingface_path": "AI-MO/NuminaMath-1.5",
+        "repository_revision": "1b05109f9e5c1ad06c0663519502416c30b300f8"
+      }
+    },
+    "A6": {
+      "analysis": {
+        "cell_estimand": "(mean_d5(Q_times_D)-mean_control(Q_times_D))/pooled_pre_delay_mean_Q",
+        "cell_estimator": "cross_fitted_generalized_regression_q_and_zero_indicator_v1",
+        "cell_material_threshold_delta_l": 0.2,
+        "cell_materiality_role": "supporting_cannot_override_interaction",
+        "inference": {
+          "bootstrap_draws_each_cell": 20000,
+          "bootstrap_seeds": {
+            "qwen3_0p6b_gsm8k_historical": 20260920,
+            "qwen3_0p6b_numinamath": 20260926,
+            "qwen3_1p7b_gsm8k_historical": 20260919,
+            "qwen3_1p7b_numinamath": 20260928
+          },
+          "circular_block_size_start_versions": 8,
+          "confidence": 0.95,
+          "cross_fit_folds": 8,
+          "endpoint_interval": "outer_envelope_of_independent_cell_hac_and_block_bootstrap",
+          "hac_bartlett_lag_start_versions": 4,
+          "sampling_unit": "assignment_clustered_by_start_weight_version"
+        },
+        "missingness": {
+          "maximum_terminal_missing_fraction_each_prospective_arm": 0.01,
+          "missing_opportunity": "RED",
+          "missing_terminal_lower_qd": 0,
+          "missing_terminal_upper_qd": "observed_Q",
+          "primary_interaction_requires_complete_common_window_terminal_scoring": true
+        },
+        "primary_decision_rule": {
+          "inconclusive_generalization": "confidence envelope includes zero",
+          "opposite_direction_generalization": "confidence envelope entirely above zero",
+          "same_direction_generalization": "confidence envelope entirely below zero",
+          "unavailable": "either prospective cell lacks complete common-window terminal scoring"
+        },
+        "primary_interaction": "(qwen3_0p6b_numinamath-qwen3_0p6b_gsm8k)-(qwen3_1p7b_numinamath-qwen3_1p7b_gsm8k)",
+        "secondary": "descriptive comparisons to OpenMath and registered cell-level materiality",
+        "supporting_estimator": "original_unadjusted_registered_estimator_v1"
+      },
+      "arms": [
+        {
+          "delay_seconds": 0,
+          "label": "control",
+          "mass": 1
+        },
+        {
+          "delay_seconds": 5,
+          "label": "d5",
+          "mass": 1
+        }
+      ],
+      "artifact_id": "A6",
+      "assignment": {
+        "domain": "m4-opportunity-loss-qwen3-1p7b-numinamath-generalization-v1",
+        "seed": 20260927
+      },
+      "instrumentation": {
+        "arm_dependent_pre_opportunity_branch_forbidden": true,
+        "common_in_all_arms": true,
+        "corrected_observer_duty_portability_target": 0.01,
+        "duty_artifact": {
+          "active_window_end": "after_pumps_and_residual_cleanup_stop",
+          "active_window_start": "after_initial_weight_sync_before_pumps",
+          "clock": "perf_counter_ns",
+          "clock_overhead_correction": "subtract_minimum_of_64_paired_reads_per_observation",
+          "measurement_scope": "complete_pre_delay_prepare_observer_callback",
+          "observation_count_must_equal": "all_opportunity_group_records",
+          "output_path_must_be_distinct": true,
+          "schema_version": 1
+        },
+        "duty_role": "external_validity_qualifier_not_causal_correction",
+        "loss_replay": {
+          "disable_ppo_ratio": false,
+          "positive_example_nll_weight": 0,
+          "sequence_level_importance_ratios": false,
+          "token_level_loss": true,
+          "use_cispo": false
+        },
+        "off_on_abba": false,
+        "opportunity_coverage_required": 1,
+        "opportunity_replay": {
+          "allowed_reward_values": [
+            0,
+            1
+          ],
+          "baseline_algorithm": "nemo_rl_grpo_v1",
+          "comparison": "ieee754_binary32_bit_exact",
+          "estimator": "GRPOAdvantageEstimator",
+          "normalization_epsilon": 1e-06,
+          "normalize_rewards": true,
+          "reduction_dtype": "float32",
+          "reward_dtype": "float32",
+          "sibling_order": "ascending_sibling_index",
+          "use_leave_one_out_baseline": true
+        },
+        "terminal_semantics": {
+          "cancelled_bounded_shutdown_failed_stale": "D=1",
+          "completed_learner_step": "D=0",
+          "missing_removal_or_selected_without_completed_step": "D=null",
+          "partial_split_unknown_or_contradictory": "RED"
+        }
+      },
+      "model": "Qwen/Qwen3-1.7B",
+      "protocol": "m4-opportunity-loss-numinamath-paired-generalization-v2",
+      "runtime": {
+        "buffer_capacity": 64,
+        "generations_per_prompt": 8,
+        "inflight_prompts": 16,
+        "max_num_epochs": 1,
+        "max_staleness_versions": 1,
+        "prompts_per_step": 4,
+        "sampler": "windowed_fifo",
+        "train_global_batch_size": 32,
+        "trainer_steps": 448
+      },
+      "windows": {
+        "burn_in_start_versions": [
+          0,
+          7
+        ],
+        "primary_start_versions": [
+          8,
+          407
+        ],
+        "terminal_guard_start_versions": [
+          408,
+          447
+        ]
+      },
+      "workload": {
+        "expected_filtered_rows": 680786,
+        "expected_source_rows": 896215,
+        "expected_unique_filtered_problems": 680786,
+        "filter": {
+          "answer_nonempty": true,
+          "answer_not_in": [
+            "proof",
+            "notfound"
+          ],
+          "problem_is_valid": "Yes",
+          "problem_nonempty": true,
+          "question_type_not": "proof",
+          "solution_is_valid": "Yes"
+        },
+        "huggingface_path": "AI-MO/NuminaMath-1.5",
+        "repository_revision": "1b05109f9e5c1ad06c0663519502416c30b300f8"
+      }
+    }
+  },
+  "schema": "m4-public-protocol-projections-v1"
+}

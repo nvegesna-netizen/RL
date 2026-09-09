@@ -57,8 +57,8 @@ registered cell decisions.
 - Final author roster, affiliations, acknowledgments, and conflict metadata.
 - Recovery or explicit omission of exact driver, CUDA, PyTorch, vLLM,
   Megatron, CPU, and GPU-memory versions.
-- An official-template PDF build, page-count check, font check, and visual QA.
-- Approval, scrubbing, clean-room testing, and hosting of the anonymous artifact
-  bundle.
+- Type-1-compatible outlining of figure fonts for final conference upload.
+- Approval and hosting of the already scrubbed and locally clean-room-tested
+  anonymous compact artifact; raw-ledger release requires separate review.
 - Original operational rationale for the 0.20 threshold, if a pre-outcome
   design record contains one. Do not invent a retrospective rationale.
