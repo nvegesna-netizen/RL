@@ -238,6 +238,8 @@ project-includes = [
   "nemo_rl/weight_sync/factory.py",
   "nemo_rl/weight_sync/http_weight_synchronizer.py",
   "nemo_rl/weight_sync/interfaces.py",
+  "tools/analyze_dapo_operational_latency_discovery.py",
+  "tools/materialize_dapo_operational_latency_discovery.py",
   "nemo_rl/weight_sync/ipc_weight_synchronizer.py",
   "nemo_rl/weight_sync/vllm_remote_sparse_weight_synchronizer.py",
   "nemo_rl/weight_sync/nccl_reshard_utils.py",

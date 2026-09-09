@@ -203,6 +203,41 @@ STRUCTURED_GENERATION_MATERIALIZED_RECORD_FIELDS: Final[frozenset[str]] = frozen
         "model_revision",
     }
 )
+DAPO_OPERATIONAL_DATASET_ID: Final[str] = "BytedTsinghua-SIA/DAPO-Math-17k"
+DAPO_OPERATIONAL_DATASET_REVISION: Final[str] = (
+    "65877096c24ffa7abc4e4fa5edb95cf3413a5674"
+)
+DAPO_OPERATIONAL_MODEL_REVISION: Final[str] = "b101308fe89651ea5ce025f25317fea6fc07e96e"
+DAPO_OPERATIONAL_PROTOCOL_SHA256: Final[str] = (
+    "24cb689d6f600b64fe9a986c69482d44547ca3fd7e9858730e32d8e12afb77c9"
+)
+DAPO_OPERATIONAL_SELECTION_SEEDS: Final[frozenset[int]] = frozenset(
+    {47001, 47002, 47003}
+)
+DAPO_OPERATIONAL_SOURCE_IDS: Final[tuple[str, str]] = (
+    "dapo_math_a",
+    "dapo_math_b",
+)
+DAPO_OPERATIONAL_MATERIALIZED_RECORD_FIELDS: Final[frozenset[str]] = frozenset(
+    {
+        "input",
+        "output",
+        "source_id",
+        "source_dataset_id",
+        "source_revision",
+        "source_split",
+        "source_dataset_index",
+        "source_prompt_id",
+        "repeated_prompt_cluster_id",
+        "canonical_prompt_sha256",
+        "source_extra_index",
+        "source_duplicate_count",
+        "input_token_count",
+        "input_token_ids_sha256",
+        "selection_seed",
+        "model_revision",
+    }
+)
 
 Sha256Hex: TypeAlias = Annotated[
     str,
@@ -1331,6 +1366,130 @@ def validate_structured_generation_scheduler_crossover_manifest_design(
     )
 
 
+def validate_dapo_operational_latency_discovery_manifest_design(
+    manifest: FixedPoolManifest,
+) -> None:
+    """Enforce one deduplicated DAPO operational-latency discovery pool."""
+    if manifest.order_seed not in DAPO_OPERATIONAL_SELECTION_SEEDS:
+        raise FixedPoolManifestError("DAPO discovery selection seed mismatch")
+    if (
+        manifest.model_revision != DAPO_OPERATIONAL_MODEL_REVISION
+        or manifest.design_protocol_sha256 != DAPO_OPERATIONAL_PROTOCOL_SHA256
+    ):
+        raise FixedPoolManifestError("DAPO discovery model or protocol mismatch")
+    if tuple(source.source_id for source in manifest.sources) != (
+        DAPO_OPERATIONAL_SOURCE_IDS
+    ):
+        raise FixedPoolManifestError("DAPO discovery source order mismatch")
+    expected_identity = (
+        DAPO_OPERATIONAL_DATASET_ID,
+        DAPO_OPERATIONAL_DATASET_REVISION,
+        "train",
+    )
+    if any(
+        (source.dataset_id, source.revision, source.split) != expected_identity
+        for source in manifest.sources
+    ):
+        raise FixedPoolManifestError("DAPO discovery source identity mismatch")
+    expected_files = tuple(
+        f"{source_id}_{manifest.order_seed}.jsonl"
+        for source_id in DAPO_OPERATIONAL_SOURCE_IDS
+    )
+    if tuple(source.materialized_file for source in manifest.sources) != expected_files:
+        raise FixedPoolManifestError("DAPO discovery source filename mismatch")
+    counts = {
+        source_id: sum(item.task_name == source_id for item in manifest.items)
+        for source_id in DAPO_OPERATIONAL_SOURCE_IDS
+    }
+    if len(manifest.items) != 16 or counts != {
+        source_id: 8 for source_id in DAPO_OPERATIONAL_SOURCE_IDS
+    }:
+        raise FixedPoolManifestError("DAPO discovery requires two 8-row shards")
+    if (
+        any(item.source_id != item.task_name for item in manifest.items)
+        or len({item.source_prompt_id for item in manifest.items}) != 16
+        or len({item.repeated_prompt_cluster_id for item in manifest.items}) != 16
+    ):
+        raise FixedPoolManifestError("DAPO discovery prompts must be unique")
+    by_cohort: dict[int, list[FixedPoolManifestItem]] = {}
+    for item in manifest.items:
+        by_cohort.setdefault(item.dispatch_cohort, []).append(item)
+        if not 0 < item.input_token_count <= 2048:
+            raise FixedPoolManifestError("DAPO discovery input-token bound violated")
+    if len(by_cohort) != 4 or any(
+        len(items) != 4
+        or {item.decorrelation_block for item in items} != {f"cohort-{cohort}"}
+        for cohort, items in by_cohort.items()
+    ):
+        raise FixedPoolManifestError("DAPO discovery cohort geometry mismatch")
+
+    source_rows, _ = _load_materialized_source_rows(manifest)
+    if any(
+        len(source_rows[source_id]) != 8 for source_id in DAPO_OPERATIONAL_SOURCE_IDS
+    ):
+        raise FixedPoolManifestError("DAPO discovery shard row count mismatch")
+    canonical_prompts: set[str] = set()
+    for item in manifest.items:
+        record = source_rows[item.source_id][item.materialized_source_row]
+        if set(record) != DAPO_OPERATIONAL_MATERIALIZED_RECORD_FIELDS:
+            raise FixedPoolManifestError(
+                f"DAPO discovery record schema mismatch at {item.ordinal}"
+            )
+        canonical_prompt_sha = _require_record_sha256(
+            record, "canonical_prompt_sha256", ordinal=item.ordinal
+        )
+        prompt = record.get("input")
+        ground_truth = record.get("output")
+        duplicate_count = record.get("source_duplicate_count")
+        source_extra_index = record.get("source_extra_index")
+        if (
+            not isinstance(prompt, str)
+            or not prompt
+            or not isinstance(ground_truth, str)
+            or not ground_truth
+            or not isinstance(duplicate_count, int)
+            or isinstance(duplicate_count, bool)
+            or duplicate_count < 1
+            or not isinstance(source_extra_index, str)
+        ):
+            raise FixedPoolManifestError(
+                f"DAPO discovery record value mismatch at {item.ordinal}"
+            )
+        observed_prompt_sha = hashlib.sha256(
+            json.dumps(
+                [{"role": "user", "content": prompt}],
+                allow_nan=False,
+                separators=(",", ":"),
+                sort_keys=True,
+            ).encode("utf-8")
+        ).hexdigest()
+        expected = {
+            "source_id": item.source_id,
+            "source_dataset_id": DAPO_OPERATIONAL_DATASET_ID,
+            "source_revision": DAPO_OPERATIONAL_DATASET_REVISION,
+            "source_split": "train",
+            "source_dataset_index": item.source_dataset_index,
+            "source_prompt_id": item.source_prompt_id,
+            "repeated_prompt_cluster_id": item.repeated_prompt_cluster_id,
+            "input_token_count": item.input_token_count,
+            "input_token_ids_sha256": item.input_token_ids_sha256,
+            "selection_seed": manifest.order_seed,
+            "model_revision": DAPO_OPERATIONAL_MODEL_REVISION,
+            "canonical_prompt_sha256": observed_prompt_sha,
+        }
+        if any(record.get(key) != value for key, value in expected.items()):
+            raise FixedPoolManifestError(
+                f"DAPO discovery source binding mismatch at {item.ordinal}"
+            )
+        if item.matching_pair_id != f"unique-prompt-{canonical_prompt_sha}":
+            raise FixedPoolManifestError(
+                f"DAPO discovery unique-prompt identity mismatch at {item.ordinal}"
+            )
+        canonical_prompts.add(canonical_prompt_sha)
+    if len(canonical_prompts) != 16:
+        raise FixedPoolManifestError("DAPO discovery canonical prompts are not unique")
+
+
 def _validate_structured_generation_manifest_design(
     manifest: FixedPoolManifest,
     *,
@@ -1506,6 +1665,8 @@ def validate_fixed_pool_manifest_design(
         validate_structured_generation_latency_manifest_design(manifest)
     elif design_id == "structured_generation_scheduler_crossover_v1":
         validate_structured_generation_scheduler_crossover_manifest_design(manifest)
+    elif design_id == "dapo_math_operational_latency_discovery_v1":
+        validate_dapo_operational_latency_discovery_manifest_design(manifest)
     else:
         raise FixedPoolManifestError(f"unsupported fixed-pool design_id: {design_id!r}")
 
