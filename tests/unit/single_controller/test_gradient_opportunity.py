@@ -109,6 +109,48 @@ def test_exact_loss_aligned_float64_opportunity_math() -> None:
     assert [sibling.truncated for sibling in summary.siblings] == [False, True]
 
 
+def test_vectorized_sibling_reductions_match_rowwise_float64_reference() -> None:
+    generator = torch.Generator().manual_seed(20260909)
+    rewards = torch.randn(8, generator=generator, dtype=torch.float32)
+    token_mask = torch.randint(
+        0, 2, (8, 2048), generator=generator, dtype=torch.int64
+    ).float()
+    sample_mask = torch.randint(0, 2, (8,), generator=generator).float()
+    actor_mask = token_mask * sample_mask.unsqueeze(-1)
+
+    class FixedEstimator:
+        def compute_advantage(self, prompt_ids, rewards, mask, **kwargs):
+            del prompt_ids, rewards, kwargs
+            scalars = torch.randn(8, generator=generator, dtype=torch.float32)
+            return scalars.unsqueeze(-1).expand(mask.shape)
+
+    inputs = GRPOOpportunityInputs(
+        prompt_ids=torch.ones((8, 64), dtype=torch.long),
+        rewards=rewards,
+        actor_mask=actor_mask,
+        repeated_batch={"total_reward": rewards},
+        estimator_kwargs={},
+    )
+    summary = compute_grpo_gradient_opportunity(
+        {},
+        group_id="group",
+        sample_ids=tuple(f"group_g{index}" for index in range(8)),
+        start_weight_version=3,
+        truncation=(False,) * 8,
+        estimator=FixedEstimator(),
+        prepare_inputs=lambda _: inputs,
+    )
+
+    aligned_mask = actor_mask[:, 1:].to(dtype=torch.float64)
+    for index, sibling in enumerate(summary.siblings):
+        scalar = sibling.scalar_advantage
+        coefficients = aligned_mask[index] * scalar
+        assert sibling.valid_actor_tokens == int(
+            aligned_mask[index].sum(dtype=torch.float64).item()
+        )
+        assert sibling.opportunity == coefficients.abs().sum(dtype=torch.float64).item()
+
+
 def test_zero_variance_and_zero_valid_siblings_are_retained() -> None:
     zero_variance = _summary(_batch(rewards=torch.tensor([1.0, 1.0])))
     assert zero_variance.opportunity == 0.0

@@ -78,14 +78,20 @@ PINNED_FILES = (
     "nemo_rl/environments/math_environment.py",
     "nemo_rl/experience/rollout_manager.py",
     "tools/m4_llama_family_transport_preflight.py",
+    "tools/neutral_qualification_lifecycle.py",
     "tools/opportunity_loss_adjusted_inference.py",
     "tools/opportunity_loss_family_transport_analysis.py",
     "tools/opportunity_loss_inference.py",
     "tools/opportunity_loss_mechanism.py",
     "tools/opportunity_loss_pipeline.py",
+    "tests/unit/single_controller/test_gradient_opportunity.py",
+    "tests/unit/tools/test_m4_llama_qualification_repair_amendment.py",
     "tests/unit/tools/test_m4_llama_family_transport_preflight.py",
     "tests/unit/tools/test_m4_llama_family_transport_protocol.py",
+    "tests/unit/tools/test_neutral_qualification_lifecycle.py",
     "tests/unit/tools/test_opportunity_loss_family_transport_analysis.py",
+    f"{REPORT_ROOT}/qualification_repair.md",
+    f"{REPORT_ROOT}/qualification_repair_amendment.json",
 )
 
 

@@ -241,10 +241,20 @@ def compute_grpo_gradient_opportunity(
     coefficients = aligned_advantages * aligned_mask
     absolute_coefficients = coefficients.abs()
 
+    # Reduce every sibling in two vectorized operations. This preserves the
+    # existing row-wise float64 arithmetic while avoiding one reduction and one
+    # scalar extraction per sibling for both quantities on the synchronous
+    # pre-release observer path.
+    sibling_valid_actor_tokens = aligned_mask.sum(dim=1, dtype=torch.float64).tolist()
+    sibling_opportunities = absolute_coefficients.sum(
+        dim=1, dtype=torch.float64
+    ).tolist()
+    sibling_rewards = inputs.rewards.tolist()
+    sibling_scalar_advantages = scalar_advantages.tolist()
+
     siblings: list[SiblingOpportunitySummary] = []
     for sibling_index, sample_id in enumerate(sample_ids):
-        sibling_mask = aligned_mask[sibling_index]
-        valid_actor_tokens_float = float(sibling_mask.sum(dtype=torch.float64).item())
+        valid_actor_tokens_float = float(sibling_valid_actor_tokens[sibling_index])
         valid_actor_tokens = int(valid_actor_tokens_float)
         if valid_actor_tokens_float != valid_actor_tokens:
             raise ValueError("actor_mask valid-token count must be integral")
@@ -252,12 +262,10 @@ def compute_grpo_gradient_opportunity(
             SiblingOpportunitySummary(
                 sample_id=sample_id,
                 sibling_index=sibling_index,
-                reward=float(inputs.rewards[sibling_index].item()),
-                scalar_advantage=float(scalar_advantages[sibling_index].item()),
+                reward=float(sibling_rewards[sibling_index]),
+                scalar_advantage=float(sibling_scalar_advantages[sibling_index]),
                 valid_actor_tokens=valid_actor_tokens,
-                opportunity=float(
-                    absolute_coefficients[sibling_index].sum(dtype=torch.float64).item()
-                ),
+                opportunity=float(sibling_opportunities[sibling_index]),
                 truncated=bool(truncation[sibling_index]),
             )
         )

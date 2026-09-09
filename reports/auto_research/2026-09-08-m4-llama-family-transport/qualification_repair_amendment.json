@@ -1,0 +1,63 @@
+{
+  "causal_scope": {
+    "acquisition_allowed": false,
+    "causal_estimate_allowed": false,
+    "qualification_observations_enter_estimators": false
+  },
+  "evidence_trigger": {
+    "gsm8k": {
+      "corrected_observer_duty": 0.012030301258562307,
+      "failed_checks": [
+        "neutral_zero_dose_instrument",
+        "observer_duty"
+      ],
+      "logs_after_artifact_sha256": "06f3fd8030b58f4f4cd66fadb5f0f947b969eaeaaa60dcb47bbc8ff965fe9444",
+      "parent_pipeline_id": 67022988,
+      "terminal_record_sha256": "5b4c66a6b18a2575bcaff9efc812a3dc9eac46a5063c7c0d7e9e74a49ca93fe6"
+    },
+    "openmath": {
+      "corrected_observer_duty": 0.0065044909097423595,
+      "logs_after_artifact_sha256": "e5f43981912190622f4a01d9b13d16f84a8ab3f7af074956e3a12033f397a522",
+      "parent_pipeline_id": 67022991,
+      "qualification_complete": true,
+      "terminal_record_sha256": "62368f99e932e43191cabe93d05167e9bf3386ee08f38912cdd8cf845a1335e3"
+    }
+  },
+  "immutable_predecessor": {
+    "qualification_plan_sha256": "8442be8a93fac7d38d04ab2ba87485be2627702401505008140dfbc5e303d6c8",
+    "source_commit": "b8829d18cacd7ce87d82cafc467215140f40d719"
+  },
+  "lifecycle_repair": {
+    "accepted_terminal_censoring": "A neutral zero-second release may lack release_delay_completed only when the same group has exactly one later removed event with removal_reason=bounded_shutdown.",
+    "all_recorded_release_fields_must_remain": {
+      "release_arm": "neutral",
+      "release_arm_mass": 1,
+      "release_delay_seconds": 0.0,
+      "release_total_mass": 1
+    },
+    "opportunity_group_ids_must_equal_started_group_ids": true,
+    "unexplained_missing_completion_allowed": false
+  },
+  "observer_repair": {
+    "arithmetic_contract": "Preserve the existing row-wise float64 sibling reductions and every serialized summary value.",
+    "implementation": "Vectorize sibling valid-token and absolute-opportunity reductions and replace per-sibling scalar extraction with batched tolist conversion.",
+    "measurement_scope_changed": false,
+    "observer_duty_maximum": 0.01,
+    "threshold_changed": false,
+    "workload_slowdown_as_metric_repair_allowed": false
+  },
+  "requalification": {
+    "automatic_extension": false,
+    "automatic_retry": false,
+    "inspect_only_after_both_terminal": true,
+    "required_cells": [
+      "llama3p2_1b_openmath",
+      "llama3p2_1b_gsm8k"
+    ],
+    "shared_no_training_preflight_required": true,
+    "submission_authorized": false,
+    "trainer_steps_each_cell": 32
+  },
+  "schema": "m4-llama-family-transport-qualification-repair-amendment-v1",
+  "status": "FROZEN_LOCAL_REPAIR_PENDING_NO_TRAINING_PREFLIGHT"
+}
