@@ -11,6 +11,10 @@ _AMENDMENT = (
     _REPO / "reports/auto_research/2026-09-08-m4-llama-family-transport/"
     "qualification_repair_amendment.json"
 )
+_FINAL_AMENDMENT = (
+    _REPO / "reports/auto_research/2026-09-08-m4-llama-family-transport/"
+    "qualification_repair_r2_amendment.json"
+)
 
 
 def test_repair_preserves_threshold_scope_and_historical_results() -> None:
@@ -54,3 +58,28 @@ def test_repair_lifecycle_contract_fails_closed() -> None:
     }
     assert lifecycle["opportunity_group_ids_must_equal_started_group_ids"] is True
     assert lifecycle["unexplained_missing_completion_allowed"] is False
+
+
+def test_final_repair_preserves_scientific_gate_and_freezes_stop_rule() -> None:
+    amendment = json.loads(_FINAL_AMENDMENT.read_bytes())
+
+    assert amendment["status"] == "FROZEN_LOCAL_FINAL_REPAIR_PENDING_IMPLEMENTATION"
+    assert amendment["observer_repair"]["observer_duty_maximum"] == 0.01
+    assert amendment["observer_repair"]["threshold_changed"] is False
+    assert amendment["observer_repair"]["measurement_scope_changed"] is False
+    assert (
+        amendment["observer_repair"]["workload_slowdown_as_metric_repair_allowed"]
+        is False
+    )
+    assert amendment["no_training_preflight"] == {
+        "absolute_mean_callback_ms_maximum": 1.0,
+        "automatic_retry": False,
+        "benchmark_shape": {"sequence_length": 2048, "siblings": 8},
+        "minimum_speedup_fraction_against_expanded_reference": 0.25,
+        "qualification_allowed": False,
+        "submission_attempt_limit": 1,
+        "training_allowed": False,
+    }
+    assert amendment["requalification"]["permanent_close_after_any_failure"] is True
+    assert amendment["authorization"]["final_paired_qualification_authorized"] is False
+    assert amendment["authorization"]["acquisition_authorized"] is False

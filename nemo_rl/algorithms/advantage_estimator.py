@@ -97,6 +97,73 @@ class GRPOAdvantageEstimator:
 
         return advantages.expand(mask.shape)
 
+    def compute_single_prompt_scalar_advantage(
+        self, *, prompt_ids: torch.Tensor, rewards: torch.Tensor
+    ) -> torch.Tensor:
+        """Compute production-equivalent scalar advantages for one prompt group.
+
+        The asynchronous opportunity observer receives one prompt's sibling
+        generations at a time. This path retains the production float32
+        baseline and normalization arithmetic while avoiding generic prompt
+        grouping and expansion across the response sequence.
+
+        Args:
+            prompt_ids: Prompt identifiers with the sibling dimension first.
+            rewards: One reward per sibling.
+
+        Returns:
+            One scalar advantage per sibling.
+
+        Raises:
+            ValueError: If inputs do not describe exactly one prompt group.
+        """
+        if rewards.ndim != 1 or prompt_ids.ndim < 1:
+            raise ValueError("single-prompt GRPO inputs have invalid rank")
+        if prompt_ids.shape[0] != rewards.shape[0] or rewards.shape[0] == 0:
+            raise ValueError("single-prompt GRPO batch dimensions must match")
+        if not bool((prompt_ids == prompt_ids[0]).all().item()):
+            raise ValueError("single-prompt GRPO inputs contain multiple prompts")
+
+        baseline = torch.zeros_like(rewards)
+        squared_baseline = torch.zeros_like(rewards)
+        std = torch.zeros_like(rewards)
+        valid = torch.ones_like(rewards)
+        if valid.sum() <= 1:
+            baseline[:] = rewards
+        else:
+            reward_device = rewards.device
+            sibling_count = len(rewards)
+            if self.use_leave_one_out_baseline:
+                baseline_mask = (1 - torch.eye(sibling_count)).to(reward_device)
+            else:
+                baseline_mask = torch.ones(
+                    (sibling_count, sibling_count), device=reward_device
+                )
+            num_valid = valid.float().sum() - int(self.use_leave_one_out_baseline)
+            prompt_baseline = torch.matmul(baseline_mask, rewards * valid) / num_valid
+            prompt_baseline_square = (
+                torch.matmul(baseline_mask, torch.pow(rewards, 2) * valid) / num_valid
+            )
+            baseline[:] = prompt_baseline
+            squared_baseline[:] = prompt_baseline_square
+            std[:] = (
+                (
+                    (prompt_baseline_square - prompt_baseline.square())
+                    * (num_valid / (num_valid - 1))
+                )
+                .sqrt()
+                .nan_to_num(0)
+            )
+
+        advantages = rewards - baseline
+        if self.normalize_rewards:
+            epsilon = 1e-6
+            non_zero_std_mask = std > 0
+            advantages[non_zero_std_mask] = advantages[non_zero_std_mask] / (
+                std[non_zero_std_mask] + epsilon
+            )
+        return advantages
+
 
 class GDPOAdvantageEstimator:
     """GDPO-style advantage estimator with leave-one-out baseline.

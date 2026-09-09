@@ -44,6 +44,14 @@ class _ConfiguredProductionGRPOEstimator:
         leave_one_out_baseline = rewards.flip(0)
         return (rewards - leave_one_out_baseline).unsqueeze(-1).expand(mask.shape)
 
+    def compute_single_prompt_scalar_advantage(
+        self, *, prompt_ids: torch.Tensor, rewards: torch.Tensor
+    ) -> torch.Tensor:
+        del prompt_ids
+        if rewards.shape != (2,):
+            raise ValueError("the focused fixture requires exactly two siblings")
+        return rewards - rewards.flip(0)
+
 
 def _estimator() -> _ConfiguredProductionGRPOEstimator:
     return _ConfiguredProductionGRPOEstimator()
@@ -124,6 +132,10 @@ def test_vectorized_sibling_reductions_match_rowwise_float64_reference() -> None
             scalars = torch.randn(8, generator=generator, dtype=torch.float32)
             return scalars.unsqueeze(-1).expand(mask.shape)
 
+        def compute_single_prompt_scalar_advantage(self, *, prompt_ids, rewards):
+            del prompt_ids, rewards
+            return torch.randn(8, generator=generator, dtype=torch.float32)
+
     inputs = GRPOOpportunityInputs(
         prompt_ids=torch.ones((8, 64), dtype=torch.long),
         rewards=rewards,
@@ -149,6 +161,55 @@ def test_vectorized_sibling_reductions_match_rowwise_float64_reference() -> None
             aligned_mask[index].sum(dtype=torch.float64).item()
         )
         assert sibling.opportunity == coefficients.abs().sum(dtype=torch.float64).item()
+
+
+@pytest.mark.parametrize("normalize_rewards", [False, True])
+@pytest.mark.parametrize("use_leave_one_out_baseline", [False, True])
+@pytest.mark.parametrize("sibling_count", [1, 2, 8])
+def test_single_prompt_scalar_advantages_are_bit_exact(
+    normalize_rewards: bool,
+    use_leave_one_out_baseline: bool,
+    sibling_count: int,
+) -> None:
+    generator = torch.Generator().manual_seed(
+        20260910 + sibling_count + int(normalize_rewards) * 10
+    )
+    prompt = torch.randint(0, 32000, (1, 64), generator=generator)
+    prompt_ids = prompt.expand(sibling_count, -1).clone()
+    rewards = torch.randn(sibling_count, generator=generator, dtype=torch.float32)
+    mask = torch.randint(
+        0,
+        2,
+        (sibling_count, 2048),
+        generator=generator,
+        dtype=torch.int64,
+    ).float()
+    estimator = GRPOAdvantageEstimator(
+        AdvEstimatorConfig(
+            normalize_rewards=normalize_rewards,
+            use_leave_one_out_baseline=use_leave_one_out_baseline,
+        ),
+        ClippedPGLossConfig(),
+    )
+
+    expanded = estimator.compute_advantage(prompt_ids, rewards, mask)[:, 0]
+    scalar = estimator.compute_single_prompt_scalar_advantage(
+        prompt_ids=prompt_ids,
+        rewards=rewards,
+    )
+
+    assert torch.equal(scalar, expanded)
+
+
+def test_single_prompt_scalar_advantage_rejects_multiple_prompts() -> None:
+    estimator = GRPOAdvantageEstimator(AdvEstimatorConfig(), ClippedPGLossConfig())
+    prompt_ids = torch.tensor([[1, 2], [1, 3]], dtype=torch.long)
+
+    with pytest.raises(ValueError, match="multiple prompts"):
+        estimator.compute_single_prompt_scalar_advantage(
+            prompt_ids=prompt_ids,
+            rewards=torch.tensor([1.0, 0.0]),
+        )
 
 
 def test_zero_variance_and_zero_valid_siblings_are_retained() -> None:
@@ -191,6 +252,10 @@ def test_rejects_nonfinite_estimator_output() -> None:
         def compute_advantage(self, prompt_ids, rewards, mask, **kwargs):
             del prompt_ids, rewards, kwargs
             return torch.full_like(mask, float("nan"))
+
+        def compute_single_prompt_scalar_advantage(self, *, prompt_ids, rewards):
+            del prompt_ids
+            return torch.full_like(rewards, float("nan"))
 
     with pytest.raises(ValueError, match="advantages contain a nonfinite"):
         compute_grpo_gradient_opportunity(

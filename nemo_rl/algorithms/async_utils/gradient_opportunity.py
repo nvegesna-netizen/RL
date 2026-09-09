@@ -41,6 +41,12 @@ class GRPOAdvantageEstimatorProtocol(Protocol):
         """Return loss-shaped GRPO advantages."""
         ...
 
+    def compute_single_prompt_scalar_advantage(
+        self, *, prompt_ids: torch.Tensor, rewards: torch.Tensor
+    ) -> torch.Tensor:
+        """Return production-equivalent scalar advantages for one prompt."""
+        ...
+
 
 class ControllerSequencer(Protocol):
     """Shared controller sequencer used by lifecycle and opportunity ledgers."""
@@ -211,34 +217,28 @@ def compute_grpo_gradient_opportunity(
             "sample_ids and truncation must match the prepared input batch size"
         )
 
-    advantages = estimator.compute_advantage(
+    scalar_advantages = estimator.compute_single_prompt_scalar_advantage(
         prompt_ids=inputs.prompt_ids,
         rewards=inputs.rewards,
-        mask=inputs.actor_mask,
-        repeated_batch=dict(inputs.repeated_batch),
-        **dict(inputs.estimator_kwargs),
     )
-    if not isinstance(advantages, torch.Tensor):
+    if not isinstance(scalar_advantages, torch.Tensor):
         raise TypeError("the production estimator must return a torch.Tensor")
-    if advantages.device.type != "cpu":
+    if scalar_advantages.device.type != "cpu":
         raise ValueError("production advantages must be computed on CPU")
-    if advantages.requires_grad:
+    if scalar_advantages.requires_grad:
         raise ValueError("production advantages must be detached")
-    if advantages.shape != inputs.actor_mask.shape:
+    if scalar_advantages.shape != inputs.rewards.shape:
         raise ValueError(
-            "advantages and actor_mask must have identical shapes, got "
-            f"{advantages.shape} and {inputs.actor_mask.shape}"
+            "scalar advantages and rewards must have identical shapes, got "
+            f"{scalar_advantages.shape} and {inputs.rewards.shape}"
         )
-    if not bool(torch.isfinite(advantages).all().item()):
+    if not bool(torch.isfinite(scalar_advantages).all().item()):
         raise ValueError("production advantages contain a nonfinite value")
 
-    scalar_advantages = advantages[:, 0]
-    if not bool((advantages == scalar_advantages.unsqueeze(-1)).all().item()):
-        raise ValueError("GRPO advantages must be scalar-constant within each sibling")
-
-    aligned_advantages = advantages[:, 1:].to(dtype=torch.float64)
     aligned_mask = inputs.actor_mask[:, 1:].to(dtype=torch.float64)
-    coefficients = aligned_advantages * aligned_mask
+    coefficients = (
+        scalar_advantages.to(dtype=torch.float64).unsqueeze(-1) * aligned_mask
+    )
     absolute_coefficients = coefficients.abs()
 
     # Reduce every sibling in two vectorized operations. This preserves the

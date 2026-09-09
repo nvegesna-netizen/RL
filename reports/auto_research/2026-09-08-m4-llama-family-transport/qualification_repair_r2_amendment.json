@@ -1,0 +1,72 @@
+{
+  "authorization": {
+    "acquisition_authorized": false,
+    "automatic_extension": false,
+    "automatic_retry": false,
+    "final_paired_qualification_authorized": false,
+    "no_training_preflight_authorized": true,
+    "required_launcher": "runllm.py --no_wait",
+    "user_authorization": "do the sequence"
+  },
+  "causal_scope": {
+    "causal_outcomes_observed": false,
+    "qualification_observations_enter_estimators": false
+  },
+  "evidence_trigger": {
+    "gsm8k": {
+      "corrected_observer_duty": 0.011538561031731339,
+      "current_mean_observer_ms": 1.4582798484848485,
+      "historical_mean_observer_ms": 1.5522937879999998,
+      "maximum_mean_ms_at_observed_cadence_for_one_percent": 1.2638316376492196,
+      "opportunity_group_count": 1089,
+      "qualification_complete_diagnostic": false
+    },
+    "openmath": {
+      "corrected_observer_duty": 0.004994014252497621,
+      "opportunity_group_count": 630,
+      "qualification_complete_diagnostic": true
+    },
+    "paired_terminal_record_sha256": "a0d128c17fa7ec284046bc88e7c2c855f0947eda87987a08dc2c30b0f1e4c805",
+    "shared_wrapper_error": "TypeError: assess_neutral_qualification_lifecycle() takes 1 positional argument but 2 were given"
+  },
+  "immutable_predecessor": {
+    "first_repair_amendment_sha256": "67fd6d32ffe2dced0eff11b90be138277d00a809e241993497135f04c9ea0d00",
+    "source_commit": "6d7050e24ec12408a57d316a945f9be8471e60ef"
+  },
+  "no_training_preflight": {
+    "absolute_mean_callback_ms_maximum": 1.0,
+    "automatic_retry": false,
+    "benchmark_shape": {
+      "sequence_length": 2048,
+      "siblings": 8
+    },
+    "minimum_speedup_fraction_against_expanded_reference": 0.25,
+    "qualification_allowed": false,
+    "submission_attempt_limit": 1,
+    "training_allowed": false
+  },
+  "observer_repair": {
+    "arm_dependent_branch_allowed": false,
+    "float32_scalar_advantage_exact_equivalence_required": true,
+    "float64_summary_exact_equivalence_required": true,
+    "implementation": "Use a native single-prompt scalar GRPO path and avoid full-sequence scalar-advantage expansion while retaining the existing coefficient and summary contract.",
+    "measurement_scope_changed": false,
+    "observer_duty_maximum": 0.01,
+    "threshold_changed": false,
+    "workload_slowdown_as_metric_repair_allowed": false
+  },
+  "requalification": {
+    "automatic_extension": false,
+    "automatic_retry": false,
+    "inspect_only_after_both_terminal": true,
+    "permanent_close_after_any_failure": true,
+    "required_cells": [
+      "llama3p2_1b_openmath",
+      "llama3p2_1b_gsm8k"
+    ],
+    "submission_attempt_limit_each_cell": 1,
+    "trainer_steps_each_cell": 32
+  },
+  "schema": "m4-llama-family-transport-qualification-final-repair-amendment-v1",
+  "status": "FROZEN_LOCAL_FINAL_REPAIR_PENDING_IMPLEMENTATION"
+}
