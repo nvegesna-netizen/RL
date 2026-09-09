@@ -1,0 +1,132 @@
+{
+  "analysis_role": "retrospective_descriptive_sensitivity",
+  "cells": {
+    "qwen3_0p6b_gsm8k": {
+      "adjusted_common_window_estimate": 0.2332654341299639,
+      "adjustment_difference": -0.01509357216352561,
+      "common_minus_full": 0.0009234388329658061,
+      "common_window_assignment_count": 7710,
+      "common_window_estimate": 0.2332654341299639,
+      "full_window_assignment_count": 9573,
+      "full_window_estimate": 0.2323419952969981,
+      "missingness_identification_width": 0.0,
+      "missingness_lower_endpoint": 0.2332654341299639,
+      "missingness_upper_endpoint": 0.2332654341299639,
+      "threshold_sensitivity": {
+        "0.10": "MATERIAL",
+        "0.15": "MATERIAL",
+        "0.20": "MATERIAL",
+        "0.25": "INCONCLUSIVE",
+        "0.30": "NOT_MATERIAL"
+      },
+      "unadjusted_common_window_estimate": 0.2483590062934895
+    },
+    "qwen3_0p6b_numinamath": {
+      "adjusted_common_window_estimate": 0.31548086738747205,
+      "adjustment_difference": -0.05382443548982152,
+      "common_minus_full": 0.0,
+      "common_window_assignment_count": 7229,
+      "common_window_estimate": 0.31548086738747205,
+      "full_window_assignment_count": 7229,
+      "full_window_estimate": 0.31548086738747205,
+      "missingness_identification_width": 0.0,
+      "missingness_lower_endpoint": 0.31548086738747205,
+      "missingness_upper_endpoint": 0.31548086738747205,
+      "threshold_sensitivity": {
+        "0.10": "MATERIAL",
+        "0.15": "MATERIAL",
+        "0.20": "MATERIAL",
+        "0.25": "MATERIAL",
+        "0.30": "INCONCLUSIVE"
+      },
+      "unadjusted_common_window_estimate": 0.3693053028772936
+    },
+    "qwen3_0p6b_openmath": {
+      "adjusted_common_window_estimate": 0.30542321077967627,
+      "adjustment_difference": -0.02809908968652841,
+      "common_minus_full": 0.0,
+      "common_window_assignment_count": 7199,
+      "common_window_estimate": 0.30542321077967627,
+      "full_window_assignment_count": 7199,
+      "full_window_estimate": 0.30542321077967627,
+      "missingness_identification_width": 0.0,
+      "missingness_lower_endpoint": 0.30542321077967627,
+      "missingness_upper_endpoint": 0.30542321077967627,
+      "threshold_sensitivity": {
+        "0.10": "MATERIAL",
+        "0.15": "MATERIAL",
+        "0.20": "MATERIAL",
+        "0.25": "MATERIAL",
+        "0.30": "INCONCLUSIVE"
+      },
+      "unadjusted_common_window_estimate": 0.3335223004662047
+    },
+    "qwen3_1p7b_gsm8k": {
+      "adjusted_common_window_estimate": 0.14306352903703942,
+      "adjustment_difference": -0.022200751326672402,
+      "common_minus_full": 0.005267983454407543,
+      "common_window_assignment_count": 7613,
+      "common_window_estimate": 0.14306352903703942,
+      "full_window_assignment_count": 9429,
+      "full_window_estimate": 0.13779554558263188,
+      "missingness_identification_width": 0.0,
+      "missingness_lower_endpoint": 0.14306352903703942,
+      "missingness_upper_endpoint": 0.14306352903703942,
+      "threshold_sensitivity": {
+        "0.10": "MATERIAL",
+        "0.15": "INCONCLUSIVE",
+        "0.20": "NOT_MATERIAL",
+        "0.25": "NOT_MATERIAL",
+        "0.30": "NOT_MATERIAL"
+      },
+      "unadjusted_common_window_estimate": 0.16526428036371182
+    },
+    "qwen3_1p7b_numinamath": {
+      "adjusted_common_window_estimate": 0.29785925081506975,
+      "adjustment_difference": -0.021344696784302952,
+      "common_minus_full": 0.0,
+      "common_window_assignment_count": 7050,
+      "common_window_estimate": 0.29785925081506975,
+      "full_window_assignment_count": 7050,
+      "full_window_estimate": 0.29785925081506975,
+      "missingness_identification_width": 0.0,
+      "missingness_lower_endpoint": 0.29785925081506975,
+      "missingness_upper_endpoint": 0.29785925081506975,
+      "threshold_sensitivity": {
+        "0.10": "MATERIAL",
+        "0.15": "MATERIAL",
+        "0.20": "MATERIAL",
+        "0.25": "MATERIAL",
+        "0.30": "INCONCLUSIVE"
+      },
+      "unadjusted_common_window_estimate": 0.3192039475993727
+    },
+    "qwen3_1p7b_openmath": {
+      "adjusted_common_window_estimate": 0.29822630791824456,
+      "adjustment_difference": 0.020755435332077188,
+      "common_minus_full": -0.004266997342768364,
+      "common_window_assignment_count": 6955,
+      "common_window_estimate": 0.29822630791824456,
+      "full_window_assignment_count": 8673,
+      "full_window_estimate": 0.3024933052610129,
+      "missingness_identification_width": 0.0,
+      "missingness_lower_endpoint": 0.29822630791824456,
+      "missingness_upper_endpoint": 0.29822630791824456,
+      "threshold_sensitivity": {
+        "0.10": "MATERIAL",
+        "0.15": "MATERIAL",
+        "0.20": "MATERIAL",
+        "0.25": "MATERIAL",
+        "0.30": "INCONCLUSIVE"
+      },
+      "unadjusted_common_window_estimate": 0.27747087258616737
+    }
+  },
+  "interpretation": {
+    "hac_vs_bootstrap": "Both interval families are reported separately; the conservative cell display uses their outer envelope.",
+    "missingness": "All six common-window datasets have complete terminal scoring, so sharp lower and upper endpoints coincide.",
+    "threshold": "Threshold labels are descriptive interval classifications, not replacements for registered decisions.",
+    "window": "Common-window results harmonize versions 8-407; full-window results retain each cell's registered primary window."
+  },
+  "schema": "m4-opportunity-loss-publication-robustness-v1"
+}

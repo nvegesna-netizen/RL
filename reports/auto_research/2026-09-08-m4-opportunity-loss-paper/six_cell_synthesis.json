@@ -1,0 +1,269 @@
+{
+  "analysis_role": "retrospective_secondary_cannot_override_registered_cell_or_interaction_results",
+  "bootstrap_draws_per_cell": 20000,
+  "cell_results": {
+    "qwen3_0p6b_gsm8k": {
+      "assignment_count": 7710,
+      "bootstrap_interval": [
+        0.20847867409915932,
+        0.25788779288993696
+      ],
+      "conclusion_at_registered_threshold": "MATERIAL",
+      "estimate": 0.2332654341299639,
+      "hac_interval": [
+        0.2101110751013402,
+        0.2564197931585876
+      ],
+      "hac_standard_error": 0.011813665562868671,
+      "outer_envelope": [
+        0.20847867409915932,
+        0.25788779288993696
+      ],
+      "terminal_missing_count": 0
+    },
+    "qwen3_0p6b_numinamath": {
+      "assignment_count": 7229,
+      "bootstrap_interval": [
+        0.2877998311316367,
+        0.34265887723541355
+      ],
+      "conclusion_at_registered_threshold": "MATERIAL",
+      "estimate": 0.31548086738747205,
+      "hac_interval": [
+        0.2881058608301996,
+        0.3428558739447445
+      ],
+      "hac_standard_error": 0.013967096728921035,
+      "outer_envelope": [
+        0.2877998311316367,
+        0.3428558739447445
+      ],
+      "terminal_missing_count": 0
+    },
+    "qwen3_0p6b_openmath": {
+      "assignment_count": 7199,
+      "bootstrap_interval": [
+        0.2763315341451523,
+        0.3338829142439936
+      ],
+      "conclusion_at_registered_threshold": "MATERIAL",
+      "estimate": 0.30542321077967627,
+      "hac_interval": [
+        0.2759345052842236,
+        0.33491191627512895
+      ],
+      "hac_standard_error": 0.015045534371067945,
+      "outer_envelope": [
+        0.2759345052842236,
+        0.33491191627512895
+      ],
+      "terminal_missing_count": 0
+    },
+    "qwen3_1p7b_gsm8k": {
+      "assignment_count": 7613,
+      "bootstrap_interval": [
+        0.11723250619618682,
+        0.16758781112320087
+      ],
+      "conclusion_at_registered_threshold": "NOT_MATERIAL",
+      "estimate": 0.14306352903703942,
+      "hac_interval": [
+        0.11851211197546431,
+        0.16761494609861455
+      ],
+      "hac_standard_error": 0.012526463371385174,
+      "outer_envelope": [
+        0.11723250619618682,
+        0.16761494609861455
+      ],
+      "terminal_missing_count": 0
+    },
+    "qwen3_1p7b_numinamath": {
+      "assignment_count": 7050,
+      "bootstrap_interval": [
+        0.2614689302151933,
+        0.333422628990257
+      ],
+      "conclusion_at_registered_threshold": "MATERIAL",
+      "estimate": 0.29785925081506975,
+      "hac_interval": [
+        0.26169695513468144,
+        0.33402154649545807
+      ],
+      "hac_standard_error": 0.018450489889422404,
+      "outer_envelope": [
+        0.2614689302151933,
+        0.33402154649545807
+      ],
+      "terminal_missing_count": 0
+    },
+    "qwen3_1p7b_openmath": {
+      "assignment_count": 6955,
+      "bootstrap_interval": [
+        0.27034473162691836,
+        0.326690738714574
+      ],
+      "conclusion_at_registered_threshold": "MATERIAL",
+      "estimate": 0.29822630791824456,
+      "hac_interval": [
+        0.2697424814096154,
+        0.32671013442687374
+      ],
+      "hac_standard_error": 0.014532831589409809,
+      "outer_envelope": [
+        0.2697424814096154,
+        0.32671013442687374
+      ],
+      "terminal_missing_count": 0
+    }
+  },
+  "common_window": [
+    8,
+    407
+  ],
+  "dependency_aware_synthesis": {
+    "bootstrap_correlation": 0.40530226396440766,
+    "bootstrap_covariance": [
+      [
+        0.0007480200202475449,
+        0.0003254783551648497
+      ],
+      [
+        0.0003254783551648497,
+        0.0008621303702131773
+      ]
+    ],
+    "bootstrap_draws": 20000,
+    "cell_estimates": {
+      "qwen3_0p6b_gsm8k": 0.2332654341299639,
+      "qwen3_0p6b_numinamath": 0.31548086738747205,
+      "qwen3_0p6b_openmath": 0.30542321077967627,
+      "qwen3_1p7b_gsm8k": 0.14306352903703942,
+      "qwen3_1p7b_numinamath": 0.29785925081506975,
+      "qwen3_1p7b_openmath": 0.29822630791824456
+    },
+    "confidence": 0.95,
+    "global_heterogeneity_degrees_of_freedom": 2,
+    "global_heterogeneity_p_value": 0.0031390066345424925,
+    "global_heterogeneity_wald_chi_square": 11.527697775079632,
+    "hac_correlation": 0.3793770869832136,
+    "hac_covariance": [
+      [
+        0.0007340462771430981,
+        0.0002964749786259636
+      ],
+      [
+        0.0002964749786259636,
+        0.0008319753468206786
+      ]
+    ],
+    "model_scale_effects": {
+      "gsm8k": -0.09020190509292447,
+      "numinamath": -0.0176216165724023,
+      "openmath": -0.007196902861431709
+    },
+    "reference_interactions": {
+      "gsm8k_minus_numinamath": {
+        "bootstrap_interval": [
+          -0.1305496376894155,
+          -0.01493207655279414
+        ],
+        "estimate": -0.07258028852052217,
+        "hac_interval": [
+          -0.1291134560829748,
+          -0.01604712095806953
+        ],
+        "hac_standard_error": 0.028843982852939685,
+        "simultaneous_bootstrap_interval": [
+          -0.1378219020233843,
+          -0.007338675017660057
+        ]
+      },
+      "gsm8k_minus_openmath": {
+        "bootstrap_interval": [
+          -0.136568869092096,
+          -0.028939854587893145
+        ],
+        "estimate": -0.08300500223149276,
+        "hac_interval": [
+          -0.13610687174781994,
+          -0.029903132715165592
+        ],
+        "hac_standard_error": 0.027093288415087197,
+        "simultaneous_bootstrap_interval": [
+          -0.14377578519980463,
+          -0.022234219263180893
+        ]
+      }
+    },
+    "role": "retrospective_secondary_cannot_override_registered_results",
+    "simultaneous_bootstrap_critical_value": 2.221970153509533
+  },
+  "evidence": {
+    "qwen3_0p6b_gsm8k": {
+      "lifecycle_path": "session/20260907_m4_cross_study_harmonization/grid-acquisition-failure-terminal-artifact/workspace/assets/basic/m4-qwen3-0p6b-gsm8k-grid-control-d5-acquisition/m4-grid-lifecycle.jsonl",
+      "lifecycle_sha256": "ac032de183ec3cb602e83afad92da587b664c3c5a8e20a4fb31eeaf333fa3c84",
+      "opportunity_path": "session/20260907_m4_cross_study_harmonization/grid-acquisition-failure-terminal-artifact/workspace/assets/basic/m4-qwen3-0p6b-gsm8k-grid-control-d5-acquisition/m4-grid-opportunity.jsonl",
+      "opportunity_sha256": "bc110e951869e5b7b0aa68e6c78e2992f527f5553bb19b9e8e28db98231635eb",
+      "protocol_path": "reports/auto_research/2026-09-07-m4-opportunity-loss-grid-completion/protocol_config.json",
+      "protocol_sha256": "b6682795071d12a5d6b3eddcdf73536e045949f08ce881885dd330fba9885db6"
+    },
+    "qwen3_0p6b_numinamath": {
+      "lifecycle_path": "session/20260907_m4_cross_study_harmonization/numinamath-0p6b-acquisition-terminal-artifact/m4-numinamath-0p6b-lifecycle.jsonl",
+      "lifecycle_sha256": "0ff343743550cd5277538dd8f5e164a2bb67afd0b8e9dd4a265e2bc36fc7636f",
+      "opportunity_path": "session/20260907_m4_cross_study_harmonization/numinamath-0p6b-acquisition-terminal-artifact/m4-numinamath-0p6b-opportunity.jsonl",
+      "opportunity_sha256": "b0d5a90ad70e2d20e822ec6a0d14e9894d706ac96f86843e3bf98aa5264ce184",
+      "protocol_path": "reports/auto_research/2026-09-07-m4-opportunity-loss-numinamath-generalization/protocol_config.json",
+      "protocol_sha256": "bbe2c07211952e3e46d4511524f68e864606a7c63f271ae8e064263044dad0c8"
+    },
+    "qwen3_0p6b_openmath": {
+      "lifecycle_path": "session/20260907_m4_cross_study_harmonization/qwen3_0p6b_openmath/m4-opportunity-loss-followup-lifecycle.jsonl",
+      "lifecycle_sha256": "1852d21b98125c2e07c3cfa20f09a33393e13bd656ed684846bafea29a3c06ec",
+      "opportunity_path": "session/20260907_m4_cross_study_harmonization/qwen3_0p6b_openmath/m4-opportunity-loss-followup-opportunity.jsonl",
+      "opportunity_sha256": "0a9a48abbd1a87b504e3b2e528695b38c5d7799636b830c4bcd809c23c94b8d6",
+      "protocol_path": "reports/auto_research/2026-09-02-m4-opportunity-loss-followup/protocol_config.json",
+      "protocol_sha256": "6631a4ca8cfc6010150d1c135a1f5821c717f0dea189a3309c5f0f58f9b0709c"
+    },
+    "qwen3_1p7b_gsm8k": {
+      "lifecycle_path": "session/20260906_m4_gsm8k_r2/acquisition-terminal-artifact/workspace/assets/basic/m4-qwen3-1p7b-gsm8k-confirmatory-control-d5-acquisition-r2/m4-gsm8k-r2-lifecycle.jsonl",
+      "lifecycle_sha256": "aba8b910f0928a4776d58cc8ef56dac2acd13c1d90516dd5144fdadf90ed6b83",
+      "opportunity_path": "session/20260906_m4_gsm8k_r2/acquisition-terminal-artifact/workspace/assets/basic/m4-qwen3-1p7b-gsm8k-confirmatory-control-d5-acquisition-r2/m4-gsm8k-r2-opportunity.jsonl",
+      "opportunity_sha256": "1d6f39337a6b73756ce0548849f5cc50d40e7c9e159d4130f9c4df49676847a5",
+      "protocol_path": "reports/auto_research/2026-09-04-m4-opportunity-loss-workload-transport/qwen3-1p7b-gsm8k-confirmatory-design/protocol_config_r2.json",
+      "protocol_sha256": "3413bde3718563157cee5d504f174710f65406dd7f1effd8ad2755a03d73b69e"
+    },
+    "qwen3_1p7b_numinamath": {
+      "lifecycle_path": "session/20260907_m4_cross_study_harmonization/numinamath-1p7b-acquisition-terminal-artifact/m4-numinamath-1p7b-lifecycle.jsonl",
+      "lifecycle_sha256": "79b017e7a740a01b4cc81e8ba83ed0746a4a9a345bd53e9136dc38cfa5042935",
+      "opportunity_path": "session/20260907_m4_cross_study_harmonization/numinamath-1p7b-acquisition-terminal-artifact/m4-numinamath-1p7b-opportunity.jsonl",
+      "opportunity_sha256": "917790b262995f314cde328c9d239592525e2ae17312b5adda735047a1854d4f",
+      "protocol_path": "reports/auto_research/2026-09-07-m4-opportunity-loss-numinamath-generalization/protocol_config.json",
+      "protocol_sha256": "bbe2c07211952e3e46d4511524f68e864606a7c63f271ae8e064263044dad0c8"
+    },
+    "qwen3_1p7b_openmath": {
+      "lifecycle_path": "session/20260907_m4_cross_study_harmonization/qwen3_1p7b_openmath/m4-qwen3-1p7b-confirmatory-lifecycle.jsonl",
+      "lifecycle_sha256": "71238a4c2b7ba0aceeb206514e8564719688d594989f19396653de483c37ba47",
+      "opportunity_path": "session/20260907_m4_cross_study_harmonization/qwen3_1p7b_openmath/m4-qwen3-1p7b-confirmatory-opportunity.jsonl",
+      "opportunity_sha256": "170cf1cf3cf124b4248cf5173fe6f7e18eaed0eeac3792cb9367b66207184b2d",
+      "protocol_path": "reports/auto_research/2026-09-03-m4-opportunity-loss-transport/qwen3-1p7b-confirmatory-design/protocol_config.json",
+      "protocol_sha256": "eef87a5e26f2cc1a39428628b0c28288b17a297f49d449a80ed9699f9ee17cb7"
+    }
+  },
+  "input_records": {
+    "grid_synthesis": {
+      "path": "reports/auto_research/2026-09-07-m4-opportunity-loss-grid-completion/grid_synthesis_result.json",
+      "sha256": "4a33668f332e250c71769ecc88b57972ecd08c6f5c69b38d31e53fa93240168f"
+    },
+    "numinamath_terminal_analysis": {
+      "path": "session/20260907_m4_cross_study_harmonization/numinamath-paired-terminal-analysis-result.json",
+      "sha256": "0dfd265d788d6697cbfcabc1f39519b23191b8196279894de66f98aaee8af018"
+    }
+  },
+  "limitations": {
+    "downstream_model_quality_measured": false,
+    "family_wide_generalization_supported": false,
+    "independent_replications": false,
+    "shared_reference": "Both reference interactions reuse the same two GSM8K cells."
+  },
+  "schema": "m4-opportunity-loss-publication-six-cell-synthesis-v1"
+}
