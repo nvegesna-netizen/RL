@@ -1,0 +1,235 @@
+{
+  "analysis": {
+    "cell_estimand": "(mean_d5(Q_times_D)-mean_control(Q_times_D))/pooled_pre_delay_mean_Q",
+    "cell_estimator": "cross_fitted_generalized_regression_q_and_zero_indicator_v1",
+    "cell_material_threshold_delta_l": 0.2,
+    "inference": {
+      "bootstrap_draws_each_cell": 20000,
+      "bootstrap_seeds": {
+        "llama3p2_1b_gsm8k": 20261002,
+        "llama3p2_1b_openmath": 20261001
+      },
+      "circular_block_size_start_versions": 8,
+      "confidence": 0.95,
+      "cross_fit_folds": 8,
+      "endpoint_interval": "outer_envelope_of_cell_hac_and_block_bootstrap",
+      "hac_bartlett_lag_start_versions": 4,
+      "material_alpha": 0.05,
+      "sampling_unit": "assignment_clustered_by_start_weight_version"
+    },
+    "gsm8k_direction_decision": {
+      "inconclusive": "95% confidence envelope includes zero",
+      "negative": "95% confidence envelope entirely below zero",
+      "positive": "95% confidence envelope entirely above zero",
+      "role": "supporting_cross_workload_external_validity"
+    },
+    "missingness": {
+      "maximum_terminal_missing_fraction_each_arm": 0.01,
+      "missing_opportunity": "RED",
+      "missing_terminal_lower_qd": 0,
+      "missing_terminal_upper_qd": "observed_Q",
+      "workload_contrast_requires_complete_common_window_terminal_scoring": true
+    },
+    "openmath_family_transport_decision": {
+      "inconclusive": "confidence envelope crosses 0.20",
+      "material": "lower confidence-envelope endpoint exceeds 0.20 and registered materiality p-value is below 0.05",
+      "not_material": "upper confidence-envelope endpoint is at most 0.20",
+      "role": "primary_cross_family_anchor"
+    },
+    "supporting": [
+      "gsm8k_cell_materiality",
+      "original_unadjusted_registered_estimator_v1",
+      "descriptive_comparison_to_immutable_qwen_common_window"
+    ],
+    "workload_pattern_decision": {
+      "contrast": "llama3p2_1b_openmath_minus_llama3p2_1b_gsm8k",
+      "inconclusive": "95% outer envelope includes zero",
+      "opposite_direction": "95% outer envelope entirely below zero",
+      "same_direction": "95% outer envelope entirely above zero",
+      "uncertainty": "independent_cell_version_hac_and_circular_block_bootstrap_outer_envelope"
+    }
+  },
+  "arms": [
+    {
+      "delay_seconds": 0.0,
+      "label": "control",
+      "mass": 1
+    },
+    {
+      "delay_seconds": 5.0,
+      "label": "d5",
+      "mass": 1
+    }
+  ],
+  "design_evidence": {
+    "analysis_test_sha256": "3bd22882e1dcb379724a41743af68784d30159b79b8783e9f987b5f0dfe2a934",
+    "analysis_tool_sha256": "9c051113622c415f0c7ce211aec75e9828b425e0a5a3ec8e52367108c54fc68d",
+    "completed_qwen_synthesis_sha256": "fd4c74c245b5294be175e2117c136e5cc7a3dcd5ce302713ba8041768c6902be",
+    "design_sha256": "02454e69d5fa09c81e160b8249d1daffd620f70cbcfa09b2efaab548ffdcf083",
+    "gsm8k_config_sha256": "b10fceb967706d62b50ca0c9e62a76a6478eb5ce20dbe7c8929fa7d44f884d74",
+    "gsm8k_qualification_config_sha256": "70d42cbae07c636a84f82db6d2e14592a432a75358e608698954dd0835e9e783",
+    "openmath_config_sha256": "eec2df575f282753d4ea7205dc3a26069d0eed2dc01177a95098c601c6feaf1c",
+    "openmath_qualification_config_sha256": "c9c97f2deae79312055708b7d84a1b42044da224609fd1c7453b45534fd126d8",
+    "power_capacity_plan_sha256": "80c3de6527466901f6ded97b404899e8e67710298b52cba6e3132750e1d326e0"
+  },
+  "execution_lock": {
+    "analyze_only_after_both_terminal_artifacts_are_frozen": true,
+    "both_acquisition_packages_must_be_frozen_before_first_submission": true,
+    "failure_of_one_cell_permits_outcome_inspection": false,
+    "outcome_conditioned_retry_or_extension": false,
+    "submit_both_before_inspecting_either_causal_outcome": true
+  },
+  "historical_context": {
+    "common_primary_start_versions": [
+      8,
+      407
+    ],
+    "qwen3_0p6b": {
+      "gsm8k_estimate": 0.2332654341299639,
+      "openmath_estimate": 0.30542321077967627
+    },
+    "qwen3_1p7b": {
+      "gsm8k_estimate": 0.14306352903703942,
+      "openmath_estimate": 0.29822630791824456
+    },
+    "role": "immutable_design_inputs_no_refitting_or_outcome_selection"
+  },
+  "instrumentation": {
+    "arm_dependent_pre_opportunity_branch_forbidden": true,
+    "common_in_all_arms": true,
+    "corrected_observer_duty_portability_target": 0.01,
+    "duty_role": "support_condition_not_causal_correction",
+    "opportunity_coverage_required": 1.0,
+    "opportunity_replay": {
+      "allowed_reward_values": [
+        0,
+        1
+      ],
+      "comparison": "ieee754_binary32_bit_exact",
+      "estimator": "GRPOAdvantageEstimator",
+      "normalization_epsilon": 0.000001,
+      "normalize_rewards": true,
+      "reduction_dtype": "float32",
+      "reward_dtype": "float32",
+      "sibling_order": "ascending_sibling_index",
+      "use_leave_one_out_baseline": true
+    },
+    "terminal_semantics": {
+      "cancelled_bounded_shutdown_failed_stale": "D=1",
+      "completed_learner_step": "D=0",
+      "missing_removal_or_selected_without_completed_step": "D=null",
+      "partial_split_unknown_or_contradictory": "RED"
+    }
+  },
+  "mechanism_support": {
+    "role": "mandatory_support_condition_cannot_override_causal_conclusions",
+    "thresholds": {
+      "maximum_control_direct_chain_rate": 0.02,
+      "maximum_delay_overshoot_p99_seconds": 2.0,
+      "minimum_d5_control_direct_chain_contrast": 0.1,
+      "minimum_d5_control_version_advance_contrast": 0.2,
+      "minimum_d5_direct_chain_rate": 0.1,
+      "minimum_nonzero_delay_compliance": 0.99
+    }
+  },
+  "model": {
+    "architecture_scope": "dense_text_only_autoregressive_transformer",
+    "family": "Llama 3.2",
+    "huggingface_id": "meta-llama/Llama-3.2-1B-Instruct",
+    "license_access_must_be_verified_on_eos": true,
+    "model_card": "https://huggingface.co/meta-llama/Llama-3.2-1B-Instruct",
+    "parameter_label": "1B",
+    "reported_parameter_count_billions": 1.23
+  },
+  "prospective_cells": {
+    "llama3p2_1b_gsm8k": {
+      "assignment_domain": "m4-opportunity-loss-llama3p2-1b-gsm8k-family-transport-v1",
+      "assignment_seed": 20260930,
+      "config": "examples/configs/grpo_math_1B_megatron_single_controller_m4_llama3p2_1b_gsm8k_family_transport.yaml",
+      "max_num_epochs": 2,
+      "workload": "GSM8K"
+    },
+    "llama3p2_1b_openmath": {
+      "assignment_domain": "m4-opportunity-loss-llama3p2-1b-openmath-family-transport-v1",
+      "assignment_seed": 20260929,
+      "config": "examples/configs/grpo_math_1B_megatron_single_controller_m4_llama3p2_1b_openmath_family_transport.yaml",
+      "max_num_epochs": 1,
+      "workload": "OpenMathInstruct-2"
+    }
+  },
+  "protocol": "m4-opportunity-loss-llama3p2-1b-family-transport-v1",
+  "qualification": {
+    "causal_analysis_allowed": false,
+    "controlled_release_arm": {
+      "delay_seconds": 0.0,
+      "label": "neutral",
+      "mass": 1
+    },
+    "data_may_enter_any_causal_estimator": false,
+    "trainer_steps_each_cell": 32
+  },
+  "resource_caps_each_cell": {
+    "automatic_extension": false,
+    "automatic_retry": false,
+    "gpu_hour_cap": 8.0,
+    "gpus": 2,
+    "wall_clock_cap_hours": 4.0
+  },
+  "runtime_each_cell": {
+    "backend": "megatron_single_controller_non_colocated_vllm",
+    "buffer_capacity": 64,
+    "generations_per_prompt": 8,
+    "inflight_prompts": 16,
+    "max_staleness_versions": 1,
+    "prompts_per_step": 4,
+    "sampler": "windowed_fifo",
+    "train_global_batch_size": 32,
+    "train_micro_batch_size": 1,
+    "trainer_steps": 448
+  },
+  "scope": {
+    "different_family_external_validity_supported": "only according to the two separately registered conclusions",
+    "family_wide_generalization_supported": false,
+    "final_model_quality_supported": false,
+    "pure_model_family_causal_effect_supported": false,
+    "workloads": [
+      "OpenMathInstruct-2",
+      "GSM8K"
+    ]
+  },
+  "status": "FROZEN_LOCAL_PROTOCOL_PENDING_NO_TRAINING_PREFLIGHT",
+  "windows": {
+    "burn_in_start_versions": [
+      0,
+      7
+    ],
+    "primary_start_versions": [
+      8,
+      407
+    ],
+    "terminal_guard_start_versions": [
+      408,
+      447
+    ]
+  },
+  "workloads": {
+    "gsm8k": {
+      "dataset_name": "gsm8k",
+      "extract_answer": true,
+      "huggingface_path": "openai/gsm8k",
+      "processor": "math_hf_data_processor",
+      "prompt_file": "examples/prompts/cot.txt",
+      "reward_verifier": "hf_math_verify",
+      "split": "train",
+      "split_validation_size": 0.0,
+      "subset": "main"
+    },
+    "openmath": {
+      "dataset_name": "OpenMathInstruct-2",
+      "processor": "math_hf_data_processor",
+      "prompt_file": "examples/prompts/cot.txt",
+      "reward_verifier": "hf_math_verify",
+      "split_validation_size": 0.05
+    }
+  }
+}

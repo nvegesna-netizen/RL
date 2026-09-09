@@ -1,0 +1,51 @@
+{
+  "planning_alternative": {
+    "llama_1p23b_gsm8k": 0.185,
+    "llama_1p23b_openmath": 0.301,
+    "openmath_minus_gsm8k": 0.116,
+    "source": "log-parameter interpolation of immutable Qwen3 common-window point estimates"
+  },
+  "planning_precision": {
+    "gsm8k_hac_standard_error_proxy_before_inflation": 0.012526463371385174,
+    "openmath_hac_standard_error_proxy_before_inflation": 0.015045534371067945,
+    "transport_inflation_factor": 1.25
+  },
+  "power": {
+    "confidence": 0.95,
+    "minimum_required_each_confirmatory_test": 0.8,
+    "tests": {
+      "gsm8k_positive_effect": {
+        "alternative": 0.185,
+        "null_boundary": 0.0,
+        "planned_power": 1.0,
+        "standard_error": 0.015658079214231468,
+        "sidedness": "one_sided_greater"
+      },
+      "openmath_materiality": {
+        "alternative": 0.301,
+        "null_boundary": 0.2,
+        "planned_power": 0.9996756619881282,
+        "standard_error": 0.01880691796383493,
+        "sidedness": "one_sided_greater"
+      },
+      "openmath_minus_gsm8k": {
+        "alternative": 0.116,
+        "null_boundary": 0.0,
+        "planned_power": 0.9972833916878143,
+        "standard_error": 0.024471935108968487,
+        "sidedness": "one_sided_greater"
+      }
+    }
+  },
+  "resource_capacity": {
+    "automatic_extension": false,
+    "automatic_retry": false,
+    "gpu_hour_cap_each_cell": 8.0,
+    "gpus_each_cell": 2,
+    "minimum_projected_primary_assignments_each_cell": 6900,
+    "primary_start_version_count": 400,
+    "trainer_steps_each_cell": 448,
+    "wall_clock_cap_hours_each_cell": 4.0
+  },
+  "schema": "m4-llama-family-transport-power-capacity-v1"
+}
