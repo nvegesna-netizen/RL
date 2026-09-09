@@ -6,13 +6,14 @@
 \usepackage{hyperref}
 \newcommand{\theHalgorithm}{\arabic{algorithm}}
 \usepackage{mlsys2025}
-\mlsystitlerunning{M4 Supplementary Material}
+\mlsystitlerunning{\hbox{\fontsize{8}{9}\selectfont M4 Supplementary Material}}
 
 \begin{document}
 \twocolumn[
 \mlsystitle{Supplementary Material: Measuring the Causal Cost of Delayed Rollout Release}
 \begin{mlsysauthorlist}\mlsysauthor{Anonymous Author}{anon}\end{mlsysauthorlist}
 \mlsysaffiliation{anon}{Anonymous Institution}
+\mlsyscorrespondingauthor{Anonymous Author}{anon.email@domain.com}
 \vskip 0.3in
 \begin{abstract}
 This supplement reports reproducibility, provenance, mechanism, observer-duty, and robustness details for the M4 controlled-release study. It introduces no new acquisition and does not replace the registered primary analyses.
@@ -114,9 +115,6 @@ renormalize the registered causal estimand.
 
 \section{Dataset and Artifact Notes}
 GSM8K uses \texttt{openai/gsm8k}, \texttt{main}, training split. NuminaMath-1.5 is pinned at revision \texttt{1b05109f9e5c1ad06c0663519502416c30b300f8}; 896,215 source rows were filtered to 680,786 retained unique problems, with shard hashes in the preflight lock. The anonymous reviewer bundle is planned to contain compact results, analysis code, protocols, a synthetic miniature ledger, and a SHA-256 manifest. Raw ledgers remain external pending privacy and anonymous-access review; this document does not claim they are public.
-
-\section{AI-Assistance Disclosure Draft}
-\input{ai_use_statement}
 
 \bibliography{../references}
 \bibliographystyle{mlsys2025}

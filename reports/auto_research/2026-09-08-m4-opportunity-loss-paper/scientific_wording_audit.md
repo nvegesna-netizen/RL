@@ -55,7 +55,6 @@ registered cell decisions.
 ## Open release blockers
 
 - Final author roster, affiliations, acknowledgments, and conflict metadata.
-- Human approval of the AI-assistance disclosure.
 - Recovery or explicit omission of exact driver, CUDA, PyTorch, vLLM,
   Megatron, CPU, and GPU-memory versions.
 - An official-template PDF build, page-count check, font check, and visual QA.

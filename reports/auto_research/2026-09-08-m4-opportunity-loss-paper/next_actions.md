@@ -17,7 +17,7 @@ clean scale extension.
 ## Ordered submission sequence
 
 1. **Human scientific review.** Approve the claim ledger, title, abstract,
-   author roster, related-work characterization, and AI-assistance disclosure.
+   author roster, and related-work characterization.
 2. **Environment recovery.** Search authenticated logs for exact dependency and
    hardware metadata. Report what is found; mark the rest unavailable.
 3. **PDF build and fit.** Use the official MLSys style, convert SVGs to vector

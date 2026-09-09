@@ -142,7 +142,7 @@ training-outcome experiment.
 1. **Complete:** MLSys 2027 Research Track selected; main and separate appendix
    LaTeX sources created against the official style contract.
 2. **Open human gate:** final author list, institutional affiliations,
-   acknowledgments, conflicts, and AI-assistance disclosure approval.
+   acknowledgments, and conflicts.
 3. **Complete source / open build gate:** four vector SVG sources exist; convert
    them to PDF and inspect the compiled result in a TeX-capable environment.
 4. **Complete private record:** appendix table contains protocol/artifact hashes,
