@@ -12,6 +12,7 @@ import statistics
 from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
+from typing import cast
 
 from nemo_rl.algorithms.async_utils.fixed_pool import (
     load_fixed_pool_manifest,
@@ -105,7 +106,14 @@ def _load_design(path: Path, expected_seed: int) -> tuple[str, tuple[DesignItem,
         "generation_seed",
         "items",
     }
-    expected_generation = dict(materializer.POOL_SPECS).get(expected_seed)
+    expected_generation = next(
+        (
+            generation_seed
+            for selection_seed, generation_seed in materializer.POOL_SPECS
+            if selection_seed == expected_seed
+        ),
+        None,
+    )
     if (
         not isinstance(raw, dict)
         or set(raw) != required
@@ -515,8 +523,9 @@ def main() -> None:
     args = parser.parse_args()
     if args.output.exists():
         raise FileExistsError(f"refusing to overwrite {args.output}")
-    runs = dict(args.run)
-    if len(runs) != len(args.run):
+    parsed_runs = cast(list[tuple[int, Path]], args.run)
+    runs: dict[int, Path] = dict(parsed_runs)
+    if len(runs) != len(parsed_runs):
         raise DapoOperationalAnalysisError("duplicate run seed")
     result = analyze(runs, materialization_root=args.materialization_root)
     args.output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
