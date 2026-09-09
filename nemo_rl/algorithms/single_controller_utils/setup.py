@@ -35,6 +35,7 @@ from nemo_rl.algorithms.async_utils.scheduler_assay import (
     SchedulerAssayArm,
 )
 from nemo_rl.algorithms.async_utils.structured_scheduler_crossover import (
+    DapoSchedulerCrossoverPlan,
     SchedulerProtocolArm,
     SchedulerProtocolPlan,
     StructuredSchedulerCrossoverPlan,
@@ -400,7 +401,10 @@ def setup_single_controller(
             assert assay_config.arm_id is not None
             assert assay_config.order_seed is not None
             assay_plan = load_scheduler_protocol(assay_config.plan_path)
-            if isinstance(assay_plan, StructuredSchedulerCrossoverPlan):
+            if isinstance(
+                assay_plan,
+                (StructuredSchedulerCrossoverPlan, DapoSchedulerCrossoverPlan),
+            ):
                 assay_arm = assay_plan.arm(assay_config.arm_id)
                 pool = assay_plan.pool(assay_config.order_seed)
                 expected_generation_seed = pool.generation_study_seed
@@ -444,6 +448,20 @@ def setup_single_controller(
                 raise ValueError(
                     "structured crossover runtime does not match frozen plan"
                 )
+            if isinstance(assay_plan, DapoSchedulerCrossoverPlan) and (
+                generation_config.get("max_new_tokens") != assay_plan.max_new_tokens
+                or master_config.async_rl.max_inflight_prompts
+                != assay_plan.max_inflight_prompts
+                or master_config.async_rl.max_buffered_rollouts
+                != assay_plan.max_buffered_rollouts
+                or data_config["max_input_seq_length"]
+                != assay_plan.data_max_input_seq_length
+                or policy_config.get("hf_config_overrides", {}).get(
+                    "max_position_embeddings"
+                )
+                != assay_plan.hf_config_override_max_position_embeddings
+            ):
+                raise ValueError("DAPO crossover runtime does not match frozen plan")
 
     # TODO: add validate dataset wiring.
     use_nemo_gym = _should_use_nemo_gym(cast(GrpoMasterConfig, master_config))

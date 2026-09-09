@@ -420,6 +420,9 @@ def _make_pool(
     selection_seed: int,
     generation_seed: int,
     prompts: Sequence[UniquePrompt],
+    design_id: str = DESIGN_ID,
+    analysis_status: str = "candidate_operational_workload_latency_discovery",
+    protocol_sha256: str = PROTOCOL_SHA256,
 ) -> dict[str, object]:
     source_records: dict[str, list[dict[str, object]]] = {
         source_id: [] for source_id in SOURCE_IDS
@@ -436,9 +439,9 @@ def _make_pool(
             "source_revision": DATASET_REVISION,
             "source_split": "train",
             "source_dataset_index": prompt.first_source_index,
-            "source_prompt_id": _opaque(key, DESIGN_ID, prompt.canonical_sha256),
+            "source_prompt_id": _opaque(key, design_id, prompt.canonical_sha256),
             "repeated_prompt_cluster_id": _opaque(
-                key, DESIGN_ID, "cluster", prompt.canonical_sha256
+                key, design_id, "cluster", prompt.canonical_sha256
             ),
             "canonical_prompt_sha256": prompt.canonical_sha256,
             "source_extra_index": prompt.source_extra_index,
@@ -474,7 +477,7 @@ def _make_pool(
             {
                 "ordinal": ordinal,
                 "pool_item_id": _opaque(
-                    key, DESIGN_ID, selection_seed, generation_seed, ordinal
+                    key, design_id, selection_seed, generation_seed, ordinal
                 ),
                 "source_prompt_id": source_prompt_id,
                 "source_id": source_id,
@@ -530,10 +533,10 @@ def _make_pool(
     _write(root / manifest_name, manifest_raw)
     design = {
         "schema_version": 1,
-        "analysis_status": "candidate_operational_workload_latency_discovery",
+        "analysis_status": analysis_status,
         "calibration_only": True,
         "confirmatory_eligible": False,
-        "protocol_sha256": PROTOCOL_SHA256,
+        "protocol_sha256": protocol_sha256,
         "fixed_pool_id": manifest["pool_id"],
         "selection_seed": selection_seed,
         "generation_seed": generation_seed,

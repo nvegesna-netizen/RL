@@ -214,6 +214,12 @@ DAPO_OPERATIONAL_PROTOCOL_SHA256: Final[str] = (
 DAPO_OPERATIONAL_SELECTION_SEEDS: Final[frozenset[int]] = frozenset(
     {47001, 47002, 47003}
 )
+DAPO_CROSSOVER_PROTOCOL_SHA256: Final[str] = (
+    "c49f9604225db847eded1d298c592938299fb3c3d508cf60d2b598f1e8b604c7"
+)
+DAPO_CROSSOVER_SELECTION_SEEDS: Final[frozenset[int]] = frozenset(
+    {48001, 48002, 48003, 48004}
+)
 DAPO_OPERATIONAL_SOURCE_IDS: Final[tuple[str, str]] = (
     "dapo_math_a",
     "dapo_math_b",
@@ -1368,15 +1374,19 @@ def validate_structured_generation_scheduler_crossover_manifest_design(
 
 def validate_dapo_operational_latency_discovery_manifest_design(
     manifest: FixedPoolManifest,
+    *,
+    expected_selection_seeds: frozenset[int] = DAPO_OPERATIONAL_SELECTION_SEEDS,
+    expected_protocol_sha256: str = DAPO_OPERATIONAL_PROTOCOL_SHA256,
+    study_label: str = "DAPO discovery",
 ) -> None:
     """Enforce one deduplicated DAPO operational-latency discovery pool."""
-    if manifest.order_seed not in DAPO_OPERATIONAL_SELECTION_SEEDS:
-        raise FixedPoolManifestError("DAPO discovery selection seed mismatch")
+    if manifest.order_seed not in expected_selection_seeds:
+        raise FixedPoolManifestError(f"{study_label} selection seed mismatch")
     if (
         manifest.model_revision != DAPO_OPERATIONAL_MODEL_REVISION
-        or manifest.design_protocol_sha256 != DAPO_OPERATIONAL_PROTOCOL_SHA256
+        or manifest.design_protocol_sha256 != expected_protocol_sha256
     ):
-        raise FixedPoolManifestError("DAPO discovery model or protocol mismatch")
+        raise FixedPoolManifestError(f"{study_label} model or protocol mismatch")
     if tuple(source.source_id for source in manifest.sources) != (
         DAPO_OPERATIONAL_SOURCE_IDS
     ):
@@ -1488,6 +1498,18 @@ def validate_dapo_operational_latency_discovery_manifest_design(
         canonical_prompts.add(canonical_prompt_sha)
     if len(canonical_prompts) != 16:
         raise FixedPoolManifestError("DAPO discovery canonical prompts are not unique")
+
+
+def validate_dapo_scheduler_crossover_manifest_design(
+    manifest: FixedPoolManifest,
+) -> None:
+    """Enforce one untouched-holdout DAPO scheduler-crossover pool."""
+    validate_dapo_operational_latency_discovery_manifest_design(
+        manifest,
+        expected_selection_seeds=DAPO_CROSSOVER_SELECTION_SEEDS,
+        expected_protocol_sha256=DAPO_CROSSOVER_PROTOCOL_SHA256,
+        study_label="DAPO crossover",
+    )
 
 
 def _validate_structured_generation_manifest_design(
@@ -1667,6 +1689,8 @@ def validate_fixed_pool_manifest_design(
         validate_structured_generation_scheduler_crossover_manifest_design(manifest)
     elif design_id == "dapo_math_operational_latency_discovery_v2":
         validate_dapo_operational_latency_discovery_manifest_design(manifest)
+    elif design_id == "dapo_math_scheduler_crossover_v1":
+        validate_dapo_scheduler_crossover_manifest_design(manifest)
     else:
         raise FixedPoolManifestError(f"unsupported fixed-pool design_id: {design_id!r}")
 
