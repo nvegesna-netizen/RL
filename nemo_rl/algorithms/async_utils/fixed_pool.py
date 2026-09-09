@@ -1375,11 +1375,15 @@ def validate_structured_generation_scheduler_crossover_manifest_design(
 def validate_dapo_operational_latency_discovery_manifest_design(
     manifest: FixedPoolManifest,
     *,
-    expected_selection_seeds: frozenset[int] = DAPO_OPERATIONAL_SELECTION_SEEDS,
-    expected_protocol_sha256: str = DAPO_OPERATIONAL_PROTOCOL_SHA256,
+    expected_selection_seeds: frozenset[int] | None = None,
+    expected_protocol_sha256: str | None = None,
     study_label: str = "DAPO discovery",
 ) -> None:
     """Enforce one deduplicated DAPO operational-latency discovery pool."""
+    if expected_selection_seeds is None:
+        expected_selection_seeds = DAPO_OPERATIONAL_SELECTION_SEEDS
+    if expected_protocol_sha256 is None:
+        expected_protocol_sha256 = DAPO_OPERATIONAL_PROTOCOL_SHA256
     if manifest.order_seed not in expected_selection_seeds:
         raise FixedPoolManifestError(f"{study_label} selection seed mismatch")
     if (
