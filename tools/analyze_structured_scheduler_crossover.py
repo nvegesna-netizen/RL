@@ -127,6 +127,26 @@ def _current_clean_commit(repo_root: Path) -> str:
     return commit
 
 
+def _load_validated_pool_manifest(
+    *, copied_manifest_path: Path, materialization_manifest_path: Path
+) -> FixedPoolManifest:
+    """Validate the immutable pool at its source while binding the run copy."""
+    try:
+        copied_raw = copied_manifest_path.read_bytes()
+        materialization_raw = materialization_manifest_path.read_bytes()
+    except OSError as error:
+        raise StructuredSchedulerCrossoverAnalysisError(
+            f"cannot read copied or materialization manifest: {error}"
+        ) from error
+    _require(
+        copied_raw == materialization_raw,
+        "run manifest is not byte-identical to the materialization manifest",
+    )
+    manifest = load_fixed_pool_manifest(materialization_manifest_path)
+    validate_fixed_pool_materialization(manifest)
+    return manifest
+
+
 def load_design(path: Path) -> tuple[str, tuple[DesignItem, ...]]:
     raw = json.loads(path.read_text())
     required = {
@@ -410,6 +430,7 @@ def analyze_run(
     plan: StructuredSchedulerCrossoverPlan,
     arm: StructuredSchedulerCrossoverArm,
     order_seed: int,
+    materialization_manifest_path: Path,
 ) -> dict[str, Any]:
     trace_path = run_dir / "scheduler_trace.v1.jsonl"
     manifest_path = run_dir / "fixed_pool_manifest.v1.json"
@@ -417,8 +438,10 @@ def analyze_run(
     _require(trace_path.is_file(), f"missing trace: {trace_path}")
     _require(manifest_path.is_file(), f"missing manifest: {manifest_path}")
     _require(design_path.is_file(), f"missing design: {design_path}")
-    manifest = load_fixed_pool_manifest(manifest_path)
-    validate_fixed_pool_materialization(manifest)
+    manifest = _load_validated_pool_manifest(
+        copied_manifest_path=manifest_path,
+        materialization_manifest_path=materialization_manifest_path,
+    )
     validate_fixed_pool_manifest_design(manifest, plan.source_design_id)
     pool = plan.pool(order_seed)
     design_pool_id, items = load_design(design_path)
@@ -562,6 +585,7 @@ def analyze_block(
     plan: StructuredSchedulerCrossoverPlan,
     order_seed: int,
     runs: Mapping[str, Path],
+    materialization_manifest_path: Path,
 ) -> dict[str, Any]:
     pool = plan.pool(order_seed)
     expected = {arm.arm_id for arm in plan.arms}
@@ -572,6 +596,7 @@ def analyze_block(
             plan=plan,
             arm=plan.arm(arm_id),
             order_seed=order_seed,
+            materialization_manifest_path=materialization_manifest_path,
         )
         for arm_id in pool.arm_execution_order
     }
@@ -625,6 +650,7 @@ def main() -> None:
     parser.add_argument("--plan", type=Path, required=True)
     parser.add_argument("--order-seed", type=int, required=True)
     parser.add_argument("--run", action="append", required=True, metavar="ARM=DIR")
+    parser.add_argument("--pool-manifest", type=Path, required=True)
     parser.add_argument("--repo-root", type=Path, default=Path.cwd())
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
@@ -639,7 +665,12 @@ def main() -> None:
         _require(bool(separator and arm_id and path), f"invalid --run {assignment!r}")
         _require(arm_id not in runs, f"duplicate run arm {arm_id!r}")
         runs[arm_id] = Path(path)
-    result = analyze_block(plan=plan, order_seed=args.order_seed, runs=runs)
+    result = analyze_block(
+        plan=plan,
+        order_seed=args.order_seed,
+        runs=runs,
+        materialization_manifest_path=args.pool_manifest,
+    )
     if args.output.exists():
         raise FileExistsError(f"refusing to overwrite {args.output}")
     args.output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
