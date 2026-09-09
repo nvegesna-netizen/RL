@@ -1,0 +1,96 @@
+{
+  "automatic_extension": false,
+  "automatic_retry": false,
+  "cells": {
+    "llama3p2_1b_gsm8k": {
+      "assignment_domain": "m4-opportunity-loss-llama3p2-1b-gsm8k-neutral-qualification-v1",
+      "assignment_seed": 20261004,
+      "config": "examples/configs/grpo_math_1B_megatron_single_controller_m4_llama3p2_1b_gsm8k_neutral_qualification.yaml",
+      "config_sha256": "70d42cbae07c636a84f82db6d2e14592a432a75358e608698954dd0835e9e783",
+      "workload": "GSM8K"
+    },
+    "llama3p2_1b_openmath": {
+      "assignment_domain": "m4-opportunity-loss-llama3p2-1b-openmath-neutral-qualification-v1",
+      "assignment_seed": 20261003,
+      "config": "examples/configs/grpo_math_1B_megatron_single_controller_m4_llama3p2_1b_openmath_neutral_qualification.yaml",
+      "config_sha256": "c9c97f2deae79312055708b7d84a1b42044da224609fd1c7453b45534fd126d8",
+      "workload": "OpenMathInstruct-2"
+    }
+  },
+  "decision_gates_each_cell": {
+    "binary_reward_support_required": [
+      0,
+      1
+    ],
+    "causal_estimate_allowed": false,
+    "complete_trainer_steps_required": 32,
+    "corrected_observer_duty_maximum": 0.01,
+    "minimum_opportunity_groups_per_observed_start_version": 15,
+    "minimum_projected_primary_assignments": 6900,
+    "projection_safety_factor": 1.25,
+    "qualification_data_allowed_in_any_causal_estimator": false,
+    "resource_fit_required": true,
+    "two_gpu_projected_gpu_hour_maximum": 8.0,
+    "whole_run_projected_wall_hour_maximum": 4.0
+  },
+  "frozen_acquisition_geometry_each_cell": {
+    "burn_in_start_versions": [
+      0,
+      7
+    ],
+    "primary_start_versions": [
+      8,
+      407
+    ],
+    "primary_version_count": 400,
+    "terminal_guard_start_versions": [
+      408,
+      447
+    ],
+    "trainer_steps": 448
+  },
+  "model": "meta-llama/Llama-3.2-1B-Instruct",
+  "neutral_release_configuration": {
+    "arms": [
+      {
+        "delay_seconds": 0.0,
+        "label": "neutral",
+        "mass": 1
+      }
+    ],
+    "controlled_release_enabled": true
+  },
+  "preflight_evidence": {
+    "artifact_sha256": "041388f9259c0c10c0441ac38da0a2ba59c6cdb55ae87ec5ac9f041308419b89",
+    "lock_sha256": "e57db951189ed4c82a0386bba97f2b3d9d815350d2930873deb256754f84ea47",
+    "result_record_sha256": "94449cd17fae15eda5a8763adca74bd98f1207d0dfa9ee56a85d28dfdc75b536",
+    "summary_sha256": "ffbe586d5f6c974b754c3ad38180043b8f6be85a8b51f41b2e8686135b11831d"
+  },
+  "qualification_instrument": {
+    "causal_intervention": false,
+    "qualification_observations_enter_estimators": false,
+    "trainer_steps_each_cell": 32
+  },
+  "release": {
+    "authorized_submission_count": 2,
+    "authorized_workloads": [
+      "llama3p2_1b_openmath_neutral_qualification",
+      "llama3p2_1b_gsm8k_neutral_qualification"
+    ],
+    "qualification_authorized": true,
+    "required_launcher": "runllm.py --no_wait",
+    "scientific_acquisition_authorized": false,
+    "submission_attempt_limit_each_cell": 1,
+    "submit_both_before_terminal_interpretation": true,
+    "user_authorization": "do the next step"
+  },
+  "resources_each_cell": {
+    "gpus": 2,
+    "nodes": 1,
+    "qualification_slurm_time_limit": "01:30:00",
+    "trainer_steps": 32,
+    "wall_clock_cap_hours": 4.0
+  },
+  "schema": "m4-llama-family-transport-paired-neutral-qualification-plan-v1",
+  "status": "AUTHORIZED_PAIRED_QUALIFICATION_DESIGN_PENDING_PACKAGE_FREEZE"
+}
