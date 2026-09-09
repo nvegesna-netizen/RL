@@ -4,10 +4,13 @@
 
 The current package is sufficient for a complete causal systems-measurement
 paper. Its strongest contribution is the validated randomized instrument and
-the prospective evidence sequence, not a new RL algorithm. The manuscript is
-submission-ready after editorial polishing and venue formatting, but the likely
-acceptance ceiling depends on whether the venue requires downstream model-quality
-evidence from every systems measurement paper.
+the prospective evidence sequence, not a new RL algorithm. MLSys 2027 Research
+Track is the selected target, and a complete main-paper/appendix source now
+exists. Scientific content is ready for human review; submission remains gated
+on author metadata, PDF compilation/page fitting, dependency-version recovery,
+and anonymous artifact preparation. The likely acceptance ceiling still
+depends on how strongly reviewers demand downstream model-quality evidence from
+a systems measurement paper.
 
 ## Likely major questions
 
@@ -57,10 +60,13 @@ heterogeneity is itself an observed result. The initial d10 positive control
 supports the mechanism's dose ordering, but the definitive grid does not map a
 full dose-response curve.
 
-**Severity:** Medium.
+**Severity:** Low after offline descriptive audit.
 
-**Action:** Report update cadence and the five-second/cadence ratio per cell if
-those quantities can be reconstructed offline. Do not introduce a post hoc
+**Action completed:** The authenticated lifecycle ledgers provide 400 common-
+window inter-update intervals per cell. Median update times range from 7.769 to
+13.201 seconds, so five seconds is 0.379--0.644 median update intervals. GSM8K
+has the largest ratio at each model scale, but Qwen3-1.7B/GSM8K has the smallest
+effect. Report this as descriptive context only; do not introduce a post hoc
 normalized-dose causal claim. A future larger-model protocol should freeze its
 dose rule prospectively.
 
@@ -131,18 +137,25 @@ training-outcome experiment.
 | Can all code tests run on the local host? | Static checks pass; local environments lack pytest/Ray dependencies. Prior EOS preflights passed pinned suites. | Partial |
 | Are large artifacts publicly available? | They are outside Git and presently referenced by hashes. | Open distribution question |
 
-## Editorial and presentation gaps
+## Editorial and presentation status
 
-1. Select a target venue and convert the Markdown draft into its template.
-2. Add author list, institutional affiliations, acknowledgments, and the exact
-   hardware/software table.
-3. Turn the Mermaid diagrams into venue-compatible vector figures if Mermaid is
-   unsupported.
-4. Add a compact appendix table containing all protocol hashes, artifact hashes,
-   source commits, and pipeline IDs from the canonical evidence records.
-5. Verify every related-work entry and create a BibTeX file before submission.
-6. Decide how authenticated raw artifacts can be made available to reviewers
-   without exposing internal infrastructure.
+1. **Complete:** MLSys 2027 Research Track selected; main and separate appendix
+   LaTeX sources created against the official style contract.
+2. **Open human gate:** final author list, institutional affiliations,
+   acknowledgments, conflicts, and AI-assistance disclosure approval.
+3. **Complete source / open build gate:** four vector SVG sources exist; convert
+   them to PDF and inspect the compiled result in a TeX-capable environment.
+4. **Complete private record:** appendix table contains protocol/artifact hashes,
+   source commits, pipeline states, assignments, and observer duty. The blind
+   supplement uses opaque acquisition IDs.
+5. **Complete:** related work verified against primary records and a 16-entry
+   all-author BibTeX database created.
+6. **Planned / approval required:** anonymous reviewer bundle, scrub gates,
+   clean-room credential-free test, and controlled raw-ledger fallback are
+   specified; nothing has been externally released.
+7. **Open evidence-recovery gate:** recover exact driver, CUDA, PyTorch, vLLM,
+   Megatron, CPU, and memory details from authenticated logs where available;
+   do not infer missing versions.
 
 ## Go/no-go decision
 

@@ -1,0 +1,101 @@
+{
+  "analysis_role": "retrospective_descriptive_not_a_registered_causal_estimand",
+  "cells": {
+    "qwen3_0p6b_gsm8k": {
+      "five_seconds_over_median_cadence": 0.6435811378169982,
+      "interval_count": 400,
+      "lifecycle_path": "session/20260907_m4_cross_study_harmonization/grid-acquisition-failure-terminal-artifact/workspace/assets/basic/m4-qwen3-0p6b-gsm8k-grid-control-d5-acquisition/m4-grid-lifecycle.jsonl",
+      "lifecycle_sha256": "ac032de183ec3cb602e83afad92da587b664c3c5a8e20a4fb31eeaf333fa3c84",
+      "mean_seconds": 8.124242404285004,
+      "median_seconds": 7.7690281865,
+      "model": "Qwen3-0.6B",
+      "p05_seconds": 4.912188818900001,
+      "p25_seconds": 6.104990878500001,
+      "p75_seconds": 9.86711927125,
+      "p95_seconds": 12.37997376125,
+      "workload": "GSM8K"
+    },
+    "qwen3_0p6b_numinamath": {
+      "five_seconds_over_median_cadence": 0.416348521923652,
+      "interval_count": 400,
+      "lifecycle_path": "session/20260907_m4_cross_study_harmonization/numinamath-0p6b-acquisition-terminal-artifact/m4-numinamath-0p6b-lifecycle.jsonl",
+      "lifecycle_sha256": "0ff343743550cd5277538dd8f5e164a2bb67afd0b8e9dd4a265e2bc36fc7636f",
+      "mean_seconds": 12.211769239369993,
+      "median_seconds": 12.009169570000001,
+      "model": "Qwen3-0.6B",
+      "p05_seconds": 8.266645106,
+      "p25_seconds": 9.90227394075,
+      "p75_seconds": 14.27299631775,
+      "p95_seconds": 16.9510368826,
+      "workload": "NuminaMath"
+    },
+    "qwen3_0p6b_openmath": {
+      "five_seconds_over_median_cadence": 0.42094103011562195,
+      "interval_count": 400,
+      "lifecycle_path": "session/20260907_m4_cross_study_harmonization/qwen3_0p6b_openmath/m4-opportunity-loss-followup-lifecycle.jsonl",
+      "lifecycle_sha256": "1852d21b98125c2e07c3cfa20f09a33393e13bd656ed684846bafea29a3c06ec",
+      "mean_seconds": 12.01158130850999,
+      "median_seconds": 11.878148344500001,
+      "model": "Qwen3-0.6B",
+      "p05_seconds": 7.4633064722,
+      "p25_seconds": 9.48118731325,
+      "p75_seconds": 14.1693284655,
+      "p95_seconds": 17.55048812984999,
+      "workload": "OpenMath"
+    },
+    "qwen3_1p7b_gsm8k": {
+      "five_seconds_over_median_cadence": 0.5701683174167723,
+      "interval_count": 400,
+      "lifecycle_path": "session/20260906_m4_gsm8k_r2/acquisition-terminal-artifact/workspace/assets/basic/m4-qwen3-1p7b-gsm8k-confirmatory-control-d5-acquisition-r2/m4-gsm8k-r2-lifecycle.jsonl",
+      "lifecycle_sha256": "aba8b910f0928a4776d58cc8ef56dac2acd13c1d90516dd5144fdadf90ed6b83",
+      "mean_seconds": 9.109348549072502,
+      "median_seconds": 8.7693402935,
+      "model": "Qwen3-1.7B",
+      "p05_seconds": 6.2999296537,
+      "p25_seconds": 7.112457643250001,
+      "p75_seconds": 10.72247669525,
+      "p95_seconds": 13.256566495299998,
+      "workload": "GSM8K"
+    },
+    "qwen3_1p7b_numinamath": {
+      "five_seconds_over_median_cadence": 0.37875253433305583,
+      "interval_count": 400,
+      "lifecycle_path": "session/20260907_m4_cross_study_harmonization/numinamath-1p7b-acquisition-terminal-artifact/m4-numinamath-1p7b-lifecycle.jsonl",
+      "lifecycle_sha256": "79b017e7a740a01b4cc81e8ba83ed0746a4a9a345bd53e9136dc38cfa5042935",
+      "mean_seconds": 13.630685538055006,
+      "median_seconds": 13.2012317985,
+      "model": "Qwen3-1.7B",
+      "p05_seconds": 9.1609231227,
+      "p25_seconds": 10.5685857065,
+      "p75_seconds": 16.230523663,
+      "p95_seconds": 19.638891254449998,
+      "workload": "NuminaMath"
+    },
+    "qwen3_1p7b_openmath": {
+      "five_seconds_over_median_cadence": 0.3807922569959573,
+      "interval_count": 400,
+      "lifecycle_path": "session/20260907_m4_cross_study_harmonization/qwen3_1p7b_openmath/m4-qwen3-1p7b-confirmatory-lifecycle.jsonl",
+      "lifecycle_sha256": "71238a4c2b7ba0aceeb206514e8564719688d594989f19396653de483c37ba47",
+      "mean_seconds": 13.542130756667511,
+      "median_seconds": 13.1305190905,
+      "model": "Qwen3-1.7B",
+      "p05_seconds": 9.00831559945,
+      "p25_seconds": 10.720666772500001,
+      "p75_seconds": 15.76416804975,
+      "p95_seconds": 19.535708994349996,
+      "workload": "OpenMath"
+    }
+  },
+  "delay_seconds": 5.0,
+  "interval_definition": "timestamp(version+1)-timestamp(version) for preceding learner versions 8-407",
+  "limitations": [
+    "The delay-to-median ratio is descriptive and was not a registered endpoint.",
+    "Cadence is an observed post-assignment system property and is not used to renormalize causal effects.",
+    "The fixed five-second intervention remains the treatment in every registered analysis."
+  ],
+  "preceding_version_window": [
+    8,
+    407
+  ],
+  "schema": "m4-publication-update-cadence-sensitivity-v1"
+}

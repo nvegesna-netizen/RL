@@ -1,0 +1,128 @@
+\documentclass{article}
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amsmath,amssymb}
+\usepackage{hyperref}
+\newcommand{\theHalgorithm}{\arabic{algorithm}}
+\usepackage{mlsys2025}
+
+\mlsystitlerunning{Causal Cost of Delayed Rollout Release}
+
+\begin{document}
+\twocolumn[
+\mlsystitle{Measuring the Causal Cost of Delayed Rollout Release in Asynchronous LLM Reinforcement Learning}
+
+% Replace with the complete human-approved roster before submission. Blind mode
+% hides this block, but it must not remain a placeholder in the uploaded source.
+\begin{mlsysauthorlist}
+\mlsysauthor{Anonymous Author}{anon}
+\end{mlsysauthorlist}
+\mlsysaffiliation{anon}{Anonymous Institution}
+\mlsyskeywords{asynchronous reinforcement learning, causal measurement, rollout scheduling, LLM systems}
+
+\vskip 0.3in
+\begin{abstract}
+Asynchronous reinforcement learning overlaps rollout generation and policy updates, but release delay can cause a rollout to miss a gradient opportunity before reaching the learner. We introduce M4, a controlled-release instrument that measures pre-release opportunity, randomizes an added zero- or five-second delay, and audits terminal delivery and version advance. An initial acquisition validated the instrument and mechanism but was inconclusive against a prespecified 0.20 materiality threshold; a prospectively redesigned follow-up was material. Six definitive Qwen3-by-math-workload cells contain 49,153 assignments: five are material, while one is positive but below threshold. A dependency-aware synthesis preserves shared GSM8K anchors, finds interaction correlation 0.38--0.41, and yields simultaneous intervals excluding zero. The results establish a material, heterogeneous opportunity-loss effect in the tested systems, not an effect on final model quality or a claim beyond those environments.
+\end{abstract}
+]
+\printAffiliationsAndNotice{}
+
+\section{Introduction}
+Asynchronous LLM reinforcement learning improves accelerator utilization by overlapping rollout generation and policy optimization. The overlap also makes experience time-dependent: while a rollout waits, the learner may advance or fill the near-term window that could have consumed it. A delayed rollout can contain useful signal yet lose its opportunity to contribute to a gradient update.
+
+Observational latency comparisons do not identify that cost. Difficult prompts may both run longer and produce different rewards or gradient opportunity, while batching, load, and model scale jointly affect latency and cadence. We therefore introduce M4, a randomized controlled-release instrument. For each eligible epoch-specific group, M4 records pre-release opportunity $Q$, assigns immediate release or an added five-second hold, and observes terminal delivery. Its estimand is the treatment-induced change in lost opportunity normalized by pre-delay opportunity.
+
+The evidence was accumulated sequentially. A 224-step acquisition established instrument operation and replicated the proposed version-advance mechanism, but its interval crossed the registered materiality threshold. It remained inconclusive. A new design then froze balanced assignment, pre-treatment adjustment, twice the training horizon, and an outcome-blind power gate. That follow-up was material. Model and workload transports and a prospectively paired third workload completed a $2\times3$ map.
+
+We contribute (i) a protocol-bound causal instrument for opportunity loss; (ii) a prospective sequence that separates pipeline completion, mechanism support, and causal materiality; (iii) six definitive cells with 49,153 assignments and complete terminal scoring; and (iv) a dependency-aware analysis showing heterogeneous model-scale effects across workloads without treating shared references as independent replications.
+
+\section{Related Work}
+GRPO was introduced for mathematical reasoning in DeepSeekMath~\cite{shao2024deepseekmath}. AReaL~\cite{fu2025areal}, PipelineRL~\cite{piche2025pipelinerl}, and DORA~\cite{hu2026dora} develop asynchronous LLM-RL systems and mechanisms for efficiency, staleness control, or data integrity. Other work analyzes staleness scaling~\cite{song2026staleness} or changes optimization using gradient alignment and adaptive trust regions~\cite{xu2026gac,yang2026stale}. RollPacker~\cite{gao2025rollpacker} and TailSieve~\cite{xu2026tailsieve} target long-tail rollout scheduling.
+
+M4 addresses a narrower measurement problem. It does not propose an optimizer or scheduler. It perturbs release time after measuring opportunity and estimates the causal destruction of normalized gradient opportunities. Randomization separates controlled delay from naturally slow examples, while event ledgers and observer-duty audits make the systems path inspectable.
+
+\section{Setting and Estimand}
+All definitive experiments use single-controller GRPO in NeMo RL~\cite{nvidia2025nemorl}, asynchronous vLLM generation, and two H100 GPUs in one scheduled workload. Models are Qwen3-0.6B and Qwen3-1.7B~\cite{qwen2025qwen3}; workloads are OpenMath~\cite{toshniwal2024openmath}, GSM8K~\cite{cobbe2021gsm8k}, and NuminaMath~\cite{numinamath2024dataset}. The assignment unit is an epoch-specific prompt group with eight sibling generations.
+
+Let $A_i\in\{0,1\}$ indicate control or added five-second delay, $Q_i\ge0$ be opportunity recorded before release, and $D_i$ indicate that the opportunity was not delivered. The finite-sample unadjusted contrast is
+\begin{equation}
+\Delta_L=\frac{E[Q D\mid A=1]-E[Q D\mid A=0]}{E[Q\mid A=0]}.
+\end{equation}
+The registered primary estimator is a cross-fitted augmentation of this randomized contrast using only $Q$ and $1[Q=0]$ as pre-treatment covariates, eight contiguous start-version folds, and pooled pre-delay normalization. Positive values mean added delay destroys more opportunity. The registered operational materiality threshold is $0.20$; ``not material'' does not mean a zero causal effect.
+
+Terminal missingness is bounded by adversarial endpoint assignment, with at most 1\% allowed per arm. Dependence is indexed by start version. We use four-lag Newey--West HAC inference~\cite{newey1987hac} and a 20,000-draw circular-block bootstrap with eight-version blocks~\cite{politis1992circular}. The cell envelope is the union of both intervals across missingness endpoints. All definitive terminal dispositions are observed.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{causal_diagram.pdf}
+\caption{Causal structure. Assignment is randomized within a cell after measuring $Q$; model and workload are fixed contexts, not randomized factors.}
+\label{fig:dag}
+\end{figure}
+
+\section{Instrument and Prospective Sequence}
+M4 combines a common opportunity ledger, randomized controlled release, terminal bounds, detached protocol-bound inference, and corrected observer-duty measurement. Mechanism checks test whether delay breaks the direct release-to-train chain and increases learner-version advance. Source, protocol, configuration, and terminal artifacts are SHA-256 bound.
+
+The first 224-step acquisition scored all 3,298 primary assignments. Direct-chain rates were 0, 0.267, and 0.586 for control, d5, and a d10 positive-control arm; mean version advances were 0, 0.437, and 0.805. The dose ordering supported the mechanism. The primary d5 estimate was 0.210 with envelope $[0.116,0.302]$, crossing 0.20; the registered decision was therefore \texttt{INCONCLUSIVE}.
+
+That completed artifact informed design, not follow-up outcomes. The redesigned study removed d10, balanced control and d5, froze the adjusted estimator, and doubled training to 448 steps. A 20,000-draw version-cluster simulation estimated 0.816 power under a prospective alternative of 0.25, above the frozen 0.80 gate. The Qwen3-0.6B/OpenMath follow-up scored 7,199 assignments and estimated 0.305 with envelope $[0.276,0.335]$: \texttt{MATERIAL}. No outcome-guided extension occurred.
+
+One-axis transports then changed model scale on OpenMath and workload to GSM8K. A prospectively designed Qwen3-0.6B/GSM8K cell completed the $2\times2$ grid. Finally, both NuminaMath protocols were frozen and submitted as a pair before either outcome was inspected. These cells supply a third workload while reusing immutable GSM8K anchors for the registered comparison.
+
+\section{Results}
+\begin{table*}[t]
+\caption{Registered full-window causal results. Envelopes are conservative 95\% unions of HAC and block-bootstrap intervals.}
+\label{tab:cells}
+\centering
+\small
+\begin{tabular}{llrrlc}
+\toprule
+Workload & Model & Assignments & Estimate & 95\% envelope & Decision \\
+\midrule
+OpenMath & Qwen3-0.6B & 7,199 & 0.3054 & [0.2759, 0.3349] & MATERIAL \\
+OpenMath & Qwen3-1.7B & 8,673 & 0.3025 & [0.2769, 0.3281] & MATERIAL \\
+GSM8K & Qwen3-0.6B & 9,573 & 0.2323 & [0.2108, 0.2533] & MATERIAL \\
+GSM8K & Qwen3-1.7B & 9,429 & 0.1378 & [0.1152, 0.1599] & NOT MATERIAL \\
+NuminaMath & Qwen3-0.6B & 7,229 & 0.3155 & [0.2878, 0.3429] & MATERIAL \\
+NuminaMath & Qwen3-1.7B & 7,050 & 0.2979 & [0.2615, 0.3340] & MATERIAL \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+Table~\ref{tab:cells} reports the authoritative full-window decisions. Five cells are material. Qwen3-1.7B/GSM8K is positive and precisely below 0.20, which argues against instrument failure and shows that operational materiality depends on execution context. The six acquisitions total 49,153 assignments.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{cell_forest_plot.pdf}
+\caption{Common-window cell estimates and conservative 95\% envelopes. The dashed line is the registered 0.20 threshold.}
+\label{fig:forest}
+\end{figure}
+
+Cross-cell analysis harmonizes fully scored start versions 8--407. Let $S_w=\Delta_{1.7B,w}-\Delta_{0.6B,w}$. The scale contrasts are $-0.007$ on OpenMath, $-0.090$ on GSM8K, and $-0.018$ on NuminaMath. Registered interactions are $S_{GSM8K}-S_{OpenMath}=-0.083$ with outer interval $[-0.137,-0.029]$ and $S_{GSM8K}-S_{NuminaMath}=-0.073$ with $[-0.131,-0.015]$.
+
+Both interactions contain the same two GSM8K cell estimates. A joint bootstrap therefore reuses identical GSM8K resamples in both contrasts while independently resampling the other cells. Analytic HAC covariance likewise includes both shared GSM8K variances. Interaction correlation is 0.379 under HAC and 0.405 under bootstrap. Max-standardized simultaneous intervals are $[-0.144,-0.022]$ and $[-0.138,-0.007]$, both excluding zero (Figure~\ref{fig:interaction}). A retrospective Wald test of equal scale effects across all workloads gives $\chi^2(2)=11.53$, $p=0.00314$. These joint results describe dependence; they do not overwrite prospective decisions.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{interaction_plot.pdf}
+\caption{Dependency-aware interaction estimates with simultaneous 95\% bootstrap intervals.}
+\label{fig:interaction}
+\end{figure}
+
+The direct-chain/version-advance mechanism replicated in every terminal cell. Corrected observer duty ranged from 0.00180 to 0.00329, below the frozen 0.01 ceiling. HAC and bootstrap intervals agree closely; adjusted and unadjusted estimates are positive in all cells. Missingness bounds collapse because terminal scoring is complete. Common-window estimates differ from registered full-window estimates by at most 0.0053. At threshold 0.10 all cells are material; at 0.20 five are material; at 0.25 the OpenMath and NuminaMath cells remain material while Qwen3-0.6B/GSM8K becomes inconclusive. An authenticated descriptive audit places five seconds at 0.379--0.644 median learner-update intervals across cells. GSM8K has the largest ratio at both scales, although Qwen3-1.7B/GSM8K has the smallest effect; heterogeneity is not monotone in this single cadence ratio. We do not renormalize the registered estimand post hoc.
+
+\section{Discussion and Limitations}
+The study supports three scoped conclusions: controlled release delay causes opportunity loss in the tested asynchronous GRPO cells; the loss is operationally material in most but not all cells; and the model-scale contrast varies across workloads. A universal delay tolerance would therefore obscure relevant runtime context.
+
+M4 measures a proximal systems consequence. Missing one gradient opportunity need not change final reward if later data compensate, while repeated loss of high-opportunity groups could compound. We measured neither final model quality nor convergence. The design covers only two small Qwen3 models, three math workloads, GRPO, one primary nonzero delay, two H100 GPUs, and one cluster environment. Model and workload are fixed rather than randomized factors. Distinct acquisition runs are treated as independent cells; unrecorded cluster-wide conditions could create residual cross-run dependence. NuminaMath is thus a prospective same-direction extension with a shared reference, not an independent four-cell replication.
+
+The Qwen3-0.6B/GSM8K acquisition also illustrates why pipeline status is not a scientific endpoint. Its pipeline completed all registered training and preserved immutable ledgers, then failed while invoking an incompatible post-run analyzer. Applying the preregistered correct analyzer without new data or protocol changes recovered its canonical result. We label the pipeline failed and the acquisition scientifically complete.
+
+\section{Reproducibility and Conclusion}
+Every acquisition binds source, protocol, raw ledgers, and terminal archive by SHA-256. Qualification data never enter estimators; failures remain documented; automatic retry and outcome-guided extension were prohibited. The supplement reports source commits, pipeline states, artifact hashes, observer duty, software identity, and offline robustness. Large raw artifacts remain outside Git pending anonymous access review.
+
+The evidence sequence is: validated instrument $\rightarrow$ replicated mechanism $\rightarrow$ inconclusive initial materiality acquisition $\rightarrow$ prospectively redesigned confirmation $\rightarrow$ cross-model/workload heterogeneity $\rightarrow$ prospective same-direction extension. Within six tested Qwen3-by-math-workload environments, a five-second release delay causes positive normalized gradient-opportunity loss and is material in five cells at the registered threshold. This supports a causal systems-measurement result while leaving final-quality consequences and broader generalization to new preregistered studies.
+
+\bibliography{../references}
+\bibliographystyle{mlsys2025}
+\end{document}

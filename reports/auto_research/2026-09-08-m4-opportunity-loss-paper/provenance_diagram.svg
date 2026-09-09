@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="360" viewBox="0 0 1180 360" role="img" aria-labelledby="title desc">
+<title id="title">Evidence provenance from source freeze to manuscript claims</title>
+<desc id="desc">Frozen source and protocol pass no-training preflight and qualification before one-shot acquisition. Immutable ledgers are authenticated, scored, analyzed, synthesized, and mapped to claims. Failed packaging is retained but excluded from estimators.</desc>
+<defs>
+  <marker id="a" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#334155"/></marker>
+  <style>.b{stroke-width:2;rx:8}.f{fill:#e0f2fe;stroke:#0369a1}.e{fill:#ecfdf5;stroke:#047857}.s{fill:#fff7ed;stroke:#c2410c}.x{fill:#f8fafc;stroke:#64748b}.t{font:14px Helvetica,Arial,sans-serif;fill:#17212b;text-anchor:middle}.n{font:12px Helvetica,Arial,sans-serif;fill:#475569;text-anchor:middle}.l{stroke:#334155;stroke-width:2;fill:none;marker-end:url(#a)}.d{stroke:#64748b;stroke-width:2;stroke-dasharray:6 5;fill:none;marker-end:url(#a)}</style>
+</defs>
+<rect width="100%" height="100%" fill="white"/>
+<rect class="b f" x="20" y="80" width="135" height="70"/><text class="t" x="87" y="108">Source commit +</text><text class="t" x="87" y="129">frozen protocol</text>
+<rect class="b f" x="180" y="80" width="135" height="70"/><text class="t" x="247" y="108">No-training</text><text class="t" x="247" y="129">preflight lock</text>
+<rect class="b f" x="340" y="80" width="135" height="70"/><text class="t" x="407" y="108">Neutral resource</text><text class="t" x="407" y="129">qualification</text>
+<rect class="b f" x="500" y="80" width="135" height="70"/><text class="t" x="567" y="108">One-shot</text><text class="t" x="567" y="129">acquisition</text>
+<rect class="b e" x="660" y="80" width="135" height="70"/><text class="t" x="727" y="108">Immutable raw</text><text class="t" x="727" y="129">event ledgers</text>
+<rect class="b e" x="820" y="80" width="135" height="70"/><text class="t" x="887" y="108">Hash auth +</text><text class="t" x="887" y="129">terminal scoring</text>
+<rect class="b e" x="980" y="80" width="175" height="70"/><text class="t" x="1067" y="108">Registered cell /</text><text class="t" x="1067" y="129">interaction analysis</text>
+<path class="l" d="M155 115 L180 115"/><path class="l" d="M315 115 L340 115"/><path class="l" d="M475 115 L500 115"/><path class="l" d="M635 115 L660 115"/><path class="l" d="M795 115 L820 115"/><path class="l" d="M955 115 L980 115"/>
+<rect class="b s" x="775" y="225" width="170" height="70"/><text class="t" x="860" y="253">Dependency-aware</text><text class="t" x="860" y="274">2×3 synthesis</text>
+<rect class="b s" x="980" y="225" width="175" height="70"/><text class="t" x="1067" y="253">Claims, tables,</text><text class="t" x="1067" y="274">figures, manuscript</text>
+<path class="l" d="M1067 150 L930 225"/><path class="l" d="M945 260 L980 260"/>
+<rect class="b x" x="20" y="225" width="220" height="70"/><text class="t" x="130" y="253">Failed preflight / packaging</text><text class="n" x="130" y="276">documented; excluded from estimators</text>
+<path class="d" d="M240 260 L820 140"/>
+<text class="n" x="455" y="326">Qualification data never enter causal estimators. Automatic retry and outcome-guided extension are prohibited.</text>
+</svg>

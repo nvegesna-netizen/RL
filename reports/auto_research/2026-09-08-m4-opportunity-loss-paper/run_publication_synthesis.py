@@ -288,15 +288,14 @@ def svg_forest(cells: dict[str, dict[str, object]], path: Path) -> None:
         ("0.6B · NuminaMath", "qwen3_0p6b_numinamath"),
         ("1.7B · NuminaMath", "qwen3_1p7b_numinamath"),
     ]
-    left, right, top, row = 210, 850, 55, 55
+    left, right, top, row = 210, 850, 30, 55
     x_min, x_max = 0.08, 0.37
     x = lambda value: left + (value - x_min) / (x_max - x_min) * (right - left)
     height = top + row * len(labels) + 70
     parts = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="900" height="{height}" viewBox="0 0 900 {height}">',
         '<rect width="100%" height="100%" fill="white"/>',
-        "<style>text{font-family:Arial,sans-serif;fill:#202124}.label{font-size:15px}.axis{font-size:13px}.title{font-size:18px;font-weight:700}</style>",
-        '<text x="20" y="28" class="title">M4 normalized opportunity-loss effects</text>',
+        "<style>text{font-family:Helvetica,Arial,sans-serif;fill:#202124}.label{font-size:15px}.axis{font-size:13px}</style>",
     ]
     for tick in (0.1, 0.15, 0.2, 0.25, 0.3, 0.35):
         parts.append(
@@ -318,6 +317,10 @@ def svg_forest(cells: dict[str, dict[str, object]], path: Path) -> None:
         parts.append(
             f'<line x1="{x(low):.1f}" y1="{y}" x2="{x(high):.1f}" y2="{y}" stroke="{color}" stroke-width="4"/>'
         )
+        for endpoint in (low, high):
+            parts.append(
+                f'<line x1="{x(endpoint):.1f}" y1="{y - 7}" x2="{x(endpoint):.1f}" y2="{y + 7}" stroke="{color}" stroke-width="2"/>'
+            )
         parts.append(f'<circle cx="{x(estimate):.1f}" cy="{y}" r="7" fill="{color}"/>')
     parts.append(
         f'<text x="{x(0.2) + 6:.1f}" y="{height - 49}" class="axis" fill="#d93025">registered materiality threshold</text>'
@@ -335,23 +338,22 @@ def svg_interactions(synthesis: dict[str, object], path: Path) -> None:
     x_min, x_max = -0.16, 0.04
     x = lambda value: left + (value - x_min) / (x_max - x_min) * (right - left)
     parts = [
-        '<svg xmlns="http://www.w3.org/2000/svg" width="900" height="250" viewBox="0 0 900 250">',
+        '<svg xmlns="http://www.w3.org/2000/svg" width="900" height="220" viewBox="0 0 900 220">',
         '<rect width="100%" height="100%" fill="white"/>',
-        "<style>text{font-family:Arial,sans-serif;fill:#202124}.label{font-size:15px}.axis{font-size:13px}.title{font-size:18px;font-weight:700}</style>",
-        '<text x="20" y="28" class="title">Dependency-aware model-by-workload interactions</text>',
+        "<style>text{font-family:Helvetica,Arial,sans-serif;fill:#202124}.label{font-size:15px}.axis{font-size:13px}</style>",
     ]
     for tick in (-0.15, -0.10, -0.05, 0.0):
         parts.append(
-            f'<line x1="{x(tick):.1f}" y1="42" x2="{x(tick):.1f}" y2="205" stroke="#e5e7eb"/>'
+            f'<line x1="{x(tick):.1f}" y1="15" x2="{x(tick):.1f}" y2="180" stroke="#e5e7eb"/>'
         )
         parts.append(
-            f'<text x="{x(tick):.1f}" y="230" text-anchor="middle" class="axis">{tick:.2f}</text>'
+            f'<text x="{x(tick):.1f}" y="205" text-anchor="middle" class="axis">{tick:.2f}</text>'
         )
     parts.append(
-        f'<line x1="{x(0.0):.1f}" y1="42" x2="{x(0.0):.1f}" y2="205" stroke="#202124" stroke-width="2"/>'
+        f'<line x1="{x(0.0):.1f}" y1="15" x2="{x(0.0):.1f}" y2="180" stroke="#202124" stroke-width="2"/>'
     )
     for index, (label, key) in enumerate(items):
-        y = 85 + index * 80
+        y = 60 + index * 80
         record = synthesis["reference_interactions"][key]
         low, high = record["simultaneous_bootstrap_interval"]
         estimate = record["estimate"]
@@ -359,6 +361,10 @@ def svg_interactions(synthesis: dict[str, object], path: Path) -> None:
         parts.append(
             f'<line x1="{x(low):.1f}" y1="{y}" x2="{x(high):.1f}" y2="{y}" stroke="#00897b" stroke-width="4"/>'
         )
+        for endpoint in (low, high):
+            parts.append(
+                f'<line x1="{x(endpoint):.1f}" y1="{y - 7}" x2="{x(endpoint):.1f}" y2="{y + 7}" stroke="#00897b" stroke-width="2"/>'
+            )
         parts.append(f'<circle cx="{x(estimate):.1f}" cy="{y}" r="7" fill="#00695c"/>')
     parts.append("</svg>")
     path.write_text("\n".join(parts) + "\n")

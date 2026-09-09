@@ -286,8 +286,8 @@ showed a larger direct-chain and version-advance response than d5, serving as a
 positive-control dose check.
 
 Corrected observer duty is below the frozen 0.01 ceiling in every definitive
-cell. Representative values are 0.00217 for Qwen3-0.6B/OpenMath, 0.00185 for
-Qwen3-1.7B/OpenMath, 0.00294 for Qwen3-1.7B/GSM8K, 0.00212 for
+cell: 0.00217 for Qwen3-0.6B/OpenMath, 0.00185 for Qwen3-1.7B/OpenMath, 0.00329
+for Qwen3-0.6B/GSM8K, 0.00294 for Qwen3-1.7B/GSM8K, 0.00212 for
 Qwen3-0.6B/NuminaMath, and 0.00180 for Qwen3-1.7B/NuminaMath. These measurements
 reduce concern that the observer itself generated a five-second-scale effect.
 
@@ -313,6 +313,13 @@ Finally, the harmonized common-window estimates differ from registered
 full-window estimates by at most 0.0053. The workload-heterogeneity pattern is
 not an artifact of trimming longer acquisitions to versions 8–407. Exact
 results are reported in `robustness.md` and `robustness_results.json`.
+
+A retrospective cadence audit places the common five-second treatment between
+0.379 and 0.644 median learner-update intervals across cells. GSM8K has the
+largest ratios at both model scales, yet Qwen3-1.7B/GSM8K has the smallest
+opportunity-loss estimate. The observed heterogeneity is therefore not a
+monotone reflection of this single cadence ratio. This is a descriptive check,
+not a post hoc renormalization of the registered treatment or estimand.
 
 ## 8. Discussion
 
