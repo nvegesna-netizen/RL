@@ -409,8 +409,16 @@ def analyze(
         or dataset_audit.get("dataset_repo") != materializer.DATASET_REPO
         or dataset_audit.get("dataset_revision") != materializer.DATASET_REVISION
         or dataset_audit.get("dataset_file_sha256") != materializer.DATASET_FILE_SHA256
-        or not isinstance(dataset_audit.get("unique_canonical_prompts"), int)
-        or dataset_audit["unique_canonical_prompts"] < len(canonical_ids)
+        or dataset_audit.get("published_rows") != materializer.EXPECTED_TOTAL_ROWS
+        or dataset_audit.get("unique_canonical_prompts")
+        != materializer.EXPECTED_UNIQUE_PROMPTS
+        or dataset_audit.get("unique_nonconflicting_canonical_prompts")
+        != materializer.EXPECTED_NONCONFLICTING_PROMPTS
+        or dataset_audit.get("excluded_conflicting_identity_count")
+        != materializer.EXPECTED_CONFLICT_IDENTITIES
+        or dataset_audit.get("excluded_conflicting_row_count")
+        != materializer.EXPECTED_CONFLICT_ROWS
+        or dataset_audit.get("conflicting_ground_truth_count") != 0
     ):
         raise DapoOperationalAnalysisError("dataset audit contract mismatch")
 
@@ -431,10 +439,7 @@ def analyze(
     checks = {
         "all_three_valid_pools": len(run_records) == 3,
         "complete_prompt_groups_48": len(all_observations) == 48,
-        "conflicting_duplicate_ground_truth_count_zero": dataset_audit.get(
-            "conflicting_ground_truth_count"
-        )
-        == 0,
+        "whole_conflicting_identity_exclusion_matches_amendment": True,
         "zero_administrative_censoring": True,
         "zero_learner_steps": all(
             record["physical_weight_version"] == 0 for record in run_records

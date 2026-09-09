@@ -23,9 +23,18 @@ from transformers import AutoTokenizer
 from nemo_rl.algorithms.async_utils.fixed_pool import compute_fixed_pool_id
 
 
-DESIGN_ID: Final[str] = "dapo_math_operational_latency_discovery_v1"
-PROTOCOL_SHA256: Final[str] = (
+DESIGN_ID: Final[str] = "dapo_math_operational_latency_discovery_v2"
+PARENT_PROTOCOL_SHA256: Final[str] = (
     "24cb689d6f600b64fe9a986c69482d44547ca3fd7e9858730e32d8e12afb77c9"
+)
+PROTOCOL_SHA256: Final[str] = (
+    "4d2c9af4a46a335141c197ad58dec8913ab5290d22c848cda8b978c3b00b4852"
+)
+SOURCE_AUDIT_SHA256: Final[str] = (
+    "6ee75fcd1f58f43b65b3aa320331107c3ac824d0f778e5927774ada5559a0001"
+)
+CONFIRMATION_SHA256: Final[str] = (
+    "247fe14e7708d1b80aaa76d75be1453711ba6f5b5b0aa16cd8c839473a4392e3"
 )
 DATASET_REPO: Final[str] = "BytedTsinghua-SIA/DAPO-Math-17k"
 DATASET_REVISION: Final[str] = "65877096c24ffa7abc4e4fa5edb95cf3413a5674"
@@ -43,6 +52,11 @@ POOL_SPECS: Final[tuple[tuple[int, int], ...]] = (
 )
 PROMPTS_PER_POOL: Final[int] = 16
 COHORT_SIZE: Final[int] = 4
+EXPECTED_TOTAL_ROWS: Final[int] = 1_791_700
+EXPECTED_UNIQUE_PROMPTS: Final[int] = 17_398
+EXPECTED_CONFLICT_IDENTITIES: Final[int] = 7
+EXPECTED_CONFLICT_ROWS: Final[int] = 1_400
+EXPECTED_NONCONFLICTING_PROMPTS: Final[int] = 17_391
 
 
 class DapoOperationalMaterializationError(ValueError):
@@ -59,6 +73,29 @@ class UniquePrompt:
     first_source_index: int
     source_extra_index: str
     duplicate_count: int
+
+
+@dataclass(frozen=True, slots=True)
+class ConflictPrompt:
+    """One wholly excluded canonical identity with ambiguous source answers."""
+
+    canonical_sha256: str
+    row_count: int
+    ground_truth_counts: tuple[tuple[str, int], ...]
+    extra_indices: tuple[str, ...]
+    answer_index_counts: tuple[tuple[str, str, int], ...]
+
+
+@dataclass(slots=True)
+class _PromptAccumulator:
+    """Order-independent source rows for one canonical prompt identity."""
+
+    prompt: str
+    first_source_index: int
+    first_extra_index: str
+    ground_truth_counts: dict[str, int]
+    extra_indices: set[str]
+    answer_index_counts: dict[tuple[str, str], int]
 
 
 def _canonical(value: object) -> bytes:
@@ -100,11 +137,10 @@ def _load_protocol(path: Path) -> tuple[dict[str, Any], bytes]:
     if not isinstance(protocol, dict):
         raise DapoOperationalMaterializationError("protocol must be an object")
     expected = {
-        "analysis_status": "candidate_operational_workload_latency_discovery",
-        "calibration_only": True,
-        "candidate_status": "awaiting_explicit_user_confirmation",
-        "confirmatory_eligible": False,
-        "schema_version": 1,
+        "amendment_status": "awaiting_explicit_user_confirmation",
+        "parent_candidate_sha256": PARENT_PROTOCOL_SHA256,
+        "required_new_confirmation": True,
+        "schema_version": 2,
     }
     if any(protocol.get(key) != value for key, value in expected.items()):
         raise DapoOperationalMaterializationError("protocol labels mismatch")
@@ -113,34 +149,58 @@ def _load_protocol(path: Path) -> tuple[dict[str, Any], bytes]:
         raise DapoOperationalMaterializationError(
             "candidate protocol must not contain an authorization"
         )
-    dataset = protocol.get("dataset")
-    if not isinstance(dataset, dict) or (
-        dataset.get("repo_id"),
-        dataset.get("revision"),
-        dataset.get("file_sha256"),
-        dataset.get("split"),
-    ) != (DATASET_REPO, DATASET_REVISION, DATASET_FILE_SHA256, "train"):
-        raise DapoOperationalMaterializationError("dataset pin mismatch")
-    runtime = protocol.get("runtime")
-    if not isinstance(runtime, dict) or (
-        runtime.get("prompt_groups_per_pool"),
-        runtime.get("num_generations_per_prompt"),
-        runtime.get("train_steps"),
-        runtime.get("physical_weight_version"),
-    ) != (PROMPTS_PER_POOL, 16, 0, 0):
-        raise DapoOperationalMaterializationError("runtime contract mismatch")
-    pools = protocol.get("pools")
-    observed_specs = (
-        tuple(
-            (pool.get("prompt_selection_seed"), pool.get("generation_seed"))
-            for pool in pools
-        )
-        if isinstance(pools, list) and all(isinstance(pool, dict) for pool in pools)
-        else ()
+    evidence = protocol.get("evidence")
+    if (
+        not isinstance(evidence, dict)
+        or evidence.get("source_conflict_audit_sha256") != SOURCE_AUDIT_SHA256
+    ):
+        raise DapoOperationalMaterializationError("source audit binding mismatch")
+    proposed = protocol.get("proposed_change")
+    expected_counts = (
+        proposed.get("expected_exact_source_counts")
+        if isinstance(proposed, dict)
+        else None
     )
-    if observed_specs != POOL_SPECS:
-        raise DapoOperationalMaterializationError("pool seed schedule mismatch")
+    if expected_counts != {
+        "conflict_identities_excluded": EXPECTED_CONFLICT_IDENTITIES,
+        "conflict_rows_excluded": EXPECTED_CONFLICT_ROWS,
+        "retained_conflicting_identities": 0,
+        "total_rows": EXPECTED_TOTAL_ROWS,
+        "unique_canonical_prompts_before_exclusion": EXPECTED_UNIQUE_PROMPTS,
+        "unique_nonconflicting_canonical_prompts_after_exclusion": EXPECTED_NONCONFLICTING_PROMPTS,
+    }:
+        raise DapoOperationalMaterializationError("amended source counts mismatch")
     return protocol, raw
+
+
+def _load_confirmation(path: Path) -> bytes:
+    raw = path.read_bytes()
+    if _sha_bytes(raw) != CONFIRMATION_SHA256:
+        raise DapoOperationalMaterializationError("confirmation byte hash mismatch")
+    try:
+        confirmation = json.loads(raw)
+    except json.JSONDecodeError as error:
+        raise DapoOperationalMaterializationError(
+            "confirmation is invalid JSON"
+        ) from error
+    expected_authorization = {
+        "counterfactual_replay": False,
+        "exact_image_validation": True,
+        "implementation": True,
+        "learner_training": False,
+        "rematerialization_of_three_fresh_pools": True,
+        "scheduler_comparison": False,
+        "scheduler_neutral_collection": True,
+    }
+    if (
+        not isinstance(confirmation, dict)
+        or confirmation.get("schema_version") != 2
+        or confirmation.get("confirmed_amendment_candidate_sha256") != PROTOCOL_SHA256
+        or confirmation.get("parent_candidate_sha256") != PARENT_PROTOCOL_SHA256
+        or confirmation.get("authorization") != expected_authorization
+    ):
+        raise DapoOperationalMaterializationError("confirmation contract mismatch")
+    return raw
 
 
 def _snapshot_model(root: Path) -> tuple[Any, bytes, str]:
@@ -203,49 +263,116 @@ def _parse_source_row(
 
 def _deduplicate_dataset(
     dataset: Sequence[Mapping[str, object]],
-) -> tuple[list[UniquePrompt], dict[str, int]]:
-    unique: dict[str, tuple[str, str, int, str, int]] = {}
+) -> tuple[list[UniquePrompt], list[ConflictPrompt], dict[str, int]]:
+    grouped: dict[str, _PromptAccumulator] = {}
     for source_index, row in enumerate(dataset):
         prompt, ground_truth, extra_index = _parse_source_row(row, source_index)
         canonical_sha = _sha_bytes(_canonical([{"role": "user", "content": prompt}]))
-        prior = unique.get(canonical_sha)
-        if prior is None:
-            unique[canonical_sha] = (prompt, ground_truth, source_index, extra_index, 1)
-        else:
-            prior_prompt, prior_truth, first_index, prior_extra, count = prior
-            if prior_prompt != prompt or prior_truth != ground_truth:
-                raise DapoOperationalMaterializationError(
-                    "one canonical prompt identity has conflicting ground truths"
-                )
-            unique[canonical_sha] = (
-                prior_prompt,
-                prior_truth,
-                first_index,
-                prior_extra,
-                count + 1,
+        accumulator = grouped.get(canonical_sha)
+        if accumulator is None:
+            grouped[canonical_sha] = _PromptAccumulator(
+                prompt=prompt,
+                first_source_index=source_index,
+                first_extra_index=extra_index,
+                ground_truth_counts={ground_truth: 1},
+                extra_indices={extra_index},
+                answer_index_counts={(ground_truth, extra_index): 1},
             )
+            continue
+        if accumulator.prompt != prompt:
+            raise DapoOperationalMaterializationError(
+                "canonical prompt SHA-256 collision"
+            )
+        accumulator.ground_truth_counts[ground_truth] = (
+            accumulator.ground_truth_counts.get(ground_truth, 0) + 1
+        )
+        accumulator.extra_indices.add(extra_index)
+        pair = (ground_truth, extra_index)
+        accumulator.answer_index_counts[pair] = (
+            accumulator.answer_index_counts.get(pair, 0) + 1
+        )
+
+    unique = {
+        canonical_sha: value
+        for canonical_sha, value in grouped.items()
+        if len(value.ground_truth_counts) == 1
+    }
+    conflicts = {
+        canonical_sha: value
+        for canonical_sha, value in grouped.items()
+        if len(value.ground_truth_counts) > 1
+    }
     prompts = [
         UniquePrompt(
             canonical_sha256=canonical_sha,
-            prompt=value[0],
-            ground_truth=value[1],
-            first_source_index=value[2],
-            source_extra_index=value[3],
-            duplicate_count=value[4],
+            prompt=value.prompt,
+            ground_truth=next(iter(value.ground_truth_counts)),
+            first_source_index=value.first_source_index,
+            source_extra_index=value.first_extra_index,
+            duplicate_count=sum(value.ground_truth_counts.values()),
         )
         for canonical_sha, value in sorted(unique.items())
     ]
     counts = [item.duplicate_count for item in prompts]
     if not counts:
         raise DapoOperationalMaterializationError("DAPO dataset contains no prompts")
-    return prompts, {
+    excluded = [
+        ConflictPrompt(
+            canonical_sha256=canonical_sha,
+            row_count=sum(value.ground_truth_counts.values()),
+            ground_truth_counts=tuple(sorted(value.ground_truth_counts.items())),
+            extra_indices=tuple(sorted(value.extra_indices)),
+            answer_index_counts=tuple(
+                (answer, extra_index, count)
+                for (answer, extra_index), count in sorted(
+                    value.answer_index_counts.items()
+                )
+            ),
+        )
+        for canonical_sha, value in sorted(conflicts.items())
+    ]
+    unique_before_exclusion = len(prompts) + len(excluded)
+    audit = {
         "published_rows": len(dataset),
-        "unique_canonical_prompts": len(prompts),
-        "duplicate_rows": len(dataset) - len(prompts),
+        "unique_canonical_prompts": unique_before_exclusion,
+        "unique_nonconflicting_canonical_prompts": len(prompts),
+        "duplicate_rows": len(dataset) - unique_before_exclusion,
         "minimum_multiplicity": min(counts),
         "maximum_multiplicity": max(counts),
+        "excluded_conflicting_identity_count": len(excluded),
+        "excluded_conflicting_row_count": sum(item.row_count for item in excluded),
         "conflicting_ground_truth_count": 0,
     }
+    return prompts, excluded, audit
+
+
+def _validate_source_audit(
+    conflicts: Sequence[ConflictPrompt], audit: Mapping[str, int]
+) -> None:
+    if audit != {
+        "published_rows": EXPECTED_TOTAL_ROWS,
+        "unique_canonical_prompts": EXPECTED_UNIQUE_PROMPTS,
+        "unique_nonconflicting_canonical_prompts": EXPECTED_NONCONFLICTING_PROMPTS,
+        "duplicate_rows": EXPECTED_TOTAL_ROWS - EXPECTED_UNIQUE_PROMPTS,
+        "minimum_multiplicity": 100,
+        "maximum_multiplicity": 400,
+        "excluded_conflicting_identity_count": EXPECTED_CONFLICT_IDENTITIES,
+        "excluded_conflicting_row_count": EXPECTED_CONFLICT_ROWS,
+        "conflicting_ground_truth_count": 0,
+    }:
+        raise DapoOperationalMaterializationError("source audit counts mismatch")
+    if any(
+        item.row_count != 200
+        or len(item.ground_truth_counts) != 2
+        or {count for _, count in item.ground_truth_counts} != {100}
+        or len(item.extra_indices) != 2
+        or len(item.answer_index_counts) != 2
+        or {count for _, _, count in item.answer_index_counts} != {100}
+        or len({answer for answer, _, _ in item.answer_index_counts}) != 2
+        or len({extra_index for _, extra_index, _ in item.answer_index_counts}) != 2
+        for item in conflicts
+    ):
+        raise DapoOperationalMaterializationError("source conflict structure mismatch")
 
 
 def _select_disjoint_pools(
@@ -427,11 +554,14 @@ def _make_pool(
     }
 
 
-def materialize(*, output_dir: Path, protocol_path: Path, key: bytes) -> None:
+def materialize(
+    *, output_dir: Path, protocol_path: Path, confirmation_path: Path, key: bytes
+) -> None:
     """Create all three immutable discovery pools and one shared model snapshot."""
     if len(key) < 32:
         raise DapoOperationalMaterializationError("HMAC key is too short")
     _, protocol_raw = _load_protocol(protocol_path)
+    confirmation_raw = _load_confirmation(confirmation_path)
     if output_dir.exists():
         raise FileExistsError(f"refusing to overwrite {output_dir}")
     output_dir.parent.mkdir(parents=True, exist_ok=True)
@@ -454,7 +584,8 @@ def materialize(*, output_dir: Path, protocol_path: Path, key: bytes) -> None:
         dataset = load_dataset(
             "parquet", data_files={"train": str(parquet_path)}, split="train"
         )
-        prompts, audit = _deduplicate_dataset(dataset)
+        prompts, conflicts, audit = _deduplicate_dataset(dataset)
+        _validate_source_audit(conflicts, audit)
         selected = _select_disjoint_pools(prompts)
         prompt_template = (
             Path(__file__).parents[1] / "examples/prompts/cot.txt"
@@ -474,7 +605,44 @@ def materialize(*, output_dir: Path, protocol_path: Path, key: bytes) -> None:
             )
             for selection_seed, generation_seed in POOL_SPECS
         ]
-        _write(root / "operational_discovery_protocol.candidate.v1.json", protocol_raw)
+        _write(
+            root / "operational_discovery_protocol.amendment_candidate.v2.json",
+            protocol_raw,
+        )
+        _write(
+            root / "operational_discovery_amendment_confirmation.v2.json",
+            confirmation_raw,
+        )
+        exclusion_ledger = {
+            "schema_version": 1,
+            "protocol_sha256": PROTOCOL_SHA256,
+            "excluded_identity_count": len(conflicts),
+            "excluded_row_count": sum(item.row_count for item in conflicts),
+            "items": [
+                {
+                    "excluded_prompt_id": _opaque(
+                        key, "excluded-prompt", item.canonical_sha256
+                    ),
+                    "row_count": item.row_count,
+                    "ground_truth_fingerprints": [
+                        _opaque(key, "excluded-ground-truth", ground_truth)
+                        for ground_truth, _ in item.ground_truth_counts
+                    ],
+                    "extra_index_fingerprints": [
+                        _opaque(key, "excluded-extra-index", extra_index)
+                        for extra_index in item.extra_indices
+                    ],
+                    "variant_row_counts": [
+                        count for _, _, count in item.answer_index_counts
+                    ],
+                }
+                for item in conflicts
+            ],
+        }
+        _write(
+            root / "private_conflict_exclusion_ledger.v1.json",
+            json.dumps(exclusion_ledger, indent=2, sort_keys=True).encode() + b"\n",
+        )
         audit_record = {
             "schema_version": 1,
             "dataset_repo": DATASET_REPO,
@@ -492,6 +660,12 @@ def materialize(*, output_dir: Path, protocol_path: Path, key: bytes) -> None:
             "status": "passed",
             "design_id": DESIGN_ID,
             "protocol_sha256": PROTOCOL_SHA256,
+            "parent_protocol_sha256": PARENT_PROTOCOL_SHA256,
+            "source_audit_sha256": SOURCE_AUDIT_SHA256,
+            "confirmation_sha256": CONFIRMATION_SHA256,
+            "conflict_exclusion_ledger_sha256": _sha_path(
+                root / "private_conflict_exclusion_ledger.v1.json"
+            ),
             "model_repo": MODEL_REPO,
             "model_revision": MODEL_REVISION,
             "model_weights_sha256": model_weights_sha256,
@@ -520,13 +694,17 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--protocol", type=Path, required=True)
+    parser.add_argument("--confirmation", type=Path, required=True)
     parser.add_argument("--hmac-key-env", default="DAPO_OPERATIONAL_PROMPT_HMAC_KEY")
     args = parser.parse_args()
     key = os.environ.get(args.hmac_key_env)
     if key is None:
         raise DapoOperationalMaterializationError("HMAC key is missing")
     materialize(
-        output_dir=args.output_dir, protocol_path=args.protocol, key=key.encode()
+        output_dir=args.output_dir,
+        protocol_path=args.protocol,
+        confirmation_path=args.confirmation,
+        key=key.encode(),
     )
 
 

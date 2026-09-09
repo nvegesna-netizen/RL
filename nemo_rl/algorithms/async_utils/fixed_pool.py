@@ -209,7 +209,7 @@ DAPO_OPERATIONAL_DATASET_REVISION: Final[str] = (
 )
 DAPO_OPERATIONAL_MODEL_REVISION: Final[str] = "b101308fe89651ea5ce025f25317fea6fc07e96e"
 DAPO_OPERATIONAL_PROTOCOL_SHA256: Final[str] = (
-    "24cb689d6f600b64fe9a986c69482d44547ca3fd7e9858730e32d8e12afb77c9"
+    "4d2c9af4a46a335141c197ad58dec8913ab5290d22c848cda8b978c3b00b4852"
 )
 DAPO_OPERATIONAL_SELECTION_SEEDS: Final[frozenset[int]] = frozenset(
     {47001, 47002, 47003}
@@ -1665,7 +1665,7 @@ def validate_fixed_pool_manifest_design(
         validate_structured_generation_latency_manifest_design(manifest)
     elif design_id == "structured_generation_scheduler_crossover_v1":
         validate_structured_generation_scheduler_crossover_manifest_design(manifest)
-    elif design_id == "dapo_math_operational_latency_discovery_v1":
+    elif design_id == "dapo_math_operational_latency_discovery_v2":
         validate_dapo_operational_latency_discovery_manifest_design(manifest)
     else:
         raise FixedPoolManifestError(f"unsupported fixed-pool design_id: {design_id!r}")
