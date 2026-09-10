@@ -1,6 +1,6 @@
 # Lifecycle-derived no-training EOS preflight
 
-Status: `FROZEN_IMPLEMENTED_PENDING_PACKAGE_LOCK`.
+Status: `TERMINAL_GREEN`.
 
 One credential-free EOS submission is allowed. It must use
 `runllm.py --no_wait`, disable retriers, fit within 30 minutes, and perform no
@@ -16,3 +16,14 @@ model. It may not download model weights.
 The preflight passes only if every command exits zero and the artifact preserves
 the full test output and hash ledger. Any failure terminally closes the
 successor sequence without a second submission.
+
+## Terminal result
+
+Parent pipeline `67087159` and child pipeline `67087387` passed. The workload
+artifact (SHA-256
+`414471df7690081d406b59f914587f4d255de23d91cddf14b4692a5fecd4a413`)
+records 67 selected tests passed, clean static checks, exact equality between
+the 35-file local and remote locks, and successful metadata-only access to
+`meta-llama/Llama-3.2-1B-Instruct` with no full weight download. No training,
+qualification, or acquisition occurred. The compact canonical record is
+`preflight_result.json`.

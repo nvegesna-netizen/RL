@@ -1,6 +1,6 @@
 # Lifecycle-derived paired neutral qualification plan
 
-Status: `FROZEN_CONDITIONAL_ON_TERMINAL_GREEN_PREFLIGHT`.
+Status: `FROZEN_ELIGIBLE_PREFLIGHT_GREEN_PENDING_PAIRED_SUBMISSION`.
 
 Exactly one 32-step neutral qualification is registered for each of OpenMath
 and GSM8K. Both packages must be frozen and submitted before either result is

@@ -1,0 +1,32 @@
+{
+  "artifact": {
+    "model_access_sha256": "b71b170e9f73eb96bc5b8482a5e234598d2684fca4b3047c21fe79f006b1e121",
+    "output_log_sha256": "cceef86d0f279c5868994e848c151d587af2e738359931b05ef10b49921ad627",
+    "remote_lock_sha256": "a60b5ae12eea9347021ddc2462ba65bedc03f2d93bedd15481fd7cfe016d25bb",
+    "summary_sha256": "a737ed7ef1b63970fa7c1969a0837ce8cb775a302481cce7cdb1f240e5266929",
+    "workload_zip_sha256": "414471df7690081d406b59f914587f4d255de23d91cddf14b4692a5fecd4a413"
+  },
+  "automatic_extension": false,
+  "automatic_retry": false,
+  "child_pipeline_id": 67087387,
+  "full_weight_downloaded": false,
+  "gates": {
+    "clean_room_lock_identical": true,
+    "config_and_runtime_schema_green": true,
+    "equivalence_and_blindness_tests_green": true,
+    "model_metadata_access_green": true,
+    "selected_tests_passed": 67,
+    "static_checks_green": true
+  },
+  "manifest_sha256": "ff860650a1e6118fe51ed3cececbb7d459668eb86b5e216fc00248df4ba79acf",
+  "parent_pipeline_id": 67087159,
+  "parent_pipeline_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67087159",
+  "protocol_sha256": "b26c3d5d0ef3dfbc3ec6aea1cd42dd87fb3f276b5f4b3866b7ce9ebe58789fef",
+  "qualification_eligible": true,
+  "schema": "m4-llama-lifecycle-derived-no-training-preflight-terminal-result-v1",
+  "source_archive_sha256": "38b44e4dc97995463f381816f636a59499c3ed84415a3a384165ad412ba43047",
+  "source_commit": "bdbf2956f3ff46177958a29a64e3b33e4dc6515e",
+  "status": "TERMINAL_GREEN_PAIRED_QUALIFICATION_ELIGIBLE",
+  "training_started": false,
+  "workload_job_id": 433071752
+}
