@@ -1,0 +1,28 @@
+{
+  "schema": "m4-llama3p2-3b-four-acquisition-submission-receipt-v1",
+  "package_commit": "d39e76eb86e91736d8baa1c5dafebedfb03f3929",
+  "authorization_sha256": "a732d48ebae61a11508acbf95a48f10555ee0e973db95abdd128c91ba504b6a9",
+  "package_receipt_sha256": "f38d17354ab532cffe8b77c2aeee79192ed6cf6e4741f7860581a4460c22f5eb",
+  "submission_guard_sha256": "c4b0d93b3941d2144afbe21492131a4b2193aa846f1bdaa7dd91cff7d5e43a78",
+  "launcher": "runllm.py --no_wait",
+  "submission_attempt_each": 1,
+  "submit_all_four_before_inspecting_any_causal_outcome": true,
+  "automatic_retry": false,
+  "automatic_extension": false,
+  "launcher_return_codes_all_zero": true,
+  "initial_verification": {
+    "checked_at_utc": "2026-09-10T22:33:50.142768+00:00",
+    "openmath_r1": {"parent_pipeline_id": 67263316, "parent_status": "running", "bridge_id": 434543451, "bridge_status": "created", "child_pipeline_id": null},
+    "openmath_r2": {"parent_pipeline_id": 67263327, "parent_status": "running", "bridge_id": 434543568, "bridge_status": "created", "child_pipeline_id": null},
+    "gsm8k_r1": {"parent_pipeline_id": 67263343, "parent_status": "running", "bridge_id": 434543733, "bridge_status": "created", "child_pipeline_id": null},
+    "gsm8k_r2": {"parent_pipeline_id": 67263328, "parent_status": "running", "bridge_id": 434543587, "bridge_status": "created", "child_pipeline_id": null}
+  },
+  "launcher_log_sha256": {
+    "openmath_r1": "899d74723f9973109288cda5dcaf068098b2116dfaacc3f4c7f49e4ff5913772",
+    "openmath_r2": "0716c7fe4a089ae98f070e82d159a58fa0fdc3cd177420ebaa2469ebc457595c",
+    "gsm8k_r1": "a026de9903863d66c033b1d65fa1073ec9e9f988399db53d284a6cd5c3794908",
+    "gsm8k_r2": "3c6e41c6be42c6328819ae7bf68976b5c8f77512a326726e1b51a715b286fb60"
+  },
+  "causal_outcome_inspected_before_all_four_submissions": false,
+  "authorization_consumed": true
+}

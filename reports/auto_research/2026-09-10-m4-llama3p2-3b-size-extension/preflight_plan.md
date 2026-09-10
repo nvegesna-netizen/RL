@@ -1,6 +1,6 @@
 # Llama 3.2 3B no-training preflight plan
 
-Status: `FOUR_AUTHORIZED_ACQUISITION_PACKAGES_GREEN_NOT_SUBMITTED`.
+Status: `FOUR_ACQUISITIONS_SUBMITTED_RUNNING_AUTHORITY_CONSUMED`.
 
 The first executable boundary is exactly one no-training preflight submitted
 with `runllm.py --no_wait`, only after a dedicated authorization record exists.
@@ -141,3 +141,11 @@ opening, absence of any nested launch command, and byte-identical rebuilding.
 Their compact receipt is `authorized_acquisition_package_receipt.json`; the
 62.6 MB manifests remain ignored. No submission or acquisition had occurred at
 this provenance boundary.
+
+The joint one-shot guard was then consumed and all four cells were submitted
+concurrently with `runllm.py --no_wait` before any causal outcome inspection.
+All four launcher calls returned zero. Initial independent verification found
+four distinct running parents with created bridges: OpenMath r1 `67263316`,
+OpenMath r2 `67263327`, GSM8K r1 `67263343`, and GSM8K r2 `67263328`.
+`acquisition_submission_receipt.json` preserves the guard, launcher-log, and
+package hashes. The authorization is consumed; no retry or extension exists.
