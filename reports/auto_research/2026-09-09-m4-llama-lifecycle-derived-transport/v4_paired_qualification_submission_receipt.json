@@ -1,0 +1,33 @@
+{
+  "automatic_extension": false,
+  "automatic_retry": false,
+  "cells": {
+    "gsm8k": {
+      "bridge_id_at_first_check": 433486257,
+      "bridge_status_at_first_check": "created",
+      "child_pipeline_id_at_first_check": null,
+      "manifest_sha256": "950ffe8504fad1c8c443ad132fc504edd7dc0f00cff4d7d2dbcfa2da36e05ea6",
+      "parent_created_at": "2026-09-10T01:05:56.819-07:00",
+      "parent_pipeline_id": 67136252,
+      "parent_status_at_first_check": "running",
+      "submission_attempt": 1
+    },
+    "openmath": {
+      "bridge_id_at_first_check": 433485920,
+      "bridge_status_at_first_check": "created",
+      "child_pipeline_id_at_first_check": null,
+      "manifest_sha256": "d2ec34ddba8725ec26971f11af5352d9f00a5351f6f0b51e934d58fea092c77e",
+      "parent_created_at": "2026-09-10T01:05:41.436-07:00",
+      "parent_pipeline_id": 67136217,
+      "parent_status_at_first_check": "running",
+      "submission_attempt": 1
+    }
+  },
+  "launcher": "runllm.py --no_wait",
+  "package_receipt_sha256": "12d69e3519adec5d58904898f8b7208899703126e4a008deb8e9d15cc3b387bc",
+  "paired_submission_completed_before_result_inspection": true,
+  "schema": "m4-llama-lifecycle-derived-v4-paired-neutral-qualification-submission-receipt-v1",
+  "scientific_acquisition_authorized": false,
+  "scientific_acquisition_started": false,
+  "submission_guard_sha256": "0e947d615825f13c131aa8f28ebc8222a20d883452fd7340de043b64b85ddb0f"
+}
