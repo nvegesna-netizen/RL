@@ -43,6 +43,10 @@ def _authorization(protocol_sha: str) -> dict[str, object]:
         "schema_version": 1,
         "analysis_status": "confirmed_scheduler_pressure_response_validation_and_materialization",
         "confirmed_candidate_sha256": protocol_sha,
+        "confirmed_authorization_candidate_sha256": "a" * 64,
+        "implementation_commit": "b" * 40,
+        "jet_route_commit": "c" * 40,
+        "incremental_bundle_sha256": "d" * 64,
         "authorization": {
             "exact_image_validation": True,
             "materialize_three_fresh_pools": True,

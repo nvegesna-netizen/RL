@@ -7,6 +7,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 from pathlib import Path
 from typing import Final
 
@@ -40,6 +41,10 @@ def _load_materialization_authorization(path: Path) -> bytes:
         "schema_version",
         "analysis_status",
         "confirmed_candidate_sha256",
+        "confirmed_authorization_candidate_sha256",
+        "implementation_commit",
+        "jet_route_commit",
+        "incremental_bundle_sha256",
         "authorization",
     }
     authorization = record.get("authorization") if isinstance(record, dict) else None
@@ -50,6 +55,16 @@ def _load_materialization_authorization(path: Path) -> bytes:
         or record.get("analysis_status")
         != "confirmed_scheduler_pressure_response_validation_and_materialization"
         or record.get("confirmed_candidate_sha256") != PROTOCOL_SHA256
+        or not isinstance(record.get("confirmed_authorization_candidate_sha256"), str)
+        or not re.fullmatch(
+            r"[0-9a-f]{64}", record["confirmed_authorization_candidate_sha256"]
+        )
+        or not isinstance(record.get("implementation_commit"), str)
+        or not re.fullmatch(r"[0-9a-f]{40}", record["implementation_commit"])
+        or not isinstance(record.get("jet_route_commit"), str)
+        or not re.fullmatch(r"[0-9a-f]{40}", record["jet_route_commit"])
+        or not isinstance(record.get("incremental_bundle_sha256"), str)
+        or not re.fullmatch(r"[0-9a-f]{64}", record["incremental_bundle_sha256"])
         or authorization
         != {
             "exact_image_validation": True,
