@@ -50,6 +50,7 @@ class StructuredGenerationMaterializationSpec:
     source_split: str
     protocol_filename: str
     identity_field: str
+    pair_count: int = PAIR_COUNT
 
 
 DEFAULT_SPEC: Final = StructuredGenerationMaterializationSpec(
@@ -188,7 +189,7 @@ def _make_records(
 ) -> dict[str, list[dict[str, object]]]:
     rng = random.Random(spec.selection_seed)
     problems: list[tuple[int, int]] = []
-    while len(problems) < PAIR_COUNT:
+    while len(problems) < spec.pair_count:
         candidate = (rng.randrange(101, 900), rng.randrange(101, 900))
         if candidate not in problems:
             problems.append(candidate)
@@ -248,7 +249,7 @@ def _build_manifest(
         ]
         rng.shuffle(cohort)
         ordered.extend(cohort)
-    offsets = {SOURCE_IDS[0]: 0, SOURCE_IDS[1]: PAIR_COUNT}
+    offsets = {SOURCE_IDS[0]: 0, SOURCE_IDS[1]: spec.pair_count}
     items = []
     for ordinal, (source_id, row) in enumerate(ordered):
         record = records[source_id][row]
@@ -345,6 +346,8 @@ def _materialize_from_protocol(
     protocol_raw: bytes,
     key: bytes,
     spec: StructuredGenerationMaterializationSpec,
+    additional_files: Mapping[str, bytes] | None = None,
+    additional_report_hashes: Mapping[str, str] | None = None,
 ) -> None:
     """Create one private pool from already validated protocol bytes."""
     if len(key) < 32:
@@ -366,6 +369,12 @@ def _materialize_from_protocol(
         for source_id, raw in raw_sources.items():
             _write(root / f"{source_id}.jsonl", raw)
         _write(root / spec.protocol_filename, protocol_raw)
+        for filename, raw in (additional_files or {}).items():
+            if Path(filename).name != filename:
+                raise StructuredGenerationMaterializationError(
+                    "additional artifact filename must be a basename"
+                )
+            _write(root / filename, raw)
         manifest = _build_manifest(
             key=key,
             plan_sha=_sha_bytes(protocol_raw),
@@ -381,7 +390,7 @@ def _materialize_from_protocol(
         design_raw = json.dumps(design, indent=2, sort_keys=True).encode() + b"\n"
         _write(root / "selection_design.v1.json", design_raw)
         prompt_deltas = []
-        for pair_index in range(PAIR_COUNT):
+        for pair_index in range(spec.pair_count):
             short = records[SOURCE_IDS[0]][pair_index]
             long = records[SOURCE_IDS[1]][pair_index]
             prompt_deltas.append(
@@ -397,14 +406,15 @@ def _materialize_from_protocol(
             "pool_id": manifest["pool_id"],
             "selection_seed": spec.selection_seed,
             "order_seed": spec.order_seed,
-            "pairs": PAIR_COUNT,
-            "prompt_groups": 2 * PAIR_COUNT,
+            "pairs": spec.pair_count,
+            "prompt_groups": 2 * spec.pair_count,
             "observed_max_input_pair_delta_tokens": max(prompt_deltas),
             "model_repo": model_pin.MODEL_REPO,
             "model_revision": model_pin.MODEL_REVISION,
             "model_weights_sha256": model_pin.MODEL_WEIGHTS_SHA256,
         }
         report[spec.identity_field] = spec.protocol_id
+        report.update(additional_report_hashes or {})
         report[
             "plan_sha256" if spec.identity_field == "plan_id" else "protocol_sha256"
         ] = _sha_bytes(protocol_raw)

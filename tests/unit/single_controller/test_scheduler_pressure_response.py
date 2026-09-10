@@ -1,0 +1,138 @@
+# Copyright (c) 2026, NVIDIA CORPORATION. All rights reserved.
+
+import json
+from pathlib import Path
+
+import pytest
+
+from nemo_rl.algorithms.async_utils.structured_scheduler_crossover import (
+    PRESSURE_RESPONSE_CONFIRMED_CANDIDATE_SHA256,
+    SchedulerPressureResponsePlan,
+    compute_scheduler_pressure_response_plan_id,
+    load_scheduler_pressure_response_plan,
+    load_scheduler_protocol,
+)
+
+
+def pressure_plan_record() -> dict[str, object]:
+    arms = []
+    for level, lookahead, buffer in (("l0", 0, 4), ("l1", 1, 8), ("l3", 3, 16)):
+        for sampler in ("ready_first", "in_order"):
+            arms.append(
+                {
+                    "arm_id": f"natural_{level}_{sampler}",
+                    "sampler": sampler,
+                    "pressure_level": level,
+                    "sampler_lookahead_versions": lookahead,
+                    "max_buffered_rollouts": buffer,
+                    "latency_condition": "natural",
+                    "delay_mapping": "none",
+                    "delayed_task": "none",
+                    "release_delay_seconds": 0.0,
+                }
+            )
+    for mapping, task in (
+        ("short_delayed", "structured_short"),
+        ("long_delayed", "structured_long"),
+    ):
+        for sampler in ("ready_first", "in_order"):
+            arms.append(
+                {
+                    "arm_id": f"controlled_positive_control_l3_{mapping}_{sampler}",
+                    "sampler": sampler,
+                    "pressure_level": "l3",
+                    "sampler_lookahead_versions": 3,
+                    "max_buffered_rollouts": 16,
+                    "latency_condition": "controlled_positive_control",
+                    "delay_mapping": mapping,
+                    "delayed_task": task,
+                    "release_delay_seconds": 30.0,
+                }
+            )
+    arm_ids = [arm["arm_id"] for arm in arms]
+    record: dict[str, object] = {
+        "schema_version": 1,
+        "analysis_status": "controlled_zero_update_scheduler_pressure_response_surface",
+        "calibration_only": True,
+        "confirmatory_eligible": False,
+        "population_claim_authorized": False,
+        "counterfactual_replay_authorized": False,
+        "training_authorized": False,
+        "confirmed_candidate_sha256": PRESSURE_RESPONSE_CONFIRMED_CANDIDATE_SHA256,
+        "confirmation_record_sha256": "1" * 64,
+        "analysis_code_commit": "2" * 40,
+        "expected_base_commit": "3" * 40,
+        "expected_image_sha256": "4" * 64,
+        "source_design_id": "structured_scheduler_pressure_response_v1",
+        "model_revision": "a09a35458c702b33eeacc393d103063234e8bc28",
+        "model_weights_sha256": "456f5eff514d78f7b0ef52a057118046acf15d86606655767db068cabf5f49f7",
+        "pools": [
+            {
+                "replication_id": f"replication_{seed}",
+                "order_seed": seed,
+                "selection_seed": selection,
+                "generation_study_seed": generation,
+                "arm_execution_order": arm_ids,
+                "pool_id": str(index) * 64,
+                "manifest_sha256": str(index + 3) * 64,
+            }
+            for index, (seed, selection, generation) in enumerate(
+                (
+                    (49001, 2026091001, 69001),
+                    (49002, 2026091002, 69002),
+                    (49003, 2026091003, 69003),
+                ),
+                1,
+            )
+        ],
+        "arms": arms,
+        "prompt_groups": 32,
+        "dispatch_cohorts": 8,
+        "groups_per_cohort": 4,
+        "groups_per_stratum_per_cohort": 2,
+        "completions_per_group": 2,
+        "selection_groups_per_step": 4,
+        "max_inflight_prompts": 4,
+        "max_total_sequence_length": 768,
+        "max_new_tokens": 768,
+        "temperature": 0.7,
+        "top_p": 0.8,
+        "top_k": 20,
+        "repetition_penalty": 1.0,
+        "replication_order": [49001, 49002, 49003],
+        "thresholds": {
+            "backend_length_termination_rate_max_each_stratum_each_arm": 0.125,
+            "reward_mean_min_each_stratum_each_arm": 0.75,
+            "maximum_concurrent_groups_required_each_arm": 4,
+            "natural_long_short_generated_token_median_ratio_min_each_arm": 2.0,
+            "natural_long_short_ready_latency_median_ratio_min_each_arm": 1.5,
+            "positive_control_undelayed_share_ready_first_min": 0.75,
+            "positive_control_undelayed_share_in_order_required": 0.5,
+            "positive_control_contrast_min_each_mapping": 0.25,
+            "pressure_activation_median_min": 0.5,
+            "pressure_activation_replications_exceeding_l0_min": 2,
+            "composition_median_normalized_rank_promotion_min": 1 / 31,
+            "composition_replications_at_or_above_minimum": 2,
+            "composition_negative_replications_max": 1,
+        },
+        "plan_id": "0" * 64,
+    }
+    draft = SchedulerPressureResponsePlan.model_validate(record)
+    record["plan_id"] = compute_scheduler_pressure_response_plan_id(draft)
+    return record
+
+
+def test_pressure_plan_round_trip_and_generic_dispatch(tmp_path: Path) -> None:
+    path = tmp_path / "plan.json"
+    path.write_text(json.dumps(pressure_plan_record()))
+    plan = load_scheduler_pressure_response_plan(path)
+    assert plan.prompt_groups == 32
+    assert len(plan.arms) == 10
+    assert load_scheduler_protocol(path) == plan
+
+
+def test_pressure_plan_rejects_mutated_pressure_geometry() -> None:
+    record = pressure_plan_record()
+    record["arms"][0]["max_buffered_rollouts"] = 8  # type: ignore[index]
+    with pytest.raises(ValueError, match="pressure level"):
+        SchedulerPressureResponsePlan.model_validate(record)

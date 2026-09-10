@@ -36,6 +36,8 @@ from nemo_rl.algorithms.async_utils.scheduler_assay import (
 )
 from nemo_rl.algorithms.async_utils.structured_scheduler_crossover import (
     DapoSchedulerCrossoverPlan,
+    SchedulerPressureResponseArm,
+    SchedulerPressureResponsePlan,
     SchedulerProtocolArm,
     SchedulerProtocolPlan,
     StructuredSchedulerCrossoverPlan,
@@ -403,7 +405,11 @@ def setup_single_controller(
             assay_plan = load_scheduler_protocol(assay_config.plan_path)
             if isinstance(
                 assay_plan,
-                (StructuredSchedulerCrossoverPlan, DapoSchedulerCrossoverPlan),
+                (
+                    StructuredSchedulerCrossoverPlan,
+                    DapoSchedulerCrossoverPlan,
+                    SchedulerPressureResponsePlan,
+                ),
             ):
                 assay_arm = assay_plan.arm(assay_config.arm_id)
                 pool = assay_plan.pool(assay_config.order_seed)
@@ -462,6 +468,29 @@ def setup_single_controller(
                 != assay_plan.hf_config_override_max_position_embeddings
             ):
                 raise ValueError("DAPO crossover runtime does not match frozen plan")
+            if isinstance(assay_plan, SchedulerPressureResponsePlan) and (
+                generation_config.get("top_k") != assay_plan.top_k
+                or generation_config.get("repetition_penalty")
+                != assay_plan.repetition_penalty
+                or generation_config.get("max_new_tokens") != assay_plan.max_new_tokens
+                or master_config.async_rl.max_inflight_prompts
+                != assay_plan.max_inflight_prompts
+                or master_config.async_rl.max_buffered_rollouts
+                != assay_arm.max_buffered_rollouts
+                or (
+                    getattr(
+                        master_config.async_rl.sampler, "max_staleness_versions", None
+                    )
+                    if assay_arm.sampler == "ready_first"
+                    else getattr(
+                        master_config.async_rl.sampler, "max_lookahead_versions", None
+                    )
+                )
+                != assay_arm.sampler_lookahead_versions
+            ):
+                raise ValueError(
+                    "scheduler pressure-response runtime does not match frozen arm"
+                )
 
     # TODO: add validate dataset wiring.
     use_nemo_gym = _should_use_nemo_gym(cast(GrpoMasterConfig, master_config))
@@ -606,10 +635,14 @@ def setup_single_controller(
         mask_env_flagged_samples=should_mask_flagged_samples(master_config.env),
         tq_buffer=tq_buffer,
         scheduler_assay_arm=(
-            assay_arm if isinstance(assay_arm, SchedulerAssayArm) else None
+            assay_arm
+            if isinstance(assay_arm, (SchedulerAssayArm, SchedulerPressureResponseArm))
+            else None
         ),
         scheduler_assay_delay_seconds=(
-            assay_plan.release_delay_seconds
+            assay_arm.release_delay_seconds
+            if isinstance(assay_arm, SchedulerPressureResponseArm)
+            else assay_plan.release_delay_seconds
             if assay_plan is not None and isinstance(assay_arm, SchedulerAssayArm)
             else None
         ),

@@ -45,6 +45,7 @@ FixedPoolDesignId: TypeAlias = Literal[
     "sliding_puzzle_7b_compact_prompt_v2",
     "structured_generation_latency_v1",
     "structured_generation_scheduler_crossover_v1",
+    "structured_scheduler_pressure_response_v1",
     "dapo_math_operational_latency_discovery_v2",
     "dapo_math_scheduler_crossover_v1",
 ]
@@ -210,6 +211,7 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
             if assay_design not in {
                 "ready_bias_v1",
                 "structured_generation_scheduler_crossover_v1",
+                "structured_scheduler_pressure_response_v1",
                 "dapo_math_scheduler_crossover_v1",
             }:
                 raise ValueError(
@@ -231,8 +233,16 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
                 )
             if async_config.max_inflight_prompts != 4:
                 raise ValueError("scheduler assay requires max_inflight_prompts=4")
-            expected_buffer = 16 if assay_design == "ready_bias_v1" else 8
-            if async_config.max_buffered_rollouts != expected_buffer:
+            if assay_design == "ready_bias_v1":
+                expected_buffer = 16
+            elif assay_design == "structured_scheduler_pressure_response_v1":
+                expected_buffer = None
+            else:
+                expected_buffer = 8
+            if (
+                expected_buffer is not None
+                and async_config.max_buffered_rollouts != expected_buffer
+            ):
                 raise ValueError(
                     "scheduler assay requires max_buffered_rollouts="
                     f"{expected_buffer} for {assay_design}"
@@ -250,6 +260,7 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
             expected_sequence_length = {
                 "ready_bias_v1": 512,
                 "structured_generation_scheduler_crossover_v1": 768,
+                "structured_scheduler_pressure_response_v1": 768,
                 "dapo_math_scheduler_crossover_v1": 6144,
             }[assay_design]
             if (
@@ -265,7 +276,10 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
                 sampling_matches = (
                     generation["temperature"] == 1.0 and generation["top_p"] == 1.0
                 )
-            elif assay_design == "structured_generation_scheduler_crossover_v1":
+            elif assay_design in {
+                "structured_generation_scheduler_crossover_v1",
+                "structured_scheduler_pressure_response_v1",
+            }:
                 sampling_matches = (
                     generation["temperature"],
                     generation["top_p"],
@@ -286,7 +300,19 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
                 if isinstance(async_config.sampler, ReadyFirstSamplerConfig)
                 else async_config.sampler.max_lookahead_versions
             )
-            expected_lookahead = 3 if assay_design == "ready_bias_v1" else 1
+            if assay_design == "ready_bias_v1":
+                expected_lookahead = 3
+            elif assay_design == "structured_scheduler_pressure_response_v1":
+                if async_config.max_buffered_rollouts not in {4, 8, 16}:
+                    raise ValueError(
+                        "scheduler pressure-response assay requires "
+                        "max_buffered_rollouts in {4, 8, 16}"
+                    )
+                expected_lookahead = {4: 0, 8: 1, 16: 3}[
+                    async_config.max_buffered_rollouts
+                ]
+            else:
+                expected_lookahead = 1
             if lookahead != expected_lookahead:
                 raise ValueError(
                     "scheduler assay requires sampler lookahead="

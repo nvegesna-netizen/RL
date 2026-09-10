@@ -28,6 +28,13 @@ CONFIRMED_CANDIDATE_SHA256 = (
 DAPO_CONFIRMED_CANDIDATE_SHA256 = (
     "c49f9604225db847eded1d298c592938299fb3c3d508cf60d2b598f1e8b604c7"
 )
+PRESSURE_RESPONSE_CONFIRMED_CANDIDATE_SHA256 = (
+    "c35c06797483c83bd1a29f8cf856447387729e0e612480026eb84320127576cc"
+)
+
+PressureLevel: TypeAlias = Literal["l0", "l1", "l3"]
+PressureLatencyCondition: TypeAlias = Literal["natural", "controlled_positive_control"]
+PressureDelayMapping: TypeAlias = Literal["none", "short_delayed", "long_delayed"]
 
 
 class StructuredSchedulerCrossoverPlanError(ValueError):
@@ -322,10 +329,212 @@ class DapoSchedulerCrossoverPlan(BaseModel, extra="forbid", frozen=True):
         return matches[0]
 
 
+class SchedulerPressureResponseArm(BaseModel, extra="forbid", frozen=True):
+    """One immutable scheduler, admission-pressure, and latency-condition arm."""
+
+    arm_id: str
+    sampler: CrossoverArmId
+    pressure_level: PressureLevel
+    sampler_lookahead_versions: Literal[0, 1, 3]
+    max_buffered_rollouts: Literal[4, 8, 16]
+    latency_condition: PressureLatencyCondition
+    delay_mapping: PressureDelayMapping
+    delayed_task: Literal["none", "structured_short", "structured_long"]
+    release_delay_seconds: float
+
+    @model_validator(mode="after")
+    def _validate_arm(self) -> "SchedulerPressureResponseArm":
+        pressure = {"l0": (0, 4), "l1": (1, 8), "l3": (3, 16)}
+        if pressure[self.pressure_level] != (
+            self.sampler_lookahead_versions,
+            self.max_buffered_rollouts,
+        ):
+            raise ValueError("pressure level does not match lookahead and buffer")
+        if self.latency_condition == "natural":
+            expected = ("none", "none", 0.0)
+        elif self.delay_mapping == "short_delayed":
+            expected = ("short_delayed", "structured_short", 30.0)
+        elif self.delay_mapping == "long_delayed":
+            expected = ("long_delayed", "structured_long", 30.0)
+        else:
+            raise ValueError("controlled arm requires a delay mapping")
+        if (
+            self.delay_mapping,
+            self.delayed_task,
+            self.release_delay_seconds,
+        ) != expected:
+            raise ValueError("latency condition and delay fields mismatch")
+        expected_id = "_".join(
+            part
+            for part in (
+                self.latency_condition,
+                self.pressure_level,
+                self.delay_mapping if self.delay_mapping != "none" else None,
+                self.sampler,
+            )
+            if part is not None
+        )
+        if self.arm_id != expected_id:
+            raise ValueError(f"pressure-response arm ID must be {expected_id!r}")
+        return self
+
+
+class SchedulerPressureResponsePool(BaseModel, extra="forbid", frozen=True):
+    """Immutable identity and ten-arm execution order for one replication."""
+
+    replication_id: str
+    order_seed: Literal[49001, 49002, 49003]
+    selection_seed: Literal[2026091001, 2026091002, 2026091003]
+    generation_study_seed: Literal[69001, 69002, 69003]
+    arm_execution_order: tuple[str, ...]
+    pool_id: Sha256Hex
+    manifest_sha256: Sha256Hex
+
+
+class SchedulerPressureResponseThresholds(BaseModel, extra="forbid", frozen=True):
+    backend_length_termination_rate_max_each_stratum_each_arm: float
+    reward_mean_min_each_stratum_each_arm: float
+    maximum_concurrent_groups_required_each_arm: int
+    natural_long_short_generated_token_median_ratio_min_each_arm: float
+    natural_long_short_ready_latency_median_ratio_min_each_arm: float
+    positive_control_undelayed_share_ready_first_min: float
+    positive_control_undelayed_share_in_order_required: float
+    positive_control_contrast_min_each_mapping: float
+    pressure_activation_median_min: float
+    pressure_activation_replications_exceeding_l0_min: int
+    composition_median_normalized_rank_promotion_min: float
+    composition_replications_at_or_above_minimum: int
+    composition_negative_replications_max: int
+
+
+class SchedulerPressureResponsePlan(BaseModel, extra="forbid", frozen=True):
+    """Hash-addressed final plan for the zero-update scheduler pressure surface."""
+
+    schema_version: Literal[1]
+    analysis_status: Literal[
+        "controlled_zero_update_scheduler_pressure_response_surface"
+    ]
+    calibration_only: Literal[True]
+    confirmatory_eligible: Literal[False]
+    population_claim_authorized: Literal[False]
+    counterfactual_replay_authorized: Literal[False]
+    training_authorized: Literal[False]
+    confirmed_candidate_sha256: Sha256Hex
+    confirmation_record_sha256: Sha256Hex
+    analysis_code_commit: GitCommitHex
+    expected_base_commit: GitCommitHex
+    expected_image_sha256: Sha256Hex
+    source_design_id: Literal["structured_scheduler_pressure_response_v1"]
+    model_revision: Literal["a09a35458c702b33eeacc393d103063234e8bc28"]
+    model_weights_sha256: Literal[
+        "456f5eff514d78f7b0ef52a057118046acf15d86606655767db068cabf5f49f7"
+    ]
+    pools: tuple[SchedulerPressureResponsePool, ...]
+    arms: tuple[SchedulerPressureResponseArm, ...]
+    prompt_groups: Literal[32]
+    dispatch_cohorts: Literal[8]
+    groups_per_cohort: Literal[4]
+    groups_per_stratum_per_cohort: Literal[2]
+    completions_per_group: Literal[2]
+    selection_groups_per_step: Literal[4]
+    max_inflight_prompts: Literal[4]
+    max_total_sequence_length: Literal[768]
+    max_new_tokens: Literal[768]
+    temperature: float
+    top_p: float
+    top_k: Literal[20]
+    repetition_penalty: float
+    replication_order: tuple[Literal[49001, 49002, 49003], ...]
+    thresholds: SchedulerPressureResponseThresholds
+    plan_id: Sha256Hex
+
+    @model_validator(mode="after")
+    def _validate_protocol(self) -> "SchedulerPressureResponsePlan":
+        if (
+            self.confirmed_candidate_sha256
+            != PRESSURE_RESPONSE_CONFIRMED_CANDIDATE_SHA256
+        ):
+            raise ValueError(
+                "pressure-response plan is not bound to the confirmed candidate"
+            )
+        bindings = {
+            pool.order_seed: (pool.selection_seed, pool.generation_study_seed)
+            for pool in self.pools
+        }
+        if bindings != {
+            49001: (2026091001, 69001),
+            49002: (2026091002, 69002),
+            49003: (2026091003, 69003),
+        } or self.replication_order != (49001, 49002, 49003):
+            raise ValueError("pressure-response replication bindings mismatch")
+        if tuple(pool.order_seed for pool in self.pools) != self.replication_order:
+            raise ValueError("pressure-response pools must follow replication order")
+        expected_arm_ids = {
+            f"natural_{level}_{sampler}"
+            for level in ("l0", "l1", "l3")
+            for sampler in ("ready_first", "in_order")
+        } | {
+            f"controlled_positive_control_l3_{mapping}_{sampler}"
+            for mapping in ("short_delayed", "long_delayed")
+            for sampler in ("ready_first", "in_order")
+        }
+        if {arm.arm_id for arm in self.arms} != expected_arm_ids or len(
+            self.arms
+        ) != 10:
+            raise ValueError("pressure-response plan requires the locked ten arms")
+        if any(
+            len(pool.arm_execution_order) != 10
+            or set(pool.arm_execution_order) != expected_arm_ids
+            for pool in self.pools
+        ):
+            raise ValueError("each replication must bind every arm exactly once")
+        if (self.temperature, self.top_p, self.repetition_penalty) != (0.7, 0.8, 1.0):
+            raise ValueError("pressure-response generation constants mismatch")
+        expected_thresholds = SchedulerPressureResponseThresholds(
+            backend_length_termination_rate_max_each_stratum_each_arm=0.125,
+            reward_mean_min_each_stratum_each_arm=0.75,
+            maximum_concurrent_groups_required_each_arm=4,
+            natural_long_short_generated_token_median_ratio_min_each_arm=2.0,
+            natural_long_short_ready_latency_median_ratio_min_each_arm=1.5,
+            positive_control_undelayed_share_ready_first_min=0.75,
+            positive_control_undelayed_share_in_order_required=0.5,
+            positive_control_contrast_min_each_mapping=0.25,
+            pressure_activation_median_min=0.5,
+            pressure_activation_replications_exceeding_l0_min=2,
+            composition_median_normalized_rank_promotion_min=1 / 31,
+            composition_replications_at_or_above_minimum=2,
+            composition_negative_replications_max=1,
+        )
+        if self.thresholds != expected_thresholds:
+            raise ValueError("pressure-response thresholds mismatch")
+        return self
+
+    def arm(self, arm_id: str) -> SchedulerPressureResponseArm:
+        matches = [arm for arm in self.arms if arm.arm_id == arm_id]
+        if len(matches) != 1:
+            raise StructuredSchedulerCrossoverPlanError(
+                f"unknown pressure-response arm {arm_id!r}"
+            )
+        return matches[0]
+
+    def pool(self, order_seed: int) -> SchedulerPressureResponsePool:
+        matches = [pool for pool in self.pools if pool.order_seed == order_seed]
+        if len(matches) != 1:
+            raise StructuredSchedulerCrossoverPlanError(
+                f"unknown pressure-response order seed {order_seed}"
+            )
+        return matches[0]
+
+
 SchedulerProtocolPlan: TypeAlias = (
-    SchedulerAssayPlan | StructuredSchedulerCrossoverPlan | DapoSchedulerCrossoverPlan
+    SchedulerAssayPlan
+    | StructuredSchedulerCrossoverPlan
+    | DapoSchedulerCrossoverPlan
+    | SchedulerPressureResponsePlan
 )
-SchedulerProtocolArm: TypeAlias = SchedulerAssayArm | StructuredSchedulerCrossoverArm
+SchedulerProtocolArm: TypeAlias = (
+    SchedulerAssayArm | StructuredSchedulerCrossoverArm | SchedulerPressureResponseArm
+)
 
 
 def canonical_structured_scheduler_crossover_plan(
@@ -408,6 +617,40 @@ def load_dapo_scheduler_crossover_plan(
     return plan
 
 
+def canonical_scheduler_pressure_response_plan(
+    plan: SchedulerPressureResponsePlan,
+) -> bytes:
+    return json.dumps(
+        plan.model_dump(mode="json", exclude={"plan_id"}),
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode()
+
+
+def compute_scheduler_pressure_response_plan_id(
+    plan: SchedulerPressureResponsePlan,
+) -> str:
+    return hashlib.sha256(canonical_scheduler_pressure_response_plan(plan)).hexdigest()
+
+
+def load_scheduler_pressure_response_plan(
+    path: str | Path,
+) -> SchedulerPressureResponsePlan:
+    plan_path = Path(path)
+    try:
+        plan = SchedulerPressureResponsePlan.model_validate_json(plan_path.read_bytes())
+    except (OSError, ValidationError) as error:
+        raise StructuredSchedulerCrossoverPlanError(
+            f"invalid pressure-response plan {plan_path}: {error}"
+        ) from error
+    expected_id = compute_scheduler_pressure_response_plan_id(plan)
+    if plan.plan_id != expected_id:
+        raise StructuredSchedulerCrossoverPlanError(
+            f"pressure-response plan ID mismatch: declared={plan.plan_id}, computed={expected_id}"
+        )
+    return plan
+
+
 def load_scheduler_protocol(path: str | Path) -> SchedulerProtocolPlan:
     """Load either the legacy imposed-delay assay or this crossover protocol."""
     plan_path = Path(path)
@@ -425,6 +668,14 @@ def load_scheduler_protocol(path: str | Path) -> SchedulerProtocolPlan:
         return load_scheduler_assay_plan(plan_path)
     if value.get("analysis_status") == "controlled_natural_latency_scheduler_crossover":
         return load_structured_scheduler_crossover_plan(plan_path)
-    if value.get("analysis_status") == "controlled_dapo_natural_latency_scheduler_crossover":
+    if (
+        value.get("analysis_status")
+        == "controlled_dapo_natural_latency_scheduler_crossover"
+    ):
         return load_dapo_scheduler_crossover_plan(plan_path)
+    if (
+        value.get("analysis_status")
+        == "controlled_zero_update_scheduler_pressure_response_surface"
+    ):
+        return load_scheduler_pressure_response_plan(plan_path)
     raise StructuredSchedulerCrossoverPlanError("unsupported scheduler protocol type")

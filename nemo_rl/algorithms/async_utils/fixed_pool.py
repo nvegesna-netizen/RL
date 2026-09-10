@@ -172,6 +172,14 @@ STRUCTURED_CROSSOVER_SELECTION_SEEDS: Final[dict[int, int]] = {
     46003: 2026090803,
     46004: 2026090804,
 }
+STRUCTURED_PRESSURE_PROTOCOL_SHA256: Final[str] = (
+    "c35c06797483c83bd1a29f8cf856447387729e0e612480026eb84320127576cc"
+)
+STRUCTURED_PRESSURE_SELECTION_SEEDS: Final[dict[int, int]] = {
+    49001: 2026091001,
+    49002: 2026091002,
+    49003: 2026091003,
+}
 STRUCTURED_GENERATION_SOURCE_IDS: Final[tuple[str, str]] = (
     "structured_short",
     "structured_long",
@@ -1372,6 +1380,24 @@ def validate_structured_generation_scheduler_crossover_manifest_design(
     )
 
 
+def validate_structured_scheduler_pressure_response_manifest_design(
+    manifest: FixedPoolManifest,
+) -> None:
+    """Enforce one confirmed fresh scheduler pressure-response pool."""
+    selection_seed = STRUCTURED_PRESSURE_SELECTION_SEEDS.get(manifest.order_seed)
+    if selection_seed is None:
+        raise FixedPoolManifestError("structured pressure-response order seed mismatch")
+    _validate_structured_generation_manifest_design(
+        manifest,
+        expected_order_seed=manifest.order_seed,
+        expected_selection_seed=selection_seed,
+        expected_protocol_sha256=STRUCTURED_PRESSURE_PROTOCOL_SHA256,
+        expected_split="scheduler_pressure_response",
+        expected_pairs=16,
+        expected_cohorts=8,
+    )
+
+
 def validate_dapo_operational_latency_discovery_manifest_design(
     manifest: FixedPoolManifest,
     *,
@@ -1523,6 +1549,8 @@ def _validate_structured_generation_manifest_design(
     expected_selection_seed: int,
     expected_protocol_sha256: str,
     expected_split: str,
+    expected_pairs: int = 8,
+    expected_cohorts: int = 4,
 ) -> None:
     """Validate shared immutable structure for generated short/long pairs."""
     if manifest.order_seed != expected_order_seed:
@@ -1554,10 +1582,10 @@ def _validate_structured_generation_manifest_design(
         source_id: sum(item.task_name == source_id for item in manifest.items)
         for source_id in STRUCTURED_GENERATION_SOURCE_IDS
     }
-    if len(manifest.items) != 16 or counts != {
-        source_id: 8 for source_id in STRUCTURED_GENERATION_SOURCE_IDS
+    if len(manifest.items) != 2 * expected_pairs or counts != {
+        source_id: expected_pairs for source_id in STRUCTURED_GENERATION_SOURCE_IDS
     }:
-        raise FixedPoolManifestError("structured-generation requires balanced 8+8")
+        raise FixedPoolManifestError("structured-generation pool is not balanced")
     if any(item.source_id != item.task_name for item in manifest.items):
         raise FixedPoolManifestError("structured-generation source/task mismatch")
     by_cohort: dict[int, list[FixedPoolManifestItem]] = {}
@@ -1569,7 +1597,7 @@ def _validate_structured_generation_manifest_design(
             raise FixedPoolManifestError(
                 "structured-generation input exceeds 256 tokens"
             )
-    if len(by_cohort) != 4 or len(by_pair) != 8:
+    if len(by_cohort) != expected_cohorts or len(by_pair) != expected_pairs:
         raise FixedPoolManifestError("structured-generation cohort/pair count mismatch")
     for cohort, items in by_cohort.items():
         cohort_counts = {
@@ -1587,7 +1615,7 @@ def _validate_structured_generation_manifest_design(
             )
     source_rows, _ = _load_materialized_source_rows(manifest)
     if any(
-        len(source_rows[source_id]) != 8
+        len(source_rows[source_id]) != expected_pairs
         for source_id in STRUCTURED_GENERATION_SOURCE_IDS
     ):
         raise FixedPoolManifestError("structured-generation source row count mismatch")
@@ -1691,6 +1719,8 @@ def validate_fixed_pool_manifest_design(
         validate_structured_generation_latency_manifest_design(manifest)
     elif design_id == "structured_generation_scheduler_crossover_v1":
         validate_structured_generation_scheduler_crossover_manifest_design(manifest)
+    elif design_id == "structured_scheduler_pressure_response_v1":
+        validate_structured_scheduler_pressure_response_manifest_design(manifest)
     elif design_id == "dapo_math_operational_latency_discovery_v2":
         validate_dapo_operational_latency_discovery_manifest_design(manifest)
     elif design_id == "dapo_math_scheduler_crossover_v1":

@@ -18,14 +18,13 @@ import json
 import statistics
 import uuid
 from dataclasses import dataclass
-from typing import Any, Optional
+from typing import Any, Optional, Protocol
 
 import torch
 from transformers import PreTrainedTokenizerBase
 from wandb import Table
 
 from nemo_rl.algorithms.async_utils.replay_buffer import TQReplayBuffer
-from nemo_rl.algorithms.async_utils.scheduler_assay import SchedulerAssayArm
 from nemo_rl.algorithms.async_utils.scheduler_trace import (
     NoopSchedulerTraceSink,
     Scalar,
@@ -58,6 +57,13 @@ from nemo_rl.models.generation.interfaces import (
 from nemo_rl.utils.timer import Timer
 
 TokenizerType = PreTrainedTokenizerBase
+
+
+class SchedulerDelayArm(Protocol):
+    """Structural fields required to impose a scheduler-assay release delay."""
+
+    arm_id: str
+    delayed_task: str
 
 
 @dataclass(frozen=True, slots=True)
@@ -930,7 +936,7 @@ class RolloutManager:
         use_nemo_gym: bool = False,
         mask_env_flagged_samples: bool = True,
         tq_buffer: Optional[TQReplayBuffer] = None,
-        scheduler_assay_arm: Optional[SchedulerAssayArm] = None,
+        scheduler_assay_arm: Optional[SchedulerDelayArm] = None,
         scheduler_assay_delay_seconds: Optional[float] = None,
     ) -> None:
         assert num_generations_per_prompt >= 1, (
