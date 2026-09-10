@@ -1,0 +1,20 @@
+{
+  "automatic_extension": false,
+  "automatic_retry": false,
+  "cells": [
+    "openmath",
+    "gsm8k"
+  ],
+  "eos_submission_authorized": true,
+  "paired_qualification_authorized": true,
+  "paired_qualification_contract_sha256": "b011c846a8e876e9ea37f143d26089c7c498058a1f3e3c2461e6b317ff368fec",
+  "required_launcher": "runllm.py --no_wait",
+  "schema": "m4-llama-lifecycle-derived-v4-paired-neutral-qualification-authorization-v1",
+  "scientific_acquisition_authorized": false,
+  "scope": "exactly_one_shared_pair_of_64_step_v4_neutral_llama_lifecycle_qualifications",
+  "submission_attempt_limit_each_cell": 1,
+  "submit_both_before_inspecting_either": true,
+  "trainer_steps_each": 64,
+  "training_authorized": true,
+  "user_authorization": "I authorize"
+}
