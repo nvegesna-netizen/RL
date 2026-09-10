@@ -1,6 +1,12 @@
 # Lifecycle-derived paired neutral qualification plan
 
-Status: `FROZEN_ELIGIBLE_PREFLIGHT_GREEN_PENDING_PAIRED_SUBMISSION`.
+Status: `TERMINAL_FAILED_PACKAGE_BOOTSTRAP_NO_TRAINING_NO_ACQUISITION`.
+
+Terminal evidence is recorded in `qualification_terminal_result.json` and
+`terminal_close.md`. Both paired cells stopped before training at the same
+package bootstrap import check. No registered qualification measurement was
+produced. Per the frozen rule below, the successor is closed without retry or
+acquisition.
 
 Exactly one 32-step neutral qualification is registered for each of OpenMath
 and GSM8K. Both packages must be frozen and submitted before either result is

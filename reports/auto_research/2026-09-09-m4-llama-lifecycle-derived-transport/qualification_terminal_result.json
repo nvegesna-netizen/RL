@@ -1,0 +1,49 @@
+{
+  "acquisition_authorized": false,
+  "acquisition_started": false,
+  "automatic_extension": false,
+  "automatic_retry": false,
+  "cause": {
+    "accepted_bootstrap_import_order": [
+      "import nemo_rl",
+      "import megatron"
+    ],
+    "error": "ModuleNotFoundError: No module named 'megatron'",
+    "failed_bootstrap_import_order": [
+      "import megatron"
+    ],
+    "failure_stage": "pre_training_fingerprint_and_megatron_import_check",
+    "mechanism": "Importing nemo_rl appends the copied Megatron-LM workspace to sys.path; the qualification package omitted that prerequisite import."
+  },
+  "cells": {
+    "gsm8k": {
+      "child_pipeline_id": 67090857,
+      "failure_reason": "script_failure",
+      "parent_pipeline_id": 67090748,
+      "trace_sha256": "6a973f0a88af5df63424d9ff78a9b21dd4423f01c17b9a27689e5318ca0e7a3e",
+      "training_entrypoint_reached": false,
+      "workload_artifact_sha256": "76e03ec0c63255831809b0c3f5466b3f72d0cd6732552ab4a0c4abf3e99847f4",
+      "workload_job_id": 433105447
+    },
+    "openmath": {
+      "child_pipeline_id": 67090910,
+      "failure_reason": "script_failure",
+      "parent_pipeline_id": 67090802,
+      "trace_sha256": "86ac7f01b63e7ba1e157536b000b937efa61396f819c4dde50c6ed05a45c6c54",
+      "training_entrypoint_reached": false,
+      "workload_artifact_sha256": "50d53147193def2088ac95b09ffff264b144863b9baf6dc4469cef33a27d65d7",
+      "workload_job_id": 433106036
+    }
+  },
+  "lifecycle_artifact_produced": false,
+  "opportunity_artifact_produced": false,
+  "preflight_green": true,
+  "qualification_gate_evaluable": false,
+  "qualification_summary_produced": false,
+  "retry_allowed": false,
+  "schema": "m4-llama-lifecycle-derived-paired-qualification-terminal-result-v1",
+  "scientific_interpretation": "The failure supplies no evidence for or against lifecycle-derived M4 transport because both cells stopped before training and before any registered qualification measurement.",
+  "source_commit": "bdbf2956f3ff46177958a29a64e3b33e4dc6515e",
+  "status": "TERMINAL_CLOSED_PAIRED_QUALIFICATION_PACKAGE_FAILURE_NO_TRAINING_NO_ACQUISITION",
+  "trainer_steps_started": 0
+}

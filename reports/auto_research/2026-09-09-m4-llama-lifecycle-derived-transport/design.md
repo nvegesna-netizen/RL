@@ -1,6 +1,6 @@
 # Llama 3.2 1B lifecycle-derived M4 transport design
 
-Status: `FROZEN_PREFLIGHT_GREEN_PAIRED_QUALIFICATION_ELIGIBLE`.
+Status: `TERMINAL_CLOSED_PAIRED_QUALIFICATION_PACKAGE_FAILURE_NO_TRAINING_NO_ACQUISITION`.
 
 ## Separation from the closed study
 
