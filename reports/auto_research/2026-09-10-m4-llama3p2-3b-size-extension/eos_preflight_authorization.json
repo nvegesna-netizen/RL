@@ -1,0 +1,20 @@
+{
+  "schema": "m4-llama3p2-3b-no-training-eos-preflight-authorization-v1",
+  "scope": "exactly_one_credential_free_llama3p2_3b_no_training_eos_preflight",
+  "user_authorization": "I authorize",
+  "source_commit": "88424bdb7bfb526e541b4a7b07830bc31028e64f",
+  "source_archive_sha256": "1ae875a63786d687fcf46bd7fa7cb2f26b1031c3cf3c36e38114305c732820eb",
+  "protocol_sha256": "4f2a5e496030e836b3449697928f4f363d7d36e3cec668105b2cdcc701b9814c",
+  "local_candidate_sha256": "30d88f08be15777db977964ae670808617e240545ccab486042d2112d1183334",
+  "required_launcher": "runllm.py --no_wait",
+  "submission_attempt_limit": 1,
+  "eos_submission_authorized": true,
+  "model_metadata_and_tokenizer_access_authorized": true,
+  "model_weight_download_authorized": false,
+  "trainer_construction_authorized": false,
+  "training_authorized": false,
+  "qualification_authorized": false,
+  "acquisition_authorized": false,
+  "automatic_retry": false,
+  "automatic_extension": false
+}

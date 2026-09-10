@@ -1,0 +1,17 @@
+{
+  "acquisition_surface_present": false,
+  "authorization_sha256": "6bc6a54a95f577b235d9c6b77c5bf52a11b8236a3bd042a2b1f087dc4fbb95de",
+  "candidate_sha256": "30d88f08be15777db977964ae670808617e240545ccab486042d2112d1183334",
+  "deterministic_rebuild": true,
+  "jet_manifest_schema_green": true,
+  "jet_retrier_enabled": false,
+  "launch_attempted": false,
+  "manifest_sha256": "037066da5e60892d4e2837979f87359e75650898ef240a1fef81f28f694683fd",
+  "model_weight_loading_surface_present": false,
+  "qualification_surface_present": false,
+  "runllm_sha256": "30532cd638d8394fa0e651daf4a43ec9424cbaa0949cd59c323191177318e616",
+  "schema": "m4-llama3p2-3b-no-training-eos-preflight-package-validation-v1",
+  "status": "PASS",
+  "submission_attempt_limit": 1,
+  "training_surface_present": false
+}
