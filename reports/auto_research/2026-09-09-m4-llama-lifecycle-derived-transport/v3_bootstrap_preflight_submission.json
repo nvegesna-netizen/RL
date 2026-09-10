@@ -1,0 +1,20 @@
+{
+  "automatic_extension": false,
+  "automatic_retry": false,
+  "frozen_provenance_commit": "f9d2abade2737257d68a6c0ee542a538478d31c6",
+  "manifest_sha256": "1e7d0b610ff16b9ade6e07d9563664f2b9db86571f6abb0c28f55d9be68b0ff1",
+  "parent_pipeline": {
+    "created_at": "2026-09-09T22:14:27.734-07:00",
+    "id": 67111748,
+    "ref": "dlalgo-ci/eos",
+    "sha": "8f5151cf00e02933a9b92772443d62e95b5150ff",
+    "source": "api",
+    "status_at_verification": "running",
+    "url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67111748"
+  },
+  "required_launcher": "runllm.py --no_wait",
+  "schema": "m4-llama-lifecycle-derived-v3-bootstrap-preflight-submission-v1",
+  "submission_attempt": 1,
+  "submission_guard_sha256": "681be7515357340821ae1d30fdd6286fe56c4e6a47f80c8edf5e7171eb7d3dbf",
+  "training_authorized": false
+}
