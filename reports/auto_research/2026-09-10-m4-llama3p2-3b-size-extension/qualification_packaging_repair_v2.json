@@ -1,0 +1,33 @@
+{
+  "schema": "m4-llama3p2-3b-paired-qualification-packaging-repair-v2",
+  "status": "FROZEN_LOCAL_REPAIR_NO_LAUNCH_AUTHORITY",
+  "terminal_failure_sha256": "038940708c1aaca1a1ca1834fa0444ce8cff6c7738b23d958f1d652117168204",
+  "qualification_execution_contract_sha256": "4e124c51a2179bd3faff5da8d34a58dc0ce33f98aa58faa2e00f1d6965944e62",
+  "failed_v1_manifest_sha256": {
+    "openmath": "55a0ee88d17265ad78d6b37cad3b0edabaa28773c0b517bd95ae23a3a66a94ec",
+    "gsm8k": "8d7f521aea8422948f2c43ba7ca07c1c5f9187b542a46cb8802b8ddb0adc73d4"
+  },
+  "failure_stage": "embedded_authorization_evidence_before_config_or_training",
+  "root_cause": "json_boolean_literals_interpolated_into_python_source",
+  "allowed_manifest_changes": [
+    "change workload name suffix from v1 to v2-local-candidate",
+    "replace consumed authorization payload and hash with local repair authorization",
+    "replace only the embedded authorization-evidence block with valid Python syntax and an explicit no-launch exit"
+  ],
+  "scientific_configuration_changes_allowed": false,
+  "qualification_data_exist": false,
+  "required_validation": [
+    "exact normalized delta from failed v1 manifests",
+    "compile every embedded Python block",
+    "execute the repaired authorization-evidence block with its real payloads",
+    "observe the explicit no-launch exit before config resolution and training",
+    "byte-identical deterministic rebuild of both cells"
+  ],
+  "eos_submission_authorized": false,
+  "training_authorized": false,
+  "qualification_authorized": false,
+  "acquisition_authorized": false,
+  "automatic_retry": false,
+  "automatic_extension": false,
+  "fresh_authorization_required_for_launchable_v2_pair": true
+}

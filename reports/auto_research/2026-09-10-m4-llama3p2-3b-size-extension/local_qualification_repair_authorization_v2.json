@@ -1,0 +1,14 @@
+{
+  "schema": "m4-llama3p2-3b-paired-qualification-local-repair-authorization-v2",
+  "scope": "build_and_validate_two_nonlaunchable_repaired_qualification_candidates",
+  "user_instruction": "do the next step",
+  "qualification_packaging_repair_sha256": "f70b62e24b4a3f24c7ae1b62ce56c380704b8b75436623650a5428329d772883",
+  "local_package_build_authorized": true,
+  "eos_submission_authorized": false,
+  "model_weight_access_authorized": false,
+  "training_authorized": false,
+  "paired_qualification_authorized": false,
+  "scientific_acquisition_authorized": false,
+  "automatic_retry": false,
+  "automatic_extension": false
+}

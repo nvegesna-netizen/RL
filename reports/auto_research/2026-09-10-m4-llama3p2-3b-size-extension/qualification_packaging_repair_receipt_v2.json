@@ -1,0 +1,22 @@
+{
+  "schema": "m4-llama3p2-3b-paired-qualification-local-repair-receipt-v2",
+  "status": "VALIDATED_LOCAL_REPAIR_NO_LAUNCH_AUTHORITY",
+  "repair_sha256": "f70b62e24b4a3f24c7ae1b62ce56c380704b8b75436623650a5428329d772883",
+  "local_authorization_sha256": "8ea7472092fe8b340373b54f34dce36d57a7ac2ec4cc7a451587d66a5c4bf269",
+  "builder_sha256": "4ecf6f5a6276c381b3e6c0d21dfe2d6171b5cf556888e460b9b52071b0f96a3c",
+  "validator_sha256": "04e8daf512d1f54d72940ce418425ad915380e55c9bcf60224e60f3c09f05c6f",
+  "validation_sha256": "04a072122531f2e74da2a51a20c3cef77af357a0d124523ccf726b3f178505b6",
+  "v2_local_candidate_sha256": {
+    "openmath": "314dd66ee6257c77bb1a1a26e705e27a147bdc71785c2d67ffee1940cbbf98b9",
+    "gsm8k": "8b557a6689614f44318053d32253e4e00d59c34c734e1fe47e949612dbf359ef"
+  },
+  "validation_status": "PASS",
+  "root_cause_repaired": "json_boolean_literals_interpolated_into_python_source",
+  "scientific_configuration_changed": false,
+  "dynamic_authorization_evidence_executed": true,
+  "explicit_no_launch_exit_observed": true,
+  "deterministic_rebuild": true,
+  "large_candidates_tracked_in_git": false,
+  "eos_submission_attempted": false,
+  "fresh_authorization_required_for_launchable_v2_pair": true
+}

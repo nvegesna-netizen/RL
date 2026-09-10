@@ -1,0 +1,35 @@
+{
+  "deterministic_rebuild": true,
+  "dynamic_authorization_evidence": {
+    "gsm8k": {
+      "authorization_evidence_executed": true,
+      "evidence_pass_marker_observed": true,
+      "explicit_no_launch_exit_observed": true,
+      "name_error_observed": false
+    },
+    "openmath": {
+      "authorization_evidence_executed": true,
+      "evidence_pass_marker_observed": true,
+      "explicit_no_launch_exit_observed": true,
+      "name_error_observed": false
+    }
+  },
+  "embedded_python_blocks_each": 6,
+  "exact_registered_delta": true,
+  "failed_v1_manifest_sha256": {
+    "gsm8k": "8d7f521aea8422948f2c43ba7ca07c1c5f9187b542a46cb8802b8ddb0adc73d4",
+    "openmath": "55a0ee88d17265ad78d6b37cad3b0edabaa28773c0b517bd95ae23a3a66a94ec"
+  },
+  "jet_manifest_schema_green": true,
+  "launch_attempted": false,
+  "launch_authority_present": false,
+  "local_authorization_sha256": "8ea7472092fe8b340373b54f34dce36d57a7ac2ec4cc7a451587d66a5c4bf269",
+  "repair_sha256": "f70b62e24b4a3f24c7ae1b62ce56c380704b8b75436623650a5428329d772883",
+  "schema": "m4-llama3p2-3b-paired-qualification-local-repair-validation-v2",
+  "scientific_configuration_changed": false,
+  "status": "PASS",
+  "v2_local_candidate_sha256": {
+    "gsm8k": "8b557a6689614f44318053d32253e4e00d59c34c734e1fe47e949612dbf359ef",
+    "openmath": "314dd66ee6257c77bb1a1a26e705e27a147bdc71785c2d67ffee1940cbbf98b9"
+  }
+}

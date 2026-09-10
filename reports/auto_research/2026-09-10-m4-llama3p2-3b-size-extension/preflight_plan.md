@@ -1,6 +1,6 @@
 # Llama 3.2 3B no-training preflight plan
 
-Status: `EOS_PREFLIGHT_GREEN_QUALIFICATION_NOT_AUTHORIZED`.
+Status: `V2_LOCAL_REPAIR_VALIDATED_NO_LAUNCH_AUTHORITY`.
 
 The first executable boundary is exactly one no-training preflight submitted
 with `runllm.py --no_wait`, only after a dedicated authorization record exists.
@@ -69,3 +69,14 @@ Status: `SHARED_PRETRAINING_PACKAGING_FAILURE_NO_QUALIFICATION_DATA`.
 The scientific qualification gate was not evaluated. The original two
 attempts are consumed, acquisition remains unauthorized, and any repaired pair
 requires a new versioned package plus fresh explicit authorization.
+
+The v2 local repair replaced only the workload name, consumed authorization
+surface, and defective authorization-evidence block. The builder now embeds a
+valid Python representation of the authorization payload. Validation compiled
+all six embedded Python blocks per cell, executed the repaired evidence block
+against the real frozen payloads, observed its pass marker and explicit
+no-launch exit, confirmed the scientific configuration is unchanged, and
+reproduced both candidates byte for byte. The compact hash ledger is preserved
+in `qualification_packaging_repair_receipt_v2.json`; the large candidates stay
+outside Git. No EOS submission occurred. A launchable v2 pair still requires
+fresh, explicit authorization and a separately versioned authorization surface.
