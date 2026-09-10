@@ -1,0 +1,37 @@
+{
+  "automatic_extension": false,
+  "automatic_retry": false,
+  "frozen_manifest_commit": "265873cdee156f45809df9d2010f5fcc964fbb09",
+  "gsm8k": {
+    "child_pipeline_id": 67119617,
+    "manifest_sha256": "d83490d994724817ba0e76bda8eec7fb34d5f9421d22a9abc94b77e140babfc2",
+    "parent_pipeline_id": 67118822,
+    "resubmitted_during_repair": false,
+    "workload_identity_authenticated": true
+  },
+  "openmath": {
+    "authorization_commit": "19dc9cfdd463c253c8ae576d89055ed0a5ceef5f",
+    "authorization_sha256": "a8e182727135fffd8d582d30fca36e99caaa2380c4a42694e87f9c6b1377a4c8",
+    "child_pipeline_id": 67121552,
+    "generate_job_id": 433363380,
+    "launcher_exit_code": 0,
+    "launcher_output_sha256": "bd1bd3e0d05628b7d0db61791a3326d2a70c3e2463f7957cbddf93583fe91df2",
+    "manifest_sha256": "5ff618b6101a4887c742daf2f62eb6d89b199ce8db712922acce8ddabb45e99b",
+    "parent_pipeline": {
+      "created_at": "2026-09-09T23:19:58.952-07:00",
+      "id": 67121179,
+      "status_at_verification": "running",
+      "url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67121179"
+    },
+    "submission_guard_sha256": "03aef3e09447f964e188ccd0f6f1009cff7ab9946121493678effefb09bf88c4",
+    "workload_identity_authenticated": true,
+    "workload_name": "m4-llama-openmath-lifecycle-derived-neutral-qualification-v3"
+  },
+  "paired_qualification_submission_complete": true,
+  "qualification_results_inspected": false,
+  "schema": "m4-llama-lifecycle-derived-v3-paired-qualification-submission-v1",
+  "scientific_acquisition_authorized": false,
+  "scientific_interpretation": "Both frozen neutral qualification cells now have artifact-authenticated parent and child pipelines, and neither scientific result was inspected before both submissions were established. This submission record contains no qualification conclusion or acquisition authority.",
+  "status": "PAIRED_QUALIFICATION_SUBMITTED_RESULTS_UNINSPECTED",
+  "verified_at_utc": "2026-09-10T06:22:26Z"
+}
