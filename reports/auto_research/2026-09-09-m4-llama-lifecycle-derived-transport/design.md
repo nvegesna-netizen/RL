@@ -1,6 +1,6 @@
 # Llama 3.2 1B lifecycle-derived M4 transport design
 
-Status: `FROZEN_LOCAL_SUCCESSOR_PROTOCOL_PENDING_IMPLEMENTATION`.
+Status: `FROZEN_IMPLEMENTED_PENDING_NO_TRAINING_PREFLIGHT`.
 
 ## Separation from the closed study
 
@@ -35,13 +35,15 @@ token-level GRPO coefficient mass before release:
 
 where `A_i` is the production-equivalent float32 leave-one-out normalized GRPO
 scalar advantage and `T_i` is the valid assistant-token count for sibling `i`.
-Rewards, sibling indices, trajectory identities, truncation, token counts, and
-start versions come only from `sibling_done` lifecycle events. Sample identity
-comes only from the matching `group_ready` lifecycle event. Completed learner
-steps come only from `removed(reason=selected)` events paired with the matching
-`learner_version_advanced` transition.
+Rewards, sibling indices, trajectory identities, truncation, token counts,
+start versions, and sample identity come only from `sibling_done` lifecycle
+events; `trajectory_id` is the authoritative sample ID. A later matching
+`group_ready` event is a post-release consistency check, not an input to Q.
+Completed learner steps come only from `removed(reason=selected)` events paired
+with the matching `learner_version_advanced` transition.
 
-The derivation code is forbidden from reading `release_arm`,
+The Q derivation code is forbidden from reading `group_ready`, `removed`,
+`learner_version_advanced`, `release_arm`,
 `release_delay_seconds`, assignment draws, nonces, masses, or any downstream
 outcome/disposition when computing Q. It runs only after the active window has
 closed. Its output records the maximum controller sequence of the source
@@ -71,9 +73,9 @@ Before any training launch, all of the following must pass:
    lifecycle topology.
 4. Treatment-blindness metamorphism: arbitrary changes to all release-arm and
    release-dose fields leave every derived opportunity byte unchanged.
-5. Fail-closed rejection of incomplete siblings, invalid ordering, duplicate
-   identities, nonfinite/unsupported rewards, missing selected-step evidence,
-   or incompatible estimator/loss settings.
+5. Fail-closed rejection of incomplete siblings in any opportunity-required
+   window, invalid ordering, duplicate identities, nonfinite/unsupported rewards,
+   missing selected-step evidence, or incompatible estimator/loss settings.
 6. Total lifecycle-recorder duty instrumentation and post-run elapsed-time
    reporting are present and independently validated.
 

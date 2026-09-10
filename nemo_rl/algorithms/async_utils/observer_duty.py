@@ -63,6 +63,7 @@ class CommonObserverDutyMeter:
         *,
         assignment_domain: str,
         release_arm_labels: Sequence[str],
+        measurement_scope: str = MEASUREMENT_SCOPE,
         clock_ns: Callable[[], int] = time.perf_counter_ns,
         calibration_pairs: int = 64,
     ) -> None:
@@ -75,6 +76,12 @@ class CommonObserverDutyMeter:
         ):
             raise ValueError("observer duty requires a domain and unique arms")
         if (
+            not measurement_scope
+            or not measurement_scope.isascii()
+            or "\0" in measurement_scope
+        ):
+            raise ValueError("observer duty measurement_scope must be nonempty ASCII")
+        if (
             isinstance(calibration_pairs, bool)
             or not isinstance(calibration_pairs, int)
             or calibration_pairs <= 0
@@ -82,6 +89,7 @@ class CommonObserverDutyMeter:
             raise ValueError("calibration_pairs must be a positive integer")
         self._assignment_domain = assignment_domain
         self._release_arm_labels = labels
+        self._measurement_scope = measurement_scope
         self._clock_ns = clock_ns
         self._calibration_pairs = calibration_pairs
         calibration: list[int] = []
@@ -155,7 +163,7 @@ class CommonObserverDutyMeter:
             raise ValueError("observer duty is nonfinite")
         return ObserverDutySummary(
             schema_version=self.SCHEMA_VERSION,
-            measurement_scope=self.MEASUREMENT_SCOPE,
+            measurement_scope=self._measurement_scope,
             assignment_domain=self._assignment_domain,
             release_arm_labels=self._release_arm_labels,
             arm_dependent_branch_forbidden=True,

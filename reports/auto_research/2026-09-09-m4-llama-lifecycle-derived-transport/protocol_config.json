@@ -36,8 +36,7 @@
       "sibling_idx",
       "reward",
       "assistant_tokens",
-      "truncated",
-      "group_ready_sample_ids"
+      "truncated"
     ],
     "derived_after_active_window": true,
     "derivation_method": "lifecycle_derived_grpo_opportunity_v1",
@@ -125,7 +124,7 @@
     "pure_model_family_causal_effect_supported": false,
     "workloads": ["OpenMathInstruct-2", "GSM8K"]
   },
-  "status": "FROZEN_LOCAL_SUCCESSOR_PROTOCOL_PENDING_IMPLEMENTATION",
+  "status": "FROZEN_IMPLEMENTED_PENDING_NO_TRAINING_PREFLIGHT",
   "windows": {
     "burn_in_start_versions": [0, 7],
     "primary_start_versions": [8, 407],

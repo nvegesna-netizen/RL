@@ -44,6 +44,35 @@ def test_shared_controller_sequencer_orders_equal_clock_events() -> None:
     assert event0.to_dict()["controller_sequence"] == 0
 
 
+def test_recorder_wraps_the_complete_record_body_in_duty_meter() -> None:
+    class DutyMeter:
+        def __init__(self) -> None:
+            self.entered = 0
+            self.exited = 0
+
+        def observe(self):
+            meter = self
+
+            class Observation:
+                def __enter__(self):
+                    meter.entered += 1
+
+                def __exit__(self, *args):
+                    meter.exited += 1
+
+            return Observation()
+
+    meter = DutyMeter()
+    recorder = RolloutLifecycleRecorder(clock_ns=lambda: 1, duty_meter=meter)
+    recorder.record(
+        group_id="group",
+        stage=RolloutLifecycleStage.RESERVED,
+        start_weight_version=0,
+    )
+
+    assert (meter.entered, meter.exited) == (1, 1)
+
+
 def test_records_one_monotonic_clock_domain_and_mixed_version_status():
     timestamps = iter((10, 20, 30))
     recorder = RolloutLifecycleRecorder(

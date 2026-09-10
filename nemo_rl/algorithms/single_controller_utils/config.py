@@ -47,6 +47,15 @@ class GradientOpportunityAuditConfig(BaseModel, frozen=True):
     observer_duty_path: Optional[str] = None
 
 
+class LifecycleDerivedOpportunityAuditConfig(BaseModel, frozen=True):
+    """Default-off post-run opportunity reconstruction from lifecycle facts."""
+
+    enabled: bool = False
+    output_path: Optional[str] = None
+    lifecycle_duty_path: Optional[str] = None
+    derivation_summary_path: Optional[str] = None
+
+
 class AsyncRLConfig(BaseModel, extra="allow"):
     # Staleness policy shared by the rollout and train pumps.
     sampler: SamplerConfig = Field(
@@ -71,6 +80,9 @@ class AsyncRLConfig(BaseModel, extra="allow"):
     # Default-off all-group GRPO coefficient-opportunity ledger.
     gradient_opportunity_audit: GradientOpportunityAuditConfig = Field(
         default_factory=GradientOpportunityAuditConfig
+    )
+    lifecycle_derived_opportunity_audit: LifecycleDerivedOpportunityAuditConfig = Field(
+        default_factory=LifecycleDerivedOpportunityAuditConfig
     )
 
 
@@ -111,6 +123,7 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
     async_config = master_config.async_rl
     release_config = async_config.controlled_release_delay
     opportunity_config = async_config.gradient_opportunity_audit
+    derived_config = async_config.lifecycle_derived_opportunity_audit
     if release_config.enabled:
         if not async_config.lifecycle_audit_path:
             raise ValueError(
@@ -166,6 +179,59 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
                 "gradient opportunity audit requires ordinary token-level clipped "
                 "PG (PPO ratio enabled, no sequence-level ratio, CISPO, or "
                 "positive-example NLL)"
+            )
+    if derived_config.enabled:
+        if opportunity_config.enabled:
+            raise ValueError(
+                "synchronous and lifecycle-derived opportunity audits are mutually exclusive"
+            )
+        if not release_config.enabled or not async_config.lifecycle_audit_path:
+            raise ValueError(
+                "async_rl.lifecycle_derived_opportunity_audit.enabled=true requires "
+                "controlled release and lifecycle_audit_path"
+            )
+        if (
+            not derived_config.output_path
+            or not derived_config.lifecycle_duty_path
+            or not derived_config.derivation_summary_path
+        ):
+            raise ValueError(
+                "lifecycle-derived opportunity audit requires output_path and "
+                "lifecycle_duty_path and derivation_summary_path"
+            )
+        derived_paths = (
+            Path(async_config.lifecycle_audit_path).resolve(),
+            Path(derived_config.output_path).resolve(),
+            Path(derived_config.lifecycle_duty_path).resolve(),
+            Path(derived_config.derivation_summary_path).resolve(),
+        )
+        if len(set(derived_paths)) != len(derived_paths):
+            raise ValueError(
+                "lifecycle, derived opportunity, and lifecycle-duty paths must differ"
+            )
+        if master_config.grpo.adv_estimator.name != "grpo":
+            raise ValueError(
+                "lifecycle-derived opportunity requires the native GRPO estimator"
+            )
+        estimator_config = master_config.grpo.adv_estimator
+        if (
+            not estimator_config.normalize_rewards
+            or not estimator_config.use_leave_one_out_baseline
+        ):
+            raise ValueError(
+                "lifecycle-derived opportunity requires normalized leave-one-out GRPO"
+            )
+        loss_config = master_config.loss_fn
+        unsupported_loss = (
+            loss_config.disable_ppo_ratio
+            or not loss_config.token_level_loss
+            or loss_config.sequence_level_importance_ratios
+            or loss_config.use_cispo
+            or loss_config.positive_example_nll_weight != 0
+        )
+        if unsupported_loss:
+            raise ValueError(
+                "lifecycle-derived opportunity requires ordinary token-level clipped PG"
             )
     num_prompts_per_step = master_config.grpo.num_prompts_per_step
     if num_prompts_per_step < async_config.min_groups_for_streaming_train:

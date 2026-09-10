@@ -1,0 +1,22 @@
+# One-shot neutral operational qualification; permanently excluded from causal estimators.
+defaults: grpo_math_1B_megatron_single_controller_m4_llama3p2_1b_openmath_lifecycle_derived_transport.yaml
+
+grpo:
+  max_num_steps: 32
+
+async_rl:
+  lifecycle_audit_path: results/m4-llama3p2-1b-openmath-lifecycle-derived-neutral/lifecycle.jsonl
+  controlled_release_delay:
+    seed: 20261007
+    assignment_domain: m4-llama3p2-1b-openmath-lifecycle-derived-neutral-v1
+    arms:
+      - label: neutral
+        delay_seconds: 0.0
+        mass: 1
+  lifecycle_derived_opportunity_audit:
+    output_path: results/m4-llama3p2-1b-openmath-lifecycle-derived-neutral/opportunity.jsonl
+    lifecycle_duty_path: results/m4-llama3p2-1b-openmath-lifecycle-derived-neutral/lifecycle-duty.json
+    derivation_summary_path: results/m4-llama3p2-1b-openmath-lifecycle-derived-neutral/derivation-summary.json
+
+logger:
+  log_dir: results/m4-llama3p2-1b-openmath-lifecycle-derived-neutral/metrics

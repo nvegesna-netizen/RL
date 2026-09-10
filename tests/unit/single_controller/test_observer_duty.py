@@ -120,6 +120,24 @@ def test_canonical_atomic_summary_is_deterministic(tmp_path: Path) -> None:
     assert decoded["corrected_observer_duty"] == 0.25
 
 
+def test_custom_measurement_scope_is_preserved() -> None:
+    meter = CommonObserverDutyMeter(
+        assignment_domain="study-v1",
+        release_arm_labels=("control", "d5"),
+        measurement_scope="all_synchronous_lifecycle_record_calls",
+        clock_ns=_clock(iter((0, 1, 2, 3, 4, 8))),
+        calibration_pairs=1,
+    )
+    meter.begin_active_window()
+    with meter.observe():
+        pass
+    meter.end_active_window()
+
+    assert (
+        meter.snapshot().measurement_scope == "all_synchronous_lifecycle_record_calls"
+    )
+
+
 @pytest.mark.parametrize(
     "kwargs",
     [

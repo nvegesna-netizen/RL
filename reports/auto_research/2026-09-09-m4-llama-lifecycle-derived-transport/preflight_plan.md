@@ -1,6 +1,6 @@
 # Lifecycle-derived no-training EOS preflight
 
-Status: `FROZEN_PENDING_IMPLEMENTATION_AND_PACKAGE_LOCK`.
+Status: `FROZEN_IMPLEMENTED_PENDING_PACKAGE_LOCK`.
 
 One credential-free EOS submission is allowed. It must use
 `runllm.py --no_wait`, disable retriers, fit within 30 minutes, and perform no

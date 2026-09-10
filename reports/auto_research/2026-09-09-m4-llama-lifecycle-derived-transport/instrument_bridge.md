@@ -1,6 +1,6 @@
 # Accepted-to-lifecycle instrument bridge
 
-Status: `FROZEN_BEFORE_IMPLEMENTATION`.
+Status: `FROZEN_IMPLEMENTED_PENDING_PREFLIGHT`.
 
 ## Invariant scientific quantity
 
@@ -13,13 +13,14 @@ release to after the active run.
 | Accepted field | Lifecycle source | Required relation |
 | --- | --- | --- |
 | `group_id` | group key shared by lifecycle events | exact |
-| `sample_ids[i]` | `group_ready.sample_ids[i]` | exact identity |
+| `sample_ids[i]` | `sibling_done.trajectory_id` | exact identity |
 | `sibling_index` | `sibling_done.sibling_idx` | exact 0--7 permutation |
 | `sample_id` | `sibling_done.trajectory_id` | equals `sample_ids[i]` |
 | `reward` | `sibling_done.reward` | IEEE-754 binary32 equivalent |
 | `valid_actor_tokens` | `sibling_done.assistant_tokens` | exact nonnegative integer |
 | `truncated` | `sibling_done.truncated` | exact boolean |
 | `start_weight_version` | shared lifecycle start version | exact |
+| post-release identity check | `group_ready.sample_ids` | exact match when ready |
 | completed step | `removed(selected)` plus learner transition | exact membership and version |
 
 The historical final paired qualification established these equalities for all
@@ -51,15 +52,18 @@ reject any group whose last required source sequence is not strictly before its
 
 ## Blindness contract
 
-The Q derivation accepts only a projected structure containing group identity,
-start version, sibling identity/index, reward, assistant-token count, and
-truncation. Release assignment, delay, nonce, draw, lifecycle disposition, and
-terminal outcome are absent from that structure. Completed-step reconstruction
-is a separate identity operation and cannot change Q.
+The Q derivation accepts only `sibling_done` projections containing group
+identity, start version, sibling identity/index, reward, assistant-token count,
+and truncation. Release assignment, delay, nonce, draw, `group_ready`, lifecycle
+disposition, learner transitions, and terminal outcome are absent from that
+structure. Post-release identity validation and completed-step reconstruction
+are separate operations and cannot change Q.
 
 ## Fail-closed contract
 
-No imputation is allowed for opportunity. Any unsupported estimator setting,
-loss setting, reward, sample masking mode, identity mismatch, duplicate or
-missing sibling, mixed start version, ambiguous selected-step mapping, or
-source event after treatment start invalidates the artifact.
+No imputation is allowed for opportunity. An incomplete group emits no Q, and
+the strict join rejects it if its start version is in an opportunity-required
+window or it entered a completed learner step. Any unsupported estimator
+setting, loss setting, reward, sample masking mode, identity mismatch, duplicate
+sibling, mixed start version, ambiguous selected-step mapping, or source event
+after treatment start invalidates the artifact.

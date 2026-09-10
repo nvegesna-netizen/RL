@@ -48,6 +48,11 @@ from nemo_rl.algorithms.async_utils.gradient_opportunity import (
     GradientOpportunityRecorder,
     compute_grpo_gradient_opportunity,
 )
+from nemo_rl.algorithms.async_utils.lifecycle_opportunity import (
+    derive_lifecycle_opportunity_rows,
+    flush_lifecycle_derivation_summary,
+    flush_lifecycle_opportunity_rows,
+)
 from nemo_rl.algorithms.async_utils.observer_duty import CommonObserverDutyMeter
 from nemo_rl.algorithms.async_utils.staleness_sampler import create_sampler
 from nemo_rl.algorithms.async_utils.rollout_lifecycle import (
@@ -138,11 +143,28 @@ class SingleControllerActor:
         self._observer_duty_meter: Optional[CommonObserverDutyMeter] = None
         if self._async_cfg.lifecycle_audit_path is not None:
             opportunity_enabled = self._async_cfg.gradient_opportunity_audit.enabled
-            controller_sequencer = (
-                ControllerEventSequencer() if opportunity_enabled else None
+            derived_enabled = (
+                self._async_cfg.lifecycle_derived_opportunity_audit.enabled
             )
+            controller_sequencer = (
+                ControllerEventSequencer()
+                if opportunity_enabled or derived_enabled
+                else None
+            )
+            if derived_enabled:
+                self._observer_duty_meter = CommonObserverDutyMeter(
+                    assignment_domain=(
+                        self._async_cfg.controlled_release_delay.assignment_domain
+                    ),
+                    release_arm_labels=tuple(
+                        arm.label
+                        for arm in self._async_cfg.controlled_release_delay.arms
+                    ),
+                    measurement_scope="all_synchronous_lifecycle_record_calls",
+                )
             self._lifecycle_recorder = RolloutLifecycleRecorder(
-                controller_sequencer=controller_sequencer
+                controller_sequencer=controller_sequencer,
+                duty_meter=self._observer_duty_meter if derived_enabled else None,
             )
             self._buffer.set_lifecycle_recorder(self._lifecycle_recorder)
             self._rollout_manager.set_lifecycle_recorder(self._lifecycle_recorder)
@@ -236,6 +258,12 @@ class SingleControllerActor:
                         self._opportunity_recorder.append_group(summary)
 
                 self._buffer.set_prepare_observer(_record_prepared_opportunity)
+            elif derived_enabled and not isinstance(
+                self._advantage_estimator, GRPOAdvantageEstimator
+            ):
+                raise TypeError(
+                    "lifecycle-derived opportunity requires native GRPO advantages"
+                )
 
         # Built here, not on the driver: Logger backends (wandb/tb/...) hold
         # _thread.lock that Ray can't cloudpickle into the actor.
@@ -365,6 +393,42 @@ class SingleControllerActor:
                         self._lifecycle_recorder.flush_jsonl(
                             self._async_cfg.lifecycle_audit_path
                         )
+                        derived_config = (
+                            self._async_cfg.lifecycle_derived_opportunity_audit
+                        )
+                        if derived_config.enabled:
+                            assert derived_config.output_path is not None
+                            assert derived_config.derivation_summary_path is not None
+                            derivation_started = time.perf_counter_ns()
+                            derived_rows = derive_lifecycle_opportunity_rows(
+                                tuple(
+                                    event.to_dict()
+                                    for event in self._lifecycle_recorder.snapshot()
+                                ),
+                                estimator=self._advantage_estimator,
+                                loss_settings={
+                                    "disable_ppo_ratio": self._master_config.loss_fn.disable_ppo_ratio,
+                                    "positive_example_nll_weight": self._master_config.loss_fn.positive_example_nll_weight,
+                                    "sequence_level_importance_ratios": self._master_config.loss_fn.sequence_level_importance_ratios,
+                                    "token_level_loss": self._master_config.loss_fn.token_level_loss,
+                                    "use_cispo": self._master_config.loss_fn.use_cispo,
+                                },
+                                siblings_per_group=self._master_config.grpo.num_generations_per_prompt,
+                                train_batch_size=self._master_config.policy[
+                                    "train_global_batch_size"
+                                ],
+                            )
+                            derivation_elapsed_ns = (
+                                time.perf_counter_ns() - derivation_started
+                            )
+                            flush_lifecycle_opportunity_rows(
+                                derived_rows, derived_config.output_path
+                            )
+                            flush_lifecycle_derivation_summary(
+                                output_path=derived_config.derivation_summary_path,
+                                elapsed_ns=derivation_elapsed_ns,
+                                rows=derived_rows,
+                            )
                 finally:
                     try:
                         if self._opportunity_recorder is not None:
@@ -376,7 +440,14 @@ class SingleControllerActor:
                     finally:
                         try:
                             if self._observer_duty_meter is not None:
-                                duty_path = self._async_cfg.gradient_opportunity_audit.observer_duty_path
+                                derived_config = (
+                                    self._async_cfg.lifecycle_derived_opportunity_audit
+                                )
+                                duty_path = (
+                                    derived_config.lifecycle_duty_path
+                                    if derived_config.enabled
+                                    else self._async_cfg.gradient_opportunity_audit.observer_duty_path
+                                )
                                 assert duty_path is not None
                                 self._observer_duty_meter.flush_json(duty_path)
                         finally:

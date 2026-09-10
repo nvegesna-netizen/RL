@@ -1,0 +1,18 @@
+# Separately preregistered lifecycle-derived M4 successor: Llama/GSM8K.
+defaults: grpo_math_1B_megatron_single_controller_m4_llama3p2_1b_gsm8k_family_transport.yaml
+
+async_rl:
+  lifecycle_audit_path: results/m4-llama3p2-1b-gsm8k-lifecycle-derived-transport/lifecycle.jsonl
+  controlled_release_delay:
+    seed: 20261010
+    assignment_domain: m4-llama3p2-1b-gsm8k-lifecycle-derived-transport-v1
+  gradient_opportunity_audit:
+    enabled: false
+  lifecycle_derived_opportunity_audit:
+    enabled: true
+    output_path: results/m4-llama3p2-1b-gsm8k-lifecycle-derived-transport/opportunity.jsonl
+    lifecycle_duty_path: results/m4-llama3p2-1b-gsm8k-lifecycle-derived-transport/lifecycle-duty.json
+    derivation_summary_path: results/m4-llama3p2-1b-gsm8k-lifecycle-derived-transport/derivation-summary.json
+
+logger:
+  log_dir: results/m4-llama3p2-1b-gsm8k-lifecycle-derived-transport/metrics

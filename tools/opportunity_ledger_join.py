@@ -557,49 +557,78 @@ def join_opportunity_ledgers(
             "opportunity ledger must begin with exactly one header"
         )
     _validate_opportunity_header(header_rows[0], protocol.opportunity_audit)
+    opportunity_schema_versions = {
+        _integer(row.get("schema_version"), name="opportunity schema_version")
+        for row in opportunity_rows
+    }
+    if opportunity_schema_versions not in ({1}, {2}):
+        raise OpportunityLedgerJoinError(
+            "opportunity ledger must consistently use schema v1 or v2"
+        )
+    lifecycle_derived = opportunity_schema_versions == {2}
     for row in opportunity_rows:
-        if _integer(row.get("schema_version"), name="opportunity schema_version") != 1:
-            raise OpportunityLedgerJoinError("opportunity ledger must use schema v1")
         if (
             _string(row.get("run_id"), name="run_id") not in run_ids
             or _string(row.get("clock_domain_id"), name="clock_domain_id")
             not in clock_ids
         ):
             raise OpportunityLedgerJoinError("audit run or clock domains disagree")
-    opportunity_sequences = [
-        _integer(row.get("controller_sequence"), name="controller_sequence")
-        for row in opportunity_rows
-    ]
-    if any(
-        right <= left
-        for left, right in zip(opportunity_sequences, opportunity_sequences[1:])
-    ):
-        raise OpportunityLedgerJoinError(
-            "opportunity file order must follow controller sequence"
-        )
+        if lifecycle_derived:
+            if (
+                _string(row.get("derivation_method"), name="derivation_method")
+                != "lifecycle_derived_grpo_opportunity_v1"
+                or "controller_sequence" in row
+                or "timestamp_ns" in row
+            ):
+                raise OpportunityLedgerJoinError(
+                    "schema-v2 opportunity rows require arm-blind derivation provenance"
+                )
+    if lifecycle_derived:
+        if (
+            _integer(
+                header_rows[0].get("source_lifecycle_schema_version"),
+                name="source_lifecycle_schema_version",
+            )
+            != 4
+        ):
+            raise OpportunityLedgerJoinError(
+                "derived opportunity header requires lifecycle schema v4"
+            )
+    else:
+        opportunity_sequences = [
+            _integer(row.get("controller_sequence"), name="controller_sequence")
+            for row in opportunity_rows
+        ]
+        if any(
+            right <= left
+            for left, right in zip(opportunity_sequences, opportunity_sequences[1:])
+        ):
+            raise OpportunityLedgerJoinError(
+                "opportunity file order must follow controller sequence"
+            )
 
-    combined = (*lifecycle_rows, *opportunity_rows)
-    controller_sequences = [
-        _integer(row.get("controller_sequence"), name="controller_sequence")
-        for row in combined
-    ]
-    if len(controller_sequences) != len(set(controller_sequences)):
-        raise OpportunityLedgerJoinError(
-            "shared controller sequence contains duplicates"
+        combined = (*lifecycle_rows, *opportunity_rows)
+        controller_sequences = [
+            _integer(row.get("controller_sequence"), name="controller_sequence")
+            for row in combined
+        ]
+        if len(controller_sequences) != len(set(controller_sequences)):
+            raise OpportunityLedgerJoinError(
+                "shared controller sequence contains duplicates"
+            )
+        ordered = sorted(
+            combined,
+            key=lambda row: _integer(
+                row.get("controller_sequence"), name="controller_sequence"
+            ),
         )
-    ordered = sorted(
-        combined,
-        key=lambda row: _integer(
-            row.get("controller_sequence"), name="controller_sequence"
-        ),
-    )
-    timestamps = [
-        _integer(row.get("timestamp_ns"), name="timestamp_ns") for row in ordered
-    ]
-    if any(right < left for left, right in zip(timestamps, timestamps[1:])):
-        raise OpportunityLedgerJoinError(
-            "shared controller timestamps are nonmonotonic"
-        )
+        timestamps = [
+            _integer(row.get("timestamp_ns"), name="timestamp_ns") for row in ordered
+        ]
+        if any(right < left for left, right in zip(timestamps, timestamps[1:])):
+            raise OpportunityLedgerJoinError(
+                "shared controller timestamps are nonmonotonic"
+            )
 
     lifecycle_by_group: dict[str, list[Mapping[str, Any]]] = defaultdict(list)
     learner_events: dict[int, Mapping[str, Any]] = {}
@@ -657,13 +686,33 @@ def join_opportunity_ledgers(
                 raise OpportunityLedgerJoinError(
                     "completed learner step lacks lifecycle version advance"
                 )
-            if _integer(
-                learner_event.get("start_weight_version"),
-                name="start_weight_version",
-            ) != previous or _integer(
-                learner_event.get("controller_sequence"),
-                name="controller_sequence",
-            ) >= _integer(row.get("controller_sequence"), name="controller_sequence"):
+            learner_sequence = _integer(
+                learner_event.get("controller_sequence"), name="controller_sequence"
+            )
+            if (
+                _integer(
+                    learner_event.get("start_weight_version"),
+                    name="start_weight_version",
+                )
+                != previous
+            ):
+                raise OpportunityLedgerJoinError(
+                    "completed-step and learner-advance versions disagree"
+                )
+            if lifecycle_derived:
+                if (
+                    _integer(
+                        row.get("source_controller_sequence_max"),
+                        name="source_controller_sequence_max",
+                    )
+                    != learner_sequence
+                ):
+                    raise OpportunityLedgerJoinError(
+                        "derived completed-step provenance disagrees"
+                    )
+            elif learner_sequence >= _integer(
+                row.get("controller_sequence"), name="controller_sequence"
+            ):
                 raise OpportunityLedgerJoinError(
                     "completed-step and learner-advance ordering disagree"
                 )
@@ -813,16 +862,28 @@ def join_opportunity_ledgers(
             _integer(row.get("controller_sequence"), name="controller_sequence")
             for row in sibling_rows
         )
-        opportunity_sequence = _integer(
-            opportunity.get("controller_sequence"), name="controller_sequence"
-        )
         delay_sequence = _integer(
             delay_started.get("controller_sequence"), name="controller_sequence"
         )
-        if not last_sibling_sequence < opportunity_sequence < delay_sequence:
-            raise OpportunityLedgerJoinError(
-                f"{group_id}: opportunity is not strictly pre-delay"
+        if lifecycle_derived:
+            source_sequence = _integer(
+                opportunity.get("source_controller_sequence_max"),
+                name="source_controller_sequence_max",
             )
+            if source_sequence != last_sibling_sequence or not (
+                source_sequence < delay_sequence
+            ):
+                raise OpportunityLedgerJoinError(
+                    f"{group_id}: derived opportunity sources are not strictly pre-delay"
+                )
+        else:
+            opportunity_sequence = _integer(
+                opportunity.get("controller_sequence"), name="controller_sequence"
+            )
+            if not last_sibling_sequence < opportunity_sequence < delay_sequence:
+                raise OpportunityLedgerJoinError(
+                    f"{group_id}: opportunity is not strictly pre-delay"
+                )
 
         completed_rows = {
             id(completed_step_for_sample[sample_id]): completed_step_for_sample[
@@ -887,7 +948,38 @@ def join_opportunity_ledgers(
                 )
         if completed:
             completed_step = next(iter(completed_rows.values()))
-            if _integer(
+            if lifecycle_derived:
+                if removed is None or removed.get("removal_reason") != "selected":
+                    raise OpportunityLedgerJoinError(
+                        f"{group_id}: derived completed step lacks selected removal"
+                    )
+                previous = _integer(
+                    completed_step.get("previous_learner_version"),
+                    name="previous_learner_version",
+                )
+                if (
+                    _integer(
+                        removed.get("learner_weight_version"),
+                        name="learner_weight_version",
+                    )
+                    != previous
+                ):
+                    raise OpportunityLedgerJoinError(
+                        f"{group_id}: selected removal version disagrees"
+                    )
+                learner_event = learner_events.get(previous + 1)
+                assert learner_event is not None
+                if _integer(
+                    learner_event.get("controller_sequence"),
+                    name="controller_sequence",
+                ) <= _integer(
+                    removed.get("controller_sequence"),
+                    name="controller_sequence",
+                ):
+                    raise OpportunityLedgerJoinError(
+                        f"{group_id}: learner transition does not follow selection"
+                    )
+            elif _integer(
                 completed_step.get("controller_sequence"), name="controller_sequence"
             ) <= max(
                 _integer(row.get("controller_sequence"), name="controller_sequence")

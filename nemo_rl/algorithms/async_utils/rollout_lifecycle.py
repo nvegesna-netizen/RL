@@ -24,8 +24,23 @@ import uuid
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from enum import Enum
+from functools import wraps
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Optional, Protocol
+
+
+class _DutyObservation(Protocol):
+    """Minimal context-manager boundary used to time recorder calls."""
+
+    def __enter__(self) -> None: ...
+
+    def __exit__(self, *args: object) -> None: ...
+
+
+class LifecycleDutyMeter(Protocol):
+    """Structural type for a common-arm synchronous duty meter."""
+
+    def observe(self) -> _DutyObservation: ...
 
 
 class RolloutLifecycleStage(str, Enum):
@@ -162,6 +177,23 @@ class RolloutLifecycleEvent:
         return result
 
 
+def _measure_record(
+    method: Callable[..., RolloutLifecycleEvent],
+) -> Callable[..., RolloutLifecycleEvent]:
+    """Measure the complete record call while preserving its public signature."""
+
+    @wraps(method)
+    def measured(
+        recorder: RolloutLifecycleRecorder, *args: Any, **kwargs: Any
+    ) -> RolloutLifecycleEvent:
+        if recorder._duty_meter is None:
+            return method(recorder, *args, **kwargs)
+        with recorder._duty_meter.observe():
+            return method(recorder, *args, **kwargs)
+
+    return measured
+
+
 class RolloutLifecycleRecorder:
     """In-memory append-only event recorder for one controller actor.
 
@@ -176,13 +208,16 @@ class RolloutLifecycleRecorder:
         clock_domain_id: Optional[str] = None,
         clock_ns: Callable[[], int] = time.monotonic_ns,
         controller_sequencer: Optional[ControllerEventSequencer] = None,
+        duty_meter: Optional[LifecycleDutyMeter] = None,
     ) -> None:
         self.run_id = run_id or str(uuid.uuid4())
         self.clock_domain_id = clock_domain_id or str(uuid.uuid4())
         self._clock_ns = clock_ns
         self._controller_sequencer = controller_sequencer
+        self._duty_meter = duty_meter
         self._events: list[RolloutLifecycleEvent] = []
 
+    @_measure_record
     def record(
         self,
         *,
