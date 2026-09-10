@@ -1,0 +1,47 @@
+{
+  "automatic_extension": false,
+  "automatic_retry": false,
+  "frozen_provenance_commit": "265873cdee156f45809df9d2010f5fcc964fbb09",
+  "gsm8k": {
+    "child_pipeline": {
+      "id": 67119617,
+      "status_at_verification": "running",
+      "url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67119617"
+    },
+    "generate_artifact_workload_name_authenticated": true,
+    "generate_job_id": 433342406,
+    "manifest_sha256": "d83490d994724817ba0e76bda8eec7fb34d5f9421d22a9abc94b77e140babfc2",
+    "parent_pipeline": {
+      "created_at": "2026-09-09T23:04:56.609-07:00",
+      "id": 67118822,
+      "status_at_verification": "running",
+      "url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67118822"
+    },
+    "submission_attempted": true
+  },
+  "launcher_diagnosis": {
+    "concurrent_process_stdout_receipt_preserved": false,
+    "definitive_root_cause_established": false,
+    "evidence": "The joint guard was created at 23:04:33 PDT. GitLab artifact inspection authenticates GSM8K parent 67118822 after that boundary. No post-guard OpenMath parent was present in the recent API pipeline window through 23:11:48 PDT. Candidate 67118409 was created before the guard and its generate artifact authenticates an unrelated ReadyBias workload.",
+    "safe_repair": "Do not resubmit GSM8K. If separately authorized, submit only the unchanged OpenMath manifest with one serialized runllm.py --no_wait invocation and preserve its stdout plus independent artifact identity."
+  },
+  "openmath": {
+    "manifest_sha256": "5ff618b6101a4887c742daf2f62eb6d89b199ce8db712922acce8ddabb45e99b",
+    "parent_pipeline_id": null,
+    "result_inspected": false,
+    "submission_attempted": true,
+    "submission_receipt_observed": false
+  },
+  "paired_qualification_evaluable": false,
+  "scientific_acquisition_authorized": false,
+  "scientific_interpretation": "No paired qualification conclusion is available. One cell is running and the other has no authenticated parent receipt; no qualification artifact or scientific result from either cell has been inspected.",
+  "schema": "m4-llama-lifecycle-derived-v3-paired-qualification-partial-submission-v1",
+  "status": "PARTIAL_SUBMISSION_GSM8K_RUNNING_OPENMATH_NO_AUTHENTICATED_PARENT_NO_RETRY",
+  "submission_guard_created_at": "2026-09-09T23:04:33-07:00",
+  "submission_guard_sha256": "a5f87ce1d5b36200ab03bf2779f10028208776f65897ad74b4b894a97a33fb9a",
+  "unrelated_pipeline_excluded": {
+    "generate_artifact_workload": "coreai-dlalgo-ci-readybias-sc-trace-cpudefault-gpudefault_c-dapo-scheduler-crossover-eos-unit-c0-hw0",
+    "id": 67118409,
+    "reason": "Created before the joint guard and artifact-authenticated as a different workload."
+  }
+}
