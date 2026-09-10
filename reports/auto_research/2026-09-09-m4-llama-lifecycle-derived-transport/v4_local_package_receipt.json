@@ -1,0 +1,58 @@
+{
+  "authorization": {
+    "acquisition_authorized": false,
+    "automatic_extension": false,
+    "automatic_retry": false,
+    "eos_launch_authorized": false,
+    "local_package_build_authorized": true,
+    "qualification_launch_authorized": false,
+    "sha256": "0aed80115a831bc87079eebf1413d6c555b0019e6d718df61fa3616e94d84672"
+  },
+  "clean_room_validation": {
+    "embedded_python_blocks_compiled_each": 6,
+    "fail_closed_authorization_checked": true,
+    "isolated_support_gate_tests_passed": 7,
+    "jet_manifest_schema_validated": true,
+    "megatron_import_negative_control_passed": true,
+    "megatron_import_positive_control_passed": true,
+    "normalized_container_fingerprint_matched": true,
+    "payload_order_and_hashes_matched": true,
+    "rebuild_byte_identical": true,
+    "shell_syntax_validated": true,
+    "source_archive_safe_extraction_passed": true,
+    "source_archive_symlink_count": 16
+  },
+  "contract_sha256": "b011c846a8e876e9ea37f143d26089c7c498058a1f3e3c2461e6b317ff368fec",
+  "large_artifacts_outside_git": {
+    "gsm8k_manifest": {
+      "bytes": 15603960,
+      "path": "session/20260909_m4_llama_lifecycle_derived_transport/m4-llama-gsm8k-lifecycle-derived-neutral-qualification-v4-local-candidate.yaml",
+      "sha256": "0a9e8104bd75a5f20c6e2b735905e0cd06d10370d4e5f3f66a824d79db484871"
+    },
+    "openmath_manifest": {
+      "bytes": 15604048,
+      "path": "session/20260909_m4_llama_lifecycle_derived_transport/m4-llama-openmath-lifecycle-derived-neutral-qualification-v4-local-candidate.yaml",
+      "sha256": "56c6a2f879e23ae003e04ce6bf7a798dbc8719e86de66d549bf2ccfd0009f403"
+    },
+    "source_archive": {
+      "bytes": 9595251,
+      "directory_count": 204,
+      "file_count": 1910,
+      "member_count": 2130,
+      "path": "session/20260909_m4_llama_lifecycle_derived_transport/m4-llama-v4-source-241af2997.tar.gz",
+      "sha256": "6cb2bbc59602ed22991e2783670829f2759c363113141f9b3a51713253ba549c",
+      "symlink_count": 16
+    }
+  },
+  "launch_attempted": false,
+  "megatron_dependency": {
+    "archive_member_count": 726,
+    "archive_sha256": "98d98920c0fea3d8ae1216a485dc9b5aa4fc966e469435ad61f2bae456de80d2",
+    "dependency_receipt_sha256": "6a9fc16e404d15f3f133c1fef042cfbd5cb53eb01563a4b8c794f97bd21e90c0"
+  },
+  "qualification_started": false,
+  "schema": "m4-llama-lifecycle-derived-v4-local-package-receipt-v1",
+  "scientific_acquisition_started": false,
+  "source_commit": "241af2997ed1fd54752013aa3ef56b94960b3b55",
+  "status": "LOCAL_CANDIDATES_CLEAN_ROOM_GREEN_NO_LAUNCH_AUTHORITY"
+}
