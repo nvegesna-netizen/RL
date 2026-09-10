@@ -1,0 +1,19 @@
+{
+  "acquisition_authorized": false,
+  "authorization_sha256": "90997c5ceead304efe0f535512b1c4cce49d88e457fb1fe9ded766f32cf603ff",
+  "contract_sha256": "4e124c51a2179bd3faff5da8d34a58dc0ce33f98aa58faa2e00f1d6965944e62",
+  "deterministic_rebuild": true,
+  "jet_manifest_schema_green": true,
+  "jet_retrier_enabled": false,
+  "launch_attempted": false,
+  "manifest_sha256": {
+    "gsm8k": "8d7f521aea8422948f2c43ba7ca07c1c5f9187b542a46cb8802b8ddb0adc73d4",
+    "openmath": "55a0ee88d17265ad78d6b37cad3b0edabaa28773c0b517bd95ae23a3a66a94ec"
+  },
+  "scheduler_cap_seconds_each": 14400,
+  "schema": "m4-llama3p2-3b-paired-neutral-qualification-package-validation-v1",
+  "source_members": 2174,
+  "status": "PASS",
+  "submission_attempt_limit_each_cell": 1,
+  "submit_both_before_inspecting_either": true
+}

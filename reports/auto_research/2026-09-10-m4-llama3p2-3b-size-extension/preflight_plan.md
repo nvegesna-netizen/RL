@@ -45,3 +45,10 @@ container/code fingerprint warning (also present in prior successful Llama
 runs); this is preserved in the terminal record rather than silently omitted.
 The preflight stage is green, but paired qualification remains a separate,
 unauthorized decision boundary.
+
+Paired qualification authorization was received on 2026-09-10. Before any
+qualification data existed, `qualification_execution_contract.json` froze the
+previously unspecified cell-specific bootstrap seeds. Both 64-step manifests
+were built and jointly validated with one-node/two-GPU topology, 4-hour caps,
+disabled retriers, one attempt per cell, and acquisition still forbidden.
+Status: `PAIRED_QUALIFICATION_PACKAGE_VALIDATED_NOT_SUBMITTED`.

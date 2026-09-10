@@ -1,0 +1,18 @@
+{
+  "schema": "m4-llama3p2-3b-paired-neutral-qualification-authorization-v1",
+  "scope": "exactly_one_shared_pair_of_64_step_llama3p2_3b_neutral_qualifications",
+  "user_authorization": "I authorize",
+  "cells": ["openmath", "gsm8k"],
+  "qualification_execution_contract_sha256": "4e124c51a2179bd3faff5da8d34a58dc0ce33f98aa58faa2e00f1d6965944e62",
+  "required_launcher": "runllm.py --no_wait",
+  "submission_attempt_limit_each_cell": 1,
+  "submit_both_before_inspecting_either": true,
+  "eos_submission_authorized": true,
+  "model_weight_access_authorized": true,
+  "training_authorized": true,
+  "paired_qualification_authorized": true,
+  "trainer_steps_each": 64,
+  "scientific_acquisition_authorized": false,
+  "automatic_retry": false,
+  "automatic_extension": false
+}

@@ -1,0 +1,41 @@
+{
+  "schema": "m4-llama3p2-3b-paired-neutral-qualification-execution-contract-v1",
+  "status": "FROZEN_BEFORE_QUALIFICATION_DATA",
+  "scientific_source_commit": "88424bdb7bfb526e541b4a7b07830bc31028e64f",
+  "scientific_source_archive_sha256": "1ae875a63786d687fcf46bd7fa7cb2f26b1031c3cf3c36e38114305c732820eb",
+  "prospective_protocol_sha256": "4f2a5e496030e836b3449697928f4f363d7d36e3cec668105b2cdcc701b9814c",
+  "authenticated_preflight_result_sha256": "eaa4408d27becc95d12fad7e51c89731c6106046acd0b5fe596259061d32899a",
+  "cells": {
+    "openmath": {
+      "config": "examples/configs/grpo_math_3B_megatron_single_controller_m4_llama3p2_3b_openmath_neutral_qualification_v1.yaml",
+      "config_sha256": "15788df473dca65e96b811fc09790784f9fdb248380d152855b3b6204bc61830",
+      "assignment_domain": "m4-llama3p2-3b-openmath-neutral-qualification-v1",
+      "assignment_seed": 20261101,
+      "assignment_bootstrap_seed": 20261107,
+      "timing_bootstrap_seed": 20261109
+    },
+    "gsm8k": {
+      "config": "examples/configs/grpo_math_3B_megatron_single_controller_m4_llama3p2_3b_gsm8k_neutral_qualification_v1.yaml",
+      "config_sha256": "337351dfb177f6ad61b96de4fa4f859a3bbaaaacb966e4ff4d7dad63fb469fd5",
+      "assignment_domain": "m4-llama3p2-3b-gsm8k-neutral-qualification-v1",
+      "assignment_seed": 20261102,
+      "assignment_bootstrap_seed": 20261108,
+      "timing_bootstrap_seed": 20261110
+    }
+  },
+  "trainer_steps_each": 64,
+  "evaluable_start_versions": [8, 55],
+  "terminal_guard_start_versions": [56, 64],
+  "bootstrap_draws": 20000,
+  "circular_block_size_versions": 8,
+  "minimum_assignment_projection_lower_95": 5000.0,
+  "maximum_projected_runtime_upper_95_seconds": 12600.0,
+  "scheduler_cap_seconds_each": 14400,
+  "gpus_each": 2,
+  "submit_both_before_inspecting_either": true,
+  "qualification_data_allowed_in_causal_estimator": false,
+  "failure_of_either_closes_acquisition": true,
+  "automatic_retry": false,
+  "automatic_extension": false,
+  "acquisition_authorized": false
+}

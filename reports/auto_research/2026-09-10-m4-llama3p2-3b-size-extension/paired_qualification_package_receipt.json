@@ -1,0 +1,39 @@
+{
+  "schema": "m4-llama3p2-3b-paired-neutral-qualification-package-receipt-v1",
+  "authorization_sha256": "90997c5ceead304efe0f535512b1c4cce49d88e457fb1fe9ded766f32cf603ff",
+  "builder_sha256": "309363ce528311442289d886ae9c7e1cbd0b51644ec1664ad82ad3f1cfe09b59",
+  "contract_sha256": "4e124c51a2179bd3faff5da8d34a58dc0ce33f98aa58faa2e00f1d6965944e62",
+  "custom_config_sha256": "e5111315a4754386375c65baf8d907515f92b4b381fb44bf2641375db757cb56",
+  "additional_variables_sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+  "manifest_sha256": {
+    "openmath": "55a0ee88d17265ad78d6b37cad3b0edabaa28773c0b517bd95ae23a3a66a94ec",
+    "gsm8k": "8d7f521aea8422948f2c43ba7ca07c1c5f9187b542a46cb8802b8ddb0adc73d4"
+  },
+  "manifest_bytes": {
+    "openmath": 15657116,
+    "gsm8k": 15657031
+  },
+  "validation_record_sha256": "7e68913df07c8c139e2eb8a256971cdfd881b893b34b0244f949c4d8f1067501",
+  "validator_sha256": "50077090a8f018f8ff6c3090bd6388be1ec4422df8ced65069b32177d18d0c62",
+  "clean_room_validation": {
+    "both_manifests_jointly_validated": true,
+    "deterministic_rebuild_identical": true,
+    "embedded_python_blocks_each": 6,
+    "embedded_payload_hashes_green": true,
+    "jet_manifest_schema_green": true,
+    "qualification_gate_uses_assignment_and_timing_bootstraps": true
+  },
+  "scheduler": {
+    "nodes_each": 1,
+    "gpus_each": 2,
+    "workload_time_limit_seconds_each": 14400,
+    "sbatch_time_each": "04:00:00",
+    "srun_time_each": "04:00:00",
+    "jet_retrier_enabled": false
+  },
+  "required_launcher": "runllm.py --no_wait",
+  "submission_attempt_limit_each_cell": 1,
+  "submit_both_before_inspecting_either": true,
+  "scientific_acquisition_authorized": false,
+  "submitted": false
+}
