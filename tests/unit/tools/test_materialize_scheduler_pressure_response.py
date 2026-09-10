@@ -1,6 +1,7 @@
 # Copyright (c) 2026, NVIDIA CORPORATION. All rights reserved.
 
 import json
+from collections import Counter
 from pathlib import Path
 
 import pytest
@@ -89,9 +90,9 @@ def test_materializes_balanced_32_group_pool(
     design = json.loads((output / "selection_design.v1.json").read_text())
     report = json.loads((output / "materialization_report.v1.json").read_text())
     assert len(manifest["items"]) == len(design["items"]) == 32
-    assert sorted(item["pair_id"] for item in design["items"]) == [
-        f"pair-{pair_index}" for pair_index in range(16) for _ in range(2)
-    ]
+    assert Counter(item["pair_id"] for item in design["items"]) == {
+        f"pair-{pair_index}": 2 for pair_index in range(16)
+    }
     assert {item["dispatch_cohort"] for item in manifest["items"]} == set(range(8))
     assert [source["split"] for source in manifest["sources"]] == [
         "scheduler_pressure_response",
