@@ -1,0 +1,14 @@
+{
+  "authorization_sha256": "d29a823bf4d7b34e1a550112632bf0016b6c6a0511a093c26da8c2afa7567ff7",
+  "candidate_sha256": "30d88f08be15777db977964ae670808617e240545ccab486042d2112d1183334",
+  "deterministic_rebuild": true,
+  "embedded_python_blocks": 5,
+  "launch_attempted": false,
+  "launch_authority_present": false,
+  "megatron_archive_sha256": "98d98920c0fea3d8ae1216a485dc9b5aa4fc966e469435ad61f2bae456de80d2",
+  "protocol_sha256": "4f2a5e496030e836b3449697928f4f363d7d36e3cec668105b2cdcc701b9814c",
+  "schema": "m4-llama3p2-3b-no-training-preflight-local-package-validation-v1",
+  "source_archive_sha256": "1ae875a63786d687fcf46bd7fa7cb2f26b1031c3cf3c36e38114305c732820eb",
+  "source_members": 2174,
+  "status": "PASS"
+}

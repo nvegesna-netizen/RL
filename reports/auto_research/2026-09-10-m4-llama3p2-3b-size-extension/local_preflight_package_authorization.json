@@ -1,0 +1,16 @@
+{
+  "schema": "m4-llama3p2-3b-no-training-preflight-local-package-authorization-v1",
+  "scope": "build_and_validate_one_nonlaunchable_no_training_preflight_candidate",
+  "user_instruction": "do the sequence properly",
+  "source_commit": "88424bdb7bfb526e541b4a7b07830bc31028e64f",
+  "source_archive_sha256": "1ae875a63786d687fcf46bd7fa7cb2f26b1031c3cf3c36e38114305c732820eb",
+  "protocol_sha256": "4f2a5e496030e836b3449697928f4f363d7d36e3cec668105b2cdcc701b9814c",
+  "local_package_build_authorized": true,
+  "eos_submission_authorized": false,
+  "model_weight_download_authorized": false,
+  "training_authorized": false,
+  "qualification_authorized": false,
+  "acquisition_authorized": false,
+  "automatic_retry": false,
+  "automatic_extension": false
+}

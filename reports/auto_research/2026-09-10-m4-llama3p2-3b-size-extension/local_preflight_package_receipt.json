@@ -1,0 +1,27 @@
+{
+  "authorization_sha256": "d29a823bf4d7b34e1a550112632bf0016b6c6a0511a093c26da8c2afa7567ff7",
+  "builder_sha256": "314a1e77ec411716d105d3a7513165ccf488b2e41e7d1fc4c84f38147c4ed8d2",
+  "candidate_bytes": 15645838,
+  "candidate_name": "m4-llama3b-no-training-preflight-local-candidate.json",
+  "candidate_sha256": "30d88f08be15777db977964ae670808617e240545ccab486042d2112d1183334",
+  "clean_room_validation": {
+    "bash_syntax_green": true,
+    "deterministic_rebuild_identical": true,
+    "embedded_payload_hashes_green": true,
+    "embedded_python_blocks": 5,
+    "frozen_design_validation_green": true,
+    "model_weight_loading_surface_present": false,
+    "nested_submission_surface_present": false,
+    "source_members": 2174,
+    "training_surface_present": false
+  },
+  "dependency_archive_sha256": "98d98920c0fea3d8ae1216a485dc9b5aa4fc966e469435ad61f2bae456de80d2",
+  "eos_submission_authorized": false,
+  "launch_attempted": false,
+  "protocol_sha256": "4f2a5e496030e836b3449697928f4f363d7d36e3cec668105b2cdcc701b9814c",
+  "schema": "m4-llama3p2-3b-no-training-preflight-local-package-receipt-v1",
+  "scientific_source_archive_sha256": "1ae875a63786d687fcf46bd7fa7cb2f26b1031c3cf3c36e38114305c732820eb",
+  "scientific_source_commit": "88424bdb7bfb526e541b4a7b07830bc31028e64f",
+  "validation_record_sha256": "29687c2e0118f4637b1ca12d1961b7f8feb1e4b94f0e4eaad0f327c6010ef966",
+  "validator_sha256": "2647b91f60402ea9f9548947af41fc40b18d2c48406c50078bef3c079226b56d"
+}
