@@ -1,6 +1,6 @@
 # Llama M4 V5 pre-launch status
 
-Status: `FOUR_AUTHORIZED_ACQUISITIONS_SUBMITTED_RUNNING`.
+Status: `TERMINAL_MATERIAL_BOTH_WORKLOADS_REPLICATED`.
 
 The V5 successor is preregistered, packaged, and submitted exactly once per
 replicate. Parent pipelines are OpenMath r1 `67204364`, OpenMath r2 `67204399`,
@@ -18,6 +18,6 @@ candidate manifests remain outside Git and are authenticated in
 `v5_local_package_receipt.json`.
 
 All four were submitted before any causal outcome was inspected. The joint
-one-shot guard is consumed. The next step is lifecycle monitoring without
-causal inspection until every pipeline is terminal; there is no automatic
-retry or extension.
+one-shot guard is consumed, all four parent/child chains succeeded, and their
+authenticated artifacts support material effects on both workloads. There was
+no automatic retry or extension. See `v5_terminal_report.md`.

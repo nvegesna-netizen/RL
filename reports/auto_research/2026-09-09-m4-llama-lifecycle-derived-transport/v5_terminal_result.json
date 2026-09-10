@@ -1,0 +1,26 @@
+{
+  "analysis": {
+    "bootstrap_draws_each_replicate": 20000,
+    "combined_workloads": {
+      "gsm8k": {"conclusion": "MATERIAL", "confidence_envelope": [0.29523110493588284, 0.38977930737463234], "estimate": 0.34607413746273974, "hac_interval": [0.3025938809264353, 0.3895543939990442], "material_p_value": 4.999750012499375e-05, "replicate_estimates": {"r1": 0.3549833512021026, "r2": 0.3371649237233769}, "replicate_heterogeneity_envelope": [-0.08523680821719325, 0.10692231554708864]},
+      "openmath": {"conclusion": "MATERIAL", "confidence_envelope": [0.35041041237653886, 0.4467286824938217], "estimate": 0.39907889029747823, "hac_interval": [0.3525991564230082, 0.44555862417194825], "material_p_value": 4.999750012499375e-05, "replicate_estimates": {"r1": 0.3947432449591328, "r2": 0.4034145356358237}, "replicate_heterogeneity_envelope": [-0.10476810038821224, 0.08617628308750004]}
+    },
+    "materiality_threshold": 0.2,
+    "secondary_openmath_minus_gsm8k": {"conclusion": "INCONCLUSIVE", "confidence_envelope": [-0.013691548514234805, 0.12317712539730606], "estimate": 0.05300475283473849, "hac_interval": [-0.010641915338107766, 0.11665142100758474]},
+    "terminal_analysis_sha256": "47b14b0caddae4ad055986eeb4d08a3dbaf5be6d4ab156f615503befe49e46b7"
+  },
+  "automatic_extension": false,
+  "automatic_retry": false,
+  "cells": {
+    "gsm8k_r1": {"child_pipeline_id": 67204678, "joined_assignment_count": 7314, "missing_fraction_each_arm": 0.0, "parent_pipeline_id": 67204429},
+    "gsm8k_r2": {"child_pipeline_id": 67204582, "joined_assignment_count": 7681, "missing_fraction_each_arm": 0.0, "parent_pipeline_id": 67204363},
+    "openmath_r1": {"child_pipeline_id": 67204578, "joined_assignment_count": 6908, "missing_fraction_each_arm": 0.0, "parent_pipeline_id": 67204364},
+    "openmath_r2": {"child_pipeline_id": 67204614, "joined_assignment_count": 6809, "missing_fraction_each_arm": 0.0, "parent_pipeline_id": 67204399}
+  },
+  "combination_rule": "equal_replicate_weight_independent_block_diagonal",
+  "instrument": "lifecycle_derived_grpo_opportunity_v1",
+  "qualification_data_entered_estimator": false,
+  "schema": "m4-llama-v5-four-acquisition-terminal-result-v1",
+  "status": "TERMINAL_MATERIAL_BOTH_WORKLOADS_REPLICATED",
+  "terminal_authentication_sha256": "4addd34e82351af582053fca8815905998718d4a0d251ef5f2e9e14eabe8baf6"
+}
