@@ -1,6 +1,6 @@
 # Llama 3.2 3B no-training preflight plan
 
-Status: `V2_PIPELINES_FAILED_POST_TRAINING_BOTH_QUALIFIED_OFFLINE`.
+Status: `FOUR_LOCAL_ACQUISITION_CANDIDATES_GREEN_NO_LAUNCH_AUTHORITY`.
 
 The first executable boundary is exactly one no-training preflight submitted
 with `runllm.py --no_wait`, only after a dedicated authorization record exists.
@@ -114,3 +114,15 @@ integrity, lifecycle, duty, assignment-support, and timing-support check passed.
 The terminal and offline-recovery records preserve all artifact hashes. The
 qualification data remain excluded from any causal estimator. No retraining,
 retry, extension, acquisition, or causal estimate occurred.
+
+After both qualifications passed, `acquisition_execution_contract.json` froze
+the four causal cells and independent analysis bootstrap seeds before any 3B
+causal data existed. Four 448-step local candidates were built for OpenMath r1,
+OpenMath r2, GSM8K r1, and GSM8K r2. Clean-room validation confirmed their
+source and payload hashes, one-node/two-GPU topology, four-hour caps, schema,
+embedded Python and shell syntax, scientific cell identities, dynamic
+no-launch guards, and byte-identical rebuilds. Their compact receipt is
+`local_acquisition_package_receipt.json`; the 62.6 MB of candidate manifests
+remain outside Git. No model-weight access, training, EOS submission, causal
+outcome inspection, or acquisition occurred. A launchable four-cell package
+requires fresh explicit authorization.

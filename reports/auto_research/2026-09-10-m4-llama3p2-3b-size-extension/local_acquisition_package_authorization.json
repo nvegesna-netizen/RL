@@ -1,0 +1,14 @@
+{
+  "schema": "m4-llama3p2-3b-four-acquisition-local-package-authorization-v1",
+  "scope": "build_and_clean_room_validate_four_nonlaunchable_acquisition_candidates",
+  "user_instruction": "do the next step",
+  "acquisition_execution_contract_sha256": "f1696fdd2cf628af053c36c37fc7147974afc1d0f5d563853ed237afbe7abeb8",
+  "cells": ["openmath_r1", "openmath_r2", "gsm8k_r1", "gsm8k_r2"],
+  "local_package_build_authorized": true,
+  "eos_submission_authorized": false,
+  "model_weight_access_authorized": false,
+  "training_authorized": false,
+  "scientific_acquisition_authorized": false,
+  "automatic_retry": false,
+  "automatic_extension": false
+}

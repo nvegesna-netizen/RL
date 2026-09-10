@@ -1,0 +1,71 @@
+{
+  "schema": "m4-llama3p2-3b-four-acquisition-execution-contract-v1",
+  "status": "FROZEN_AFTER_QUALIFICATION_BEFORE_CAUSAL_DATA",
+  "scientific_source_commit": "88424bdb7bfb526e541b4a7b07830bc31028e64f",
+  "scientific_source_archive_sha256": "1ae875a63786d687fcf46bd7fa7cb2f26b1031c3cf3c36e38114305c732820eb",
+  "megatron_archive_sha256": "98d98920c0fea3d8ae1216a485dc9b5aa4fc966e469435ad61f2bae456de80d2",
+  "prospective_protocol_sha256": "4f2a5e496030e836b3449697928f4f363d7d36e3cec668105b2cdcc701b9814c",
+  "qualification_terminal_result_sha256": "339c1317e12ccae11f8ca5d9f33dd214c8bfe0ca4ee97eaa6b22f7e09288fe74",
+  "qualification_offline_recovery_sha256": "5f944114be9b9265ba47108dbb8cd148509323b8d3fbdd2d565d893f16720a87",
+  "qualification_status_required": "PIPELINES_FAILED_POST_TRAINING_BOTH_QUALIFIED_OFFLINE",
+  "model": "meta-llama/Llama-3.2-3B-Instruct",
+  "cells": {
+    "openmath_r1": {
+      "config": "examples/configs/grpo_math_3B_megatron_single_controller_m4_llama3p2_3b_openmath_size_extension_v1_r1.yaml",
+      "config_sha256": "0b7bfb8fa3c9101ad0aea3320a519e9997d2337d000e5bc6728873b8b546e1f5",
+      "assignment_domain": "m4-llama3p2-3b-openmath-size-extension-v1-r1",
+      "assignment_seed": 20261103,
+      "analysis_bootstrap_seed": 20261111
+    },
+    "openmath_r2": {
+      "config": "examples/configs/grpo_math_3B_megatron_single_controller_m4_llama3p2_3b_openmath_size_extension_v1_r2.yaml",
+      "config_sha256": "8a97966d28d9d2d1e5b2a204f7bf81c55a93fadd0248986294dec23f73ef6140",
+      "assignment_domain": "m4-llama3p2-3b-openmath-size-extension-v1-r2",
+      "assignment_seed": 20261104,
+      "analysis_bootstrap_seed": 20261112
+    },
+    "gsm8k_r1": {
+      "config": "examples/configs/grpo_math_3B_megatron_single_controller_m4_llama3p2_3b_gsm8k_size_extension_v1_r1.yaml",
+      "config_sha256": "50bee58c0d96ea99236790ab74ac9e612ec6ab316754d914cfd0ce50be434932",
+      "assignment_domain": "m4-llama3p2-3b-gsm8k-size-extension-v1-r1",
+      "assignment_seed": 20261105,
+      "analysis_bootstrap_seed": 20261113
+    },
+    "gsm8k_r2": {
+      "config": "examples/configs/grpo_math_3B_megatron_single_controller_m4_llama3p2_3b_gsm8k_size_extension_v1_r2.yaml",
+      "config_sha256": "27ec964ca51a41c18813b1804a53864f763efc91b51a410f846deaedda9bb06a",
+      "assignment_domain": "m4-llama3p2-3b-gsm8k-size-extension-v1-r2",
+      "assignment_seed": 20261106,
+      "analysis_bootstrap_seed": 20261114
+    }
+  },
+  "release_arms": [
+    {"label": "control", "delay_seconds": 0.0, "mass": 1},
+    {"label": "d5", "delay_seconds": 5.0, "mass": 1}
+  ],
+  "trainer_steps_each": 448,
+  "primary_start_versions": [8, 407],
+  "terminal_guard_start_versions": [408, 447],
+  "gpus_each": 2,
+  "scheduler_cap_seconds_each": 14400,
+  "submission_attempt_limit_each": 1,
+  "submit_all_four_before_inspecting_any_causal_outcome": true,
+  "analysis": {
+    "replicates_each_workload": 2,
+    "replicate_combination": "equal_weight_independent_block_diagonal",
+    "cell_estimator_each_replicate": "cross_fitted_generalized_regression_q_and_zero_indicator_v1",
+    "cross_fit_folds": 8,
+    "hac_bartlett_lag_start_versions": 4,
+    "circular_block_size_start_versions": 8,
+    "bootstrap_draws_each_replicate": 20000,
+    "confidence": 0.95,
+    "materiality_threshold": 0.2,
+    "joint_success_rule": "both_workload_endpoints_material",
+    "individual_claim_multiplicity": "Holm",
+    "missingness": "sharp_endpoints_each_arm_each_replicate_at_most_0.01"
+  },
+  "qualification_data_allowed_in_causal_estimator": false,
+  "acquisition_authorized": false,
+  "automatic_retry": false,
+  "automatic_extension": false
+}

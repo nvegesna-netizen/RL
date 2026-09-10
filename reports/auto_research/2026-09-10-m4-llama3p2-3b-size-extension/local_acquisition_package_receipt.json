@@ -1,0 +1,45 @@
+{
+  "schema": "m4-llama3p2-3b-four-acquisition-local-package-receipt-v1",
+  "status": "FOUR_LOCAL_CANDIDATES_CLEAN_ROOM_GREEN_NO_LAUNCH_AUTHORITY",
+  "contract_sha256": "f1696fdd2cf628af053c36c37fc7147974afc1d0f5d563853ed237afbe7abeb8",
+  "authorization_sha256": "22bf5d2e2e3d118304aa974fa13a3a2bd3551cc5e478fb3d6e990c5f0dade899",
+  "builder_sha256": "94c86c419ea7b165f7061d91564529fa6832b4568eb36f84b36c44cc1269a45d",
+  "validator_sha256": "470520e4b36bb0f4db872a3e67a4bd34ec4168d218a5b951aa9b69828659fb0a",
+  "validation_sha256": "9898198a2f815856b0c78a4f04febdd15966380f12bb1d68867b889461575845",
+  "source": {
+    "commit": "88424bdb7bfb526e541b4a7b07830bc31028e64f",
+    "archive_sha256": "1ae875a63786d687fcf46bd7fa7cb2f26b1031c3cf3c36e38114305c732820eb",
+    "archive_members": 2174,
+    "archive_symlinks": 16
+  },
+  "megatron_archive_sha256": "98d98920c0fea3d8ae1216a485dc9b5aa4fc966e469435ad61f2bae456de80d2",
+  "qualification_terminal_result_sha256": "339c1317e12ccae11f8ca5d9f33dd214c8bfe0ca4ee97eaa6b22f7e09288fe74",
+  "qualification_offline_recovery_sha256": "5f944114be9b9265ba47108dbb8cd148509323b8d3fbdd2d565d893f16720a87",
+  "candidates": {
+    "openmath_r1": {"bytes": 15656096, "sha256": "1b1ef30489fbb9fafe368485efc19da7562829d2417f8ab97b2e8a26c3fe311f"},
+    "openmath_r2": {"bytes": 15656096, "sha256": "b04b11e19c9578b84f079f0c556980ee1cd2c014f4eb7b5a3c11ef2efab383c8"},
+    "gsm8k_r1": {"bytes": 15656042, "sha256": "e63303e3f843826efb8cfae9a3bde78cfd62376ff178d912d92b152cd3632a4d"},
+    "gsm8k_r2": {"bytes": 15656042, "sha256": "21c42e14487354226a75c96efeea800f5669c1354caf6f8c317d15ca70704643"}
+  },
+  "clean_room_validation": {
+    "jet_manifest_schema_green": true,
+    "embedded_python_blocks_compiled_each": 4,
+    "dynamic_no_launch_guard_passed": true,
+    "embedded_payload_order_and_hashes_green": true,
+    "safe_source_extraction_green": true,
+    "deterministic_rebuild": true
+  },
+  "runtime_each": {
+    "trainer_steps": 448,
+    "nodes": 1,
+    "gpus": 2,
+    "scheduler_cap_seconds": 14400
+  },
+  "large_candidates_tracked_in_git": false,
+  "eos_submission_authorized": false,
+  "scientific_acquisition_started": false,
+  "launch_attempted": false,
+  "automatic_retry": false,
+  "automatic_extension": false,
+  "fresh_explicit_authorization_required_for_launchable_four_cell_package": true
+}
