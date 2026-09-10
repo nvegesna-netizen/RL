@@ -1,0 +1,42 @@
+{
+  "analysis": {
+    "analyzer_sha256": "8e441c6069759863613af5795334a6d0604f59cb5b919a78dcba84869a4ca953",
+    "regression_test_sha256": "0872ed93f0939e0409fac6d71d9e331b5cac01d31b2c004d93acae225e1b7966",
+    "v4_exact_replay_sha256": "0c81c9a798d87f4c0513ab4fdc97bf4585e1efd4ede921b7f39abde313f53971",
+    "v5_planning_result_sha256": "ec698190f44c7e79ba83a4a35eff875b3e7bb2f7164f4417f2c48873f44ff1a6"
+  },
+  "authorization": {
+    "acquisition_authorized": false,
+    "automatic_extension": false,
+    "automatic_retry": false,
+    "eos_launch_authorized": false,
+    "local_package_build_authorized": true,
+    "submission_authorized": false,
+    "sha256": "901e90b8263db1120c850e374d8e46c365634251622a4bda4800199e083b3278"
+  },
+  "clean_room_validation": {
+    "embedded_python_blocks_compiled_each": 4,
+    "fail_closed_authorization_checked": true,
+    "isolated_analyzer_regression_tests_passed": 4,
+    "jet_manifest_schema_validated": true,
+    "payload_order_and_hashes_matched": true,
+    "rebuild_byte_identical": true,
+    "shell_syntax_validated": true,
+    "source_archive_safe_extraction_passed": true,
+    "source_archive_symlink_count": 16
+  },
+  "large_artifacts_outside_git": {
+    "gsm8k_r1_manifest": {"bytes": 15602175, "path": "session/20260909_m4_llama_lifecycle_derived_transport/m4-llama-v5-gsm8k-r1-acquisition-local-candidate.yaml", "sha256": "2ba05dba4b12a9d044363047b526a43a0bf0ca2070b021c3a71be1dcca82494f"},
+    "gsm8k_r2_manifest": {"bytes": 15602175, "path": "session/20260909_m4_llama_lifecycle_derived_transport/m4-llama-v5-gsm8k-r2-acquisition-local-candidate.yaml", "sha256": "74678bc7afb2412c249b36e35f4562a7e2ce2203a17735149f0650de3fbd285f"},
+    "openmath_r1_manifest": {"bytes": 15602214, "path": "session/20260909_m4_llama_lifecycle_derived_transport/m4-llama-v5-openmath-r1-acquisition-local-candidate.yaml", "sha256": "6d60507f0ab7741f3722da6251453a7e5c3dfddc469f2b56973e13843895f6ee"},
+    "openmath_r2_manifest": {"bytes": 15602214, "path": "session/20260909_m4_llama_lifecycle_derived_transport/m4-llama-v5-openmath-r2-acquisition-local-candidate.yaml", "sha256": "d209e614eb67be10592efb627dfe974eb0957ae1137e3aa4ea5517bd4c8cbf2c"},
+    "source_archive": {"bytes": 9608589, "member_count": 2147, "path": "session/20260909_m4_llama_lifecycle_derived_transport/m4-llama-v5-source-6a476bbc1.tar.gz", "sha256": "2a1b5fde33dee1ef77c763b3af3af74a4abb2059be34a67602519b12e4d94f39"}
+  },
+  "launch_attempted": false,
+  "megatron_dependency": {"archive_member_count": 726, "archive_sha256": "98d98920c0fea3d8ae1216a485dc9b5aa4fc966e469435ad61f2bae456de80d2"},
+  "protocol_sha256": "56a3311f78a0ac12cb9dc7ecdeee1a6fc0c5ace889799ebfaba1faaa0e610521",
+  "schema": "m4-llama-v5-four-acquisition-local-package-receipt-v1",
+  "scientific_acquisition_started": false,
+  "source_commit": "6a476bbc1cc8cb7800cff7ff4c9be9eefc6f4b89",
+  "status": "FOUR_LOCAL_CANDIDATES_CLEAN_ROOM_GREEN_NO_LAUNCH_AUTHORITY"
+}
