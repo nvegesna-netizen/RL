@@ -1,0 +1,17 @@
+{
+  "automatic_extension": false,
+  "automatic_retry": false,
+  "eos_submission_authorized": true,
+  "gsm8k_resubmission_authorized": false,
+  "openmath_manifest_sha256": "5ff618b6101a4887c742daf2f62eb6d89b199ce8db712922acce8ddabb45e99b",
+  "openmath_replacement_submission_authorized": true,
+  "paired_qualification_contract_sha256": "ebd1e4a1e94dc800afc9b67f9baa0dbe14560c6207d40453abfde22b12907cb8",
+  "partial_submission_evidence_sha256": "b0ef8f5ee4df8d8e4b2be91e922c61fa4bff862d7e729d8b2648ade4caa41961",
+  "required_launcher": "runllm.py --no_wait",
+  "schema": "m4-llama-lifecycle-derived-v3-openmath-missing-cell-authorization-v1",
+  "scientific_acquisition_authorized": false,
+  "scope": "exactly_one_serialized_openmath_32_step_neutral_qualification_submission",
+  "submission_attempt_limit": 1,
+  "training_authorized": true,
+  "user_authorization": "i authorize"
+}
