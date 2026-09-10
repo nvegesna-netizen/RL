@@ -1,0 +1,36 @@
+{
+  "acquisition_authorized": false,
+  "automatic_extension": false,
+  "automatic_retry": false,
+  "branch": "autoresearch/2026-09-10-m4-llama-lifecycle-derived-transport-v4/prospective-qualification-design",
+  "checks": {
+    "contract_and_evidence_hash_validation": "PASS",
+    "direct_negative_controls": "PASS",
+    "direct_support_semantics": "PASS",
+    "python_compile": "PASS",
+    "repository_pytest": "ENVIRONMENT_BLOCKED"
+  },
+  "files": {
+    "contract": {
+      "path": "reports/auto_research/2026-09-09-m4-llama-lifecycle-derived-transport/v4_prospective_qualification_contract.json",
+      "sha256": "6f43e8b8ff0dd8cb8cbd27dff5673ca416b9e134e527eb180c0410b50bc4928b"
+    },
+    "design": {
+      "path": "reports/auto_research/2026-09-09-m4-llama-lifecycle-derived-transport/v4_prospective_qualification_design.md",
+      "sha256": "77e540789674d0074999e14fe54f63af435f550dbc454360b8046d265a4bc99f"
+    },
+    "test": {
+      "path": "tests/unit/tools/test_m4_llama_qualification_support.py",
+      "sha256": "fc93c902397b8d7fe2aa1c80a748d671ea74537a07fdaaae51568fe51d37aaee"
+    },
+    "tool": {
+      "path": "tools/m4_llama_qualification_support.py",
+      "sha256": "a7e0c3de7c4aba96f4ba491f727ca3d273e4748269b934f6c2569b366ea898d5"
+    }
+  },
+  "launch_attempted": false,
+  "qualification_authorized": false,
+  "pytest_environment_blocker": "uv cannot build the local nemo-rl project because nemo-gym is referenced as a workspace source but is not a workspace member in this checkout. This occurred before test collection and is not a test failure.",
+  "schema": "m4-llama-lifecycle-derived-v4-local-design-validation-v1",
+  "status": "LOCAL_DESIGN_AND_EXECUTABLE_SUPPORT_GATE_VALIDATED_NO_LAUNCH"
+}

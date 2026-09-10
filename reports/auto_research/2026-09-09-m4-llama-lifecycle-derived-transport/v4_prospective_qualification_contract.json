@@ -1,0 +1,99 @@
+{
+  "acquisition": {
+    "analysis_attempt_limit": 1,
+    "authorized": false,
+    "automatic_extension": false,
+    "automatic_retry": false,
+    "gpus_each": 2,
+    "primary_start_versions": [
+      8,
+      407
+    ],
+    "scheduler_wall_hours_maximum_each": 4.0,
+    "trainer_steps_each": 448
+  },
+  "causal_contract_unchanged": {
+    "cell_estimand": "(mean_d5(Q_times_D)-mean_control(Q_times_D))/pooled_pre_delay_mean_Q",
+    "gsm8k_direction_rule": "POSITIVE only if the whole registered interval exceeds zero",
+    "openmath_materiality_threshold": 0.2,
+    "randomized_release_arms_seconds": [
+      0.0,
+      5.0
+    ],
+    "workload_contrast_rule": "SAME_DIRECTION only if the whole registered interaction interval exceeds zero"
+  },
+  "cells": {
+    "gsm8k": {
+      "acquisition_assignment_domain_reserved": "m4-llama3p2-1b-gsm8k-lifecycle-derived-transport-v2",
+      "acquisition_assignment_seed_reserved": 20261016,
+      "qualification_assignment_domain": "m4-llama3p2-1b-gsm8k-lifecycle-derived-neutral-v2",
+      "qualification_assignment_seed": 20261014,
+      "qualification_projection_bootstrap_seed": 20261018,
+      "workload": "GSM8K"
+    },
+    "openmath": {
+      "acquisition_assignment_domain_reserved": "m4-llama3p2-1b-openmath-lifecycle-derived-transport-v2",
+      "acquisition_assignment_seed_reserved": 20261015,
+      "qualification_assignment_domain": "m4-llama3p2-1b-openmath-lifecycle-derived-neutral-v2",
+      "qualification_assignment_seed": 20261013,
+      "qualification_projection_bootstrap_seed": 20261017,
+      "workload": "OpenMathInstruct-2"
+    }
+  },
+  "design_evidence": {
+    "gsm8k_v3_terminal_result_sha256": "5ab990e71401a82a02e54a2fa0c619508fa7f7e697a58b0a2de5067e3b6fcfaf",
+    "openmath_v3_terminal_result_sha256": "795ba0fed52f6cb42c78734f08d262f1a9f5064b59fa6921421be115bcd99670",
+    "paired_v3_terminal_result_sha256": "e26215850721dff2c24d481b597e3c6213600654e7d0d2373c5dcc09673948a8",
+    "use": "planning_only_not_v4_qualification_or_causal_data",
+    "v3_terminal_commit": "fa3b70883eec5a5c71b892e36216cb2ee595b4a6"
+  },
+  "instrument": {
+    "derivation_method": "lifecycle_derived_grpo_opportunity_v1",
+    "opportunity_coverage_required": 1.0,
+    "opportunity_imputation_allowed": false,
+    "synchronous_gradient_opportunity_callback_enabled": false,
+    "total_lifecycle_recorder_corrected_duty_maximum": 0.01
+  },
+  "model": "meta-llama/Llama-3.2-1B-Instruct",
+  "qualification": {
+    "authorized": false,
+    "automatic_extension": false,
+    "automatic_retry": false,
+    "binary_reward_support_required": [
+      0,
+      1
+    ],
+    "common_evaluable_start_versions": [
+      8,
+      55
+    ],
+    "evaluable_version_count": 48,
+    "gpus_each": 2,
+    "minimum_joined_groups_each_evaluable_version": 1,
+    "projection": {
+      "bootstrap_draws": 20000,
+      "circular_block_size_versions": 8,
+      "lower_quantile_order_statistic_zero_based": 999,
+      "minimum_one_sided_95_percent_lower_bound": 6900.0,
+      "quantity": "400 * mean(joined_group_count_by_evaluable_start_version)"
+    },
+    "qualification_data_allowed_in_causal_estimator": false,
+    "scheduler_time_limit_seconds_each": 5400,
+    "startup_burn_in_start_versions": [
+      0,
+      7
+    ],
+    "submission_attempt_limit_each_cell": 1,
+    "submit_both_before_inspecting_either": true,
+    "terminal_guard_start_versions": [
+      56,
+      64
+    ],
+    "trainer_steps_each": 64
+  },
+  "required_launcher_if_later_authorized": "runllm.py --no_wait",
+  "scientific_source_commit_at_design": "bdbf2956f3ff46177958a29a64e3b33e4dc6515e",
+  "schema": "m4-llama-lifecycle-derived-v4-prospective-paired-qualification-contract-v1",
+  "source_protocol_sha256": "b26c3d5d0ef3dfbc3ec6aea1cd42dd87fb3f276b5f4b3866b7ce9ebe58789fef",
+  "status": "FROZEN_LOCAL_DESIGN_NO_LAUNCH_AUTHORITY"
+}
