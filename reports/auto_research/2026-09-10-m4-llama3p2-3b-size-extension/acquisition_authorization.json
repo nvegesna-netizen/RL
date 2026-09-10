@@ -1,0 +1,20 @@
+{
+  "schema": "m4-llama3p2-3b-four-causal-acquisition-authorization-v1",
+  "scope": "exactly_four_preregistered_llama3p2_3b_causal_acquisitions_one_per_cell",
+  "user_authorization": "I authorize.",
+  "acquisition_execution_contract_sha256": "f1696fdd2cf628af053c36c37fc7147974afc1d0f5d563853ed237afbe7abeb8",
+  "cells": ["openmath_r1", "openmath_r2", "gsm8k_r1", "gsm8k_r2"],
+  "trainer_steps_each": 448,
+  "submission_attempt_limit_each": 1,
+  "submit_all_four_before_inspecting_any_causal_outcome": true,
+  "required_launcher": "runllm.py --no_wait",
+  "wall_clock_cap_hours_each": 4.0,
+  "gpu_hour_cap_each": 8.0,
+  "local_package_build_authorized": true,
+  "eos_submission_authorized": true,
+  "model_weight_access_authorized": true,
+  "training_authorized": true,
+  "scientific_acquisition_authorized": true,
+  "automatic_retry": false,
+  "automatic_extension": false
+}

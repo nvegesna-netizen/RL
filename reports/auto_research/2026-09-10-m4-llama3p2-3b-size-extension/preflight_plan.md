@@ -126,3 +126,10 @@ no-launch guards, and byte-identical rebuilds. Their compact receipt is
 remain outside Git. No model-weight access, training, EOS submission, causal
 outcome inspection, or acquisition occurred. A launchable four-cell package
 requires fresh explicit authorization.
+
+The user subsequently provided that fresh authorization. The separate
+`acquisition_authorization.json` binds it to exactly the four frozen 448-step
+cells, one attempt each, all submitted before any causal outcome inspection,
+using `runllm.py --no_wait` with four-hour per-cell caps. It authorizes the
+specified acquisitions but no automatic retry or extension. The scientific
+contract and its pre-outcome hashes remain unchanged.
