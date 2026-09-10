@@ -1,0 +1,13 @@
+{
+  "cells": {
+    "gsm8k_r1": {"child_pipeline_id": 67204678, "corrected_lifecycle_duty": 0.0007311306487927162, "group_count": 8208, "lifecycle_sha256": "62304e8b223b52f70f7fd45a1be5cea9337c6e4a85d78025b9a7e32bb3ccf20f", "logs_after_artifact_sha256": "1d4a0d7f3ec412aed153b56a1f8a1eb685d2c855f650a3878fea93910e1b97a4", "opportunity_sha256": "5d8fcf3a0bc766964b42fd761e2827c4b691ccef0602f4e8336bdbfae05a0008", "workload_artifact_sha256": "c321dcf94a138d2a289142b0991c452be848d28dedf5f5c468fba78cd85ffa59"},
+    "gsm8k_r2": {"child_pipeline_id": 67204582, "corrected_lifecycle_duty": 0.0007820781062648155, "group_count": 8598, "lifecycle_sha256": "14cfd5c01c3721bd5e39549b863222cad106955beafbec61ef69a683e5f4bccf", "logs_after_artifact_sha256": "36ff4d6628d54da2916e538757be4b559455c15bf6e996c43b33d91003ed0dcd", "opportunity_sha256": "053c2f98d216cb09c4a9ac179a4b9379b601dc10b47cfe954f97cb5b6e56575b", "workload_artifact_sha256": "fcb236655ed1554215e370cca6d21fe5873b385e4f4b1576cdc27ff2dbe4735b"},
+    "openmath_r1": {"child_pipeline_id": 67204578, "corrected_lifecycle_duty": 0.0006559854138774108, "group_count": 7802, "lifecycle_sha256": "d93c9349df7af67c7fbb1d2da72632a580e95db6be4d5a37465f0080f5097fe4", "logs_after_artifact_sha256": "6e1038e58befd8f9befdf813820e9f634ec370aada88aa206f16356797c940d2", "opportunity_sha256": "49a64f44389ffb7f32a55455093486b44d27e078d24359969cd4a18b3b92390f", "workload_artifact_sha256": "7fc1d62dba8bf82777e9d86abc3e205afa5f5012ce067082fd3a2babe88139b6"},
+    "openmath_r2": {"child_pipeline_id": 67204614, "corrected_lifecycle_duty": 0.0006028855469673545, "group_count": 7675, "lifecycle_sha256": "59978d224bea5781205e47f9636be831a8a36cee17915c3fc1a3189489b7c08b", "logs_after_artifact_sha256": "d518c4ee358bf1c402ae865c2e4993ec55861e1cd63dc41539744e6c65346218", "opportunity_sha256": "b7f1c9113f73450a5b77b12c76786efa8ec6510b910d5f429904462efb5513fd", "workload_artifact_sha256": "37da83c526bef6cf13b36090d21dd49a9d73a768422e3fea9381521eb8e71a33"}
+  },
+  "causal_analysis_performed": false,
+  "checks": {"all_child_jobs_success": true, "all_trainer_steps_448": true, "declared_asset_hashes_match": true, "lifecycle_derivation_valid": true, "observer_duty_below_0p01": true, "workload_and_logs_after_selected_bytes_identical": true},
+  "full_authentication_record_sha256": "1da34ca184985bbdd319ae2f466ca9ae7c747b312f69a18be7e6f0a3088bf63d",
+  "schema": "m4-llama-v5-four-cell-terminal-authentication-v1",
+  "status": "AUTHENTICATED_READY_FOR_FROZEN_JOINT_ANALYSIS"
+}
