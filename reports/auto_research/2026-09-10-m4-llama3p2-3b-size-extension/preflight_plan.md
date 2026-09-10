@@ -1,6 +1,6 @@
 # Llama 3.2 3B no-training preflight plan
 
-Status: `V2_PAIRED_QUALIFICATION_AUTHORIZED_VALIDATED_NOT_SUBMITTED`.
+Status: `V2_PAIRED_QUALIFICATION_SUBMITTED_RESULTS_PENDING`.
 
 The first executable boundary is exactly one no-training preflight submitted
 with `runllm.py --no_wait`, only after a dedicated authorization record exists.
@@ -88,4 +88,11 @@ surfaces. Both passed schema validation, dynamic authorization-evidence
 execution, exact-delta comparison, and deterministic rebuild. Each remains a
 64-step, one-node/two-GPU qualification with a four-hour cap. Acquisition,
 retry, and extension remain unauthorized. Submission provenance is not yet
-present, so this status records a validated package rather than a launch.
+present in the package receipt, which records the pre-submission state rather
+than retroactively treating the package as a launch record.
+
+The shared v2 one-shot guard was consumed on 2026-09-10. OpenMath parent
+pipeline `67248517` and GSM8K parent pipeline `67248551` were submitted with
+`runllm.py --no_wait`; both launcher calls returned zero. Both submissions were
+made before either result was inspected. This is submission success only, not
+a qualification result. No polling, acquisition, retry, or extension occurred.
