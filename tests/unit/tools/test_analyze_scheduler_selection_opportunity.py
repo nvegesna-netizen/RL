@@ -117,6 +117,7 @@ def test_comparison_reports_choice_and_displacement_without_identities() -> None
         "median": 1.5,
         "maximum": 2.0,
     }
+    assert result["arms"]["ready_first"]["total_ready_but_ineligible_groups"] == 0
     assert result["cross_arm"]["differing_global_selection_positions"] == 3
     assert result["cross_arm"]["same_selected_step_sets"] == 0
     assert result["cross_arm"]["groups_crossing_selection_step_boundaries"] == 2

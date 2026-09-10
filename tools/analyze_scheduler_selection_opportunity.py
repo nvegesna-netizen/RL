@@ -218,6 +218,10 @@ def analyze_trace_events(
             "selection count does not match identities",
         )
         _require(
+            event.ready_prompt_groups >= event.eligible_prompt_groups,
+            "eligible count exceeds ready count",
+        )
+        _require(
             set(event.selected_logical_group_ids)
             <= set(event.eligible_logical_group_ids),
             "selected groups are not eligible",
@@ -283,6 +287,9 @@ def analyze_trace(path: Path) -> TraceAnalysis:
 def _arm_summary(analysis: TraceAnalysis) -> dict[str, object]:
     decisions = analysis.decisions
     choice = sum(item.eligible_count > item.selected_count for item in decisions)
+    ready_but_ineligible = [
+        item.ready_count - item.eligible_count for item in decisions
+    ]
 
     def ratio_summary(numerators: Sequence[int]) -> dict[str, float]:
         ratios = [
@@ -304,6 +311,13 @@ def _arm_summary(analysis: TraceAnalysis) -> dict[str, object]:
         "decisions_with_ready_greater_than_selected": sum(
             item.ready_count > item.selected_count for item in decisions
         ),
+        "decisions_with_ready_greater_than_eligible": sum(
+            count > 0 for count in ready_but_ineligible
+        ),
+        "total_ready_but_ineligible_groups": sum(ready_but_ineligible),
+        "mean_ready_but_ineligible_groups_per_decision": statistics.fmean(
+            ready_but_ineligible
+        ),
         "decisions_with_buffered_greater_than_selected": sum(
             item.buffered_count > item.selected_count for item in decisions
         ),
@@ -321,6 +335,7 @@ def _arm_summary(analysis: TraceAnalysis) -> dict[str, object]:
                 "logical_step": item.logical_step,
                 "ready": item.ready_count,
                 "eligible": item.eligible_count,
+                "ready_but_ineligible": item.ready_count - item.eligible_count,
                 "buffered": item.buffered_count,
                 "selected": item.selected_count,
             }
