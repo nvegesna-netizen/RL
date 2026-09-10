@@ -1,6 +1,6 @@
 # Llama 3.2 3B no-training preflight plan
 
-Status: `FOUR_LOCAL_ACQUISITION_CANDIDATES_GREEN_NO_LAUNCH_AUTHORITY`.
+Status: `FOUR_AUTHORIZED_ACQUISITION_PACKAGES_GREEN_NOT_SUBMITTED`.
 
 The first executable boundary is exactly one no-training preflight submitted
 with `runllm.py --no_wait`, only after a dedicated authorization record exists.
@@ -133,3 +133,11 @@ cells, one attempt each, all submitted before any causal outcome inspection,
 using `runllm.py --no_wait` with four-hour per-cell caps. It authorizes the
 specified acquisitions but no automatic retry or extension. The scientific
 contract and its pre-outcome hashes remain unchanged.
+
+The four authorization-bound manifests were then regenerated from the exact
+local candidates. Clean-room validation passed JET schema validation, shell and
+embedded-Python syntax, payload ordering and hashes, exact authorization-gate
+opening, absence of any nested launch command, and byte-identical rebuilding.
+Their compact receipt is `authorized_acquisition_package_receipt.json`; the
+62.6 MB manifests remain ignored. No submission or acquisition had occurred at
+this provenance boundary.

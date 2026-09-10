@@ -1,0 +1,30 @@
+{
+  "schema": "m4-llama3p2-3b-four-authorized-acquisition-package-receipt-v1",
+  "status": "FOUR_AUTHORIZED_PACKAGES_CLEAN_ROOM_GREEN_NOT_SUBMITTED",
+  "authorization_commit": "61a8fd981f15897c19d7c697f30fe497d392e3d4",
+  "authorization_sha256": "a732d48ebae61a11508acbf95a48f10555ee0e973db95abdd128c91ba504b6a9",
+  "contract_sha256": "f1696fdd2cf628af053c36c37fc7147974afc1d0f5d563853ed237afbe7abeb8",
+  "builder_sha256": "5485babb4e8fe88b84514860cb5dd3f71e8980e33dd1e37fcf33b7780c15cb70",
+  "validator_sha256": "b3e72fa7f1129d851ff8e0bde9607a7b5e728a0f67612d3f9e9a6356dbec78e4",
+  "validation_sha256": "34b01b4668b8b7b4973b2380cf3db46b1cfdc20232d7d91568bad2a9647b5fc0",
+  "scientific_source_commit": "88424bdb7bfb526e541b4a7b07830bc31028e64f",
+  "scientific_source_archive_sha256": "1ae875a63786d687fcf46bd7fa7cb2f26b1031c3cf3c36e38114305c732820eb",
+  "megatron_archive_sha256": "98d98920c0fea3d8ae1216a485dc9b5aa4fc966e469435ad61f2bae456de80d2",
+  "manifests": {
+    "openmath_r1": {"bytes": 15656611, "sha256": "44b79931bb9de522c67fb05e84b4566c80d447695ca43e2db3e947150304c39e"},
+    "openmath_r2": {"bytes": 15656611, "sha256": "7bcd92f23089f24bef85967a9539fb367e790cbbe8ae32978f50cb7bf3d55a7d"},
+    "gsm8k_r1": {"bytes": 15656557, "sha256": "7670167b574683bf4a1a6016a6ebe0743fa2b662da0ceaf7ccfccc52c07bb25b"},
+    "gsm8k_r2": {"bytes": 15656557, "sha256": "d1d8966e247d1fe527980fee6f2eeeb5232d4ca22e86f972d6ba5d56f90d942d"}
+  },
+  "required_launcher": "runllm.py --no_wait",
+  "runllm_sha256": "30532cd638d8394fa0e651daf4a43ec9424cbaa0949cd59c323191177318e616",
+  "eos_custom_config_sha256": "8bdf1338245a84ba9794a1eb76a7ebfcde6477f795ce48c15c24b35a45a02c6d",
+  "additional_variables_sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+  "submission_attempt_limit_each": 1,
+  "submit_all_four_before_inspecting_any_causal_outcome": true,
+  "large_manifests_tracked_in_git": false,
+  "launch_attempted": false,
+  "scientific_acquisition_started": false,
+  "automatic_retry": false,
+  "automatic_extension": false
+}

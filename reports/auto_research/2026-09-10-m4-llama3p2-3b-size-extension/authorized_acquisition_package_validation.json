@@ -1,0 +1,20 @@
+{
+  "authorization_gate_opened_exactly": true,
+  "authorization_sha256": "a732d48ebae61a11508acbf95a48f10555ee0e973db95abdd128c91ba504b6a9",
+  "builder_sha256": "5485babb4e8fe88b84514860cb5dd3f71e8980e33dd1e37fcf33b7780c15cb70",
+  "deterministic_rebuild": true,
+  "embedded_python_blocks_each": 4,
+  "jet_manifest_schema_green": true,
+  "launch_attempted": false,
+  "manifest_count": 4,
+  "manifest_sha256": {
+    "gsm8k_r1": "7670167b574683bf4a1a6016a6ebe0743fa2b662da0ceaf7ccfccc52c07bb25b",
+    "gsm8k_r2": "d1d8966e247d1fe527980fee6f2eeeb5232d4ca22e86f972d6ba5d56f90d942d",
+    "openmath_r1": "44b79931bb9de522c67fb05e84b4566c80d447695ca43e2db3e947150304c39e",
+    "openmath_r2": "7bcd92f23089f24bef85967a9539fb367e790cbbe8ae32978f50cb7bf3d55a7d"
+  },
+  "nested_launch_surface_absent": true,
+  "schema": "m4-llama3p2-3b-four-authorized-acquisition-package-validation-v1",
+  "scientific_acquisition_started": false,
+  "status": "PASS"
+}
