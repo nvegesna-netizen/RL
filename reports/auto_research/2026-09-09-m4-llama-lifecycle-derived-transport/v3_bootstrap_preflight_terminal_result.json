@@ -1,0 +1,75 @@
+{
+  "acquisition_started": false,
+  "automatic_extension": false,
+  "automatic_retry": false,
+  "jobs": {
+    "child_logs_after": {
+      "artifact_sha256": "9c24f3e8d4bfa418c4d6ae65d875c957f587f5f8e42bbf9dde2b55a78ecdca96",
+      "id": 433288702,
+      "status": "success"
+    },
+    "child_logs_before": {
+      "artifact_sha256": "1808259cca4c59d8950ffb162d2fe0f80d5236d785b3f71d778784eef03c608d",
+      "id": 433288700,
+      "status": "success"
+    },
+    "child_workload": {
+      "artifact_sha256": "cb255941576ddb31bc0fbc50707a435ff2f5d3b60e2c1001fb080298cdc73c73",
+      "id": 433288701,
+      "status": "success"
+    },
+    "parent_generate": {
+      "id": 433286954,
+      "status": "success"
+    },
+    "parent_trigger": {
+      "id": 433286955,
+      "status": "success"
+    }
+  },
+  "manifest_sha256": "1e7d0b610ff16b9ade6e07d9563664f2b9db86571f6abb0c28f55d9be68b0ff1",
+  "observed_boundary": {
+    "bootstrap_import_order": [
+      "import nemo_rl",
+      "import megatron"
+    ],
+    "container_fingerprint_authenticated": true,
+    "expected_megatron_path_present": true,
+    "hash_manifest_sha256": "e7ca1511512a8f3774112f21d8deee65fe5d2a77f1b06404ea376f3f5cc57b19",
+    "model_weights_downloaded": false,
+    "normalized_source_fingerprint_equal": true,
+    "output_log_sha256": "b2bbacb97d9fcc5a014b80466f015ded3f9f6d3642c67737b61408d341e3029d",
+    "preflight_green": true,
+    "result_sha256": "4ff05124cb7718cf46232a6e586d51d188ca97f5756f07fc7fe6ed6a37913abb",
+    "terminal_marker": "M4_LLAMA_V3_BOOTSTRAP_NO_TRAINING_PREFLIGHT_GREEN",
+    "terminal_marker_count": 1,
+    "workload_exit_code": 0
+  },
+  "paired_qualification_started": false,
+  "pipelines": {
+    "child": {
+      "finished_at": "2026-09-09T22:26:34.993-07:00",
+      "id": 67111981,
+      "sha": "8f5151cf00e02933a9b92772443d62e95b5150ff",
+      "status": "success",
+      "url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67111981"
+    },
+    "parent": {
+      "finished_at": "2026-09-09T22:26:35.746-07:00",
+      "id": 67111748,
+      "sha": "8f5151cf00e02933a9b92772443d62e95b5150ff",
+      "status": "success",
+      "url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67111748"
+    }
+  },
+  "qualification_authorized": false,
+  "retry_authorized": false,
+  "schema": "m4-llama-lifecycle-derived-v3-bootstrap-preflight-terminal-result-v1",
+  "scientific_interpretation": "The repaired v3 package is operationally qualified for a separately authorized paired qualification: its normalized scientific-source fingerprint, pinned Megatron dependency, required import order, and no-training boundary passed on EOS. This preflight contains no training or registered M4 measurement and therefore supplies no evidence for or against lifecycle-derived M4 transport on Llama.",
+  "scientific_source_archive_sha256": "38b44e4dc97995463f381816f636a59499c3ed84415a3a384165ad412ba43047",
+  "scientific_source_commit": "bdbf2956f3ff46177958a29a64e3b33e4dc6515e",
+  "status": "GREEN_OPERATIONAL_BOOTSTRAP_NO_TRAINING_NO_SCIENTIFIC_RESULT",
+  "submission_attempts": 1,
+  "trainer_steps_started": 0,
+  "training_started": false
+}
