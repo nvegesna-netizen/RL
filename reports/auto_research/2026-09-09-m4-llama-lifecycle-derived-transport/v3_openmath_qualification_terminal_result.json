@@ -1,0 +1,149 @@
+{
+  "acquisition_authorized": false,
+  "acquisition_started": false,
+  "artifact_authentication": {
+    "derivation_sha256": "edb7b3ddb399f3f9c2ed1ed9d1a6adc637a9307f6d4303eb9ffddd531aae3f73",
+    "exit_code_file_sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+    "final_hash_manifest_produced": false,
+    "lifecycle_duty_sha256": "f5039e1f51e3cc137037b533bcd2edc1e77ee3689544ff2cd13a08d8455581b4",
+    "lifecycle_sha256": "007d4a9b13d08ae058c87ac92936f82903c3215ee0e8609eed1a903b17eda023",
+    "logs_after_and_workload_selected_files_byte_identical": true,
+    "opportunity_sha256": "44662fb4909ddf69d9d3827d8870d0079de493e704f39f02d5577312deeb04b9",
+    "output_log_sha256": "c22c7f0920b6a049ef6a1edccc0d95ef22749be716d001378cae09a04f640225",
+    "run_log_sha256": "6ce2323e805daa4f48a11120ea503eecd3fcd89fb51f790a5ea4d99694e787b5",
+    "summary_produced": false
+  },
+  "automatic_extension": false,
+  "automatic_retry": false,
+  "causal_estimate_produced": false,
+  "cell": "openmath",
+  "failure_boundary": {
+    "bootstrap_completed": true,
+    "config_validation_completed": true,
+    "exception": "tools.opportunity_ledger_join.OpportunityLedgerJoinError: 9b29b9a4-0457-44d6-bf8f-f45c8e61aa67: primary assignment lacks opportunity",
+    "failed_stage": "registered_strict_opportunity_join",
+    "green_terminal_marker_count": 0,
+    "registered_summary_produced": false,
+    "trainer_steps_completed": 32,
+    "workload_exit_code": 1
+  },
+  "jobs": {
+    "logs_after": {
+      "artifact_sha256": "607730617a1c11db0806817d91cf6ad847062a9a93c8e1248d3e519ffb13723d",
+      "id": 433365661,
+      "status": "success"
+    },
+    "logs_before": {
+      "artifact_sha256": "32bb9aa7a4f256b137a58fe2911bfba60ebadfdded5b938add53d2c8adbf05e6",
+      "id": 433365659,
+      "status": "success"
+    },
+    "workload": {
+      "artifact_sha256": "9cb8fafa0e71486a9f17bca389f6587b061ce2e29a8c1fd921eb0063f6ccb089",
+      "failure_reason": "script_failure",
+      "id": 433365660,
+      "slurm_job_id": 6005981,
+      "status": "failed",
+      "trace_sha256": "2f8021f80f8f8d143e7794197809e3a28ecf6361eef18a1001cec638af7aaf31"
+    }
+  },
+  "manifest_sha256": "5ff618b6101a4887c742daf2f62eb6d89b199ce8db712922acce8ddabb45e99b",
+  "offline_diagnostics_not_registered_result": {
+    "binary_reward_support": true,
+    "complete_steps": true,
+    "corrected_lifecycle_duty": 0.0013776315914544798,
+    "derivation_elapsed_ns": 773775390,
+    "diagnostic_primary_end_version_30_join_assignment_count": 666,
+    "diagnostic_primary_end_version_30_join_passed": true,
+    "fixed_overhead_seconds": 330.192967714,
+    "groups_by_start_version": {
+      "0": 68,
+      "1": 4,
+      "2": 28,
+      "3": 20,
+      "4": 15,
+      "5": 24,
+      "6": 18,
+      "7": 17,
+      "8": 23,
+      "9": 15,
+      "10": 23,
+      "11": 17,
+      "12": 15,
+      "13": 22,
+      "14": 27,
+      "15": 19,
+      "16": 21,
+      "17": 14,
+      "18": 16,
+      "19": 22,
+      "20": 21,
+      "21": 20,
+      "22": 21,
+      "23": 24,
+      "24": 26,
+      "25": 20,
+      "26": 16,
+      "27": 26,
+      "28": 23,
+      "29": 23,
+      "30": 18,
+      "31": 6
+    },
+    "lifecycle_event_count": 10212,
+    "lifecycle_support_check": true,
+    "mean_completed_step_interval_seconds": 4.538040502193549,
+    "minimum_groups_each_version": false,
+    "minimum_groups_threshold": 15,
+    "observed_start_version_count": 32,
+    "opportunity_group_count": 672,
+    "projected_448_step_gpu_hours": 1.6411354949282706,
+    "projected_448_step_wall_hours": 0.8205677474641353,
+    "projected_primary_assignment_count": 8400.0,
+    "registered_primary_end_version_31_join_passed": false,
+    "subthreshold_group_counts": {
+      "1": 4,
+      "17": 14,
+      "31": 6
+    },
+    "wall_time_seconds": 470.872223282
+  },
+  "pipelines": {
+    "child": {
+      "created_at": "2026-09-09T23:21:45.657-07:00",
+      "finished_at": "2026-09-09T23:39:59.437-07:00",
+      "id": 67121552,
+      "sha": "8f5151cf00e02933a9b92772443d62e95b5150ff",
+      "status": "failed",
+      "url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67121552"
+    },
+    "parent": {
+      "created_at": "2026-09-09T23:19:58.952-07:00",
+      "finished_at": "2026-09-09T23:39:59.794-07:00",
+      "id": 67121179,
+      "sha": "8f5151cf00e02933a9b92772443d62e95b5150ff",
+      "status": "failed",
+      "url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67121179"
+    }
+  },
+  "registered_join_failure": {
+    "assigned_group_count": 688,
+    "bounded_shutdown_before_release_start_count": 16,
+    "completed_opportunity_group_count": 672,
+    "first_rejected_group_id": "9b29b9a4-0457-44d6-bf8f-f45c8e61aa67",
+    "first_rejected_group_sibling_count": 6,
+    "first_rejected_group_start_version": 31,
+    "first_rejected_group_terminal_disposition": "bounded_shutdown",
+    "missing_opportunity_assignments_by_start_version": {
+      "31": 15,
+      "32": 1
+    },
+    "reason": "Lifecycle reconstruction correctly emits no Q for incomplete sibling groups. The frozen qualification join nevertheless marks start version 31 as opportunity-required, so expected right-boundary censoring is fail-closed."
+  },
+  "retry_authorized": false,
+  "schema": "m4-llama-lifecycle-derived-v3-openmath-neutral-qualification-terminal-result-v1",
+  "scientific_interpretation": "OpenMath completed training and produced authenticated lifecycle, opportunity, duty, and derivation artifacts, but the registered strict join failed on an incomplete version-31 group removed at bounded shutdown. This exposes a terminal-window mismatch in the qualification design, not an EOS/bootstrap/training failure. A diagnostic join ending at version 30 passes, but it is not the frozen analysis and cannot salvage the run. Offline diagnostics also show the minimum-groups gate would fail at versions 1, 17, and 31. No causal M4 estimate was produced.",
+  "scientific_source_commit": "bdbf2956f3ff46177958a29a64e3b33e4dc6515e",
+  "status": "TERMINAL_OPENMATH_QUALIFICATION_FAILED_STRICT_JOIN_NO_ACQUISITION",
+  "submission_attempts": 1
+}

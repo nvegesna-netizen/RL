@@ -1,0 +1,34 @@
+{
+  "acquisition_authorized": false,
+  "acquisition_started": false,
+  "automatic_extension": false,
+  "automatic_retry": false,
+  "cells": {
+    "gsm8k": {
+      "child_pipeline_id": 67119617,
+      "failure": "minimum_groups_each_version: start version 1 had 4 groups versus threshold 15",
+      "parent_pipeline_id": 67118822,
+      "registered_summary_produced": true,
+      "status": "FAILED_REGISTERED_MINIMUM_GROUPS_GATE",
+      "terminal_result": "v3_gsm8k_qualification_terminal_result.json"
+    },
+    "openmath": {
+      "child_pipeline_id": 67121552,
+      "failure": "strict join rejected an incomplete start-version-31 group removed at bounded shutdown",
+      "offline_additional_failure": "minimum group counts were below 15 at versions 1, 17, and 31",
+      "parent_pipeline_id": 67121179,
+      "registered_summary_produced": false,
+      "status": "FAILED_REGISTERED_STRICT_JOIN",
+      "terminal_result": "v3_openmath_qualification_terminal_result.json"
+    }
+  },
+  "causal_estimate_produced": false,
+  "paired_qualification_evaluable": false,
+  "permanent_close_after_any_failure": true,
+  "qualification_data_allowed_in_causal_estimator": false,
+  "retry_authorized": false,
+  "schema": "m4-llama-lifecycle-derived-v3-paired-neutral-qualification-terminal-result-v1",
+  "scientific_interpretation": "Both v3 cells completed 32 trainer steps and authenticated the repaired package and lifecycle-derived measurement path, but neither passed every frozen qualification gate. These are qualification observations only and provide no causal estimate of M4 materiality on Llama. The paired successor is terminally closed without acquisition. A future attempt must be a separately preregistered successor with a terminal guard/common-support qualification window and an adequacy rule that can be satisfied under observed workload heterogeneity; the present data cannot be reclassified post hoc.",
+  "scientific_source_commit": "bdbf2956f3ff46177958a29a64e3b33e4dc6515e",
+  "status": "TERMINAL_CLOSED_PAIRED_QUALIFICATION_GATE_FAILURES_NO_ACQUISITION"
+}
