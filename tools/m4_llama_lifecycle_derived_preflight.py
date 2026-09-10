@@ -12,10 +12,6 @@ import tempfile
 from collections.abc import Mapping
 from pathlib import Path
 
-from omegaconf import OmegaConf
-
-from nemo_rl.utils.config import load_config, register_omegaconf_resolvers
-
 REPORT_ROOT = "reports/auto_research/2026-09-09-m4-llama-lifecycle-derived-transport"
 PROTOCOL_PATH = f"{REPORT_ROOT}/protocol_config.json"
 DESIGN_PATH = f"{REPORT_ROOT}/design.md"
@@ -103,6 +99,10 @@ def _at(value: Mapping[str, object], *path: str) -> object:
 
 
 def _resolve(repo: Path, path: str) -> dict[str, object]:
+    from omegaconf import OmegaConf
+
+    from nemo_rl.utils.config import load_config
+
     value = OmegaConf.to_container(load_config(repo / path), resolve=True)
     if not isinstance(value, dict):
         raise LifecycleDerivedPreflightError(f"{path} did not resolve to an object")
@@ -249,7 +249,7 @@ def validate_config(
     _validate_runtime_schema(config)
 
 
-def build_lock(
+def build_file_lock(
     *, repo: Path, source_commit: str, source_archive_sha256: str
 ) -> dict[str, object]:
     if len(source_commit) != 40 or any(
@@ -262,16 +262,8 @@ def build_lock(
         raise LifecycleDerivedPreflightError(
             "source archive hash must be lowercase hex"
         )
-    register_omegaconf_resolvers()
     protocol = json.loads((repo / PROTOCOL_PATH).read_bytes())
     validate_protocol(protocol)
-    for cell in CONFIG_PATHS:
-        validate_config(cell, _resolve(repo, CONFIG_PATHS[cell]), qualification=False)
-        validate_config(
-            cell,
-            _resolve(repo, QUALIFICATION_CONFIG_PATHS[cell]),
-            qualification=True,
-        )
     files: dict[str, object] = {}
     for name in sorted(PINNED_FILES):
         raw = (repo / name).read_bytes()
@@ -295,6 +287,27 @@ def build_lock(
     }
 
 
+def build_lock(
+    *, repo: Path, source_commit: str, source_archive_sha256: str
+) -> dict[str, object]:
+    """Validate runtime configs and return the deterministic pinned-file lock."""
+    from nemo_rl.utils.config import register_omegaconf_resolvers
+
+    register_omegaconf_resolvers()
+    for cell in CONFIG_PATHS:
+        validate_config(cell, _resolve(repo, CONFIG_PATHS[cell]), qualification=False)
+        validate_config(
+            cell,
+            _resolve(repo, QUALIFICATION_CONFIG_PATHS[cell]),
+            qualification=True,
+        )
+    return build_file_lock(
+        repo=repo,
+        source_commit=source_commit,
+        source_archive_sha256=source_archive_sha256,
+    )
+
+
 def _write(path: Path, value: Mapping[str, object]) -> None:
     raw = (json.dumps(value, separators=(",", ":"), sort_keys=True) + "\n").encode()
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -316,8 +329,10 @@ def main() -> None:
     parser.add_argument("--source-commit", required=True)
     parser.add_argument("--source-archive-sha256", required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--hash-only", action="store_true")
     args = parser.parse_args()
-    lock = build_lock(
+    builder = build_file_lock if args.hash_only else build_lock
+    lock = builder(
         repo=args.repo,
         source_commit=args.source_commit,
         source_archive_sha256=args.source_archive_sha256,

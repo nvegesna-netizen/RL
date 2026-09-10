@@ -8,6 +8,7 @@ from pathlib import Path
 
 import pytest
 
+from nemo_rl.utils.config import register_omegaconf_resolvers
 from tools import m4_llama_lifecycle_derived_preflight as subject
 
 _REPO = Path(__file__).resolve().parents[3]
@@ -23,7 +24,7 @@ def test_protocol_preserves_closed_predecessor_and_one_shot_sequence() -> None:
 
 @pytest.mark.parametrize("qualification", [False, True])
 def test_configs_resolve_and_disable_synchronous_observer(qualification: bool) -> None:
-    subject.register_omegaconf_resolvers()
+    register_omegaconf_resolvers()
     paths = (
         subject.QUALIFICATION_CONFIG_PATHS if qualification else subject.CONFIG_PATHS
     )
@@ -37,7 +38,7 @@ def test_configs_resolve_and_disable_synchronous_observer(qualification: bool) -
 
 
 def test_config_mutation_fails_closed() -> None:
-    subject.register_omegaconf_resolvers()
+    register_omegaconf_resolvers()
     config = subject._resolve(
         _REPO, subject.QUALIFICATION_CONFIG_PATHS["llama3p2_1b_gsm8k"]
     )
