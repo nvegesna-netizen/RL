@@ -51,4 +51,9 @@ qualification data existed, `qualification_execution_contract.json` froze the
 previously unspecified cell-specific bootstrap seeds. Both 64-step manifests
 were built and jointly validated with one-node/two-GPU topology, 4-hour caps,
 disabled retriers, one attempt per cell, and acquisition still forbidden.
-Status: `PAIRED_QUALIFICATION_PACKAGE_VALIDATED_NOT_SUBMITTED`.
+Status: `PAIRED_QUALIFICATION_SUBMITTED_RESULTS_PENDING`.
+
+The shared one-shot guard was consumed on 2026-09-10. OpenMath parent pipeline
+`67239810` and GSM8K parent pipeline `67240055` were both submitted with
+`runllm.py --no_wait` before either result was inspected. Both launcher calls
+returned zero. No polling, retry, extension, or acquisition was performed.

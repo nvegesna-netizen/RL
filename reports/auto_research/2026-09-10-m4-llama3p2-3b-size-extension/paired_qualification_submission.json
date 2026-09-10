@@ -1,0 +1,30 @@
+{
+  "schema": "m4-llama3p2-3b-paired-neutral-qualification-submission-v1",
+  "status": "SUBMITTED_RESULTS_PENDING",
+  "submitted_on": "2026-09-10",
+  "pipelines": {
+    "openmath": {
+      "parent_pipeline_id": 67239810,
+      "parent_pipeline_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67239810",
+      "launcher_return_code": 0,
+      "submission_stdout_sha256": "bcca4693387b9fb983d464d9a5c64dc1779f4bf78c7dd4b07a5918c384eb498f"
+    },
+    "gsm8k": {
+      "parent_pipeline_id": 67240055,
+      "parent_pipeline_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67240055",
+      "launcher_return_code": 0,
+      "submission_stdout_sha256": "f7178ea4451ade681f46e85487c98fc8b54a2b8af799dae00b9b690cef58afe2"
+    }
+  },
+  "package_commit": "058883d47ce44ac5f157cde25e1b759f3aeece30",
+  "authorization_sha256": "90997c5ceead304efe0f535512b1c4cce49d88e457fb1fe9ded766f32cf603ff",
+  "submission_guard_sha256": "1c95a876393eabdff1d4cc227e9d1b3eca4075cee4fe6ac8ce6f1b5e0afed587",
+  "submission_wrapper_sha256": "5078d30b5876a678234ed08b4417a171b5d7fcb5aa1ca8f1646ceb8aea8aea23",
+  "launcher": "runllm.py --no_wait",
+  "submission_attempt_each_cell": 1,
+  "both_submitted_before_inspecting_either": true,
+  "results_inspected": false,
+  "automatic_retry": false,
+  "automatic_extension": false,
+  "scientific_acquisition_authorized": false
+}
