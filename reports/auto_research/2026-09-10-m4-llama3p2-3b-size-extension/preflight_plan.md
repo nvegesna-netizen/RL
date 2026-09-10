@@ -57,3 +57,15 @@ The shared one-shot guard was consumed on 2026-09-10. OpenMath parent pipeline
 `67239810` and GSM8K parent pipeline `67240055` were both submitted with
 `runllm.py --no_wait` before either result was inspected. Both launcher calls
 returned zero. No polling, retry, extension, or acquisition was performed.
+
+Terminal inspection found both pipelines failed before training in the same
+embedded authorization-evidence block. The manifest builder serialized the
+authorization as JSON inside Python, producing lowercase `false`/`true` names;
+both jobs stopped at `NameError: name 'false' is not defined` before config
+validation, model loading, the training-start marker, lifecycle output, or a
+qualification summary. The package validator compiled the block but did not
+execute its authorization comparison, so it missed this runtime name error.
+Status: `SHARED_PRETRAINING_PACKAGING_FAILURE_NO_QUALIFICATION_DATA`.
+The scientific qualification gate was not evaluated. The original two
+attempts are consumed, acquisition remains unauthorized, and any repaired pair
+requires a new versioned package plus fresh explicit authorization.

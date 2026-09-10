@@ -1,0 +1,58 @@
+{
+  "schema": "m4-llama3p2-3b-paired-neutral-qualification-terminal-failure-v1",
+  "status": "SHARED_PRETRAINING_PACKAGING_FAILURE_NO_QUALIFICATION_DATA",
+  "pipeline_metadata_sha256": "9684c4501532cabf4b6a15ae92872492aca647e10dac0c35e58c9a8ef9cc6dbe",
+  "cells": {
+    "openmath": {
+      "parent_pipeline_id": 67239810,
+      "child_pipeline_id": 67240074,
+      "workload_job_id": 434340008,
+      "logs_after_job_id": 434340009,
+      "workload_artifact_sha256": "e15a7929535400553ae0be58747ddb9bf3446b2700fab7c66f761a91628a8b71",
+      "logs_after_artifact_sha256": "b3315c33beafed3d224addc27bf6acea4bb14edda9b10870752ec72df1cacbe6",
+      "preserved_output_log_sha256": "e703851124ae8e6a5c467cfb2f94e2b97c0c6d7f258e87689cd705a38ca2dcee",
+      "rank_zero_exit_code": 1
+    },
+    "gsm8k": {
+      "parent_pipeline_id": 67240055,
+      "child_pipeline_id": 67240196,
+      "workload_job_id": 434340839,
+      "logs_after_job_id": 434340840,
+      "workload_artifact_sha256": "62014c875ea85ff0f11b232c93f2785ff5b37a83321fb0110940e2b42277e053",
+      "logs_after_artifact_sha256": "90728913b5229006c24ab2388e234e0c819aebbfab7c7cd2f3eb8caa9eb34580",
+      "preserved_output_log_sha256": "7d875100818ff178894db378b8c42411b034a7d2665f5513869786603b836acf",
+      "rank_zero_exit_code": 1
+    }
+  },
+  "failure": {
+    "shared": true,
+    "stage": "embedded_authorization_evidence_before_config_or_training",
+    "exception": "NameError: name 'false' is not defined",
+    "cause": "authorization JSON was interpolated as executable Python, retaining lowercase JSON booleans",
+    "builder_location": "build_paired_qualification_manifests.py authorization equality assertion",
+    "validator_gap": "embedded block was compiled but its authorization comparison was not executed"
+  },
+  "evidence": {
+    "authorization_hashes_passed": true,
+    "source_safe_extraction_passed": true,
+    "megatron_extraction_passed": true,
+    "bootstrap_import_passed": true,
+    "authorization_block_reached": true,
+    "configuration_validation_reached": false,
+    "training_start_marker_present": false,
+    "run_complete_marker_present": false,
+    "lifecycle_artifact_present": false,
+    "qualification_summary_present": false,
+    "qualification_data_produced": false
+  },
+  "scientific_disposition": {
+    "qualification_gate_evaluated": false,
+    "llama3p2_3b_feasibility_inference_allowed": false,
+    "original_attempts_consumed": true,
+    "automatic_retry": false,
+    "automatic_extension": false,
+    "acquisition_authorized": false,
+    "repair_classification": "deterministic_pretraining_packaging_repair",
+    "fresh_authorization_required_for_repaired_pair": true
+  }
+}
