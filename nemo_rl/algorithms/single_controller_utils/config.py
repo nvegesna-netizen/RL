@@ -46,6 +46,7 @@ FixedPoolDesignId: TypeAlias = Literal[
     "structured_generation_latency_v1",
     "structured_generation_scheduler_crossover_v1",
     "dapo_math_operational_latency_discovery_v2",
+    "dapo_math_scheduler_crossover_v1",
 ]
 
 

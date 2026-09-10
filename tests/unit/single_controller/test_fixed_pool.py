@@ -801,6 +801,16 @@ def test_fixed_pool_config_accepts_structured_scheduler_crossover_design() -> No
     assert config.design_id == "structured_generation_scheduler_crossover_v1"
 
 
+def test_fixed_pool_config_accepts_dapo_scheduler_crossover_design() -> None:
+    config = FixedPoolCollectionConfig(
+        enabled=True,
+        manifest_path="pool.json",
+        design_id="dapo_math_scheduler_crossover_v1",
+    )
+
+    assert config.design_id == "dapo_math_scheduler_crossover_v1"
+
+
 def test_fixed_pool_config_rejects_unknown_design() -> None:
     with pytest.raises(ValidationError, match="literal_error"):
         FixedPoolCollectionConfig(design_id="unknown")  # type: ignore[arg-type]
