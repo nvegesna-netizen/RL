@@ -1,0 +1,23 @@
+{
+  "checks": {
+    "3b_model_and_tokenizer_exact": true,
+    "acquisitions_inherit_v5_448_step_contract": true,
+    "assignment_and_timing_negative_controls": true,
+    "launch_authority_absent": true,
+    "qualification_inherits_neutral_64_step_contract": true,
+    "six_unique_domains_and_seeds": true,
+    "size_contrast_retains_both_sizes_and_replicates": true
+  },
+  "config_sha256": {
+    "gsm8k_qualification": "337351dfb177f6ad61b96de4fa4f859a3bbaaaacb966e4ff4d7dad63fb469fd5",
+    "gsm8k_r1": "50bee58c0d96ea99236790ab74ac9e612ec6ab316754d914cfd0ce50be434932",
+    "gsm8k_r2": "27ec964ca51a41c18813b1804a53864f763efc91b51a410f846deaedda9bb06a",
+    "openmath_qualification": "15788df473dca65e96b811fc09790784f9fdb248380d152855b3b6204bc61830",
+    "openmath_r1": "0b7bfb8fa3c9101ad0aea3320a519e9997d2337d000e5bc6728873b8b546e1f5",
+    "openmath_r2": "8a97966d28d9d2d1e5b2a204f7bf81c55a93fadd0248986294dec23f73ef6140"
+  },
+  "launch_attempted": false,
+  "protocol_sha256": "4f2a5e496030e836b3449697928f4f363d7d36e3cec668105b2cdcc701b9814c",
+  "schema": "m4-llama3p2-3b-local-design-validation-v1",
+  "status": "PASS"
+}
