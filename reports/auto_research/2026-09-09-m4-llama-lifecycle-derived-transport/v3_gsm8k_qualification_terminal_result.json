@@ -1,0 +1,151 @@
+{
+  "acquisition_authorized": false,
+  "acquisition_started": false,
+  "artifact_authentication": {
+    "derivation_sha256": "8a164dd2629bfc2b78712841efb025c08f89609dd3df79f00ba5b6a4283ad7ca",
+    "exit_code_file_sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+    "final_hash_manifest_produced": false,
+    "lifecycle_duty_sha256": "6af63adceba8498d1b426d362791659007f1e40a7762363f2629c6439860713d",
+    "lifecycle_sha256": "99921e5837d1806e957a3642869c1a86b2fa45dd8a28aded8a7ea45306a1afd4",
+    "logs_after_and_workload_selected_files_byte_identical": true,
+    "opportunity_sha256": "2e046d64a2d7d3b72236a9c459ba065025ef774232398d5f1c4540c71b633da1",
+    "output_log_sha256": "803663b8e276e523439ac56b247b782893d0c252d39b1f37fcc1ab5f54627f72",
+    "run_log_sha256": "4b0206c4d5bd6d190c66ac4e9295253052d608ab01ddbdc2211ac3d17a5c3bc3",
+    "summary_sha256": "55248709e90a6be389c25da80889a60a37c399bee38342c2fa191ff44340158a"
+  },
+  "automatic_extension": false,
+  "automatic_retry": false,
+  "causal_estimate_produced": false,
+  "cell": "gsm8k",
+  "failure_boundary": {
+    "bootstrap_completed": true,
+    "config_validation_completed": true,
+    "failed_check": "minimum_groups_each_version",
+    "green_terminal_marker_count": 0,
+    "mechanism_evidence_completed": true,
+    "registered_summary_produced": true,
+    "trainer_steps_completed": 32,
+    "workload_exit_code": 1
+  },
+  "jobs": {
+    "logs_after": {
+      "artifact_sha256": "d3f51b678b97e86aeb814705408bae1fdb79fa7f57cb54d3a1976425c8689eb7",
+      "id": 433348721,
+      "status": "success"
+    },
+    "logs_before": {
+      "artifact_sha256": "396e84738bf0dd2368553b9950a2ac60f938d496587c45881587e8ecb1a4c73b",
+      "id": 433348717,
+      "status": "success"
+    },
+    "workload": {
+      "artifact_sha256": "b4321722b8fcf451a8472441eb7cc65d4c101e1b051424731a7a558f7f3e943f",
+      "failure_reason": "script_failure",
+      "id": 433348720,
+      "slurm_job_id": 6005904,
+      "status": "failed",
+      "trace_sha256": "90c1add2a7096e8505833ea52da1578280ad4a290572a0c8edb1e319155783e9"
+    }
+  },
+  "manifest_sha256": "d83490d994724817ba0e76bda8eec7fb34d5f9421d22a9abc94b77e140babfc2",
+  "paired_consequence": {
+    "acquisition_authorized": false,
+    "openmath_result_required_to_reopen_pair": false,
+    "paired_qualification_evaluable": false,
+    "reason": "The frozen paired contract permanently closes acquisition after any cell fails a registered qualification gate. The still-separate OpenMath terminal outcome may be documented but cannot reverse this consequence."
+  },
+  "pipelines": {
+    "child": {
+      "created_at": "2026-09-09T23:06:44.860-07:00",
+      "finished_at": "2026-09-09T23:21:33.129-07:00",
+      "id": 67119617,
+      "sha": "8f5151cf00e02933a9b92772443d62e95b5150ff",
+      "status": "failed",
+      "url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67119617"
+    },
+    "parent": {
+      "created_at": "2026-09-09T23:04:56.609-07:00",
+      "finished_at": "2026-09-09T23:21:33.424-07:00",
+      "id": 67118822,
+      "sha": "8f5151cf00e02933a9b92772443d62e95b5150ff",
+      "status": "failed",
+      "url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67118822"
+    }
+  },
+  "qualification": {
+    "checks": {
+      "binary_reward_support": true,
+      "complete_steps": true,
+      "derivation": true,
+      "gpu_hour_projection": true,
+      "group_ids_unique": true,
+      "lifecycle_duty": true,
+      "minimum_groups_each_version": false,
+      "neutral_lifecycle": true,
+      "projected_primary_assignments": true,
+      "strict_join": true,
+      "wall_time_projection": true
+    },
+    "corrected_lifecycle_duty": 0.002693067298608296,
+    "derivation_elapsed_ns": 566392673,
+    "fixed_overhead_seconds": 151.37182051099998,
+    "groups_by_start_version": {
+      "0": 68,
+      "1": 4,
+      "2": 51,
+      "3": 17,
+      "4": 41,
+      "5": 27,
+      "6": 40,
+      "7": 27,
+      "8": 41,
+      "9": 27,
+      "10": 41,
+      "11": 27,
+      "12": 41,
+      "13": 27,
+      "14": 41,
+      "15": 27,
+      "16": 41,
+      "17": 27,
+      "18": 41,
+      "19": 27,
+      "20": 41,
+      "21": 27,
+      "22": 41,
+      "23": 27,
+      "24": 41,
+      "25": 27,
+      "26": 41,
+      "27": 27,
+      "28": 41,
+      "29": 27,
+      "30": 41,
+      "31": 27
+    },
+    "lifecycle_event_count": 16397,
+    "mean_completed_step_interval_seconds": 3.7928719097096772,
+    "minimum_groups_per_observed_start_version": 4,
+    "minimum_groups_threshold": 15,
+    "observed_start_version_count": 32,
+    "only_deficient_start_version": 1,
+    "opportunity_group_count": 1091,
+    "projected_448_step_gpu_hours": 1.285123913931205,
+    "projected_448_step_wall_hours": 0.6425619569656025,
+    "projected_primary_assignment_count": 13637.5,
+    "qualification_complete": false,
+    "reward_values": [
+      0.0,
+      1.0
+    ],
+    "strict_join_assignment_count": 1091,
+    "trainer_steps": 32,
+    "wall_time_seconds": 268.950849712
+  },
+  "retry_authorized": false,
+  "schema": "m4-llama-lifecycle-derived-v3-gsm8k-neutral-qualification-terminal-result-v1",
+  "scientific_interpretation": "The repaired package, training run, lifecycle instrument, strict join, observer-duty ceiling, and projections all worked. GSM8K nevertheless fails the frozen qualification because start version 1 contains 4 opportunity groups rather than the required 15. This is a registered adequacy-gate failure at the startup boundary, not a plumbing failure and not causal evidence for or against an M4 materiality effect. The threshold is not changed post hoc.",
+  "scientific_source_commit": "bdbf2956f3ff46177958a29a64e3b33e4dc6515e",
+  "status": "TERMINAL_GSM8K_QUALIFICATION_FAILED_MINIMUM_GROUPS_PAIR_CLOSED_NO_ACQUISITION",
+  "submission_attempts": 1
+}
