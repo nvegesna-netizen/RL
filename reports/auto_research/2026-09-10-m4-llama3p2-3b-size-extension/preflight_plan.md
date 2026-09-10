@@ -1,6 +1,6 @@
 # Llama 3.2 3B no-training preflight plan
 
-Status: `V2_LOCAL_REPAIR_VALIDATED_NO_LAUNCH_AUTHORITY`.
+Status: `V2_PAIRED_QUALIFICATION_AUTHORIZED_VALIDATED_NOT_SUBMITTED`.
 
 The first executable boundary is exactly one no-training preflight submitted
 with `runllm.py --no_wait`, only after a dedicated authorization record exists.
@@ -80,3 +80,12 @@ reproduced both candidates byte for byte. The compact hash ledger is preserved
 in `qualification_packaging_repair_receipt_v2.json`; the large candidates stay
 outside Git. No EOS submission occurred. A launchable v2 pair still requires
 fresh, explicit authorization and a separately versioned authorization surface.
+
+Fresh explicit EOS authorization was received on 2026-09-10 for exactly one
+shared repaired pair. The two launchable v2 manifests were derived from the
+validated local candidates by changing only their names and authorization
+surfaces. Both passed schema validation, dynamic authorization-evidence
+execution, exact-delta comparison, and deterministic rebuild. Each remains a
+64-step, one-node/two-GPU qualification with a four-hour cap. Acquisition,
+retry, and extension remain unauthorized. Submission provenance is not yet
+present, so this status records a validated package rather than a launch.

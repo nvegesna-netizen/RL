@@ -1,0 +1,39 @@
+{
+  "schema": "m4-llama3p2-3b-paired-neutral-qualification-package-receipt-v2",
+  "status": "AUTHORIZED_VALIDATED_NOT_SUBMITTED",
+  "authorization_sha256": "fb64bbd5b92e3fdc536e8fc98c937b575344bbff1370f098c69bf90fed258858",
+  "repair_receipt_sha256": "6603836231624e441acc50bc917ac93568d61bb83789e699614775c48b54b585",
+  "builder_sha256": "f9ed46a51905ec3134c9a31b722b9d33b164bfd743c2ff46fa32074312230994",
+  "validator_sha256": "f625347993267834e94f478c2c633a9838cc3990137b8aee5d2d2b7c3371f27e",
+  "validation_sha256": "e85a74887c3b6dac4c497cf85ec362fa4053fe5fc34d023344a3eab34cdc4c7e",
+  "manifest_sha256": {
+    "openmath": "23903e358f85e70a373490a95edc3bb18c558deb86fe3055b9345a76c3480a62",
+    "gsm8k": "583becb35807ab2231779a576fe460e4f6d8e7255c7f897cdfc6b14af02a40e1"
+  },
+  "manifest_bytes": {
+    "openmath": 15657804,
+    "gsm8k": 15657719
+  },
+  "custom_config_sha256": "e5111315a4754386375c65baf8d907515f92b4b381fb44bf2641375db757cb56",
+  "additional_variables_sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+  "runllm_sha256": "30532cd638d8394fa0e651daf4a43ec9424cbaa0949cd59c323191177318e616",
+  "validation": {
+    "exact_registered_delta_from_validated_local_candidates": true,
+    "dynamic_authorization_evidence_passed": true,
+    "jet_manifest_schema_green": true,
+    "deterministic_rebuild": true
+  },
+  "scheduler": {
+    "nodes_each": 1,
+    "gpus_each": 2,
+    "time_limit_seconds_each": 14400,
+    "jet_retrier_enabled": false
+  },
+  "required_launcher": "runllm.py --no_wait",
+  "submission_attempt_limit_each_cell": 1,
+  "submit_both_before_inspecting_either": true,
+  "scientific_acquisition_authorized": false,
+  "automatic_retry": false,
+  "automatic_extension": false,
+  "submitted": false
+}

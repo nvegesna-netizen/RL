@@ -1,0 +1,32 @@
+{
+  "authorization_sha256": "fb64bbd5b92e3fdc536e8fc98c937b575344bbff1370f098c69bf90fed258858",
+  "automatic_extension": false,
+  "automatic_retry": false,
+  "builder_sha256": "f9ed46a51905ec3134c9a31b722b9d33b164bfd743c2ff46fa32074312230994",
+  "deterministic_rebuild": true,
+  "dynamic_authorization_evidence": {
+    "gsm8k": {
+      "authorization_evidence_executed": true,
+      "authorization_evidence_passed": true,
+      "local_no_launch_guard_absent": true
+    },
+    "openmath": {
+      "authorization_evidence_executed": true,
+      "authorization_evidence_passed": true,
+      "local_no_launch_guard_absent": true
+    }
+  },
+  "embedded_python_blocks_each": 6,
+  "exact_registered_delta_from_validated_local_candidates": true,
+  "jet_manifest_schema_green": true,
+  "manifest_sha256": {
+    "gsm8k": "583becb35807ab2231779a576fe460e4f6d8e7255c7f897cdfc6b14af02a40e1",
+    "openmath": "23903e358f85e70a373490a95edc3bb18c558deb86fe3055b9345a76c3480a62"
+  },
+  "scheduler_cap_seconds_each": 14400,
+  "schema": "m4-llama3p2-3b-paired-neutral-qualification-package-validation-v2",
+  "scientific_acquisition_authorized": false,
+  "status": "PASS",
+  "submission_attempt_limit_each_cell": 1,
+  "submitted": false
+}
