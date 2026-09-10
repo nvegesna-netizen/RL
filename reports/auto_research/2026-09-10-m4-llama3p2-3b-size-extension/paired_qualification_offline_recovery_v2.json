@@ -1,0 +1,143 @@
+{
+  "cells": {
+    "gsm8k": {
+      "acquisition_started": false,
+      "artifact_sha256": {
+        "derivation.json": "9c510e508830e75db8e58cf087a0ff67c54026028be0ae23b9ee4fefe0fdfa15",
+        "lifecycle-duty.json": "58482812c26e202bcfbedc87b559ea4b445bb784967bdf3a15b8cffb23a996f0",
+        "lifecycle.jsonl": "59198df4a5351b0c66556bc91d7ca4143a52920af5eb43e2823458779a495773",
+        "opportunity.jsonl": "3909083323399d889c76c9a0e1f2206b170912a6cde8f36429e3422551dbd684",
+        "run.log": "e1e1f25023a8bdbdd81ba72b9d67bd51f1e2d2dcbc3cf3525f4909c090ff3b9e"
+      },
+      "automatic_extension": false,
+      "automatic_retry": false,
+      "causal_estimate_produced": false,
+      "cell": "gsm8k",
+      "checks": {
+        "assignment_support": true,
+        "binary_reward_support": true,
+        "complete_steps": true,
+        "derivation": true,
+        "exact_evaluable_window": true,
+        "group_ids_unique": true,
+        "joint_qualification_gate": true,
+        "lifecycle_duty": true,
+        "neutral_lifecycle": true,
+        "strict_join": true,
+        "timing_support": true
+      },
+      "corrected_lifecycle_duty": 0.0019127363308823878,
+      "gpus": 2,
+      "lifecycle_event_count": 27821,
+      "opportunity_group_count": 1843,
+      "qualification": {
+        "assignment_projection": {
+          "bootstrap_draws": 20000,
+          "circular_block_size_versions": 8,
+          "evaluable_end_version": 55,
+          "evaluable_start_version": 8,
+          "evaluable_version_count": 48,
+          "joined_group_count": 1390,
+          "minimum_joined_groups_in_any_version": 6,
+          "projected_primary_assignments": 11583.333333333334,
+          "projected_primary_assignments_lower_95": 9833.333333333334,
+          "qualification_support_passed": true
+        },
+        "assignment_support_passed": true,
+        "bootstrap_draws": 20000,
+        "maximum_projected_runtime_seconds": 12600.0,
+        "measured_non_active_overhead_seconds": 224.192726362,
+        "projected_400_version_active_seconds_upper_95": 1927.5158271143002,
+        "projected_total_runtime_seconds_upper_95": 2151.7085534763,
+        "qualified": true,
+        "timing_block_size_versions": 8,
+        "timing_support_passed": true
+      },
+      "qualification_complete": true,
+      "reward_values": [
+        0.0,
+        1.0
+      ],
+      "schema": "m4-llama3p2-3b-neutral-qualification-offline-recovery-v2",
+      "source_commit": "88424bdb7bfb526e541b4a7b07830bc31028e64f",
+      "strict_join_assignment_count": 1390,
+      "trainer_steps": 64,
+      "wall_time_seconds": 453.241505539,
+      "workload_archive_sha256": "691e410ac464d5156cf002573b5cc0993982683f7445be78f3fc270df1eeb113",
+      "workload_job_id": 434414503,
+      "workload_trace_sha256": "72868253b8c215c06dd542cfd9a4f151f523171de961f251513a4ef8ea6af6a2"
+    },
+    "openmath": {
+      "acquisition_started": false,
+      "artifact_sha256": {
+        "derivation.json": "25c64c804051fdc807620c59a7953213b8179a224c7bd2534b5d82ec09f2b047",
+        "lifecycle-duty.json": "56803884bd6954f01ec0adb6589d6f8d9f63629e4c1190bb01be5e59d7876d4d",
+        "lifecycle.jsonl": "8427d7038f52a34802136963bd2c71dee1167dfb9a6c887c0d4a095852b24bd7",
+        "opportunity.jsonl": "9ad7618c28fbbe1588a82a238af86518ca1f4665df3207fcb9ee328fe5043341",
+        "run.log": "c6bc52cfe8d37b432d61bcff1d2f3d9c86c6e9477a855c458ef80e6cb4a161bf"
+      },
+      "automatic_extension": false,
+      "automatic_retry": false,
+      "causal_estimate_produced": false,
+      "cell": "openmath",
+      "checks": {
+        "assignment_support": true,
+        "binary_reward_support": true,
+        "complete_steps": true,
+        "derivation": true,
+        "exact_evaluable_window": true,
+        "group_ids_unique": true,
+        "joint_qualification_gate": true,
+        "lifecycle_duty": true,
+        "neutral_lifecycle": true,
+        "strict_join": true,
+        "timing_support": true
+      },
+      "corrected_lifecycle_duty": 0.0009350036007722879,
+      "gpus": 2,
+      "lifecycle_event_count": 16687,
+      "opportunity_group_count": 1102,
+      "qualification": {
+        "assignment_projection": {
+          "bootstrap_draws": 20000,
+          "circular_block_size_versions": 8,
+          "evaluable_end_version": 55,
+          "evaluable_start_version": 8,
+          "evaluable_version_count": 48,
+          "joined_group_count": 847,
+          "minimum_joined_groups_in_any_version": 8,
+          "projected_primary_assignments": 7058.333333333334,
+          "projected_primary_assignments_lower_95": 6166.666666666667,
+          "qualification_support_passed": true
+        },
+        "assignment_support_passed": true,
+        "bootstrap_draws": 20000,
+        "maximum_projected_runtime_seconds": 12600.0,
+        "measured_non_active_overhead_seconds": 480.91813189299995,
+        "projected_400_version_active_seconds_upper_95": 2201.0521097218493,
+        "projected_total_runtime_seconds_upper_95": 2681.9702416148493,
+        "qualified": true,
+        "timing_block_size_versions": 8,
+        "timing_support_passed": true
+      },
+      "qualification_complete": true,
+      "reward_values": [
+        0.0,
+        1.0
+      ],
+      "schema": "m4-llama3p2-3b-neutral-qualification-offline-recovery-v2",
+      "source_commit": "88424bdb7bfb526e541b4a7b07830bc31028e64f",
+      "strict_join_assignment_count": 847,
+      "trainer_steps": 64,
+      "wall_time_seconds": 740.345741089,
+      "workload_archive_sha256": "c1b93302f8f561269eec96feb905cde18a476bda61120b4ee8d39a15f4abdf81",
+      "workload_job_id": 434414383,
+      "workload_trace_sha256": "1fc22d292e98f82f33b0964d43cef161c5662da8cec2a9c0a2319be2fc6c2552"
+    }
+  },
+  "recovery_delta": "JoinedOpportunityAssignment.start_version_field_access_only",
+  "schema": "m4-llama3p2-3b-paired-neutral-qualification-offline-recovery-v2",
+  "scientific_configuration_changed": false,
+  "status": "BOTH_QUALIFIED",
+  "training_rerun": false
+}

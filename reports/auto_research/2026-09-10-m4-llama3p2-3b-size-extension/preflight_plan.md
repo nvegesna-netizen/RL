@@ -1,6 +1,6 @@
 # Llama 3.2 3B no-training preflight plan
 
-Status: `V2_PAIRED_QUALIFICATION_SUBMITTED_RESULTS_PENDING`.
+Status: `V2_PIPELINES_FAILED_POST_TRAINING_BOTH_QUALIFIED_OFFLINE`.
 
 The first executable boundary is exactly one no-training preflight submitted
 with `runllm.py --no_wait`, only after a dedicated authorization record exists.
@@ -96,3 +96,21 @@ pipeline `67248517` and GSM8K parent pipeline `67248551` were submitted with
 `runllm.py --no_wait`; both launcher calls returned zero. Both submissions were
 made before either result was inspected. This is submission success only, not
 a qualification result. No polling, acquisition, retry, or extension occurred.
+
+Terminal evidence shows both parent and child pipelines failed, but neither
+training failed. OpenMath and GSM8K each completed all 64 trainer steps and
+reached trainer version 64 after passing authorization and configuration
+checks. Both then hit the same post-training summary defect: the embedded code
+subscripted a `JoinedOpportunityAssignment` dataclass as
+`row["start_weight_version"]`; its frozen field is `row.start_version`.
+
+The authenticated workload artifacts were recovered and the preregistered
+qualification gates were executed offline with only that field-access repair.
+Both cells qualify. OpenMath has 847 joined window assignments, a projected
+lower 95% assignment count of 6166.67, and projected upper 95% total runtime of
+2681.97 seconds. GSM8K has 1390 joined assignments, a projected lower 95%
+count of 9833.33, and projected upper 95% runtime of 2151.71 seconds. Every
+integrity, lifecycle, duty, assignment-support, and timing-support check passed.
+The terminal and offline-recovery records preserve all artifact hashes. The
+qualification data remain excluded from any causal estimator. No retraining,
+retry, extension, acquisition, or causal estimate occurred.

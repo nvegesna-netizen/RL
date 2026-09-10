@@ -1,0 +1,75 @@
+{
+  "schema": "m4-llama3p2-3b-paired-neutral-qualification-terminal-result-v2",
+  "status": "PIPELINES_FAILED_POST_TRAINING_BOTH_QUALIFIED_OFFLINE",
+  "terminal_on": "2026-09-10",
+  "package_commit": "6c0ee5d4d314c562794701c99ca45bfe79c6f930",
+  "submission_sha256": "8b71db87fb548db8010a63572122eb1a33eee23ab4d1818afa3028a3e2c14e92",
+  "pipelines": {
+    "openmath": {
+      "parent_pipeline_id": 67248517,
+      "child_pipeline_id": 67248809,
+      "workload_job_id": 434414383,
+      "parent_status": "failed",
+      "child_status": "failed",
+      "workload_job_status": "failed",
+      "workload_failure_reason": "script_failure",
+      "training_completed_steps": 64,
+      "trainer_version": 64,
+      "workload_trace_sha256": "1fc22d292e98f82f33b0964d43cef161c5662da8cec2a9c0a2319be2fc6c2552",
+      "workload_archive_sha256": "c1b93302f8f561269eec96feb905cde18a476bda61120b4ee8d39a15f4abdf81",
+      "job_metadata_sha256": "1a88c57febc05f2c507ce1f9399806bf6d63d9c8114f85add265797963ed1333"
+    },
+    "gsm8k": {
+      "parent_pipeline_id": 67248551,
+      "child_pipeline_id": 67248827,
+      "workload_job_id": 434414503,
+      "parent_status": "failed",
+      "child_status": "failed",
+      "workload_job_status": "failed",
+      "workload_failure_reason": "script_failure",
+      "training_completed_steps": 64,
+      "trainer_version": 64,
+      "workload_trace_sha256": "72868253b8c215c06dd542cfd9a4f151f523171de961f251513a4ef8ea6af6a2",
+      "workload_archive_sha256": "691e410ac464d5156cf002573b5cc0993982683f7445be78f3fc270df1eeb113",
+      "job_metadata_sha256": "eaa0ddd706d6b6207ebe8dc0938c613fef34b2739c82ab7f057547b84a152f76"
+    }
+  },
+  "shared_failure": {
+    "stage": "post_training_offline_qualification_summary",
+    "exception": "TypeError: 'JoinedOpportunityAssignment' object is not subscriptable",
+    "defective_expression": "row[\"start_weight_version\"]",
+    "repaired_expression": "row.start_version",
+    "packaging_authorization_evidence_passed": true,
+    "configuration_validation_passed": true,
+    "training_failed": false,
+    "scientific_data_recoverable": true
+  },
+  "offline_recovery": {
+    "script_sha256": "624c47fef4e4721d280af8cdd945c888b737fa7f7c14293a8c185730419a1db1",
+    "result_sha256": "5f944114be9b9265ba47108dbb8cd148509323b8d3fbdd2d565d893f16720a87",
+    "result_status": "BOTH_QUALIFIED",
+    "scientific_configuration_changed": false,
+    "training_rerun": false,
+    "recovery_delta": "JoinedOpportunityAssignment.start_version_field_access_only"
+  },
+  "qualification": {
+    "openmath": {
+      "joined_assignments": 847,
+      "projected_primary_assignments_lower_95": 6166.666666666667,
+      "projected_total_runtime_seconds_upper_95": 2681.9702416148493,
+      "qualified": true
+    },
+    "gsm8k": {
+      "joined_assignments": 1390,
+      "projected_primary_assignments_lower_95": 9833.333333333334,
+      "projected_total_runtime_seconds_upper_95": 2151.7085534763,
+      "qualified": true
+    }
+  },
+  "qualification_data_allowed_in_causal_estimator": false,
+  "causal_estimate_produced": false,
+  "scientific_acquisition_started": false,
+  "retry_performed": false,
+  "extension_performed": false,
+  "large_artifacts_tracked_in_git": false
+}
