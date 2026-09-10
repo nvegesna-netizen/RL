@@ -1,0 +1,71 @@
+{
+  "acquisition_started": false,
+  "automatic_extension": false,
+  "automatic_retry": false,
+  "jobs": {
+    "child_logs_after": {
+      "id": 433196571,
+      "status": "success"
+    },
+    "child_workload": {
+      "artifact_sha256": "8ec4dc4cd3fda34dfec0630a7e7d4f1ac8e72c8765f714c3aa372bd8b12fb807",
+      "failure_reason": "script_failure",
+      "id": 433196570,
+      "output_log_sha256": "3b9a7ccf76e19ee8ac9a121786661e14ee7ce149ff89f81c4ab2e7b6a840639f",
+      "slurm_job_id": 6005170,
+      "status": "failed"
+    },
+    "parent_generate": {
+      "id": 433195129,
+      "status": "success"
+    }
+  },
+  "manifest_sha256": "29a044ce2dc509748a3452e630222be46742c3aaece661c0493d469e0d710b99",
+  "observed_boundary": {
+    "authorization_evidence_passed": true,
+    "failed_assertion": "current == container",
+    "failed_embedded_program_line": 8,
+    "failure_stage": "pre_training_container_fingerprint_equality",
+    "hash_manifest_produced": false,
+    "megatron_import_reached": false,
+    "nemo_rl_import_reached": false,
+    "preflight_result_produced": false,
+    "safe_archive_check_passed": true,
+    "workload_exit_code": 1
+  },
+  "packaging_diagnosis": {
+    "archive_contains_dot_git": false,
+    "archive_contains_nested_megatron_lm_package": false,
+    "container_only_submodule_keys": {
+      "submodules/3rdparty/Automodel-workspace/Automodel": "24b47e856263d313b942f0ed666c63fff83306b4",
+      "submodules/3rdparty/Gym-workspace/Gym": "473f446f71ec7c1243eb1517fe2440a2b37fe68b",
+      "submodules/3rdparty/Megatron-Bridge-workspace/Megatron-Bridge": "573e088c9c6740082c39744e03dc5b009e730ed4"
+    },
+    "evidence": "The source archive omits .git, so tools/generate_fingerprint.py emits no submodule entries. The preserved successful v1 preflight log reports exactly the three container submodule keys as Current: missing while continuing under the image's mismatch policy.",
+    "earlier_successful_preflight_log_sha256": "cceef86d0f279c5868994e848c151d587af2e738359931b05ef10b49921ad627",
+    "root_cause": "The v2 package incorrectly required whole-object equality between a gitless source-archive fingerprint and the container build fingerprint. The local validator compiled this assertion but did not execute it against a representative container fingerprint.",
+    "repair_requirement": "A future separately authorized package must preserve exact pyproject.toml and uv.lock equality while supplying or otherwise authenticating the pinned Megatron-LM checkout needed for the repaired import path. Simply deleting the equality assertion is insufficient."
+  },
+  "pipelines": {
+    "child": {
+      "id": 67101296,
+      "status": "failed",
+      "url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67101296"
+    },
+    "parent": {
+      "finished_at": "2026-09-09T21:09:37.427-07:00",
+      "id": 67101094,
+      "status": "failed",
+      "url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67101094"
+    }
+  },
+  "qualification_started": false,
+  "retry_authorized": false,
+  "schema": "m4-llama-lifecycle-derived-v2-bootstrap-preflight-terminal-result-v1",
+  "scientific_interpretation": "This operational preflight failure supplies no evidence for or against lifecycle-derived M4 transport on Llama because it occurred before the repaired imports, qualification, training, or any registered measurement.",
+  "scientific_source_archive_sha256": "38b44e4dc97995463f381816f636a59499c3ed84415a3a384165ad412ba43047",
+  "scientific_source_commit": "bdbf2956f3ff46177958a29a64e3b33e4dc6515e",
+  "status": "FAILED_OPERATIONAL_FINGERPRINT_ASSERTION_NO_TRAINING_NO_SCIENTIFIC_RESULT",
+  "trainer_steps_started": 0,
+  "training_started": false
+}
