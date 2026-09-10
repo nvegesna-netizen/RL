@@ -238,10 +238,10 @@ def _build_manifest(
     spec: StructuredGenerationMaterializationSpec = DEFAULT_SPEC,
 ) -> dict[str, object]:
     rng = random.Random(spec.order_seed)
-    pair_order = list(range(PAIR_COUNT))
+    pair_order = list(range(spec.pair_count))
     rng.shuffle(pair_order)
     ordered: list[tuple[str, int]] = []
-    for start in range(0, PAIR_COUNT, 2):
+    for start in range(0, spec.pair_count, 2):
         cohort = [
             (source_id, pair_index)
             for pair_index in pair_order[start : start + 2]
