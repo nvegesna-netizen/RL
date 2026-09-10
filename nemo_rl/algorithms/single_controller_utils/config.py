@@ -210,10 +210,11 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
             if assay_design not in {
                 "ready_bias_v1",
                 "structured_generation_scheduler_crossover_v1",
+                "dapo_math_scheduler_crossover_v1",
             }:
                 raise ValueError(
-                    "scheduler assay requires the controlled ready-bias or "
-                    "structured-crossover fixed-pool design"
+                    "scheduler assay requires a controlled ready-bias, "
+                    "structured-crossover, or DAPO-crossover fixed-pool design"
                 )
             if not isinstance(
                 async_config.sampler,
@@ -238,11 +239,19 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
                 )
             if master_config.grpo.max_num_epochs != 1:
                 raise ValueError("scheduler assay requires grpo.max_num_epochs=1")
-            if master_config.grpo.num_generations_per_prompt != 2:
+            expected_generations = (
+                16 if assay_design == "dapo_math_scheduler_crossover_v1" else 2
+            )
+            if master_config.grpo.num_generations_per_prompt != expected_generations:
                 raise ValueError(
-                    "scheduler assay requires grpo.num_generations_per_prompt=2"
+                    "scheduler assay requires grpo.num_generations_per_prompt="
+                    f"{expected_generations} for {assay_design}"
                 )
-            expected_sequence_length = 512 if assay_design == "ready_bias_v1" else 768
+            expected_sequence_length = {
+                "ready_bias_v1": 512,
+                "structured_generation_scheduler_crossover_v1": 768,
+                "dapo_math_scheduler_crossover_v1": 6144,
+            }[assay_design]
             if (
                 master_config.policy["max_total_sequence_length"]
                 != expected_sequence_length
@@ -252,16 +261,22 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
                     f"{expected_sequence_length} for {assay_design}"
                 )
             generation = master_config.policy["generation"]
-            sampling_matches = (
-                generation["temperature"] == 1.0 and generation["top_p"] == 1.0
-                if assay_design == "ready_bias_v1"
-                else (
+            if assay_design == "ready_bias_v1":
+                sampling_matches = (
+                    generation["temperature"] == 1.0 and generation["top_p"] == 1.0
+                )
+            elif assay_design == "structured_generation_scheduler_crossover_v1":
+                sampling_matches = (
                     generation["temperature"],
                     generation["top_p"],
                     generation["top_k"],
-                )
-                == (0.7, 0.8, 20)
-            )
+                ) == (0.7, 0.8, 20)
+            else:
+                sampling_matches = (
+                    generation["temperature"],
+                    generation["top_p"],
+                    generation["top_k"],
+                ) == (1.0, 0.7, None)
             if not sampling_matches:
                 raise ValueError(
                     f"scheduler assay generation sampling does not match {assay_design}"

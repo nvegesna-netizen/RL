@@ -31,12 +31,14 @@ from nemo_rl.algorithms.async_utils.scheduler_trace import (
     SchedulerEventType,
     SchedulerTraceValidationError,
 )
+from nemo_rl.algorithms.async_utils.staleness_sampler import ReadyFirstSamplerConfig
 from nemo_rl.algorithms.grpo import GRPOConfig
 from nemo_rl.algorithms.single_controller import SingleControllerActor
 from nemo_rl.algorithms.single_controller_utils.config import (
     AsyncRLConfig,
     FixedPoolCollectionConfig,
     MasterConfig,
+    SchedulerAssayConfig,
     SchedulerTraceConfig,
     validate_single_controller_config,
 )
@@ -809,6 +811,45 @@ def test_fixed_pool_config_accepts_dapo_scheduler_crossover_design() -> None:
     )
 
     assert config.design_id == "dapo_math_scheduler_crossover_v1"
+
+
+def test_dapo_scheduler_crossover_passes_zero_update_assay_validation() -> None:
+    config = _fixed_pool_master_config(
+        policy={
+            "max_total_sequence_length": 6144,
+            "generation": {"temperature": 1.0, "top_p": 0.7, "top_k": None},
+        },
+        grpo=GRPOConfig.model_construct(
+            use_dynamic_sampling=False,
+            val_period=0,
+            val_at_start=False,
+            val_at_end=False,
+            stop_at_validation_metric=None,
+            num_prompts_per_step=4,
+            num_generations_per_prompt=16,
+            max_num_epochs=1,
+        ),
+    )
+    config.async_rl = AsyncRLConfig(
+        sampler=ReadyFirstSamplerConfig(max_staleness_versions=1),
+        min_groups_for_streaming_train=4,
+        max_inflight_prompts=4,
+        max_buffered_rollouts=8,
+        scheduler_trace=SchedulerTraceConfig(enabled=True, path="trace.jsonl"),
+        fixed_pool=FixedPoolCollectionConfig(
+            enabled=True,
+            manifest_path="pool.json",
+            design_id="dapo_math_scheduler_crossover_v1",
+        ),
+        scheduler_assay=SchedulerAssayConfig(
+            enabled=True,
+            plan_path="plan.json",
+            arm_id="ready_first",
+            order_seed=48001,
+        ),
+    )
+
+    validate_single_controller_config(config)
 
 
 def test_fixed_pool_config_rejects_unknown_design() -> None:
