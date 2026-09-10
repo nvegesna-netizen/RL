@@ -1,0 +1,18 @@
+{
+  "automatic_extension": false,
+  "automatic_retry": false,
+  "dependency_receipt_sha256": "6a9fc16e404d15f3f133c1fef042cfbd5cb53eb01563a4b8c794f97bd21e90c0",
+  "eos_submission_authorized": true,
+  "local_repair_result_sha256": "b35caa471cb59f9a31e89dccc06a2757af1061c6d96f619abe1ca2d86ae7de8b",
+  "operational_amendment_sha256": "e5ac184ea3fc1dadd1cc0cb9eb3471b991b316d2e096269e9963597074dc74b0",
+  "paired_qualification_authorized": false,
+  "required_launcher": "runllm.py --no_wait",
+  "schema": "m4-llama-lifecycle-derived-v3-bootstrap-no-training-preflight-authorization-v1",
+  "scientific_acquisition_authorized": false,
+  "scope": "exactly_one_credential_free_v3_bootstrap_no_training_eos_preflight",
+  "source_archive_sha256": "38b44e4dc97995463f381816f636a59499c3ed84415a3a384165ad412ba43047",
+  "source_commit": "bdbf2956f3ff46177958a29a64e3b33e4dc6515e",
+  "submission_attempt_limit": 1,
+  "training_authorized": false,
+  "user_authorization": "I authorize"
+}

@@ -1,0 +1,37 @@
+{
+  "additional_variables_sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+  "authorization_sha256": "2a13b36a8eabd1f873bfb6cf438d81c95f26e89b95bc89952c4f5c6f1ddd01aa",
+  "authorized_builder_sha256": "1afdc11adadbaab9e7ef596165aa5fe8ff4dab42a3e31e6c81c1145755f40ae7",
+  "authorized_validator_sha256": "dbbe38fb24e53aa883456e90907c6d6b7202ab91ae70c2a01c0a18018439ccd4",
+  "clean_room_validation": {
+    "authorized_delta_limited_to_name_and_authorization": true,
+    "bash_syntax_green": true,
+    "deterministic_rebuild_identical": true,
+    "embedded_payload_hashes_green": true,
+    "embedded_python_blocks": 4,
+    "jet_manifest_schema_green": true,
+    "megatron_import_path_green": true,
+    "megatron_members": 726,
+    "scientific_source_members": 2091,
+    "scientific_source_symlinks": 16,
+    "training_or_nested_submission_surface_present": false
+  },
+  "custom_config_sha256": "3d7fefba24bdc21786faf5937aeda44c735602fcca00dc8eb46a349ae6e27748",
+  "dependency_archive_sha256": "98d98920c0fea3d8ae1216a485dc9b5aa4fc966e469435ad61f2bae456de80d2",
+  "local_candidate_sha256": "35b2869daf4d736c7dc1d00e3cff472606add7068280f0665982dd22e1cbbc60",
+  "manifest_bytes": 15559251,
+  "manifest_name": "m4-llama-lifecycle-derived-v3-bootstrap-no-training-preflight",
+  "manifest_sha256": "1e7d0b610ff16b9ade6e07d9563664f2b9db86571f6abb0c28f55d9be68b0ff1",
+  "required_launcher": "runllm.py --no_wait",
+  "runllm_sha256": "30532cd638d8394fa0e651daf4a43ec9424cbaa0949cd59c323191177318e616",
+  "scheduler": {
+    "jet_retrier_enabled": false,
+    "nodes": 1,
+    "sbatch_time": "00:30:00",
+    "srun_time": "00:30:00",
+    "workload_time_limit_seconds": 900
+  },
+  "schema": "m4-llama-lifecycle-derived-v3-bootstrap-preflight-package-receipt-v1",
+  "scientific_source_archive_sha256": "38b44e4dc97995463f381816f636a59499c3ed84415a3a384165ad412ba43047",
+  "scientific_source_commit": "bdbf2956f3ff46177958a29a64e3b33e4dc6515e"
+}
