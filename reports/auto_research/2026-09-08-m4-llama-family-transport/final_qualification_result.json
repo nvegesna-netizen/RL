@@ -1,0 +1,116 @@
+{
+  "acquisition_may_proceed": false,
+  "automatic_extension": false,
+  "automatic_retry": false,
+  "cells": {
+    "llama3p2_1b_gsm8k": {
+      "artifacts": {
+        "lifecycle_jsonl_sha256": "7f04910e36c278072a91f640398ce66576c28c1c0b7e1edf801222a941de13e5",
+        "logs_after_zip_sha256": "03b5b91bbdccc4507da290c86b30c8d8b1f9d263c87bc36a14d25485917ea3e5",
+        "observer_duty_json_sha256": "d6ae9f8f186309c58ce8a3bc2ef49fa26724b74b9334c85206f1415d14f37483",
+        "opportunity_jsonl_sha256": "6e1bbe78310aa5ab9c8edb14199f620d628a0b549ce84967dc277709ddd9ce37",
+        "run_log_sha256": "569f30c9352b3e534ce9ad82eddb34bdb5442f086ff8de992c3d1343f672d7cb",
+        "summary_json_sha256": "de000d3c8b55509b63a5a5fa75d7a22a88e0416ddd32450cb1b2268d39352e9b",
+        "workload_zip_sha256": "d857e7ff7aa3b05684660a3dc64b5f34d92e4cd7ef8b48769d3a9fdfe8e1f16c"
+      },
+      "checks": {
+        "binary_reward_support": true,
+        "complete_steps": true,
+        "gpu_hour_projection": true,
+        "group_ids_unique": true,
+        "information_yield": true,
+        "neutral_zero_dose_instrument": true,
+        "observer_duty": false,
+        "wall_time_projection": true
+      },
+      "corrected_observer_duty": 0.010647595805923558,
+      "lifecycle": {
+        "assigned_group_count": 1092,
+        "bounded_shutdown_before_start_count": 3,
+        "bounded_shutdown_during_release_count": 0,
+        "completed_group_count": 1089,
+        "supported": true
+      },
+      "mean_corrected_observer_ms": 1.322536043159,
+      "one_percent_allowed_mean_ms": 1.242098279522,
+      "opportunity_group_count": 1089,
+      "pipeline": {
+        "child_id": 67068412,
+        "child_status": "failed",
+        "logs_after_job_id": 432903455,
+        "logs_after_status": "success",
+        "logs_before_job_id": 432903453,
+        "logs_before_status": "success",
+        "parent_id": 67068261,
+        "parent_status": "failed",
+        "slurm_job_id": 6003853,
+        "workload_job_id": 432903454,
+        "workload_status": "failed"
+      },
+      "projected_448_step_gpu_hours": 1.3265759355332885,
+      "projected_448_step_wall_hours": 0.6632879677666442,
+      "projected_primary_assignment_count": 13612.5,
+      "qualification_complete": false,
+      "trainer_steps": 32
+    },
+    "llama3p2_1b_openmath": {
+      "artifacts": {
+        "lifecycle_jsonl_sha256": "6a10243567970baee878b766b950079ffc2af79b33666d1649e1a4f6f3abcf49",
+        "logs_after_zip_sha256": "8b626f4ca4824fab4b732a836f7a053bf8b9e2f565c41c8e73b361c9db7a767d",
+        "observer_duty_json_sha256": "215c280a7d127b5f8c80ac32f4d679f62ef0169d7873844e72b74f223b8ee612",
+        "opportunity_jsonl_sha256": "14c3b829539fbe2f79cce00b3648630e83d72881e77a5f2bd4ac818be35063d1",
+        "run_log_sha256": "0fa229f8ac61c31b9028b45f78ee671450aad35cbece6ba74d98138f3ffe97f8",
+        "summary_json_sha256": "f431a4f24867fd5d21048bd02a41411d8987e8dcf69378d752ed260367ae6b3e",
+        "workload_zip_sha256": "6265a96700a3fd0f3d26b432d41c2ec3202031570ebff35bd02c7f3feea5876e"
+      },
+      "checks": {
+        "binary_reward_support": true,
+        "complete_steps": true,
+        "gpu_hour_projection": true,
+        "group_ids_unique": true,
+        "information_yield": true,
+        "neutral_zero_dose_instrument": true,
+        "observer_duty": true,
+        "wall_time_projection": true
+      },
+      "corrected_observer_duty": 0.005953361650088822,
+      "lifecycle": {
+        "assigned_group_count": 772,
+        "bounded_shutdown_before_start_count": 16,
+        "bounded_shutdown_during_release_count": 0,
+        "completed_group_count": 756,
+        "supported": true
+      },
+      "opportunity_group_count": 756,
+      "pipeline": {
+        "child_id": 67068674,
+        "child_status": "success",
+        "logs_after_job_id": 432905984,
+        "logs_after_status": "success",
+        "logs_before_job_id": 432905982,
+        "logs_before_status": "success",
+        "parent_id": 67068355,
+        "parent_status": "success",
+        "slurm_job_id": 6003856,
+        "workload_job_id": 432905983,
+        "workload_status": "success"
+      },
+      "projected_448_step_gpu_hours": 1.6693414987064294,
+      "projected_448_step_wall_hours": 0.8346707493532147,
+      "projected_primary_assignment_count": 9450.0,
+      "qualification_complete": true,
+      "trainer_steps": 32
+    }
+  },
+  "failure_classification": "genuine_registered_observer_duty_gate_miss",
+  "paired_gate_passed_cells": 1,
+  "paired_gate_required_cells": 2,
+  "qualification_observations_enter_estimators": false,
+  "schema": "m4-llama-family-transport-final-paired-neutral-qualification-terminal-result-v1",
+  "scientific_interpretation": "OpenMath passed all registered qualification gates. GSM8K completed 32 steps and passed lifecycle, reward, information, and resource gates but exceeded the unchanged 0.01 observer-duty ceiling at 0.0106475958. The paired prerequisite failed; under the prospective final stop rule this Llama branch is permanently closed without acquisition. Qualification data provide no causal estimate.",
+  "source_archive_sha256": "e7df48cae19fb96dc102a494a3e9eaacd311286a76c0ecded1087bb21bea5c44",
+  "source_commit": "d73b535db1eef0e5757fbf2950480903f6f2da62",
+  "status": "TERMINAL_CLOSED_QUALIFICATION_MISS_NO_ACQUISITION",
+  "stop_rule_consequence": "no_retry_no_threshold_relaxation_no_further_repair_no_single_cell_substitution_no_acquisition",
+  "terminal_at": "2026-09-09 17:22 PDT"
+}

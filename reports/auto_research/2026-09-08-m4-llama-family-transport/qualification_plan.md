@@ -1,6 +1,10 @@
 # Llama 3.2 1B paired neutral qualification plan
 
-Status: `AUTHORIZED_PAIRED_QUALIFICATION_DESIGN_PENDING_PACKAGE_FREEZE`.
+Status: `TERMINAL_CLOSED_ONE_OF_TWO_QUALIFICATIONS_PASSING`.
+
+The final execution produced one passing cell (OpenMath) and one registered
+observer-duty miss (GSM8K). The paired prerequisite did not pass, so neither
+448-step acquisition may proceed.
 
 The next gate consists of exactly two neutral 32-step qualifications: one for
 OpenMathInstruct-2 and one for GSM8K. Both packages must be frozen before either

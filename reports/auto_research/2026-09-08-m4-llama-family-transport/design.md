@@ -1,6 +1,12 @@
 # Llama 3.2 1B M4 family-transport design
 
-Status: `FROZEN_LOCAL_PROTOCOL_PENDING_NO_TRAINING_PREFLIGHT`.
+Status: `TERMINAL_CLOSED_QUALIFICATION_MISS_NO_ACQUISITION`.
+
+The final paired neutral qualification closed at one of two passing cells.
+OpenMath passed all registered gates; GSM8K completed 32 steps but its corrected
+observer duty was `0.0106475958`, above the unchanged `0.01` ceiling. Under the
+prospectively frozen final-repair stop rule, the Llama extension is closed with
+no retry or acquisition. See `final_qualification_result.md`.
 
 ## Scientific question
 

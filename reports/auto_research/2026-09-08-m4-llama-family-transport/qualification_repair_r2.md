@@ -1,6 +1,11 @@
 # Llama family-transport final observer repair
 
-Status: `FROZEN_LOCAL_FINAL_REPAIR_PENDING_IMPLEMENTATION`.
+Status: `TERMINAL_FINAL_QUALIFICATION_MISS_BRANCH_CLOSED`.
+
+The no-training performance preflight passed, but the final GSM8K
+qualification measured corrected observer duty `0.0106475958` against the
+unchanged `0.01` ceiling. The stop rule below is therefore binding: no further
+repair, requalification, or acquisition is permitted on this branch.
 
 ## Trigger
 
