@@ -33,6 +33,7 @@ from transformers.tokenization_utils_base import PreTrainedTokenizerBase
 from nemo_rl.algorithms.async_utils.replay_buffer import TQReplayBuffer
 from nemo_rl.algorithms.async_utils.scheduler_assay import (
     SchedulerAssayArm,
+    SchedulerAssayPlan,
 )
 from nemo_rl.algorithms.async_utils.structured_scheduler_crossover import (
     DapoSchedulerCrossoverPlan,
@@ -468,29 +469,39 @@ def setup_single_controller(
                 != assay_plan.hf_config_override_max_position_embeddings
             ):
                 raise ValueError("DAPO crossover runtime does not match frozen plan")
-            if isinstance(assay_plan, SchedulerPressureResponsePlan) and (
-                generation_config.get("top_k") != assay_plan.top_k
-                or generation_config.get("repetition_penalty")
-                != assay_plan.repetition_penalty
-                or generation_config.get("max_new_tokens") != assay_plan.max_new_tokens
-                or master_config.async_rl.max_inflight_prompts
-                != assay_plan.max_inflight_prompts
-                or master_config.async_rl.max_buffered_rollouts
-                != assay_arm.max_buffered_rollouts
-                or (
-                    getattr(
-                        master_config.async_rl.sampler, "max_staleness_versions", None
+            if isinstance(assay_plan, SchedulerPressureResponsePlan):
+                if not isinstance(assay_arm, SchedulerPressureResponseArm):
+                    raise ValueError(
+                        "scheduler pressure-response arm/plan type mismatch"
                     )
-                    if assay_arm.sampler == "ready_first"
-                    else getattr(
-                        master_config.async_rl.sampler, "max_lookahead_versions", None
+                if (
+                    generation_config.get("top_k") != assay_plan.top_k
+                    or generation_config.get("repetition_penalty")
+                    != assay_plan.repetition_penalty
+                    or generation_config.get("max_new_tokens")
+                    != assay_plan.max_new_tokens
+                    or master_config.async_rl.max_inflight_prompts
+                    != assay_plan.max_inflight_prompts
+                    or master_config.async_rl.max_buffered_rollouts
+                    != assay_arm.max_buffered_rollouts
+                    or (
+                        getattr(
+                            master_config.async_rl.sampler,
+                            "max_staleness_versions",
+                            None,
+                        )
+                        if assay_arm.sampler == "ready_first"
+                        else getattr(
+                            master_config.async_rl.sampler,
+                            "max_lookahead_versions",
+                            None,
+                        )
                     )
-                )
-                != assay_arm.sampler_lookahead_versions
-            ):
-                raise ValueError(
-                    "scheduler pressure-response runtime does not match frozen arm"
-                )
+                    != assay_arm.sampler_lookahead_versions
+                ):
+                    raise ValueError(
+                        "scheduler pressure-response runtime does not match frozen arm"
+                    )
 
     # TODO: add validate dataset wiring.
     use_nemo_gym = _should_use_nemo_gym(cast(GrpoMasterConfig, master_config))
@@ -623,6 +634,19 @@ def setup_single_controller(
         pad_value_dict={"token_ids": pad_id, "input_ids": pad_id},
         require_routed_experts=router_replay_enabled(policy_config),
     )
+    delay_arm = (
+        assay_arm
+        if isinstance(assay_arm, (SchedulerAssayArm, SchedulerPressureResponseArm))
+        else None
+    )
+    if isinstance(assay_arm, SchedulerPressureResponseArm):
+        delay_seconds = assay_arm.release_delay_seconds
+    elif isinstance(assay_arm, SchedulerAssayArm):
+        if not isinstance(assay_plan, SchedulerAssayPlan):
+            raise ValueError("scheduler assay arm/plan type mismatch")
+        delay_seconds = assay_plan.release_delay_seconds
+    else:
+        delay_seconds = None
     rollout_manager = RolloutManager(
         tokenizer=tokenizer,
         task_to_env=env_handles,
@@ -634,18 +658,8 @@ def setup_single_controller(
         use_nemo_gym=use_nemo_gym,
         mask_env_flagged_samples=should_mask_flagged_samples(master_config.env),
         tq_buffer=tq_buffer,
-        scheduler_assay_arm=(
-            assay_arm
-            if isinstance(assay_arm, (SchedulerAssayArm, SchedulerPressureResponseArm))
-            else None
-        ),
-        scheduler_assay_delay_seconds=(
-            assay_arm.release_delay_seconds
-            if isinstance(assay_arm, SchedulerPressureResponseArm)
-            else assay_plan.release_delay_seconds
-            if assay_plan is not None and isinstance(assay_arm, SchedulerAssayArm)
-            else None
-        ),
+        scheduler_assay_arm=delay_arm,
+        scheduler_assay_delay_seconds=delay_seconds,
     )
 
     return SingleControllerActorArgs(

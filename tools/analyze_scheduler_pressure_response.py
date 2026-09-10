@@ -106,30 +106,33 @@ def _load_design(path: Path) -> tuple[str, dict[str, str]]:
         "selection design labels mismatch",
     )
     items = value.get("items")
-    _require(
-        isinstance(items, list) and len(items) == EXPECTED_GROUPS,
-        "design size mismatch",
-    )
+    if not isinstance(items, list) or len(items) != EXPECTED_GROUPS:
+        raise SchedulerPressureResponseAnalysisError("design size mismatch")
     strata: dict[str, str] = {}
     by_cohort: dict[int, list[str]] = defaultdict(list)
     pairs: dict[str, list[str]] = defaultdict(list)
     for ordinal, item in enumerate(items):
-        _require(
-            isinstance(item, dict)
-            and item.get("source_pool_ordinal") == ordinal
-            and item.get("stratum") in {"short", "long"}
-            and item.get("task_name") == f"structured_{item.get('stratum')}",
-            "selection design item mismatch",
-        )
+        if not isinstance(item, dict):
+            raise SchedulerPressureResponseAnalysisError(
+                "selection design item mismatch"
+            )
+        stratum = item.get("stratum")
+        if (
+            item.get("source_pool_ordinal") != ordinal
+            or not isinstance(stratum, str)
+            or stratum not in {"short", "long"}
+            or item.get("task_name") != f"structured_{stratum}"
+        ):
+            raise SchedulerPressureResponseAnalysisError(
+                "selection design item mismatch"
+            )
         source_id = item.get("source_prompt_id")
         pair_id = item.get("pair_id")
-        _require(
-            isinstance(source_id, str) and isinstance(pair_id, str),
-            "design identity missing",
-        )
-        strata[source_id] = str(item["stratum"])
-        by_cohort[ordinal // GROUPS_PER_SELECTION].append(str(item["stratum"]))
-        pairs[pair_id].append(str(item["stratum"]))
+        if not isinstance(source_id, str) or not isinstance(pair_id, str):
+            raise SchedulerPressureResponseAnalysisError("design identity missing")
+        strata[source_id] = stratum
+        by_cohort[ordinal // GROUPS_PER_SELECTION].append(stratum)
+        pairs[pair_id].append(stratum)
     _require(
         len(strata) == EXPECTED_GROUPS
         and len(by_cohort) == 8

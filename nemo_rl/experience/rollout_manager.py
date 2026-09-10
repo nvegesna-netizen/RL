@@ -62,8 +62,11 @@ TokenizerType = PreTrainedTokenizerBase
 class SchedulerDelayArm(Protocol):
     """Structural fields required to impose a scheduler-assay release delay."""
 
-    arm_id: str
-    delayed_task: str
+    @property
+    def arm_id(self) -> str: ...
+
+    @property
+    def delayed_task(self) -> str: ...
 
 
 @dataclass(frozen=True, slots=True)
