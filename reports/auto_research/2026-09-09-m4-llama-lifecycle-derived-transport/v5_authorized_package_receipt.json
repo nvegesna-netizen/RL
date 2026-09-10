@@ -1,0 +1,28 @@
+{
+  "authorization_sha256": "f3be76dffcb0dde43a1d8757d4288ee0ae3a89557a63a50093d882e09cc0f7e0",
+  "clean_room_validation": {
+    "embedded_python_blocks_compiled_each": 4,
+    "exact_four_run_authority_checked": true,
+    "isolated_analyzer_tests_passed": 4,
+    "jet_manifest_schema_validated": true,
+    "payload_order_and_hashes_matched": true,
+    "rebuild_byte_identical": true,
+    "shell_syntax_validated": true,
+    "source_archive_safe_extraction_passed": true,
+    "source_archive_symlink_count": 16
+  },
+  "large_artifacts_outside_git": {
+    "gsm8k_r1_manifest": {"bytes": 15605195, "path": "session/20260909_m4_llama_lifecycle_derived_transport/m4-llama-v5-gsm8k-r1-acquisition-authorized.yaml", "sha256": "053ad873917964dfc4b26cfe94bcce15143c21c2b99616c421dc4a1601a2abb4"},
+    "gsm8k_r2_manifest": {"bytes": 15605195, "path": "session/20260909_m4_llama_lifecycle_derived_transport/m4-llama-v5-gsm8k-r2-acquisition-authorized.yaml", "sha256": "890c9aca179d474a5b5e73885bb3ac23bc18609da17e09675f2e77020b07ad1b"},
+    "openmath_r1_manifest": {"bytes": 15605234, "path": "session/20260909_m4_llama_lifecycle_derived_transport/m4-llama-v5-openmath-r1-acquisition-authorized.yaml", "sha256": "585c0cb92a2bb4bbccd085e90353207bc7e649e05f75e2ae72bfaa2d03dbbddf"},
+    "openmath_r2_manifest": {"bytes": 15605234, "path": "session/20260909_m4_llama_lifecycle_derived_transport/m4-llama-v5-openmath-r2-acquisition-authorized.yaml", "sha256": "146835bf73ac8a1fdecd6f6ea82421e3dc3c39ea8a1bdbf4c75acec52c0ef612"},
+    "source_archive": {"bytes": 9610356, "member_count": 2150, "path": "session/20260909_m4_llama_lifecycle_derived_transport/m4-llama-v5-source-b88de7cd0.tar.gz", "sha256": "8048bb2f22f668b19ccece3af40a788c5565b14d899f217926935d32dc76784d"}
+  },
+  "launch_attempted": false,
+  "manifest_count": 4,
+  "protocol_sha256": "56a3311f78a0ac12cb9dc7ecdeee1a6fc0c5ace889799ebfaba1faaa0e610521",
+  "required_launcher": "runllm.py --no_wait",
+  "schema": "m4-llama-v5-authorized-four-acquisition-package-receipt-v1",
+  "source_commit": "b88de7cd0c5b9372d2b06181584718cbb8999b4e",
+  "status": "FOUR_AUTHORIZED_PACKAGES_CLEAN_ROOM_GREEN_NOT_SUBMITTED"
+}
