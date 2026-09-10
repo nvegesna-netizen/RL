@@ -1,0 +1,14 @@
+{
+  "acquisition_authorized": false,
+  "automatic_extension": false,
+  "automatic_retry": false,
+  "branch": "autoresearch/2026-09-10-m4-llama-lifecycle-derived-transport-v4/prospective-qualification-design",
+  "eos_launch_authorized": false,
+  "local_package_build_authorized": true,
+  "qualification_launch_authorized": false,
+  "schema": "m4-llama-lifecycle-derived-v4-local-package-authorization-v1",
+  "scope": "build_and_clean_room_validate_two_64_step_v4_neutral_qualification_local_candidates",
+  "scientific_acquisition_authorized": false,
+  "user_authorization": "do the next step",
+  "v4_contract_sha256": "b011c846a8e876e9ea37f143d26089c7c498058a1f3e3c2461e6b317ff368fec"
+}

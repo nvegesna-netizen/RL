@@ -26,6 +26,8 @@
     "gsm8k": {
       "acquisition_assignment_domain_reserved": "m4-llama3p2-1b-gsm8k-lifecycle-derived-transport-v2",
       "acquisition_assignment_seed_reserved": 20261016,
+      "qualification_config_path": "examples/configs/grpo_math_1B_megatron_single_controller_m4_llama3p2_1b_gsm8k_lifecycle_derived_neutral_qualification_v4.yaml",
+      "qualification_config_sha256": "b91dddf60cf86b5a64baa0f2e194bb51088416620fe1b1177aa945b7b1f4f7da",
       "qualification_assignment_domain": "m4-llama3p2-1b-gsm8k-lifecycle-derived-neutral-v2",
       "qualification_assignment_seed": 20261014,
       "qualification_projection_bootstrap_seed": 20261018,
@@ -34,6 +36,8 @@
     "openmath": {
       "acquisition_assignment_domain_reserved": "m4-llama3p2-1b-openmath-lifecycle-derived-transport-v2",
       "acquisition_assignment_seed_reserved": 20261015,
+      "qualification_config_path": "examples/configs/grpo_math_1B_megatron_single_controller_m4_llama3p2_1b_openmath_lifecycle_derived_neutral_qualification_v4.yaml",
+      "qualification_config_sha256": "7e501da4a653b7c074f169c638fd7c02cc71bbd7f9f27e870c6d0a331b36054d",
       "qualification_assignment_domain": "m4-llama3p2-1b-openmath-lifecycle-derived-neutral-v2",
       "qualification_assignment_seed": 20261013,
       "qualification_projection_bootstrap_seed": 20261017,

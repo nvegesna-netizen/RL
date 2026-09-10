@@ -13,7 +13,7 @@
   "files": {
     "contract": {
       "path": "reports/auto_research/2026-09-09-m4-llama-lifecycle-derived-transport/v4_prospective_qualification_contract.json",
-      "sha256": "6f43e8b8ff0dd8cb8cbd27dff5673ca416b9e134e527eb180c0410b50bc4928b"
+      "sha256": "b011c846a8e876e9ea37f143d26089c7c498058a1f3e3c2461e6b317ff368fec"
     },
     "design": {
       "path": "reports/auto_research/2026-09-09-m4-llama-lifecycle-derived-transport/v4_prospective_qualification_design.md",
