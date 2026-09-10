@@ -1,0 +1,42 @@
+{
+  "additional_variables_sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+  "authorization_sha256": "4fb94ffa926ad6b12a60fb0b07b635df6920edf53e883ca71ce48277ac622f81",
+  "builder_sha256": "0f548f9bdc60159f3349ccfd7ae1ba30e5234f5c4506acfec75a1fe9383b14b3",
+  "clean_room_validation": {
+    "bash_syntax_green": true,
+    "deterministic_rebuild_byte_identical": true,
+    "embedded_python_blocks_each": 6,
+    "isolated_support_gate_tests_passed": 7,
+    "jet_manifest_schema_green": true,
+    "megatron_members": 726,
+    "missing_megatron_negative_control_rejected": true,
+    "normalized_source_fingerprint_green": true,
+    "payload_order_and_hashes_green": true,
+    "source_members": 2132,
+    "source_symlinks": 16
+  },
+  "contract_sha256": "b011c846a8e876e9ea37f143d26089c7c498058a1f3e3c2461e6b317ff368fec",
+  "custom_config_sha256": "2dd84b15489d50c9c10ceeeb77187da884b94a508977db23d8805ed49701a316",
+  "gsm8k_manifest": {
+    "bytes": 15605253,
+    "sha256": "950ffe8504fad1c8c443ad132fc504edd7dc0f00cff4d7d2dbcfa2da36e05ea6"
+  },
+  "launch_attempted": false,
+  "manifest_count": 2,
+  "megatron_dependency_archive_sha256": "98d98920c0fea3d8ae1216a485dc9b5aa4fc966e469435ad61f2bae456de80d2",
+  "openmath_manifest": {
+    "bytes": 15605341,
+    "sha256": "d2ec34ddba8725ec26971f11af5352d9f00a5351f6f0b51e934d58fea092c77e"
+  },
+  "runllm_sha256": "30532cd638d8394fa0e651daf4a43ec9424cbaa0949cd59c323191177318e616",
+  "schema": "m4-llama-lifecycle-derived-v4-paired-neutral-qualification-package-receipt-v1",
+  "scientific_acquisition_authorized": false,
+  "scientific_source_archive": {
+    "bytes": 9596111,
+    "sha256": "1ec8b4cf9ca3f14f088038bfcf5851d8bd85741f0b55915227c311789b863576"
+  },
+  "scientific_source_commit": "5804fe81d706f8ad9a3db4d2f41782a742710c51",
+  "validated_at_utc": "2026-09-10T08:02:29Z",
+  "validator_sha256": "acc5ea0a2764691693ba53402b3b48a8bf7343ef809c39d928a477dacaf85140",
+  "v3_bootstrap_preflight_terminal_result_sha256": "f4fc789bb6c7cc0d61ddf4677b32f4749261f21e465d940c167cc168bce1667c"
+}
