@@ -12,6 +12,7 @@ from statistics import NormalDist
 from typing import Any
 
 from tools.opportunity_ledger_join import JoinedOpportunityAssignment
+from tools.opportunity_loss_adjusted_inference import _bootstrap_shifts, _endpoint
 
 
 class M4LlamaV5AnalysisError(ValueError):
@@ -68,6 +69,73 @@ def groups_by_start_version(
 ) -> Counter[int]:
     """Count joined groups using the dataclass API, not mapping subscripting."""
     return Counter(row.start_version for row in rows)
+
+
+def infer_replicate(
+    rows: Sequence[JoinedOpportunityAssignment],
+    *,
+    replicate: str,
+    bootstrap_seed: int,
+    bootstrap_draws: int = 20_000,
+) -> ReplicateInference:
+    """Analyze one run independently under the accepted adjusted estimator."""
+    versions = tuple(range(8, 408))
+    if (
+        replicate not in {"r1", "r2"}
+        or not rows
+        or len({row.assignment_id for row in rows}) != len(rows)
+        or any(row.start_version not in versions for row in rows)
+    ):
+        raise M4LlamaV5AnalysisError("invalid replicate rows or identity")
+    opportunity_scale = math.sqrt(
+        math.fsum(row.opportunity**2 for row in rows) / len(rows)
+    )
+    if not math.isfinite(opportunity_scale) or opportunity_scale <= 0.0:
+        raise M4LlamaV5AnalysisError("opportunity scale must be positive")
+    works = {
+        endpoint: _endpoint(
+            rows,
+            endpoint=endpoint,
+            control_arm="control",
+            treatment_arm="d5",
+            versions=versions,
+            folds=8,
+            hac_lag=4,
+            opportunity_scale=opportunity_scale,
+        )
+        for endpoint in ("lower", "upper")
+    }
+    endpoints = {
+        name: ReplicateEndpoint(
+            work.estimate,
+            work.hac_standard_error,
+            tuple(
+                _bootstrap_shifts(
+                    rows,
+                    work.scores,
+                    versions=versions,
+                    block_size=8,
+                    draws=bootstrap_draws,
+                    seed=bootstrap_seed,
+                )
+            ),
+        )
+        for name, work in works.items()
+    }
+
+    def missing(arm: str) -> float:
+        arm_rows = [row for row in rows if row.arm == arm]
+        if not arm_rows:
+            raise M4LlamaV5AnalysisError(f"replicate lacks arm {arm}")
+        return sum(row.delivered is None for row in arm_rows) / len(arm_rows)
+
+    return ReplicateInference(
+        replicate=replicate,
+        lower=endpoints["lower"],
+        upper=endpoints["upper"],
+        control_missing_fraction=missing("control"),
+        treatment_missing_fraction=missing("d5"),
+    )
 
 
 def _type7(values: Sequence[float], probability: float) -> float:
