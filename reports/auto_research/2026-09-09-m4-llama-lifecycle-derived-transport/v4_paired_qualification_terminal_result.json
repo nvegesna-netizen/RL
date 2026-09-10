@@ -1,0 +1,81 @@
+{
+  "acquisition_authorized": false,
+  "acquisition_started": false,
+  "automatic_extension": false,
+  "automatic_retry": false,
+  "cells": {
+    "gsm8k": {
+      "artifact_zip_sha256": {
+        "logs_after": "d9352fb029f8afaf53c0c638f0cad2925ff079f595976c82ab300e65217975c0",
+        "workload": "f26475cc5cbe1dd55582107a054310a9b8c316ab683bbf7c0c88f2a27a5fa4af"
+      },
+      "child_pipeline_id": 67136481,
+      "corrected_lifecycle_duty": 0.0022173859590093204,
+      "failed_gate_count": 0,
+      "minimum_joined_groups_in_any_evaluable_version": 10,
+      "offline_frozen_gate_recovery": "QUALIFICATION_SUPPORT_PASSED",
+      "opportunity_group_count": 1864,
+      "parent_pipeline_id": 67136252,
+      "pipeline_terminal_status": "failed",
+      "projected_448_step_gpu_hours": 1.569144960671219,
+      "projected_448_step_wall_hours": 0.7845724803356094,
+      "projected_primary_assignments": 12275.0,
+      "projected_primary_assignments_lower_95": 10625.0,
+      "qualification_complete": true,
+      "selected_artifacts": {
+        "derivation_sha256": "febf5f71363b9e70dfd0d7f6577c40c6b398e94f23aad1d7d4f6cdb7e8c0aff1",
+        "duty_sha256": "fb44705a3d214c897e1d66fcd304da7af86057d8afb8d490f3ce3f8f211c518f",
+        "lifecycle_sha256": "81ca5052368db88664a9a1452698b0950afe5a00aa3456a26c220f1113a98645",
+        "opportunity_sha256": "3bc8c07b397cd546e8cadfe794fa3e98ae46af30a028983367c5723dcd1df70d",
+        "run_log_sha256": "0d87b9d43ec51c7c0e331d23f24704ee7b9ff9e14b12a7c87691823d7f73ca55"
+      },
+      "strict_join_assignment_count": 1473,
+      "trainer_steps": 64,
+      "workload_and_logs_after_selected_bytes_identical": true
+    },
+    "openmath": {
+      "artifact_zip_sha256": {
+        "logs_after": "4226fcc35695a20d90d7c280c9ed0b0f4667dfd20a765899501202ee8ecc1b0b",
+        "workload": "d6b1bb8904c52cbc444fcab5fa802f595469acf742db48d93d5f687d6c0f47a1"
+      },
+      "child_pipeline_id": 67136423,
+      "corrected_lifecycle_duty": 0.0008355864664297189,
+      "failed_gate": "projected_primary_assignments_lower_95",
+      "failed_gate_count": 1,
+      "minimum_joined_groups_in_any_evaluable_version": 5,
+      "offline_frozen_gate_recovery": "INSUFFICIENT_SUPPORT",
+      "opportunity_group_count": 1073,
+      "parent_pipeline_id": 67136217,
+      "pipeline_terminal_status": "failed",
+      "projected_448_step_gpu_hours": 2.231346679014583,
+      "projected_448_step_wall_hours": 1.1156733395072915,
+      "projected_primary_assignments": 6466.666666666667,
+      "projected_primary_assignments_lower_95": 6241.666666666667,
+      "qualification_complete": false,
+      "selected_artifacts": {
+        "derivation_sha256": "97e76ecc972ede673b39567a07a1be3b4cee305d700ab680611a61106de75003",
+        "duty_sha256": "9ce1b682ebb683d99c17ba704073157dfecb58150a073bb6695c8640011c1f96",
+        "lifecycle_sha256": "f814d188cb2a3416fabe164c9f8976de6dffdebe00caeeb06052c75b647e2837",
+        "opportunity_sha256": "5c2d445addf5b816dad305fd8e1df86d508ff365f58f57ec32fa9daefc3e3e3b",
+        "run_log_sha256": "7dbd0e847030c035e72f2f5f7b44f17ddc73fbe968fedf20fbc1f57d6855d922"
+      },
+      "strict_join_assignment_count": 776,
+      "trainer_steps": 64,
+      "workload_and_logs_after_selected_bytes_identical": true
+    }
+  },
+  "contract_sha256": "b011c846a8e876e9ea37f143d26089c7c498058a1f3e3c2461e6b317ff368fec",
+  "failure_boundary": {
+    "both_training_runs_completed_64_steps": true,
+    "cause": "post_run_analyzer_indexed_JoinedOpportunityAssignment_dataclass_as_mapping",
+    "exception": "TypeError: 'JoinedOpportunityAssignment' object is not subscriptable",
+    "pipeline_failure_is_not_itself_a_registered_qualification_failure": true,
+    "registered_gates_recovered_from_preserved_artifacts": true,
+    "rerun_required_to_classify_qualification": false
+  },
+  "pair_qualification_complete": false,
+  "qualification_data_allowed_in_causal_estimator": false,
+  "schema": "m4-llama-lifecycle-derived-v4-paired-neutral-qualification-terminal-result-v1",
+  "status": "TERMINAL_NOT_QUALIFIED_NO_ACQUISITION",
+  "submission_receipt_commit": "6dba91751ffb1bfff2cb69f9e89a83589626c621"
+}
