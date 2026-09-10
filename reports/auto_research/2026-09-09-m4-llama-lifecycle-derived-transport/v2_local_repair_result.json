@@ -1,0 +1,37 @@
+{
+  "candidate_manifests": {
+    "gsm8k_sha256": "de4191e8b35e5adb6e301fb1d618d0d50907ddc10dca35b0640732b59df7ab99",
+    "openmath_sha256": "2aafa0b3ba6b94e74a2a7dc5a7c4480652e0e477b491e46871e85d79b194b8cb"
+  },
+  "clean_room_validation": {
+    "archive_members": 2091,
+    "archive_symlinks": 16,
+    "embedded_python_blocks_each": 5,
+    "full_package_validator_green": true,
+    "jet_manifest_schema_green": true,
+    "negative_controls_rejected": 2
+  },
+  "eos_launch_authorized": false,
+  "eos_launch_performed": false,
+  "local_package": {
+    "builder_sha256_after": "dfd2445c477d524fb443ff69857a63a55a8fa7bf7cf746bddf4bc7d9727bcd39",
+    "builder_sha256_before": "a40f6d249670b0b718f5225d81a78e0d4a6db20903ba3ee99a582965d6e10a04",
+    "repair_authorization_sha256": "826cfc72099eb8df2a14eabb13ee990757052a55a762115b6d44e1bcffedeba1",
+    "validator_sha256_after": "ebb6f5552bee673faff713963a2fd924360652fb80216fcb8b227b19aaabeec8"
+  },
+  "operational_amendment_sha256": "b9b0e07297bf0f676215b78f405451743f3ee9d9948e7a3b632e0a9f8dbd52b2",
+  "paired_qualification_authorized": false,
+  "repair": {
+    "bootstrap_import_order": [
+      "import nemo_rl",
+      "import megatron"
+    ],
+    "exact_failure_regression_gate_added": true,
+    "scientific_runtime_code_delta_count": 0
+  },
+  "schema": "m4-llama-lifecycle-derived-transport-v2-local-repair-result-v1",
+  "scientific_source_archive_sha256": "38b44e4dc97995463f381816f636a59499c3ed84415a3a384165ad412ba43047",
+  "scientific_source_commit": "bdbf2956f3ff46177958a29a64e3b33e4dc6515e",
+  "status": "LOCAL_REPAIR_GREEN_PENDING_SEPARATELY_AUTHORIZED_NO_TRAINING_EOS_PREFLIGHT",
+  "validated_at": "2026-09-09T20:06:32-07:00"
+}

@@ -1,0 +1,53 @@
+{
+  "authorization": {
+    "acquisition_authorized": false,
+    "eos_launch_authorized_by_this_amendment": false,
+    "local_package_repair_authorized": true,
+    "paired_qualification_authorized": false,
+    "user_authorization": "please make the repair"
+  },
+  "failure_evidence": {
+    "error": "ModuleNotFoundError: No module named 'megatron'",
+    "failure_stage": "pre_training_fingerprint_and_megatron_import_check",
+    "gsm8k_trace_sha256": "6a973f0a88af5df63424d9ff78a9b21dd4423f01c17b9a27689e5318ca0e7a3e",
+    "openmath_trace_sha256": "86ac7f01b63e7ba1e157536b000b937efa61396f819c4dde50c6ed05a45c6c54",
+    "qualification_measurement_observed": false,
+    "trainer_steps_started": 0
+  },
+  "immutable_scientific_contract": {
+    "acquisition_design_changed": false,
+    "analysis_changed": false,
+    "configuration_changed": false,
+    "estimand_changed": false,
+    "instrument_changed": false,
+    "model_or_workload_changed": false,
+    "seeds_or_assignment_domains_changed": false,
+    "threshold_changed": false
+  },
+  "operational_delta": {
+    "allowed": [
+      "Import nemo_rl immediately before importing megatron in the embedded package bootstrap check.",
+      "Require and test that exact import order during clean-room package validation.",
+      "Bind regenerated package manifests to this amendment and distinguish their names from v1."
+    ],
+    "forbidden": [
+      "Any scientific runtime-code change",
+      "Any configuration, gate, threshold, seed, domain, model, workload, or estimand change",
+      "Any acquisition before two fresh paired qualifications pass",
+      "Any EOS submission without separate explicit authorization"
+    ],
+    "original_builder_sha256": "a40f6d249670b0b718f5225d81a78e0d4a6db20903ba3ee99a582965d6e10a04",
+    "required_import_order": [
+      "import nemo_rl",
+      "import megatron"
+    ]
+  },
+  "predecessor": {
+    "branch": "autoresearch/2026-09-09-m4-llama-lifecycle-derived-transport/preregistration",
+    "terminal_commit": "99540670e4429c2c7ec3347cb555b4c51640cec3",
+    "terminal_result": "qualification_terminal_result.json",
+    "v1_remains_terminal": true
+  },
+  "schema": "m4-llama-lifecycle-derived-transport-v2-operational-amendment-v1",
+  "status": "FROZEN_LOCAL_REPAIR_AUTHORIZED_NO_EOS_LAUNCH_AUTHORIZED"
+}
