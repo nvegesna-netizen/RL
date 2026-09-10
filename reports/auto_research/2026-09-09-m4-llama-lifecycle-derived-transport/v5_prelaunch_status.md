@@ -1,8 +1,10 @@
 # Llama M4 V5 pre-launch status
 
-Status: `FOUR_LOCAL_CANDIDATES_CLEAN_ROOM_GREEN_NO_LAUNCH_AUTHORITY`.
+Status: `FOUR_AUTHORIZED_ACQUISITIONS_SUBMITTED_RUNNING`.
 
-The V5 successor is preregistered and packaged, but it has not been launched.
+The V5 successor is preregistered, packaged, and submitted exactly once per
+replicate. Parent pipelines are OpenMath r1 `67204364`, OpenMath r2 `67204399`,
+GSM8K r1 `67204429`, and GSM8K r2 `67204363`.
 The analyzer repair exactly replays both V4 terminal results. The primary V5
 cell estimator analyzes each 400-version replicate independently, combines the
 two estimates with equal replicate weight, uses block-diagonal HAC covariance,
@@ -15,7 +17,7 @@ and 20261022; GSM8K r1/r2 use 20261023 and 20261024. All retain the accepted
 candidate manifests remain outside Git and are authenticated in
 `v5_local_package_receipt.json`.
 
-The next step is a separate authorization decision for exactly four causal
-acquisitions. If authorized, all four authorization-bound packages must be
-rebuilt and clean-room checked, then submitted before inspecting any causal
-outcome. There is no automatic retry or extension.
+All four were submitted before any causal outcome was inspected. The joint
+one-shot guard is consumed. The next step is lifecycle monitoring without
+causal inspection until every pipeline is terminal; there is no automatic
+retry or extension.

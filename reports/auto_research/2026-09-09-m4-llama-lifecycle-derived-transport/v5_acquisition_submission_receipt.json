@@ -1,0 +1,24 @@
+{
+  "authorization_sha256": "f3be76dffcb0dde43a1d8757d4288ee0ae3a89557a63a50093d882e09cc0f7e0",
+  "automatic_extension": false,
+  "automatic_retry": false,
+  "initial_verification": {
+    "checked_at_utc": "2026-09-10T16:15:29.305435+00:00",
+    "gsm8k_r1": {"bridge_id": 434037075, "bridge_status": "created", "child_pipeline_id": null, "parent_pipeline_id": 67204429, "parent_status": "running"},
+    "gsm8k_r2": {"bridge_id": 434036503, "bridge_status": "pending", "child_pipeline_id": null, "parent_pipeline_id": 67204363, "parent_status": "running"},
+    "openmath_r1": {"bridge_id": 434036505, "bridge_status": "created", "child_pipeline_id": null, "parent_pipeline_id": 67204364, "parent_status": "running"},
+    "openmath_r2": {"bridge_id": 434036732, "bridge_status": "created", "child_pipeline_id": null, "parent_pipeline_id": 67204399, "parent_status": "running"}
+  },
+  "launcher": "runllm.py --no_wait",
+  "manifest_sha256": {
+    "gsm8k_r1": "053ad873917964dfc4b26cfe94bcce15143c21c2b99616c421dc4a1601a2abb4",
+    "gsm8k_r2": "890c9aca179d474a5b5e73885bb3ac23bc18609da17e09675f2e77020b07ad1b",
+    "openmath_r1": "585c0cb92a2bb4bbccd085e90353207bc7e649e05f75e2ae72bfaa2d03dbbddf",
+    "openmath_r2": "146835bf73ac8a1fdecd6f6ea82421e3dc3c39ea8a1bdbf4c75acec52c0ef612"
+  },
+  "package_receipt_sha256": "b8cd36a2bb40c729c047610a05c22096cd6cbfccd935c69257d8e8246d78cda5",
+  "schema": "m4-llama-v5-four-acquisition-submission-receipt-v1",
+  "submission_attempt_each": 1,
+  "submission_guard_sha256": "ef0744d7cb7027af04bfe801d6e2a8c324a420c048589d7f313bf10f291b093e",
+  "submit_all_four_before_inspecting_any_causal_outcome": true
+}
