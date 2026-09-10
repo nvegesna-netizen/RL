@@ -1,0 +1,22 @@
+{
+  "schema": "m4-llama3p2-3b-no-training-eos-preflight-submission-v1",
+  "status": "SUBMITTED_RESULT_PENDING",
+  "submitted_on": "2026-09-10",
+  "parent_pipeline_id": 67234694,
+  "parent_pipeline_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67234694",
+  "launcher": "runllm.py --no_wait",
+  "submission_attempt": 1,
+  "authorization_sha256": "6bc6a54a95f577b235d9c6b77c5bf52a11b8236a3bd042a2b1f087dc4fbb95de",
+  "manifest_sha256": "037066da5e60892d4e2837979f87359e75650898ef240a1fef81f28f694683fd",
+  "package_commit": "fc9cd5092668a0b27a57a3d112aa204a23fd4384",
+  "submission_guard_sha256": "a80243939cdb4f410b68540de3da25fc906d65578d7bc236bde42611af08535d",
+  "submission_stdout_sha256": "5b6541182ab396b24095572df72c52ec506d6b57091e634df2fa6fa584dafe03",
+  "submission_wrapper_sha256": "158c9443a98f078ca5010db141f7accc22e39f861f56b3e1a7c086e0cad3c75c",
+  "no_wait_returned": true,
+  "result_inspected": false,
+  "automatic_retry": false,
+  "automatic_extension": false,
+  "training_authorized": false,
+  "qualification_authorized": false,
+  "acquisition_authorized": false
+}

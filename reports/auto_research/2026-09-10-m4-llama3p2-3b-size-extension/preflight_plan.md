@@ -1,6 +1,6 @@
 # Llama 3.2 3B no-training preflight plan
 
-Status: `EOS_PACKAGE_AUTHORIZED_VALIDATED_NOT_SUBMITTED`.
+Status: `EOS_PREFLIGHT_SUBMITTED_RESULT_PENDING`.
 
 The first executable boundary is exactly one no-training preflight submitted
 with `runllm.py --no_wait`, only after a dedicated authorization record exists.
@@ -30,3 +30,8 @@ authorization surface, then schema-checked and deterministically rebuilt. Its
 hash is recorded in `eos_preflight_package_receipt.json`. This status does not
 mean the one-shot submission has been consumed; submission provenance must be
 recorded separately after invoking `runllm.py --no_wait`.
+
+The one-shot authority was consumed on 2026-09-10 by parent pipeline
+`67234694`. The launcher returned in no-wait mode without polling or
+post-processing. This records successful submission only; it is not a green
+preflight result and grants no authority for qualification or acquisition.
