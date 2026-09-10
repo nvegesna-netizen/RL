@@ -1,0 +1,37 @@
+{
+  "additional_variables_sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+  "authorization_sha256": "fd6af7fb3f8ba9bf644e2d481d094a7483de77234f7ecffe1148da2c491a6493",
+  "builder_sha256": "ad67cdbbf6f33247868f0682bd998fe6cf77621a1c4fa86170d12b12bbf22b22",
+  "clean_room_validation": {
+    "bash_syntax_green": true,
+    "deterministic_rebuild_byte_identical": true,
+    "embedded_python_blocks_each": 6,
+    "jet_manifest_schema_green": true,
+    "megatron_members": 726,
+    "missing_megatron_negative_control_rejected": true,
+    "modified_contract_negative_control_rejected": true,
+    "normalized_source_fingerprint_green": true,
+    "scientific_training_and_analysis_suffix_byte_identical": true,
+    "source_members": 2091,
+    "source_symlinks": 16
+  },
+  "contract_sha256": "ebd1e4a1e94dc800afc9b67f9baa0dbe14560c6207d40453abfde22b12907cb8",
+  "custom_config_sha256": "2dd84b15489d50c9c10ceeeb77187da884b94a508977db23d8805ed49701a316",
+  "gsm8k_manifest": {
+    "bytes": 15569446,
+    "sha256": "d83490d994724817ba0e76bda8eec7fb34d5f9421d22a9abc94b77e140babfc2"
+  },
+  "manifest_count": 2,
+  "megatron_dependency_archive_sha256": "98d98920c0fea3d8ae1216a485dc9b5aa4fc966e469435ad61f2bae456de80d2",
+  "openmath_manifest": {
+    "bytes": 15569543,
+    "sha256": "5ff618b6101a4887c742daf2f62eb6d89b199ce8db712922acce8ddabb45e99b"
+  },
+  "runllm_sha256": "30532cd638d8394fa0e651daf4a43ec9424cbaa0949cd59c323191177318e616",
+  "schema": "m4-llama-lifecycle-derived-v3-paired-neutral-qualification-package-receipt-v1",
+  "scientific_source_archive_sha256": "38b44e4dc97995463f381816f636a59499c3ed84415a3a384165ad412ba43047",
+  "scientific_source_commit": "bdbf2956f3ff46177958a29a64e3b33e4dc6515e",
+  "validated_at_utc": "2026-09-10T06:00:27Z",
+  "validator_sha256": "a5f5a6ab33097c32a02af27d5b8de72d467ef12622c8ca1532dd4531ee4f46ea",
+  "v3_bootstrap_preflight_terminal_result_sha256": "f4fc789bb6c7cc0d61ddf4677b32f4749261f21e465d940c167cc168bce1667c"
+}

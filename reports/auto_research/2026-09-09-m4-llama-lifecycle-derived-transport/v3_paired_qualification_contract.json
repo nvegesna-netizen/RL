@@ -1,0 +1,36 @@
+{
+  "automatic_extension": false,
+  "automatic_retry": false,
+  "cells": {
+    "gsm8k": {
+      "assignment_domain": "m4-llama3p2-1b-gsm8k-lifecycle-derived-neutral-v1",
+      "assignment_seed": 20261008,
+      "config_sha256": "aa0dcaa7350d0b7d81a917eb04aa1c6f00b2f39df04e88e562ccb0395c2b2394"
+    },
+    "openmath": {
+      "assignment_domain": "m4-llama3p2-1b-openmath-lifecycle-derived-neutral-v1",
+      "assignment_seed": 20261007,
+      "config_sha256": "34795a9352de2a12eb37964e59400c5f8306970ad40bd453b6f0393c1ddaeb9d"
+    }
+  },
+  "gpus_each": 2,
+  "immutable_scientific_contract": true,
+  "megatron_dependency_archive_sha256": "98d98920c0fea3d8ae1216a485dc9b5aa4fc966e469435ad61f2bae456de80d2",
+  "model": "meta-llama/Llama-3.2-1B-Instruct",
+  "original_paired_qualification_contract_sha256": "d033e693938d1989b461ac8c514dc6e26d02c1b26a7121b417a114452fb15416",
+  "paired_qualification_plan_sha256": "e7b704c3ab46c1c6c3eb65f237dec61d4a8a426dea29755a1070d54c1fd3d050",
+  "permanent_close_after_any_failure": true,
+  "qualification_data_allowed_in_causal_estimator": false,
+  "scheduler_time_limit_seconds_each": 5400,
+  "schema": "m4-llama-lifecycle-derived-v3-paired-neutral-qualification-contract-v1",
+  "scientific_acquisition_authorized": false,
+  "scientific_runtime_code_delta_count": 0,
+  "scientific_source_archive_sha256": "38b44e4dc97995463f381816f636a59499c3ed84415a3a384165ad412ba43047",
+  "scientific_source_commit": "bdbf2956f3ff46177958a29a64e3b33e4dc6515e",
+  "submission_attempt_limit_each_cell": 1,
+  "submit_both_before_inspecting_either": true,
+  "trainer_steps_each": 32,
+  "v3_bootstrap_preflight_result_sha256": "f4fc789bb6c7cc0d61ddf4677b32f4749261f21e465d940c167cc168bce1667c",
+  "v3_megatron_dependency_receipt_sha256": "6a9fc16e404d15f3f133c1fef042cfbd5cb53eb01563a4b8c794f97bd21e90c0",
+  "v3_operational_amendment_sha256": "e5ac184ea3fc1dadd1cc0cb9eb3471b991b316d2e096269e9963597074dc74b0"
+}
