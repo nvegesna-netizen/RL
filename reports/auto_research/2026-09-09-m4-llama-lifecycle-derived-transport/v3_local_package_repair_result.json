@@ -1,0 +1,65 @@
+{
+  "authorization": {
+    "eos_launch_authorized": false,
+    "eos_launch_performed": false,
+    "local_package_repair_authorized": true,
+    "paired_qualification_authorized": false,
+    "scientific_acquisition_authorized": false,
+    "training_authorized": false
+  },
+  "candidate": {
+    "bytes": 15557840,
+    "deterministic_rebuild_identical": true,
+    "manifest_sha256": "35b2869daf4d736c7dc1d00e3cff472606add7068280f0665982dd22e1cbbc60",
+    "name": "m4-llama-v3-bootstrap-no-training-local-candidate-do-not-submit"
+  },
+  "dependency_package": {
+    "archive_sha256": "98d98920c0fea3d8ae1216a485dc9b5aa4fc966e469435ad61f2bae456de80d2",
+    "megatron_bridge_commit": "573e088c9c6740082c39744e03dc5b009e730ed4",
+    "megatron_lm_commit": "6513e3e23d6b5eda6a1c934990b15e804237732b",
+    "megatron_tree": "46040aa10c9b788959440128f6979b5e585aa89b",
+    "members": 726,
+    "uncompressed_file_bytes": 9517562
+  },
+  "immutable_scientific_source": {
+    "archive_sha256": "38b44e4dc97995463f381816f636a59499c3ed84415a3a384165ad412ba43047",
+    "commit": "bdbf2956f3ff46177958a29a64e3b33e4dc6515e",
+    "runtime_code_delta_count": 0
+  },
+  "local_implementation": {
+    "builder_sha256": "3d6eacc8a18ab3c1bb1195fe3efa3573f3ef10f9f6e69819bd59e99abcde411f",
+    "local_only_defects_rejected_before_launch": [
+      "missing JET workload type field",
+      "embedded result newline escape"
+    ],
+    "validator_sha256": "9ad930dc0b9d5f210766897255541d62be00884669bcaaeac8bd1a4377b8f16a"
+  },
+  "normalized_fingerprint_policy": {
+    "container_full_fingerprint_authenticated": true,
+    "gitless_source_primary_projection_equal": true,
+    "submodule_pins_authenticated_separately": true
+  },
+  "provenance": {
+    "amendment_sha256": "e5ac184ea3fc1dadd1cc0cb9eb3471b991b316d2e096269e9963597074dc74b0",
+    "dependency_receipt_sha256": "6a9fc16e404d15f3f133c1fef042cfbd5cb53eb01563a4b8c794f97bd21e90c0",
+    "v2_terminal_result_sha256": "9cee9bc0183b6233141ff4b3794b3d2983225cc1b72ac888d93c8337392b07a2"
+  },
+  "schema": "m4-llama-lifecycle-derived-v3-local-package-repair-result-v1",
+  "status": "LOCAL_PACKAGE_REPAIR_GREEN_PENDING_SEPARATELY_AUTHORIZED_NO_TRAINING_EOS_PREFLIGHT",
+  "validation": {
+    "bash_syntax_green": true,
+    "changed_fingerprint_negative_control_rejected": true,
+    "embedded_payload_hashes_green": true,
+    "embedded_python_blocks": 4,
+    "import_order": [
+      "import nemo_rl",
+      "import megatron"
+    ],
+    "jet_manifest_schema_green": true,
+    "megatron_import_path_green": true,
+    "missing_megatron_negative_control_rejected": true,
+    "scientific_archive_members": 2091,
+    "scientific_archive_symlinks": 16,
+    "training_or_nested_submission_surface_present": false
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "authorization": {
+    "acquisition_authorized": false,
+    "eos_launch_authorized": false,
+    "local_package_repair_authorized": true,
+    "paired_qualification_authorized": false,
+    "retry_authorized": false,
+    "training_authorized": false,
+    "user_authorization": "do the next step"
+  },
+  "immutable_scientific_contract": {
+    "analysis_changed": false,
+    "assignments_or_seeds_changed": false,
+    "estimand_changed": false,
+    "instrument_changed": false,
+    "model_or_workload_changed": false,
+    "scientific_runtime_code_changed": false,
+    "threshold_or_window_changed": false
+  },
+  "operational_delta": {
+    "allowed": [
+      "Compare pyproject.toml and uv.lock exactly against their container fingerprint entries.",
+      "Authenticate container submodule pins separately from the gitless scientific archive fingerprint.",
+      "Supply the exact pinned Megatron-LM megatron source subtree at nemo_rl's expected path.",
+      "Execute normalized fingerprint and import-path semantics in clean-room validation."
+    ],
+    "forbidden": [
+      "Delete or bypass dependency authentication.",
+      "Change scientific source, design, runtime configuration, or analysis.",
+      "Launch EOS without a separate explicit authorization and fresh one-shot guard."
+    ],
+    "required_import_order": [
+      "import nemo_rl",
+      "import megatron"
+    ]
+  },
+  "predecessor": {
+    "terminal_result": "v2_bootstrap_preflight_terminal_result.json",
+    "v2_parent_pipeline_id": 67101094,
+    "v2_remains_terminal": true
+  },
+  "schema": "m4-llama-lifecycle-derived-transport-v3-operational-amendment-v1",
+  "scientific_source_archive_sha256": "38b44e4dc97995463f381816f636a59499c3ed84415a3a384165ad412ba43047",
+  "scientific_source_commit": "bdbf2956f3ff46177958a29a64e3b33e4dc6515e",
+  "status": "FROZEN_LOCAL_PACKAGE_REPAIR_ONLY_NO_EOS_AUTHORITY"
+}
