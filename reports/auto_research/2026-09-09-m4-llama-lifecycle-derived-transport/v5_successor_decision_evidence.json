@@ -1,0 +1,76 @@
+{
+  "decision": {
+    "additional_neutral_qualification_recommended": false,
+    "recommended_design": "two_independent_448_step_acquisition_replicas_per_workload",
+    "retain_primary_start_versions_each_replica": [
+      8,
+      407
+    ],
+    "v4_retry_recommended": false
+  },
+  "planning_projection": {
+    "bootstrap_draws": 100000,
+    "circular_block_size_versions": 8,
+    "replicates_per_workload": 2,
+    "cells": {
+      "gsm8k": {
+        "aggregate_gpu_hours": 3.138289921342438,
+        "combined_point_assignments": 24550.0,
+        "combined_projected_assignments_lower_95": 22283.333333333336,
+        "planning_bootstrap_seed": 20261020,
+        "sequential_wall_hours": 1.569144960671219
+      },
+      "openmath": {
+        "aggregate_gpu_hours": 4.462693358029166,
+        "combined_point_assignments": 12933.333333333334,
+        "combined_projected_assignments_lower_95": 12625.0,
+        "planning_bootstrap_seed": 20261019,
+        "sequential_wall_hours": 2.231346679014583,
+        "throughput_degradation_sensitivity": {
+          "20_percent_lower": 10100.0,
+          "30_percent_lower": 8837.5,
+          "40_percent_lower": 7575.0,
+          "threshold_crossing_degradation_fraction": 0.4534653465346535
+        }
+      }
+    },
+    "status": "PLANNING_ONLY_NOT_ACQUIRED_DATA"
+  },
+  "schema": "m4-llama-v5-successor-decision-evidence-v1",
+  "source_terminal_records": {
+    "lifecycle_v1": {
+      "path": "qualification_terminal_result.json",
+      "sha256": "ce6866f6f0a9251a631265d408741e755f6a3a4a0fff6dfbd4e874f7f699378e"
+    },
+    "lifecycle_v2": {
+      "path": "v2_bootstrap_preflight_terminal_result.json",
+      "sha256": "9cee9bc0183b6233141ff4b3794b3d2983225cc1b72ac888d93c8337392b07a2"
+    },
+    "lifecycle_v3": {
+      "path": "v3_paired_qualification_terminal_result.json",
+      "sha256": "e26215850721dff2c24d481b597e3c6213600654e7d0d2373c5dcc09673948a8"
+    },
+    "lifecycle_v4": {
+      "path": "v4_paired_qualification_terminal_result.json",
+      "sha256": "4124e3f2bade2a9df1076e3c44df03f45e2895f8b5801c9103553be99841dc47"
+    },
+    "synchronous_predecessor": {
+      "path": "../m4-llama-family-transport/reports/auto_research/2026-09-08-m4-llama-family-transport/final_qualification_result.json",
+      "sha256": "7929933fdd042a2bc32842a39f0031ff99b95962c56ed42a073d45f23f70a448"
+    }
+  },
+  "status": "LOCAL_EVIDENCE_SYNTHESIS_NO_LAUNCH_AUTHORITY",
+  "v4_binding_evidence": {
+    "gsm8k": {
+      "failed_gate_count": 0,
+      "projected_assignments_lower_95": 10625.0,
+      "qualification_complete": true
+    },
+    "openmath": {
+      "failed_gate": "projected_primary_assignments_lower_95",
+      "projected_assignments_lower_95": 6241.666666666667,
+      "registered_threshold": 6900.0,
+      "relative_shortfall": 0.09541062801932363
+    }
+  }
+}

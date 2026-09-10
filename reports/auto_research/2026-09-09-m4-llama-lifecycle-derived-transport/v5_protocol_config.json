@@ -1,0 +1,55 @@
+{
+  "analysis": {
+    "bootstrap_draws_each_replicate": 20000,
+    "bootstrap_seeds": {"gsm8k_r1": 20261027, "gsm8k_r2": 20261028, "openmath_r1": 20261025, "openmath_r2": 20261026},
+    "cell_primary_rule": "equal_weight_mean_of_two_independently_analyzed_replicates",
+    "cell_estimand": "equal_replicate_mean_of_(mean_d5(Q_times_D)-mean_control(Q_times_D))/pooled_pre_delay_mean_Q",
+    "cell_estimator_each_replicate": "cross_fitted_generalized_regression_q_and_zero_indicator_v1",
+    "cell_material_threshold_delta_l": 0.2,
+    "circular_block_size_start_versions": 8,
+    "confidence": 0.95,
+    "cross_fit_folds": 8,
+    "hac_bartlett_lag_start_versions": 4,
+    "hac_replica_combination": "block_diagonal_covariance_then_equal_weight",
+    "material_alpha": 0.05,
+    "missingness": "sharp_lower_and_upper_endpoints_each_replicate; every arm in every replicate must be at_most_0.01",
+    "replicate_heterogeneity": "report_both_replicate_estimates_and_difference; cannot_override_primary_equal_weight_result",
+    "sampling_unit": "assignment_clustered_by_start_weight_version_within_replicate",
+    "version_series_concatenation_allowed": false
+  },
+  "execution": {
+    "acquisition_attempt_limit_each_replicate": 1,
+    "automatic_extension": false,
+    "automatic_retry": false,
+    "launch_authorized": false,
+    "qualification_required": false,
+    "required_launcher": "runllm.py --no_wait",
+    "submit_all_four_before_inspecting_any_causal_outcome": true
+  },
+  "instrument": {
+    "accepted_quantity": "sum_i(abs(float32_grpo_scalar_advantage_i)*valid_actor_tokens_i)",
+    "derivation_method": "lifecycle_derived_grpo_opportunity_v1",
+    "gradient_opportunity_callback_enabled": false,
+    "opportunity_coverage_required": 1.0,
+    "pre_treatment_proof": "all_required_source_controller_sequences_strictly_before_release_delay_started",
+    "total_lifecycle_recorder_corrected_duty_maximum": 0.01
+  },
+  "model": {"family": "Llama 3.2", "huggingface_id": "meta-llama/Llama-3.2-1B-Instruct", "parameter_label": "1B"},
+  "planning": {
+    "capacity_bootstrap_draws": 100000,
+    "capacity_bootstrap_seeds": {"gsm8k": 20261020, "openmath": 20261019},
+    "power_heterogeneity_inflation_over_two_run_se": 1.25,
+    "result_path": "v5_replication_planning_result.json",
+    "result_role": "planning_only_not_acquired_data"
+  },
+  "prospective_replicates": {
+    "gsm8k_r1": {"assignment_domain": "m4-llama3p2-1b-gsm8k-lifecycle-derived-transport-v5-r1", "assignment_seed": 20261023, "config": "examples/configs/grpo_math_1B_megatron_single_controller_m4_llama3p2_1b_gsm8k_lifecycle_derived_transport_v5_r1.yaml", "workload": "GSM8K"},
+    "gsm8k_r2": {"assignment_domain": "m4-llama3p2-1b-gsm8k-lifecycle-derived-transport-v5-r2", "assignment_seed": 20261024, "config": "examples/configs/grpo_math_1B_megatron_single_controller_m4_llama3p2_1b_gsm8k_lifecycle_derived_transport_v5_r2.yaml", "workload": "GSM8K"},
+    "openmath_r1": {"assignment_domain": "m4-llama3p2-1b-openmath-lifecycle-derived-transport-v5-r1", "assignment_seed": 20261021, "config": "examples/configs/grpo_math_1B_megatron_single_controller_m4_llama3p2_1b_openmath_lifecycle_derived_transport_v5_r1.yaml", "workload": "OpenMathInstruct-2"},
+    "openmath_r2": {"assignment_domain": "m4-llama3p2-1b-openmath-lifecycle-derived-transport-v5-r2", "assignment_seed": 20261022, "config": "examples/configs/grpo_math_1B_megatron_single_controller_m4_llama3p2_1b_openmath_lifecycle_derived_transport_v5_r2.yaml", "workload": "OpenMathInstruct-2"}
+  },
+  "protocol": "m4-llama3p2-1b-lifecycle-derived-transport-v5-replicated-v1",
+  "runtime_each_replicate": {"gpus": 2, "trainer_steps": 448, "wall_clock_cap_hours": 4.0, "gpu_hour_cap": 8.0},
+  "status": "FROZEN_IMPLEMENTED_LOCAL_PACKAGING_PENDING_NO_LAUNCH_AUTHORITY",
+  "windows_each_replicate": {"burn_in_start_versions": [0, 7], "primary_start_versions": [8, 407], "terminal_guard_start_versions": [408, 447]}
+}

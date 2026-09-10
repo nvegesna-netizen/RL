@@ -1,0 +1,8 @@
+{
+  "bug_repaired": "JoinedOpportunityAssignment.start_version replaces mapping subscripting",
+  "gsm8k": {"qualification_complete": true, "strict_join_assignment_count": 1473, "projected_primary_assignments": 12275.0, "projected_primary_assignments_lower_95": 10625.0},
+  "openmath": {"qualification_complete": false, "strict_join_assignment_count": 776, "projected_primary_assignments": 6466.666666666667, "projected_primary_assignments_lower_95": 6241.666666666667},
+  "replay_source": "authenticated V4 terminal workload artifacts",
+  "schema": "m4-llama-v5-analyzer-repair-replay-v1",
+  "scientific_result_changed": false
+}
