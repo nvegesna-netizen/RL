@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Render and verify publication SVGs from the compact six-cell results."""
+"""Render and verify publication SVGs from compact publication results."""
 
 from __future__ import annotations
 
@@ -19,9 +19,11 @@ def forest(cells: dict[str, dict[str, object]]) -> str:
         ("1.7B - GSM8K", "qwen3_1p7b_gsm8k"),
         ("0.6B - NuminaMath", "qwen3_0p6b_numinamath"),
         ("1.7B - NuminaMath", "qwen3_1p7b_numinamath"),
+        ("Llama 1B - OpenMath (2 reps)", "llama3p2_1b_openmath"),
+        ("Llama 1B - GSM8K (2 reps)", "llama3p2_1b_gsm8k"),
     ]
-    left, right, top, row = 210, 850, 30, 55
-    x_min, x_max = 0.08, 0.37
+    left, right, top, row = 255, 850, 30, 55
+    x_min, x_max = 0.08, 0.48
     x = lambda value: left + (value - x_min) / (x_max - x_min) * (right - left)
     height = top + row * len(labels) + 70
     parts = [
@@ -29,7 +31,7 @@ def forest(cells: dict[str, dict[str, object]]) -> str:
         '<rect width="100%" height="100%" fill="white"/>',
         '<style>text{font-family:Helvetica,Arial,sans-serif;fill:#202124}.label{font-size:15px}.axis{font-size:13px}</style>',
     ]
-    for tick in (0.1, 0.15, 0.2, 0.25, 0.3, 0.35):
+    for tick in (0.1, 0.2, 0.3, 0.4):
         parts.append(f'<line x1="{x(tick):.1f}" y1="42" x2="{x(tick):.1f}" y2="{height - 45}" stroke="#e5e7eb"/>')
         parts.append(f'<text x="{x(tick):.1f}" y="{height - 20}" text-anchor="middle" class="axis">{tick:.2f}</text>')
     parts.append(f'<line x1="{x(0.2):.1f}" y1="42" x2="{x(0.2):.1f}" y2="{height - 45}" stroke="#d93025" stroke-width="2" stroke-dasharray="6 5"/>')
@@ -38,7 +40,7 @@ def forest(cells: dict[str, dict[str, object]]) -> str:
         record = cells[name]
         low, high = record["outer_envelope"]
         estimate = record["estimate"]
-        color = "#1769aa" if "0p6b" in name else "#7b1fa2"
+        color = "#00897b" if "llama" in name else "#1769aa" if "0p6b" in name else "#7b1fa2"
         parts.append(f'<text x="20" y="{y + 5}" class="label">{label}</text>')
         parts.append(f'<line x1="{x(low):.1f}" y1="{y}" x2="{x(high):.1f}" y2="{y}" stroke="{color}" stroke-width="4"/>')
         for endpoint in (low, high):
@@ -82,8 +84,15 @@ def main() -> None:
     parser.add_argument("--verify", action="store_true")
     args = parser.parse_args()
     result = json.loads((ROOT / "data/published_results.json").read_bytes())
+    cells = dict(result["cell_results"])
+    for workload in ("openmath", "gsm8k"):
+        record = result["llama_v5_extension"]["combined_workloads"][workload]
+        cells[f"llama3p2_1b_{workload}"] = {
+            "estimate": record["identification_interval"][0],
+            "outer_envelope": record["confidence_envelope"],
+        }
     outputs = {
-        ROOT / "figures/cell_forest_plot.svg": forest(result["cell_results"]),
+        ROOT / "figures/cell_forest_plot.svg": forest(cells),
         ROOT / "figures/interaction_plot.svg": interactions(result["dependency_aware_synthesis"]),
     }
     for path, content in outputs.items():

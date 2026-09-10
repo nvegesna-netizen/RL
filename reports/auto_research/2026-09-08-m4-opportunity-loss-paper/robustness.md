@@ -76,3 +76,33 @@ cell pattern.
 
 Machine-readable values are in `robustness_results.json`; its SHA-256 is
 `4f12bafe8cca627a48b9ee21f9fb0d05a3964d2004994a5d28568f8d7c3b168a`.
+
+## Prospective Llama 3.2 1B extension
+
+These views use only the four frozen V5 acquisition ledgers. They supplement,
+but do not redefine, the two registered equal-replicate workload endpoints.
+
+| Workload | Adjusted estimate | HAC 95% interval | Bootstrap 95% interval | Unadjusted estimate |
+| --- | ---: | ---: | ---: | ---: |
+| OpenMath | 0.3991 | [0.3526, 0.4456] | [0.3504, 0.4467] | 0.3600 |
+| GSM8K | 0.3461 | [0.3026, 0.3896] | [0.2952, 0.3898] | 0.4031 |
+
+Every primary assignment is terminally scored, so sharp missingness endpoints
+coincide. Common and registered-full windows are both versions 8–407 by design;
+versions 408–447 are an excluded guard window, not an alternative endpoint.
+
+| Threshold | OpenMath | GSM8K |
+| ---: | --- | --- |
+| 0.00 | above | above |
+| 0.10 | above | above |
+| 0.20 | above | above |
+| 0.25 | above | above |
+| 0.30 | above | inconclusive |
+| 0.35 | above | inconclusive |
+| 0.40 | inconclusive | below or equal |
+
+Leave-one-replicate-out envelopes are [0.3233, 0.4634] and [0.3376, 0.4683]
+for OpenMath, and [0.2634, 0.4298] and [0.2884, 0.3830] for GSM8K. Each remains
+above 0.20. The secondary cross-workload contrast remains inconclusive:
+0.0530, envelope [-0.0137, 0.1232]. Machine-readable values are in
+`llama_v5_publication_extension.json`.

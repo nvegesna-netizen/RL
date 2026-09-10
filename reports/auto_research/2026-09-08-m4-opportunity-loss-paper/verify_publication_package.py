@@ -70,6 +70,17 @@ def main() -> None:
         + sum(cell["assignment_count"] for cell in numina["cells"].values())
     )
     assert definitive_total == 49_153
+    extension = load(HERE / "llama_v5_publication_extension.json")
+    llama = extension["combined_workloads"]
+    assert sum(cell["assignment_count"] for cell in llama.values()) == 28_712
+    assert all(cell["conclusion"] == "MATERIAL" for cell in llama.values())
+    assert llama["openmath"]["confidence_envelope"][0] > 0.20
+    assert llama["gsm8k"]["confidence_envelope"][0] > 0.20
+    assert extension["secondary_openmath_minus_gsm8k"]["conclusion"] == "INCONCLUSIVE"
+    campaign_total = definitive_total + sum(
+        cell["assignment_count"] for cell in llama.values()
+    )
+    assert campaign_total == 77_865
 
     cadence_path = HERE / "cadence_results.json"
     cadence = load(cadence_path)
@@ -86,6 +97,10 @@ def main() -> None:
         HERE / "manuscript.md",
         [
             "49,153",
+            "77,865",
+            "28,712",
+            "0.3991",
+            "0.3461",
             "χ²(2)=11.53",
             "p=0.00314",
             "0.00329",
@@ -106,6 +121,10 @@ def main() -> None:
             evidence["workload_transport_qwen3_1p7b_gsm8k"]["artifact"]["sha256"],
             numina["cells"]["qwen3_0p6b_numinamath"]["artifact_sha256"],
             numina["cells"]["qwen3_1p7b_numinamath"]["artifact_sha256"],
+            "7fc1d62dba8bf82777e9d86abc3e205afa5f5012ce067082fd3a2babe88139b6",
+            "37da83c526bef6cf13b36090d21dd49a9d73a768422e3fea9381521eb8e71a33",
+            "c321dcf94a138d2a289142b0991c452be848d28dedf5f5c468fba78cd85ffa59",
+            "fcb236655ed1554215e370cca6d21fe5873b385e4f4b1576cdc27ff2dbe4735b",
         ],
     )
 
@@ -128,7 +147,9 @@ def main() -> None:
     }
     assert cited <= bib_keys, f"missing BibTeX keys: {sorted(cited - bib_keys)}"
     print("PUBLICATION_PACKAGE_VERIFY_PASS")
-    print(f"definitive_full_window_assignments={definitive_total}")
+    print(f"qwen_full_window_assignments={definitive_total}")
+    print(f"llama_extension_assignments={campaign_total - definitive_total}")
+    print(f"campaign_full_window_assignments={campaign_total}")
     print(f"common_window_assignments={sum(c['assignment_count'] for c in cells.values())}")
     print(f"six_cell_synthesis_sha256={sha256(synthesis_path)}")
 

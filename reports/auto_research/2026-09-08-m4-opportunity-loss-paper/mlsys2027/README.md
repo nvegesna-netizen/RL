@@ -21,10 +21,9 @@ inkscape ../causal_diagram.svg --export-type=pdf
 inkscape ../provenance_diagram.svg --export-type=pdf
 ```
 
-Then run `latexmk -pdf paper.tex` and `latexmk -pdf appendix.tex`. A local TeX
-toolchain and SVG-to-PDF converter were not present in the captured development
-environment, so PDF compilation remains an explicit release gate rather than a
-claimed check.
+Then run `latexmk -pdf paper.tex` and `latexmk -pdf appendix.tex`. The reviewed
+local PDFs were compiled with Tectonic 0.17.0 and vector-preserving
+`rsvg-convert`; the official style files remain intentionally unvendored.
 
 ## Before submission
 
@@ -36,5 +35,3 @@ claimed check.
 - Run `pdffonts` and confirm embedded Type-1 fonts, including in figures.
 - Build and inspect the appendix as a separate PDF.
 - Run the privacy/anonymity checks in `../artifact_access_plan.md`.
-- Have all human authors approve `ai_use_statement.tex` before inclusion or
-  submission-form disclosure.

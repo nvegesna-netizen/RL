@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1120" height="430" viewBox="0 0 1120 430" role="img" aria-labelledby="title desc">
 <title id="title">Causal structure of the controlled-release experiment</title>
-<desc id="desc">Model and workload affect cadence and pre-release opportunity. Randomized arm affects only controlled delay, which affects version advance, terminal delivery, and lost opportunity. Opportunity is measured before treatment.</desc>
+<desc id="desc">Fixed model, family, and workload context affect cadence and pre-release opportunity. Randomized arm affects only controlled delay, which affects version advance, terminal delivery, and lost opportunity. Family is not a randomized exposure.</desc>
 <defs>
   <marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#37474f"/></marker>
   <style>.box{stroke-width:2;rx:10}.context{fill:#fff3e0;stroke:#b45309}.treat{fill:#e0f2fe;stroke:#0369a1}.outcome{fill:#ecfdf5;stroke:#047857}.measure{fill:#f5f3ff;stroke:#6d28d9}.txt{font:16px Helvetica,Arial,sans-serif;fill:#17212b;text-anchor:middle}.small{font:14px Helvetica,Arial,sans-serif;fill:#475569;text-anchor:middle}.edge{stroke:#37474f;stroke-width:2;fill:none;marker-end:url(#arrow)}.dash{stroke:#6d28d9;stroke-width:2;stroke-dasharray:7 5;fill:none;marker-end:url(#arrow)}</style>

@@ -1,14 +1,15 @@
 # Final post-PDF and reviewer-artifact adversarial review
 
-Date: 2026-09-08
+Date: 2026-09-10
 
 ## Verdict
 
 **Pass for bounded scientific review and local anonymous artifact delivery.**
 The exact paper, supplement, and deterministic compact reviewer archive agree
-on the six-cell evidence and contain no discovered internal execution IDs,
-paths, credentials, disclosure text, or author identity. No additional M4 GPU
-acquisition is needed for the scoped opportunity-loss claim.
+on the six-cell Qwen evidence and the four-acquisition Llama 3.2 1B extension.
+They contain no discovered internal execution IDs, paths, credentials, or
+author identity. No additional M4 GPU acquisition is needed
+for the scoped opportunity-loss and bounded cross-family claims.
 
 **Not yet a final conference-upload clearance.** Figure-derived fonts include
 Type 3 and TrueType faces rather than the template's Type-1-only requirement;
@@ -19,21 +20,23 @@ public URL or empirical raw-ledger access is claimed.
 
 | Object | SHA-256 | Structure |
 | --- | --- | --- |
-| Main review PDF | `e79f36bd1c83063e8a04a7d08c13d3730757abc1d7d28e3ead37185b96c8d7e4` | PDF 1.5, letter, 5 pages; references begin on page 4 |
-| Supplement PDF | `8c7931300784b25627d42dc3339432b3ee479b1862dfaab31b5e40bbc1dcd499` | PDF 1.5, letter, 2 pages |
-| Reviewer archive | `eada56b991c220ac6726eef56fc458544009364a87b570a50f9efce3602091d2` | 18,289 bytes; 17 extracted files including manifest |
-| Archive manifest | `4995abb4e60c5c504836b65e27cadf66573cea4821d698530e560fc1f2392ecd` | 16 hashed members plus A1--A6 external commitments |
+| Main review PDF | `830cac5b3f882089f9b6cdc642ca25ccee97e0596536515db1d252615fe0befe` | PDF 1.5, letter, 5 pages; references begin on page 4 |
+| Supplement PDF | `3121b2f7c8c66e8dbb102318e70612a013f78a997060a553e11522142e758175` | PDF 1.5, letter, 2 pages |
+| Reviewer archive | `86434a9b6f5878366543328f7de8a7aff8ca78faebacb7b34c83d9b30020cb17` | 22,462 bytes; 17 extracted files including manifest |
+| Archive manifest | `06cc0e390f34b29a8f654f04030bb19bb24723ca2a203740c3a3aba5ac7691e5` | 16 hashed members plus A1--A10 external commitments |
 
 ## Adversarial checks
 
 | Attack | Result | Evidence |
 | --- | --- | --- |
-| Headline-number drift | Pass | Publication verifier reconciles 49,153 full-window and 43,756 common-window assignments, zero missingness, correlation values, and synthesis hash. |
+| Headline-number drift | Pass | Verifiers reconcile 49,153 Qwen plus 28,712 Llama assignments (77,865 total), zero missingness, Qwen correlations, and Llama equal-replicate endpoints. |
 | Shared-anchor double counting | Pass | Both interactions reuse the same two GSM8K draws; HAC and bootstrap covariance are retained and the artifact synthetic replay exercises shared-reference correlation. |
 | Pipeline/scientific-status conflation | Pass | A3 remains `post-run fail` while its immutable completed acquisition is analyzed; no execution ID appears in the blind PDF or archive. |
 | Retrospective promotion | Pass | The first acquisition remains `INCONCLUSIVE`; secondary synthesis and sensitivity analyses cannot override registered decisions. |
-| Scope inflation | Pass | The claim remains limited to tested Qwen3 GRPO math-workload environments and excludes final model quality and family-wide generalization. |
-| PDF template leakage | Pass | Extracted text contains no `AUTHORERR`, suppressed-title message, disclosure, private path, or internal execution identifier; metadata says `Anonymous Authors`. |
+| Cross-family scope inflation | Pass | Llama is described as prospective replication in one size and two workloads, not a randomized family contrast, pure architecture effect, or family-wide result. |
+| Replicate cherry-picking | Pass | Both preregistered Llama replicates enter each workload with equal weight; all four single-replicate envelopes clear 0.20, and neither replicate is discarded. |
+| Llama workload overclaim | Pass | The OpenMath-minus-GSM8K contrast remains `INCONCLUSIVE`; the manuscript does not equate a null contrast with equality. |
+| PDF template leakage | Pass | Extracted text contains no `AUTHORERR`, suppressed-title message, private path, or internal execution identifier; metadata says `Anonymous Authors`. |
 | Blind source linkage | Pass after repair | Searchable source revision prefixes were removed from the supplement; the private record retains the mapping. |
 | Archive credentials/anonymity | Pass | Decompressed-content scan rejects internal host, repository, cluster, user, job, token, password, and known source-prefix patterns. |
 | Archive traversal/symlink attack | Pass | Extraction validates every member stays under the temporary root and rejects symbolic and hard links. |
@@ -50,6 +53,10 @@ public URL or empirical raw-ledger access is claimed.
 3. Added standalone figure-generation source and byte-for-byte SVG tests.
 4. Removed an empty uncited bibliography from the supplement.
 5. Removed source revision prefixes from the blind provenance table.
+6. Added A7--A10 opaque commitments and deterministic checks for the Llama
+   extension without exposing pipeline or job identifiers.
+7. Recomputed HAC/bootstrap, adjusted/unadjusted, missingness, threshold,
+   common-window, and leave-one-replicate-out views from authenticated ledgers.
 
 ## Remaining release gates
 

@@ -48,13 +48,18 @@ def published_checks() -> dict[str, object]:
     assert math.isclose(synthesis["hac_correlation"], 0.3793770869832136)
     assert math.isclose(synthesis["bootstrap_correlation"], 0.40530226396440766)
     assert math.isclose(synthesis["global_heterogeneity_p_value"], 0.0031390066345424925)
+    extension = result["llama_v5_extension"]["combined_workloads"]
+    assert math.isclose(extension["openmath"]["identification_interval"][0], 0.39907889029747823)
+    assert math.isclose(extension["gsm8k"]["identification_interval"][0], 0.34607413746273974)
+    assert sum(value["assignment_count"] for value in extension.values()) == 28_712
     provenance = load(ROOT / "data/provenance.json")
-    assert set(provenance["acquisitions"]) == {f"A{i}" for i in range(1, 7)}
-    assert sum(item["full_window_assignments"] for item in provenance["acquisitions"].values()) == 49_153
+    assert set(provenance["acquisitions"]) == {f"A{i}" for i in range(1, 11)}
+    assert sum(item["full_window_assignments"] for item in provenance["acquisitions"].values()) == 77_865
     assert all(len(item["terminal_artifact_sha256"]) == 64 for item in provenance["acquisitions"].values())
     return {
         "common_window_assignments": 43_756,
-        "full_window_assignments": 49_153,
+        "full_window_assignments": 77_865,
+        "llama_extension_assignments": 28_712,
         "hac_correlation": synthesis["hac_correlation"],
         "bootstrap_correlation": synthesis["bootstrap_correlation"],
     }

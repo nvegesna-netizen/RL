@@ -32,7 +32,8 @@ the private provenance ledger retains the reversible mapping.
 
 ## Raw terminal artifacts
 
-The six terminal archives total hundreds of megabytes and remain outside Git.
+The 10 definitive terminal archives total hundreds of megabytes and remain
+outside Git.
 Preferred access is an anonymous, read-only object store with stable URLs,
 checksums, content length, and no request tracking exposed to authors during
 review. If policy permits, publish the lifecycle and opportunity ledgers after
@@ -57,7 +58,7 @@ evaluation committee under controlled access. Do not imply public availability.
    compact-result verification and the synthetic end-to-end path; empirical
    re-estimation remains unavailable without the external raw ledgers.**
 6. Link check from the exact submission PDF and supplementary README.
-7. Human-author approval of the final disclosure and access limitations.
+7. Human-author approval of the final access limitations.
 
 ## Camera-ready path
 

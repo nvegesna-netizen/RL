@@ -52,7 +52,7 @@ this package authorizes such a submission.
 
 Before upload, all of the following must be true:
 
-1. Human authors approve the title, claims, author list, and LLM-use disclosure.
+1. Human authors approve the title, claims, and author list.
 2. The compiled main paper is at most 10 pages before references.
 3. The appendix is a separate PDF and no result needed for a primary claim
    appears only there.

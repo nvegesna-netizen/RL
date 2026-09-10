@@ -1,8 +1,7 @@
 # M4 publication package
 
 This directory is the review-ready publication workspace for the completed M4
-opportunity-loss campaign. No new acquisition or qualification data enter any
-file here.
+opportunity-loss campaign and its prospective Llama 3.2 1B extension.
 
 ## Start here
 
@@ -27,8 +26,12 @@ file here.
 
 ## Analysis and figures
 
-- `run_publication_synthesis.py` — authenticates all six raw cell inputs,
+- `run_publication_synthesis.py` — authenticates all six Qwen raw cell inputs,
   reconstructs common-window inferences, and generates the files below.
+- `run_llama_v5_publication_extension.py` — reconstructs all four Llama V5
+  acquisitions and the two registered equal-replicate workload endpoints.
+- `llama_v5_publication_extension.json` — machine-readable Llama extension and
+  offline robustness record.
 - `six_cell_synthesis.json` — dependency-aware 2×3 synthesis.
 - `robustness_results.json` and `robustness.md` — HAC/bootstrap,
   adjusted/unadjusted, missingness, threshold, and window sensitivity.

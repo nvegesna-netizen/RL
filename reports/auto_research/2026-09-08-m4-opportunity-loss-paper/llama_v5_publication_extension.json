@@ -1,0 +1,354 @@
+{
+  "analysis_role": "prospective_replicated_cross_family_extension",
+  "authentication_sha256": "1da34ca184985bbdd319ae2f466ca9ae7c747b312f69a18be7e6f0a3088bf63d",
+  "cells": {
+    "gsm8k-r1": {
+      "adjusted": {
+        "bootstrap_interval": [
+          0.26337936601242995,
+          0.42895507688303136
+        ],
+        "estimate": 0.3549833512021026,
+        "hac_interval": [
+          0.28013273015671025,
+          0.429833972247495
+        ],
+        "outer_envelope": [
+          0.26337936601242995,
+          0.429833972247495
+        ]
+      },
+      "adjustment_shift": 0.008420808503941224,
+      "assignment_count": 7314,
+      "replicate": "r1",
+      "selected_artifact_sha256": {
+        "derivation.json": "b02a123b111554e1188dee1b3bb6c62da4521bfffa5a3fb6f524bbc4c2a41a60",
+        "lifecycle-duty.json": "1b1beaad75afb7f8e9329885e8689eddde769f772cfa6f6d42c16b80a860f912",
+        "lifecycle.jsonl": "62304e8b223b52f70f7fd45a1be5cea9337c6e4a85d78025b9a7e32bb3ccf20f",
+        "opportunity.jsonl": "5d8fcf3a0bc766964b42fd761e2827c4b691ccef0602f4e8336bdbfae05a0008",
+        "run.log": "2d648aa396c5449963e46b6e6df246c510ee94f246c326950cffc79e4593b86f"
+      },
+      "terminal_missing_count": 0,
+      "unadjusted_estimate": 0.3465625426981614,
+      "workload": "gsm8k"
+    },
+    "gsm8k-r2": {
+      "adjusted": {
+        "bootstrap_interval": [
+          0.2884397126276969,
+          0.38295277764486
+        ],
+        "estimate": 0.3371649237233769,
+        "hac_interval": [
+          0.29289851023673397,
+          0.38143133721001987
+        ],
+        "outer_envelope": [
+          0.2884397126276969,
+          0.38295277764486
+        ]
+      },
+      "adjustment_shift": -0.12240498628217228,
+      "assignment_count": 7681,
+      "replicate": "r2",
+      "selected_artifact_sha256": {
+        "derivation.json": "c375fe04d0c5b5e57db9c79f8d1cc04bbc5004ab8dff7a5a96b4f13391a39673",
+        "lifecycle-duty.json": "27ae046e1f148cefc8772bb1b490ec5f3e46e9f294487fa3ba2c460c0eee7b92",
+        "lifecycle.jsonl": "14cfd5c01c3721bd5e39549b863222cad106955beafbec61ef69a683e5f4bccf",
+        "opportunity.jsonl": "053c2f98d216cb09c4a9ac179a4b9379b601dc10b47cfe954f97cb5b6e56575b",
+        "run.log": "490a8194fad261e760a526357dd7bda7c660cccc4cd2a6ecb4d9ee8b85558f17"
+      },
+      "terminal_missing_count": 0,
+      "unadjusted_estimate": 0.4595699100055492,
+      "workload": "gsm8k"
+    },
+    "openmath-r1": {
+      "adjusted": {
+        "bootstrap_interval": [
+          0.3233190144028824,
+          0.4634208971579794
+        ],
+        "estimate": 0.3947432449591328,
+        "hac_interval": [
+          0.32821543931568453,
+          0.4612710506025811
+        ],
+        "outer_envelope": [
+          0.3233190144028824,
+          0.4634208971579794
+        ]
+      },
+      "adjustment_shift": 0.05006497334478205,
+      "assignment_count": 6908,
+      "replicate": "r1",
+      "selected_artifact_sha256": {
+        "derivation.json": "8aa4e116e1734b25b02befdeb6a02a96746028c30d64365b205bd327e19eef39",
+        "lifecycle-duty.json": "bde2e50e7b245ba99b1ec4ae9daecac2d2e38c8ea1fc81cc5e400ced3604b0ee",
+        "lifecycle.jsonl": "d93c9349df7af67c7fbb1d2da72632a580e95db6be4d5a37465f0080f5097fe4",
+        "opportunity.jsonl": "49a64f44389ffb7f32a55455093486b44d27e078d24359969cd4a18b3b92390f",
+        "run.log": "517cff7af491fd02f1bba94330ace4bfa6acb67080bfeb8c901bf1df1ad4a6c2"
+      },
+      "terminal_missing_count": 0,
+      "unadjusted_estimate": 0.3446782716143508,
+      "workload": "openmath"
+    },
+    "openmath-r2": {
+      "adjusted": {
+        "bootstrap_interval": [
+          0.33760251526109175,
+          0.4681954202814065
+        ],
+        "estimate": 0.4034145356358237,
+        "hac_interval": [
+          0.33848754802332326,
+          0.4683415232483241
+        ],
+        "outer_envelope": [
+          0.33760251526109175,
+          0.4683415232483241
+        ]
+      },
+      "adjustment_shift": 0.028028233462501606,
+      "assignment_count": 6809,
+      "replicate": "r2",
+      "selected_artifact_sha256": {
+        "derivation.json": "0d20a8083b320583ff81eab1202c0426f781bea92ebdb5f6c0d22e572e64c1b1",
+        "lifecycle-duty.json": "5246e03f6eddfa58ea990168f0196264e42b7293ca6f1309797aa73324302fc4",
+        "lifecycle.jsonl": "59978d224bea5781205e47f9636be831a8a36cee17915c3fc1a3189489b7c08b",
+        "opportunity.jsonl": "b7f1c9113f73450a5b77b12c76786efa8ec6510b910d5f429904462efb5513fd",
+        "run.log": "01e031bd73bdbfd69c00cd8804408e725fc912d71ffcbc09217f8fa1c858eac0"
+      },
+      "terminal_missing_count": 0,
+      "unadjusted_estimate": 0.3753863021733221,
+      "workload": "openmath"
+    }
+  },
+  "combined_workloads": {
+    "gsm8k": {
+      "assignment_count": 14995,
+      "bootstrap_draws": 20000,
+      "combination_rule": "equal_replicate_weight_independent_block_diagonal",
+      "common_vs_full_window": {
+        "common_window": [
+          8,
+          407
+        ],
+        "guard_window_excluded": [
+          408,
+          447
+        ],
+        "registered_primary_window": [
+          8,
+          407
+        ],
+        "status": "IDENTICAL_BY_DESIGN"
+      },
+      "conclusion": "MATERIAL",
+      "confidence": 0.95,
+      "confidence_envelope": [
+        0.29523110493588284,
+        0.38977930737463234
+      ],
+      "coverage_gate_passed": true,
+      "identification_interval": [
+        0.34607413746273974,
+        0.34607413746273974
+      ],
+      "leave_one_replicate_out": {
+        "r1": {
+          "bootstrap_interval": [
+            0.26337936601242995,
+            0.42895507688303136
+          ],
+          "estimate": 0.3549833512021026,
+          "hac_interval": [
+            0.28013273015671025,
+            0.429833972247495
+          ],
+          "outer_envelope": [
+            0.26337936601242995,
+            0.429833972247495
+          ]
+        },
+        "r2": {
+          "bootstrap_interval": [
+            0.2884397126276969,
+            0.38295277764486
+          ],
+          "estimate": 0.3371649237233769,
+          "hac_interval": [
+            0.29289851023673397,
+            0.38143133721001987
+          ],
+          "outer_envelope": [
+            0.2884397126276969,
+            0.38295277764486
+          ]
+        }
+      },
+      "lower_bootstrap_interval": [
+        0.29523110493588284,
+        0.38977930737463234
+      ],
+      "lower_hac_interval": [
+        0.3025938809264353,
+        0.3895543939990442
+      ],
+      "material_p_value": 4.999750012499375e-05,
+      "material_threshold": 0.2,
+      "replicate_estimates": {
+        "r1": [
+          0.3549833512021026,
+          0.3549833512021026
+        ],
+        "r2": [
+          0.3371649237233769,
+          0.3371649237233769
+        ]
+      },
+      "threshold_sensitivity": {
+        "0.00": "ABOVE_THRESHOLD",
+        "0.10": "ABOVE_THRESHOLD",
+        "0.20": "ABOVE_THRESHOLD",
+        "0.25": "ABOVE_THRESHOLD",
+        "0.30": "CROSSES_THRESHOLD",
+        "0.35": "CROSSES_THRESHOLD",
+        "0.40": "BELOW_OR_EQUAL_THRESHOLD"
+      },
+      "unadjusted_estimate": 0.4030662263518553,
+      "upper_bootstrap_interval": [
+        0.29523110493588284,
+        0.38977930737463234
+      ],
+      "upper_hac_interval": [
+        0.3025938809264353,
+        0.3895543939990442
+      ]
+    },
+    "openmath": {
+      "assignment_count": 13717,
+      "bootstrap_draws": 20000,
+      "combination_rule": "equal_replicate_weight_independent_block_diagonal",
+      "common_vs_full_window": {
+        "common_window": [
+          8,
+          407
+        ],
+        "guard_window_excluded": [
+          408,
+          447
+        ],
+        "registered_primary_window": [
+          8,
+          407
+        ],
+        "status": "IDENTICAL_BY_DESIGN"
+      },
+      "conclusion": "MATERIAL",
+      "confidence": 0.95,
+      "confidence_envelope": [
+        0.35041041237653886,
+        0.4467286824938217
+      ],
+      "coverage_gate_passed": true,
+      "identification_interval": [
+        0.39907889029747823,
+        0.39907889029747823
+      ],
+      "leave_one_replicate_out": {
+        "r1": {
+          "bootstrap_interval": [
+            0.3233190144028824,
+            0.4634208971579794
+          ],
+          "estimate": 0.3947432449591328,
+          "hac_interval": [
+            0.32821543931568453,
+            0.4612710506025811
+          ],
+          "outer_envelope": [
+            0.3233190144028824,
+            0.4634208971579794
+          ]
+        },
+        "r2": {
+          "bootstrap_interval": [
+            0.33760251526109175,
+            0.4681954202814065
+          ],
+          "estimate": 0.4034145356358237,
+          "hac_interval": [
+            0.33848754802332326,
+            0.4683415232483241
+          ],
+          "outer_envelope": [
+            0.33760251526109175,
+            0.4683415232483241
+          ]
+        }
+      },
+      "lower_bootstrap_interval": [
+        0.35041041237653886,
+        0.4467286824938217
+      ],
+      "lower_hac_interval": [
+        0.3525991564230082,
+        0.44555862417194825
+      ],
+      "material_p_value": 4.999750012499375e-05,
+      "material_threshold": 0.2,
+      "replicate_estimates": {
+        "r1": [
+          0.3947432449591328,
+          0.3947432449591328
+        ],
+        "r2": [
+          0.4034145356358237,
+          0.4034145356358237
+        ]
+      },
+      "threshold_sensitivity": {
+        "0.00": "ABOVE_THRESHOLD",
+        "0.10": "ABOVE_THRESHOLD",
+        "0.20": "ABOVE_THRESHOLD",
+        "0.25": "ABOVE_THRESHOLD",
+        "0.30": "ABOVE_THRESHOLD",
+        "0.35": "ABOVE_THRESHOLD",
+        "0.40": "CROSSES_THRESHOLD"
+      },
+      "unadjusted_estimate": 0.36003228689383643,
+      "upper_bootstrap_interval": [
+        0.35041041237653886,
+        0.4467286824938217
+      ],
+      "upper_hac_interval": [
+        0.3525991564230082,
+        0.44555862417194825
+      ]
+    }
+  },
+  "robustness_notes": {
+    "common_window": "The two replicates used the same registered 8--407 primary window; common- and registered-full-window results are identical. Versions 408--447 were a frozen guard window and are not an alternative analysis window.",
+    "leave_one_replicate_out": "Each workload remains positive and above 0.20 at the point-estimate level when either replicate is omitted; interval-level results are reported per replicate.",
+    "missingness": "Sharp lower and upper endpoints coincide in every replicate because all primary assignments were terminally scored."
+  },
+  "schema": "m4-llama-v5-publication-extension-v1",
+  "secondary_openmath_minus_gsm8k": {
+    "bootstrap_interval": [
+      -0.013691548514234805,
+      0.12317712539730606
+    ],
+    "conclusion": "INCONCLUSIVE",
+    "confidence_envelope": [
+      -0.013691548514234805,
+      0.12317712539730606
+    ],
+    "estimate": 0.05300475283473849,
+    "hac_interval": [
+      -0.010641915338107766,
+      0.11665142100758474
+    ],
+    "hac_standard_error": 0.032473386590204247
+  },
+  "source_terminal_analysis_sha256": "47b14b0caddae4ad055986eeb4d08a3dbaf5be6d4ab156f615503befe49e46b7"
+}

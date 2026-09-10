@@ -16,7 +16,7 @@
 \mlsyscorrespondingauthor{Anonymous Author}{anon.email@domain.com}
 \vskip 0.3in
 \begin{abstract}
-This supplement reports reproducibility, provenance, mechanism, observer-duty, and robustness details for the M4 controlled-release study. It introduces no new acquisition and does not replace the registered primary analyses.
+This supplement reports reproducibility, provenance, mechanism, observer-duty, and robustness details for the M4 controlled-release study and its prospective Llama 3.2 1B extension. It does not replace the registered primary analyses.
 \end{abstract}
 ]
 \printAffiliationsAndNotice{}
@@ -47,11 +47,15 @@ A3 & 0.6B & GSM8K & post-run fail & b668279507 / 6c2ebeb2b2 \\
 A4 & 1.7B & GSM8K & success & 3413bde371 / 966dfbf605 \\
 A5 & 0.6B & NuminaMath & success & bbe2c07211 / ad7c556f43 \\
 A6 & 1.7B & NuminaMath & success & bbe2c07211 / 6aa6196873 \\
+A7 & Llama 1B r1 & OpenMath & success & 56a331 / 7fc1d62dba \\
+A8 & Llama 1B r2 & OpenMath & success & 56a331 / 37da83c526 \\
+A9 & Llama 1B r1 & GSM8K & success & 56a331 / c321dcf94a \\
+A10 & Llama 1B r2 & GSM8K & success & 56a331 / fcb236655e \\
 \bottomrule
 \end{tabular}
 \end{table*}
 
-Acquisition A3 completed 558 registered steps and preserved 9,573 scored assignments before invoking an analyzer that rejected the grid protocol identity. The preregistered correct analyzer was applied to those immutable ledgers without new acquisition or protocol change. Full 64-character hashes are supplied in the authenticated reviewer manifest; the private record retains the internal-to-anonymous ID mapping.
+Acquisition A3 completed 558 registered steps and preserved 9,573 scored assignments before invoking an analyzer that rejected the grid protocol identity. The preregistered correct analyzer was applied to those immutable ledgers without new acquisition or protocol change. A7--A10 are the four V5 family-extension acquisitions. Full 64-character hashes are supplied in the authenticated reviewer manifest; the private record retains the internal-to-anonymous ID mapping.
 
 \section{Mechanism and Observer Duty}
 \begin{table}[h]
@@ -67,13 +71,19 @@ Model & Workload & Unscored & Duty \\
 1.7B & GSM8K & 0 & .002943 \\
 0.6B & NuminaMath & 0 & .002121 \\
 1.7B & NuminaMath & 0 & .001798 \\
+Llama 1B r1 & OpenMath & 0 & .000656 \\
+Llama 1B r2 & OpenMath & 0 & .000603 \\
+Llama 1B r1 & GSM8K & 0 & .000731 \\
+Llama 1B r2 & GSM8K & 0 & .000782 \\
 \bottomrule
 \end{tabular}
 \end{table}
-The mechanism conclusion is \texttt{REPLICATED} in all six cells. Observer duty is below the registered 0.01 ceiling. This supports low measurement burden in the observed runs, not portability to other systems.
+The mechanism conclusion is \texttt{REPLICATED} in all 10 definitive acquisitions. Observer duty is below the registered 0.01 ceiling. This supports low measurement burden in the observed runs, not portability to other systems.
 
 \section{Robustness}
 HAC and circular-block bootstrap intervals are closely aligned. All adjusted and unadjusted common-window estimates are positive. The largest adjustment shift is $-0.054$ for Qwen3-0.6B/NuminaMath; Qwen3-1.7B/OpenMath is the only positive shift ($+0.021$). All missingness endpoint widths are zero because every common-window assignment is terminally scored. Common-window estimates differ from registered full-window estimates by at most 0.0053.
+
+For the Llama extension, combined adjusted estimates are 0.3991 on OpenMath and 0.3461 on GSM8K; HAC intervals are [0.3526, 0.4456] and [0.3026, 0.3896], while bootstrap intervals are [0.3504, 0.4467] and [0.2952, 0.3898]. Unadjusted estimates are 0.3600 and 0.4031. All four leave-one-replicate-out envelopes exceed 0.20, and all terminal-missingness widths are zero. Both replicates use the identical registered 8--407 window; 408--447 is an excluded guard window.
 
 \begin{table}[h]
 \caption{Interval classification by materiality threshold.}

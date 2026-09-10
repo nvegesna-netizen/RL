@@ -9,8 +9,10 @@ flowchart TD
     A --> R[Immutable lifecycle and opportunity ledgers]
     R --> H[SHA-256 authentication + terminal scoring]
     H --> G[Registered cell / interaction analysis]
-    G --> S[Retrospective dependency-aware 2×3 synthesis]
+    G --> S[Retrospective dependency-aware Qwen 2×3 synthesis]
+    G --> L[Prospective replicated Llama workload synthesis]
     S --> M[Claim ledger, robustness tables, figures, manuscript]
+    L --> M
 
     X[Failed packaging or preflight attempts] -. documented, excluded from estimator .-> H
     N[No outcome-guided retry or extension] -. constraint .-> A
@@ -25,6 +27,7 @@ flowchart TD
 ```
 
 The publication synthesis authenticates the raw ledgers against the preserved
-four-cell grid and NuminaMath terminal records before reconstructing any
-estimate. It does not consume qualification observations, add acquisitions, or
-change registered conclusions.
+four-cell grid, NuminaMath, and four Llama V5 terminal records before
+reconstructing any estimate. It does not consume qualification observations,
+add acquisitions, or change registered conclusions. The Llama endpoints remain
+separate from the Qwen interaction model.

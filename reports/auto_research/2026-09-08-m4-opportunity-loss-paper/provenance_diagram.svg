@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1180" height="360" viewBox="0 0 1180 360" role="img" aria-labelledby="title desc">
 <title id="title">Evidence provenance from source freeze to manuscript claims</title>
-<desc id="desc">Frozen source and protocol pass no-training preflight and qualification before one-shot acquisition. Immutable ledgers are authenticated, scored, analyzed, synthesized, and mapped to claims. Failed packaging is retained but excluded from estimators.</desc>
+<desc id="desc">Frozen source and protocol pass no-training preflight and qualification before one-shot acquisition. Immutable ledgers are authenticated, scored, and analyzed. Qwen cells enter a dependency-aware two-by-three synthesis; four Llama acquisitions enter a separate replicated workload synthesis. Both map to bounded claims.</desc>
 <defs>
   <marker id="a" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto"><path d="M0,0 L10,4 L0,8 Z" fill="#334155"/></marker>
   <style>.b{stroke-width:2;rx:8}.f{fill:#e0f2fe;stroke:#0369a1}.e{fill:#ecfdf5;stroke:#047857}.s{fill:#fff7ed;stroke:#c2410c}.x{fill:#f8fafc;stroke:#64748b}.t{font:14px Helvetica,Arial,sans-serif;fill:#17212b;text-anchor:middle}.n{font:12px Helvetica,Arial,sans-serif;fill:#475569;text-anchor:middle}.l{stroke:#334155;stroke-width:2;fill:none;marker-end:url(#a)}.d{stroke:#64748b;stroke-width:2;stroke-dasharray:6 5;fill:none;marker-end:url(#a)}</style>
@@ -14,9 +14,10 @@
 <rect class="b e" x="820" y="80" width="135" height="70"/><text class="t" x="887" y="108">Hash auth +</text><text class="t" x="887" y="129">terminal scoring</text>
 <rect class="b e" x="980" y="80" width="175" height="70"/><text class="t" x="1067" y="108">Registered cell /</text><text class="t" x="1067" y="129">interaction analysis</text>
 <path class="l" d="M155 115 L180 115"/><path class="l" d="M315 115 L340 115"/><path class="l" d="M475 115 L500 115"/><path class="l" d="M635 115 L660 115"/><path class="l" d="M795 115 L820 115"/><path class="l" d="M955 115 L980 115"/>
-<rect class="b s" x="775" y="225" width="170" height="70"/><text class="t" x="860" y="253">Dependency-aware</text><text class="t" x="860" y="274">2×3 synthesis</text>
+<rect class="b s" x="560" y="225" width="180" height="70"/><text class="t" x="650" y="253">Replicated Llama</text><text class="t" x="650" y="274">workload synthesis</text>
+<rect class="b s" x="775" y="225" width="170" height="70"/><text class="t" x="860" y="253">Dependency-aware</text><text class="t" x="860" y="274">Qwen 2×3 synthesis</text>
 <rect class="b s" x="980" y="225" width="175" height="70"/><text class="t" x="1067" y="253">Claims, tables,</text><text class="t" x="1067" y="274">figures, manuscript</text>
-<path class="l" d="M1067 150 L930 225"/><path class="l" d="M945 260 L980 260"/>
+<path class="l" d="M1067 150 L930 225"/><path class="l" d="M1035 150 L715 225"/><path class="l" d="M945 260 L980 260"/><path class="l" d="M740 260 L980 260"/>
 <rect class="b x" x="20" y="225" width="220" height="70"/><text class="t" x="130" y="253">Failed preflight / packaging</text><text class="n" x="130" y="276">documented; excluded from estimators</text>
 <path class="d" d="M240 260 L820 140"/>
 <text class="n" x="455" y="326">Qualification data never enter causal estimators. Automatic retry and outcome-guided extension are prohibited.</text>

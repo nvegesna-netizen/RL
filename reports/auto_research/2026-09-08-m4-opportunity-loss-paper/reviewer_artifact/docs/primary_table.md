@@ -16,6 +16,24 @@ six-cell synthesis and cannot replace those decisions.
 The six definitive full-window acquisitions contain 49,153 assignments. Every
 assignment in every harmonized cell has a scored terminal disposition.
 
+## Prospective Llama 3.2 1B family extension
+
+This extension is separate from the Qwen3 2×3 interaction grid. Each workload
+was prospectively replicated in two independently randomized 400-version
+acquisitions, then combined with equal replicate weight.
+
+| Workload | Replicates | Primary assignments | Replicate estimates | Combined adjusted estimate | HAC 95% interval | Bootstrap 95% interval | Conservative conclusion |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| OpenMath | 2 | 13,717 | 0.3947, 0.4034 | 0.3991 | [0.3526, 0.4456] | [0.3504, 0.4467] | `MATERIAL` |
+| GSM8K | 2 | 14,995 | 0.3550, 0.3372 | 0.3461 | [0.3026, 0.3896] | [0.2952, 0.3898] | `MATERIAL` |
+
+The extension adds 28,712 primary assignments, bringing the definitive campaign
+total to 77,865. The secondary OpenMath-minus-GSM8K estimate is 0.0530 with
+envelope [-0.0137, 0.1232], so the data do not establish a workload difference
+within Llama 3.2 1B. They also do not identify a pure family effect because the
+Qwen and Llama acquisitions were conducted in different prospectively defined
+study blocks.
+
 ## Dependency-aware interaction results
 
 Let \(S_w = \Delta_{1.7B,w} - \Delta_{0.6B,w}\) be the model-scale contrast

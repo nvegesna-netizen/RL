@@ -8,6 +8,13 @@
       "terminal_artifact_bytes": 54950561,
       "terminal_artifact_sha256": "07cddc489ea20055161f9c435d44d0a52b91113fda9eac16472bdb531dc6ffb6"
     },
+    "A10": {
+      "cell": "llama3p2_1b_gsm8k_r2",
+      "full_window_assignments": 7681,
+      "protocol_sha256": "56a3311f78a0ac12cb9dc7ecdeee1a6fc0c5ace889799ebfaba1faaa0e610521",
+      "terminal_artifact_bytes": 67119843,
+      "terminal_artifact_sha256": "fcb236655ed1554215e370cca6d21fe5873b385e4f4b1576cdc27ff2dbe4735b"
+    },
     "A2": {
       "cell": "qwen3_1p7b_openmath",
       "full_window_assignments": 8673,
@@ -42,6 +49,27 @@
       "protocol_sha256": "bbe2c07211952e3e46d4511524f68e864606a7c63f271ae8e064263044dad0c8",
       "terminal_artifact_bytes": 128543493,
       "terminal_artifact_sha256": "6aa61968730833387a15b45a6d0f2be541c6f84b6d4f16a29e7dbf583981fc9b"
+    },
+    "A7": {
+      "cell": "llama3p2_1b_openmath_r1",
+      "full_window_assignments": 6908,
+      "protocol_sha256": "56a3311f78a0ac12cb9dc7ecdeee1a6fc0c5ace889799ebfaba1faaa0e610521",
+      "terminal_artifact_bytes": 66178095,
+      "terminal_artifact_sha256": "7fc1d62dba8bf82777e9d86abc3e205afa5f5012ce067082fd3a2babe88139b6"
+    },
+    "A8": {
+      "cell": "llama3p2_1b_openmath_r2",
+      "full_window_assignments": 6809,
+      "protocol_sha256": "56a3311f78a0ac12cb9dc7ecdeee1a6fc0c5ace889799ebfaba1faaa0e610521",
+      "terminal_artifact_bytes": 65947753,
+      "terminal_artifact_sha256": "37da83c526bef6cf13b36090d21dd49a9d73a768422e3fea9381521eb8e71a33"
+    },
+    "A9": {
+      "cell": "llama3p2_1b_gsm8k_r1",
+      "full_window_assignments": 7314,
+      "protocol_sha256": "56a3311f78a0ac12cb9dc7ecdeee1a6fc0c5ace889799ebfaba1faaa0e610521",
+      "terminal_artifact_bytes": 66467861,
+      "terminal_artifact_sha256": "c321dcf94a138d2a289142b0991c452be848d28dedf5f5c468fba78cd85ffa59"
     }
   },
   "schema": "m4-anonymous-provenance-v1"

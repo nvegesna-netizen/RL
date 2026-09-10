@@ -125,6 +125,71 @@
         "name": "OpenMath"
       }
     },
+    "A10": {
+      "analysis": {
+        "bootstrap_draws_each_replicate": 20000,
+        "bootstrap_seeds": {
+          "gsm8k_r1": 20261027,
+          "gsm8k_r2": 20261028,
+          "openmath_r1": 20261025,
+          "openmath_r2": 20261026
+        },
+        "cell_estimand": "equal_replicate_mean_of_(mean_d5(Q_times_D)-mean_control(Q_times_D))/pooled_pre_delay_mean_Q",
+        "cell_estimator_each_replicate": "cross_fitted_generalized_regression_q_and_zero_indicator_v1",
+        "cell_material_threshold_delta_l": 0.2,
+        "cell_primary_rule": "equal_weight_mean_of_two_independently_analyzed_replicates",
+        "circular_block_size_start_versions": 8,
+        "confidence": 0.95,
+        "cross_fit_folds": 8,
+        "hac_bartlett_lag_start_versions": 4,
+        "hac_replica_combination": "block_diagonal_covariance_then_equal_weight",
+        "material_alpha": 0.05,
+        "missingness": "sharp_lower_and_upper_endpoints_each_replicate; every arm in every replicate must be at_most_0.01",
+        "replicate_heterogeneity": "report_both_replicate_estimates_and_difference; cannot_override_primary_equal_weight_result",
+        "sampling_unit": "assignment_clustered_by_start_weight_version_within_replicate",
+        "version_series_concatenation_allowed": false
+      },
+      "artifact_id": "A10",
+      "assignment": {
+        "domain": "m4-llama3p2-1b-gsm8k-lifecycle-derived-transport-v5-r2",
+        "seed": 20261024
+      },
+      "instrument": {
+        "accepted_quantity": "sum_i(abs(float32_grpo_scalar_advantage_i)*valid_actor_tokens_i)",
+        "derivation_method": "lifecycle_derived_grpo_opportunity_v1",
+        "gradient_opportunity_callback_enabled": false,
+        "opportunity_coverage_required": 1.0,
+        "pre_treatment_proof": "all_required_source_controller_sequences_strictly_before_release_delay_started",
+        "total_lifecycle_recorder_corrected_duty_maximum": 0.01
+      },
+      "model": {
+        "family": "Llama 3.2",
+        "huggingface_id": "meta-llama/Llama-3.2-1B-Instruct",
+        "parameter_label": "1B"
+      },
+      "protocol": "m4-llama3p2-1b-lifecycle-derived-transport-v5-replicated-v1",
+      "runtime": {
+        "gpu_hour_cap": 8.0,
+        "gpus": 2,
+        "trainer_steps": 448,
+        "wall_clock_cap_hours": 4.0
+      },
+      "windows": {
+        "burn_in_start_versions": [
+          0,
+          7
+        ],
+        "primary_start_versions": [
+          8,
+          407
+        ],
+        "terminal_guard_start_versions": [
+          408,
+          447
+        ]
+      },
+      "workload": "GSM8K"
+    },
     "A2": {
       "analysis": {
         "inference": {
@@ -817,6 +882,201 @@
         "huggingface_path": "AI-MO/NuminaMath-1.5",
         "repository_revision": "1b05109f9e5c1ad06c0663519502416c30b300f8"
       }
+    },
+    "A7": {
+      "analysis": {
+        "bootstrap_draws_each_replicate": 20000,
+        "bootstrap_seeds": {
+          "gsm8k_r1": 20261027,
+          "gsm8k_r2": 20261028,
+          "openmath_r1": 20261025,
+          "openmath_r2": 20261026
+        },
+        "cell_estimand": "equal_replicate_mean_of_(mean_d5(Q_times_D)-mean_control(Q_times_D))/pooled_pre_delay_mean_Q",
+        "cell_estimator_each_replicate": "cross_fitted_generalized_regression_q_and_zero_indicator_v1",
+        "cell_material_threshold_delta_l": 0.2,
+        "cell_primary_rule": "equal_weight_mean_of_two_independently_analyzed_replicates",
+        "circular_block_size_start_versions": 8,
+        "confidence": 0.95,
+        "cross_fit_folds": 8,
+        "hac_bartlett_lag_start_versions": 4,
+        "hac_replica_combination": "block_diagonal_covariance_then_equal_weight",
+        "material_alpha": 0.05,
+        "missingness": "sharp_lower_and_upper_endpoints_each_replicate; every arm in every replicate must be at_most_0.01",
+        "replicate_heterogeneity": "report_both_replicate_estimates_and_difference; cannot_override_primary_equal_weight_result",
+        "sampling_unit": "assignment_clustered_by_start_weight_version_within_replicate",
+        "version_series_concatenation_allowed": false
+      },
+      "artifact_id": "A7",
+      "assignment": {
+        "domain": "m4-llama3p2-1b-openmath-lifecycle-derived-transport-v5-r1",
+        "seed": 20261021
+      },
+      "instrument": {
+        "accepted_quantity": "sum_i(abs(float32_grpo_scalar_advantage_i)*valid_actor_tokens_i)",
+        "derivation_method": "lifecycle_derived_grpo_opportunity_v1",
+        "gradient_opportunity_callback_enabled": false,
+        "opportunity_coverage_required": 1.0,
+        "pre_treatment_proof": "all_required_source_controller_sequences_strictly_before_release_delay_started",
+        "total_lifecycle_recorder_corrected_duty_maximum": 0.01
+      },
+      "model": {
+        "family": "Llama 3.2",
+        "huggingface_id": "meta-llama/Llama-3.2-1B-Instruct",
+        "parameter_label": "1B"
+      },
+      "protocol": "m4-llama3p2-1b-lifecycle-derived-transport-v5-replicated-v1",
+      "runtime": {
+        "gpu_hour_cap": 8.0,
+        "gpus": 2,
+        "trainer_steps": 448,
+        "wall_clock_cap_hours": 4.0
+      },
+      "windows": {
+        "burn_in_start_versions": [
+          0,
+          7
+        ],
+        "primary_start_versions": [
+          8,
+          407
+        ],
+        "terminal_guard_start_versions": [
+          408,
+          447
+        ]
+      },
+      "workload": "OpenMathInstruct-2"
+    },
+    "A8": {
+      "analysis": {
+        "bootstrap_draws_each_replicate": 20000,
+        "bootstrap_seeds": {
+          "gsm8k_r1": 20261027,
+          "gsm8k_r2": 20261028,
+          "openmath_r1": 20261025,
+          "openmath_r2": 20261026
+        },
+        "cell_estimand": "equal_replicate_mean_of_(mean_d5(Q_times_D)-mean_control(Q_times_D))/pooled_pre_delay_mean_Q",
+        "cell_estimator_each_replicate": "cross_fitted_generalized_regression_q_and_zero_indicator_v1",
+        "cell_material_threshold_delta_l": 0.2,
+        "cell_primary_rule": "equal_weight_mean_of_two_independently_analyzed_replicates",
+        "circular_block_size_start_versions": 8,
+        "confidence": 0.95,
+        "cross_fit_folds": 8,
+        "hac_bartlett_lag_start_versions": 4,
+        "hac_replica_combination": "block_diagonal_covariance_then_equal_weight",
+        "material_alpha": 0.05,
+        "missingness": "sharp_lower_and_upper_endpoints_each_replicate; every arm in every replicate must be at_most_0.01",
+        "replicate_heterogeneity": "report_both_replicate_estimates_and_difference; cannot_override_primary_equal_weight_result",
+        "sampling_unit": "assignment_clustered_by_start_weight_version_within_replicate",
+        "version_series_concatenation_allowed": false
+      },
+      "artifact_id": "A8",
+      "assignment": {
+        "domain": "m4-llama3p2-1b-openmath-lifecycle-derived-transport-v5-r2",
+        "seed": 20261022
+      },
+      "instrument": {
+        "accepted_quantity": "sum_i(abs(float32_grpo_scalar_advantage_i)*valid_actor_tokens_i)",
+        "derivation_method": "lifecycle_derived_grpo_opportunity_v1",
+        "gradient_opportunity_callback_enabled": false,
+        "opportunity_coverage_required": 1.0,
+        "pre_treatment_proof": "all_required_source_controller_sequences_strictly_before_release_delay_started",
+        "total_lifecycle_recorder_corrected_duty_maximum": 0.01
+      },
+      "model": {
+        "family": "Llama 3.2",
+        "huggingface_id": "meta-llama/Llama-3.2-1B-Instruct",
+        "parameter_label": "1B"
+      },
+      "protocol": "m4-llama3p2-1b-lifecycle-derived-transport-v5-replicated-v1",
+      "runtime": {
+        "gpu_hour_cap": 8.0,
+        "gpus": 2,
+        "trainer_steps": 448,
+        "wall_clock_cap_hours": 4.0
+      },
+      "windows": {
+        "burn_in_start_versions": [
+          0,
+          7
+        ],
+        "primary_start_versions": [
+          8,
+          407
+        ],
+        "terminal_guard_start_versions": [
+          408,
+          447
+        ]
+      },
+      "workload": "OpenMathInstruct-2"
+    },
+    "A9": {
+      "analysis": {
+        "bootstrap_draws_each_replicate": 20000,
+        "bootstrap_seeds": {
+          "gsm8k_r1": 20261027,
+          "gsm8k_r2": 20261028,
+          "openmath_r1": 20261025,
+          "openmath_r2": 20261026
+        },
+        "cell_estimand": "equal_replicate_mean_of_(mean_d5(Q_times_D)-mean_control(Q_times_D))/pooled_pre_delay_mean_Q",
+        "cell_estimator_each_replicate": "cross_fitted_generalized_regression_q_and_zero_indicator_v1",
+        "cell_material_threshold_delta_l": 0.2,
+        "cell_primary_rule": "equal_weight_mean_of_two_independently_analyzed_replicates",
+        "circular_block_size_start_versions": 8,
+        "confidence": 0.95,
+        "cross_fit_folds": 8,
+        "hac_bartlett_lag_start_versions": 4,
+        "hac_replica_combination": "block_diagonal_covariance_then_equal_weight",
+        "material_alpha": 0.05,
+        "missingness": "sharp_lower_and_upper_endpoints_each_replicate; every arm in every replicate must be at_most_0.01",
+        "replicate_heterogeneity": "report_both_replicate_estimates_and_difference; cannot_override_primary_equal_weight_result",
+        "sampling_unit": "assignment_clustered_by_start_weight_version_within_replicate",
+        "version_series_concatenation_allowed": false
+      },
+      "artifact_id": "A9",
+      "assignment": {
+        "domain": "m4-llama3p2-1b-gsm8k-lifecycle-derived-transport-v5-r1",
+        "seed": 20261023
+      },
+      "instrument": {
+        "accepted_quantity": "sum_i(abs(float32_grpo_scalar_advantage_i)*valid_actor_tokens_i)",
+        "derivation_method": "lifecycle_derived_grpo_opportunity_v1",
+        "gradient_opportunity_callback_enabled": false,
+        "opportunity_coverage_required": 1.0,
+        "pre_treatment_proof": "all_required_source_controller_sequences_strictly_before_release_delay_started",
+        "total_lifecycle_recorder_corrected_duty_maximum": 0.01
+      },
+      "model": {
+        "family": "Llama 3.2",
+        "huggingface_id": "meta-llama/Llama-3.2-1B-Instruct",
+        "parameter_label": "1B"
+      },
+      "protocol": "m4-llama3p2-1b-lifecycle-derived-transport-v5-replicated-v1",
+      "runtime": {
+        "gpu_hour_cap": 8.0,
+        "gpus": 2,
+        "trainer_steps": 448,
+        "wall_clock_cap_hours": 4.0
+      },
+      "windows": {
+        "burn_in_start_versions": [
+          0,
+          7
+        ],
+        "primary_start_versions": [
+          8,
+          407
+        ],
+        "terminal_guard_start_versions": [
+          408,
+          447
+        ]
+      },
+      "workload": "GSM8K"
     }
   },
   "schema": "m4-public-protocol-projections-v1"
