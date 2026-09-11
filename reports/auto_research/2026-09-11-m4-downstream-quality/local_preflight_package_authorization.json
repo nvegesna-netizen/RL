@@ -1,0 +1,21 @@
+{
+  "schema": "m4-downstream-quality-local-preflight-package-authorization-v1",
+  "status": "LOCAL_BUILD_ONLY_NO_EOS_AUTHORITY",
+  "source_commit": "1941728f8a636d82126dec8632277cd63172e3b7",
+  "source_archive_sha256": "80741c66b32a7951e4ebd620e66a8043858159e7a871c7fb87d038db068aa714",
+  "megatron_dependency_sha256": "98d98920c0fea3d8ae1216a485dc9b5aa4fc966e469435ad61f2bae456de80d2",
+  "protocol_draft_sha256": "5ec319043f6e3be90e8e294946eee3596b4c8ab445630de93ae103bbcabb7162",
+  "preflight_plan_sha256": "b160c6610226bf2b2250cbc20500667776bfb1e62df0918994c4221a690918fa",
+  "local_package_build_authorized": true,
+  "clean_room_validation_authorized": true,
+  "eos_submission_authorized": false,
+  "model_weight_access_authorized": false,
+  "optimizer_initialization_authorized": false,
+  "optimizer_steps_allowed": 0,
+  "training_authorized": false,
+  "qualification_authorized": false,
+  "pilot_authorized": false,
+  "scientific_acquisition_authorized": false,
+  "automatic_retry": false,
+  "automatic_extension": false
+}

@@ -1,0 +1,35 @@
+{
+  "automatic_extension": false,
+  "automatic_retry": false,
+  "candidate": {
+    "bytes": 15758894,
+    "git_tracked": false,
+    "path": "session/20260909_m4_llama_lifecycle_derived_transport/m4-downstream-quality-no-training-preflight-local-candidate.yaml",
+    "sha256": "e7de1aa88e2f4a9c7de7e1b7f9f6a5b34382ea18544d9920dcb65d3d0b5b4853"
+  },
+  "eos_launch_attempted": false,
+  "megatron_dependency_archive": {
+    "bytes": 2083856,
+    "git_tracked": false,
+    "path": "session/20260909_m4_llama_lifecycle_derived_transport/megatron-lm-megatron-tree-6513e3e23.tar.gz",
+    "sha256": "98d98920c0fea3d8ae1216a485dc9b5aa4fc966e469435ad61f2bae456de80d2"
+  },
+  "model_weight_accessed": false,
+  "optimizer_initialized": false,
+  "optimizer_steps": 0,
+  "schema": "m4-downstream-quality-local-preflight-package-receipt-v1",
+  "source_archive": {
+    "bytes": 9718002,
+    "git_tracked": false,
+    "path": "session/20260909_m4_llama_lifecycle_derived_transport/m4-downstream-quality-source-1941728f8.tar.gz",
+    "sha256": "80741c66b32a7951e4ebd620e66a8043858159e7a871c7fb87d038db068aa714"
+  },
+  "source_commit": "1941728f8a636d82126dec8632277cd63172e3b7",
+  "status": "PASS",
+  "training_started": false,
+  "validation": {
+    "path": "reports/auto_research/2026-09-11-m4-downstream-quality/local_preflight_package_validation.json",
+    "sha256": "d9cad97deaa1bc55feeacd393e49aa026f565736d77acac15c8f2dced16d0e0c"
+  },
+  "validator_sha256": "f7d839e0a4914f2ee1c663de8449538872c95510465c4d29df822125094eb35e"
+}
