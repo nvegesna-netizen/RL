@@ -1,0 +1,86 @@
+{
+  "schema": "m4-downstream-quality-no-training-eos-preflight-v5-terminal-result-v1",
+  "status": "FAILED_TERMINAL_NO_RETRY_AUTHORITY",
+  "classification": "OPERATIONAL_FAILURE_DURING_PRE_MODEL_TRANSFORMER_ENGINE_PROVENANCE_ASSERTION",
+  "parent_pipeline": {
+    "id": 67386681,
+    "status": "failed",
+    "finished_at": "2026-09-11T09:05:39.444-07:00"
+  },
+  "child_pipeline": {
+    "id": 67386833,
+    "status": "failed",
+    "finished_at": "2026-09-11T09:05:36.881-07:00"
+  },
+  "job": {
+    "id": 435601161,
+    "status": "failed",
+    "failure_reason": "script_failure",
+    "duration_seconds": 1521.551897,
+    "slurm_duration": "00:03:15",
+    "slurm_queue_time": "00:20:54"
+  },
+  "completed_markers": [
+    "M4_DOWNSTREAM_QUALITY_EOS_PREFLIGHT_V5_AUTHORITY_PASS",
+    "M4_DOWNSTREAM_QUALITY_SAFE_SOURCE_PASS",
+    "M4_DOWNSTREAM_QUALITY_MEGATRON_DEPENDENCIES_PASS"
+  ],
+  "failure": {
+    "exception": "AssertionError",
+    "first_failing_operation": "assert te_path.is_relative_to(venv)",
+    "embedded_python_line": 13,
+    "stage": "pre-model mcore converter-environment provenance gate",
+    "root_cause": "The exact prefetched mcore interpreter existed and successfully imported packaged megatron.bridge, packaged megatron.core, Transformer Engine, and AutoBridge. The gate then resolved Transformer Engine's module path and required the physical resolved target to remain below the virtualenv directory. That physical-containment condition was false, so the gate stopped before printing the paths or invoking the converter. This is an over-strict provenance assertion, not a missing-Transformer-Engine recurrence.",
+    "bounded_inference": "The false physical-containment result is consistent with a linked package whose resolved target is outside the virtualenv tree. The exact resolved target was not printed because the assertion preceded the diagnostic print."
+  },
+  "verified_environment_facts": {
+    "mcore_interpreter_executable_gate_passed": true,
+    "packaged_megatron_bridge_imported": true,
+    "packaged_megatron_core_imported": true,
+    "transformer_engine_imported": true,
+    "autobridge_imported": true,
+    "bridge_path_containment_assertion_passed": true,
+    "core_path_containment_assertion_passed": true,
+    "transformer_engine_resolved_path_containment_assertion_passed": false,
+    "converter_help_invoked": false
+  },
+  "absent_outputs": [
+    "terminal_policy_export.json",
+    "resolved_config.json",
+    "converted_huggingface_model",
+    "m4-downstream-quality-prompt-manifest.json",
+    "evaluation_data.json",
+    "m4-downstream-quality-no-training-preflight-result.json"
+  ],
+  "model": {
+    "name": "Qwen/Qwen3-0.6B",
+    "accessed": false
+  },
+  "optimizer_initialized": false,
+  "optimizer_steps": 0,
+  "training_started": false,
+  "qualification_started": false,
+  "pilot_started": false,
+  "scientific_acquisition_started": false,
+  "submission_attempts": 1,
+  "automatic_retry": false,
+  "automatic_extension": false,
+  "source_commit": "573dddce4cfca5fd615079c8045af05dddf80d03",
+  "terminal_artifact_authentication": {
+    "declared_exit_code": 1,
+    "metadata_sha256": "b0110488c9605d3a52dd649445581787a830217318f2d6493c9172200adba92b",
+    "workload_trace_sha256": "18aefc762c8c34d1fcda97040edcf5d9972e760b4cef9ef32a27b63eab596bee",
+    "workload_artifact_sha256": "0bcd60f44ea87764a0461130a82d94fd77ecb9d4ddfb2e47c5a5fb61e31b5cd8",
+    "workload_output_log_sha256": "7ccccfbe38897fa0fed041a41d95e1afc40fa29d56ecfd886360080a93b4546b",
+    "logs_before_artifact_sha256": "bdc854e0b838c04bf6f003f60510170cf90ddb05355dad4154d152e597463c5f",
+    "logs_after_trace_sha256": "4da25b1d96cd96a4b21166ce446fbc7297c283a90c3b53d7904a0b5b716fcabb",
+    "logs_after_artifact_sha256": "bb788a0647c8348d7c7404bf1ebeefa4e22862e3ac5fa398d113446c4f16b778"
+  },
+  "scientific_interpretation": "No downstream-quality or M4 scientific observation was produced. The run verified the exact mcore interpreter and successful imports through AutoBridge, then exposed an over-strict physical-path provenance assertion before model access.",
+  "prospective_repair": {
+    "change": "Retain the exact-interpreter, packaged-Bridge, packaged-Megatron-Core, and successful-import gates, but replace resolved physical containment for Transformer Engine with a symlink-aware logical provenance check and print raw and resolved paths before assertions.",
+    "local_implementation_status": "NOT_STARTED",
+    "requires_fresh_authorization": true,
+    "requires_new_package_identity": true
+  }
+}
