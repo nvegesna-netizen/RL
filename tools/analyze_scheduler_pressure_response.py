@@ -230,18 +230,44 @@ def _replay_parity(
     )
 
 
-def _maximum_concurrency(events: Sequence[SchedulerTraceEvent]) -> int:
+def _maximum_concurrency(
+    events: Sequence[SchedulerTraceEvent],
+    *,
+    terminal_event_types: frozenset[SchedulerEventType],
+) -> int:
     changes = []
     for event in events:
         if event.event_type is SchedulerEventType.ATTEMPT_DISPATCHED:
             changes.append((event.monotonic_ns, 1))
-        elif event.event_type is SchedulerEventType.GROUP_READY:
+        elif event.event_type in terminal_event_types:
             changes.append((event.monotonic_ns, -1))
     active = maximum = 0
     for _, change in sorted(changes, key=lambda item: (item[0], item[1])):
         active += change
         maximum = max(maximum, active)
     return maximum
+
+
+def _maximum_unreleased_group_concurrency(
+    events: Sequence[SchedulerTraceEvent],
+) -> int:
+    return _maximum_concurrency(
+        events,
+        terminal_event_types=frozenset(
+            {SchedulerEventType.GROUP_READY, SchedulerEventType.ATTEMPT_FAILED}
+        ),
+    )
+
+
+def _maximum_active_generation_concurrency(
+    events: Sequence[SchedulerTraceEvent],
+) -> int:
+    return _maximum_concurrency(
+        events,
+        terminal_event_types=frozenset(
+            {SchedulerEventType.ROLLOUT_COMPLETED, SchedulerEventType.ATTEMPT_FAILED}
+        ),
+    )
 
 
 def analyze_run(
@@ -408,6 +434,8 @@ def analyze_run(
     latency_ratio = statistics.median(ready_latencies["long"]) / statistics.median(
         ready_latencies["short"]
     )
+    unreleased_concurrency = _maximum_unreleased_group_concurrency(events)
+    active_generation_concurrency = _maximum_active_generation_concurrency(events)
     checks = {
         "complete_32_groups_64_completions": len(completed) == EXPECTED_GROUPS,
         "eight_nonempty_four_group_selections": True,
@@ -416,7 +444,6 @@ def analyze_run(
         "native_reconstruction_exact_group_id_parity": _replay_parity(
             events, manifest, arm
         ),
-        "maximum_concurrent_groups_equals_4": _maximum_concurrency(events) == 4,
         "backend_length_termination_rate_le_max_each_stratum": all(
             value
             <= thresholds.backend_length_termination_rate_max_each_stratum_each_arm
@@ -438,6 +465,21 @@ def analyze_run(
             >= thresholds.natural_long_short_ready_latency_median_ratio_min_each_arm
         ),
     }
+    if plan.schema_version == 1:
+        checks["maximum_concurrent_groups_equals_4"] = (
+            unreleased_concurrency
+            == thresholds.maximum_concurrent_groups_required_each_arm
+        )
+    else:
+        checks["maximum_active_generation_groups_equals_4"] = (
+            active_generation_concurrency
+            == thresholds.maximum_active_generation_groups_required_each_arm
+        )
+        if natural:
+            checks["natural_maximum_unreleased_groups_equals_4"] = (
+                unreleased_concurrency
+                == thresholds.natural_maximum_unreleased_groups_required_each_arm
+            )
     order = trace_analysis.selected_order
     shares = {
         str(horizon): sum(strata[source_id] == "short" for source_id in order[:horizon])
@@ -465,7 +507,14 @@ def analyze_run(
             "ready_latency_median_long_short_ratio": latency_ratio,
             "reward_mean_by_stratum": reward_means,
             "backend_length_termination_rate_by_stratum": length_rates,
-            "maximum_concurrent_groups": _maximum_concurrency(events),
+            **(
+                {"maximum_concurrent_groups": unreleased_concurrency}
+                if plan.schema_version == 1
+                else {
+                    "maximum_unreleased_groups": unreleased_concurrency,
+                    "maximum_active_generation_groups": active_generation_concurrency,
+                }
+            ),
             "selection_pressure": _arm_summary(trace_analysis),
             "validity_checks": checks,
             "all_validity_gates_passed": all(checks.values()),

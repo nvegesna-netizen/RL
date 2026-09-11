@@ -31,6 +31,15 @@ DAPO_CONFIRMED_CANDIDATE_SHA256 = (
 PRESSURE_RESPONSE_CONFIRMED_CANDIDATE_SHA256 = (
     "c35c06797483c83bd1a29f8cf856447387729e0e612480026eb84320127576cc"
 )
+PRESSURE_RESPONSE_CONCURRENCY_AMENDMENT_SHA256 = (
+    "bcd0977439deb1589ee236893000c9e8c2b6867bd86eec0dc240cc1321bf2488"
+)
+PRESSURE_RESPONSE_CONCURRENCY_AMENDMENT_CONFIRMATION_SHA256 = (
+    "892ccdeccc2e91a11fe1a9f692949c7cc9fddcd63b784ae7b43d3191e6a64197"
+)
+PRESSURE_RESPONSE_SUPERSEDED_PLAN_ID = (
+    "1348a5e1d6b26e0329527652a87c6b161b16d0e3a303709edb5501eaf5cb8e61"
+)
 
 PressureLevel: TypeAlias = Literal["l0", "l1", "l3"]
 PressureLatencyCondition: TypeAlias = Literal["natural", "controlled_positive_control"]
@@ -383,9 +392,9 @@ class SchedulerPressureResponsePool(BaseModel, extra="forbid", frozen=True):
     """Immutable identity and ten-arm execution order for one replication."""
 
     replication_id: str
-    order_seed: Literal[49001, 49002, 49003]
-    selection_seed: Literal[2026091001, 2026091002, 2026091003]
-    generation_study_seed: Literal[69001, 69002, 69003]
+    order_seed: Literal[49001, 49002, 49003, 49004]
+    selection_seed: Literal[2026091001, 2026091002, 2026091003, 2026091004]
+    generation_study_seed: Literal[69001, 69002, 69003, 69004]
     arm_execution_order: tuple[str, ...]
     pool_id: Sha256Hex
     manifest_sha256: Sha256Hex
@@ -394,7 +403,9 @@ class SchedulerPressureResponsePool(BaseModel, extra="forbid", frozen=True):
 class SchedulerPressureResponseThresholds(BaseModel, extra="forbid", frozen=True):
     backend_length_termination_rate_max_each_stratum_each_arm: float
     reward_mean_min_each_stratum_each_arm: float
-    maximum_concurrent_groups_required_each_arm: int
+    maximum_concurrent_groups_required_each_arm: int | None = None
+    maximum_active_generation_groups_required_each_arm: int | None = None
+    natural_maximum_unreleased_groups_required_each_arm: int | None = None
     natural_long_short_generated_token_median_ratio_min_each_arm: float
     natural_long_short_ready_latency_median_ratio_min_each_arm: float
     positive_control_undelayed_share_ready_first_min: float
@@ -410,7 +421,7 @@ class SchedulerPressureResponseThresholds(BaseModel, extra="forbid", frozen=True
 class SchedulerPressureResponsePlan(BaseModel, extra="forbid", frozen=True):
     """Hash-addressed final plan for the zero-update scheduler pressure surface."""
 
-    schema_version: Literal[1]
+    schema_version: Literal[1, 2]
     analysis_status: Literal[
         "controlled_zero_update_scheduler_pressure_response_surface"
     ]
@@ -421,6 +432,10 @@ class SchedulerPressureResponsePlan(BaseModel, extra="forbid", frozen=True):
     training_authorized: Literal[False]
     confirmed_candidate_sha256: Sha256Hex
     confirmation_record_sha256: Sha256Hex
+    confirmed_concurrency_amendment_sha256: Sha256Hex | None = None
+    concurrency_amendment_confirmation_sha256: Sha256Hex | None = None
+    supersedes_plan_id: Sha256Hex | None = None
+    excluded_calibration_order_seed: Literal[49001] | None = None
     analysis_code_commit: GitCommitHex
     expected_base_commit: GitCommitHex
     expected_image_sha256: Sha256Hex
@@ -444,7 +459,7 @@ class SchedulerPressureResponsePlan(BaseModel, extra="forbid", frozen=True):
     top_p: float
     top_k: Literal[20]
     repetition_penalty: float
-    replication_order: tuple[Literal[49001, 49002, 49003], ...]
+    replication_order: tuple[Literal[49001, 49002, 49003, 49004], ...]
     thresholds: SchedulerPressureResponseThresholds
     plan_id: Sha256Hex
 
@@ -461,11 +476,23 @@ class SchedulerPressureResponsePlan(BaseModel, extra="forbid", frozen=True):
             pool.order_seed: (pool.selection_seed, pool.generation_study_seed)
             for pool in self.pools
         }
-        if bindings != {
-            49001: (2026091001, 69001),
-            49002: (2026091002, 69002),
-            49003: (2026091003, 69003),
-        } or self.replication_order != (49001, 49002, 49003):
+        expected_bindings = (
+            {
+                49001: (2026091001, 69001),
+                49002: (2026091002, 69002),
+                49003: (2026091003, 69003),
+            }
+            if self.schema_version == 1
+            else {
+                49002: (2026091002, 69002),
+                49003: (2026091003, 69003),
+                49004: (2026091004, 69004),
+            }
+        )
+        expected_order = (
+            (49001, 49002, 49003) if self.schema_version == 1 else (49002, 49003, 49004)
+        )
+        if bindings != expected_bindings or self.replication_order != expected_order:
             raise ValueError("pressure-response replication bindings mismatch")
         if tuple(pool.order_seed for pool in self.pools) != self.replication_order:
             raise ValueError("pressure-response pools must follow replication order")
@@ -490,10 +517,9 @@ class SchedulerPressureResponsePlan(BaseModel, extra="forbid", frozen=True):
             raise ValueError("each replication must bind every arm exactly once")
         if (self.temperature, self.top_p, self.repetition_penalty) != (0.7, 0.8, 1.0):
             raise ValueError("pressure-response generation constants mismatch")
-        expected_thresholds = SchedulerPressureResponseThresholds(
+        threshold_fields = dict(
             backend_length_termination_rate_max_each_stratum_each_arm=0.125,
             reward_mean_min_each_stratum_each_arm=0.75,
-            maximum_concurrent_groups_required_each_arm=4,
             natural_long_short_generated_token_median_ratio_min_each_arm=2.0,
             natural_long_short_ready_latency_median_ratio_min_each_arm=1.5,
             positive_control_undelayed_share_ready_first_min=0.75,
@@ -505,6 +531,26 @@ class SchedulerPressureResponsePlan(BaseModel, extra="forbid", frozen=True):
             composition_replications_at_or_above_minimum=2,
             composition_negative_replications_max=1,
         )
+        if self.schema_version == 1:
+            expected_amendment = (None, None, None, None)
+            threshold_fields["maximum_concurrent_groups_required_each_arm"] = 4
+        else:
+            expected_amendment = (
+                PRESSURE_RESPONSE_CONCURRENCY_AMENDMENT_SHA256,
+                PRESSURE_RESPONSE_CONCURRENCY_AMENDMENT_CONFIRMATION_SHA256,
+                PRESSURE_RESPONSE_SUPERSEDED_PLAN_ID,
+                49001,
+            )
+            threshold_fields["maximum_active_generation_groups_required_each_arm"] = 4
+            threshold_fields["natural_maximum_unreleased_groups_required_each_arm"] = 4
+        if (
+            self.confirmed_concurrency_amendment_sha256,
+            self.concurrency_amendment_confirmation_sha256,
+            self.supersedes_plan_id,
+            self.excluded_calibration_order_seed,
+        ) != expected_amendment:
+            raise ValueError("pressure-response concurrency amendment binding mismatch")
+        expected_thresholds = SchedulerPressureResponseThresholds(**threshold_fields)
         if self.thresholds != expected_thresholds:
             raise ValueError("pressure-response thresholds mismatch")
         return self
@@ -621,7 +667,7 @@ def canonical_scheduler_pressure_response_plan(
     plan: SchedulerPressureResponsePlan,
 ) -> bytes:
     return json.dumps(
-        plan.model_dump(mode="json", exclude={"plan_id"}),
+        plan.model_dump(mode="json", exclude={"plan_id"}, exclude_none=True),
         sort_keys=True,
         separators=(",", ":"),
     ).encode()

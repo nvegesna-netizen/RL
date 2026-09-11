@@ -6,7 +6,10 @@ from pathlib import Path
 import pytest
 
 from nemo_rl.algorithms.async_utils.structured_scheduler_crossover import (
+    PRESSURE_RESPONSE_CONCURRENCY_AMENDMENT_CONFIRMATION_SHA256,
+    PRESSURE_RESPONSE_CONCURRENCY_AMENDMENT_SHA256,
     PRESSURE_RESPONSE_CONFIRMED_CANDIDATE_SHA256,
+    PRESSURE_RESPONSE_SUPERSEDED_PLAN_ID,
     SchedulerPressureResponsePlan,
     compute_scheduler_pressure_response_plan_id,
     load_scheduler_pressure_response_plan,
@@ -122,6 +125,46 @@ def pressure_plan_record() -> dict[str, object]:
     return record
 
 
+def amended_pressure_plan_record() -> dict[str, object]:
+    record = pressure_plan_record()
+    pools = record["pools"]
+    assert isinstance(pools, list)
+    arm_order = pools[0]["arm_execution_order"]
+    record.update(
+        schema_version=2,
+        confirmed_concurrency_amendment_sha256=(
+            PRESSURE_RESPONSE_CONCURRENCY_AMENDMENT_SHA256
+        ),
+        concurrency_amendment_confirmation_sha256=(
+            PRESSURE_RESPONSE_CONCURRENCY_AMENDMENT_CONFIRMATION_SHA256
+        ),
+        supersedes_plan_id=PRESSURE_RESPONSE_SUPERSEDED_PLAN_ID,
+        excluded_calibration_order_seed=49001,
+        pools=[
+            *pools[1:],
+            {
+                "replication_id": "replication_49004",
+                "order_seed": 49004,
+                "selection_seed": 2026091004,
+                "generation_study_seed": 69004,
+                "arm_execution_order": arm_order,
+                "pool_id": "4" * 64,
+                "manifest_sha256": "7" * 64,
+            },
+        ],
+        replication_order=[49002, 49003, 49004],
+    )
+    thresholds = record["thresholds"]
+    assert isinstance(thresholds, dict)
+    thresholds.pop("maximum_concurrent_groups_required_each_arm")
+    thresholds["maximum_active_generation_groups_required_each_arm"] = 4
+    thresholds["natural_maximum_unreleased_groups_required_each_arm"] = 4
+    record["plan_id"] = "0" * 64
+    draft = SchedulerPressureResponsePlan.model_validate(record)
+    record["plan_id"] = compute_scheduler_pressure_response_plan_id(draft)
+    return record
+
+
 def test_pressure_plan_round_trip_and_generic_dispatch(tmp_path: Path) -> None:
     path = tmp_path / "plan.json"
     path.write_text(json.dumps(pressure_plan_record()))
@@ -129,6 +172,28 @@ def test_pressure_plan_round_trip_and_generic_dispatch(tmp_path: Path) -> None:
     assert plan.prompt_groups == 32
     assert len(plan.arms) == 10
     assert load_scheduler_protocol(path) == plan
+
+
+def test_amended_pressure_plan_round_trip_and_replication_order(
+    tmp_path: Path,
+) -> None:
+    path = tmp_path / "plan.v2.json"
+    path.write_text(json.dumps(amended_pressure_plan_record()))
+    plan = load_scheduler_pressure_response_plan(path)
+    assert plan.schema_version == 2
+    assert plan.replication_order == (49002, 49003, 49004)
+    assert plan.excluded_calibration_order_seed == 49001
+    assert plan.thresholds.maximum_active_generation_groups_required_each_arm == 4
+    assert plan.thresholds.natural_maximum_unreleased_groups_required_each_arm == 4
+
+
+def test_amended_pressure_plan_rejects_old_concurrency_gate() -> None:
+    record = amended_pressure_plan_record()
+    thresholds = record["thresholds"]
+    assert isinstance(thresholds, dict)
+    thresholds["maximum_concurrent_groups_required_each_arm"] = 4
+    with pytest.raises(ValueError, match="thresholds mismatch"):
+        SchedulerPressureResponsePlan.model_validate(record)
 
 
 def test_pressure_plan_rejects_mutated_pressure_geometry() -> None:

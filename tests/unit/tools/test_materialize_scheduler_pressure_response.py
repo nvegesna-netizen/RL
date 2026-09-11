@@ -58,6 +58,40 @@ def _authorization(protocol_sha: str) -> dict[str, object]:
     }
 
 
+def _amendment() -> dict[str, object]:
+    return {
+        "candidate_status": "awaiting_exact_user_confirmation",
+        "requires_exact_hash_confirmation": True,
+        "non_retroactivity": {"reclassify_replication_49001": False},
+        "prospective_replications": {
+            "replication_order": [49002, 49003, 49004],
+            "new_pool_required": {
+                "order_seed": 49004,
+                "selection_seed": 2026091004,
+                "generation_study_seed": 69004,
+                "status": "not_materialized",
+            },
+        },
+    }
+
+
+def _amendment_confirmation(amendment_sha: str) -> dict[str, object]:
+    return {
+        "schema_version": 1,
+        "analysis_status": "confirmed_prospective_scheduler_pressure_response_concurrency_amendment",
+        "confirmed_amendment_candidate_sha256": amendment_sha,
+        "authorization": {
+            "materialize_and_validate_pool_49004_without_rollout": True,
+            "scheduler_arm_49002": False,
+            "scheduler_arm_49003": False,
+            "scheduler_arm_49004": False,
+            "counterfactual_replay": False,
+            "learner_training": False,
+            "population_claim": False,
+        },
+    }
+
+
 def test_materializes_balanced_32_group_pool(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -83,6 +117,7 @@ def test_materializes_balanced_32_group_pool(
         output_dir=output,
         protocol_path=protocol,
         authorization_path=authorization,
+        amendment_path=None,
         order_seed=49002,
         key=b"k" * 32,
     )
@@ -101,3 +136,57 @@ def test_materializes_balanced_32_group_pool(
     assert report[
         "materialization_authorization_sha256"
     ] == materializer.base._sha_path(authorization)
+
+
+def test_materializes_amendment_bound_49004_pool(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    protocol = tmp_path / "candidate.json"
+    protocol.write_text(json.dumps(_candidate(), sort_keys=True))
+    monkeypatch.setattr(
+        materializer, "PROTOCOL_SHA256", materializer.base._sha_path(protocol)
+    )
+    amendment = tmp_path / "amendment.json"
+    amendment.write_text(json.dumps(_amendment(), sort_keys=True))
+    monkeypatch.setattr(
+        materializer, "AMENDMENT_SHA256", materializer.base._sha_path(amendment)
+    )
+    confirmation = tmp_path / "amendment-confirmation.json"
+    confirmation.write_text(
+        json.dumps(
+            _amendment_confirmation(materializer.AMENDMENT_SHA256), sort_keys=True
+        )
+    )
+    monkeypatch.setattr(
+        materializer,
+        "AMENDMENT_CONFIRMATION_SHA256",
+        materializer.base._sha_path(confirmation),
+    )
+
+    def _snapshot(root: Path):
+        snapshot = b'{"schema_version":1}\n'
+        (root / "model_snapshot").mkdir()
+        (root / "model_snapshot_manifest.v1.json").write_bytes(snapshot)
+        return _Tokenizer(), snapshot
+
+    monkeypatch.setattr(materializer.base.model_pin, "_snapshot_model", _snapshot)
+    output = tmp_path / "pool"
+    materializer.materialize(
+        output_dir=output,
+        protocol_path=protocol,
+        authorization_path=confirmation,
+        amendment_path=amendment,
+        order_seed=49004,
+        key=b"k" * 32,
+    )
+
+    manifest = json.loads((output / "fixed_pool_manifest.v1.49004.json").read_text())
+    report = json.loads((output / "materialization_report.v1.json").read_text())
+    assert manifest["order_seed"] == 49004
+    assert manifest["selection_seed"] == 2026091004
+    assert report["concurrency_amendment_sha256"] == materializer.base._sha_path(
+        amendment
+    )
+    assert report[
+        "concurrency_amendment_confirmation_sha256"
+    ] == materializer.base._sha_path(confirmation)
