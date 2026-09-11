@@ -1,0 +1,20 @@
+{
+  "schema": "m4-downstream-quality-eos-preflight-v7-package-validation-v1",
+  "status": "PASS",
+  "manifest_sha256": "f1bcc8751ce969aef42531049d7fa1a1daea3a9b4ee723502632fac3b61226d5",
+  "authorization_sha256": "c22f3bf90a0493b2c892805ccf0f2b67af9575f8ede24911dc6228566bc1d9c2",
+  "predecessor_manifest_sha256": "eb6b1e3de678672e03ec1d386b300fea1650f44f39b27f7a3ce4c9f50136abb9",
+  "jet_manifest_schema_passed": true,
+  "bash_and_python_syntax_passed": true,
+  "dynamic_authority_passed": true,
+  "expanded_authority_negative_control_passed": true,
+  "v6_execution_repair_unchanged": true,
+  "deterministic_rebuild_passed": true,
+  "credential_surface_absent": true,
+  "jet_retrier_enabled": false,
+  "submission_attempt_limit": 1,
+  "optimizer_steps": 0,
+  "training_started": false,
+  "automatic_retry": false,
+  "automatic_extension": false
+}

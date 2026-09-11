@@ -1,0 +1,19 @@
+{
+  "schema": "m4-downstream-quality-no-training-eos-preflight-v7-package-receipt-v1",
+  "status": "PASS_UNSUBMITTED",
+  "manifest_path": "session/20260909_m4_llama_lifecycle_derived_transport/m4-downstream-quality-no-training-preflight-v7.yaml",
+  "manifest_sha256": "f1bcc8751ce969aef42531049d7fa1a1daea3a9b4ee723502632fac3b61226d5",
+  "manifest_bytes": 17751821,
+  "authorization_sha256": "c22f3bf90a0493b2c892805ccf0f2b67af9575f8ede24911dc6228566bc1d9c2",
+  "validation_sha256": "8d869de7efd506bb9bb4341521a0e97e24b5d2efee417f147529b6892299cd4b",
+  "runllm_sha256": "30532cd638d8394fa0e651daf4a43ec9424cbaa0949cd59c323191177318e616",
+  "required_launcher": "runllm.py --no_wait",
+  "jet_retrier_enabled": false,
+  "submission_attempt_limit": 1,
+  "submitted": false,
+  "optimizer_initialized": false,
+  "optimizer_steps": 0,
+  "training_started": false,
+  "automatic_retry": false,
+  "automatic_extension": false
+}
