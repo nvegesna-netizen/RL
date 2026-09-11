@@ -1,0 +1,23 @@
+{
+  "schema": "m4-downstream-quality-no-training-eos-preflight-v8-authorization-v1",
+  "scope": "exactly_one_evaluation_dataset_metadata_repaired_credential_free_downstream_quality_no_training_eos_preflight_v8",
+  "user_authorization": "do the repair. I authorize launches on eos",
+  "predecessor_terminal_result_sha256": "d388f31490977f929bf11b3b9ca49d0f5c1b183c0cedcdf6fa4a82caa78db004",
+  "predecessor_manifest_sha256": "f1bcc8751ce969aef42531049d7fa1a1daea3a9b4ee723502632fac3b61226d5",
+  "source_commit": "573dddce4cfca5fd615079c8045af05dddf80d03",
+  "protocol_draft_sha256": "5ec319043f6e3be90e8e294946eee3596b4c8ab445630de93ae103bbcabb7162",
+  "preflight_plan_sha256": "b160c6610226bf2b2250cbc20500667776bfb1e62df0918994c4221a690918fa",
+  "required_repair": "add_top_level_openmath_dataset_name_to_evaluation_only_master_config",
+  "required_launcher": "runllm.py --no_wait",
+  "submission_attempt_limit": 1,
+  "eos_submission_authorized": true,
+  "model_weight_access_authorized": true,
+  "optimizer_initialization_authorized": false,
+  "optimizer_steps_allowed": 0,
+  "training_authorized": false,
+  "qualification_authorized": false,
+  "pilot_authorized": false,
+  "scientific_acquisition_authorized": false,
+  "automatic_retry": false,
+  "automatic_extension": false
+}
