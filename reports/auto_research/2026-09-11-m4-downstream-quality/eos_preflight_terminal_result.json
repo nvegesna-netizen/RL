@@ -1,0 +1,74 @@
+{
+  "absent_outputs": [
+    "terminal_policy_export.json",
+    "resolved_config.json",
+    "converted_huggingface_model",
+    "m4-downstream-quality-prompt-manifest.json",
+    "evaluation_data.json",
+    "m4-downstream-quality-no-training-preflight-result.json"
+  ],
+  "automatic_extension": false,
+  "automatic_retry": false,
+  "child_pipeline": {
+    "finished_at": "2026-09-11T02:09:01.840-07:00",
+    "id": 67340771,
+    "status": "failed"
+  },
+  "classification": "OPERATIONAL_FAILURE_BEFORE_MODEL_ACCESS",
+  "completed_markers": [
+    "M4_DOWNSTREAM_QUALITY_EOS_PREFLIGHT_AUTHORITY_PASS",
+    "M4_DOWNSTREAM_QUALITY_SAFE_SOURCE_PASS",
+    "M4_DOWNSTREAM_QUALITY_MEGATRON_DEPENDENCY_PASS",
+    "M4_DOWNSTREAM_QUALITY_PROTOCOL_PASS"
+  ],
+  "failure": {
+    "exception": "omegaconf.errors.UnsupportedInterpolationType",
+    "first_failing_operation": "OmegaConf.to_container(load_config(config_path), resolve=True)",
+    "full_key": "policy.dynamic_batching.train_mb_tokens",
+    "message": "Unsupported interpolation type mul",
+    "missing_call": "register_omegaconf_resolvers()",
+    "stage": "frozen anchor configuration resolution"
+  },
+  "job": {
+    "duration_seconds": 237.440335,
+    "failure_reason": "script_failure",
+    "id": 435223516,
+    "status": "failed"
+  },
+  "logs_after_artifact": {
+    "bytes": 131641364,
+    "job_id": 435223517,
+    "sha256": "a964c5d8f1d9739957f772d8a5fe0f6bf715c54b59a0e104b008a2feb84c5cb3"
+  },
+  "model_weight_accessed": false,
+  "optimizer_initialized": false,
+  "optimizer_steps": 0,
+  "parent_pipeline": {
+    "finished_at": "2026-09-11T02:09:02.100-07:00",
+    "id": 67340646,
+    "status": "failed"
+  },
+  "pilot_started": false,
+  "prospective_repair": {
+    "code_change": "Call register_omegaconf_resolvers() before load_config and resolved conversion.",
+    "local_runtime_verification": "BLOCKED_MISSING_OMEGACONF_IN_LOCAL_JET_VENV",
+    "requires_fresh_authorization": true,
+    "requires_new_package_identity": true
+  },
+  "qualification_started": false,
+  "schema": "m4-downstream-quality-no-training-eos-preflight-terminal-result-v1",
+  "scientific_acquisition_started": false,
+  "scientific_interpretation": "No downstream-quality or M4 scientific observation was produced. The failure tests only the operational preflight package.",
+  "source_commit": "1941728f8a636d82126dec8632277cd63172e3b7",
+  "status": "FAILED_TERMINAL_NO_RETRY_AUTHORITY",
+  "submission_attempts": 1,
+  "terminal_artifact_authentication": {
+    "declared_exit_code": 1,
+    "duplicate_output_log_sha256": "f71f7a771998a56c338e9aad0e312151089189d165c5a36b80800ffffbe98435",
+    "duplicate_output_logs_identical": true,
+    "metadata_sha256": "c80d97099cf05ff6d187e32565e069acba65260f5731cb863fd3065d8b0d3d67",
+    "workload_artifact_sha256": "139e6b80b68bd5516e43c24ce56df5975bb426e621d65ef1fd9868f2bb80fe1b",
+    "workload_trace_sha256": "53d4238342af3440807a22b68eab212c5b5e3f2d9bcc9d53b5a4b00302807b86"
+  },
+  "training_started": false
+}
