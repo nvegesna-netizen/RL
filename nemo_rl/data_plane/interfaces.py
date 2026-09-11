@@ -52,7 +52,8 @@ class DataPlaneConfig(TypedDict):
     Required keys (always set in exemplar YAML — never defaulted in code):
     ``enabled``, ``impl``, ``backend``, ``storage_capacity``,
     ``num_storage_units``, ``claim_meta_poll_interval_s``,
-    ``global_segment_size``, ``local_buffer_size``.
+    ``global_segment_size``, ``local_buffer_size``,
+    ``actor_runtime_env_mode``.
 
     ``global_segment_size`` / ``local_buffer_size`` are only *read* when
     ``backend == "mooncake_cpu"``; the simple backend ignores them.
@@ -68,6 +69,7 @@ class DataPlaneConfig(TypedDict):
     claim_meta_poll_interval_s: float
     global_segment_size: int
     local_buffer_size: int
+    actor_runtime_env_mode: Literal["pip", "inherit_baked_single_node"]
     controller_address: NotRequired[str]
     ack_timeout_ms: NotRequired[int]
     observability: NotRequired["ObservabilityConfig"]

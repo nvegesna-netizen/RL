@@ -30,6 +30,7 @@ import time
 from importlib import resources
 from typing import Any
 
+import ray
 import torch
 import transfer_queue as tq
 from tensordict import TensorDict
@@ -201,6 +202,23 @@ def _patch_tq_actor_runtime_env() -> None:
     _TQ_RUNTIME_ENV_PATCHED = True
 
 
+def _configure_tq_actor_runtime_env(cfg: DataPlaneConfig) -> None:
+    """Configure how TransferQueue actors obtain their Python environment."""
+    mode = cfg["actor_runtime_env_mode"]
+    if mode == "pip":
+        _patch_tq_actor_runtime_env()
+        return
+    if mode != "inherit_baked_single_node":
+        raise ValueError(f"unknown TQ actor runtime environment mode: {mode!r}")
+
+    alive_nodes = [node for node in ray.nodes() if node.get("Alive") is True]
+    if len(alive_nodes) != 1:
+        raise RuntimeError(
+            "inherit_baked_single_node requires exactly one live Ray node; "
+            f"found {len(alive_nodes)}"
+        )
+
+
 def _init_tq(cfg: DataPlaneConfig) -> None:
     """Driver-process path: bootstrap the TQ controller for the chosen backend."""
     from omegaconf import OmegaConf
@@ -292,10 +310,7 @@ def _init_tq(cfg: DataPlaneConfig) -> None:
 
     conf = OmegaConf.merge(base, overlay)
 
-    # Inject runtime_env into TQ's actor spawn so SimpleStorageUnit /
-    # TransferQueueController land on workers with transfer_queue available
-    # — see _patch_tq_actor_runtime_env() docstring for the why.
-    _patch_tq_actor_runtime_env()
+    _configure_tq_actor_runtime_env(cfg)
 
     # pyrefly: ignore  # bad-argument-type
     tq.init(conf=conf)
