@@ -1,0 +1,22 @@
+{
+  "schema": "m4-downstream-quality-trained-paired-local-implementation-authorization-v1",
+  "scope": "implement_and_locally_validate_configs_run_identities_embargo_and_detached_analysis",
+  "user_authorization": "I authorize",
+  "protocol_sha256": "dbe7a4f7d1938ef43d24e536ccf9dd57110a01bab5e6cb511980218e472ef2c0",
+  "config_template_implementation_authorized": true,
+  "run_identity_materialization_authorized": true,
+  "outcome_embargo_implementation_authorized": true,
+  "detached_analyzer_implementation_authorized": true,
+  "local_tests_authorized": true,
+  "source_archive_build_authorized": false,
+  "credential_free_eos_package_build_authorized": false,
+  "model_weight_access_authorized": false,
+  "optimizer_initialization_authorized": false,
+  "training_authorized": false,
+  "eos_submission_authorized": false,
+  "qualification_authorized": false,
+  "scientific_acquisition_authorized": false,
+  "automatic_retry": false,
+  "automatic_replacement": false,
+  "automatic_extension": false
+}

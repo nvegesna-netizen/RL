@@ -1,0 +1,35 @@
+{
+  "schema": "m4-downstream-quality-trained-paired-outcome-embargo-v1",
+  "status": "LOCKED_NO_TRAINED_OUTCOMES",
+  "protocol_sha256": "dbe7a4f7d1938ef43d24e536ccf9dd57110a01bab5e6cb511980218e472ef2c0",
+  "required_completion_gate_schema": "m4-downstream-quality-trained-paired-completion-gate-v1",
+  "required_completion_status": "COMPLETE_AUTHENTICATED_16_PAIRS",
+  "required_run_result_schema": "m4-downstream-quality-trained-run-result-v1",
+  "required_complete_pairs": 16,
+  "required_complete_runs": 32,
+  "required_scores_each_run": 1024,
+  "completion_gate_must_bind": [
+    "protocol_sha256",
+    "run_manifest_sha256",
+    "all_32_result_paths_and_sha256",
+    "all_terminal_export_paths_and_sha256",
+    "all_evaluation_prompt_manifest_sha256",
+    "all_config_sha256",
+    "all_train_steps_and_trainer_versions",
+    "all_pipeline_and_job_ids"
+  ],
+  "analyzer_read_order": [
+    "protocol",
+    "run_manifest",
+    "completion_gate",
+    "only_after_gate_passes_read_run_results"
+  ],
+  "partial_result_analysis_allowed": false,
+  "regime_labeled_score_release_before_completion_allowed": false,
+  "outcome_guided_retry_allowed": false,
+  "outcome_guided_replacement_allowed": false,
+  "outcome_guided_extension_allowed": false,
+  "outcome_release_authorized": false,
+  "training_authorized": false,
+  "eos_submission_authorized": false
+}

@@ -1,0 +1,50 @@
+# Generated-run template for the prospective downstream-quality mixed-d5 cell.
+# This template is not directly launchable; every marker must be materialized.
+# Protocol SHA-256: dbe7a4f7d1938ef43d24e536ccf9dd57110a01bab5e6cb511980218e472ef2c0
+defaults: grpo_math_1B_megatron_single_controller_m4_opportunity_loss_followup.yaml
+
+grpo:
+  max_num_steps: 448
+  seed: __TRAINING_SEED__
+  num_prompts_per_step: 4
+  num_generations_per_prompt: 8
+
+data:
+  shuffle: true
+  train:
+    dataset_name: OpenMathInstruct-2
+    split_validation_size: 0.05
+    seed: 20260911
+  validation: null
+
+async_rl:
+  lifecycle_audit_path: __RUN_ROOT__/lifecycle.jsonl
+  controlled_release_delay:
+    enabled: true
+    seed: __ASSIGNMENT_SEED__
+    assignment_domain: __ASSIGNMENT_DOMAIN__
+    arms:
+      - label: control
+        delay_seconds: 0.0
+        mass: 1
+      - label: d5
+        delay_seconds: 5.0
+        mass: 1
+  gradient_opportunity_audit:
+    enabled: true
+    output_path: __RUN_ROOT__/opportunity.jsonl
+    observer_duty_path: __RUN_ROOT__/observer-duty.json
+  terminal_policy_export:
+    enabled: true
+    output_dir: __RUN_ROOT__/terminal-policy
+
+checkpointing:
+  enabled: false
+
+logger:
+  log_dir: __RUN_ROOT__/metrics
+  wandb_enabled: false
+  tensorboard_enabled: false
+  mlflow_enabled: false
+  swanlab_enabled: false
+  monitor_gpus: false
