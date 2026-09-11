@@ -1,6 +1,6 @@
 # Prospective Llama 3.2 3B M4 size extension
 
-Status: `FROZEN_LOCAL_DESIGN_NO_LAUNCH_AUTHORITY`.
+Status: `TERMINAL_JOINT_MATERIALITY_NOT_CONFIRMED`.
 
 ## Purpose and separation
 
@@ -72,3 +72,13 @@ substitution, or outcome-guided sample increase.
 
 No EOS launch, model-weight download, training, qualification, or acquisition
 is authorized by this design commit.
+
+## Terminal postscript
+
+The later separately authorized four-cell acquisition completed successfully.
+OpenMath was `MATERIAL`; GSM8K was `INCONCLUSIVE` around the 0.20 threshold, so
+the joint criterion was not met. Both prespecified 3B-minus-1B contrasts were
+negative with simultaneous intervals excluding zero, while their cross-workload
+difference was inconclusive. These findings support size-related attenuation
+for the tested fixed configurations, not a causal parameter-count effect or a
+general scaling law. See `terminal_report.md` and `terminal_result.json`.

@@ -1,6 +1,6 @@
 # Llama 3.2 3B no-training preflight plan
 
-Status: `FOUR_ACQUISITIONS_AUTHENTICATED_READY_FOR_FROZEN_ANALYSIS`.
+Status: `TERMINAL_JOINT_MATERIALITY_NOT_CONFIRMED`.
 
 The first executable boundary is exactly one no-training preflight submitted
 with `runllm.py --no_wait`, only after a dedicated authorization record exists.
@@ -158,3 +158,14 @@ the frozen lifecycle derivation method, and corrected observer duty between
 0.000417 and 0.000547. `terminal_authentication.json` is the compact pre-analysis
 record. No causal estimator was run before that record and the all-cell analysis
 driver were frozen.
+
+The frozen analysis then concluded `MATERIAL` for OpenMath (0.2621, envelope
+[0.2215, 0.2994]) and `INCONCLUSIVE` for GSM8K (0.2135, envelope
+[0.1872, 0.2398]). Because both co-primary workloads had to be material, the
+joint 3B replication criterion was not met. Prespecified 3B-minus-1B contrasts
+were negative for both workloads, with simultaneous intervals excluding zero;
+the cross-workload difference between those attenuations was inconclusive. The
+result supports attenuation in the tested fixed configurations, not a general
+scaling law. A deterministic rerun produced identical bytes. The terminal
+result is preserved in `terminal_result.json` and explained in
+`terminal_report.md`. No retry or extension is authorized.

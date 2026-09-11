@@ -1,0 +1,63 @@
+{
+  "schema": "m4-llama3p2-3b-four-acquisition-terminal-result-v1",
+  "status": "TERMINAL_JOINT_MATERIALITY_NOT_CONFIRMED",
+  "model": "meta-llama/Llama-3.2-3B-Instruct",
+  "instrument": "lifecycle_derived_grpo_opportunity_v1",
+  "materiality_threshold": 0.2,
+  "joint_success": false,
+  "co_primary_3b_workloads": {
+    "openmath": {
+      "estimate": 0.2620625084474564,
+      "confidence_envelope": [0.22149817490508733, 0.29937021858999413],
+      "material_p_value": 0.00199990000499975,
+      "holm_adjusted_material_p_value": 0.0039998000099995,
+      "conclusion": "MATERIAL",
+      "replicate_estimates": {"r1": 0.29050494316618847, "r2": 0.23362007372872431}
+    },
+    "gsm8k": {
+      "estimate": 0.21352290408701716,
+      "confidence_envelope": [0.18723560970139147, 0.23983916503944264],
+      "material_p_value": 0.15664216789160543,
+      "holm_adjusted_material_p_value": 0.15664216789160543,
+      "conclusion": "INCONCLUSIVE",
+      "replicate_estimates": {"r1": 0.18025675570297786, "r2": 0.24678905247105645}
+    }
+  },
+  "secondary_3b_minus_1b": {
+    "openmath": {
+      "estimate": -0.13701638185002188,
+      "confidence_envelope": [-0.198620186246386, -0.07492671093831058],
+      "simultaneous_two_contrast_interval": [-0.2093320793075156, -0.06470068439252816],
+      "conclusion": "NEGATIVE"
+    },
+    "gsm8k": {
+      "estimate": -0.1325512333757226,
+      "confidence_envelope": [-0.1833906285336748, -0.07495219559104012],
+      "simultaneous_two_contrast_interval": [-0.19385916115687568, -0.07124330559456955],
+      "conclusion": "NEGATIVE"
+    }
+  },
+  "secondary_cross_workload_size_interaction_gsm8k_minus_openmath": {
+    "estimate": 0.004465148474299269,
+    "confidence_envelope": [-0.07664635940349618, 0.08776958663098018],
+    "conclusion": "INCONCLUSIVE"
+  },
+  "cells": {
+    "openmath_r1": {"parent_pipeline_id": 67263316, "child_pipeline_id": 67263519, "joined_assignment_count": 7073, "missing_fraction_each_arm": 0.0},
+    "openmath_r2": {"parent_pipeline_id": 67263327, "child_pipeline_id": 67263508, "joined_assignment_count": 6612, "missing_fraction_each_arm": 0.0},
+    "gsm8k_r1": {"parent_pipeline_id": 67263343, "child_pipeline_id": 67263541, "joined_assignment_count": 7176, "missing_fraction_each_arm": 0.0},
+    "gsm8k_r2": {"parent_pipeline_id": 67263328, "child_pipeline_id": 67263552, "joined_assignment_count": 7927, "missing_fraction_each_arm": 0.0}
+  },
+  "combination_rule": "equal_replicate_weight_independent_block_diagonal",
+  "size_contrast_scope": "descriptive_fixed_configuration_contrasts_not_a_population_scaling_law",
+  "one_b_reference_reproduced": true,
+  "qualification_data_entered_estimator": false,
+  "terminal_analysis_sha256": "6855611a3a400d84f45003e26f8ef40c2fcee0d6d2c0edbd3a98ed27c78c661a",
+  "terminal_authentication_sha256": "5e6ebc34974ccd9c9b8902bee511180c5826547f131b8c9d04291a75b5676355",
+  "analysis_driver_sha256": "cb77c8c4f55af41a5af8aa8d47024807ada355fbbb050fbc0ae2c40a6e7aaebd",
+  "prospective_protocol_sha256": "4f2a5e496030e836b3449697928f4f363d7d36e3cec668105b2cdcc701b9814c",
+  "one_b_terminal_result_sha256": "ad2a2c6261996327c2dfe854fb8e73c86b14b7fec883d61c12dcf83808c126a0",
+  "deterministic_reproduction_byte_identical": true,
+  "automatic_retry": false,
+  "automatic_extension": false
+}
