@@ -1,0 +1,21 @@
+{
+  "schema": "m4-downstream-quality-trained-paired-local-package-authorization-v1",
+  "scope": "build_and_clean_room_validate_credential_free_32_run_acquisition_candidates_only",
+  "user_authorization": "I authorize",
+  "protocol_sha256": "dbe7a4f7d1938ef43d24e536ccf9dd57110a01bab5e6cb511980218e472ef2c0",
+  "run_manifest_sha256": "a461e83c7dbccdefa1c5c779062e709f34bfc502639a3e7de663a717fefa93bf",
+  "runtime_source_commit": "e90e400eb2219284b1e0b1726bdfd8e878ed8620",
+  "candidate_count": 32,
+  "source_archive_build_authorized": true,
+  "credential_free_eos_package_build_authorized": true,
+  "clean_room_validation_authorized": true,
+  "model_weight_access_authorized": false,
+  "optimizer_initialization_authorized": false,
+  "training_authorized": false,
+  "eos_submission_authorized": false,
+  "qualification_authorized": false,
+  "scientific_acquisition_authorized": false,
+  "automatic_retry": false,
+  "automatic_replacement": false,
+  "automatic_extension": false
+}
