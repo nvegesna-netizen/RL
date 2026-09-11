@@ -1,0 +1,23 @@
+{
+  "schema": "m4-downstream-quality-no-training-eos-preflight-authorization-v1",
+  "scope": "exactly_one_credential_free_downstream_quality_no_training_eos_preflight",
+  "user_authorization": "I authorize",
+  "source_commit": "1941728f8a636d82126dec8632277cd63172e3b7",
+  "source_archive_sha256": "80741c66b32a7951e4ebd620e66a8043858159e7a871c7fb87d038db068aa714",
+  "megatron_dependency_sha256": "98d98920c0fea3d8ae1216a485dc9b5aa4fc966e469435ad61f2bae456de80d2",
+  "protocol_draft_sha256": "5ec319043f6e3be90e8e294946eee3596b4c8ab445630de93ae103bbcabb7162",
+  "preflight_plan_sha256": "b160c6610226bf2b2250cbc20500667776bfb1e62df0918994c4221a690918fa",
+  "local_candidate_sha256": "e7de1aa88e2f4a9c7de7e1b7f9f6a5b34382ea18544d9920dcb65d3d0b5b4853",
+  "required_launcher": "runllm.py --no_wait",
+  "submission_attempt_limit": 1,
+  "eos_submission_authorized": true,
+  "model_weight_access_authorized": true,
+  "optimizer_initialization_authorized": false,
+  "optimizer_steps_allowed": 0,
+  "training_authorized": false,
+  "qualification_authorized": false,
+  "pilot_authorized": false,
+  "scientific_acquisition_authorized": false,
+  "automatic_retry": false,
+  "automatic_extension": false
+}

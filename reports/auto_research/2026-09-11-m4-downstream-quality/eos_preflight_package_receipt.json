@@ -1,0 +1,33 @@
+{
+  "additional_variables_sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+  "authorization_sha256": "a2cd3cb97818d530b4dfb72312eb4ee266322c534c7a51e89f49006e04a26ceb",
+  "authorized_builder_sha256": "4612185db9f1e5c507fa9fdfd02e25747c98ee52cd3567aff056a8bd11188c64",
+  "authorized_validator_sha256": "39f87fbe1cacd35f73bedd9789877293b4552408cf6c44e61c08226ef2483664",
+  "automatic_extension": false,
+  "automatic_retry": false,
+  "custom_config_sha256": "c13a73b87669569429c36fd0c60f09d2a6ecabfb4086063395924cc26566dc8d",
+  "jet_retrier_enabled": false,
+  "manifest_bytes": 15759356,
+  "manifest_git_tracked": false,
+  "manifest_name": "m4-downstream-quality-no-training-preflight",
+  "manifest_path": "session/20260909_m4_llama_lifecycle_derived_transport/m4-downstream-quality-no-training-preflight.yaml",
+  "manifest_sha256": "13dfd195a2ea2a5f6b9426b854531a294a51f31214d6e195df5d6cec5b5e5103",
+  "optimizer_initialized": false,
+  "optimizer_steps": 0,
+  "required_launcher": "runllm.py --no_wait",
+  "runllm_sha256": "30532cd638d8394fa0e651daf4a43ec9424cbaa0949cd59c323191177318e616",
+  "scheduler": {
+    "nodes": 1,
+    "sbatch_time": "02:00:00",
+    "srun_time": "02:00:00",
+    "workload_time_limit_seconds": 7200
+  },
+  "schema": "m4-downstream-quality-no-training-eos-preflight-package-receipt-v1",
+  "source_archive_sha256": "80741c66b32a7951e4ebd620e66a8043858159e7a871c7fb87d038db068aa714",
+  "source_commit": "1941728f8a636d82126dec8632277cd63172e3b7",
+  "status": "PASS_UNSUBMITTED",
+  "submission_attempt_limit": 1,
+  "submitted": false,
+  "training_started": false,
+  "validation_record_sha256": "3988c01976f3045944166c8d42ca18058d66644df1a23ddeca05758588229960"
+}

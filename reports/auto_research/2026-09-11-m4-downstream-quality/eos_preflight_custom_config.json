@@ -1,0 +1,23 @@
+{
+  "environments": {
+    "retrier": {
+      "enabled": false
+    }
+  },
+  "launchers": {
+    "dgxh100_eos": {
+      "account": "coreai_dlalgo_ci",
+      "exclusive": true,
+      "mounts": {
+        "/jet/persistent/nvegesna": "/lustre/fsw/coreai_dlalgo_ci/nvegesna"
+      },
+      "partition": "batch",
+      "sbatch_additional_flags": {
+        "time": "02:00:00"
+      },
+      "srun_additional_flags": {
+        "time": "02:00:00"
+      }
+    }
+  }
+}
