@@ -106,3 +106,24 @@ for OpenMath, and [0.2634, 0.4298] and [0.2884, 0.3830] for GSM8K. Each remains
 above 0.20. The secondary cross-workload contrast remains inconclusive:
 0.0530, envelope [-0.0137, 0.1232]. Machine-readable values are in
 `llama_v5_publication_extension.json`.
+
+## Prospective Llama 3.2 3B extension
+
+The four frozen 3B ledgers reproduce the registered endpoints exactly.
+
+| Workload | Adjusted estimate | HAC 95% interval | Bootstrap 95% interval | Unadjusted estimate |
+| --- | ---: | ---: | ---: | ---: |
+| OpenMath | 0.2621 | [0.2248, 0.2994] | [0.2215, 0.2989] | 0.2358 |
+| GSM8K | 0.2135 | [0.1878, 0.2393] | [0.1872, 0.2398] | 0.2635 |
+
+All terminal-missingness endpoints coincide, and common and registered-full
+windows are identically versions 8–407. OpenMath is above thresholds 0.00,
+0.10, and 0.20; it crosses 0.25 and is below or equal at 0.30 and above. GSM8K
+is above 0.00 and 0.10, crosses 0.20, and is below or equal at 0.25 and above.
+
+Leave-one-replicate-out analysis exposes real replicate variation: OpenMath r1
+is individually material while r2 crosses 0.20; GSM8K r1 crosses 0.20 and r2 is
+individually material. The prospectively combined conclusions—not selected
+replicates—remain authoritative. Both 3B-minus-1B secondary contrasts are
+negative under HAC and bootstrap, and their simultaneous intervals exclude
+zero. Machine-readable values are in `llama_3b_publication_extension.json`.

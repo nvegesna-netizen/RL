@@ -26,6 +26,10 @@ CELL_IDS = {
     "llama3p2_1b_openmath_r2": "A8",
     "llama3p2_1b_gsm8k_r1": "A9",
     "llama3p2_1b_gsm8k_r2": "A10",
+    "llama3p2_3b_openmath_r1": "A11",
+    "llama3p2_3b_openmath_r2": "A12",
+    "llama3p2_3b_gsm8k_r1": "A13",
+    "llama3p2_3b_gsm8k_r2": "A14",
 }
 
 EXTERNAL_ARTIFACTS = {
@@ -39,6 +43,10 @@ EXTERNAL_ARTIFACTS = {
     "A8": ("37da83c526bef6cf13b36090d21dd49a9d73a768422e3fea9381521eb8e71a33", 65_947_753),
     "A9": ("c321dcf94a138d2a289142b0991c452be848d28dedf5f5c468fba78cd85ffa59", 66_467_861),
     "A10": ("fcb236655ed1554215e370cca6d21fe5873b385e4f4b1576cdc27ff2dbe4735b", 67_119_843),
+    "A11": ("b79b7d1bcd861bdacf3d161bbdc5fe236edc35da41f427d0adf20a1895ddcd38", 66_561_497),
+    "A12": ("034d6e57440593a48a28f705534474b1c36c8aeb0170c22e54d869f4e33a9aaa", 66_110_870),
+    "A13": ("6714f77466a5d3e3c854339f69d19ac4d8312276cc3627c25fe3d8ef79b26163", 67_019_231),
+    "A14": ("e535f0ce6c1fdb4f1863eca4142596f4543190d53dfd70cee7ddaf35d25a5920", 67_286_792),
 }
 
 PROTOCOL_SOURCES = {
@@ -52,6 +60,10 @@ PROTOCOL_SOURCES = {
     "A8": HERE.parent / "2026-09-09-m4-llama-lifecycle-derived-transport/v5_protocol_config.json",
     "A9": HERE.parent / "2026-09-09-m4-llama-lifecycle-derived-transport/v5_protocol_config.json",
     "A10": HERE.parent / "2026-09-09-m4-llama-lifecycle-derived-transport/v5_protocol_config.json",
+    "A11": HERE.parent / "2026-09-10-m4-llama3p2-3b-size-extension/prospective_protocol.json",
+    "A12": HERE.parent / "2026-09-10-m4-llama3p2-3b-size-extension/prospective_protocol.json",
+    "A13": HERE.parent / "2026-09-10-m4-llama3p2-3b-size-extension/prospective_protocol.json",
+    "A14": HERE.parent / "2026-09-10-m4-llama3p2-3b-size-extension/prospective_protocol.json",
 }
 
 PROTOCOL_HASHES = {
@@ -65,6 +77,10 @@ PROTOCOL_HASHES = {
     "A8": "56a3311f78a0ac12cb9dc7ecdeee1a6fc0c5ace889799ebfaba1faaa0e610521",
     "A9": "56a3311f78a0ac12cb9dc7ecdeee1a6fc0c5ace889799ebfaba1faaa0e610521",
     "A10": "56a3311f78a0ac12cb9dc7ecdeee1a6fc0c5ace889799ebfaba1faaa0e610521",
+    "A11": "4f2a5e496030e836b3449697928f4f363d7d36e3cec668105b2cdcc701b9814c",
+    "A12": "4f2a5e496030e836b3449697928f4f363d7d36e3cec668105b2cdcc701b9814c",
+    "A13": "4f2a5e496030e836b3449697928f4f363d7d36e3cec668105b2cdcc701b9814c",
+    "A14": "4f2a5e496030e836b3449697928f4f363d7d36e3cec668105b2cdcc701b9814c",
 }
 
 
@@ -83,9 +99,9 @@ python3 -m unittest discover -s tests -v
 ```
 
 `data/published_results.json` contains the six-cell Qwen common-window results
-and the two replicated Llama workload endpoints after
+and the four replicated Llama size/workload endpoints after
 removal of private filesystem paths. `data/provenance.json` binds opaque
-acquisition IDs A1--A10 to the frozen protocols, compact records, and external
+acquisition IDs A1--A14 to the frozen protocols, compact records, and external
 terminal archives by SHA-256. The large empirical ledgers are not included;
 therefore this bundle verifies compact results but does not independently
 re-estimate the empirical cells. The synthetic ledger contains no experimental
@@ -146,14 +162,22 @@ def published_checks() -> dict[str, object]:
     assert math.isclose(extension["openmath"]["identification_interval"][0], 0.39907889029747823)
     assert math.isclose(extension["gsm8k"]["identification_interval"][0], 0.34607413746273974)
     assert sum(value["assignment_count"] for value in extension.values()) == 28_712
+    extension_3b = result["llama_3b_extension"]
+    combined_3b = extension_3b["combined_workloads"]
+    assert math.isclose(combined_3b["openmath"]["identification_interval"][0], 0.2620625084474564)
+    assert math.isclose(combined_3b["gsm8k"]["identification_interval"][0], 0.21352290408701716)
+    assert combined_3b["openmath"]["conclusion"] == "MATERIAL"
+    assert combined_3b["gsm8k"]["conclusion"] == "INCONCLUSIVE"
+    assert all(value["simultaneous_two_contrast_interval"][1] < 0 for value in extension_3b["secondary_3b_minus_1b"].values())
     provenance = load(ROOT / "data/provenance.json")
-    assert set(provenance["acquisitions"]) == {f"A{i}" for i in range(1, 11)}
-    assert sum(item["full_window_assignments"] for item in provenance["acquisitions"].values()) == 77_865
+    assert set(provenance["acquisitions"]) == {f"A{i}" for i in range(1, 15)}
+    assert sum(item["full_window_assignments"] for item in provenance["acquisitions"].values()) == 106_653
     assert all(len(item["terminal_artifact_sha256"]) == 64 for item in provenance["acquisitions"].values())
     return {
         "common_window_assignments": 43_756,
-        "full_window_assignments": 77_865,
-        "llama_extension_assignments": 28_712,
+        "full_window_assignments": 106_653,
+        "llama_1b_extension_assignments": 28_712,
+        "llama_3b_extension_assignments": 28_788,
         "hac_correlation": synthesis["hac_correlation"],
         "bootstrap_correlation": synthesis["bootstrap_correlation"],
     }
@@ -277,6 +301,8 @@ def forest(cells: dict[str, dict[str, object]]) -> str:
         ("1.7B - NuminaMath", "qwen3_1p7b_numinamath"),
         ("Llama 1B - OpenMath (2 reps)", "llama3p2_1b_openmath"),
         ("Llama 1B - GSM8K (2 reps)", "llama3p2_1b_gsm8k"),
+        ("Llama 3B - OpenMath (2 reps)", "llama3p2_3b_openmath"),
+        ("Llama 3B - GSM8K (2 reps)", "llama3p2_3b_gsm8k"),
     ]
     left, right, top, row = 255, 850, 30, 55
     x_min, x_max = 0.08, 0.48
@@ -296,7 +322,7 @@ def forest(cells: dict[str, dict[str, object]]) -> str:
         record = cells[name]
         low, high = record["outer_envelope"]
         estimate = record["estimate"]
-        color = "#00897b" if "llama" in name else "#1769aa" if "0p6b" in name else "#7b1fa2"
+        color = "#e67e22" if "llama3p2_3b" in name else "#00897b" if "llama" in name else "#1769aa" if "0p6b" in name else "#7b1fa2"
         parts.append(f'<text x="20" y="{y + 5}" class="label">{label}</text>')
         parts.append(f'<line x1="{x(low):.1f}" y1="{y}" x2="{x(high):.1f}" y2="{y}" stroke="{color}" stroke-width="4"/>')
         for endpoint in (low, high):
@@ -347,6 +373,11 @@ def main() -> None:
             "estimate": record["identification_interval"][0],
             "outer_envelope": record["confidence_envelope"],
         }
+        record_3b = result["llama_3b_extension"]["combined_workloads"][workload]
+        cells[f"llama3p2_3b_{workload}"] = {
+            "estimate": record_3b["identification_interval"][0],
+            "outer_envelope": record_3b["confidence_envelope"],
+        }
     outputs = {
         ROOT / "figures/cell_forest_plot.svg": forest(cells),
         ROOT / "figures/interaction_plot.svg": interactions(result["dependency_aware_synthesis"]),
@@ -385,8 +416,9 @@ class ReviewerArtifactTest(unittest.TestCase):
         )
         output = json.loads(result.stdout)
         self.assertEqual(output["status"], "PASS")
-        self.assertEqual(output["published"]["full_window_assignments"], 77_865)
-        self.assertEqual(output["published"]["llama_extension_assignments"], 28_712)
+        self.assertEqual(output["published"]["full_window_assignments"], 106_653)
+        self.assertEqual(output["published"]["llama_1b_extension_assignments"], 28_712)
+        self.assertEqual(output["published"]["llama_3b_extension_assignments"], 28_788)
         self.assertEqual(output["synthetic"]["row_count"], 192)
 
     def test_figure_reproduction(self) -> None:
@@ -415,6 +447,24 @@ def write_json(path: Path, value: object) -> None:
 
 
 def public_protocol(raw: dict[str, object], artifact_id: str) -> dict[str, object]:
+    if artifact_id in {"A11", "A12", "A13", "A14"}:
+        names = {"A11": "openmath_r1", "A12": "openmath_r2", "A13": "gsm8k_r1", "A14": "gsm8k_r2"}
+        name = names[artifact_id]
+        cell = raw["cells"][name]
+        return {
+            "artifact_id": artifact_id,
+            "analysis": raw["analysis"],
+            "assignment": {"domain": cell["domain"], "seed": cell["seed"]},
+            "instrument": raw["instrument"],
+            "model": raw["model"],
+            "protocol": raw["schema"],
+            "runtime": raw["acquisition"],
+            "windows": {
+                "primary": raw["acquisition"]["primary_start_versions"],
+                "guard": raw["acquisition"]["terminal_guard_start_versions"],
+            },
+            "workload": "OpenMath" if name.startswith("openmath") else "GSM8K",
+        }
     if artifact_id in {"A7", "A8", "A9", "A10"}:
         names = {
             "A7": "openmath_r1",
@@ -534,6 +584,10 @@ def main() -> None:
     for cell in extension["cells"].values():
         cell.pop("selected_artifact_sha256", None)
     published["llama_v5_extension"] = extension
+    extension_3b = json.loads((HERE / "llama_3b_publication_extension.json").read_bytes())
+    for cell in extension_3b["cells"].values():
+        cell.pop("selected_artifact_sha256", None)
+    published["llama_3b_extension"] = extension_3b
     published["evidence_commitments"] = {
         CELL_IDS[name]: {
             "cell": name,
@@ -557,7 +611,7 @@ def main() -> None:
         text=True,
     )
 
-    full_counts = {"A1": 7199, "A2": 8673, "A3": 9573, "A4": 9429, "A5": 7229, "A6": 7050, "A7": 6908, "A8": 6809, "A9": 7314, "A10": 7681}
+    full_counts = {"A1": 7199, "A2": 8673, "A3": 9573, "A4": 9429, "A5": 7229, "A6": 7050, "A7": 6908, "A8": 6809, "A9": 7314, "A10": 7681, "A11": 7073, "A12": 6612, "A13": 7176, "A14": 7927}
     provenance = {
         "schema": "m4-anonymous-provenance-v1",
         "access_scope": "compact_records_only_external_raw_archives_not_included",

@@ -243,6 +243,349 @@
     "independent_replications": false,
     "shared_reference": "Both reference interactions reuse the same two GSM8K cells."
   },
+  "llama_3b_extension": {
+    "analysis_role": "prospective_within_family_size_extension",
+    "authentication_sha256": "5e6ebc34974ccd9c9b8902bee511180c5826547f131b8c9d04291a75b5676355",
+    "cells": {
+      "gsm8k-r1": {
+        "adjusted": {
+          "bootstrap_interval": [
+            0.13763943863084283,
+            0.22144134995548978
+          ],
+          "estimate": 0.18025675570297786,
+          "hac_interval": [
+            0.14333650875228793,
+            0.2171770026536678
+          ],
+          "outer_envelope": [
+            0.13763943863084283,
+            0.22144134995548978
+          ]
+        },
+        "adjustment_shift": -0.07122008242785297,
+        "assignment_count": 7176,
+        "replicate": "r1",
+        "terminal_missing_count": 0,
+        "unadjusted_estimate": 0.2514768381308308,
+        "workload": "gsm8k"
+      },
+      "gsm8k-r2": {
+        "adjusted": {
+          "bootstrap_interval": [
+            0.2159822532979191,
+            0.2804999110112208
+          ],
+          "estimate": 0.24678905247105645,
+          "hac_interval": [
+            0.21091149289759936,
+            0.28266661204451354
+          ],
+          "outer_envelope": [
+            0.21091149289759936,
+            0.28266661204451354
+          ]
+        },
+        "adjustment_shift": -0.028707455698683687,
+        "assignment_count": 7927,
+        "replicate": "r2",
+        "terminal_missing_count": 0,
+        "unadjusted_estimate": 0.27549650816974014,
+        "workload": "gsm8k"
+      },
+      "openmath-r1": {
+        "adjusted": {
+          "bootstrap_interval": [
+            0.22636804389864087,
+            0.35003257861530623
+          ],
+          "estimate": 0.29050494316618847,
+          "hac_interval": [
+            0.23352863636136523,
+            0.3474812499710117
+          ],
+          "outer_envelope": [
+            0.22636804389864087,
+            0.35003257861530623
+          ]
+        },
+        "adjustment_shift": 0.008164723430433063,
+        "assignment_count": 7073,
+        "replicate": "r1",
+        "terminal_missing_count": 0,
+        "unadjusted_estimate": 0.2823402197357554,
+        "workload": "openmath"
+      },
+      "openmath-r2": {
+        "adjusted": {
+          "bootstrap_interval": [
+            0.18412413382144754,
+            0.2765691839355449
+          ],
+          "estimate": 0.23362007372872431,
+          "hac_interval": [
+            0.1854416407197409,
+            0.28179850673770773
+          ],
+          "outer_envelope": [
+            0.18412413382144754,
+            0.28179850673770773
+          ]
+        },
+        "adjustment_shift": 0.0444529651507517,
+        "assignment_count": 6612,
+        "replicate": "r2",
+        "terminal_missing_count": 0,
+        "unadjusted_estimate": 0.18916710857797261,
+        "workload": "openmath"
+      }
+    },
+    "combined_workloads": {
+      "gsm8k": {
+        "assignment_count": 15103,
+        "bootstrap_draws": 20000,
+        "combination_rule": "equal_replicate_weight_independent_block_diagonal",
+        "common_vs_full_window": {
+          "common_window": [
+            8,
+            407
+          ],
+          "guard_window_excluded": [
+            408,
+            447
+          ],
+          "registered_primary_window": [
+            8,
+            407
+          ],
+          "status": "IDENTICAL_BY_DESIGN"
+        },
+        "conclusion": "INCONCLUSIVE",
+        "confidence": 0.95,
+        "confidence_envelope": [
+          0.18723560970139147,
+          0.23983916503944264
+        ],
+        "coverage_gate_passed": true,
+        "identification_interval": [
+          0.21352290408701716,
+          0.21352290408701716
+        ],
+        "leave_one_replicate_out": {
+          "r1": {
+            "bootstrap_interval": [
+              0.13763943863084283,
+              0.22144134995548978
+            ],
+            "estimate": 0.18025675570297786,
+            "hac_interval": [
+              0.14333650875228793,
+              0.2171770026536678
+            ],
+            "outer_envelope": [
+              0.13763943863084283,
+              0.22144134995548978
+            ]
+          },
+          "r2": {
+            "bootstrap_interval": [
+              0.2159822532979191,
+              0.2804999110112208
+            ],
+            "estimate": 0.24678905247105645,
+            "hac_interval": [
+              0.21091149289759936,
+              0.28266661204451354
+            ],
+            "outer_envelope": [
+              0.21091149289759936,
+              0.28266661204451354
+            ]
+          }
+        },
+        "lower_bootstrap_interval": [
+          0.18723560970139147,
+          0.23983916503944264
+        ],
+        "lower_hac_interval": [
+          0.18778235283103736,
+          0.23926345534299695
+        ],
+        "material_p_value": 0.15664216789160543,
+        "material_threshold": 0.2,
+        "replicate_estimates": {
+          "r1": [
+            0.18025675570297786,
+            0.18025675570297786
+          ],
+          "r2": [
+            0.24678905247105645,
+            0.24678905247105645
+          ]
+        },
+        "threshold_sensitivity": {
+          "0.00": "ABOVE_THRESHOLD",
+          "0.10": "ABOVE_THRESHOLD",
+          "0.20": "CROSSES_THRESHOLD",
+          "0.25": "BELOW_OR_EQUAL_THRESHOLD",
+          "0.30": "BELOW_OR_EQUAL_THRESHOLD",
+          "0.35": "BELOW_OR_EQUAL_THRESHOLD",
+          "0.40": "BELOW_OR_EQUAL_THRESHOLD"
+        },
+        "unadjusted_estimate": 0.2634866731502855,
+        "upper_bootstrap_interval": [
+          0.18723560970139147,
+          0.23983916503944264
+        ],
+        "upper_hac_interval": [
+          0.18778235283103736,
+          0.23926345534299695
+        ]
+      },
+      "openmath": {
+        "assignment_count": 13685,
+        "bootstrap_draws": 20000,
+        "combination_rule": "equal_replicate_weight_independent_block_diagonal",
+        "common_vs_full_window": {
+          "common_window": [
+            8,
+            407
+          ],
+          "guard_window_excluded": [
+            408,
+            447
+          ],
+          "registered_primary_window": [
+            8,
+            407
+          ],
+          "status": "IDENTICAL_BY_DESIGN"
+        },
+        "conclusion": "MATERIAL",
+        "confidence": 0.95,
+        "confidence_envelope": [
+          0.22149817490508733,
+          0.29937021858999413
+        ],
+        "coverage_gate_passed": true,
+        "identification_interval": [
+          0.2620625084474564,
+          0.2620625084474564
+        ],
+        "leave_one_replicate_out": {
+          "r1": {
+            "bootstrap_interval": [
+              0.22636804389864087,
+              0.35003257861530623
+            ],
+            "estimate": 0.29050494316618847,
+            "hac_interval": [
+              0.23352863636136523,
+              0.3474812499710117
+            ],
+            "outer_envelope": [
+              0.22636804389864087,
+              0.35003257861530623
+            ]
+          },
+          "r2": {
+            "bootstrap_interval": [
+              0.18412413382144754,
+              0.2765691839355449
+            ],
+            "estimate": 0.23362007372872431,
+            "hac_interval": [
+              0.1854416407197409,
+              0.28179850673770773
+            ],
+            "outer_envelope": [
+              0.18412413382144754,
+              0.28179850673770773
+            ]
+          }
+        },
+        "lower_bootstrap_interval": [
+          0.22149817490508733,
+          0.2989096545935386
+        ],
+        "lower_hac_interval": [
+          0.22475479830491865,
+          0.29937021858999413
+        ],
+        "material_p_value": 0.00199990000499975,
+        "material_threshold": 0.2,
+        "replicate_estimates": {
+          "r1": [
+            0.29050494316618847,
+            0.29050494316618847
+          ],
+          "r2": [
+            0.23362007372872431,
+            0.23362007372872431
+          ]
+        },
+        "threshold_sensitivity": {
+          "0.00": "ABOVE_THRESHOLD",
+          "0.10": "ABOVE_THRESHOLD",
+          "0.20": "ABOVE_THRESHOLD",
+          "0.25": "CROSSES_THRESHOLD",
+          "0.30": "BELOW_OR_EQUAL_THRESHOLD",
+          "0.35": "BELOW_OR_EQUAL_THRESHOLD",
+          "0.40": "BELOW_OR_EQUAL_THRESHOLD"
+        },
+        "unadjusted_estimate": 0.235753664156864,
+        "upper_bootstrap_interval": [
+          0.22149817490508733,
+          0.2989096545935386
+        ],
+        "upper_hac_interval": [
+          0.22475479830491865,
+          0.29937021858999413
+        ]
+      }
+    },
+    "robustness_notes": {
+      "common_window": "Registered full and common windows are both versions 8--407; versions 408--447 are the frozen guard window.",
+      "missingness": "Sharp endpoints coincide in all four acquisitions because every primary assignment was terminally scored.",
+      "scope": "The 3B-minus-1B contrasts are prespecified fixed-configuration secondary estimates, not a randomized model-size effect or general scaling law."
+    },
+    "schema": "m4-llama3p2-3b-publication-extension-v1",
+    "secondary_3b_minus_1b": {
+      "gsm8k": {
+        "conclusion": "NEGATIVE",
+        "confidence_envelope": [
+          -0.1833906285336748,
+          -0.07495219559104012
+        ],
+        "estimate": -0.1325512333757226,
+        "simultaneous_two_contrast_interval": [
+          -0.19385916115687568,
+          -0.07124330559456955
+        ]
+      },
+      "openmath": {
+        "conclusion": "NEGATIVE",
+        "confidence_envelope": [
+          -0.198620186246386,
+          -0.07492671093831058
+        ],
+        "estimate": -0.13701638185002188,
+        "simultaneous_two_contrast_interval": [
+          -0.2093320793075156,
+          -0.06470068439252816
+        ]
+      }
+    },
+    "secondary_cross_workload_size_interaction_gsm8k_minus_openmath": {
+      "conclusion": "INCONCLUSIVE",
+      "confidence_envelope": [
+        -0.07664635940349618,
+        0.08776958663098018
+      ],
+      "estimate": 0.004465148474299269
+    },
+    "source_terminal_result_sha256": "7fba3d8fba1ae47b5df3475ba36771264955552f9080b081ddbd6440b6d72d86"
+  },
   "llama_v5_extension": {
     "analysis_role": "prospective_replicated_cross_family_extension",
     "authentication_sha256": "1da34ca184985bbdd319ae2f466ca9ae7c747b312f69a18be7e6f0a3088bf63d",

@@ -1,15 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="900" height="540" viewBox="0 0 900 540">
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="650" viewBox="0 0 900 650">
 <rect width="100%" height="100%" fill="white"/>
 <style>text{font-family:Helvetica,Arial,sans-serif;fill:#202124}.label{font-size:15px}.axis{font-size:13px}</style>
-<line x1="284.8" y1="42" x2="284.8" y2="495" stroke="#e5e7eb"/>
-<text x="284.8" y="520" text-anchor="middle" class="axis">0.10</text>
-<line x1="433.5" y1="42" x2="433.5" y2="495" stroke="#e5e7eb"/>
-<text x="433.5" y="520" text-anchor="middle" class="axis">0.20</text>
-<line x1="582.2" y1="42" x2="582.2" y2="495" stroke="#e5e7eb"/>
-<text x="582.2" y="520" text-anchor="middle" class="axis">0.30</text>
-<line x1="731.0" y1="42" x2="731.0" y2="495" stroke="#e5e7eb"/>
-<text x="731.0" y="520" text-anchor="middle" class="axis">0.40</text>
-<line x1="433.5" y1="42" x2="433.5" y2="495" stroke="#d93025" stroke-width="2" stroke-dasharray="6 5"/>
+<line x1="284.8" y1="42" x2="284.8" y2="605" stroke="#e5e7eb"/>
+<text x="284.8" y="630" text-anchor="middle" class="axis">0.10</text>
+<line x1="433.5" y1="42" x2="433.5" y2="605" stroke="#e5e7eb"/>
+<text x="433.5" y="630" text-anchor="middle" class="axis">0.20</text>
+<line x1="582.2" y1="42" x2="582.2" y2="605" stroke="#e5e7eb"/>
+<text x="582.2" y="630" text-anchor="middle" class="axis">0.30</text>
+<line x1="731.0" y1="42" x2="731.0" y2="605" stroke="#e5e7eb"/>
+<text x="731.0" y="630" text-anchor="middle" class="axis">0.40</text>
+<line x1="433.5" y1="42" x2="433.5" y2="605" stroke="#d93025" stroke-width="2" stroke-dasharray="6 5"/>
 <text x="20" y="35" class="label">0.6B - OpenMath</text>
 <line x1="546.5" y1="30" x2="634.2" y2="30" stroke="#1769aa" stroke-width="4"/>
 <line x1="546.5" y1="23" x2="546.5" y2="37" stroke="#1769aa" stroke-width="2"/>
@@ -50,5 +50,15 @@
 <line x1="575.2" y1="408" x2="575.2" y2="422" stroke="#00897b" stroke-width="2"/>
 <line x1="715.8" y1="408" x2="715.8" y2="422" stroke="#00897b" stroke-width="2"/>
 <circle cx="650.8" cy="415" r="7" fill="#00897b"/>
-<text x="439.5" y="491" class="axis" fill="#d93025">registered materiality threshold</text>
+<text x="20" y="475" class="label">Llama 3B - OpenMath (2 reps)</text>
+<line x1="465.5" y1="470" x2="581.3" y2="470" stroke="#e67e22" stroke-width="4"/>
+<line x1="465.5" y1="463" x2="465.5" y2="477" stroke="#e67e22" stroke-width="2"/>
+<line x1="581.3" y1="463" x2="581.3" y2="477" stroke="#e67e22" stroke-width="2"/>
+<circle cx="525.8" cy="470" r="7" fill="#e67e22"/>
+<text x="20" y="530" class="label">Llama 3B - GSM8K (2 reps)</text>
+<line x1="414.5" y1="525" x2="492.8" y2="525" stroke="#e67e22" stroke-width="4"/>
+<line x1="414.5" y1="518" x2="414.5" y2="532" stroke="#e67e22" stroke-width="2"/>
+<line x1="492.8" y1="518" x2="492.8" y2="532" stroke="#e67e22" stroke-width="2"/>
+<circle cx="453.6" cy="525" r="7" fill="#e67e22"/>
+<text x="439.5" y="601" class="axis" fill="#d93025">registered materiality threshold</text>
 </svg>

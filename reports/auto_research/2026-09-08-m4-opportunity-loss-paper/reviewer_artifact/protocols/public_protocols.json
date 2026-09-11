@@ -190,6 +190,258 @@
       },
       "workload": "GSM8K"
     },
+    "A11": {
+      "analysis": {
+        "bootstrap_draws_each_replicate": 20000,
+        "cell_estimator_each_replicate": "cross_fitted_generalized_regression_q_and_zero_indicator_v1",
+        "circular_block_size_start_versions": 8,
+        "confidence": 0.95,
+        "cross_fit_folds": 8,
+        "hac_bartlett_lag_start_versions": 4,
+        "missingness": "sharp endpoints; each arm in each replicate at_most_0.01",
+        "replicate_combination": "equal_weight_independent_block_diagonal",
+        "replicates_each_workload": 2,
+        "version_series_concatenation_allowed": false
+      },
+      "artifact_id": "A11",
+      "assignment": {
+        "domain": "m4-llama3p2-3b-openmath-size-extension-v1-r1",
+        "seed": 20261103
+      },
+      "instrument": {
+        "corrected_lifecycle_recorder_duty_maximum": 0.01,
+        "derivation_method": "lifecycle_derived_grpo_opportunity_v1",
+        "opportunity_coverage_required": 1.0,
+        "opportunity_imputation_allowed": false,
+        "synchronous_gradient_opportunity_callback_enabled": false
+      },
+      "model": {
+        "extension": "meta-llama/Llama-3.2-3B-Instruct",
+        "family": "Llama 3.2",
+        "reference": "meta-llama/Llama-3.2-1B-Instruct",
+        "size_is_fixed_not_randomized": true
+      },
+      "protocol": "m4-llama3p2-3b-within-family-size-extension-v1",
+      "runtime": {
+        "attempt_limit_each": 1,
+        "authorized": false,
+        "automatic_extension": false,
+        "automatic_retry": false,
+        "gpu_hour_cap_each": 8.0,
+        "gpus_each": 2,
+        "primary_start_versions": [
+          8,
+          407
+        ],
+        "scheduler_cap_seconds_each": 14400,
+        "submit_all_four_before_inspecting_any_causal_outcome": true,
+        "terminal_guard_start_versions": [
+          408,
+          447
+        ],
+        "trainer_steps_each": 448
+      },
+      "windows": {
+        "guard": [
+          408,
+          447
+        ],
+        "primary": [
+          8,
+          407
+        ]
+      },
+      "workload": "OpenMath"
+    },
+    "A12": {
+      "analysis": {
+        "bootstrap_draws_each_replicate": 20000,
+        "cell_estimator_each_replicate": "cross_fitted_generalized_regression_q_and_zero_indicator_v1",
+        "circular_block_size_start_versions": 8,
+        "confidence": 0.95,
+        "cross_fit_folds": 8,
+        "hac_bartlett_lag_start_versions": 4,
+        "missingness": "sharp endpoints; each arm in each replicate at_most_0.01",
+        "replicate_combination": "equal_weight_independent_block_diagonal",
+        "replicates_each_workload": 2,
+        "version_series_concatenation_allowed": false
+      },
+      "artifact_id": "A12",
+      "assignment": {
+        "domain": "m4-llama3p2-3b-openmath-size-extension-v1-r2",
+        "seed": 20261104
+      },
+      "instrument": {
+        "corrected_lifecycle_recorder_duty_maximum": 0.01,
+        "derivation_method": "lifecycle_derived_grpo_opportunity_v1",
+        "opportunity_coverage_required": 1.0,
+        "opportunity_imputation_allowed": false,
+        "synchronous_gradient_opportunity_callback_enabled": false
+      },
+      "model": {
+        "extension": "meta-llama/Llama-3.2-3B-Instruct",
+        "family": "Llama 3.2",
+        "reference": "meta-llama/Llama-3.2-1B-Instruct",
+        "size_is_fixed_not_randomized": true
+      },
+      "protocol": "m4-llama3p2-3b-within-family-size-extension-v1",
+      "runtime": {
+        "attempt_limit_each": 1,
+        "authorized": false,
+        "automatic_extension": false,
+        "automatic_retry": false,
+        "gpu_hour_cap_each": 8.0,
+        "gpus_each": 2,
+        "primary_start_versions": [
+          8,
+          407
+        ],
+        "scheduler_cap_seconds_each": 14400,
+        "submit_all_four_before_inspecting_any_causal_outcome": true,
+        "terminal_guard_start_versions": [
+          408,
+          447
+        ],
+        "trainer_steps_each": 448
+      },
+      "windows": {
+        "guard": [
+          408,
+          447
+        ],
+        "primary": [
+          8,
+          407
+        ]
+      },
+      "workload": "OpenMath"
+    },
+    "A13": {
+      "analysis": {
+        "bootstrap_draws_each_replicate": 20000,
+        "cell_estimator_each_replicate": "cross_fitted_generalized_regression_q_and_zero_indicator_v1",
+        "circular_block_size_start_versions": 8,
+        "confidence": 0.95,
+        "cross_fit_folds": 8,
+        "hac_bartlett_lag_start_versions": 4,
+        "missingness": "sharp endpoints; each arm in each replicate at_most_0.01",
+        "replicate_combination": "equal_weight_independent_block_diagonal",
+        "replicates_each_workload": 2,
+        "version_series_concatenation_allowed": false
+      },
+      "artifact_id": "A13",
+      "assignment": {
+        "domain": "m4-llama3p2-3b-gsm8k-size-extension-v1-r1",
+        "seed": 20261105
+      },
+      "instrument": {
+        "corrected_lifecycle_recorder_duty_maximum": 0.01,
+        "derivation_method": "lifecycle_derived_grpo_opportunity_v1",
+        "opportunity_coverage_required": 1.0,
+        "opportunity_imputation_allowed": false,
+        "synchronous_gradient_opportunity_callback_enabled": false
+      },
+      "model": {
+        "extension": "meta-llama/Llama-3.2-3B-Instruct",
+        "family": "Llama 3.2",
+        "reference": "meta-llama/Llama-3.2-1B-Instruct",
+        "size_is_fixed_not_randomized": true
+      },
+      "protocol": "m4-llama3p2-3b-within-family-size-extension-v1",
+      "runtime": {
+        "attempt_limit_each": 1,
+        "authorized": false,
+        "automatic_extension": false,
+        "automatic_retry": false,
+        "gpu_hour_cap_each": 8.0,
+        "gpus_each": 2,
+        "primary_start_versions": [
+          8,
+          407
+        ],
+        "scheduler_cap_seconds_each": 14400,
+        "submit_all_four_before_inspecting_any_causal_outcome": true,
+        "terminal_guard_start_versions": [
+          408,
+          447
+        ],
+        "trainer_steps_each": 448
+      },
+      "windows": {
+        "guard": [
+          408,
+          447
+        ],
+        "primary": [
+          8,
+          407
+        ]
+      },
+      "workload": "GSM8K"
+    },
+    "A14": {
+      "analysis": {
+        "bootstrap_draws_each_replicate": 20000,
+        "cell_estimator_each_replicate": "cross_fitted_generalized_regression_q_and_zero_indicator_v1",
+        "circular_block_size_start_versions": 8,
+        "confidence": 0.95,
+        "cross_fit_folds": 8,
+        "hac_bartlett_lag_start_versions": 4,
+        "missingness": "sharp endpoints; each arm in each replicate at_most_0.01",
+        "replicate_combination": "equal_weight_independent_block_diagonal",
+        "replicates_each_workload": 2,
+        "version_series_concatenation_allowed": false
+      },
+      "artifact_id": "A14",
+      "assignment": {
+        "domain": "m4-llama3p2-3b-gsm8k-size-extension-v1-r2",
+        "seed": 20261106
+      },
+      "instrument": {
+        "corrected_lifecycle_recorder_duty_maximum": 0.01,
+        "derivation_method": "lifecycle_derived_grpo_opportunity_v1",
+        "opportunity_coverage_required": 1.0,
+        "opportunity_imputation_allowed": false,
+        "synchronous_gradient_opportunity_callback_enabled": false
+      },
+      "model": {
+        "extension": "meta-llama/Llama-3.2-3B-Instruct",
+        "family": "Llama 3.2",
+        "reference": "meta-llama/Llama-3.2-1B-Instruct",
+        "size_is_fixed_not_randomized": true
+      },
+      "protocol": "m4-llama3p2-3b-within-family-size-extension-v1",
+      "runtime": {
+        "attempt_limit_each": 1,
+        "authorized": false,
+        "automatic_extension": false,
+        "automatic_retry": false,
+        "gpu_hour_cap_each": 8.0,
+        "gpus_each": 2,
+        "primary_start_versions": [
+          8,
+          407
+        ],
+        "scheduler_cap_seconds_each": 14400,
+        "submit_all_four_before_inspecting_any_causal_outcome": true,
+        "terminal_guard_start_versions": [
+          408,
+          447
+        ],
+        "trainer_steps_each": 448
+      },
+      "windows": {
+        "guard": [
+          408,
+          447
+        ],
+        "primary": [
+          8,
+          407
+        ]
+      },
+      "workload": "GSM8K"
+    },
     "A2": {
       "analysis": {
         "inference": {

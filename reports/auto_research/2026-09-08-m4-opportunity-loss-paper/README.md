@@ -1,7 +1,7 @@
 # M4 publication package
 
 This directory is the review-ready publication workspace for the completed M4
-opportunity-loss campaign and its prospective Llama 3.2 1B extension.
+opportunity-loss campaign and its prospective Llama 3.2 1B and 3B extensions.
 
 ## Start here
 
@@ -11,7 +11,8 @@ opportunity-loss campaign and its prospective Llama 3.2 1B extension.
 - `claim_ledger.md` — supported, bounded, and prohibited claims.
 - `primary_table.md` — registered cell results and the dependency-aware joint
   interaction table.
-- `reviewer_gap_audit.md` — adversarial review and go/no-go decision.
+- `post_llama3b_reviewer_gap_audit.md` — current adversarial scientific review
+  and go/no-go decision; `reviewer_gap_audit.md` preserves the earlier audit.
 - `next_actions.md` — ordered submission sequence and new-compute decision.
 - `reproducibility_appendix.md` — hardware/software, protocol, acquisition,
   observer-duty, and provenance details.
@@ -32,6 +33,9 @@ opportunity-loss campaign and its prospective Llama 3.2 1B extension.
   acquisitions and the two registered equal-replicate workload endpoints.
 - `llama_v5_publication_extension.json` — machine-readable Llama extension and
   offline robustness record.
+- `run_llama3b_publication_extension.py` and
+  `llama_3b_publication_extension.json` — reconstruct the four 3B acquisitions,
+  robustness views, and prespecified 3B-minus-1B contrasts.
 - `six_cell_synthesis.json` — dependency-aware 2×3 synthesis.
 - `robustness_results.json` and `robustness.md` — HAC/bootstrap,
   adjusted/unadjusted, missingness, threshold, and window sensitivity.

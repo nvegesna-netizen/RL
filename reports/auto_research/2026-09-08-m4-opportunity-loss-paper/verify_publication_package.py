@@ -77,10 +77,22 @@ def main() -> None:
     assert llama["openmath"]["confidence_envelope"][0] > 0.20
     assert llama["gsm8k"]["confidence_envelope"][0] > 0.20
     assert extension["secondary_openmath_minus_gsm8k"]["conclusion"] == "INCONCLUSIVE"
+    three_b_extension = load(HERE / "llama_3b_publication_extension.json")
+    three_b = three_b_extension["combined_workloads"]
+    assert sum(cell["assignment_count"] for cell in three_b.values()) == 28_788
+    assert three_b["openmath"]["conclusion"] == "MATERIAL"
+    assert three_b["gsm8k"]["conclusion"] == "INCONCLUSIVE"
+    assert three_b["openmath"]["confidence_envelope"][0] > 0.20
+    assert three_b["gsm8k"]["confidence_envelope"][0] < 0.20
+    assert all(
+        contrast["conclusion"] == "NEGATIVE"
+        and contrast["simultaneous_two_contrast_interval"][1] < 0
+        for contrast in three_b_extension["secondary_3b_minus_1b"].values()
+    )
     campaign_total = definitive_total + sum(
         cell["assignment_count"] for cell in llama.values()
-    )
-    assert campaign_total == 77_865
+    ) + sum(cell["assignment_count"] for cell in three_b.values())
+    assert campaign_total == 106_653
 
     cadence_path = HERE / "cadence_results.json"
     cadence = load(cadence_path)
@@ -97,10 +109,13 @@ def main() -> None:
         HERE / "manuscript.md",
         [
             "49,153",
-            "77,865",
+            "106,653",
             "28,712",
+            "28,788",
             "0.3991",
             "0.3461",
+            "0.2621",
+            "0.2135",
             "χ²(2)=11.53",
             "p=0.00314",
             "0.00329",
@@ -125,6 +140,10 @@ def main() -> None:
             "37da83c526bef6cf13b36090d21dd49a9d73a768422e3fea9381521eb8e71a33",
             "c321dcf94a138d2a289142b0991c452be848d28dedf5f5c468fba78cd85ffa59",
             "fcb236655ed1554215e370cca6d21fe5873b385e4f4b1576cdc27ff2dbe4735b",
+            "b79b7d1bcd861bdacf3d161bbdc5fe236edc35da41f427d0adf20a1895ddcd38",
+            "034d6e57440593a48a28f705534474b1c36c8aeb0170c22e54d869f4e33a9aaa",
+            "6714f77466a5d3e3c854339f69d19ac4d8312276cc3627c25fe3d8ef79b26163",
+            "e535f0ce6c1fdb4f1863eca4142596f4543190d53dfd70cee7ddaf35d25a5920",
         ],
     )
 
@@ -148,7 +167,8 @@ def main() -> None:
     assert cited <= bib_keys, f"missing BibTeX keys: {sorted(cited - bib_keys)}"
     print("PUBLICATION_PACKAGE_VERIFY_PASS")
     print(f"qwen_full_window_assignments={definitive_total}")
-    print(f"llama_extension_assignments={campaign_total - definitive_total}")
+    print(f"llama_1b_extension_assignments={sum(cell['assignment_count'] for cell in llama.values())}")
+    print(f"llama_3b_extension_assignments={sum(cell['assignment_count'] for cell in three_b.values())}")
     print(f"campaign_full_window_assignments={campaign_total}")
     print(f"common_window_assignments={sum(c['assignment_count'] for c in cells.values())}")
     print(f"six_cell_synthesis_sha256={sha256(synthesis_path)}")

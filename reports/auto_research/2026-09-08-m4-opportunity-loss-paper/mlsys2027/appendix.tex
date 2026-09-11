@@ -16,7 +16,7 @@
 \mlsyscorrespondingauthor{Anonymous Author}{anon.email@domain.com}
 \vskip 0.3in
 \begin{abstract}
-This supplement reports reproducibility, provenance, mechanism, observer-duty, and robustness details for the M4 controlled-release study and its prospective Llama 3.2 1B extension. It does not replace the registered primary analyses.
+This supplement reports reproducibility, provenance, mechanism, observer-duty, and robustness details for the M4 controlled-release study and its prospective Llama 3.2 1B and 3B extensions. It does not replace the registered primary analyses.
 \end{abstract}
 ]
 \printAffiliationsAndNotice{}
@@ -51,11 +51,15 @@ A7 & Llama 1B r1 & OpenMath & success & 56a331 / 7fc1d62dba \\
 A8 & Llama 1B r2 & OpenMath & success & 56a331 / 37da83c526 \\
 A9 & Llama 1B r1 & GSM8K & success & 56a331 / c321dcf94a \\
 A10 & Llama 1B r2 & GSM8K & success & 56a331 / fcb236655e \\
+A11 & Llama 3B r1 & OpenMath & success & 4f2a5e / b79b7d1bcd \\
+A12 & Llama 3B r2 & OpenMath & success & 4f2a5e / 034d6e5744 \\
+A13 & Llama 3B r1 & GSM8K & success & 4f2a5e / 6714f77466 \\
+A14 & Llama 3B r2 & GSM8K & success & 4f2a5e / e535f0ce6c \\
 \bottomrule
 \end{tabular}
 \end{table*}
 
-Acquisition A3 completed 558 registered steps and preserved 9,573 scored assignments before invoking an analyzer that rejected the grid protocol identity. The preregistered correct analyzer was applied to those immutable ledgers without new acquisition or protocol change. A7--A10 are the four V5 family-extension acquisitions. Full 64-character hashes are supplied in the authenticated reviewer manifest; the private record retains the internal-to-anonymous ID mapping.
+Acquisition A3 completed 558 registered steps and preserved 9,573 scored assignments before invoking an analyzer that rejected the grid protocol identity. The preregistered correct analyzer was applied to those immutable ledgers without new acquisition or protocol change. A7--A10 are the 1B family-extension acquisitions; A11--A14 are the prospective 3B size extension. Full 64-character hashes are supplied in the authenticated reviewer manifest; the private record retains the internal-to-anonymous ID mapping.
 
 \section{Mechanism and Observer Duty}
 \begin{table}[h]
@@ -75,15 +79,21 @@ Llama 1B r1 & OpenMath & 0 & .000656 \\
 Llama 1B r2 & OpenMath & 0 & .000603 \\
 Llama 1B r1 & GSM8K & 0 & .000731 \\
 Llama 1B r2 & GSM8K & 0 & .000782 \\
+Llama 3B r1 & OpenMath & 0 & .000436 \\
+Llama 3B r2 & OpenMath & 0 & .000417 \\
+Llama 3B r1 & GSM8K & 0 & .000547 \\
+Llama 3B r2 & GSM8K & 0 & .000513 \\
 \bottomrule
 \end{tabular}
 \end{table}
-The mechanism conclusion is \texttt{REPLICATED} in all 10 definitive acquisitions. Observer duty is below the registered 0.01 ceiling. This supports low measurement burden in the observed runs, not portability to other systems.
+The mechanism conclusion is \texttt{REPLICATED} in all 14 definitive acquisitions. Observer duty is below the registered 0.01 ceiling. This supports low measurement burden in the observed runs, not portability to other systems.
 
 \section{Robustness}
 HAC and circular-block bootstrap intervals are closely aligned. All adjusted and unadjusted common-window estimates are positive. The largest adjustment shift is $-0.054$ for Qwen3-0.6B/NuminaMath; Qwen3-1.7B/OpenMath is the only positive shift ($+0.021$). All missingness endpoint widths are zero because every common-window assignment is terminally scored. Common-window estimates differ from registered full-window estimates by at most 0.0053.
 
 For the Llama extension, combined adjusted estimates are 0.3991 on OpenMath and 0.3461 on GSM8K; HAC intervals are [0.3526, 0.4456] and [0.3026, 0.3896], while bootstrap intervals are [0.3504, 0.4467] and [0.2952, 0.3898]. Unadjusted estimates are 0.3600 and 0.4031. All four leave-one-replicate-out envelopes exceed 0.20, and all terminal-missingness widths are zero. Both replicates use the identical registered 8--407 window; 408--447 is an excluded guard window.
+
+At Llama 3B, OpenMath is 0.2621 with envelope [0.2215, 0.2994] and \texttt{MATERIAL}; GSM8K is 0.2135 with [0.1872, 0.2398] and \texttt{INCONCLUSIVE}. Unadjusted estimates are 0.2358 and 0.2635. Prespecified 3B-minus-1B contrasts are $-0.1370$ and $-0.1326$; simultaneous intervals exclude zero. These are fixed-configuration contrasts, not a causal scaling law.
 
 \begin{table}[h]
 \caption{Interval classification by materiality threshold.}
@@ -103,27 +113,14 @@ Cell & 0.10 & 0.20 & 0.25 \\
 \end{table}
 Here M, I, and N denote material, inconclusive, and not material relative to the displayed threshold. Only 0.20 was registered; other columns are retrospective sensitivity analyses.
 
-\begin{table}[h]
-\caption{Descriptive update cadence over preceding versions 8--407.}
-\centering\small
-\begin{tabular}{llrr}
-\toprule
-Model & Workload & Median s & 5 s / median \\
-\midrule
-0.6B & OpenMath & 11.878 & .421 \\
-1.7B & OpenMath & 13.131 & .381 \\
-0.6B & GSM8K & 7.769 & .644 \\
-1.7B & GSM8K & 8.769 & .570 \\
-0.6B & NuminaMath & 12.009 & .416 \\
-1.7B & NuminaMath & 13.201 & .379 \\
-\bottomrule
-\end{tabular}
-\end{table}
-Each row uses 400 authenticated inter-update intervals. This retrospective
-ratio describes the fixed treatment's time scale; it does not redefine or
-renormalize the registered causal estimand.
+Across 400 authenticated inter-update intervals per Qwen cell, median cadence
+ranged from 7.769 to 13.201 seconds, placing the fixed five-second treatment at
+0.379--0.644 median update intervals. This retrospective ratio describes the
+treatment's time scale; it does not redefine or renormalize the registered
+causal estimand.
 
 \section{Dataset and Artifact Notes}
+\enlargethispage{5\baselineskip}
 GSM8K uses \texttt{openai/gsm8k}, \texttt{main}, training split. NuminaMath-1.5 is pinned at revision \texttt{1b05109f9e5c1ad06c0663519502416c30b300f8}; 896,215 source rows were filtered to 680,786 retained unique problems, with shard hashes in the preflight lock. A credential-free compact reviewer bundle contains results, public protocol projections, a synthetic miniature ledger, and a SHA-256 manifest; it passes a local credential-stripped replay. Raw ledgers and public hosting remain external pending privacy and anonymous-access review, so this document does not claim empirical re-estimation or public availability.
 
 \end{document}

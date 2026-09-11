@@ -13,9 +13,9 @@ python3 -m unittest discover -s tests -v
 ```
 
 `data/published_results.json` contains the six-cell Qwen common-window results
-and the two replicated Llama workload endpoints after
+and the four replicated Llama size/workload endpoints after
 removal of private filesystem paths. `data/provenance.json` binds opaque
-acquisition IDs A1--A10 to the frozen protocols, compact records, and external
+acquisition IDs A1--A14 to the frozen protocols, compact records, and external
 terminal archives by SHA-256. The large empirical ledgers are not included;
 therefore this bundle verifies compact results but does not independently
 re-estimate the empirical cells. The synthetic ledger contains no experimental

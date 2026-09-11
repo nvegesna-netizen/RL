@@ -65,6 +65,10 @@ compact result JSON.
 | Llama 3.2 1B / OpenMath r2 | 67204614 | success | `8f5151cf00e02933a9b92772443d62e95b5150ff` | `56a3311f78a0ac12cb9dc7ecdeee1a6fc0c5ace889799ebfaba1faaa0e610521` | `37da83c526bef6cf13b36090d21dd49a9d73a768422e3fea9381521eb8e71a33` |
 | Llama 3.2 1B / GSM8K r1 | 67204678 | success | `8f5151cf00e02933a9b92772443d62e95b5150ff` | `56a3311f78a0ac12cb9dc7ecdeee1a6fc0c5ace889799ebfaba1faaa0e610521` | `c321dcf94a138d2a289142b0991c452be848d28dedf5f5c468fba78cd85ffa59` |
 | Llama 3.2 1B / GSM8K r2 | 67204582 | success | `8f5151cf00e02933a9b92772443d62e95b5150ff` | `56a3311f78a0ac12cb9dc7ecdeee1a6fc0c5ace889799ebfaba1faaa0e610521` | `fcb236655ed1554215e370cca6d21fe5873b385e4f4b1576cdc27ff2dbe4735b` |
+| Llama 3.2 3B / OpenMath r1 | 67263519 | success | `8f5151cf00e02933a9b92772443d62e95b5150ff` | `4f2a5e496030e836b3449697928f4f363d7d36e3cec668105b2cdcc701b9814c` | `b79b7d1bcd861bdacf3d161bbdc5fe236edc35da41f427d0adf20a1895ddcd38` |
+| Llama 3.2 3B / OpenMath r2 | 67263508 | success | `8f5151cf00e02933a9b92772443d62e95b5150ff` | `4f2a5e496030e836b3449697928f4f363d7d36e3cec668105b2cdcc701b9814c` | `034d6e57440593a48a28f705534474b1c36c8aeb0170c22e54d869f4e33a9aaa` |
+| Llama 3.2 3B / GSM8K r1 | 67263541 | success | `8f5151cf00e02933a9b92772443d62e95b5150ff` | `4f2a5e496030e836b3449697928f4f363d7d36e3cec668105b2cdcc701b9814c` | `6714f77466a5d3e3c854339f69d19ac4d8312276cc3627c25fe3d8ef79b26163` |
+| Llama 3.2 3B / GSM8K r2 | 67263552 | success | `8f5151cf00e02933a9b92772443d62e95b5150ff` | `4f2a5e496030e836b3449697928f4f363d7d36e3cec668105b2cdcc701b9814c` | `e535f0ce6c1fdb4f1863eca4142596f4543190d53dfd70cee7ddaf35d25a5920` |
 
 Pipeline 66675506 is deliberately not labeled successful. It completed all 558
 registered trainer steps and preserved 9,573 scored primary assignments, then
@@ -100,6 +104,10 @@ The scientific decision remains `INCONCLUSIVE`.
 | Llama 3.2 1B / OpenMath r2 | 6,809 | 0 | 0.000603 | replicated |
 | Llama 3.2 1B / GSM8K r1 | 7,314 | 0 | 0.000731 | replicated |
 | Llama 3.2 1B / GSM8K r2 | 7,681 | 0 | 0.000782 | replicated |
+| Llama 3.2 3B / OpenMath r1 | 7,073 | 0 | 0.000436 | replicated |
+| Llama 3.2 3B / OpenMath r2 | 6,612 | 0 | 0.000417 | replicated |
+| Llama 3.2 3B / GSM8K r1 | 7,176 | 0 | 0.000547 | replicated |
+| Llama 3.2 3B / GSM8K r2 | 7,927 | 0 | 0.000513 | replicated |
 
 Every value is below the frozen 0.01 observer-duty ceiling. This supports the
 registered instrumentation-overhead qualifier within these runs; it is not a

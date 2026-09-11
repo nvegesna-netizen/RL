@@ -21,6 +21,8 @@ def forest(cells: dict[str, dict[str, object]]) -> str:
         ("1.7B - NuminaMath", "qwen3_1p7b_numinamath"),
         ("Llama 1B - OpenMath (2 reps)", "llama3p2_1b_openmath"),
         ("Llama 1B - GSM8K (2 reps)", "llama3p2_1b_gsm8k"),
+        ("Llama 3B - OpenMath (2 reps)", "llama3p2_3b_openmath"),
+        ("Llama 3B - GSM8K (2 reps)", "llama3p2_3b_gsm8k"),
     ]
     left, right, top, row = 255, 850, 30, 55
     x_min, x_max = 0.08, 0.48
@@ -40,7 +42,7 @@ def forest(cells: dict[str, dict[str, object]]) -> str:
         record = cells[name]
         low, high = record["outer_envelope"]
         estimate = record["estimate"]
-        color = "#00897b" if "llama" in name else "#1769aa" if "0p6b" in name else "#7b1fa2"
+        color = "#e67e22" if "llama3p2_3b" in name else "#00897b" if "llama" in name else "#1769aa" if "0p6b" in name else "#7b1fa2"
         parts.append(f'<text x="20" y="{y + 5}" class="label">{label}</text>')
         parts.append(f'<line x1="{x(low):.1f}" y1="{y}" x2="{x(high):.1f}" y2="{y}" stroke="{color}" stroke-width="4"/>')
         for endpoint in (low, high):
@@ -90,6 +92,11 @@ def main() -> None:
         cells[f"llama3p2_1b_{workload}"] = {
             "estimate": record["identification_interval"][0],
             "outer_envelope": record["confidence_envelope"],
+        }
+        record_3b = result["llama_3b_extension"]["combined_workloads"][workload]
+        cells[f"llama3p2_3b_{workload}"] = {
+            "estimate": record_3b["identification_interval"][0],
+            "outer_envelope": record_3b["confidence_envelope"],
         }
     outputs = {
         ROOT / "figures/cell_forest_plot.svg": forest(cells),

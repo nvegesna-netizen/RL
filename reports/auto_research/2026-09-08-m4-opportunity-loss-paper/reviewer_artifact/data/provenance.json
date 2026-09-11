@@ -15,6 +15,34 @@
       "terminal_artifact_bytes": 67119843,
       "terminal_artifact_sha256": "fcb236655ed1554215e370cca6d21fe5873b385e4f4b1576cdc27ff2dbe4735b"
     },
+    "A11": {
+      "cell": "llama3p2_3b_openmath_r1",
+      "full_window_assignments": 7073,
+      "protocol_sha256": "4f2a5e496030e836b3449697928f4f363d7d36e3cec668105b2cdcc701b9814c",
+      "terminal_artifact_bytes": 66561497,
+      "terminal_artifact_sha256": "b79b7d1bcd861bdacf3d161bbdc5fe236edc35da41f427d0adf20a1895ddcd38"
+    },
+    "A12": {
+      "cell": "llama3p2_3b_openmath_r2",
+      "full_window_assignments": 6612,
+      "protocol_sha256": "4f2a5e496030e836b3449697928f4f363d7d36e3cec668105b2cdcc701b9814c",
+      "terminal_artifact_bytes": 66110870,
+      "terminal_artifact_sha256": "034d6e57440593a48a28f705534474b1c36c8aeb0170c22e54d869f4e33a9aaa"
+    },
+    "A13": {
+      "cell": "llama3p2_3b_gsm8k_r1",
+      "full_window_assignments": 7176,
+      "protocol_sha256": "4f2a5e496030e836b3449697928f4f363d7d36e3cec668105b2cdcc701b9814c",
+      "terminal_artifact_bytes": 67019231,
+      "terminal_artifact_sha256": "6714f77466a5d3e3c854339f69d19ac4d8312276cc3627c25fe3d8ef79b26163"
+    },
+    "A14": {
+      "cell": "llama3p2_3b_gsm8k_r2",
+      "full_window_assignments": 7927,
+      "protocol_sha256": "4f2a5e496030e836b3449697928f4f363d7d36e3cec668105b2cdcc701b9814c",
+      "terminal_artifact_bytes": 67286792,
+      "terminal_artifact_sha256": "e535f0ce6c1fdb4f1863eca4142596f4543190d53dfd70cee7ddaf35d25a5920"
+    },
     "A2": {
       "cell": "qwen3_1p7b_openmath",
       "full_window_assignments": 8673,

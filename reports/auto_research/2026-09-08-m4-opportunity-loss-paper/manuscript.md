@@ -31,11 +31,16 @@ heterogeneity test of χ²(2)=11.53 (p=0.00314). The direct-chain and
 version-advance mechanism replicates in every terminal cell. A preregistered
 cross-family extension then ran two Llama 3.2 1B acquisitions per workload.
 Equal-replicate estimates were 0.399 on OpenMath (envelope [0.350, 0.447]) and
-0.346 on GSM8K ([0.295, 0.390]); both were material. The 10 definitive
-acquisitions contain 77,865 primary assignments. These findings establish a
+0.346 on GSM8K ([0.295, 0.390]); both were material. A prospectively frozen
+Llama 3.2 3B size extension added four acquisitions. OpenMath was material at
+0.262 ([0.221, 0.299]); GSM8K was positive but inconclusive at 0.214
+([0.187, 0.240]). Prespecified 3B-minus-1B contrasts were negative on both
+workloads, with simultaneous intervals excluding zero. The 14 definitive
+acquisitions contain 106,653 primary assignments. These findings establish a
 material, heterogeneous opportunity-loss effect in the tested asynchronous
 GRPO environments. They do not establish an effect on final model quality, a
-pure model-family effect, or generalization beyond the tested configurations.
+pure model-family effect, a general scaling law, or generalization beyond the
+tested configurations.
 
 ## 1. Introduction
 
@@ -72,7 +77,8 @@ adjustment, twice as many trainer steps, and an outcome-blind power gate. The
 follow-up confirmed a material effect. Subsequent one-axis transports and a
 paired third-workload extension completed a two-model-by-three-workload map. A
 prospective Llama 3.2 1B study then replicated materiality twice within each of
-OpenMath and GSM8K, providing a bounded cross-family extension.
+OpenMath and GSM8K. A preregistered 3B follow-up tested within-family size
+transport on the same workloads without outcome-guided extension.
 
 Our contributions are:
 
@@ -88,8 +94,9 @@ Our contributions are:
 5. A dependency-aware synthesis showing that two registered interactions share
    GSM8K anchors but remain jointly distinguishable from zero after preserving
    that dependence.
-6. A prospectively replicated Llama 3.2 1B extension with 28,712 additional
-   assignments, while explicitly avoiding a post hoc pure-family comparison.
+6. Prospectively replicated Llama 3.2 1B and 3B extensions with 57,500
+   additional assignments, including prespecified fixed-configuration size
+   contrasts while avoiding pure-family and general-scaling claims.
 
 ## 2. Related work
 
@@ -238,7 +245,8 @@ the adjusted estimator, lag-four HAC inference, and an eight-version circular
 block bootstrap. Each of OpenMath and GSM8K was independently randomized and
 acquired twice; the registered workload endpoint combined the two runs with
 equal replicate weight and block-diagonal covariance. Qualification data did
-not enter the estimator, and there was no automatic retry or extension.
+not enter the estimator, and there was no automatic retry or extension. The
+four acquisitions contain 28,712 primary assignments.
 
 All four acquisitions completed their registered windows with zero terminal
 missingness. OpenMath yielded replicate estimates 0.3947 and 0.4034, for a
@@ -249,6 +257,25 @@ workloads, while the secondary OpenMath-minus-GSM8K contrast was inconclusive
 (0.0530, envelope [-0.0137, 0.1232]). This extends the phenomenon to one tested
 model from another family; it does not identify a pure architecture effect or
 a family-wide Llama result.
+
+### 4.6 Prospective Llama 3B size extension
+
+Before inspecting outcomes, we froze four Llama 3.2 3B acquisitions using the
+same two-workload, two-replicate design, totaling 28,788 primary assignments.
+All four registered windows completed
+with zero terminal missingness. OpenMath replicate estimates 0.2905 and 0.2336
+combined to 0.2621 with envelope [0.2215, 0.2994], yielding `MATERIAL` after
+Holm correction. GSM8K estimates 0.1803 and 0.2468 combined to 0.2135 with
+envelope [0.1872, 0.2398], yielding `INCONCLUSIVE`; consequently the registered
+joint-success criterion was not met.
+
+The prespecified secondary 3B-minus-1B contrasts were -0.1370 on OpenMath and
+-0.1326 on GSM8K. Their simultaneous two-contrast intervals were
+[-0.2093, -0.0647] and [-0.1939, -0.0712], respectively. Thus opportunity loss
+was lower at 3B in both tested fixed configurations. The cross-workload
+difference between those attenuations was inconclusive (0.0045, envelope
+[-0.0766, 0.0878]). Model size was not randomized and only two sizes were
+tested, so these results do not establish a causal or monotonic scaling law.
 
 ## 5. Six-cell synthesis
 
@@ -261,7 +288,7 @@ analysis. Cell estimation retains the original eight-fold adjustment, lag-four
 HAC calculation, eight-version bootstrap blocks, and independently seeded
 20,000-draw cell resamples.
 
-![Forest plot of the six Qwen cells and two replicated Llama workload syntheses](cell_forest_plot.svg)
+![Forest plot of the six Qwen cells and four replicated Llama workload syntheses](cell_forest_plot.svg)
 
 Five of six registered full-window cell results are material. The sole
 not-material cell, Qwen3-1.7B/GSM8K, is nevertheless positive and precisely
@@ -307,10 +334,11 @@ decision.
 ### 5.4 Position of the family extension
 
 The Llama workload syntheses are displayed with the Qwen cells for scale, but
-they are not added to the Qwen 2×3 interaction model. Family was not randomized,
-the studies were conducted sequentially, and only one Llama size was tested.
-Agreement in sign and materiality is therefore evidence of bounded external
-validity, not a causal contrast between Qwen and Llama architectures.
+they are not added to the Qwen 2×3 interaction model. Family and model size were
+not randomized, and the studies were conducted sequentially. Agreement in sign
+across both Llama sizes is bounded external-validity evidence; the 3B-minus-1B
+contrasts describe the two tested fixed configurations rather than a causal
+architecture or general scaling effect.
 
 ## 6. Mechanism and observer evidence
 
@@ -326,8 +354,8 @@ cell: 0.00217 for Qwen3-0.6B/OpenMath, 0.00185 for Qwen3-1.7B/OpenMath, 0.00329
 for Qwen3-0.6B/GSM8K, 0.00294 for Qwen3-1.7B/GSM8K, 0.00212 for
 Qwen3-0.6B/NuminaMath, and 0.00180 for Qwen3-1.7B/NuminaMath. These measurements
 reduce concern that the observer itself generated a five-second-scale effect.
-All four Llama V5 duties were below 0.00079, providing the same observer-burden
-check in the family extension.
+All eight Llama duties were below 0.00079, including 0.000417–0.000547 in the
+3B acquisitions, providing the same observer-burden check in both extensions.
 
 ## 7. Robustness analyses
 
@@ -396,12 +424,13 @@ quality.
 
 ## 9. Limitations
 
-The model range contains Qwen3-0.6B, Qwen3-1.7B, and Llama 3.2 1B. All workloads
+The model range contains Qwen3-0.6B, Qwen3-1.7B, Llama 3.2 1B, and Llama 3.2
+3B. All workloads
 are mathematical reasoning datasets, all runs use GRPO, and all definitive
 cells use two H100 GPUs in EOS. Model, family, and workload are not randomized
 factors. The six-cell interaction describes the tested Qwen environments; the
-Llama study is a prospective cross-family extension, not an estimate of a
-population-average family or architecture effect.
+Llama studies are prospective cross-family and within-family size extensions,
+not estimates of population-average family, architecture, or scaling effects.
 
 The treatment has one primary nonzero dose, five seconds. The initial d10 arm
 validates dose ordering for the mechanism but is not part of the definitive
@@ -430,8 +459,9 @@ Large terminal artifacts remain outside Git and are referenced by SHA-256.
 Compact result records retain source commits, protocol hashes, pipeline and job
 identifiers, raw-ledger hashes, and analysis hashes. The publication runner
 authenticates those ledgers and deterministically reconstructs the six Qwen
-cells before computing the joint synthesis. A separate runner reconstructs the
-four Llama acquisitions and their equal-replicate workload endpoints. The Qwen
+cells before computing the joint synthesis. Separate runners reconstruct the
+eight Llama acquisitions, their equal-replicate workload endpoints, and the
+prespecified 3B-minus-1B contrasts. The Qwen
 result record has SHA-256
 `fd4c74c245b5294be175e2117c136e5cc7a3dcd5ce302713ba8041768c6902be`.
 The full evidence flow appears in `provenance_diagram.md`.
@@ -443,15 +473,18 @@ The evidence sequence is:
 > validated instrument → replicated mechanism → inconclusive initial
 > materiality acquisition → prospectively redesigned confirmation →
 > cross-model/workload heterogeneity → prospective same-direction workload
-> extension → prospectively replicated cross-family extension
+> extension → prospectively replicated cross-family extension → prospective
+> within-family size extension
 
 Across six definitive Qwen3×math-workload cells, a controlled five-second
 release delay produces positive normalized gradient-opportunity loss and is
 material in five cells at the registered 0.20 threshold. The causal mechanism
 replicates across all terminal settings. A joint analysis that retains the
 shared GSM8K dependence supports heterogeneous scale effects across the three
-tested workloads. Four additional Llama 3.2 1B acquisitions independently
-replicate materiality within each of two workloads. This establishes a material
+tested workloads. Four Llama 3.2 1B acquisitions replicate materiality within
+each workload; four 3B acquisitions retain a positive effect but confirm
+materiality only on OpenMath. The negative prespecified size contrasts show
+attenuation in both fixed workload configurations. This establishes a material
 M4 opportunity-loss phenomenon across the tested configurations while leaving
-final model-quality consequences, pure family effects, and broader
-generalization to future preregistered studies.
+final model-quality consequences, pure family effects, general scaling laws,
+and broader generalization to future preregistered studies.

@@ -301,6 +301,19 @@ def svg_forest(cells: dict[str, dict[str, object]], path: Path) -> None:
             ("Llama 1B · OpenMath (2 reps)", "llama3p2_1b_openmath"),
             ("Llama 1B · GSM8K (2 reps)", "llama3p2_1b_gsm8k"),
         ])
+    extension_3b_path = HERE / "llama_3b_publication_extension.json"
+    if extension_3b_path.exists():
+        extension_3b = json.loads(extension_3b_path.read_bytes())["combined_workloads"]
+        for workload in ("openmath", "gsm8k"):
+            result = extension_3b[workload]
+            cells[f"llama3p2_3b_{workload}"] = {
+                "estimate": result["identification_interval"][0],
+                "outer_envelope": result["confidence_envelope"],
+            }
+        labels.extend([
+            ("Llama 3B · OpenMath (2 reps)", "llama3p2_3b_openmath"),
+            ("Llama 3B · GSM8K (2 reps)", "llama3p2_3b_gsm8k"),
+        ])
     left, right, top, row = 255, 850, 30, 55
     x_min, x_max = 0.08, 0.48
     x = lambda value: left + (value - x_min) / (x_max - x_min) * (right - left)
@@ -325,7 +338,7 @@ def svg_forest(cells: dict[str, dict[str, object]], path: Path) -> None:
         record = cells[name]
         low, high = record["outer_envelope"]
         estimate = record["estimate"]
-        color = "#00897b" if "llama" in name else "#1769aa" if "0p6b" in name else "#7b1fa2"
+        color = "#e67e22" if "llama3p2_3b" in name else "#00897b" if "llama" in name else "#1769aa" if "0p6b" in name else "#7b1fa2"
         parts.append(f'<text x="20" y="{y + 5}" class="label">{label}</text>')
         parts.append(
             f'<line x1="{x(low):.1f}" y1="{y}" x2="{x(high):.1f}" y2="{y}" stroke="{color}" stroke-width="4"/>'

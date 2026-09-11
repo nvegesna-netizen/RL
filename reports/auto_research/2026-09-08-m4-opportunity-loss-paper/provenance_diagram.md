@@ -10,7 +10,7 @@ flowchart TD
     R --> H[SHA-256 authentication + terminal scoring]
     H --> G[Registered cell / interaction analysis]
     G --> S[Retrospective dependency-aware Qwen 2×3 synthesis]
-    G --> L[Prospective replicated Llama workload synthesis]
+    G --> L[Prospective replicated Llama size/workload synthesis]
     S --> M[Claim ledger, robustness tables, figures, manuscript]
     L --> M
 
@@ -27,7 +27,8 @@ flowchart TD
 ```
 
 The publication synthesis authenticates the raw ledgers against the preserved
-four-cell grid, NuminaMath, and four Llama V5 terminal records before
+four-cell grid, NuminaMath, and eight Llama terminal records before
 reconstructing any estimate. It does not consume qualification observations,
 add acquisitions, or change registered conclusions. The Llama endpoints remain
-separate from the Qwen interaction model.
+separate from the Qwen interaction model; the Llama 3B-minus-1B comparisons are
+prespecified fixed-configuration secondary contrasts.

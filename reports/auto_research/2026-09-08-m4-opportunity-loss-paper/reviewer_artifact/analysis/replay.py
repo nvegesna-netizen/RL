@@ -52,14 +52,22 @@ def published_checks() -> dict[str, object]:
     assert math.isclose(extension["openmath"]["identification_interval"][0], 0.39907889029747823)
     assert math.isclose(extension["gsm8k"]["identification_interval"][0], 0.34607413746273974)
     assert sum(value["assignment_count"] for value in extension.values()) == 28_712
+    extension_3b = result["llama_3b_extension"]
+    combined_3b = extension_3b["combined_workloads"]
+    assert math.isclose(combined_3b["openmath"]["identification_interval"][0], 0.2620625084474564)
+    assert math.isclose(combined_3b["gsm8k"]["identification_interval"][0], 0.21352290408701716)
+    assert combined_3b["openmath"]["conclusion"] == "MATERIAL"
+    assert combined_3b["gsm8k"]["conclusion"] == "INCONCLUSIVE"
+    assert all(value["simultaneous_two_contrast_interval"][1] < 0 for value in extension_3b["secondary_3b_minus_1b"].values())
     provenance = load(ROOT / "data/provenance.json")
-    assert set(provenance["acquisitions"]) == {f"A{i}" for i in range(1, 11)}
-    assert sum(item["full_window_assignments"] for item in provenance["acquisitions"].values()) == 77_865
+    assert set(provenance["acquisitions"]) == {f"A{i}" for i in range(1, 15)}
+    assert sum(item["full_window_assignments"] for item in provenance["acquisitions"].values()) == 106_653
     assert all(len(item["terminal_artifact_sha256"]) == 64 for item in provenance["acquisitions"].values())
     return {
         "common_window_assignments": 43_756,
-        "full_window_assignments": 77_865,
-        "llama_extension_assignments": 28_712,
+        "full_window_assignments": 106_653,
+        "llama_1b_extension_assignments": 28_712,
+        "llama_3b_extension_assignments": 28_788,
         "hac_correlation": synthesis["hac_correlation"],
         "bootstrap_correlation": synthesis["bootstrap_correlation"],
     }

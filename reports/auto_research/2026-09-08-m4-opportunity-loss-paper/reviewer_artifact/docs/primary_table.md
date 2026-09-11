@@ -27,12 +27,31 @@ acquisitions, then combined with equal replicate weight.
 | OpenMath | 2 | 13,717 | 0.3947, 0.4034 | 0.3991 | [0.3526, 0.4456] | [0.3504, 0.4467] | `MATERIAL` |
 | GSM8K | 2 | 14,995 | 0.3550, 0.3372 | 0.3461 | [0.3026, 0.3896] | [0.2952, 0.3898] | `MATERIAL` |
 
-The extension adds 28,712 primary assignments, bringing the definitive campaign
-total to 77,865. The secondary OpenMath-minus-GSM8K estimate is 0.0530 with
+The extension adds 28,712 primary assignments. The secondary
+OpenMath-minus-GSM8K estimate is 0.0530 with
 envelope [-0.0137, 0.1232], so the data do not establish a workload difference
 within Llama 3.2 1B. They also do not identify a pure family effect because the
 Qwen and Llama acquisitions were conducted in different prospectively defined
 study blocks.
+
+## Prospective Llama 3.2 3B size extension
+
+The prospectively frozen 3B extension used the same equal-replicate combination
+rule. Its two workload endpoints were co-primary and both had to be `MATERIAL`
+for joint success.
+
+| Workload | Replicates | Primary assignments | Replicate estimates | Combined adjusted estimate | HAC 95% interval | Bootstrap 95% interval | Conservative conclusion |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| OpenMath | 2 | 13,685 | 0.2905, 0.2336 | 0.2621 | [0.2248, 0.2994] | [0.2215, 0.2989] | `MATERIAL` |
+| GSM8K | 2 | 15,103 | 0.1803, 0.2468 | 0.2135 | [0.1878, 0.2393] | [0.1872, 0.2398] | `INCONCLUSIVE` |
+
+The 3B extension adds 28,788 assignments, bringing the 14-acquisition campaign
+to 106,653. Joint success was false because GSM8K crossed the 0.20 threshold.
+Prespecified 3B-minus-1B contrasts were -0.1370 on OpenMath and -0.1326 on
+GSM8K; simultaneous intervals [-0.2093, -0.0647] and [-0.1939, -0.0712]
+exclude zero. The cross-workload difference in attenuation was inconclusive.
+These are fixed-configuration secondary contrasts, not a randomized size effect
+or general scaling law.
 
 ## Dependency-aware interaction results
 

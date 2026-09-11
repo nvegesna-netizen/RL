@@ -19,8 +19,9 @@ class ReviewerArtifactTest(unittest.TestCase):
         )
         output = json.loads(result.stdout)
         self.assertEqual(output["status"], "PASS")
-        self.assertEqual(output["published"]["full_window_assignments"], 77_865)
-        self.assertEqual(output["published"]["llama_extension_assignments"], 28_712)
+        self.assertEqual(output["published"]["full_window_assignments"], 106_653)
+        self.assertEqual(output["published"]["llama_1b_extension_assignments"], 28_712)
+        self.assertEqual(output["published"]["llama_3b_extension_assignments"], 28_788)
         self.assertEqual(output["synthetic"]["row_count"], 192)
 
     def test_figure_reproduction(self) -> None:

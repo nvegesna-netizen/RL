@@ -4,10 +4,10 @@
 
 Proceed toward an MLSys 2027 Research Track submission **without another M4
 acquisition**. The present paper's claim is causal gradient-opportunity loss in
-the tested asynchronous GRPO environments. The six-cell Qwen grid, four
-prospectively replicated Llama acquisitions, replicated mechanism, complete
-scoring, and dependency-aware heterogeneity are sufficient for that bounded
-claim.
+the tested asynchronous GRPO environments. The six-cell Qwen grid, eight
+prospectively replicated Llama acquisitions across two sizes, replicated
+mechanism, complete scoring, dependency-aware heterogeneity, and prespecified
+size contrasts are sufficient for that bounded claim.
 
 Do not add a 9B or 30B cell now. A seventh cell would improve external validity
 incrementally but would not address the paper's most important remaining
@@ -40,7 +40,7 @@ claim from proximal systems opportunity loss to final learning outcome, or if a
 venue decision explicitly requires that link. It must use the training run—not
 the rollout group—as the independent unit, freeze evaluation tasks and stopping
 rules, randomize scheduler condition across independent seeds, and power the
-run-level effect before acquisition. Existing 77,865 group assignments cannot
+run-level effect before acquisition. Existing 106,653 group assignments cannot
 substitute for independent training replicates.
 
 This study would be valuable, but launching it before the main paper is compiled

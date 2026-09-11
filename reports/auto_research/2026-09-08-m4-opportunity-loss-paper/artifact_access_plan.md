@@ -32,7 +32,7 @@ the private provenance ledger retains the reversible mapping.
 
 ## Raw terminal artifacts
 
-The 10 definitive terminal archives total hundreds of megabytes and remain
+The 14 definitive terminal archives total hundreds of megabytes and remain
 outside Git.
 Preferred access is an anonymous, read-only object store with stable URLs,
 checksums, content length, and no request tracking exposed to authors during
