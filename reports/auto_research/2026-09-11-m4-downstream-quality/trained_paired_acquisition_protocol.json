@@ -1,0 +1,178 @@
+{
+  "schema": "m4-downstream-quality-trained-paired-acquisition-protocol-v1",
+  "status": "FROZEN_DESIGN_PENDING_IMPLEMENTATION_AND_EXPLICIT_TRAINING_AUTHORIZATION",
+  "design_source_commit": "4f81c9f57af2438e9ae0c573b316886947d03a87",
+  "runtime_source_commit": null,
+  "predecessor_results_modified": false,
+  "evidence_anchors": {
+    "accepted_m4": {
+      "source_commit": "47dc1a713cbf0e07813d31c4ba70a8262214e098",
+      "protocol_sha256": "6631a4ca8cfc6010150d1c135a1f5821c717f0dea189a3309c5f0f58f9b0709c",
+      "artifact_sha256": "07cddc489ea20055161f9c435d44d0a52b91113fda9eac16472bdb531dc6ffb6",
+      "adjusted_estimate": 0.30542321077967627,
+      "confidence_envelope": [0.2759345052842236, 0.33491191627512895],
+      "role": "setting_and_release_policy_selection_only_not_quality_estimator_input"
+    },
+    "v8_no_training_preflight": {
+      "source_commit": "573dddce4cfca5fd615079c8045af05dddf80d03",
+      "parent_pipeline_id": 67419324,
+      "child_pipeline_id": 67419903,
+      "workload_job_id": 435866872,
+      "terminal_result_sha256": "2c638192f249fc2e3a2644b8a3879b5cfb833cf99d0a42c458dfe1d629b1c88e",
+      "role": "endpoint_and_artifact_path_feasibility_only_not_quality_estimator_input"
+    }
+  },
+  "causal_question": "Does the accepted mixed-d5 release policy change terminal held-out exact-answer accuracy relative to all-immediate release after 448 learner updates?",
+  "causal_unit": "matched_training_seed_block",
+  "estimand": "equal_weight_mean_over_blocks(accuracy_mixed_d5_minus_accuracy_immediate)",
+  "interpretation": {
+    "identified": "intention_to_treat_total_effect_of_randomized_release_policy_in_tested_setting",
+    "not_identified": [
+      "exclusive_causal_effect_of_the_m4_mediator",
+      "model_family_generalization",
+      "workload_generalization",
+      "production_delay_prevalence"
+    ]
+  },
+  "anchor": {
+    "model": "Qwen/Qwen3-0.6B",
+    "workload": "OpenMathInstruct-2",
+    "learner_updates": 448,
+    "terminal_learner_version": 448,
+    "prompts_per_update": 4,
+    "generations_per_prompt": 8,
+    "train_global_batch_size": 32,
+    "maximum_total_sequence_length": 2048,
+    "maximum_new_tokens": 1792,
+    "sampler": "windowed_fifo",
+    "maximum_staleness_versions": 1,
+    "maximum_inflight_prompts": 16,
+    "maximum_buffered_rollouts": 64,
+    "gpus_per_run": 2
+  },
+  "regimes": {
+    "immediate": {
+      "arms": [
+        {"label": "control", "delay_seconds": 0.0, "mass": 1}
+      ]
+    },
+    "mixed_d5": {
+      "arms": [
+        {"label": "control", "delay_seconds": 0.0, "mass": 1},
+        {"label": "d5", "delay_seconds": 5.0, "mass": 1}
+      ],
+      "accepted_policy_preserved": true
+    }
+  },
+  "dataset": {
+    "split_fraction": 0.05,
+    "split_seed": 20260911,
+    "split_seed_decoupled_from_training_seed": true,
+    "training_shuffle": true,
+    "same_prompt_order_within_block": true
+  },
+  "evaluation": {
+    "prompt_count": 1024,
+    "prompt_manifest_sha256": "469a34a176febe9d15c5c6d967ff21f135a43cb20a7cb7d5ae1a53066e6b3a0a",
+    "v8_base_successes": 369,
+    "v8_base_accuracy": 0.3603515625,
+    "v8_terminal_result_sha256": "2c638192f249fc2e3a2644b8a3879b5cfb833cf99d0a42c458dfe1d629b1c88e",
+    "timing": "independent_post_training_evaluation_of_immutable_terminal_export",
+    "primary_metric": "mean_binary_exact_answer_reward",
+    "decoding": {
+      "generations_per_prompt": 1,
+      "temperature": 0.0,
+      "top_p": 1.0,
+      "top_k": -1,
+      "maximum_new_tokens": 1792
+    },
+    "in_loop_validation": false,
+    "best_checkpoint_selection": false,
+    "v8_result_enters_primary_estimator": false
+  },
+  "inference": {
+    "matched_blocks": 16,
+    "runs": 32,
+    "primary_interval": "two_sided_95_percent_paired_student_df15",
+    "practical_absolute_accuracy_margin": 0.02,
+    "decision_rules": {
+      "MATERIALLY_WORSE": "upper_interval_endpoint_below_minus_0p02",
+      "MATERIALLY_BETTER": "lower_interval_endpoint_above_plus_0p02",
+      "PRACTICALLY_EQUIVALENT": "entire_interval_inside_minus_0p02_plus_0p02",
+      "DETECTABLE_BUT_NOT_MATERIAL": "interval_excludes_zero_and_no_other_rule_matches",
+      "INCONCLUSIVE": "all_other_complete_cases",
+      "INCONCLUSIVE_INCOMPLETE": "fewer_than_16_complete_authenticated_pairs"
+    },
+    "sensitivities": [
+      "all_65536_within_block_sign_flips",
+      "20000_draw_paired_bootstrap_seed_20261401",
+      "prompt_fixed_effect_sensitivity_clustered_by_training_block",
+      "ancova_with_v8_prompt_correctness_only",
+      "margin_sensitivity_0p01_0p015_0p025_0p03"
+    ],
+    "prompt_count_is_degrees_of_freedom": false,
+    "optional_extension": false,
+    "sequential_analysis": false
+  },
+  "blocks": [
+    {"id":"b01","training_seed":20261201,"mixed_assignment_seed":20261301,"submission_order":["immediate","mixed_d5"]},
+    {"id":"b02","training_seed":20261202,"mixed_assignment_seed":20261302,"submission_order":["mixed_d5","immediate"]},
+    {"id":"b03","training_seed":20261203,"mixed_assignment_seed":20261303,"submission_order":["immediate","mixed_d5"]},
+    {"id":"b04","training_seed":20261204,"mixed_assignment_seed":20261304,"submission_order":["immediate","mixed_d5"]},
+    {"id":"b05","training_seed":20261205,"mixed_assignment_seed":20261305,"submission_order":["immediate","mixed_d5"]},
+    {"id":"b06","training_seed":20261206,"mixed_assignment_seed":20261306,"submission_order":["immediate","mixed_d5"]},
+    {"id":"b07","training_seed":20261207,"mixed_assignment_seed":20261307,"submission_order":["mixed_d5","immediate"]},
+    {"id":"b08","training_seed":20261208,"mixed_assignment_seed":20261308,"submission_order":["immediate","mixed_d5"]},
+    {"id":"b09","training_seed":20261209,"mixed_assignment_seed":20261309,"submission_order":["mixed_d5","immediate"]},
+    {"id":"b10","training_seed":20261210,"mixed_assignment_seed":20261310,"submission_order":["immediate","mixed_d5"]},
+    {"id":"b11","training_seed":20261211,"mixed_assignment_seed":20261311,"submission_order":["immediate","mixed_d5"]},
+    {"id":"b12","training_seed":20261212,"mixed_assignment_seed":20261312,"submission_order":["mixed_d5","immediate"]},
+    {"id":"b13","training_seed":20261213,"mixed_assignment_seed":20261313,"submission_order":["mixed_d5","immediate"]},
+    {"id":"b14","training_seed":20261214,"mixed_assignment_seed":20261314,"submission_order":["mixed_d5","immediate"]},
+    {"id":"b15","training_seed":20261215,"mixed_assignment_seed":20261315,"submission_order":["immediate","mixed_d5"]},
+    {"id":"b16","training_seed":20261216,"mixed_assignment_seed":20261316,"submission_order":["immediate","mixed_d5"]}
+  ],
+  "assignment": {
+    "mixed_domain_template": "m4-downstream-quality-paired-v1-{block_id}-mixed-d5",
+    "order_algorithm": "sha256('m4-downstream-quality-paired-v1|' + block_id)_integer_mod_2; zero=immediate_first",
+    "rerandomization": false
+  },
+  "artifact_contract": {
+    "terminal_policy_export_required": true,
+    "terminal_export_train_steps": 448,
+    "terminal_export_trainer_version": 448,
+    "optimizer_exported": false,
+    "resumable_checkpoint": false,
+    "conversion_to_huggingface_required": true,
+    "sha256_authentication_required": true,
+    "overwrite_allowed": false,
+    "all_1024_prompt_scores_required": true,
+    "outcome_embargo_until_completion_gate": true
+  },
+  "resource_caps": {
+    "wall_hours_each": 4.0,
+    "h100_gpu_hours_each": 8.0,
+    "summed_wall_hours": 128.0,
+    "aggregate_h100_gpu_hours": 256.0,
+    "planning_h100_gpu_hours": 102.0
+  },
+  "fail_closed": {
+    "automatic_retry": false,
+    "automatic_replacement": false,
+    "automatic_extension": false,
+    "seed_substitution": false,
+    "run_count_change": false,
+    "model_or_workload_substitution": false,
+    "endpoint_change": false,
+    "as_treated_primary_analysis": false
+  },
+  "authority": {
+    "local_design_work": true,
+    "config_implementation": false,
+    "training": false,
+    "eos_submission": false,
+    "qualification": false,
+    "scientific_acquisition": false
+  },
+  "next_step": "Implement and locally validate config templates, 32 resolved manifests, outcome embargo, and detached paired analyzer; do not train or submit to EOS without separate explicit authorization."
+}

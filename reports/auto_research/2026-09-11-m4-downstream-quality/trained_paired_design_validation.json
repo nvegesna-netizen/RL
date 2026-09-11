@@ -1,0 +1,43 @@
+{
+  "schema": "m4-downstream-quality-trained-paired-design-validation-v1",
+  "status": "PASS_LOCAL_DESIGN_ONLY",
+  "checks": {
+    "canonical_json_parses": true,
+    "protocol_schema_and_status": true,
+    "accepted_m4_anchor_authenticated": true,
+    "v8_feasibility_anchor_authenticated": true,
+    "historical_outcomes_excluded_from_primary_estimator": true,
+    "sixteen_unique_training_seeds": true,
+    "sixteen_unique_mixed_assignment_seeds": true,
+    "submission_orders_recomputed_from_sha256": true,
+    "accepted_equal_mass_mixed_policy_preserved": true,
+    "all_immediate_control_policy_valid": true,
+    "fixed_1024_prompt_manifest": true,
+    "run_level_degrees_of_freedom": true,
+    "fixed_0p02_margin": true,
+    "fixed_32_run_count": true,
+    "no_sequential_analysis": true,
+    "no_automatic_retry_replacement_or_extension": true,
+    "no_training_or_eos_authority": true,
+    "python_syntax": true,
+    "trailing_whitespace": false
+  },
+  "artifacts": {
+    "protocol_json_sha256": "dbe7a4f7d1938ef43d24e536ccf9dd57110a01bab5e6cb511980218e472ef2c0",
+    "protocol_markdown_sha256": "021392635afc2a078eb5d4d12b3cdf0fd4902d9bc694e9c548bcf677434d7326",
+    "analysis_plan_sha256": "49fb2294575bb2bc6ada11440cd29ed746677d5951c26d663dfc590c84369073",
+    "resource_rationale_sha256": "5ac38dd1d379da64b9b90b6b2df567dfbe94261a386d5e1a8e7a507f25dded20",
+    "design_audit_sha256": "9f0195415678bff8784b0a45f0015c7a2b617edbf5f3ad177c38b9c8334634f1",
+    "validator_sha256": "64d9edc168f836b167a166c23df7e7b2214d400617d188e577b97217efa37e12"
+  },
+  "test_command": "python3 reports/auto_research/2026-09-11-m4-downstream-quality/validate_trained_paired_design.py",
+  "test_output": "M4_DOWNSTREAM_QUALITY_TRAINED_PAIRED_DESIGN_PASS",
+  "repository_unit_tests": {
+    "required_for_document_only_design_freeze": false,
+    "executed": false,
+    "reason": "The worktree environment lacks pytest and uv cannot materialize the omitted nemo-gym workspace member; runtime implementation tests remain a mandatory next gate."
+  },
+  "training_started": false,
+  "eos_submission_started": false,
+  "next_gate": "Implement and locally test configuration templates, manifests, outcome embargo, and detached analyzer before requesting training authority."
+}
