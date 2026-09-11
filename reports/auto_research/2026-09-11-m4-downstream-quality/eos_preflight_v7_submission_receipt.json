@@ -1,0 +1,16 @@
+{
+  "schema": "m4-downstream-quality-no-training-eos-preflight-v7-submission-receipt-v1",
+  "package_commit": "ea807facb95c4a5c419cbb2c8787f3751823fa74",
+  "manifest_sha256": "f1bcc8751ce969aef42531049d7fa1a1daea3a9b4ee723502632fac3b61226d5",
+  "submission_guard_sha256": "a0df94c3f04cd65715b2213b86f4ac1b0f6300992f714273dda48efedefd529a",
+  "submission_stdout_sha256": "8df5424fa4d8affebfc89d500900ddfbd11aaf8b947f72d7773d154a14855a9d",
+  "launcher": "runllm.py --no_wait",
+  "submission_attempt": 1,
+  "parent_pipeline_id": 67395534,
+  "bridge_job_id": 435676647,
+  "child_pipeline_id": 67395685,
+  "verified_child_job_ids": [435677893, 435677894, 435677895],
+  "initial_verified_status": "running",
+  "automatic_retry": false,
+  "automatic_extension": false
+}
