@@ -2997,7 +2997,11 @@ class MegatronPolicyWorkerImpl(
             if not is_training:
                 self.model.eval()
 
-            if self.should_disable_forward_pre_hook:
+            forward_pre_hook_was_enabled = (
+                self.should_disable_forward_pre_hook
+                and self._forward_pre_hook_enabled()
+            )
+            if forward_pre_hook_was_enabled:
                 self.disable_forward_pre_hook()
             save_checkpoint(
                 state=self.mcore_state,
@@ -3015,7 +3019,7 @@ class MegatronPolicyWorkerImpl(
                     ckpt_cfg=self.mcore_state.cfg.checkpoint,
                     blocking=True,
                 )
-            if self.should_disable_forward_pre_hook:
+            if forward_pre_hook_was_enabled:
                 self.enable_forward_pre_hook()
 
             if not is_training:

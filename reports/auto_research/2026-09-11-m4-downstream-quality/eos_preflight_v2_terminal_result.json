@@ -1,0 +1,85 @@
+{
+  "absent_outputs": [
+    "terminal_policy_export.json",
+    "resolved_config.json",
+    "converted_huggingface_model",
+    "m4-downstream-quality-prompt-manifest.json",
+    "evaluation_data.json",
+    "m4-downstream-quality-no-training-preflight-result.json"
+  ],
+  "automatic_extension": false,
+  "automatic_retry": false,
+  "child_pipeline": {
+    "finished_at": "2026-09-11T02:52:54.272-07:00",
+    "id": 67345877,
+    "status": "failed"
+  },
+  "classification": "OPERATIONAL_FAILURE_DURING_ZERO_STEP_TERMINAL_EXPORT",
+  "completed_markers": [
+    "M4_DOWNSTREAM_QUALITY_EOS_PREFLIGHT_V2_AUTHORITY_PASS",
+    "M4_DOWNSTREAM_QUALITY_SAFE_SOURCE_PASS",
+    "M4_DOWNSTREAM_QUALITY_MEGATRON_DEPENDENCY_PASS",
+    "M4_DOWNSTREAM_QUALITY_PROTOCOL_PASS"
+  ],
+  "failure": {
+    "exception": "ray.exceptions.RayTaskError(AssertionError)",
+    "first_failing_operation": "MegatronPolicyWorkerImpl.disable_forward_pre_hook()",
+    "message": "assert isinstance(self.model, DistributedDataParallel)",
+    "root_cause": "init_optimizer=False leaves the model unwrapped, while the overlap-derived should_disable_forward_pre_hook flag remained true and save_checkpoint entered a DDP-only hook path",
+    "source_line": "nemo_rl/models/policy/workers/megatron_policy_worker.py:620",
+    "stage": "initial zero-step terminal policy export"
+  },
+  "job": {
+    "duration_seconds": 344.651176,
+    "failure_reason": "script_failure",
+    "id": 435264910,
+    "status": "failed"
+  },
+  "logs_after_artifact": {
+    "bytes": 131670350,
+    "job_id": 435264911,
+    "sha256": "f50ab96c8196375ad7e46cdd1f8ade43d132b6d603de90c5b22674106a59ef6e"
+  },
+  "model": {
+    "accessed": true,
+    "hf_import_checkpoint_loaded": true,
+    "name": "Qwen/Qwen3-0.6B",
+    "parameter_count_reported": 596049920
+  },
+  "optimizer_initialized": false,
+  "optimizer_steps": 0,
+  "parent_pipeline": {
+    "finished_at": "2026-09-11T02:52:54.603-07:00",
+    "id": 67345695,
+    "status": "failed"
+  },
+  "pilot_started": false,
+  "prospective_repair": {
+    "code_change": "Capture whether a DDP forward pre-hook is actually enabled and only disable/restore it when true.",
+    "focused_test": "tests/unit/models/policy/test_megatron_worker.py::test_megatron_save_checkpoint_only_toggles_enabled_forward_pre_hook",
+    "local_checks": [
+      "python byte-compilation passed",
+      "git diff --check passed",
+      "ruff check passed",
+      "ruff format --check passed"
+    ],
+    "local_test_execution": "BLOCKED_SHARED_PYTHON_MISSING_RAY_AND_UV_WORKSPACE_MISSING_NEMO_GYM_MEMBER",
+    "requires_fresh_authorization": true,
+    "requires_new_package_identity": true
+  },
+  "qualification_started": false,
+  "schema": "m4-downstream-quality-no-training-eos-preflight-v2-terminal-result-v1",
+  "scientific_acquisition_started": false,
+  "scientific_interpretation": "No downstream-quality or M4 scientific observation was produced. The failure tests only the no-training export path.",
+  "source_commit": "1941728f8a636d82126dec8632277cd63172e3b7",
+  "status": "FAILED_TERMINAL_NO_RETRY_AUTHORITY",
+  "submission_attempts": 1,
+  "terminal_artifact_authentication": {
+    "declared_exit_code": 1,
+    "logs_after_output_log_sha256": "4c6796f42ab098703d652fedda8fae33444c333db114b537fc8f8f034ef90c74",
+    "metadata_sha256": "c28fa24ef35af31e15425964053de706bf0a5cec2d1aa9f5735242ac3e09eace",
+    "workload_trace_sha256": "bbee867508353072ee03051644035d236fe92f5236ee755a0861937b4e02a067"
+  },
+  "training_started": false,
+  "v1_repair_verified": true
+}

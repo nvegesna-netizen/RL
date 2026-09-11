@@ -309,6 +309,43 @@ def test_megatron_finalize_async_save_releases_colocated_nvrx_cache(
         assert events == [("finalize", False)]
 
 
+@pytest.mark.parametrize("forward_pre_hook_enabled", [False, True])
+def test_megatron_save_checkpoint_only_toggles_enabled_forward_pre_hook(
+    monkeypatch: pytest.MonkeyPatch, forward_pre_hook_enabled: bool
+) -> None:
+    import nemo_rl.models.policy.workers.megatron_policy_worker as worker_module
+
+    worker = object.__new__(worker_module.MegatronPolicyWorkerImpl)
+    worker.model = MagicMock(training=True)
+    worker.optimizer = None
+    worker.scheduler = None
+    worker.should_disable_forward_pre_hook = True
+    worker._forward_pre_hook_enabled = lambda: forward_pre_hook_enabled
+    worker.disable_forward_pre_hook = MagicMock()
+    worker.enable_forward_pre_hook = MagicMock()
+    worker.checkpointing_context = None
+    worker._async_checkpoint_cuda_cache_active = False
+    worker._requires_nvrx_cuda_cache_release = lambda: False
+    worker.mcore_state = SimpleNamespace(
+        cfg=SimpleNamespace(
+            checkpoint=SimpleNamespace(save="original", async_save=False)
+        ),
+        train_state=SimpleNamespace(floating_point_operations_so_far=0),
+    )
+
+    monkeypatch.setattr(torch.distributed, "is_initialized", lambda: True)
+    monkeypatch.setattr(worker_module, "maybe_finalize_async_save", MagicMock())
+    save = MagicMock()
+    monkeypatch.setattr(worker_module, "save_checkpoint", save)
+
+    worker.save_checkpoint(weights_path="weights")
+
+    assert worker.disable_forward_pre_hook.call_count == int(forward_pre_hook_enabled)
+    assert worker.enable_forward_pre_hook.call_count == int(forward_pre_hook_enabled)
+    save.assert_called_once()
+    assert worker.mcore_state.cfg.checkpoint.save == "original"
+
+
 def test_megatron_move_model_does_not_serialize_extra_state():
     from nemo_rl.models.policy.workers.megatron_policy_worker import (
         MegatronPolicyWorkerImpl,
