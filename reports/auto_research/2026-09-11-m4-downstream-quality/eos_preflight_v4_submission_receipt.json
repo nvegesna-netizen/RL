@@ -1,0 +1,48 @@
+{
+  "schema": "m4-downstream-quality-no-training-eos-preflight-v4-submission-receipt-v1",
+  "package_commit": "9a1c2efa7b2b36a7ba1c67552be97c282d745f6f",
+  "manifest_sha256": "fcd82a3e65da33c86f51923aa7236c8a2a2b7e4aeb233f3254f66f228f931222",
+  "package_receipt_sha256": "3b5c8f1d05b54b293b6204e45bb74338c82d93c7d1f6415d39768f3b9cbe67aa",
+  "launcher": "runllm.py --no_wait",
+  "submission_attempt": 1,
+  "submission_guard_sha256": "16c60353df9f94557558cc0d44496e3543c99c6044bf3332d3dca40be3aeacd4",
+  "submission_stdout_sha256": "0f75b1893de4bc14a5078be354628a101c22b0d6d1d8843ab719ff21ebfa002d",
+  "parent_pipeline": {
+    "id": 67356618,
+    "created_at": "2026-09-11T04:17:11.300-07:00",
+    "source": "api",
+    "initial_verified_status": "running",
+    "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67356618"
+  },
+  "bridge": {
+    "id": 435350857,
+    "started_at": "2026-09-11T04:20:17.316-07:00",
+    "initial_verified_status": "running"
+  },
+  "child_pipeline": {
+    "id": 67356985,
+    "created_at": "2026-09-11T04:20:18.027-07:00",
+    "source": "parent_pipeline",
+    "initial_verified_status": "running",
+    "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67356985"
+  },
+  "verified_child_jobs": [
+    {
+      "id": 435353104,
+      "name_suffix": "[1 logs_before]",
+      "status": "running"
+    },
+    {
+      "id": 435353105,
+      "name_suffix": "[2 dgxh100_eos]",
+      "status": "created"
+    },
+    {
+      "id": 435353106,
+      "name_suffix": "[3 logs_after]",
+      "status": "created"
+    }
+  ],
+  "automatic_retry": false,
+  "automatic_extension": false
+}
