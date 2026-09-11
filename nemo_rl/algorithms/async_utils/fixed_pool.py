@@ -180,6 +180,7 @@ STRUCTURED_PRESSURE_SELECTION_SEEDS: Final[dict[int, int]] = {
     49002: 2026091002,
     49003: 2026091003,
     49004: 2026091004,
+    49005: 2026091005,
 }
 STRUCTURED_GENERATION_SOURCE_IDS: Final[tuple[str, str]] = (
     "structured_short",

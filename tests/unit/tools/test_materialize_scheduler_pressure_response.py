@@ -92,6 +92,55 @@ def _amendment_confirmation(amendment_sha: str) -> dict[str, object]:
     }
 
 
+def _replacement_amendment() -> dict[str, object]:
+    return {
+        "status": "candidate_awaiting_exact_confirmation",
+        "analysis_status": "prospective_runtime_and_replacement_amendment",
+        "integrity_decisions": {
+            "replication_49004_consumed": True,
+            "same_seed_retry_allowed": False,
+        },
+        "prospective_replacement": {
+            "replacement_order_seed": 49005,
+            "selection_seed": 2026091005,
+            "generation_study_seed": 69005,
+            "fresh_pool_required": True,
+            "replacement_replication_order": [49002, 49003, 49005],
+        },
+        "authorization_if_exactly_confirmed": {
+            "fresh_pool_49005_materialization_and_validation": True,
+            "scheduler_arm_49005": False,
+            "counterfactual_replay": False,
+            "learner_training": False,
+            "population_claim": False,
+        },
+    }
+
+
+def _replacement_confirmation(amendment_sha: str) -> dict[str, object]:
+    return {
+        "schema_version": 1,
+        "status": "confirmed_for_bounded_runtime_repair_validation_and_replacement_pool_materialization",
+        "confirmed_amendment_candidate_sha256": amendment_sha,
+        "confirmed_on": "2026-09-11",
+        "confirmation_source": "test",
+        "source_plan_id": "a" * 64,
+        "source_plan_file_sha256": "b" * 64,
+        "triggering_failure_audit_sha256": "c" * 64,
+        "authorization": {
+            "bounded_runtime_repair": True,
+            "local_validation": True,
+            "pinned_image_no_rollout_validation": True,
+            "fresh_pool_49005_materialization_and_validation_after_pinned_image_pass": True,
+            "scheduler_arm_49005": False,
+            "counterfactual_replay": False,
+            "learner_training": False,
+            "population_claim": False,
+        },
+        "required_sequence": ["test"],
+    }
+
+
 def test_materializes_balanced_32_group_pool(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
@@ -190,3 +239,60 @@ def test_materializes_amendment_bound_49004_pool(
     assert report[
         "concurrency_amendment_confirmation_sha256"
     ] == materializer.base._sha_path(confirmation)
+
+
+def test_materializes_replacement_bound_49005_pool(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    protocol = tmp_path / "candidate.json"
+    protocol.write_text(json.dumps(_candidate(), sort_keys=True))
+    monkeypatch.setattr(
+        materializer, "PROTOCOL_SHA256", materializer.base._sha_path(protocol)
+    )
+    amendment = tmp_path / "replacement-amendment.json"
+    amendment.write_text(json.dumps(_replacement_amendment(), sort_keys=True))
+    monkeypatch.setattr(
+        materializer,
+        "REPLACEMENT_AMENDMENT_SHA256",
+        materializer.base._sha_path(amendment),
+    )
+    confirmation = tmp_path / "replacement-confirmation.json"
+    confirmation.write_text(
+        json.dumps(
+            _replacement_confirmation(materializer.REPLACEMENT_AMENDMENT_SHA256),
+            sort_keys=True,
+        )
+    )
+    monkeypatch.setattr(
+        materializer,
+        "REPLACEMENT_CONFIRMATION_SHA256",
+        materializer.base._sha_path(confirmation),
+    )
+
+    def _snapshot(root: Path):
+        snapshot = b'{"schema_version":1}\n'
+        (root / "model_snapshot").mkdir()
+        (root / "model_snapshot_manifest.v1.json").write_bytes(snapshot)
+        return _Tokenizer(), snapshot
+
+    monkeypatch.setattr(materializer.base.model_pin, "_snapshot_model", _snapshot)
+    output = tmp_path / "pool"
+    materializer.materialize(
+        output_dir=output,
+        protocol_path=protocol,
+        authorization_path=confirmation,
+        amendment_path=amendment,
+        order_seed=49005,
+        key=b"k" * 32,
+    )
+    manifest = json.loads((output / "fixed_pool_manifest.v1.49005.json").read_text())
+    report = json.loads((output / "materialization_report.v1.json").read_text())
+    assert manifest["order_seed"] == 49005
+    assert report["selection_seed"] == 2026091005
+    assert report["generation_seed"] == 69005
+    assert report["replacement_runtime_amendment_sha256"] == (
+        materializer.base._sha_path(amendment)
+    )
+    assert report["replacement_runtime_amendment_confirmation_sha256"] == (
+        materializer.base._sha_path(confirmation)
+    )

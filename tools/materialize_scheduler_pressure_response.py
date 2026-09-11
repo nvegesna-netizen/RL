@@ -24,6 +24,12 @@ AMENDMENT_SHA256: Final[str] = (
 AMENDMENT_CONFIRMATION_SHA256: Final[str] = (
     "892ccdeccc2e91a11fe1a9f692949c7cc9fddcd63b784ae7b43d3191e6a64197"
 )
+REPLACEMENT_AMENDMENT_SHA256: Final[str] = (
+    "ede4dc56f5138e2b04f46cba7592198e2f06a7a8c1e87286a7b08103947d9013"
+)
+REPLACEMENT_CONFIRMATION_SHA256: Final[str] = (
+    "2047291bb0d0074a0db0fe1d7cf2af4ee0ab4e17fff3d478f41a81f40843e192"
+)
 ORIGINAL_REPLICATION_SEEDS: Final[dict[int, tuple[int, int]]] = {
     49001: (2026091001, 69001),
     49002: (2026091002, 69002),
@@ -32,6 +38,7 @@ ORIGINAL_REPLICATION_SEEDS: Final[dict[int, tuple[int, int]]] = {
 REPLICATION_SEEDS: Final[dict[int, tuple[int, int]]] = {
     **ORIGINAL_REPLICATION_SEEDS,
     49004: (2026091004, 69004),
+    49005: (2026091005, 69005),
 }
 
 
@@ -47,10 +54,49 @@ def _load_materialization_authorization(path: Path, *, order_seed: int) -> bytes
         raise SchedulerPressureResponseMaterializationError(
             "materialization authorization is invalid JSON"
         ) from error
-    if order_seed == 49004:
+    if order_seed in {49004, 49005}:
         authorization = (
             record.get("authorization") if isinstance(record, dict) else None
         )
+        if order_seed == 49005:
+            if (
+                base._sha_bytes(raw) != REPLACEMENT_CONFIRMATION_SHA256
+                or not isinstance(record, dict)
+                or set(record)
+                != {
+                    "schema_version",
+                    "status",
+                    "confirmed_amendment_candidate_sha256",
+                    "confirmed_on",
+                    "confirmation_source",
+                    "source_plan_id",
+                    "source_plan_file_sha256",
+                    "triggering_failure_audit_sha256",
+                    "authorization",
+                    "required_sequence",
+                }
+                or record.get("schema_version") != 1
+                or record.get("status")
+                != "confirmed_for_bounded_runtime_repair_validation_and_replacement_pool_materialization"
+                or record.get("confirmed_amendment_candidate_sha256")
+                != REPLACEMENT_AMENDMENT_SHA256
+                or not isinstance(authorization, dict)
+                or authorization
+                != {
+                    "bounded_runtime_repair": True,
+                    "local_validation": True,
+                    "pinned_image_no_rollout_validation": True,
+                    "fresh_pool_49005_materialization_and_validation_after_pinned_image_pass": True,
+                    "scheduler_arm_49005": False,
+                    "counterfactual_replay": False,
+                    "learner_training": False,
+                    "population_claim": False,
+                }
+            ):
+                raise SchedulerPressureResponseMaterializationError(
+                    "49005 replacement authorization contract mismatch"
+                )
+            return raw
         if (
             base._sha_bytes(raw) != AMENDMENT_CONFIRMATION_SHA256
             or not isinstance(record, dict)
@@ -215,6 +261,58 @@ def _load_amendment(path: Path) -> bytes:
     return raw
 
 
+def _load_replacement_amendment(path: Path) -> bytes:
+    raw = path.read_bytes()
+    try:
+        record = json.loads(raw)
+    except json.JSONDecodeError as error:
+        raise SchedulerPressureResponseMaterializationError(
+            "replacement amendment is invalid JSON"
+        ) from error
+    replacement = (
+        record.get("prospective_replacement", {}) if isinstance(record, dict) else {}
+    )
+    authorization = (
+        record.get("authorization_if_exactly_confirmed", {})
+        if isinstance(record, dict)
+        else {}
+    )
+    if (
+        base._sha_bytes(raw) != REPLACEMENT_AMENDMENT_SHA256
+        or not isinstance(record, dict)
+        or record.get("status") != "candidate_awaiting_exact_confirmation"
+        or record.get("analysis_status")
+        != "prospective_runtime_and_replacement_amendment"
+        or record.get("integrity_decisions", {}).get("replication_49004_consumed")
+        is not True
+        or record.get("integrity_decisions", {}).get("same_seed_retry_allowed")
+        is not False
+        or (
+            replacement.get("replacement_order_seed"),
+            replacement.get("selection_seed"),
+            replacement.get("generation_study_seed"),
+            replacement.get("fresh_pool_required"),
+            replacement.get("replacement_replication_order"),
+        )
+        != (49005, 2026091005, 69005, True, [49002, 49003, 49005])
+        or authorization.get("fresh_pool_49005_materialization_and_validation")
+        is not True
+        or any(
+            authorization.get(field) is not False
+            for field in (
+                "scheduler_arm_49005",
+                "counterfactual_replay",
+                "learner_training",
+                "population_claim",
+            )
+        )
+    ):
+        raise SchedulerPressureResponseMaterializationError(
+            "replacement amendment contract mismatch"
+        )
+    return raw
+
+
 def materialize(
     *,
     output_dir: Path,
@@ -236,12 +334,16 @@ def materialize(
         authorization_path, order_seed=order_seed
     )
     amendment_raw = None
-    if order_seed == 49004:
+    if order_seed in {49004, 49005}:
         if amendment_path is None:
             raise SchedulerPressureResponseMaterializationError(
-                "49004 requires the confirmed concurrency amendment candidate"
+                f"{order_seed} requires its confirmed amendment candidate"
             )
-        amendment_raw = _load_amendment(amendment_path)
+        amendment_raw = (
+            _load_amendment(amendment_path)
+            if order_seed == 49004
+            else _load_replacement_amendment(amendment_path)
+        )
     elif amendment_path is not None:
         raise SchedulerPressureResponseMaterializationError(
             "legacy replications do not accept a concurrency amendment"
@@ -268,7 +370,12 @@ def materialize(
                 "scheduler_pressure_response_concurrency_amendment.candidate.v1.json": amendment_raw,
                 "scheduler_pressure_response_concurrency_amendment_confirmation.v1.json": authorization_raw,
             }
-            if amendment_raw is not None
+            if order_seed == 49004
+            else {
+                "scheduler_pressure_response_49004_replacement_runtime_amendment.candidate.v1.json": amendment_raw,
+                "scheduler_pressure_response_49004_replacement_runtime_amendment_confirmation.v1.json": authorization_raw,
+            }
+            if order_seed == 49005
             else {
                 "scheduler_pressure_response_materialization_authorization.v1.json": authorization_raw
             }
@@ -280,7 +387,14 @@ def materialize(
                     authorization_raw
                 ),
             }
-            if amendment_raw is not None
+            if order_seed == 49004
+            else {
+                "replacement_runtime_amendment_sha256": base._sha_bytes(amendment_raw),
+                "replacement_runtime_amendment_confirmation_sha256": base._sha_bytes(
+                    authorization_raw
+                ),
+            }
+            if order_seed == 49005
             else {
                 "materialization_authorization_sha256": base._sha_bytes(
                     authorization_raw
