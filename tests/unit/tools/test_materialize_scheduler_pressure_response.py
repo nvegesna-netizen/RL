@@ -183,7 +183,7 @@ def test_materializes_amendment_bound_49004_pool(
     manifest = json.loads((output / "fixed_pool_manifest.v1.49004.json").read_text())
     report = json.loads((output / "materialization_report.v1.json").read_text())
     assert manifest["order_seed"] == 49004
-    assert manifest["selection_seed"] == 2026091004
+    assert report["selection_seed"] == 2026091004
     assert report["concurrency_amendment_sha256"] == materializer.base._sha_path(
         amendment
     )
