@@ -15,6 +15,7 @@
 """Tests for SingleController initialization and pump lifecycle."""
 
 import asyncio
+from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock
 
@@ -30,6 +31,7 @@ from nemo_rl.algorithms.single_controller_utils.config import (
     AsyncRLConfig,
     GradientOpportunityAuditConfig,
     MasterConfig,
+    TerminalPolicyExportConfig,
     validate_single_controller_config,
 )
 from nemo_rl.algorithms.async_utils.controlled_release import (
@@ -83,6 +85,100 @@ def test_controlled_release_rejects_nemo_gym() -> None:
 
     with pytest.raises(ValueError, match="only by native async rollouts"):
         validate_single_controller_config(config)
+
+
+def test_terminal_policy_export_requires_output_dir() -> None:
+    config = _controlled_release_master_config(lifecycle_audit_path="lifecycle.jsonl")
+    config.async_rl.terminal_policy_export = TerminalPolicyExportConfig(enabled=True)
+
+    with pytest.raises(ValueError, match="terminal_policy_export.*requires output_dir"):
+        validate_single_controller_config(config)
+
+
+def test_terminal_policy_export_is_default_off() -> None:
+    controller_cls = SingleControllerActor.__ray_metadata__.modified_class
+    ctrl = object.__new__(controller_cls)
+    ctrl._async_cfg = AsyncRLConfig()
+
+    assert asyncio.run(ctrl._export_terminal_policy()) is None
+
+
+def test_terminal_policy_export_writes_completed_artifact(tmp_path: Path) -> None:
+    controller_cls = SingleControllerActor.__ray_metadata__.modified_class
+    ctrl = object.__new__(controller_cls)
+    output_dir = tmp_path / "terminal-policy"
+    ctrl._async_cfg = AsyncRLConfig(
+        terminal_policy_export=TerminalPolicyExportConfig(
+            enabled=True, output_dir=str(output_dir)
+        )
+    )
+    ctrl._master_config = SimpleNamespace(
+        grpo=SimpleNamespace(max_num_steps=7),
+        model_dump=MagicMock(return_value={"grpo": {"max_num_steps": 7}}),
+    )
+    ctrl._train_steps = 7
+    ctrl._trainer_version = 7
+
+    def _save_checkpoint(*, weights_path, optimizer_path, tokenizer_path):
+        assert optimizer_path is None
+        Path(weights_path).mkdir(parents=True)
+        assert tokenizer_path is None
+
+    ctrl._trainer = SimpleNamespace(
+        save_checkpoint=MagicMock(side_effect=_save_checkpoint),
+        finalize_async_save=MagicMock(),
+    )
+
+    result = asyncio.run(ctrl._export_terminal_policy())
+
+    assert result == {
+        "schema": "single-controller-terminal-policy-export-v1",
+        "train_steps": 7,
+        "trainer_version": 7,
+        "weights_path": "policy/weights",
+        "resolved_config_path": "resolved_config.json",
+        "optimizer_exported": False,
+        "resumable_training_checkpoint": False,
+    }
+    assert (output_dir / "terminal_policy_export.json").is_file()
+    assert (output_dir / "resolved_config.json").is_file()
+    assert not (tmp_path / ".terminal-policy.incomplete").exists()
+    ctrl._trainer.save_checkpoint.assert_called_once()
+    ctrl._trainer.finalize_async_save.assert_called_once_with()
+
+
+def test_terminal_policy_export_rejects_incomplete_run(tmp_path: Path) -> None:
+    controller_cls = SingleControllerActor.__ray_metadata__.modified_class
+    ctrl = object.__new__(controller_cls)
+    ctrl._async_cfg = AsyncRLConfig(
+        terminal_policy_export=TerminalPolicyExportConfig(
+            enabled=True, output_dir=str(tmp_path / "terminal-policy")
+        )
+    )
+    ctrl._master_config = SimpleNamespace(grpo=SimpleNamespace(max_num_steps=7))
+    ctrl._train_steps = 6
+    ctrl._trainer_version = 6
+
+    with pytest.raises(RuntimeError, match="requires.*boundary"):
+        asyncio.run(ctrl._export_terminal_policy())
+
+
+def test_terminal_policy_export_refuses_overwrite(tmp_path: Path) -> None:
+    controller_cls = SingleControllerActor.__ray_metadata__.modified_class
+    ctrl = object.__new__(controller_cls)
+    output_dir = tmp_path / "terminal-policy"
+    output_dir.mkdir()
+    ctrl._async_cfg = AsyncRLConfig(
+        terminal_policy_export=TerminalPolicyExportConfig(
+            enabled=True, output_dir=str(output_dir)
+        )
+    )
+    ctrl._master_config = SimpleNamespace(grpo=SimpleNamespace(max_num_steps=7))
+    ctrl._train_steps = 7
+    ctrl._trainer_version = 7
+
+    with pytest.raises(FileExistsError, match="refuses to overwrite"):
+        asyncio.run(ctrl._export_terminal_policy())
 
 
 def test_gradient_opportunity_audit_requires_controlled_release() -> None:

@@ -56,6 +56,20 @@ class LifecycleDerivedOpportunityAuditConfig(BaseModel, frozen=True):
     derivation_summary_path: Optional[str] = None
 
 
+class TerminalPolicyExportConfig(BaseModel, frozen=True):
+    """Default-off terminal weight export for completed bounded runs.
+
+    This is intentionally narrower than resumable checkpointing: it exports
+    policy weights and the resolved run configuration only after the controller
+    reaches its configured terminal step/version boundary.  Independent
+    conversion and evaluation can then consume the immutable export without
+    adding validation traffic to the training run.
+    """
+
+    enabled: bool = False
+    output_dir: Optional[str] = None
+
+
 class AsyncRLConfig(BaseModel, extra="allow"):
     # Staleness policy shared by the rollout and train pumps.
     sampler: SamplerConfig = Field(
@@ -83,6 +97,9 @@ class AsyncRLConfig(BaseModel, extra="allow"):
     )
     lifecycle_derived_opportunity_audit: LifecycleDerivedOpportunityAuditConfig = Field(
         default_factory=LifecycleDerivedOpportunityAuditConfig
+    )
+    terminal_policy_export: TerminalPolicyExportConfig = Field(
+        default_factory=TerminalPolicyExportConfig
     )
 
 
@@ -124,6 +141,11 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
     release_config = async_config.controlled_release_delay
     opportunity_config = async_config.gradient_opportunity_audit
     derived_config = async_config.lifecycle_derived_opportunity_audit
+    export_config = async_config.terminal_policy_export
+    if export_config.enabled and not export_config.output_dir:
+        raise ValueError(
+            "async_rl.terminal_policy_export.enabled=true requires output_dir"
+        )
     if release_config.enabled:
         if not async_config.lifecycle_audit_path:
             raise ValueError(

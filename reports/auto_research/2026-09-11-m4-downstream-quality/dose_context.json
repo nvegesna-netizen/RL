@@ -1,0 +1,943 @@
+{
+  "interpretation": {
+    "five_second_ratio": "fixed treatment divided by median learner-update interval",
+    "last_sibling_to_hold_start": "controller path timing, not production-delay prevalence",
+    "prohibited": [
+      "reclassify_registered_m4_endpoints",
+      "claim_natural_delay_prevalence",
+      "claim_final_quality_effect"
+    ]
+  },
+  "runs": [
+    {
+      "assignment_counts": {
+        "control": 3865,
+        "d5": 3953
+      },
+      "environment_duration_seconds": {
+        "count": 62416,
+        "maximum": 5.132994437,
+        "mean": 0.08866432677111638,
+        "p50": 0.052205524,
+        "p90": 0.16847802750000002,
+        "p99": 0.3486260760999998
+      },
+      "five_seconds_over_median_update": 0.5766306044912006,
+      "generation_duration_seconds": {
+        "count": 62416,
+        "maximum": 12.817124342,
+        "mean": 7.065871566766999,
+        "p50": 8.172180925,
+        "p90": 9.102704668000001,
+        "p99": 9.813772915249999
+      },
+      "hold_overshoot_seconds": {
+        "control": {
+          "count": 3857,
+          "maximum": 0.111102802,
+          "mean": 0.00824598229815919,
+          "p50": 0.001868981,
+          "p90": 0.025395959800000003,
+          "p99": 0.06520134479999999
+        },
+        "d5": {
+          "count": 3945,
+          "maximum": 0.35704624500000026,
+          "mean": 0.008646407120659061,
+          "p50": 0.001718396000000233,
+          "p90": 0.024988556800000145,
+          "p99": 0.057555770599999695
+        }
+      },
+      "label": "llama1b_openmath_r1",
+      "last_sibling_to_hold_start_seconds": {
+        "control": {
+          "count": 3857,
+          "maximum": 0.136604523,
+          "mean": 0.009053069966813586,
+          "p50": 0.002614035,
+          "p90": 0.02696083880000002,
+          "p99": 0.07174192843999999
+        },
+        "d5": {
+          "count": 3945,
+          "maximum": 0.878520483,
+          "mean": 0.009334396453992396,
+          "p50": 0.002583744,
+          "p90": 0.0274145234,
+          "p99": 0.07670982215999997
+        }
+      },
+      "learner_update_interval_seconds": {
+        "count": 447,
+        "maximum": 19.222142897,
+        "mean": 8.551146237789709,
+        "p50": 8.671062481,
+        "p90": 9.8682044386,
+        "p99": 14.548349497360011
+      },
+      "observed_hold_seconds": {
+        "control": {
+          "count": 3857,
+          "maximum": 0.111102802,
+          "mean": 0.00824598229815919,
+          "p50": 0.001868981,
+          "p90": 0.025395959800000003,
+          "p99": 0.06520134479999999
+        },
+        "d5": {
+          "count": 3945,
+          "maximum": 5.357046245,
+          "mean": 5.00864640712066,
+          "p50": 5.001718396,
+          "p90": 5.0249885568,
+          "p99": 5.0575557706
+        }
+      },
+      "path": "session/20260909_m4_llama_lifecycle_derived_transport/v5-terminal-artifacts/authenticated/openmath-r1/lifecycle.jsonl",
+      "ready_to_terminal_seconds": {
+        "count": 7802,
+        "maximum": 23.88024826,
+        "mean": 3.03967715581556,
+        "p50": 2.2563166509999997,
+        "p90": 6.865721507300001,
+        "p99": 9.662374618539996
+      },
+      "row_count": 117526,
+      "run_id": "0a250f6e-a9ef-4caf-9df5-db9355096092",
+      "stage_counts": {
+        "group_completed": 7802,
+        "group_ready": 7802,
+        "learner_version_advanced": 448,
+        "release_delay_assigned": 7818,
+        "release_delay_completed": 7802,
+        "release_delay_started": 7802,
+        "removed": 7818,
+        "reserved": 7818,
+        "sibling_done": 62416
+      },
+      "within_group_sibling_completion_span_seconds": {
+        "count": 7802,
+        "maximum": 11.923349128,
+        "mean": 2.1834176770226863,
+        "p50": 0.436200587,
+        "p90": 6.3378084692000005,
+        "p99": 8.389731926720001
+      }
+    },
+    {
+      "assignment_counts": {
+        "control": 3865,
+        "d5": 3826
+      },
+      "environment_duration_seconds": {
+        "count": 61404,
+        "maximum": 1.151611309,
+        "mean": 0.09513759303905282,
+        "p50": 0.080420108,
+        "p90": 0.20067234340000004,
+        "p99": 0.30058205512000014
+      },
+      "five_seconds_over_median_update": 0.5626893543857638,
+      "generation_duration_seconds": {
+        "count": 61404,
+        "maximum": 12.270340595,
+        "mean": 7.500271745748779,
+        "p50": 8.5112114095,
+        "p90": 9.1310365911,
+        "p99": 9.754352995920001
+      },
+      "hold_overshoot_seconds": {
+        "control": {
+          "count": 3858,
+          "maximum": 0.13649936,
+          "mean": 0.010709015707102126,
+          "p50": 0.0021342649999999998,
+          "p90": 0.035963390500000005,
+          "p99": 0.07598850121999995
+        },
+        "d5": {
+          "count": 3815,
+          "maximum": 0.8963501420000002,
+          "mean": 0.010306270130537356,
+          "p50": 0.0020404679999996844,
+          "p90": 0.030478313399999915,
+          "p99": 0.06201691890000011
+        }
+      },
+      "label": "llama1b_openmath_r2",
+      "last_sibling_to_hold_start_seconds": {
+        "control": {
+          "count": 3858,
+          "maximum": 0.106010493,
+          "mean": 0.010148599544841886,
+          "p50": 0.0029345465000000003,
+          "p90": 0.030531379000000018,
+          "p99": 0.08234445133999997
+        },
+        "d5": {
+          "count": 3815,
+          "maximum": 0.158531037,
+          "mean": 0.009284134518741808,
+          "p50": 0.002766108,
+          "p90": 0.026443226199999986,
+          "p99": 0.0775126899
+        }
+      },
+      "learner_update_interval_seconds": {
+        "count": 447,
+        "maximum": 17.738126872,
+        "mean": 8.630630644995525,
+        "p50": 8.885897629,
+        "p90": 9.558180462000001,
+        "p99": 13.995081669140003
+      },
+      "observed_hold_seconds": {
+        "control": {
+          "count": 3858,
+          "maximum": 0.13649936,
+          "mean": 0.010709015707102126,
+          "p50": 0.0021342649999999998,
+          "p90": 0.035963390500000005,
+          "p99": 0.07598850121999995
+        },
+        "d5": {
+          "count": 3815,
+          "maximum": 5.896350142,
+          "mean": 5.010306270130537,
+          "p50": 5.002040468,
+          "p90": 5.0304783134,
+          "p99": 5.0620169189
+        }
+      },
+      "path": "session/20260909_m4_llama_lifecycle_derived_transport/v5-terminal-artifacts/authenticated/openmath-r2/lifecycle.jsonl",
+      "ready_to_terminal_seconds": {
+        "count": 7673,
+        "maximum": 19.46999386,
+        "mean": 3.5474617724308612,
+        "p50": 3.308146407,
+        "p90": 8.3443120734,
+        "p99": 9.326991514479996
+      },
+      "row_count": 115619,
+      "run_id": "e608c59f-fb71-4f3e-8f18-7eef31e49271",
+      "stage_counts": {
+        "group_completed": 7673,
+        "group_ready": 7673,
+        "learner_version_advanced": 448,
+        "release_delay_assigned": 7691,
+        "release_delay_completed": 7673,
+        "release_delay_started": 7675,
+        "removed": 7691,
+        "reserved": 7691,
+        "sibling_done": 61404
+      },
+      "within_group_sibling_completion_span_seconds": {
+        "count": 7677,
+        "maximum": 8.527145319,
+        "mean": 0.7605611696162563,
+        "p50": 0.04641678,
+        "p90": 3.861639795200001,
+        "p99": 5.811797368839999
+      }
+    },
+    {
+      "assignment_counts": {
+        "control": 4167,
+        "d5": 4057
+      },
+      "environment_duration_seconds": {
+        "count": 65664,
+        "maximum": 0.879574488,
+        "mean": 0.0682586296489553,
+        "p50": 0.0531501435,
+        "p90": 0.1518399198,
+        "p99": 0.2263127145900004
+      },
+      "five_seconds_over_median_update": 0.5842773963539433,
+      "generation_duration_seconds": {
+        "count": 65664,
+        "maximum": 10.878740518,
+        "mean": 6.276940641593963,
+        "p50": 8.1570765875,
+        "p90": 8.9455789439,
+        "p99": 9.625944964160004
+      },
+      "hold_overshoot_seconds": {
+        "control": {
+          "count": 4157,
+          "maximum": 0.595579149,
+          "mean": 0.009128395168390667,
+          "p50": 0.001866803,
+          "p90": 0.0301251092,
+          "p99": 0.06738208715999996
+        },
+        "d5": {
+          "count": 4050,
+          "maximum": 0.37273525099999993,
+          "mean": 0.009756451819506172,
+          "p50": 0.0020059930000000392,
+          "p90": 0.03125387960000009,
+          "p99": 0.0666604583799997
+        }
+      },
+      "label": "llama1b_gsm8k_r1",
+      "last_sibling_to_hold_start_seconds": {
+        "control": {
+          "count": 4157,
+          "maximum": 0.102154201,
+          "mean": 0.008235824522492182,
+          "p50": 0.00270135,
+          "p90": 0.024113656000000004,
+          "p99": 0.06793586027999997
+        },
+        "d5": {
+          "count": 4050,
+          "maximum": 0.106468423,
+          "mean": 0.007881190591851852,
+          "p50": 0.002655532,
+          "p90": 0.0233592676,
+          "p99": 0.06285090460999995
+        }
+      },
+      "learner_update_interval_seconds": {
+        "count": 447,
+        "maximum": 16.062180475,
+        "mean": 7.927233923232662,
+        "p50": 8.557579039,
+        "p90": 9.501373793199999,
+        "p99": 14.0367840959
+      },
+      "observed_hold_seconds": {
+        "control": {
+          "count": 4157,
+          "maximum": 0.595579149,
+          "mean": 0.009128395168390667,
+          "p50": 0.001866803,
+          "p90": 0.0301251092,
+          "p99": 0.06738208715999996
+        },
+        "d5": {
+          "count": 4050,
+          "maximum": 5.372735251,
+          "mean": 5.009756451819507,
+          "p50": 5.002005993,
+          "p90": 5.0312538796,
+          "p99": 5.0666604583799995
+        }
+      },
+      "path": "session/20260909_m4_llama_lifecycle_derived_transport/v5-terminal-artifacts/authenticated/gsm8k-r1/lifecycle.jsonl",
+      "ready_to_terminal_seconds": {
+        "count": 8207,
+        "maximum": 18.710027957,
+        "mean": 2.8231922013392228,
+        "p50": 2.011818327,
+        "p90": 6.4645066712,
+        "p99": 8.969054152519993
+      },
+      "row_count": 123613,
+      "run_id": "dcb4b1fd-d169-4424-b3ec-705b8073c294",
+      "stage_counts": {
+        "group_completed": 8207,
+        "group_ready": 8207,
+        "learner_version_advanced": 448,
+        "release_delay_assigned": 8224,
+        "release_delay_completed": 8207,
+        "release_delay_started": 8208,
+        "removed": 8224,
+        "reserved": 8224,
+        "sibling_done": 65664
+      },
+      "within_group_sibling_completion_span_seconds": {
+        "count": 8208,
+        "maximum": 9.147509295,
+        "mean": 0.9737049973366229,
+        "p50": 0.068638208,
+        "p90": 4.706321105300001,
+        "p99": 7.434145816800001
+      }
+    },
+    {
+      "assignment_counts": {
+        "control": 4293,
+        "d5": 4321
+      },
+      "environment_duration_seconds": {
+        "count": 68784,
+        "maximum": 1.889677115,
+        "mean": 0.06842143026929227,
+        "p50": 0.041928079,
+        "p90": 0.16441045050000003,
+        "p99": 0.2883000522599999
+      },
+      "five_seconds_over_median_update": 0.5925696513156041,
+      "generation_duration_seconds": {
+        "count": 68784,
+        "maximum": 11.149659982,
+        "mean": 5.383014153818969,
+        "p50": 7.326403565,
+        "p90": 8.9852294842,
+        "p99": 9.575844492969997
+      },
+      "hold_overshoot_seconds": {
+        "control": {
+          "count": 4286,
+          "maximum": 0.126555446,
+          "mean": 0.008489395630891274,
+          "p50": 0.001632601,
+          "p90": 0.0286229855,
+          "p99": 0.0710155134
+        },
+        "d5": {
+          "count": 4312,
+          "maximum": 0.78199913,
+          "mean": 0.00951288334763451,
+          "p50": 0.0016623945000002749,
+          "p90": 0.028348721299999727,
+          "p99": 0.0697084913899998
+        }
+      },
+      "label": "llama1b_gsm8k_r2",
+      "last_sibling_to_hold_start_seconds": {
+        "control": {
+          "count": 4286,
+          "maximum": 0.099402551,
+          "mean": 0.007152257987867476,
+          "p50": 0.0020261105,
+          "p90": 0.0226230845,
+          "p99": 0.061715335649999946
+        },
+        "d5": {
+          "count": 4312,
+          "maximum": 0.846251484,
+          "mean": 0.00765152249257885,
+          "p50": 0.0020163940000000003,
+          "p90": 0.0232634776,
+          "p99": 0.07053769821000008
+        }
+      },
+      "learner_update_interval_seconds": {
+        "count": 447,
+        "maximum": 17.243344908,
+        "mean": 7.614214250845637,
+        "p50": 8.437826657,
+        "p90": 9.542482638,
+        "p99": 13.369952902780007
+      },
+      "observed_hold_seconds": {
+        "control": {
+          "count": 4286,
+          "maximum": 0.126555446,
+          "mean": 0.008489395630891274,
+          "p50": 0.001632601,
+          "p90": 0.0286229855,
+          "p99": 0.0710155134
+        },
+        "d5": {
+          "count": 4312,
+          "maximum": 5.78199913,
+          "mean": 5.009512883347634,
+          "p50": 5.0016623945,
+          "p90": 5.0283487212999995,
+          "p99": 5.069708491389999
+        }
+      },
+      "path": "session/20260909_m4_llama_lifecycle_derived_transport/v5-terminal-artifacts/authenticated/gsm8k-r2/lifecycle.jsonl",
+      "ready_to_terminal_seconds": {
+        "count": 8598,
+        "maximum": 17.626176595,
+        "mean": 3.0288695193611304,
+        "p50": 2.474132928,
+        "p90": 6.897907157900001,
+        "p99": 9.293774805480018
+      },
+      "row_count": 129466,
+      "run_id": "31efb2e1-0b3e-47b4-b923-2d7b5a921bda",
+      "stage_counts": {
+        "group_completed": 8598,
+        "group_ready": 8598,
+        "learner_version_advanced": 448,
+        "release_delay_assigned": 8614,
+        "release_delay_completed": 8598,
+        "release_delay_started": 8598,
+        "removed": 8614,
+        "reserved": 8614,
+        "sibling_done": 68784
+      },
+      "within_group_sibling_completion_span_seconds": {
+        "count": 8598,
+        "maximum": 9.155129417,
+        "mean": 1.5472826650111653,
+        "p50": 0.1926299675,
+        "p90": 5.1856494215,
+        "p99": 7.4588534992400035
+      }
+    },
+    {
+      "assignment_counts": {
+        "control": 3993,
+        "d5": 3902
+      },
+      "environment_duration_seconds": {
+        "count": 63032,
+        "maximum": 2.552995795,
+        "mean": 0.03284321853767927,
+        "p50": 0.017607678,
+        "p90": 0.0645969083,
+        "p99": 0.15992676985000104
+      },
+      "five_seconds_over_median_update": 0.3276699860421787,
+      "generation_duration_seconds": {
+        "count": 63032,
+        "maximum": 17.843530192,
+        "mean": 11.604402389851838,
+        "p50": 15.365869883,
+        "p90": 16.2753455122,
+        "p99": 16.83699483036
+      },
+      "hold_overshoot_seconds": {
+        "control": {
+          "count": 3987,
+          "maximum": 0.077075669,
+          "mean": 0.0018445098502633559,
+          "p50": 0.00011092,
+          "p90": 0.002747563600000001,
+          "p99": 0.024435133119999997
+        },
+        "d5": {
+          "count": 3892,
+          "maximum": 0.8219717849999997,
+          "mean": 0.004598421144655701,
+          "p50": 0.0011453960000000762,
+          "p90": 0.011760289600000372,
+          "p99": 0.03625939231999989
+        }
+      },
+      "label": "llama3b_openmath_r1",
+      "last_sibling_to_hold_start_seconds": {
+        "control": {
+          "count": 3987,
+          "maximum": 0.068318338,
+          "mean": 0.0021811305094055684,
+          "p50": 0.000916822,
+          "p90": 0.0034284824000000006,
+          "p99": 0.024945527779999963
+        },
+        "d5": {
+          "count": 3892,
+          "maximum": 0.063036248,
+          "mean": 0.0021279797353545736,
+          "p50": 0.0009236105,
+          "p90": 0.0034042715,
+          "p99": 0.024274126840000017
+        }
+      },
+      "learner_update_interval_seconds": {
+        "count": 447,
+        "maximum": 28.253576305,
+        "mean": 13.563226934738257,
+        "p50": 15.259255388,
+        "p90": 19.334090695000004,
+        "p99": 23.658944387700032
+      },
+      "observed_hold_seconds": {
+        "control": {
+          "count": 3987,
+          "maximum": 0.077075669,
+          "mean": 0.0018445098502633559,
+          "p50": 0.00011092,
+          "p90": 0.002747563600000001,
+          "p99": 0.024435133119999997
+        },
+        "d5": {
+          "count": 3892,
+          "maximum": 5.821971785,
+          "mean": 5.004598421144656,
+          "p50": 5.001145396,
+          "p90": 5.011760289600001,
+          "p99": 5.03625939232
+        }
+      },
+      "path": "session/20260909_m4_llama_lifecycle_derived_transport/llama3b-terminal-artifacts/authenticated/openmath-r1/lifecycle.jsonl",
+      "ready_to_terminal_seconds": {
+        "count": 7879,
+        "maximum": 26.79380537,
+        "mean": 3.6351518984938442,
+        "p50": 3.201884935,
+        "p90": 8.275460931599998,
+        "p99": 11.079507965100001
+      },
+      "row_count": 118681,
+      "run_id": "94f26341-358a-4a5a-8fda-aa1f776a1dc6",
+      "stage_counts": {
+        "group_completed": 7879,
+        "group_ready": 7879,
+        "learner_version_advanced": 448,
+        "release_delay_assigned": 7895,
+        "release_delay_completed": 7879,
+        "release_delay_started": 7879,
+        "removed": 7895,
+        "reserved": 7895,
+        "sibling_done": 63032
+      },
+      "within_group_sibling_completion_span_seconds": {
+        "count": 7879,
+        "maximum": 14.672933853,
+        "mean": 1.2015568780441679,
+        "p50": 0.062369952,
+        "p90": 4.802533158599999,
+        "p99": 11.25812695178
+      }
+    },
+    {
+      "assignment_counts": {
+        "control": 3757,
+        "d5": 3675
+      },
+      "environment_duration_seconds": {
+        "count": 59339,
+        "maximum": 0.726623552,
+        "mean": 0.02356251310396198,
+        "p50": 0.015836519,
+        "p90": 0.04772099740000003,
+        "p99": 0.12436664492000016
+      },
+      "five_seconds_over_median_update": 0.33398268997709496,
+      "generation_duration_seconds": {
+        "count": 59339,
+        "maximum": 17.656805269,
+        "mean": 12.373590834075076,
+        "p50": 15.169829624,
+        "p90": 15.6663023648,
+        "p99": 16.35074299238
+      },
+      "hold_overshoot_seconds": {
+        "control": {
+          "count": 3750,
+          "maximum": 0.073057913,
+          "mean": 0.0013740330698666667,
+          "p50": 0.0001113045,
+          "p90": 0.0022791762999999996,
+          "p99": 0.021430328019999986
+        },
+        "d5": {
+          "count": 3666,
+          "maximum": 0.8337710610000002,
+          "mean": 0.004068195577741405,
+          "p50": 0.0011227339999999586,
+          "p90": 0.008133064999999995,
+          "p99": 0.0317712821
+        }
+      },
+      "label": "llama3b_openmath_r2",
+      "last_sibling_to_hold_start_seconds": {
+        "control": {
+          "count": 3750,
+          "maximum": 0.077409917,
+          "mean": 0.0016667497354666667,
+          "p50": 0.0009070980000000001,
+          "p90": 0.0023681539999999995,
+          "p99": 0.02228982813999999
+        },
+        "d5": {
+          "count": 3666,
+          "maximum": 0.048966595,
+          "mean": 0.0017543917618657939,
+          "p50": 0.000908631,
+          "p90": 0.002573793,
+          "p99": 0.022787417249999997
+        }
+      },
+      "learner_update_interval_seconds": {
+        "count": 447,
+        "maximum": 24.529508253,
+        "mean": 13.739687006286353,
+        "p50": 14.970835765,
+        "p90": 18.9309593468,
+        "p99": 21.709102674960025
+      },
+      "observed_hold_seconds": {
+        "control": {
+          "count": 3750,
+          "maximum": 0.073057913,
+          "mean": 0.0013740330698666667,
+          "p50": 0.0001113045,
+          "p90": 0.0022791762999999996,
+          "p99": 0.021430328019999986
+        },
+        "d5": {
+          "count": 3666,
+          "maximum": 5.833771061,
+          "mean": 5.004068195577742,
+          "p50": 5.001122734,
+          "p90": 5.008133065,
+          "p99": 5.031771282099999
+        }
+      },
+      "path": "session/20260909_m4_llama_lifecycle_derived_transport/llama3b-terminal-artifacts/authenticated/openmath-r2/lifecycle.jsonl",
+      "ready_to_terminal_seconds": {
+        "count": 7416,
+        "maximum": 26.190873038,
+        "mean": 3.6096680152183116,
+        "p50": 3.0803596444999997,
+        "p90": 8.4766215155,
+        "p99": 10.7917434785
+      },
+      "row_count": 111747,
+      "run_id": "f29fbca3-ff81-45d0-b5ee-14f69c7657d1",
+      "stage_counts": {
+        "group_completed": 7416,
+        "group_ready": 7416,
+        "learner_version_advanced": 448,
+        "release_delay_assigned": 7432,
+        "release_delay_completed": 7416,
+        "release_delay_started": 7416,
+        "removed": 7432,
+        "reserved": 7432,
+        "sibling_done": 59339
+      },
+      "within_group_sibling_completion_span_seconds": {
+        "count": 7425,
+        "maximum": 15.440903646,
+        "mean": 2.7523808590599326,
+        "p50": 0.104992042,
+        "p90": 9.3108518452,
+        "p99": 13.019544075800003
+      }
+    },
+    {
+      "assignment_counts": {
+        "control": 4087,
+        "d5": 4015
+      },
+      "environment_duration_seconds": {
+        "count": 64688,
+        "maximum": 0.834826554,
+        "mean": 0.019846640469870766,
+        "p50": 0.011345128,
+        "p90": 0.0457815675,
+        "p99": 0.11030135779999989
+      },
+      "five_seconds_over_median_update": 0.4339614796894209,
+      "generation_duration_seconds": {
+        "count": 64688,
+        "maximum": 17.641633259,
+        "mean": 8.483282176615942,
+        "p50": 11.102282801000001,
+        "p90": 15.6680414999,
+        "p99": 16.436901134179998
+      },
+      "hold_overshoot_seconds": {
+        "control": {
+          "count": 4079,
+          "maximum": 0.078782991,
+          "mean": 0.0015911245650894826,
+          "p50": 0.000109623,
+          "p90": 0.0025332906000000007,
+          "p99": 0.023519335979999997
+        },
+        "d5": {
+          "count": 4006,
+          "maximum": 0.6382121759999997,
+          "mean": 0.004724179513729412,
+          "p50": 0.0010930120000001153,
+          "p90": 0.011794238999999873,
+          "p99": 0.037263026500000095
+        }
+      },
+      "label": "llama3b_gsm8k_r1",
+      "last_sibling_to_hold_start_seconds": {
+        "control": {
+          "count": 4079,
+          "maximum": 0.078179676,
+          "mean": 0.002046565947536161,
+          "p50": 0.000943931,
+          "p90": 0.002863716800000001,
+          "p99": 0.02301877181999998
+        },
+        "d5": {
+          "count": 4006,
+          "maximum": 0.043520191,
+          "mean": 0.001807921325761358,
+          "p50": 0.0009413905,
+          "p90": 0.0026696734999999997,
+          "p99": 0.022028484899999996
+        }
+      },
+      "learner_update_interval_seconds": {
+        "count": 447,
+        "maximum": 24.967501787,
+        "mean": 11.345839745908277,
+        "p50": 11.521759958,
+        "p90": 18.670692134600007,
+        "p99": 22.46323826668
+      },
+      "observed_hold_seconds": {
+        "control": {
+          "count": 4079,
+          "maximum": 0.078782991,
+          "mean": 0.0015911245650894826,
+          "p50": 0.000109623,
+          "p90": 0.0025332906000000007,
+          "p99": 0.023519335979999997
+        },
+        "d5": {
+          "count": 4006,
+          "maximum": 5.638212176,
+          "mean": 5.00472417951373,
+          "p50": 5.001093012,
+          "p90": 5.011794239,
+          "p99": 5.037263026500001
+        }
+      },
+      "path": "session/20260909_m4_llama_lifecycle_derived_transport/llama3b-terminal-artifacts/authenticated/gsm8k-r1/lifecycle.jsonl",
+      "ready_to_terminal_seconds": {
+        "count": 8085,
+        "maximum": 19.725390605,
+        "mean": 3.324147045941002,
+        "p50": 2.873674912,
+        "p90": 7.598629728199999,
+        "p99": 11.182273960599991
+      },
+      "row_count": 121783,
+      "run_id": "7003e9e7-d67f-4549-8b2b-cf9d927c0d3f",
+      "stage_counts": {
+        "group_completed": 8085,
+        "group_ready": 8085,
+        "learner_version_advanced": 448,
+        "release_delay_assigned": 8102,
+        "release_delay_completed": 8085,
+        "release_delay_started": 8086,
+        "removed": 8102,
+        "reserved": 8102,
+        "sibling_done": 64688
+      },
+      "within_group_sibling_completion_span_seconds": {
+        "count": 8086,
+        "maximum": 15.533727929,
+        "mean": 2.73111761735073,
+        "p50": 0.268293766,
+        "p90": 10.528228743500001,
+        "p99": 13.834530477449999
+      }
+    },
+    {
+      "assignment_counts": {
+        "control": 4428,
+        "d5": 4420
+      },
+      "environment_duration_seconds": {
+        "count": 70664,
+        "maximum": 5.015020813,
+        "mean": 0.02555164604358655,
+        "p50": 0.0126695275,
+        "p90": 0.054286145700000024,
+        "p99": 0.1506069552399997
+      },
+      "five_seconds_over_median_update": 0.32330710027970755,
+      "generation_duration_seconds": {
+        "count": 70664,
+        "maximum": 17.188227741,
+        "mean": 10.12984380074785,
+        "p50": 15.3834503235,
+        "p90": 15.9076929361,
+        "p99": 16.56852895566
+      },
+      "hold_overshoot_seconds": {
+        "control": {
+          "count": 4419,
+          "maximum": 0.658184395,
+          "mean": 0.002634584085992306,
+          "p50": 0.000110017,
+          "p90": 0.004406345600000004,
+          "p99": 0.03843588995999968
+        },
+        "d5": {
+          "count": 4410,
+          "maximum": 0.7511420549999999,
+          "mean": 0.006342793849659861,
+          "p50": 0.0014242234999999326,
+          "p90": 0.016868067599999835,
+          "p99": 0.0653658968499999
+        }
+      },
+      "label": "llama3b_gsm8k_r2",
+      "last_sibling_to_hold_start_seconds": {
+        "control": {
+          "count": 4419,
+          "maximum": 0.144289744,
+          "mean": 0.0028608914711473186,
+          "p50": 0.000924269,
+          "p90": 0.0037059474,
+          "p99": 0.04279048219999997
+        },
+        "d5": {
+          "count": 4410,
+          "maximum": 0.689284431,
+          "mean": 0.0031260494058956913,
+          "p50": 0.000924488,
+          "p90": 0.003617611299999999,
+          "p99": 0.046273245359999875
+        }
+      },
+      "learner_update_interval_seconds": {
+        "count": 447,
+        "maximum": 21.794914187,
+        "mean": 13.180033096682326,
+        "p50": 15.465172264,
+        "p90": 17.5668901952,
+        "p99": 20.41017164198
+      },
+      "observed_hold_seconds": {
+        "control": {
+          "count": 4419,
+          "maximum": 0.658184395,
+          "mean": 0.002634584085992306,
+          "p50": 0.000110017,
+          "p90": 0.004406345600000004,
+          "p99": 0.03843588995999968
+        },
+        "d5": {
+          "count": 4410,
+          "maximum": 5.751142055,
+          "mean": 5.00634279384966,
+          "p50": 5.0014242235,
+          "p90": 5.0168680676,
+          "p99": 5.06536589685
+        }
+      },
+      "path": "session/20260909_m4_llama_lifecycle_derived_transport/llama3b-terminal-artifacts/authenticated/gsm8k-r2/lifecycle.jsonl",
+      "ready_to_terminal_seconds": {
+        "count": 8829,
+        "maximum": 19.818884343,
+        "mean": 4.099207657999207,
+        "p50": 3.700854317,
+        "p90": 8.3370040842,
+        "p99": 10.638921005559999
+      },
+      "row_count": 132976,
+      "run_id": "23af2b4a-c7b8-4971-9a4b-e38d42c0439f",
+      "stage_counts": {
+        "group_completed": 8829,
+        "group_ready": 8829,
+        "learner_version_advanced": 448,
+        "release_delay_assigned": 8848,
+        "release_delay_completed": 8829,
+        "release_delay_started": 8833,
+        "removed": 8848,
+        "reserved": 8848,
+        "sibling_done": 70664
+      },
+      "within_group_sibling_completion_span_seconds": {
+        "count": 8833,
+        "maximum": 15.567851326,
+        "mean": 0.5447744387602174,
+        "p50": 0.064988195,
+        "p90": 0.9690396862000002,
+        "p99": 8.169962485560001
+      }
+    }
+  ],
+  "schema": "m4-downstream-quality-dose-context-v1",
+  "status": "RETROSPECTIVE_DESCRIPTIVE_NOT_A_CAUSAL_REESTIMATION"
+}

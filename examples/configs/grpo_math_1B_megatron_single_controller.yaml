@@ -40,6 +40,11 @@ async_rl:
     enabled: false
     output_path: null
     observer_duty_path: null
+  # Default-off, non-resumable weights/resolved-config export performed only
+  # after the configured terminal train-step/version boundary is reached.
+  terminal_policy_export:
+    enabled: false
+    output_dir: null
 
 # SC does not support checkpointing yet.
 checkpointing:

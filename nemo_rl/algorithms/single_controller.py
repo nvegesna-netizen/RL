@@ -83,6 +83,7 @@ from nemo_rl.models.generation.sglang.sglang_generation import SGLangGeneration
 from nemo_rl.models.generation.vllm import VllmGeneration
 from nemo_rl.models.policy.tq_policy import TQPolicy
 from nemo_rl.utils.logger import Logger
+from nemo_rl.utils.terminal_policy_export import export_terminal_policy
 from nemo_rl.utils.timer import Timer
 
 Generation = Union[VllmGeneration, SGLangGeneration]
@@ -453,10 +454,14 @@ class SingleControllerActor:
                         finally:
                             self._logger.finish()
 
-        return {
+        export_result = await self._export_terminal_policy()
+        result: dict[str, Any] = {
             "train_steps": self._train_steps,
             "trainer_version": self._trainer_version,
         }
+        if export_result is not None:
+            result["terminal_policy_export"] = export_result
+        return result
 
     async def ping(self) -> dict[str, Any]:
         """Liveness check — returns immediately if event loop is running."""
@@ -468,6 +473,33 @@ class SingleControllerActor:
             "rollout_permitted": self._rollout_permitted.is_set(),
             "epoch": self._current_epoch,
         }
+
+    async def _export_terminal_policy(self) -> Optional[dict[str, Any]]:
+        """Export terminal weights after a successfully completed bounded run.
+
+        The export is deliberately not a resumable training checkpoint.  It
+        contains policy weights, the resolved run configuration, and a small
+        completion manifest for an independent converter/evaluator.  A
+        temporary sibling directory is atomically renamed only after all policy
+        workers finish saving.
+        """
+        export_config = getattr(self._async_cfg, "terminal_policy_export", None)
+        if export_config is None or not export_config.enabled:
+            return None
+
+        assert export_config.output_dir is not None
+        manifest = await asyncio.to_thread(
+            export_terminal_policy,
+            trainer=self._trainer,
+            master_config=self._master_config,
+            output_dir=export_config.output_dir,
+            train_steps=self._train_steps,
+            trainer_version=self._trainer_version,
+        )
+        print(
+            f"Terminal policy export complete: {export_config.output_dir}", flush=True
+        )
+        return manifest
 
     async def _cancel_residual_buffer_groups(
         self, *, reason: RolloutRemovalReason

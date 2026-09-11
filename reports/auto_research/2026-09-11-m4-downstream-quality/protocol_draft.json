@@ -1,0 +1,78 @@
+{
+  "schema": "m4-downstream-quality-protocol-draft-v1",
+  "status": "DRAFT_LOCAL_NO_LAUNCH_AUTHORITY",
+  "predecessor_result_modified": false,
+  "scientific_question": "Does the randomized mixed-d5 training regime change terminal held-out exact-answer accuracy relative to immediate release at 448 completed learner updates?",
+  "independent_unit": "matched_training_seed_block",
+  "anchor": {
+    "model": "Qwen/Qwen3-0.6B",
+    "workload": "OpenMathInstruct-2",
+    "learner_updates": 448,
+    "prompts_per_update": 4,
+    "generations_per_prompt": 8
+  },
+  "dataset": {
+    "split_fraction": 0.05,
+    "split_seed": 20260911,
+    "split_seed_decoupled_from_training_seed": true,
+    "candidate_evaluation_prompts": 1024,
+    "prompt_id_manifest_required": true
+  },
+  "regimes": {
+    "immediate": {
+      "control_delay_seconds": 0.0,
+      "control_mass": 1,
+      "d5_mass": 0
+    },
+    "mixed_d5": {
+      "control_delay_seconds": 0.0,
+      "control_mass": 1,
+      "d5_delay_seconds": 5.0,
+      "d5_mass": 1
+    }
+  },
+  "evaluation": {
+    "timing": "post_training_from_immutable_terminal_policy_export",
+    "decoding": {
+      "num_generations_per_prompt": 1,
+      "temperature": 0.0,
+      "top_p": 1.0,
+      "top_k": -1
+    },
+    "primary_metric": "exact_answer_accuracy",
+    "primary_contrast": "mixed_d5_minus_immediate",
+    "interim_validation_traffic": false,
+    "best_checkpoint_selection": false
+  },
+  "artifact_contract": {
+    "terminal_policy_export_required": true,
+    "optimizer_exported": false,
+    "resumable_training_checkpoint": false,
+    "resolved_config_required": true,
+    "conversion_to_huggingface_required_before_vllm_evaluation": true,
+    "sha256_authentication_required": true,
+    "overwrite_allowed": false
+  },
+  "inference": {
+    "primary": "paired_run_level_studentized_interval",
+    "sensitivity": [
+      "exact_sign_flip",
+      "paired_bootstrap"
+    ],
+    "confidence_level": 0.95,
+    "prompt_count_is_not_degrees_of_freedom": true,
+    "initial_block_count": 4,
+    "initial_blocks_are_nonconfirmatory_without_a_validated_sequential_boundary": true
+  },
+  "unresolved_human_gates": {
+    "absolute_accuracy_materiality_margin": null,
+    "maximum_matched_seed_blocks": null,
+    "maximum_gpu_hours": null,
+    "initial_blocks_in_final_estimator": null
+  },
+  "automatic_retry": false,
+  "automatic_extension": false,
+  "training_authorized": false,
+  "qualification_authorized": false,
+  "acquisition_authorized": false
+}

@@ -164,7 +164,14 @@ destroys more gradient opportunity.
 
 The registered materiality threshold is \(\Delta_L=0.20\). “Not material” means
 that the conservative interval is below this threshold; it does not mean that
-the causal effect is zero.
+the causal effect is zero. Because the denominator is pooled pre-delay
+opportunity, 0.20 means that the arm contrast in lost opportunity equals one
+fifth of average opportunity available before treatment; it is not a 20-point
+accuracy loss. The value was present in the analysis implementation before the
+first causal outcome and retained in all transports. The recovered pre-outcome
+record does not contain an external utility derivation, so we describe it as a
+prespecified decision threshold, emphasize continuous estimates and sensitivity,
+and do not retrofit a learning-quality or business interpretation.
 
 ### 3.3 Missingness, clustering, and uncertainty
 
@@ -386,6 +393,13 @@ largest ratios at both model scales, yet Qwen3-1.7B/GSM8K has the smallest
 opportunity-loss estimate. The observed heterogeneity is therefore not a
 monotone reflection of this single cadence ratio. This is a descriptive check,
 not a post hoc renormalization of the registered treatment or estimand.
+
+Across the eight authenticated Llama lifecycle ledgers, five seconds spans
+0.323--0.593 median learner-update intervals and 0.325--0.682 median sibling-
+generation durations. The largest run-level p99 hold overshoot is 0.070 seconds.
+This establishes that the intervention was a substantial and precisely delivered
+fraction of one update cycle in the tested executions. It does not establish how
+often an unmodified production scheduler introduces a delay of this magnitude.
 
 The Llama extension is likewise stable across the frozen robustness views. HAC
 and bootstrap intervals both exclude 0.20 for both combined workload endpoints.
