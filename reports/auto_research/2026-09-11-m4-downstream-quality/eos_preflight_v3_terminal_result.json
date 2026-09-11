@@ -1,0 +1,90 @@
+{
+  "absent_outputs": [
+    "converted_huggingface_model",
+    "m4-downstream-quality-prompt-manifest.json",
+    "evaluation_data.json",
+    "m4-downstream-quality-no-training-preflight-result.json"
+  ],
+  "automatic_extension": false,
+  "automatic_retry": false,
+  "child_pipeline": {
+    "finished_at": "2026-09-11T03:30:40.267-07:00",
+    "id": 67350774,
+    "status": "failed"
+  },
+  "classification": "OPERATIONAL_FAILURE_AFTER_ZERO_STEP_EXPORT_BEFORE_HF_CONVERSION",
+  "completed_markers": [
+    "M4_DOWNSTREAM_QUALITY_EOS_PREFLIGHT_V3_AUTHORITY_PASS",
+    "M4_DOWNSTREAM_QUALITY_SAFE_SOURCE_PASS",
+    "M4_DOWNSTREAM_QUALITY_MEGATRON_DEPENDENCY_PASS",
+    "M4_DOWNSTREAM_QUALITY_PROTOCOL_PASS",
+    "M4_DOWNSTREAM_QUALITY_ZERO_STEP_EXPORT_PASS"
+  ],
+  "failure": {
+    "exception": "ModuleNotFoundError",
+    "first_failing_operation": "import megatron.bridge.AutoBridge",
+    "message": "No module named 'megatron.bridge'",
+    "root_cause": "The source archive preserves Megatron-Bridge only as an empty gitlink directory and the separately packaged dependency supplies Megatron-LM only. The main /opt/nemo_rl_venv converter process therefore has megatron.core but not the Megatron-Bridge src tree that provides megatron.bridge.",
+    "source_line": "nemo_rl/models/megatron/community_import.py:20",
+    "stage": "initial Megatron-to-Hugging-Face conversion"
+  },
+  "job": {
+    "duration_seconds": 345.501874,
+    "failure_reason": "script_failure",
+    "id": 435301112,
+    "status": "failed"
+  },
+  "logs_after_artifact": {
+    "bytes": 131391859,
+    "job_id": 435301113,
+    "sha256": "af3ef1065182581c77ed54dbfe064cd9cdf17078ccaae70921232cf2994abfad"
+  },
+  "model": {
+    "accessed": true,
+    "hf_import_checkpoint_loaded": true,
+    "name": "Qwen/Qwen3-0.6B",
+    "parameter_count_reported": 596049920
+  },
+  "optimizer_initialized": false,
+  "optimizer_steps": 0,
+  "parent_pipeline": {
+    "finished_at": "2026-09-11T03:30:40.583-07:00",
+    "id": 67350668,
+    "status": "failed"
+  },
+  "pilot_started": false,
+  "prospective_repair": {
+    "change": "Supply the pinned Megatron-Bridge 573e088c9c6740082c39744e03dc5b009e730ed4 source tree to the main converter environment and verify import megatron.bridge before model access.",
+    "local_implementation_status": "NOT_STARTED",
+    "pre_model_access_gate": "Run the converter interpreter against the assembled RUN_REPO and require imports of megatron.bridge.AutoBridge and megatron.core to pass.",
+    "requires_fresh_authorization": true,
+    "requires_new_package_identity": true
+  },
+  "qualification_started": false,
+  "schema": "m4-downstream-quality-no-training-eos-preflight-v3-terminal-result-v1",
+  "scientific_acquisition_started": false,
+  "scientific_interpretation": "No downstream-quality or M4 scientific observation was produced. The run verified the repaired zero-step export path and then exposed an independent converter dependency-packaging defect.",
+  "source_commit": "573dddce4cfca5fd615079c8045af05dddf80d03",
+  "status": "FAILED_TERMINAL_NO_RETRY_AUTHORITY",
+  "submission_attempts": 1,
+  "terminal_artifact_authentication": {
+    "declared_exit_code": 1,
+    "logs_after_output_log_sha256": "f383201c32672d7135ebe4b361b23d08ddd527921f12816899b4c377355a7fa3",
+    "metadata_sha256": "0d635aeb7f6883f0aebd6b47abc8321c93325f411aaddd4668d2473dc859854d",
+    "workload_artifact_sha256": "bad0ca23947996bb161df4cfbdfe3b7eb78e481cfddae79a66483811b0af77bb",
+    "workload_output_log_sha256": "f383201c32672d7135ebe4b361b23d08ddd527921f12816899b4c377355a7fa3",
+    "workload_trace_sha256": "ab07a2ca9426b6e8cc5dcb6682620b4ede9fd5582f2c478121cfa8e0b135363b"
+  },
+  "terminal_export": {
+    "completed": true,
+    "manifest_assertions_passed": true,
+    "optimizer_exported": false,
+    "preserved_in_jet_artifact": false,
+    "resumable_training_checkpoint": false,
+    "train_steps": 0,
+    "trainer_version": 0
+  },
+  "training_started": false,
+  "v1_repair_verified": true,
+  "v2_repair_verified": true
+}
