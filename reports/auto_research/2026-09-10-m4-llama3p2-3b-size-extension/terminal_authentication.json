@@ -1,0 +1,23 @@
+{
+  "schema": "m4-llama3p2-3b-four-cell-terminal-authentication-v1",
+  "status": "AUTHENTICATED_READY_FOR_FROZEN_JOINT_ANALYSIS",
+  "terminal_state_checked_at_utc": "2026-09-11T00:37:25.883089+00:00",
+  "pipeline_source_sha": "8f5151cf00e02933a9b92772443d62e95b5150ff",
+  "cells": {
+    "openmath_r1": {"parent_pipeline_id": 67263316, "child_pipeline_id": 67263519, "workload_job_id": 434544763, "workload_artifact_sha256": "b79b7d1bcd861bdacf3d161bbdc5fe236edc35da41f427d0adf20a1895ddcd38", "logs_after_artifact_sha256": "454ff75bd09db82a1c329899229dcf8e08ccb12a68261581a1f1ad17b43fe1a5", "lifecycle_sha256": "5c86ca1b1c9f5023ff16b3aaefdd625c85120039a4363197a7fdaf17facaf7e4", "opportunity_sha256": "0efc97c615e90033500720123e829738e8a630aa2e99eabc267db8a24ca02176", "group_count": 7879, "corrected_lifecycle_duty": 0.00043583479351070106},
+    "openmath_r2": {"parent_pipeline_id": 67263327, "child_pipeline_id": 67263508, "workload_job_id": 434544699, "workload_artifact_sha256": "034d6e57440593a48a28f705534474b1c36c8aeb0170c22e54d869f4e33a9aaa", "logs_after_artifact_sha256": "66f4111c66598478fb57a0687c461b1581d7395824a5991fc821dbb4c280778a", "lifecycle_sha256": "aefb44880c2520ec7987a49cc0b6664ca7a5e98adb33ae52f34a9fc3c680df5a", "opportunity_sha256": "a66657bb514bb4698b56852fec090f529c8c5120cc0020f8fc2847fab381e605", "group_count": 7416, "corrected_lifecycle_duty": 0.0004171047830209133},
+    "gsm8k_r1": {"parent_pipeline_id": 67263343, "child_pipeline_id": 67263541, "workload_job_id": 434544862, "workload_artifact_sha256": "6714f77466a5d3e3c854339f69d19ac4d8312276cc3627c25fe3d8ef79b26163", "logs_after_artifact_sha256": "1e695de6e3e79c44e2d6b6ba65e48a8db4016fb7df8d954eea3ad58fbaa721e3", "lifecycle_sha256": "ed2b340d444a113ed737eb4d98705eb45717e13c0a11d5671a6abda79c8ee31f", "opportunity_sha256": "25bc57d6fac5348709d25da71c71e34999edc9579c8538097a8c4ac56fae6761", "group_count": 8086, "corrected_lifecycle_duty": 0.000546556829217743},
+    "gsm8k_r2": {"parent_pipeline_id": 67263328, "child_pipeline_id": 67263552, "workload_job_id": 434544923, "workload_artifact_sha256": "e535f0ce6c1fdb4f1863eca4142596f4543190d53dfd70cee7ddaf35d25a5920", "logs_after_artifact_sha256": "7bae56a97deedd576ebcfa815a29c862960c270a8de21b75b7e884083cfac330", "lifecycle_sha256": "6b067e3c599040661481dce443a06bcfe321d15ef54bae9f7ac37fcdec47f91a", "opportunity_sha256": "b57766f4ec4030d37d957b4a5a2636129a13bc8923bbae5437e98622ab78edd5", "group_count": 8833, "corrected_lifecycle_duty": 0.0005133410104882328}
+  },
+  "checks": {
+    "all_parent_child_and_jobs_success": true,
+    "all_trainer_steps_448": true,
+    "declared_asset_hashes_match": true,
+    "workload_and_logs_after_selected_bytes_identical": true,
+    "lifecycle_derivation_valid": true,
+    "observer_duty_below_0p01": true
+  },
+  "terminal_metadata_sha256": "805b4299d0751b88df646c7b6063d72f3e83a13da40be3d67faab8dc5170c5a9",
+  "full_authentication_record_sha256": "c1bd7abb9f877c27c74a109e3f67f5ee55cf2ed51eb892eccac2ef48a4a272a6",
+  "causal_analysis_performed": false
+}

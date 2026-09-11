@@ -1,6 +1,6 @@
 # Llama 3.2 3B no-training preflight plan
 
-Status: `FOUR_ACQUISITIONS_SUBMITTED_RUNNING_AUTHORITY_CONSUMED`.
+Status: `FOUR_ACQUISITIONS_AUTHENTICATED_READY_FOR_FROZEN_ANALYSIS`.
 
 The first executable boundary is exactly one no-training preflight submitted
 with `runllm.py --no_wait`, only after a dedicated authorization record exists.
@@ -149,3 +149,12 @@ four distinct running parents with created bridges: OpenMath r1 `67263316`,
 OpenMath r2 `67263327`, GSM8K r1 `67263343`, and GSM8K r2 `67263328`.
 `acquisition_submission_receipt.json` preserves the guard, launcher-log, and
 package hashes. The authorization is consumed; no retry or extension exists.
+
+All four parent and child pipelines subsequently completed successfully, with
+all 12 child jobs green. Concurrent atomic preservation and authentication
+verified GitLab-reported sizes, ZIP integrity, zero exit codes, byte-identical
+workload/logs-after evidence, declared hashes, exactly 448 completed steps,
+the frozen lifecycle derivation method, and corrected observer duty between
+0.000417 and 0.000547. `terminal_authentication.json` is the compact pre-analysis
+record. No causal estimator was run before that record and the all-cell analysis
+driver were frozen.
