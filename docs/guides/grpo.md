@@ -695,3 +695,31 @@ For the full reference — backend support, the DTensor vs Megatron schema compa
 ## Evaluate the Trained Model
 
 Upon completion of the training process, you can refer to our [evaluation guide](eval.md) to assess model capabilities.
+
+### Exporting terminal SingleController weights
+
+The SingleController entrypoint does not support generic resumable
+checkpointing or in-loop validation. For workflows that need only the policy at
+the completed training boundary, enable its narrower terminal export:
+
+```yaml
+async_rl:
+  terminal_policy_export:
+    enabled: true
+    output_dir: results/my-run/terminal-policy
+
+checkpointing:
+  enabled: false
+```
+
+The export runs only after both the completed train-step count and learner
+version equal `grpo.max_num_steps`. It saves policy weights and the resolved run
+configuration, finalizes any asynchronous checkpoint write, and then atomically
+publishes the directory. It refuses to overwrite either a completed destination
+or an existing `.incomplete` sibling.
+
+This artifact is intentionally not a resumable training checkpoint: it excludes
+optimizer and dataloader state. Megatron-format exports must be converted to a
+Hugging Face-readable checkpoint before evaluation with the standalone vLLM
+evaluator. Use `examples/converters/convert_megatron_to_hf.py`, preserving the
+resolved configuration alongside the converted artifact.

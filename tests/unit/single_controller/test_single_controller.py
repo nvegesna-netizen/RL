@@ -625,6 +625,7 @@ def _run_lifecycle_controller(
     ctrl._async_cfg = SimpleNamespace(
         lifecycle_audit_path="audit.jsonl",
         controlled_release_delay=SimpleNamespace(enabled=True),
+        terminal_policy_export=TerminalPolicyExportConfig(),
         gradient_opportunity_audit=SimpleNamespace(
             output_path=None, observer_duty_path=None
         ),

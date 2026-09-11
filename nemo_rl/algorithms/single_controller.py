@@ -483,8 +483,8 @@ class SingleControllerActor:
         temporary sibling directory is atomically renamed only after all policy
         workers finish saving.
         """
-        export_config = getattr(self._async_cfg, "terminal_policy_export", None)
-        if export_config is None or not export_config.enabled:
+        export_config = self._async_cfg.terminal_policy_export
+        if not export_config.enabled:
             return None
 
         assert export_config.output_dir is not None
