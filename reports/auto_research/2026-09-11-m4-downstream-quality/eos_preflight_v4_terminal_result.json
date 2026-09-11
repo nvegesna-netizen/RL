@@ -1,0 +1,84 @@
+{
+  "absent_outputs": [
+    "terminal_policy_export.json",
+    "resolved_config.json",
+    "converted_huggingface_model",
+    "m4-downstream-quality-prompt-manifest.json",
+    "evaluation_data.json",
+    "m4-downstream-quality-no-training-preflight-result.json"
+  ],
+  "automatic_extension": false,
+  "automatic_retry": false,
+  "child_pipeline": {
+    "finished_at": "2026-09-11T04:32:53.572-07:00",
+    "id": 67356985,
+    "status": "failed"
+  },
+  "classification": "OPERATIONAL_FAILURE_DURING_PRE_MODEL_CONVERTER_ENVIRONMENT_GATE",
+  "completed_markers": [
+    "M4_DOWNSTREAM_QUALITY_EOS_PREFLIGHT_V4_AUTHORITY_PASS",
+    "M4_DOWNSTREAM_QUALITY_SAFE_SOURCE_PASS",
+    "M4_DOWNSTREAM_QUALITY_MEGATRON_DEPENDENCIES_PASS"
+  ],
+  "failure": {
+    "exception": "ModuleNotFoundError",
+    "first_failing_operation": "import transformer_engine.pytorch as te",
+    "message": "No module named 'transformer_engine'",
+    "root_cause": "The v4 package successfully supplied megatron.bridge and megatron.core, but the pre-model gate ran under the base /opt/nemo_rl_venv interpreter. That interpreter does not contain the mcore extra's Transformer Engine dependency required while importing Megatron-Bridge. NeMo-RL's Megatron policy workers instead run in the prefetched mcore environment under /opt/ray_venvs.",
+    "source_line": "megatron/bridge/peft/lora_layers.py:20",
+    "stage": "pre-model packaged Bridge/converter environment gate"
+  },
+  "job": {
+    "duration_seconds": 318.56505,
+    "failure_reason": "script_failure",
+    "id": 435353105,
+    "status": "failed"
+  },
+  "logs_after_artifact": {
+    "bytes": 147715704,
+    "job_id": 435353106,
+    "sha256": "526cc0aa34761bf907b62926805404aae39287fd2743dc6f57fee7361c5316fb"
+  },
+  "model": {
+    "accessed": false,
+    "name": "Qwen/Qwen3-0.6B"
+  },
+  "optimizer_initialized": false,
+  "optimizer_steps": 0,
+  "parent_pipeline": {
+    "finished_at": "2026-09-11T04:32:53.836-07:00",
+    "id": 67356618,
+    "status": "failed"
+  },
+  "pilot_started": false,
+  "prospective_repair": {
+    "change": "Run both the pre-model converter gate and post-export converter with the existing prefetched Megatron policy-worker mcore interpreter, while retaining the packaged Bridge and Megatron-LM PYTHONPATH roots.",
+    "evidence": {
+      "documented_converter_invocation": "uv run --extra mcore python examples/converters/convert_megatron_to_hf.py",
+      "prefetched_interpreter_observed_in_v3": "/opt/ray_venvs/nemo_rl.models.policy.workers.megatron_policy_worker.MegatronPolicyWorker/bin/python",
+      "prefetched_transformer_engine_observed_in_v3": true,
+      "registry_mapping": "MegatronPolicyWorker -> PY_EXECUTABLES.MCORE"
+    },
+    "local_implementation_status": "NOT_STARTED",
+    "requires_fresh_authorization": true,
+    "requires_new_package_identity": true
+  },
+  "qualification_started": false,
+  "schema": "m4-downstream-quality-no-training-eos-preflight-v4-terminal-result-v1",
+  "scientific_acquisition_started": false,
+  "scientific_interpretation": "No downstream-quality or M4 scientific observation was produced. The run verified the pinned Bridge/Megatron-LM package topology and fail-closed pre-model gate, then exposed that the converter must use the mcore runtime rather than the base interpreter.",
+  "source_commit": "573dddce4cfca5fd615079c8045af05dddf80d03",
+  "status": "FAILED_TERMINAL_NO_RETRY_AUTHORITY",
+  "submission_attempts": 1,
+  "terminal_artifact_authentication": {
+    "declared_exit_code": 1,
+    "logs_after_output_log_sha256": "2ab944e8e796d4f577617c28917807c368c060d133cb29118944a2e3f2ad9b4b",
+    "metadata_sha256": "2634ff50aa57e15f66bec05a898ad9c782fb264c93b950900b85a12a129d0e41",
+    "workload_artifact_sha256": "fd2899acf7684d3de8aad59ccf9c89ae5c1df45cff09ec24acbb62b394ada4f4",
+    "workload_output_log_sha256": "2ab944e8e796d4f577617c28917807c368c060d133cb29118944a2e3f2ad9b4b",
+    "workload_trace_sha256": "a52297de53d06b7dae74104ec090358e8486634ac2b2ab27777c4ec144049f2f"
+  },
+  "training_started": false,
+  "v4_bridge_archive_extraction_verified": true,
+  "v4_megatron_lm_archive_extraction_verified": true
+}
