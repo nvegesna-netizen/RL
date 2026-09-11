@@ -46,6 +46,7 @@ def _make_tq_cfg(backend: str) -> dict:
         "claim_meta_poll_interval_s": 0.5,
         "global_segment_size": 8589934592,  # 8 GiB — sized for CI host RAM
         "local_buffer_size": 1073741824,  # 1 GiB
+        "actor_runtime_env_mode": "pip",
     }
 
 
