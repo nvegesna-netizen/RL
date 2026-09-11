@@ -517,9 +517,18 @@ class SchedulerPressureResponsePlan(BaseModel, extra="forbid", frozen=True):
             raise ValueError("each replication must bind every arm exactly once")
         if (self.temperature, self.top_p, self.repetition_penalty) != (0.7, 0.8, 1.0):
             raise ValueError("pressure-response generation constants mismatch")
-        threshold_fields = dict(
+        expected_thresholds = SchedulerPressureResponseThresholds(
             backend_length_termination_rate_max_each_stratum_each_arm=0.125,
             reward_mean_min_each_stratum_each_arm=0.75,
+            maximum_concurrent_groups_required_each_arm=(
+                4 if self.schema_version == 1 else None
+            ),
+            maximum_active_generation_groups_required_each_arm=(
+                None if self.schema_version == 1 else 4
+            ),
+            natural_maximum_unreleased_groups_required_each_arm=(
+                None if self.schema_version == 1 else 4
+            ),
             natural_long_short_generated_token_median_ratio_min_each_arm=2.0,
             natural_long_short_ready_latency_median_ratio_min_each_arm=1.5,
             positive_control_undelayed_share_ready_first_min=0.75,
@@ -533,7 +542,6 @@ class SchedulerPressureResponsePlan(BaseModel, extra="forbid", frozen=True):
         )
         if self.schema_version == 1:
             expected_amendment = (None, None, None, None)
-            threshold_fields["maximum_concurrent_groups_required_each_arm"] = 4
         else:
             expected_amendment = (
                 PRESSURE_RESPONSE_CONCURRENCY_AMENDMENT_SHA256,
@@ -541,8 +549,6 @@ class SchedulerPressureResponsePlan(BaseModel, extra="forbid", frozen=True):
                 PRESSURE_RESPONSE_SUPERSEDED_PLAN_ID,
                 49001,
             )
-            threshold_fields["maximum_active_generation_groups_required_each_arm"] = 4
-            threshold_fields["natural_maximum_unreleased_groups_required_each_arm"] = 4
         if (
             self.confirmed_concurrency_amendment_sha256,
             self.concurrency_amendment_confirmation_sha256,
@@ -550,7 +556,6 @@ class SchedulerPressureResponsePlan(BaseModel, extra="forbid", frozen=True):
             self.excluded_calibration_order_seed,
         ) != expected_amendment:
             raise ValueError("pressure-response concurrency amendment binding mismatch")
-        expected_thresholds = SchedulerPressureResponseThresholds(**threshold_fields)
         if self.thresholds != expected_thresholds:
             raise ValueError("pressure-response thresholds mismatch")
         return self
