@@ -40,6 +40,21 @@ PRESSURE_RESPONSE_CONCURRENCY_AMENDMENT_CONFIRMATION_SHA256 = (
 PRESSURE_RESPONSE_SUPERSEDED_PLAN_ID = (
     "1348a5e1d6b26e0329527652a87c6b161b16d0e3a303709edb5501eaf5cb8e61"
 )
+PRESSURE_RESPONSE_REPLACEMENT_AMENDMENT_SHA256 = (
+    "ede4dc56f5138e2b04f46cba7592198e2f06a7a8c1e87286a7b08103947d9013"
+)
+PRESSURE_RESPONSE_REPLACEMENT_CONFIRMATION_SHA256 = (
+    "2047291bb0d0074a0db0fe1d7cf2af4ee0ab4e17fff3d478f41a81f40843e192"
+)
+PRESSURE_RESPONSE_TQ_RUNTIME_VALIDATION_RESULT_SHA256 = (
+    "2e45ca173831ee43a471a605e094e7cae05caa02c9061b470c679885943505d3"
+)
+PRESSURE_RESPONSE_POOL_49005_MATERIALIZATION_RESULT_SHA256 = (
+    "01b1f613907e4d27bfab91de0fd109a577371d05b0bb49d7af38f4f0d1108a66"
+)
+PRESSURE_RESPONSE_REPLACED_PLAN_ID = (
+    "4c3a74f564bb0efbbfc3225e215623926656a0602b7a62ddb10d076a98590a8d"
+)
 
 PressureLevel: TypeAlias = Literal["l0", "l1", "l3"]
 PressureLatencyCondition: TypeAlias = Literal["natural", "controlled_positive_control"]
@@ -392,9 +407,9 @@ class SchedulerPressureResponsePool(BaseModel, extra="forbid", frozen=True):
     """Immutable identity and ten-arm execution order for one replication."""
 
     replication_id: str
-    order_seed: Literal[49001, 49002, 49003, 49004]
-    selection_seed: Literal[2026091001, 2026091002, 2026091003, 2026091004]
-    generation_study_seed: Literal[69001, 69002, 69003, 69004]
+    order_seed: Literal[49001, 49002, 49003, 49004, 49005]
+    selection_seed: Literal[2026091001, 2026091002, 2026091003, 2026091004, 2026091005]
+    generation_study_seed: Literal[69001, 69002, 69003, 69004, 69005]
     arm_execution_order: tuple[str, ...]
     pool_id: Sha256Hex
     manifest_sha256: Sha256Hex
@@ -421,7 +436,7 @@ class SchedulerPressureResponseThresholds(BaseModel, extra="forbid", frozen=True
 class SchedulerPressureResponsePlan(BaseModel, extra="forbid", frozen=True):
     """Hash-addressed final plan for the zero-update scheduler pressure surface."""
 
-    schema_version: Literal[1, 2]
+    schema_version: Literal[1, 2, 3]
     analysis_status: Literal[
         "controlled_zero_update_scheduler_pressure_response_surface"
     ]
@@ -436,6 +451,15 @@ class SchedulerPressureResponsePlan(BaseModel, extra="forbid", frozen=True):
     concurrency_amendment_confirmation_sha256: Sha256Hex | None = None
     supersedes_plan_id: Sha256Hex | None = None
     excluded_calibration_order_seed: Literal[49001] | None = None
+    confirmed_replacement_amendment_sha256: Sha256Hex | None = None
+    replacement_amendment_confirmation_sha256: Sha256Hex | None = None
+    tq_runtime_validation_result_sha256: Sha256Hex | None = None
+    replacement_pool_materialization_result_sha256: Sha256Hex | None = None
+    excluded_infrastructure_order_seed: Literal[49004] | None = None
+    data_plane_actor_runtime_env_mode: Literal["inherit_baked_single_node"] | None = (
+        None
+    )
+    required_live_ray_nodes: Literal[1] | None = None
     analysis_code_commit: GitCommitHex
     expected_base_commit: GitCommitHex
     expected_image_sha256: Sha256Hex
@@ -459,7 +483,7 @@ class SchedulerPressureResponsePlan(BaseModel, extra="forbid", frozen=True):
     top_p: float
     top_k: Literal[20]
     repetition_penalty: float
-    replication_order: tuple[Literal[49001, 49002, 49003, 49004], ...]
+    replication_order: tuple[Literal[49001, 49002, 49003, 49004, 49005], ...]
     thresholds: SchedulerPressureResponseThresholds
     plan_id: Sha256Hex
 
@@ -488,9 +512,19 @@ class SchedulerPressureResponsePlan(BaseModel, extra="forbid", frozen=True):
                 49003: (2026091003, 69003),
                 49004: (2026091004, 69004),
             }
+            if self.schema_version == 2
+            else {
+                49002: (2026091002, 69002),
+                49003: (2026091003, 69003),
+                49005: (2026091005, 69005),
+            }
         )
         expected_order = (
-            (49001, 49002, 49003) if self.schema_version == 1 else (49002, 49003, 49004)
+            (49001, 49002, 49003)
+            if self.schema_version == 1
+            else (49002, 49003, 49004)
+            if self.schema_version == 2
+            else (49002, 49003, 49005)
         )
         if bindings != expected_bindings or self.replication_order != expected_order:
             raise ValueError("pressure-response replication bindings mismatch")
@@ -542,11 +576,18 @@ class SchedulerPressureResponsePlan(BaseModel, extra="forbid", frozen=True):
         )
         if self.schema_version == 1:
             expected_amendment = (None, None, None, None)
-        else:
+        elif self.schema_version == 2:
             expected_amendment = (
                 PRESSURE_RESPONSE_CONCURRENCY_AMENDMENT_SHA256,
                 PRESSURE_RESPONSE_CONCURRENCY_AMENDMENT_CONFIRMATION_SHA256,
                 PRESSURE_RESPONSE_SUPERSEDED_PLAN_ID,
+                49001,
+            )
+        else:
+            expected_amendment = (
+                PRESSURE_RESPONSE_CONCURRENCY_AMENDMENT_SHA256,
+                PRESSURE_RESPONSE_CONCURRENCY_AMENDMENT_CONFIRMATION_SHA256,
+                PRESSURE_RESPONSE_REPLACED_PLAN_ID,
                 49001,
             )
         if (
@@ -556,6 +597,29 @@ class SchedulerPressureResponsePlan(BaseModel, extra="forbid", frozen=True):
             self.excluded_calibration_order_seed,
         ) != expected_amendment:
             raise ValueError("pressure-response concurrency amendment binding mismatch")
+        expected_replacement = (
+            (None, None, None, None, None, None, None)
+            if self.schema_version in (1, 2)
+            else (
+                PRESSURE_RESPONSE_REPLACEMENT_AMENDMENT_SHA256,
+                PRESSURE_RESPONSE_REPLACEMENT_CONFIRMATION_SHA256,
+                PRESSURE_RESPONSE_TQ_RUNTIME_VALIDATION_RESULT_SHA256,
+                PRESSURE_RESPONSE_POOL_49005_MATERIALIZATION_RESULT_SHA256,
+                49004,
+                "inherit_baked_single_node",
+                1,
+            )
+        )
+        if (
+            self.confirmed_replacement_amendment_sha256,
+            self.replacement_amendment_confirmation_sha256,
+            self.tq_runtime_validation_result_sha256,
+            self.replacement_pool_materialization_result_sha256,
+            self.excluded_infrastructure_order_seed,
+            self.data_plane_actor_runtime_env_mode,
+            self.required_live_ray_nodes,
+        ) != expected_replacement:
+            raise ValueError("pressure-response replacement binding mismatch")
         if self.thresholds != expected_thresholds:
             raise ValueError("pressure-response thresholds mismatch")
         return self

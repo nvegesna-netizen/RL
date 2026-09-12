@@ -9,7 +9,12 @@ from nemo_rl.algorithms.async_utils.structured_scheduler_crossover import (
     PRESSURE_RESPONSE_CONCURRENCY_AMENDMENT_CONFIRMATION_SHA256,
     PRESSURE_RESPONSE_CONCURRENCY_AMENDMENT_SHA256,
     PRESSURE_RESPONSE_CONFIRMED_CANDIDATE_SHA256,
+    PRESSURE_RESPONSE_POOL_49005_MATERIALIZATION_RESULT_SHA256,
+    PRESSURE_RESPONSE_REPLACED_PLAN_ID,
+    PRESSURE_RESPONSE_REPLACEMENT_AMENDMENT_SHA256,
+    PRESSURE_RESPONSE_REPLACEMENT_CONFIRMATION_SHA256,
     PRESSURE_RESPONSE_SUPERSEDED_PLAN_ID,
+    PRESSURE_RESPONSE_TQ_RUNTIME_VALIDATION_RESULT_SHA256,
     SchedulerPressureResponsePlan,
     compute_scheduler_pressure_response_plan_id,
     load_scheduler_pressure_response_plan,
@@ -165,6 +170,50 @@ def amended_pressure_plan_record() -> dict[str, object]:
     return record
 
 
+def replacement_pressure_plan_record() -> dict[str, object]:
+    record = amended_pressure_plan_record()
+    pools = record["pools"]
+    assert isinstance(pools, list)
+    replaced_pool = pools[-1]
+    assert isinstance(replaced_pool, dict)
+    record.update(
+        schema_version=3,
+        confirmed_replacement_amendment_sha256=(
+            PRESSURE_RESPONSE_REPLACEMENT_AMENDMENT_SHA256
+        ),
+        replacement_amendment_confirmation_sha256=(
+            PRESSURE_RESPONSE_REPLACEMENT_CONFIRMATION_SHA256
+        ),
+        tq_runtime_validation_result_sha256=(
+            PRESSURE_RESPONSE_TQ_RUNTIME_VALIDATION_RESULT_SHA256
+        ),
+        replacement_pool_materialization_result_sha256=(
+            PRESSURE_RESPONSE_POOL_49005_MATERIALIZATION_RESULT_SHA256
+        ),
+        excluded_infrastructure_order_seed=49004,
+        data_plane_actor_runtime_env_mode="inherit_baked_single_node",
+        required_live_ray_nodes=1,
+        supersedes_plan_id=PRESSURE_RESPONSE_REPLACED_PLAN_ID,
+        pools=[
+            *pools[:-1],
+            {
+                **replaced_pool,
+                "replication_id": "replication_49005",
+                "order_seed": 49005,
+                "selection_seed": 2026091005,
+                "generation_study_seed": 69005,
+                "pool_id": "8" * 64,
+                "manifest_sha256": "9" * 64,
+            },
+        ],
+        replication_order=[49002, 49003, 49005],
+    )
+    record["plan_id"] = "0" * 64
+    draft = SchedulerPressureResponsePlan.model_validate(record)
+    record["plan_id"] = compute_scheduler_pressure_response_plan_id(draft)
+    return record
+
+
 def test_pressure_plan_round_trip_and_generic_dispatch(tmp_path: Path) -> None:
     path = tmp_path / "plan.json"
     path.write_text(json.dumps(pressure_plan_record()))
@@ -185,6 +234,26 @@ def test_amended_pressure_plan_round_trip_and_replication_order(
     assert plan.excluded_calibration_order_seed == 49001
     assert plan.thresholds.maximum_active_generation_groups_required_each_arm == 4
     assert plan.thresholds.natural_maximum_unreleased_groups_required_each_arm == 4
+
+
+def test_replacement_pressure_plan_round_trip_and_runtime_binding(
+    tmp_path: Path,
+) -> None:
+    path = tmp_path / "plan.v3.json"
+    path.write_text(json.dumps(replacement_pressure_plan_record()))
+    plan = load_scheduler_pressure_response_plan(path)
+    assert plan.schema_version == 3
+    assert plan.replication_order == (49002, 49003, 49005)
+    assert plan.excluded_infrastructure_order_seed == 49004
+    assert plan.data_plane_actor_runtime_env_mode == "inherit_baked_single_node"
+    assert plan.required_live_ray_nodes == 1
+
+
+def test_replacement_pressure_plan_rejects_missing_validation_binding() -> None:
+    record = replacement_pressure_plan_record()
+    record["tq_runtime_validation_result_sha256"] = None
+    with pytest.raises(ValueError, match="replacement binding mismatch"):
+        SchedulerPressureResponsePlan.model_validate(record)
 
 
 def test_amended_pressure_plan_rejects_old_concurrency_gate() -> None:
