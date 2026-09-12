@@ -1,0 +1,32 @@
+{
+  "schema": "m4-downstream-quality-runtime-recovery-v2-initial-topology-v1",
+  "checked_at_utc": "2026-09-12T14:24:37Z",
+  "status": "PASS_14_PARENTS_14_CHILDREN_42_EXPECTED_JOBS",
+  "parent_pipeline_count": 14,
+  "child_pipeline_count": 14,
+  "jobs_per_child": 3,
+  "workload_job_count": 14,
+  "all_parent_statuses": "running",
+  "all_workload_statuses": "pending",
+  "rendered_scheduler_arguments_visible": false,
+  "reason_scheduler_arguments_not_visible": "The scientific workload jobs remain in the GitLab runner queue; sbatch has not executed yet.",
+  "outcome_inspected": false,
+  "child_artifacts_inspected": false,
+  "chains": [
+    {"identity": "b10_immediate", "parent": 67534460, "child": 67534508, "workload_job": 436878779},
+    {"identity": "b10_mixed_d5", "parent": 67534461, "child": 67534513, "workload_job": 436878839},
+    {"identity": "b11_immediate", "parent": 67534468, "child": 67534517, "workload_job": 436878852},
+    {"identity": "b11_mixed_d5", "parent": 67534467, "child": 67534607, "workload_job": 436879279},
+    {"identity": "b12_immediate", "parent": 67534471, "child": 67534612, "workload_job": 436879365},
+    {"identity": "b12_mixed_d5", "parent": 67534473, "child": 67534609, "workload_job": 436879344},
+    {"identity": "b13_immediate", "parent": 67534477, "child": 67534618, "workload_job": 436879462},
+    {"identity": "b13_mixed_d5", "parent": 67534478, "child": 67534621, "workload_job": 436879477},
+    {"identity": "b14_immediate", "parent": 67534483, "child": 67534625, "workload_job": 436879513},
+    {"identity": "b14_mixed_d5", "parent": 67534484, "child": 67534623, "workload_job": 436879510},
+    {"identity": "b15_immediate", "parent": 67534491, "child": 67534633, "workload_job": 436879559},
+    {"identity": "b15_mixed_d5", "parent": 67534489, "child": 67534630, "workload_job": 436879550},
+    {"identity": "b16_immediate", "parent": 67534498, "child": 67534652, "workload_job": 436879720},
+    {"identity": "b16_mixed_d5", "parent": 67534495, "child": 67534642, "workload_job": 436879670}
+  ],
+  "next_operational_gate": "When workload traces become visible, assert each sbatch command contains exactly one --time 0:14400 and --deadline now+8hours before interpreting terminal status."
+}
