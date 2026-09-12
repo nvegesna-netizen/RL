@@ -1,0 +1,38 @@
+{
+  "schema": "m4-downstream-quality-allocation-recovery-authorization-v1",
+  "status": "AUTHORIZED_PROSPECTIVE_ADMINISTRATIVE_RECOVERY",
+  "user_authorization": "do it.",
+  "scope": "exactly_one_resubmission_each_for_14_zero-allocation_b10-b16_identities",
+  "reason": "original Slurm jobs remained PENDING for Priority, recorded zero allocated runtime, and terminated DEADLINE",
+  "original_terminal_topology_sha256": "b4c63096ea0ad858c70bb6a6f6675b5ae5f95b0b90a7a2ade4b9b587085fda2d",
+  "original_terminal_authentication_sha256": "6409bb21bf83fcd6ddb0c74ec8ad8905e68c148b6253f3d23ca3f81b8fdc225d",
+  "protocol_sha256": "dbe7a4f7d1938ef43d24e536ccf9dd57110a01bab5e6cb511980218e472ef2c0",
+  "run_manifest_sha256": "a461e83c7dbccdefa1c5c779062e709f34bfc502639a3e7de663a717fefa93bf",
+  "identities": [
+    "b10_immediate", "b10_mixed_d5", "b11_immediate", "b11_mixed_d5",
+    "b12_immediate", "b12_mixed_d5", "b13_immediate", "b13_mixed_d5",
+    "b14_immediate", "b14_mixed_d5", "b15_immediate", "b15_mixed_d5",
+    "b16_immediate", "b16_mixed_d5"
+  ],
+  "scientific_identity_must_remain_exact": true,
+  "allowed_envelope_changes": [
+    "remove_manifest_spec_time_limit",
+    "remove_custom_launcher_sbatch_time",
+    "remove_custom_launcher_srun_time",
+    "use_unique_recovery_job_name"
+  ],
+  "scientific_runtime_wall_hours_each": 4.0,
+  "scientific_h100_gpu_hours_each": 8.0,
+  "queue_wait_uses_eos_native_policy": true,
+  "required_launcher": "runllm.py --no_wait",
+  "submission_attempt_limit_each": 1,
+  "submit_all_14_before_any_outcome_inspection": true,
+  "eos_submission_authorized": true,
+  "training_authorized": true,
+  "scientific_acquisition_authorized": true,
+  "outcome_inspected": false,
+  "automatic_retry": false,
+  "automatic_replacement": false,
+  "automatic_extension": false,
+  "rerun_completed_b01_b09": false
+}
