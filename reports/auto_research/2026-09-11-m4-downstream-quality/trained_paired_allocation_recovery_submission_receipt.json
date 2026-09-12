@@ -1,0 +1,213 @@
+{
+  "authorization_sha256": "01dec72caa36226e9f7d1589a0014d3c0871847d08efd8eba0404c395e845b76",
+  "checked_at_utc": "2026-09-12T04:07:00.580791+00:00",
+  "child_artifacts_inspected": false,
+  "explicit_time_limit_present": false,
+  "outcome_inspected": false,
+  "package_validation_sha256": "5f629a9915bad4980d3f6add533d05b2ea57fe4d141a9d59bb75cffe478350b9",
+  "provenance_commit": "e9f5ad0c2",
+  "required_launcher": "runllm.py --no_wait",
+  "runs": [
+    {
+      "block_id": "b10",
+      "identity": "b10_immediate",
+      "launcher_log_sha256": "10db5f411d3fa4a4cb4a4f6aa1f35dc787248f9945eb680c18931ff7aa7fc0e7",
+      "manifest_sha256": "71ac3af2c022888f208b78528a082b123bd0378e3d73da59546099dc773fb5f3",
+      "pipeline": {
+        "created_at": "2026-09-11T20:57:27.098-07:00",
+        "id": 67481214,
+        "status": "running",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67481214"
+      },
+      "regime": "immediate",
+      "submission_attempt": 1
+    },
+    {
+      "block_id": "b10",
+      "identity": "b10_mixed_d5",
+      "launcher_log_sha256": "a9098dc5b455a779b26c1824eb97991d1b2ed9728072042771b6ad2e7b4b3412",
+      "manifest_sha256": "95a95f79f5139368902b2e150e263d95ca62b60b4a175a88043bee2c21b6f9a9",
+      "pipeline": {
+        "created_at": "2026-09-11T20:57:55.062-07:00",
+        "id": 67481234,
+        "status": "running",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67481234"
+      },
+      "regime": "mixed_d5",
+      "submission_attempt": 1
+    },
+    {
+      "block_id": "b11",
+      "identity": "b11_immediate",
+      "launcher_log_sha256": "12d70e95b44988b3c3ca41e9de1eadb699ed8a2154e91125fcad413880451880",
+      "manifest_sha256": "b851dc0c7bfa8af3bee7fa29edf0768e1d6c8c891e54f433dddf2181198386e2",
+      "pipeline": {
+        "created_at": "2026-09-11T20:59:02.267-07:00",
+        "id": 67481266,
+        "status": "running",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67481266"
+      },
+      "regime": "immediate",
+      "submission_attempt": 1
+    },
+    {
+      "block_id": "b11",
+      "identity": "b11_mixed_d5",
+      "launcher_log_sha256": "a479817c24bb4dedcde28e6dae8210ac827ca261a5586225ec5eddbeeb2a7a47",
+      "manifest_sha256": "b4078a3d3c3c6e578c0b62e09933f4b841c3b5b3681177213bcea9e91d704278",
+      "pipeline": {
+        "created_at": "2026-09-11T20:58:27.476-07:00",
+        "id": 67481252,
+        "status": "running",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67481252"
+      },
+      "regime": "mixed_d5",
+      "submission_attempt": 1
+    },
+    {
+      "block_id": "b12",
+      "identity": "b12_immediate",
+      "launcher_log_sha256": "0524561cb041509a087d2e20658105cede48f54f9d1e3382b7027b739221168a",
+      "manifest_sha256": "5d97c50b388cb8ece9476a61e3ac78f7dc227905fcc105a86464941ddde2b52c",
+      "pipeline": {
+        "created_at": "2026-09-11T21:01:16.672-07:00",
+        "id": 67481454,
+        "status": "running",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67481454"
+      },
+      "regime": "immediate",
+      "submission_attempt": 1
+    },
+    {
+      "block_id": "b12",
+      "identity": "b12_mixed_d5",
+      "launcher_log_sha256": "1802e90fa4aaabd0d566fcb6ab80d20e6faf8ae84d4f60190d81455d9c948694",
+      "manifest_sha256": "b8e90d9016ae65d1fdb48615f687b30bfafe0ce0511ca5e10f70310f44f571ee",
+      "pipeline": {
+        "created_at": "2026-09-11T21:00:12.214-07:00",
+        "id": 67481398,
+        "status": "running",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67481398"
+      },
+      "regime": "mixed_d5",
+      "submission_attempt": 1
+    },
+    {
+      "block_id": "b13",
+      "identity": "b13_immediate",
+      "launcher_log_sha256": "85bce489130323868eea82db61df7afc80f9b066d0b865f782c40210190da89b",
+      "manifest_sha256": "7832b0eed1ce74f65cf70837b86522c69b45874d44599b4fbda44ce7e62aff64",
+      "pipeline": {
+        "created_at": "2026-09-11T21:02:45.867-07:00",
+        "id": 67481544,
+        "status": "running",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67481544"
+      },
+      "regime": "immediate",
+      "submission_attempt": 1
+    },
+    {
+      "block_id": "b13",
+      "identity": "b13_mixed_d5",
+      "launcher_log_sha256": "cb755072749af91a7bd9cd9b31987d940fa8f7c3bbb67d4769bbd1c5199c08fb",
+      "manifest_sha256": "096691b1ee9980fae66edc07b8113fd94ed5786775911b1db951a5bd2038dcbe",
+      "pipeline": {
+        "created_at": "2026-09-11T21:02:20.970-07:00",
+        "id": 67481521,
+        "status": "running",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67481521"
+      },
+      "regime": "mixed_d5",
+      "submission_attempt": 1
+    },
+    {
+      "block_id": "b14",
+      "identity": "b14_immediate",
+      "launcher_log_sha256": "2fb9a136e64709080adb904a18081453e5d5862b64b05dbccb1dd6d0fe6af163",
+      "manifest_sha256": "262d0348ff01f2c242770ade7e71e57fa7920144b58574fd7d7465d95e623b90",
+      "pipeline": {
+        "created_at": "2026-09-11T21:03:43.098-07:00",
+        "id": 67481584,
+        "status": "running",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67481584"
+      },
+      "regime": "immediate",
+      "submission_attempt": 1
+    },
+    {
+      "block_id": "b14",
+      "identity": "b14_mixed_d5",
+      "launcher_log_sha256": "8050fcf9e5e69a08cd12e1d43449ec2148ff471df849c2a467bab41ddbad60fb",
+      "manifest_sha256": "83c03733f573a67ec65edc24279544d41791862cabcf88a77190fdc04e93455f",
+      "pipeline": {
+        "created_at": "2026-09-11T21:03:42.737-07:00",
+        "id": 67481583,
+        "status": "running",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67481583"
+      },
+      "regime": "mixed_d5",
+      "submission_attempt": 1
+    },
+    {
+      "block_id": "b15",
+      "identity": "b15_immediate",
+      "launcher_log_sha256": "398a17e8b2abfc0fa3e66e8912c3ef45b1da188c4cdd02cb785351750122741d",
+      "manifest_sha256": "e5005a95baf37d1a7366f2f36e6d2b8194502074729b3ce7274f5ccbe2e687cf",
+      "pipeline": {
+        "created_at": "2026-09-11T21:04:58.864-07:00",
+        "id": 67481666,
+        "status": "running",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67481666"
+      },
+      "regime": "immediate",
+      "submission_attempt": 1
+    },
+    {
+      "block_id": "b15",
+      "identity": "b15_mixed_d5",
+      "launcher_log_sha256": "451c9e4bd8df26f4cf14b13176725889b095a0b43c31807d1c53ff4e74f19e2f",
+      "manifest_sha256": "7d69b91709d4a69be4505494b01e921fa9d5dbcdff5a28ef37e9310b3f8f9733",
+      "pipeline": {
+        "created_at": "2026-09-11T21:04:33.205-07:00",
+        "id": 67481625,
+        "status": "running",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67481625"
+      },
+      "regime": "mixed_d5",
+      "submission_attempt": 1
+    },
+    {
+      "block_id": "b16",
+      "identity": "b16_immediate",
+      "launcher_log_sha256": "554bc5325ebcf34485887e027e8e4397935c06bf7f6c50fef3623989b5584294",
+      "manifest_sha256": "0cd39a52216de8999a8e614632810ff186d5d2ba852a173abf0b392efb402b6a",
+      "pipeline": {
+        "created_at": "2026-09-11T21:05:57.005-07:00",
+        "id": 67482333,
+        "status": "running",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67482333"
+      },
+      "regime": "immediate",
+      "submission_attempt": 1
+    },
+    {
+      "block_id": "b16",
+      "identity": "b16_mixed_d5",
+      "launcher_log_sha256": "7ddc18922b6f647eba1cbe0432e6b342c455ec1e1b7e18d9a4c3e7d9a6489f64",
+      "manifest_sha256": "5e1102b1e0e27447313a83b73b6ac07dad00f831d773be9a36c8e2cc758c5475",
+      "pipeline": {
+        "created_at": "2026-09-11T21:05:22.369-07:00",
+        "id": 67482239,
+        "status": "running",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67482239"
+      },
+      "regime": "mixed_d5",
+      "submission_attempt": 1
+    }
+  ],
+  "schema": "m4-downstream-quality-allocation-recovery-submission-receipt-v1",
+  "status": "SUBMITTED_14_OF_14_PARENT_PIPELINES_CONFIRMED",
+  "submission_attempts": 14,
+  "submission_guard_sha256": "ee56a0e414d31a21693fe84f6d491cc4264bad71a75dbb05706416970dd078f9",
+  "unique_parent_pipeline_count": 14
+}
