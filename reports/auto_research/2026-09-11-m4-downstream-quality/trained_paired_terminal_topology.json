@@ -1,0 +1,1360 @@
+{
+  "all_chains_terminal": true,
+  "all_parents_terminal": true,
+  "chain_count": 32,
+  "chains": [
+    {
+      "block_id": "b01",
+      "bridges": [
+        {
+          "child": {
+            "id": 67436276,
+            "jobs": [
+              {
+                "id": 436019107,
+                "name": "basic/m4-downstream-quality-b01-immediate-acquisition-authorized dgxh100_eos 00 [3 logs_after]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436019106,
+                "name": "basic/m4-downstream-quality-b01-immediate-acquisition-authorized dgxh100_eos 00 [2 dgxh100_eos]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436019105,
+                "name": "basic/m4-downstream-quality-b01-immediate-acquisition-authorized dgxh100_eos 00 [1 logs_before]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              }
+            ],
+            "status": "success",
+            "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67436276"
+          },
+          "id": 436016426,
+          "status": "success"
+        }
+      ],
+      "identity": "b01_immediate",
+      "parent": {
+        "id": 67436067,
+        "status": "success",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67436067"
+      },
+      "regime": "immediate",
+      "terminal": true
+    },
+    {
+      "block_id": "b01",
+      "bridges": [
+        {
+          "child": {
+            "id": 67436291,
+            "jobs": [
+              {
+                "id": 436019206,
+                "name": "basic/m4-downstream-quality-b01-mixed-d5-acquisition-authorized dgxh100_eos 00 [3 logs_after]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436019204,
+                "name": "basic/m4-downstream-quality-b01-mixed-d5-acquisition-authorized dgxh100_eos 00 [2 dgxh100_eos]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436019203,
+                "name": "basic/m4-downstream-quality-b01-mixed-d5-acquisition-authorized dgxh100_eos 00 [1 logs_before]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              }
+            ],
+            "status": "success",
+            "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67436291"
+          },
+          "id": 436016388,
+          "status": "success"
+        }
+      ],
+      "identity": "b01_mixed_d5",
+      "parent": {
+        "id": 67436059,
+        "status": "success",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67436059"
+      },
+      "regime": "mixed_d5",
+      "terminal": true
+    },
+    {
+      "block_id": "b02",
+      "bridges": [
+        {
+          "child": {
+            "id": 67436369,
+            "jobs": [
+              {
+                "id": 436214427,
+                "name": "basic/m4-downstream-quality-b02-immediate-acquisition-authorized dgxh100_eos 00 [3 logs_after]",
+                "stage": "dgxh100_eos",
+                "status": "failed"
+              },
+              {
+                "id": 436019846,
+                "name": "basic/m4-downstream-quality-b02-immediate-acquisition-authorized dgxh100_eos 00 [2 dgxh100_eos]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436019845,
+                "name": "basic/m4-downstream-quality-b02-immediate-acquisition-authorized dgxh100_eos 00 [1 logs_before]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              }
+            ],
+            "status": "failed",
+            "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67436369"
+          },
+          "id": 436018123,
+          "status": "failed"
+        }
+      ],
+      "identity": "b02_immediate",
+      "parent": {
+        "id": 67436178,
+        "status": "failed",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67436178"
+      },
+      "regime": "immediate",
+      "terminal": true
+    },
+    {
+      "block_id": "b02",
+      "bridges": [
+        {
+          "child": {
+            "id": 67436378,
+            "jobs": [
+              {
+                "id": 436019943,
+                "name": "basic/m4-downstream-quality-b02-mixed-d5-acquisition-authorized dgxh100_eos 00 [3 logs_after]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436019942,
+                "name": "basic/m4-downstream-quality-b02-mixed-d5-acquisition-authorized dgxh100_eos 00 [2 dgxh100_eos]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436019941,
+                "name": "basic/m4-downstream-quality-b02-mixed-d5-acquisition-authorized dgxh100_eos 00 [1 logs_before]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              }
+            ],
+            "status": "success",
+            "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67436378"
+          },
+          "id": 436018538,
+          "status": "success"
+        }
+      ],
+      "identity": "b02_mixed_d5",
+      "parent": {
+        "id": 67436221,
+        "status": "success",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67436221"
+      },
+      "regime": "mixed_d5",
+      "terminal": true
+    },
+    {
+      "block_id": "b03",
+      "bridges": [
+        {
+          "child": {
+            "id": 67436497,
+            "jobs": [
+              {
+                "id": 436021215,
+                "name": "basic/m4-downstream-quality-b03-immediate-acquisition-authorized dgxh100_eos 00 [3 logs_after]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436021214,
+                "name": "basic/m4-downstream-quality-b03-immediate-acquisition-authorized dgxh100_eos 00 [2 dgxh100_eos]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436021213,
+                "name": "basic/m4-downstream-quality-b03-immediate-acquisition-authorized dgxh100_eos 00 [1 logs_before]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              }
+            ],
+            "status": "success",
+            "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67436497"
+          },
+          "id": 436019277,
+          "status": "success"
+        }
+      ],
+      "identity": "b03_immediate",
+      "parent": {
+        "id": 67436306,
+        "status": "success",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67436306"
+      },
+      "regime": "immediate",
+      "terminal": true
+    },
+    {
+      "block_id": "b03",
+      "bridges": [
+        {
+          "child": {
+            "id": 67436484,
+            "jobs": [
+              {
+                "id": 436021116,
+                "name": "basic/m4-downstream-quality-b03-mixed-d5-acquisition-authorized dgxh100_eos 00 [3 logs_after]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436021115,
+                "name": "basic/m4-downstream-quality-b03-mixed-d5-acquisition-authorized dgxh100_eos 00 [2 dgxh100_eos]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436021114,
+                "name": "basic/m4-downstream-quality-b03-mixed-d5-acquisition-authorized dgxh100_eos 00 [1 logs_before]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              }
+            ],
+            "status": "success",
+            "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67436484"
+          },
+          "id": 436019177,
+          "status": "success"
+        }
+      ],
+      "identity": "b03_mixed_d5",
+      "parent": {
+        "id": 67436284,
+        "status": "success",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67436284"
+      },
+      "regime": "mixed_d5",
+      "terminal": true
+    },
+    {
+      "block_id": "b04",
+      "bridges": [
+        {
+          "child": {
+            "id": 67436703,
+            "jobs": [
+              {
+                "id": 436022710,
+                "name": "basic/m4-downstream-quality-b04-immediate-acquisition-authorized dgxh100_eos 00 [3 logs_after]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436022709,
+                "name": "basic/m4-downstream-quality-b04-immediate-acquisition-authorized dgxh100_eos 00 [2 dgxh100_eos]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436022707,
+                "name": "basic/m4-downstream-quality-b04-immediate-acquisition-authorized dgxh100_eos 00 [1 logs_before]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              }
+            ],
+            "status": "success",
+            "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67436703"
+          },
+          "id": 436020730,
+          "status": "success"
+        }
+      ],
+      "identity": "b04_immediate",
+      "parent": {
+        "id": 67436445,
+        "status": "success",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67436445"
+      },
+      "regime": "immediate",
+      "terminal": true
+    },
+    {
+      "block_id": "b04",
+      "bridges": [
+        {
+          "child": {
+            "id": 67436694,
+            "jobs": [
+              {
+                "id": 436191635,
+                "name": "basic/m4-downstream-quality-b04-mixed-d5-acquisition-authorized dgxh100_eos 00 [3 logs_after]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436022684,
+                "name": "basic/m4-downstream-quality-b04-mixed-d5-acquisition-authorized dgxh100_eos 00 [2 dgxh100_eos]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436022683,
+                "name": "basic/m4-downstream-quality-b04-mixed-d5-acquisition-authorized dgxh100_eos 00 [1 logs_before]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              }
+            ],
+            "status": "success",
+            "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67436694"
+          },
+          "id": 436020488,
+          "status": "success"
+        }
+      ],
+      "identity": "b04_mixed_d5",
+      "parent": {
+        "id": 67436410,
+        "status": "success",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67436410"
+      },
+      "regime": "mixed_d5",
+      "terminal": true
+    },
+    {
+      "block_id": "b05",
+      "bridges": [
+        {
+          "child": {
+            "id": 67436830,
+            "jobs": [
+              {
+                "id": 436023740,
+                "name": "basic/m4-downstream-quality-b05-immediate-acquisition-authorized dgxh100_eos 00 [3 logs_after]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436023739,
+                "name": "basic/m4-downstream-quality-b05-immediate-acquisition-authorized dgxh100_eos 00 [2 dgxh100_eos]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436023738,
+                "name": "basic/m4-downstream-quality-b05-immediate-acquisition-authorized dgxh100_eos 00 [1 logs_before]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              }
+            ],
+            "status": "success",
+            "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67436830"
+          },
+          "id": 436022226,
+          "status": "success"
+        }
+      ],
+      "identity": "b05_immediate",
+      "parent": {
+        "id": 67436647,
+        "status": "success",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67436647"
+      },
+      "regime": "immediate",
+      "terminal": true
+    },
+    {
+      "block_id": "b05",
+      "bridges": [
+        {
+          "child": {
+            "id": 67436846,
+            "jobs": [
+              {
+                "id": 436023915,
+                "name": "basic/m4-downstream-quality-b05-mixed-d5-acquisition-authorized dgxh100_eos 00 [3 logs_after]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436023914,
+                "name": "basic/m4-downstream-quality-b05-mixed-d5-acquisition-authorized dgxh100_eos 00 [2 dgxh100_eos]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436023913,
+                "name": "basic/m4-downstream-quality-b05-mixed-d5-acquisition-authorized dgxh100_eos 00 [1 logs_before]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              }
+            ],
+            "status": "success",
+            "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67436846"
+          },
+          "id": 436022662,
+          "status": "success"
+        }
+      ],
+      "identity": "b05_mixed_d5",
+      "parent": {
+        "id": 67436683,
+        "status": "success",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67436683"
+      },
+      "regime": "mixed_d5",
+      "terminal": true
+    },
+    {
+      "block_id": "b06",
+      "bridges": [
+        {
+          "child": {
+            "id": 67436958,
+            "jobs": [
+              {
+                "id": 436024888,
+                "name": "basic/m4-downstream-quality-b06-immediate-acquisition-authorized dgxh100_eos 00 [3 logs_after]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436024886,
+                "name": "basic/m4-downstream-quality-b06-immediate-acquisition-authorized dgxh100_eos 00 [2 dgxh100_eos]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436024885,
+                "name": "basic/m4-downstream-quality-b06-immediate-acquisition-authorized dgxh100_eos 00 [1 logs_before]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              }
+            ],
+            "status": "success",
+            "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67436958"
+          },
+          "id": 436023836,
+          "status": "success"
+        }
+      ],
+      "identity": "b06_immediate",
+      "parent": {
+        "id": 67436835,
+        "status": "success",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67436835"
+      },
+      "regime": "immediate",
+      "terminal": true
+    },
+    {
+      "block_id": "b06",
+      "bridges": [
+        {
+          "child": {
+            "id": 67437214,
+            "jobs": [
+              {
+                "id": 436026810,
+                "name": "basic/m4-downstream-quality-b06-mixed-d5-acquisition-authorized dgxh100_eos 00 [3 logs_after]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436026809,
+                "name": "basic/m4-downstream-quality-b06-mixed-d5-acquisition-authorized dgxh100_eos 00 [2 dgxh100_eos]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436026808,
+                "name": "basic/m4-downstream-quality-b06-mixed-d5-acquisition-authorized dgxh100_eos 00 [1 logs_before]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              }
+            ],
+            "status": "success",
+            "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67437214"
+          },
+          "id": 436024340,
+          "status": "success"
+        }
+      ],
+      "identity": "b06_mixed_d5",
+      "parent": {
+        "id": 67436895,
+        "status": "success",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67436895"
+      },
+      "regime": "mixed_d5",
+      "terminal": true
+    },
+    {
+      "block_id": "b07",
+      "bridges": [
+        {
+          "child": {
+            "id": 67437550,
+            "jobs": [
+              {
+                "id": 436191252,
+                "name": "basic/m4-downstream-quality-b07-immediate-acquisition-authorized dgxh100_eos 00 [3 logs_after]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436028717,
+                "name": "basic/m4-downstream-quality-b07-immediate-acquisition-authorized dgxh100_eos 00 [2 dgxh100_eos]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436028716,
+                "name": "basic/m4-downstream-quality-b07-immediate-acquisition-authorized dgxh100_eos 00 [1 logs_before]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              }
+            ],
+            "status": "success",
+            "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67437550"
+          },
+          "id": 436026888,
+          "status": "success"
+        }
+      ],
+      "identity": "b07_immediate",
+      "parent": {
+        "id": 67437218,
+        "status": "success",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67437218"
+      },
+      "regime": "immediate",
+      "terminal": true
+    },
+    {
+      "block_id": "b07",
+      "bridges": [
+        {
+          "child": {
+            "id": 67437636,
+            "jobs": [
+              {
+                "id": 436029326,
+                "name": "basic/m4-downstream-quality-b07-mixed-d5-acquisition-authorized dgxh100_eos 00 [3 logs_after]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436029322,
+                "name": "basic/m4-downstream-quality-b07-mixed-d5-acquisition-authorized dgxh100_eos 00 [2 dgxh100_eos]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436029313,
+                "name": "basic/m4-downstream-quality-b07-mixed-d5-acquisition-authorized dgxh100_eos 00 [1 logs_before]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              }
+            ],
+            "status": "success",
+            "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67437636"
+          },
+          "id": 436027354,
+          "status": "success"
+        }
+      ],
+      "identity": "b07_mixed_d5",
+      "parent": {
+        "id": 67437265,
+        "status": "success",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67437265"
+      },
+      "regime": "mixed_d5",
+      "terminal": true
+    },
+    {
+      "block_id": "b08",
+      "bridges": [
+        {
+          "child": {
+            "id": 67437818,
+            "jobs": [
+              {
+                "id": 436194626,
+                "name": "basic/m4-downstream-quality-b08-immediate-acquisition-authorized dgxh100_eos 00 [3 logs_after]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436030519,
+                "name": "basic/m4-downstream-quality-b08-immediate-acquisition-authorized dgxh100_eos 00 [2 dgxh100_eos]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436030518,
+                "name": "basic/m4-downstream-quality-b08-immediate-acquisition-authorized dgxh100_eos 00 [1 logs_before]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              }
+            ],
+            "status": "success",
+            "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67437818"
+          },
+          "id": 436028698,
+          "status": "success"
+        }
+      ],
+      "identity": "b08_immediate",
+      "parent": {
+        "id": 67437544,
+        "status": "success",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67437544"
+      },
+      "regime": "immediate",
+      "terminal": true
+    },
+    {
+      "block_id": "b08",
+      "bridges": [
+        {
+          "child": {
+            "id": 67437758,
+            "jobs": [
+              {
+                "id": 436230921,
+                "name": "basic/m4-downstream-quality-b08-mixed-d5-acquisition-authorized dgxh100_eos 00 [3 logs_after]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436030175,
+                "name": "basic/m4-downstream-quality-b08-mixed-d5-acquisition-authorized dgxh100_eos 00 [2 dgxh100_eos]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436030174,
+                "name": "basic/m4-downstream-quality-b08-mixed-d5-acquisition-authorized dgxh100_eos 00 [1 logs_before]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              }
+            ],
+            "status": "success",
+            "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67437758"
+          },
+          "id": 436028359,
+          "status": "success"
+        }
+      ],
+      "identity": "b08_mixed_d5",
+      "parent": {
+        "id": 67437496,
+        "status": "success",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67437496"
+      },
+      "regime": "mixed_d5",
+      "terminal": true
+    },
+    {
+      "block_id": "b09",
+      "bridges": [
+        {
+          "child": {
+            "id": 67438135,
+            "jobs": [
+              {
+                "id": 436033296,
+                "name": "basic/m4-downstream-quality-b09-immediate-acquisition-authorized dgxh100_eos 00 [3 logs_after]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436033295,
+                "name": "basic/m4-downstream-quality-b09-immediate-acquisition-authorized dgxh100_eos 00 [2 dgxh100_eos]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436033294,
+                "name": "basic/m4-downstream-quality-b09-immediate-acquisition-authorized dgxh100_eos 00 [1 logs_before]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              }
+            ],
+            "status": "success",
+            "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67438135"
+          },
+          "id": 436030169,
+          "status": "success"
+        }
+      ],
+      "identity": "b09_immediate",
+      "parent": {
+        "id": 67437755,
+        "status": "success",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67437755"
+      },
+      "regime": "immediate",
+      "terminal": true
+    },
+    {
+      "block_id": "b09",
+      "bridges": [
+        {
+          "child": {
+            "id": 67438103,
+            "jobs": [
+              {
+                "id": 436201546,
+                "name": "basic/m4-downstream-quality-b09-mixed-d5-acquisition-authorized dgxh100_eos 00 [3 logs_after]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436032886,
+                "name": "basic/m4-downstream-quality-b09-mixed-d5-acquisition-authorized dgxh100_eos 00 [2 dgxh100_eos]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436032884,
+                "name": "basic/m4-downstream-quality-b09-mixed-d5-acquisition-authorized dgxh100_eos 00 [1 logs_before]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              }
+            ],
+            "status": "success",
+            "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67438103"
+          },
+          "id": 436029896,
+          "status": "success"
+        }
+      ],
+      "identity": "b09_mixed_d5",
+      "parent": {
+        "id": 67437717,
+        "status": "success",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67437717"
+      },
+      "regime": "mixed_d5",
+      "terminal": true
+    },
+    {
+      "block_id": "b10",
+      "bridges": [
+        {
+          "child": {
+            "id": 67438865,
+            "jobs": [
+              {
+                "id": 436041041,
+                "name": "basic/m4-downstream-quality-b10-immediate-acquisition-authorized dgxh100_eos 00 [3 logs_after]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436041040,
+                "name": "basic/m4-downstream-quality-b10-immediate-acquisition-authorized dgxh100_eos 00 [2 dgxh100_eos]",
+                "stage": "dgxh100_eos",
+                "status": "failed"
+              },
+              {
+                "id": 436041038,
+                "name": "basic/m4-downstream-quality-b10-immediate-acquisition-authorized dgxh100_eos 00 [1 logs_before]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              }
+            ],
+            "status": "failed",
+            "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67438865"
+          },
+          "id": 436037222,
+          "status": "failed"
+        }
+      ],
+      "identity": "b10_immediate",
+      "parent": {
+        "id": 67438517,
+        "status": "failed",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67438517"
+      },
+      "regime": "immediate",
+      "terminal": true
+    },
+    {
+      "block_id": "b10",
+      "bridges": [
+        {
+          "child": {
+            "id": 67439027,
+            "jobs": [
+              {
+                "id": 436043167,
+                "name": "basic/m4-downstream-quality-b10-mixed-d5-acquisition-authorized dgxh100_eos 00 [3 logs_after]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436043166,
+                "name": "basic/m4-downstream-quality-b10-mixed-d5-acquisition-authorized dgxh100_eos 00 [2 dgxh100_eos]",
+                "stage": "dgxh100_eos",
+                "status": "failed"
+              },
+              {
+                "id": 436043165,
+                "name": "basic/m4-downstream-quality-b10-mixed-d5-acquisition-authorized dgxh100_eos 00 [1 logs_before]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              }
+            ],
+            "status": "failed",
+            "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67439027"
+          },
+          "id": 436038471,
+          "status": "failed"
+        }
+      ],
+      "identity": "b10_mixed_d5",
+      "parent": {
+        "id": 67438624,
+        "status": "failed",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67438624"
+      },
+      "regime": "mixed_d5",
+      "terminal": true
+    },
+    {
+      "block_id": "b11",
+      "bridges": [
+        {
+          "child": {
+            "id": 67439657,
+            "jobs": [
+              {
+                "id": 436047589,
+                "name": "basic/m4-downstream-quality-b11-immediate-acquisition-authorized dgxh100_eos 00 [3 logs_after]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436047588,
+                "name": "basic/m4-downstream-quality-b11-immediate-acquisition-authorized dgxh100_eos 00 [2 dgxh100_eos]",
+                "stage": "dgxh100_eos",
+                "status": "failed"
+              },
+              {
+                "id": 436047587,
+                "name": "basic/m4-downstream-quality-b11-immediate-acquisition-authorized dgxh100_eos 00 [1 logs_before]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              }
+            ],
+            "status": "failed",
+            "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67439657"
+          },
+          "id": 436045174,
+          "status": "failed"
+        }
+      ],
+      "identity": "b11_immediate",
+      "parent": {
+        "id": 67439217,
+        "status": "failed",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67439217"
+      },
+      "regime": "immediate",
+      "terminal": true
+    },
+    {
+      "block_id": "b11",
+      "bridges": [
+        {
+          "child": {
+            "id": 67439260,
+            "jobs": [
+              {
+                "id": 436045526,
+                "name": "basic/m4-downstream-quality-b11-mixed-d5-acquisition-authorized dgxh100_eos 00 [3 logs_after]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436045525,
+                "name": "basic/m4-downstream-quality-b11-mixed-d5-acquisition-authorized dgxh100_eos 00 [2 dgxh100_eos]",
+                "stage": "dgxh100_eos",
+                "status": "failed"
+              },
+              {
+                "id": 436045524,
+                "name": "basic/m4-downstream-quality-b11-mixed-d5-acquisition-authorized dgxh100_eos 00 [1 logs_before]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              }
+            ],
+            "status": "failed",
+            "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67439260"
+          },
+          "id": 436043979,
+          "status": "failed"
+        }
+      ],
+      "identity": "b11_mixed_d5",
+      "parent": {
+        "id": 67439079,
+        "status": "failed",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67439079"
+      },
+      "regime": "mixed_d5",
+      "terminal": true
+    },
+    {
+      "block_id": "b12",
+      "bridges": [
+        {
+          "child": {
+            "id": 67439829,
+            "jobs": [
+              {
+                "id": 436049229,
+                "name": "basic/m4-downstream-quality-b12-immediate-acquisition-authorized dgxh100_eos 00 [3 logs_after]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436049228,
+                "name": "basic/m4-downstream-quality-b12-immediate-acquisition-authorized dgxh100_eos 00 [2 dgxh100_eos]",
+                "stage": "dgxh100_eos",
+                "status": "failed"
+              },
+              {
+                "id": 436049227,
+                "name": "basic/m4-downstream-quality-b12-immediate-acquisition-authorized dgxh100_eos 00 [1 logs_before]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              }
+            ],
+            "status": "failed",
+            "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67439829"
+          },
+          "id": 436047765,
+          "status": "failed"
+        }
+      ],
+      "identity": "b12_immediate",
+      "parent": {
+        "id": 67439677,
+        "status": "failed",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67439677"
+      },
+      "regime": "immediate",
+      "terminal": true
+    },
+    {
+      "block_id": "b12",
+      "bridges": [
+        {
+          "child": {
+            "id": 67439797,
+            "jobs": [
+              {
+                "id": 436048855,
+                "name": "basic/m4-downstream-quality-b12-mixed-d5-acquisition-authorized dgxh100_eos 00 [3 logs_after]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436048854,
+                "name": "basic/m4-downstream-quality-b12-mixed-d5-acquisition-authorized dgxh100_eos 00 [2 dgxh100_eos]",
+                "stage": "dgxh100_eos",
+                "status": "failed"
+              },
+              {
+                "id": 436048853,
+                "name": "basic/m4-downstream-quality-b12-mixed-d5-acquisition-authorized dgxh100_eos 00 [1 logs_before]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              }
+            ],
+            "status": "failed",
+            "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67439797"
+          },
+          "id": 436047236,
+          "status": "failed"
+        }
+      ],
+      "identity": "b12_mixed_d5",
+      "parent": {
+        "id": 67439611,
+        "status": "failed",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67439611"
+      },
+      "regime": "mixed_d5",
+      "terminal": true
+    },
+    {
+      "block_id": "b13",
+      "bridges": [
+        {
+          "child": {
+            "id": 67440083,
+            "jobs": [
+              {
+                "id": 436051073,
+                "name": "basic/m4-downstream-quality-b13-immediate-acquisition-authorized dgxh100_eos 00 [3 logs_after]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436051072,
+                "name": "basic/m4-downstream-quality-b13-immediate-acquisition-authorized dgxh100_eos 00 [2 dgxh100_eos]",
+                "stage": "dgxh100_eos",
+                "status": "failed"
+              },
+              {
+                "id": 436051071,
+                "name": "basic/m4-downstream-quality-b13-immediate-acquisition-authorized dgxh100_eos 00 [1 logs_before]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              }
+            ],
+            "status": "failed",
+            "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67440083"
+          },
+          "id": 436049257,
+          "status": "failed"
+        }
+      ],
+      "identity": "b13_immediate",
+      "parent": {
+        "id": 67439832,
+        "status": "failed",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67439832"
+      },
+      "regime": "immediate",
+      "terminal": true
+    },
+    {
+      "block_id": "b13",
+      "bridges": [
+        {
+          "child": {
+            "id": 67440268,
+            "jobs": [
+              {
+                "id": 436052607,
+                "name": "basic/m4-downstream-quality-b13-mixed-d5-acquisition-authorized dgxh100_eos 00 [3 logs_after]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436052606,
+                "name": "basic/m4-downstream-quality-b13-mixed-d5-acquisition-authorized dgxh100_eos 00 [2 dgxh100_eos]",
+                "stage": "dgxh100_eos",
+                "status": "failed"
+              },
+              {
+                "id": 436052605,
+                "name": "basic/m4-downstream-quality-b13-mixed-d5-acquisition-authorized dgxh100_eos 00 [1 logs_before]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              }
+            ],
+            "status": "failed",
+            "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67440268"
+          },
+          "id": 436050406,
+          "status": "failed"
+        }
+      ],
+      "identity": "b13_mixed_d5",
+      "parent": {
+        "id": 67439992,
+        "status": "failed",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67439992"
+      },
+      "regime": "mixed_d5",
+      "terminal": true
+    },
+    {
+      "block_id": "b14",
+      "bridges": [
+        {
+          "child": {
+            "id": 67440474,
+            "jobs": [
+              {
+                "id": 436054841,
+                "name": "basic/m4-downstream-quality-b14-immediate-acquisition-authorized dgxh100_eos 00 [3 logs_after]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436054840,
+                "name": "basic/m4-downstream-quality-b14-immediate-acquisition-authorized dgxh100_eos 00 [2 dgxh100_eos]",
+                "stage": "dgxh100_eos",
+                "status": "failed"
+              },
+              {
+                "id": 436054839,
+                "name": "basic/m4-downstream-quality-b14-immediate-acquisition-authorized dgxh100_eos 00 [1 logs_before]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              }
+            ],
+            "status": "failed",
+            "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67440474"
+          },
+          "id": 436052797,
+          "status": "failed"
+        }
+      ],
+      "identity": "b14_immediate",
+      "parent": {
+        "id": 67440289,
+        "status": "failed",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67440289"
+      },
+      "regime": "immediate",
+      "terminal": true
+    },
+    {
+      "block_id": "b14",
+      "bridges": [
+        {
+          "child": {
+            "id": 67440461,
+            "jobs": [
+              {
+                "id": 436054748,
+                "name": "basic/m4-downstream-quality-b14-mixed-d5-acquisition-authorized dgxh100_eos 00 [3 logs_after]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436054747,
+                "name": "basic/m4-downstream-quality-b14-mixed-d5-acquisition-authorized dgxh100_eos 00 [2 dgxh100_eos]",
+                "stage": "dgxh100_eos",
+                "status": "failed"
+              },
+              {
+                "id": 436054746,
+                "name": "basic/m4-downstream-quality-b14-mixed-d5-acquisition-authorized dgxh100_eos 00 [1 logs_before]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              }
+            ],
+            "status": "failed",
+            "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67440461"
+          },
+          "id": 436052589,
+          "status": "failed"
+        }
+      ],
+      "identity": "b14_mixed_d5",
+      "parent": {
+        "id": 67440265,
+        "status": "failed",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67440265"
+      },
+      "regime": "mixed_d5",
+      "terminal": true
+    },
+    {
+      "block_id": "b15",
+      "bridges": [
+        {
+          "child": {
+            "id": 67441058,
+            "jobs": [
+              {
+                "id": 436061646,
+                "name": "basic/m4-downstream-quality-b15-immediate-acquisition-authorized dgxh100_eos 00 [3 logs_after]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436061645,
+                "name": "basic/m4-downstream-quality-b15-immediate-acquisition-authorized dgxh100_eos 00 [2 dgxh100_eos]",
+                "stage": "dgxh100_eos",
+                "status": "failed"
+              },
+              {
+                "id": 436061644,
+                "name": "basic/m4-downstream-quality-b15-immediate-acquisition-authorized dgxh100_eos 00 [1 logs_before]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              }
+            ],
+            "status": "failed",
+            "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67441058"
+          },
+          "id": 436058611,
+          "status": "failed"
+        }
+      ],
+      "identity": "b15_immediate",
+      "parent": {
+        "id": 67440869,
+        "status": "failed",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67440869"
+      },
+      "regime": "immediate",
+      "terminal": true
+    },
+    {
+      "block_id": "b15",
+      "bridges": [
+        {
+          "child": {
+            "id": 67440651,
+            "jobs": [
+              {
+                "id": 436056300,
+                "name": "basic/m4-downstream-quality-b15-mixed-d5-acquisition-authorized dgxh100_eos 00 [3 logs_after]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436056299,
+                "name": "basic/m4-downstream-quality-b15-mixed-d5-acquisition-authorized dgxh100_eos 00 [2 dgxh100_eos]",
+                "stage": "dgxh100_eos",
+                "status": "failed"
+              },
+              {
+                "id": 436056298,
+                "name": "basic/m4-downstream-quality-b15-mixed-d5-acquisition-authorized dgxh100_eos 00 [1 logs_before]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              }
+            ],
+            "status": "failed",
+            "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67440651"
+          },
+          "id": 436055058,
+          "status": "failed"
+        }
+      ],
+      "identity": "b15_mixed_d5",
+      "parent": {
+        "id": 67440494,
+        "status": "failed",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67440494"
+      },
+      "regime": "mixed_d5",
+      "terminal": true
+    },
+    {
+      "block_id": "b16",
+      "bridges": [
+        {
+          "child": {
+            "id": 67441298,
+            "jobs": [
+              {
+                "id": 436063645,
+                "name": "basic/m4-downstream-quality-b16-immediate-acquisition-authorized dgxh100_eos 00 [3 logs_after]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436063644,
+                "name": "basic/m4-downstream-quality-b16-immediate-acquisition-authorized dgxh100_eos 00 [2 dgxh100_eos]",
+                "stage": "dgxh100_eos",
+                "status": "failed"
+              },
+              {
+                "id": 436063643,
+                "name": "basic/m4-downstream-quality-b16-immediate-acquisition-authorized dgxh100_eos 00 [1 logs_before]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              }
+            ],
+            "status": "failed",
+            "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67441298"
+          },
+          "id": 436061875,
+          "status": "failed"
+        }
+      ],
+      "identity": "b16_immediate",
+      "parent": {
+        "id": 67441099,
+        "status": "failed",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67441099"
+      },
+      "regime": "immediate",
+      "terminal": true
+    },
+    {
+      "block_id": "b16",
+      "bridges": [
+        {
+          "child": {
+            "id": 67441315,
+            "jobs": [
+              {
+                "id": 436063764,
+                "name": "basic/m4-downstream-quality-b16-mixed-d5-acquisition-authorized dgxh100_eos 00 [3 logs_after]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              },
+              {
+                "id": 436063763,
+                "name": "basic/m4-downstream-quality-b16-mixed-d5-acquisition-authorized dgxh100_eos 00 [2 dgxh100_eos]",
+                "stage": "dgxh100_eos",
+                "status": "failed"
+              },
+              {
+                "id": 436063762,
+                "name": "basic/m4-downstream-quality-b16-mixed-d5-acquisition-authorized dgxh100_eos 00 [1 logs_before]",
+                "stage": "dgxh100_eos",
+                "status": "success"
+              }
+            ],
+            "status": "failed",
+            "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67441315"
+          },
+          "id": 436062077,
+          "status": "failed"
+        }
+      ],
+      "identity": "b16_mixed_d5",
+      "parent": {
+        "id": 67441115,
+        "status": "failed",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67441115"
+      },
+      "regime": "mixed_d5",
+      "terminal": true
+    }
+  ],
+  "checked_at_utc": "2026-09-12T02:54:32.683086+00:00",
+  "outcome_or_artifact_endpoints_requested": false,
+  "parent_status_counts": {
+    "failed": 15,
+    "success": 17
+  },
+  "receipt_sha256": "0c3668a309cc0923a769a1b33eae10f20073d8916f6d811689b4e1402a6814be",
+  "schema": "m4-downstream-quality-status-only-snapshot-v1",
+  "terminal_chain_count": 32
+}
