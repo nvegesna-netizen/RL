@@ -1,0 +1,78 @@
+{
+  "schema": "m4-downstream-quality-allocation-recovery-terminal-diagnosis-v1",
+  "status": "OPERATIONAL_RUNTIME_ENVELOPE_FAILURE_NO_SCIENTIFIC_RESULT",
+  "scope": {
+    "parent_pipeline_count": 14,
+    "block_ids": ["b10", "b11", "b12", "b13", "b14", "b15", "b16"],
+    "regimes": ["immediate", "mixed_d5"],
+    "outcome_artifacts_inspected": false,
+    "scientific_outputs_opened": false,
+    "relaunch_performed": false
+  },
+  "common_signature": {
+    "initial_slurm_state": "PENDING",
+    "initial_slurm_reason": "Priority",
+    "allocation_obtained": true,
+    "generated_sbatch_time": "0:3600",
+    "generated_sbatch_deadline": "now+8hours",
+    "terminal_whole_job_state": "TIMEOUT",
+    "terminal_step_state": "CANCELLED",
+    "terminal_step_exit_code": "0:15",
+    "terminal_message": "DUE TO TIME LIMIT",
+    "observed_step_duration_range": ["00:59:44", "00:59:55"]
+  },
+  "control_comparison": {
+    "identity": "original b01_immediate",
+    "parent_pipeline_id": 67436067,
+    "child_pipeline_id": 67436276,
+    "workload_job_id": 436019106,
+    "generated_sbatch_time_values": ["0:14400", "04:00:00"],
+    "generated_sbatch_deadline": "now+8hours",
+    "terminal_state": "COMPLETED",
+    "slurm_duration": "01:36:23",
+    "slurm_queue_time": "00:00:29"
+  },
+  "representative_recovery_comparison": {
+    "identity": "b10_immediate",
+    "parent_pipeline_id": 67481214,
+    "child_pipeline_id": 67481277,
+    "workload_job_id": 436425090,
+    "generated_sbatch_time": "0:3600",
+    "generated_sbatch_deadline": "now+8hours",
+    "terminal_state": "TIMEOUT",
+    "slurm_duration": "01:00:12",
+    "slurm_queue_time": "01:40:22",
+    "step_duration": "00:59:53",
+    "step_exit_code": "0:15"
+  },
+  "runs": [
+    {"identity": "b10_immediate", "parent": 67481214, "child": 67481277, "workload_job": 436425090, "step_duration": "00:59:53"},
+    {"identity": "b10_mixed_d5", "parent": 67481234, "child": 67481288, "workload_job": 436426055, "step_duration": "00:59:53"},
+    {"identity": "b11_immediate", "parent": 67481266, "child": 67481427, "workload_job": 436427075, "step_duration": "00:59:51"},
+    {"identity": "b11_mixed_d5", "parent": 67481252, "child": 67481403, "workload_job": 436426827, "step_duration": "00:59:52"},
+    {"identity": "b12_immediate", "parent": 67481454, "child": 67481562, "workload_job": 436428198, "step_duration": "00:59:55"},
+    {"identity": "b12_mixed_d5", "parent": 67481398, "child": 67481495, "workload_job": 436427702, "step_duration": "00:59:52"},
+    {"identity": "b13_immediate", "parent": 67481544, "child": 67481635, "workload_job": 436428523, "step_duration": "00:59:50"},
+    {"identity": "b13_mixed_d5", "parent": 67481521, "child": 67481604, "workload_job": 436428423, "step_duration": "00:59:47"},
+    {"identity": "b14_immediate", "parent": 67481584, "child": 67482268, "workload_job": 436433190, "step_duration": "00:59:50"},
+    {"identity": "b14_mixed_d5", "parent": 67481583, "child": 67482288, "workload_job": 436433358, "step_duration": "00:59:50"},
+    {"identity": "b15_immediate", "parent": 67481666, "child": 67482469, "workload_job": 436436628, "step_duration": "00:59:44"},
+    {"identity": "b15_mixed_d5", "parent": 67481625, "child": 67482386, "workload_job": 436434646, "step_duration": "00:59:45"},
+    {"identity": "b16_immediate", "parent": 67482333, "child": 67482561, "workload_job": 436437610, "step_duration": "00:59:49"},
+    {"identity": "b16_mixed_d5", "parent": 67482239, "child": 67482502, "workload_job": 436436993, "step_duration": "00:59:46"}
+  ],
+  "causal_diagnosis": {
+    "cause": "Removing every explicit runtime field caused JET to inject its one-hour default Slurm runtime, --time 0:3600.",
+    "not_a_queue_deadline_failure": true,
+    "reason": "All 14 jobs progressed from PENDING/Priority to allocated nodes and then ran for approximately one hour. The independent --deadline now+8hours remained present.",
+    "scientific_disposition": "Operationally censored before planned completion; these runs are not scientific observations and do not unlock the completion gate."
+  },
+  "prospective_repair_constraint": {
+    "restore_manifest_spec_time_limit_seconds": 14400,
+    "leave_custom_sbatch_time_unset": true,
+    "leave_custom_srun_time_unset": true,
+    "do_not_change_queue_deadline": true,
+    "expected_generated_runtime_flag": "--time 0:14400",
+    "required_prelaunch_check": "Render the launch and assert exactly one four-hour Slurm runtime flag plus the unchanged queue deadline before any authorized submission."
+  }
+}
