@@ -433,6 +433,19 @@ class SchedulerPressureResponseThresholds(BaseModel, extra="forbid", frozen=True
     composition_negative_replications_max: int
 
 
+class SchedulerPressureResponseInheritedReplication(
+    BaseModel, extra="forbid", frozen=True
+):
+    """Exact completed result inherited from the superseded execution plan."""
+
+    order_seed: Literal[49002, 49003]
+    source_plan_id: Literal[
+        "4c3a74f564bb0efbbfc3225e215623926656a0602b7a62ddb10d076a98590a8d"
+    ]
+    scientific_result_sha256: Sha256Hex
+    audit_sha256: Sha256Hex
+
+
 class SchedulerPressureResponsePlan(BaseModel, extra="forbid", frozen=True):
     """Hash-addressed final plan for the zero-update scheduler pressure surface."""
 
@@ -460,6 +473,9 @@ class SchedulerPressureResponsePlan(BaseModel, extra="forbid", frozen=True):
         None
     )
     required_live_ray_nodes: Literal[1] | None = None
+    inherited_completed_replications: (
+        tuple[SchedulerPressureResponseInheritedReplication, ...] | None
+    ) = None
     analysis_code_commit: GitCommitHex
     expected_base_commit: GitCommitHex
     expected_image_sha256: Sha256Hex
@@ -620,6 +636,32 @@ class SchedulerPressureResponsePlan(BaseModel, extra="forbid", frozen=True):
             self.required_live_ray_nodes,
         ) != expected_replacement:
             raise ValueError("pressure-response replacement binding mismatch")
+        expected_inherited = (
+            None
+            if self.schema_version in (1, 2)
+            else (
+                (
+                    49002,
+                    "b6e467b3100d287f0928d2dd26b08af77f70de446364015f58cd94fcd61c4bbf",
+                    "085801de8a031d00eb1748dba455af13831a84c7e9d5eedf9dfcddcd4faa41b4",
+                ),
+                (
+                    49003,
+                    "09ace64da91e2cb063bbbfc9d52c5656f19fbb8ec54819d3e23bc3fabdca271c",
+                    "224a22aac661b322a5c23020c1d0794c0f27d44cfbe6d14a00ddecd4b288c3e6",
+                ),
+            )
+        )
+        inherited = (
+            None
+            if self.inherited_completed_replications is None
+            else tuple(
+                (item.order_seed, item.scientific_result_sha256, item.audit_sha256)
+                for item in self.inherited_completed_replications
+            )
+        )
+        if inherited != expected_inherited:
+            raise ValueError("pressure-response inherited-result binding mismatch")
         if self.thresholds != expected_thresholds:
             raise ValueError("pressure-response thresholds mismatch")
         return self

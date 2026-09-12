@@ -5,6 +5,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import statistics
 from pathlib import Path
@@ -32,8 +33,24 @@ def analyze(
         tuple(result_paths) == plan.replication_order, "results are not in frozen order"
     )
     results = []
+    inherited = {
+        item.order_seed: item for item in (plan.inherited_completed_replications or ())
+    }
     for order_seed, path in result_paths.items():
-        value = json.loads(path.read_text())
+        raw = path.read_bytes()
+        value = json.loads(raw)
+        inherited_binding = inherited.get(order_seed)
+        expected_plan_id = (
+            inherited_binding.source_plan_id
+            if inherited_binding is not None
+            else plan.plan_id
+        )
+        if inherited_binding is not None:
+            _require(
+                hashlib.sha256(raw).hexdigest()
+                == inherited_binding.scientific_result_sha256,
+                f"replication {order_seed} inherited result hash mismatch",
+            )
         _require(
             isinstance(value, dict)
             and value.get("schema_version") == 1
@@ -43,7 +60,7 @@ def analyze(
             and value.get("population_claim_authorized") is False
             and value.get("counterfactual_replay_authorized") is False
             and value.get("training_authorized") is False
-            and value.get("plan_id") == plan.plan_id
+            and value.get("plan_id") == expected_plan_id
             and value.get("order_seed") == order_seed,
             f"replication {order_seed} identity mismatch",
         )

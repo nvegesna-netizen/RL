@@ -193,6 +193,28 @@ def replacement_pressure_plan_record() -> dict[str, object]:
         excluded_infrastructure_order_seed=49004,
         data_plane_actor_runtime_env_mode="inherit_baked_single_node",
         required_live_ray_nodes=1,
+        inherited_completed_replications=[
+            {
+                "order_seed": 49002,
+                "source_plan_id": PRESSURE_RESPONSE_REPLACED_PLAN_ID,
+                "scientific_result_sha256": (
+                    "b6e467b3100d287f0928d2dd26b08af77f70de446364015f58cd94fcd61c4bbf"
+                ),
+                "audit_sha256": (
+                    "085801de8a031d00eb1748dba455af13831a84c7e9d5eedf9dfcddcd4faa41b4"
+                ),
+            },
+            {
+                "order_seed": 49003,
+                "source_plan_id": PRESSURE_RESPONSE_REPLACED_PLAN_ID,
+                "scientific_result_sha256": (
+                    "09ace64da91e2cb063bbbfc9d52c5656f19fbb8ec54819d3e23bc3fabdca271c"
+                ),
+                "audit_sha256": (
+                    "224a22aac661b322a5c23020c1d0794c0f27d44cfbe6d14a00ddecd4b288c3e6"
+                ),
+            },
+        ],
         supersedes_plan_id=PRESSURE_RESPONSE_REPLACED_PLAN_ID,
         pools=[
             *pools[:-1],
@@ -247,6 +269,9 @@ def test_replacement_pressure_plan_round_trip_and_runtime_binding(
     assert plan.excluded_infrastructure_order_seed == 49004
     assert plan.data_plane_actor_runtime_env_mode == "inherit_baked_single_node"
     assert plan.required_live_ray_nodes == 1
+    assert tuple(
+        binding.order_seed for binding in plan.inherited_completed_replications or ()
+    ) == (49002, 49003)
 
 
 def test_replacement_pressure_plan_rejects_missing_validation_binding() -> None:
