@@ -199,6 +199,23 @@
     "role": "retrospective_secondary_cannot_override_registered_results",
     "simultaneous_bootstrap_critical_value": 2.221970153509533
   },
+  "downstream_quality": {
+    "block_count": 16,
+    "causal_unit": "matched_training_seed_block",
+    "conclusion": "INCONCLUSIVE",
+    "estimate": -0.044921875,
+    "exact_sign_flip_p_value": 0.29815673828125,
+    "immediate_mean_accuracy": 0.259765625,
+    "mixed_d5_mean_accuracy": 0.21484375,
+    "practical_absolute_accuracy_margin": 0.02,
+    "prompt_count_per_run": 1024,
+    "run_count": 32,
+    "schema": "m4-downstream-quality-public-summary-v1",
+    "student_interval_95": [
+      -0.13394335582884473,
+      0.04409960582884473
+    ]
+  },
   "evidence_commitments": {
     "A1": {
       "cell": "qwen3_0p6b_openmath",

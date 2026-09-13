@@ -68,6 +68,6 @@ Before upload, all of the following must be true:
 
 Venue selection does **not** create a need for another same-design M4
 acquisition. The present evidence supports a scoped causal systems-measurement
-paper. A downstream final-training-quality study would enlarge the claim, but
-it is a separate hypothesis test and is not a prerequisite for the chosen
-scope.
+paper. A separate downstream final-training-quality study has now been
+completed and is inconclusive; it strengthens the scope audit but does not
+enlarge the headline claim or justify a retry.

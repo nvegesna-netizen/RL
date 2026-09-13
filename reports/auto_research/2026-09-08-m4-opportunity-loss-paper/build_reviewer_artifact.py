@@ -98,9 +98,10 @@ python3 analysis/render_figures.py --verify
 python3 -m unittest discover -s tests -v
 ```
 
-`data/published_results.json` contains the six-cell Qwen common-window results
-and the four replicated Llama size/workload endpoints after
-removal of private filesystem paths. `data/provenance.json` binds opaque
+`data/published_results.json` contains the six-cell Qwen common-window results,
+the four replicated Llama size/workload endpoints, and the separate 16-pair
+downstream-quality result after removal of private filesystem paths.
+`data/provenance.json` binds opaque
 acquisition IDs A1--A14 to the frozen protocols, compact records, and external
 terminal archives by SHA-256. The large empirical ledgers are not included;
 therefore this bundle verifies compact results but does not independently
@@ -169,6 +170,12 @@ def published_checks() -> dict[str, object]:
     assert combined_3b["openmath"]["conclusion"] == "MATERIAL"
     assert combined_3b["gsm8k"]["conclusion"] == "INCONCLUSIVE"
     assert all(value["simultaneous_two_contrast_interval"][1] < 0 for value in extension_3b["secondary_3b_minus_1b"].values())
+    downstream = result["downstream_quality"]
+    assert downstream["block_count"] == 16
+    assert downstream["run_count"] == 32
+    assert downstream["conclusion"] == "INCONCLUSIVE"
+    assert math.isclose(downstream["estimate"], -0.044921875)
+    assert downstream["student_interval_95"] == [-0.13394335582884473, 0.04409960582884473]
     provenance = load(ROOT / "data/provenance.json")
     assert set(provenance["acquisitions"]) == {f"A{i}" for i in range(1, 15)}
     assert sum(item["full_window_assignments"] for item in provenance["acquisitions"].values()) == 106_653
@@ -178,6 +185,8 @@ def published_checks() -> dict[str, object]:
         "full_window_assignments": 106_653,
         "llama_1b_extension_assignments": 28_712,
         "llama_3b_extension_assignments": 28_788,
+        "downstream_quality_blocks": downstream["block_count"],
+        "downstream_quality_runs": downstream["run_count"],
         "hac_correlation": synthesis["hac_correlation"],
         "bootstrap_correlation": synthesis["bootstrap_correlation"],
     }
@@ -227,6 +236,21 @@ def circular_bootstrap(values: list[float], draws: int, seed: int) -> list[float
     return shifts
 
 
+def assert_summary_close(actual, expected) -> None:
+    if isinstance(expected, float):
+        assert math.isclose(actual, expected, rel_tol=1e-12, abs_tol=1e-12), (actual, expected)
+    elif isinstance(expected, dict):
+        assert actual.keys() == expected.keys()
+        for key in expected:
+            assert_summary_close(actual[key], expected[key])
+    elif isinstance(expected, list):
+        assert len(actual) == len(expected)
+        for actual_item, expected_item in zip(actual, expected):
+            assert_summary_close(actual_item, expected_item)
+    else:
+        assert actual == expected
+
+
 def synthetic_replay() -> dict[str, object]:
     rows = [json.loads(line) for line in (ROOT / "synthetic/miniature_ledger.jsonl").read_text().splitlines()]
     estimates, effects = cell_estimates(rows)
@@ -259,7 +283,7 @@ def synthetic_replay() -> dict[str, object]:
         "shared_reference_bootstrap_correlation": covariance / (sd_x * sd_y),
     }
     expected = load(ROOT / "synthetic/expected_summary.json")
-    assert summary == expected
+    assert_summary_close(summary, expected)
     return summary
 
 
@@ -419,6 +443,8 @@ class ReviewerArtifactTest(unittest.TestCase):
         self.assertEqual(output["published"]["full_window_assignments"], 106_653)
         self.assertEqual(output["published"]["llama_1b_extension_assignments"], 28_712)
         self.assertEqual(output["published"]["llama_3b_extension_assignments"], 28_788)
+        self.assertEqual(output["published"]["downstream_quality_blocks"], 16)
+        self.assertEqual(output["published"]["downstream_quality_runs"], 32)
         self.assertEqual(output["synthetic"]["row_count"], 192)
 
     def test_figure_reproduction(self) -> None:
@@ -588,6 +614,20 @@ def main() -> None:
     for cell in extension_3b["cells"].values():
         cell.pop("selected_artifact_sha256", None)
     published["llama_3b_extension"] = extension_3b
+    published["downstream_quality"] = {
+        "schema": "m4-downstream-quality-public-summary-v1",
+        "causal_unit": "matched_training_seed_block",
+        "block_count": 16,
+        "run_count": 32,
+        "prompt_count_per_run": 1024,
+        "immediate_mean_accuracy": 0.259765625,
+        "mixed_d5_mean_accuracy": 0.21484375,
+        "estimate": -0.044921875,
+        "student_interval_95": [-0.13394335582884473, 0.04409960582884473],
+        "exact_sign_flip_p_value": 0.29815673828125,
+        "practical_absolute_accuracy_margin": 0.02,
+        "conclusion": "INCONCLUSIVE",
+    }
     published["evidence_commitments"] = {
         CELL_IDS[name]: {
             "cell": name,
@@ -624,6 +664,14 @@ def main() -> None:
                 "terminal_artifact_bytes": EXTERNAL_ARTIFACTS[artifact_id][1],
             }
             for artifact_id in sorted(EXTERNAL_ARTIFACTS)
+        },
+        "downstream_quality": {
+            "protocol_sha256": "dbe7a4f7d1938ef43d24e536ccf9dd57110a01bab5e6cb511980218e472ef2c0",
+            "run_manifest_sha256": "a461e83c7dbccdefa1c5c779062e709f34bfc502639a3e7de663a717fefa93bf",
+            "terminal_topology_sha256": "b644466687e59f89d4ddb33d75f3b1c096db9e10f7090b122d263a4b2068d72c",
+            "terminal_authentication_sha256": "f1c00b24877ba54fc68ff267af86824aa2233f8bdf674416bfaa18c9a801a441",
+            "completion_gate_sha256": "54167b9517dc37b3ae05122e035c95da5bcd50f75d2326c1d6a841c7ddc43887",
+            "analysis_sha256": "b412c5bb61ae637bf8e52442df09b8fec8e21800123ed2d900b987feca6da306",
         },
     }
     write_json(output / "data/provenance.json", provenance)

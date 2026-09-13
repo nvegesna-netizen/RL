@@ -101,9 +101,9 @@
   },
   "files": [
     {
-      "bytes": 1008,
+      "bytes": 1057,
       "path": "README.md",
-      "sha256": "c38daee8622796c745d79c5bc34c4c8d5585bc092bdc323f13515bc7355a19ba"
+      "sha256": "9196e24b70811d7fb44b11742869976eed4ffa407a2540ffe4576257995d5277"
     },
     {
       "bytes": 5889,
@@ -111,9 +111,9 @@
       "sha256": "0f361f9f9de8c21a008dd1964f2865e3204df4a269ef8c77ab4e723e5fbbe7c1"
     },
     {
-      "bytes": 7401,
+      "bytes": 8488,
       "path": "analysis/replay.py",
-      "sha256": "3e77940e9eab1ea6ff2d893e317d21dfa0dbbd213a71b78f41d2fb3b54240c08"
+      "sha256": "99d54826632bfc52b050bf429bfaf74017bdaa00153df51be075204775996b02"
     },
     {
       "bytes": 3711,
@@ -121,14 +121,14 @@
       "sha256": "0f4b42f2e8ad2568c584fe93f64b46f5096d0702b50412f00b128c7defe17e0b"
     },
     {
-      "bytes": 4822,
+      "bytes": 5433,
       "path": "data/provenance.json",
-      "sha256": "40faccdbc0182320c0314aa68feb6ead63dd61a3536841248dc423b5acf8078f"
+      "sha256": "960ec37cfc836fea1bb0095b9cb141433d81d898439636a3cf533a05f05aacf5"
     },
     {
-      "bytes": 27881,
+      "bytes": 28433,
       "path": "data/published_results.json",
-      "sha256": "a5fcbbcd6549b1cab36e6bf5de8031c49ed31f18fe11b69bd0dd82678403b578"
+      "sha256": "b33efc9e912680afd888d0347ad6653fa2cb922b52ee7af515bf689e7ae7a60f"
     },
     {
       "bytes": 5457,
@@ -136,14 +136,14 @@
       "sha256": "4f12bafe8cca627a48b9ee21f9fb0d05a3964d2004994a5d28568f8d7c3b168a"
     },
     {
-      "bytes": 5935,
+      "bytes": 7013,
       "path": "docs/claim_ledger.md",
-      "sha256": "ac4ee06d3d8a773f48e4653a81caebc3b25b21e23167a9a18991b1f80309d053"
+      "sha256": "641657c50919f5136b8b7e78f79e3c4dc4e031e73760b53063623534f83d6db1"
     },
     {
-      "bytes": 4513,
+      "bytes": 5422,
       "path": "docs/primary_table.md",
-      "sha256": "332842198b9c1da0ca360a1aaa7af4b9f08f4335861dfcf1d072541d602268c8"
+      "sha256": "7a13a12fc6855a51d6f23d510fdbd72aff444f7539eb664686d6857949e2eb1d"
     },
     {
       "bytes": 6104,
@@ -176,9 +176,9 @@
       "sha256": "65c2aad6e8eacab0f53a7e6fed6f0edfe30be8cd28d7ee8cd23d508cfbf37089"
     },
     {
-      "bytes": 1225,
+      "bytes": 1381,
       "path": "tests/test_replay.py",
-      "sha256": "2b2b82c86e05eddc2a61a9f92561fec76a1d22d08cbc1de9e03ce1a40d57012d"
+      "sha256": "53454f3efd652d077b77179df860794dddc181747302e86b46bc8fb1f36025a7"
     }
   ],
   "schema": "m4-reviewer-artifact-manifest-v1"

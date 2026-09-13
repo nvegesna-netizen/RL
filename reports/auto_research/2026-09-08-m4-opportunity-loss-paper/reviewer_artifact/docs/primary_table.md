@@ -53,6 +53,22 @@ exclude zero. The cross-workload difference in attenuation was inconclusive.
 These are fixed-configuration secondary contrasts, not a randomized size effect
 or general scaling law.
 
+## Prospective downstream-quality study
+
+This separately preregistered experiment changed the causal unit from rollout
+groups within one shared policy to 16 matched training-seed blocks. Each block
+paired one all-immediate training run with one equal-mass control/d5 run and
+evaluated the same 1,024-prompt terminal OpenMath endpoint.
+
+| Endpoint | Blocks / runs | Immediate mean | Mixed-d5 mean | Paired difference | Paired 95% interval | Registered conclusion |
+| --- | ---: | ---: | ---: | ---: | ---: | --- |
+| Terminal OpenMath accuracy | 16 / 32 | 0.25977 | 0.21484 | -0.04492 | [-0.13394, 0.04410] | `INCONCLUSIVE` |
+
+The interval crosses both zero and the registered 0.02 absolute-accuracy
+margin. The point estimate is in the hypothesized harmful direction, but the
+study confirms neither a material final-quality cost nor practical
+equivalence. All 32 endpoints authenticated; no run was excluded.
+
 ## Dependency-aware interaction results
 
 Let \(S_w = \Delta_{1.7B,w} - \Delta_{0.6B,w}\) be the model-scale contrast

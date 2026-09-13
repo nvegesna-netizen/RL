@@ -19,7 +19,7 @@ its proximal opportunity-loss claim without another M4 acquisition.
 | Could missingness or interval choice explain the result? | No terminal scores are missing. HAC and circular-block bootstrap agree on endpoint classifications and negative size contrasts. |
 | Does one replicate drive the 3B conclusion? | Replicate estimates vary, especially on GSM8K. Equal-replicate combination was prospective, and leave-one-out results are disclosed rather than used to select a preferred run. |
 | Is the five-second treatment equivalent across sizes? | Not established. A fixed wall-clock dose may span different update cadences; this remains a limitation rather than a post-hoc renormalization target. |
-| Is more M4 acquisition required for this paper? | No. Additional sizes would incrementally broaden external validity but would not resolve the larger unmeasured link to final model quality. |
+| Is more M4 acquisition required for this paper? | No. Additional sizes would incrementally broaden external validity. The previously unmeasured final-quality link has since been tested in a separate 16-pair study, but its registered result is inconclusive. |
 
 ## Remaining release work
 
@@ -31,5 +31,5 @@ approval remain outside this repository workflow.
 ## Recommendation
 
 Close the current M4 acquisition program and submit the bounded claim after the
-release checks pass. If a new study is opened, prioritize independently
-replicated final-quality outcomes over another nearby model-size point.
+release checks pass. The later prospective final-quality study should be
+reported as inconclusive, not used to justify a retry or nearby size point.

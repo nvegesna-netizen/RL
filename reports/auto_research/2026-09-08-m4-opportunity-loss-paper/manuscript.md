@@ -38,9 +38,12 @@ Llama 3.2 3B size extension added four acquisitions. OpenMath was material at
 workloads, with simultaneous intervals excluding zero. The 14 definitive
 acquisitions contain 106,653 primary assignments. These findings establish a
 material, heterogeneous opportunity-loss effect in the tested asynchronous
-GRPO environments. They do not establish an effect on final model quality, a
-pure model-family effect, a general scaling law, or generalization beyond the
-tested configurations.
+GRPO environments. A separate prospective 16-pair experiment estimated the
+total effect of mixed-d5 versus immediate release on terminal OpenMath accuracy
+as -0.0449 (paired 95% CI [-0.1339, 0.0441]) and was inconclusive. It neither
+confirms final-quality harm nor practical equivalence. The evidence also does
+not establish a pure model-family effect, a general scaling law, or
+generalization beyond the tested configurations.
 
 ## 1. Introduction
 
@@ -432,9 +435,15 @@ M4 measures a proximal systems consequence. A lost gradient opportunity is a
 necessary link between delay and learning dynamics, but it is not itself a
 final reward or accuracy loss. Compensation, later updates, or redundant
 examples may attenuate downstream consequences. Conversely, repeatedly losing
-high-opportunity groups could compound over training. Establishing either path
-requires a separate run-level experiment whose endpoint is final training
-quality.
+high-opportunity groups could compound over training. We therefore ran a
+separately preregistered end-to-end experiment with 16 matched training-seed
+blocks, pairing all-immediate release with an equal-mass control/d5 policy. On
+the fixed 1,024-prompt terminal OpenMath endpoint, mean accuracy was 0.25977
+under immediate release and 0.21484 under mixed-d5. The paired difference was
+-0.04492 with 95% CI [-0.13394, 0.04410], so the registered 0.02-margin
+conclusion was `INCONCLUSIVE`. This prospective test is evidence about the
+total release-policy effect; it does not identify M4 opportunity loss as the
+exclusive causal path.
 
 ## 9. Limitations
 
@@ -456,10 +465,12 @@ dependency-aware synthesis corrects their joint uncertainty, but NuminaMath is
 best described as a prospective same-direction extension with a shared fixed
 reference—not a wholly independent four-cell replication.
 
-No final model-quality, task-accuracy, or convergence endpoint was measured.
-The results cannot establish that preventing M4 opportunity loss improves final
-benchmark performance. They also do not compare M4-aware scheduling against a
-production scheduling policy.
+A terminal task-accuracy endpoint was measured in the separate run-randomized
+study, but its interval includes material harm, zero, and benefit. The result
+therefore cannot establish that preventing M4 opportunity loss improves final
+benchmark performance or that the two release policies are practically
+equivalent. Convergence and final reward were not tested. The study also does
+not compare M4-aware scheduling against a production scheduling policy.
 
 ## 10. Reproducibility and provenance
 
@@ -478,6 +489,11 @@ eight Llama acquisitions, their equal-replicate workload endpoints, and the
 prespecified 3B-minus-1B contrasts. The Qwen
 result record has SHA-256
 `fd4c74c245b5294be175e2117c136e5cc7a3dcd5ce302713ba8041768c6902be`.
+The downstream-quality analysis record has SHA-256
+`b412c5bb61ae637bf8e52442df09b8fec8e21800123ed2d900b987feca6da306`;
+its completion gate and 32-run authentication records are separately hash
+bound. All 16 matched blocks and 32 terminal endpoints enter the frozen
+analysis.
 The full evidence flow appears in `provenance_diagram.md`.
 
 ## 11. Conclusion
@@ -488,7 +504,7 @@ The evidence sequence is:
 > materiality acquisition → prospectively redesigned confirmation →
 > cross-model/workload heterogeneity → prospective same-direction workload
 > extension → prospectively replicated cross-family extension → prospective
-> within-family size extension
+> within-family size extension → prospective end-to-end quality test
 
 Across six definitive Qwen3×math-workload cells, a controlled five-second
 release delay produces positive normalized gradient-opportunity loss and is
@@ -499,6 +515,8 @@ tested workloads. Four Llama 3.2 1B acquisitions replicate materiality within
 each workload; four 3B acquisitions retain a positive effect but confirm
 materiality only on OpenMath. The negative prespecified size contrasts show
 attenuation in both fixed workload configurations. This establishes a material
-M4 opportunity-loss phenomenon across the tested configurations while leaving
-final model-quality consequences, pure family effects, general scaling laws,
-and broader generalization to future preregistered studies.
+M4 opportunity-loss phenomenon across the tested configurations. The subsequent
+run-randomized quality estimate was harmful in direction but imprecise, leaving
+the final-quality consequence inconclusive rather than untested. Pure family
+effects, general scaling laws, and broader generalization remain for future
+preregistered studies.

@@ -12,9 +12,10 @@ python3 analysis/render_figures.py --verify
 python3 -m unittest discover -s tests -v
 ```
 
-`data/published_results.json` contains the six-cell Qwen common-window results
-and the four replicated Llama size/workload endpoints after
-removal of private filesystem paths. `data/provenance.json` binds opaque
+`data/published_results.json` contains the six-cell Qwen common-window results,
+the four replicated Llama size/workload endpoints, and the separate 16-pair
+downstream-quality result after removal of private filesystem paths.
+`data/provenance.json` binds opaque
 acquisition IDs A1--A14 to the frozen protocols, compact records, and external
 terminal archives by SHA-256. The large empirical ledgers are not included;
 therefore this bundle verifies compact results but does not independently

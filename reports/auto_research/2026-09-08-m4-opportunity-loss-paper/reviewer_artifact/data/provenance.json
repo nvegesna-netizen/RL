@@ -100,5 +100,13 @@
       "terminal_artifact_sha256": "c321dcf94a138d2a289142b0991c452be848d28dedf5f5c468fba78cd85ffa59"
     }
   },
+  "downstream_quality": {
+    "analysis_sha256": "b412c5bb61ae637bf8e52442df09b8fec8e21800123ed2d900b987feca6da306",
+    "completion_gate_sha256": "54167b9517dc37b3ae05122e035c95da5bcd50f75d2326c1d6a841c7ddc43887",
+    "protocol_sha256": "dbe7a4f7d1938ef43d24e536ccf9dd57110a01bab5e6cb511980218e472ef2c0",
+    "run_manifest_sha256": "a461e83c7dbccdefa1c5c779062e709f34bfc502639a3e7de663a717fefa93bf",
+    "terminal_authentication_sha256": "f1c00b24877ba54fc68ff267af86824aa2233f8bdf674416bfaa18c9a801a441",
+    "terminal_topology_sha256": "b644466687e59f89d4ddb33d75f3b1c096db9e10f7090b122d263a4b2068d72c"
+  },
   "schema": "m4-anonymous-provenance-v1"
 }

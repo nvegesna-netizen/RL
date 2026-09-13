@@ -31,11 +31,11 @@ gradient-opportunity loss.
 measurement paper because the end-to-end question was tested prospectively and
 reported transparently.
 
-**Action:** Add the complete inconclusive study to the paper or supplement with
-its full interval and instability caveat. Do not claim equivalence, confirmed
-quality harm, or mediation. Do not extend the frozen study post hoc. A future
-study would need a prospective stability intervention and power recalibrated to
-the observed run-level variance.
+**Action completed:** The main paper and supplement now report the complete
+inconclusive study, full interval, and instability caveat. They do not claim
+equivalence, confirmed quality harm, or mediation. Do not extend the frozen
+study post hoc. A future study would need a prospective stability intervention
+and power recalibrated to the observed run-level variance.
 
 ### 2. Are the two interactions independent replications?
 

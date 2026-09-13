@@ -2,6 +2,8 @@
 
 This directory is the review-ready publication workspace for the completed M4
 opportunity-loss campaign and its prospective Llama 3.2 1B and 3B extensions.
+It also integrates the separately preregistered 16-pair downstream-quality
+study without promoting its inconclusive result into the headline claim.
 
 ## Start here
 

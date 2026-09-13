@@ -1,12 +1,13 @@
 # Final post-PDF and reviewer-artifact adversarial review
 
-Date: 2026-09-10
+Date: 2026-09-13
 
 ## Verdict
 
 **Pass for bounded scientific review and local anonymous artifact delivery.**
 The exact paper, supplement, and deterministic compact reviewer archive agree
-on the six-cell Qwen evidence and the eight-acquisition Llama 3.2 1B/3B extensions.
+on the six-cell Qwen evidence, the eight-acquisition Llama 3.2 1B/3B
+extensions, and the separate 16-pair downstream-quality result.
 They contain no discovered internal execution IDs, paths, credentials, or
 author identity. No additional M4 GPU acquisition is needed
 for the scoped opportunity-loss, bounded cross-family, and fixed-configuration
@@ -21,16 +22,16 @@ public URL or empirical raw-ledger access is claimed.
 
 | Object | SHA-256 | Structure |
 | --- | --- | --- |
-| Main review PDF | `bb773c05c05b73507cf0074086044d3e163f7a728a464de57f4156c3988c67a4` | PDF 1.5, letter, 5 pages; references begin on page 4 |
-| Supplement PDF | `05a7bfac27794afa092f60f57a597e9218bfd4d914ec7a6df84e46cb0e4e89e9` | PDF 1.5, letter, 2 pages |
-| Reviewer archive | `8d6fd534d2375a0a2bd22a06639b6cd2b4547576333291775dd9280b62989158` | 26,077 bytes; 17 extracted files including manifest |
-| Archive manifest | `a1784ac278a10a6b1bf6db4ae2f917ec6822c2d21c1732b562563a735f952bd1` | 16 hashed members plus A1--A14 external commitments |
+| Main review PDF | `b148b6646c9af6fb1063211263ca08053c46496f66f11851b251fcb56d63475d` | PDF 1.5, letter, 6 pages; references begin on page 5 |
+| Supplement PDF | `2916961f4295aad4ede8901a6d56d799f704411eb7b96630c91660949924aa69` | PDF 1.5, letter, 3 pages |
+| Reviewer archive | `5e57d8b21d62cf39f1b27e598b20cf11b6609cc72d2c19267e7922d7ccdf3be6` | 27,625 bytes; 17 extracted files including manifest |
+| Archive manifest | `95489b976864bab75d2ca355c7b663039df2c2126269372166568d1432776f53` | 16 hashed members, A1--A14 external commitments, and downstream hash chain |
 
 ## Adversarial checks
 
 | Attack | Result | Evidence |
 | --- | --- | --- |
-| Headline-number drift | Pass | Verifiers reconcile 49,153 Qwen, 28,712 Llama 1B, and 28,788 Llama 3B assignments (106,653 total), zero missingness, Qwen correlations, and all Llama endpoints. |
+| Headline-number drift | Pass | Verifiers reconcile 49,153 Qwen, 28,712 Llama 1B, and 28,788 Llama 3B assignments (106,653 total), zero missingness, Qwen correlations, all Llama endpoints, and the 16-block/32-run downstream result. |
 | Shared-anchor double counting | Pass | Both interactions reuse the same two GSM8K draws; HAC and bootstrap covariance are retained and the artifact synthetic replay exercises shared-reference correlation. |
 | Pipeline/scientific-status conflation | Pass | A3 remains `post-run fail` while its immutable completed acquisition is analyzed; no execution ID appears in the blind PDF or archive. |
 | Retrospective promotion | Pass | The first acquisition remains `INCONCLUSIVE`; secondary synthesis and sensitivity analyses cannot override registered decisions. |
@@ -39,6 +40,9 @@ public URL or empirical raw-ledger access is claimed.
 | Llama workload overclaim | Pass | The OpenMath-minus-GSM8K contrast remains `INCONCLUSIVE`; the manuscript does not equate a null contrast with equality. |
 | Llama size overclaim | Pass | Both 3B-minus-1B simultaneous intervals exclude zero, but size was fixed and only two points were tested; the paper prohibits causal and general scaling-law wording. |
 | 3B joint-success inflation | Pass | OpenMath is `MATERIAL`, GSM8K is `INCONCLUSIVE`, and the manuscript explicitly records joint success as false. |
+| Downstream-quality promotion | Pass | The paper reports -0.04492 with paired 95% CI [-0.13394, 0.04410] and labels it `INCONCLUSIVE`; it claims neither confirmed harm nor equivalence. |
+| Downstream unit inflation | Pass | All inference uses 16 matched seed blocks, not 32 runs or 32,768 prompt scores as independent causal units. All 32 endpoints remain included. |
+| Mediation overclaim | Pass | The downstream result is labeled a total release-policy effect; the paper does not identify M4 opportunity loss as the exclusive path to quality. |
 | PDF template leakage | Pass | Extracted text contains no `AUTHORERR`, suppressed-title message, private path, or internal execution identifier; metadata says `Anonymous Authors`. |
 | Blind source linkage | Pass after repair | Searchable source revision prefixes were removed from the supplement; the private record retains the mapping. |
 | Archive credentials/anonymity | Pass | Decompressed-content scan rejects internal host, repository, cluster, user, job, token, password, and known source-prefix patterns. |
@@ -62,6 +66,13 @@ public URL or empirical raw-ledger access is claimed.
    common-window, and leave-one-replicate-out views from authenticated ledgers.
 8. Added prespecified 3B-minus-1B contrasts, retained the failed co-primary
    joint decision, and rebuilt both PDFs with all-page visual inspection.
+9. Replaced the stale “final quality untested” statement with the prospective
+   16-pair result, added the full interval and sensitivity boundary, and kept
+   the proximal headline unchanged.
+10. Added a public-safe downstream summary and six-record SHA-256 chain to the
+    reviewer artifact, then passed credential-stripped replay and a byte-
+    identical rebuild under Python 3.13, plus direct replay and tests under
+    Python 3.10.
 
 ## Remaining release gates
 

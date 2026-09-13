@@ -90,6 +90,39 @@ Its terminal archive SHA-256 is
 The parent pipeline failed during packaging after the canonical result existed.
 The scientific decision remains `INCONCLUSIVE`.
 
+## Prospective downstream-quality provenance
+
+The end-to-end study used 16 matched training-seed blocks and 32 independently
+trained Qwen3-0.6B/OpenMath runs. Within each block, one run used all-immediate
+release and one used an equal-mass control/d5 policy. Every run used the frozen
+448-update budget and the same ordered 1,024-prompt terminal evaluation. The
+training-seed block—not the prompt—is the causal unit.
+
+| Record | SHA-256 |
+| --- | --- |
+| Protocol | `dbe7a4f7d1938ef43d24e536ccf9dd57110a01bab5e6cb511980218e472ef2c0` |
+| 32-run manifest | `a461e83c7dbccdefa1c5c779062e709f34bfc502639a3e7de663a717fefa93bf` |
+| Terminal topology | `b644466687e59f89d4ddb33d75f3b1c096db9e10f7090b122d263a4b2068d72c` |
+| Terminal authentication | `f1c00b24877ba54fc68ff267af86824aa2233f8bdf674416bfaa18c9a801a441` |
+| Completion gate | `54167b9517dc37b3ae05122e035c95da5bcd50f75d2326c1d6a841c7ddc43887` |
+| Frozen analysis | `b412c5bb61ae637bf8e52442df09b8fec8e21800123ed2d900b987feca6da306` |
+
+All 32 workload ZIPs passed integrity checks; their signed manifests and all
+eight registered members matched declared hashes. The completion gate was
+`COMPLETE_AUTHENTICATED_16_PAIRS`. Eighteen runs use their original successful
+workload artifacts; the 14 b10--b16 identities use the prospectively authorized
+runtime-recovery-v2 artifacts. Every selected scientific workload succeeded.
+The b02 immediate parent pipeline remains failed solely because its logs-after
+transfer failed; its workload artifact and endpoint authenticated and were
+retained. Measured use was 52.1158 wall-hours and 104.2317 H100 GPU-hours,
+below the frozen 128-wall-hour and 256-H100-hour caps.
+
+The registered mixed-d5-minus-immediate estimate is -0.04492 with paired
+Student 95% interval [-0.13394, 0.04410]. The exact 65,536-assignment sign-flip
+test gives p=0.29816; paired-bootstrap and covariate-adjusted sensitivities do
+not change the `INCONCLUSIVE` decision. No run, including six zero-accuracy
+endpoints, was excluded.
+
 ## Assignment and observer-duty audit
 
 | Cell | Full-window assignments | Unscored | Corrected observer duty | Mechanism |

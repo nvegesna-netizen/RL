@@ -16,7 +16,7 @@
 \mlsyscorrespondingauthor{Anonymous Author}{anon.email@domain.com}
 \vskip 0.3in
 \begin{abstract}
-This supplement reports reproducibility, provenance, mechanism, observer-duty, and robustness details for the M4 controlled-release study and its prospective Llama 3.2 1B and 3B extensions. It does not replace the registered primary analyses.
+This supplement reports reproducibility, provenance, mechanism, observer-duty, and robustness details for the M4 controlled-release study, its prospective Llama 3.2 1B and 3B extensions, and the separate 16-pair downstream-quality study. It does not replace the registered primary analyses.
 \end{abstract}
 ]
 \printAffiliationsAndNotice{}
@@ -95,6 +95,28 @@ For the Llama extension, combined adjusted estimates are 0.3991 on OpenMath and 
 
 At Llama 3B, OpenMath is 0.2621 with envelope [0.2215, 0.2994] and \texttt{MATERIAL}; GSM8K is 0.2135 with [0.1872, 0.2398] and \texttt{INCONCLUSIVE}. Unadjusted estimates are 0.2358 and 0.2635. Prespecified 3B-minus-1B contrasts are $-0.1370$ and $-0.1326$; simultaneous intervals exclude zero. These are fixed-configuration contrasts, not a causal scaling law.
 
+\section{Run-Randomized Quality Endpoint}
+The separately preregistered downstream study paired all-immediate and equal-mass control/d5 regimes within 16 training-seed blocks. Every run completed 448 updates and the same ordered 1,024-prompt OpenMath evaluation. All 32 signed workload manifests and registered result members authenticated before analysis. The completion gate was \texttt{COMPLETE\_AUTHENTICATED\_16\_PAIRS}; measured use was 52.1158 wall-hours and 104.2317 H100 GPU-hours, below the frozen caps.
+
+\begin{table}[h]
+\caption{Terminal quality, mixed-d5 minus immediate.}
+\centering\small
+\begin{tabular}{lr}
+\toprule
+Quantity & Value \\
+\midrule
+Immediate mean & 0.25977 \\
+Mixed-d5 mean & 0.21484 \\
+Paired difference & -0.04492 \\
+Student 95\% interval & [-0.13394, 0.04410] \\
+Exact sign-flip $p$ & 0.29816 \\
+Registered decision & INCONCLUSIVE \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The 20,000-draw paired-bootstrap percentile interval is [-0.12402, 0.03442], and the studentized interval is [-0.13185, 0.04598]. Prompt fixed effects give the same point estimate with seed-block-clustered SE 0.04244; balanced base-correctness adjustment also leaves the point estimate unchanged. Absolute materiality margins 0.01, 0.015, 0.025, and 0.03 remain \texttt{INCONCLUSIVE}. Ten block contrasts are negative, five positive, and one zero. No zero-accuracy endpoint or other run was excluded. The analysis record, completion gate, and terminal authentication records are SHA-256 bound in the private evidence map. This is a total release-policy effect in one tested setting, not an identified mediation effect through M4 alone.
+
 \begin{table}[h]
 \caption{Interval classification by materiality threshold.}
 \centering\small
@@ -120,7 +142,6 @@ treatment's time scale; it does not redefine or renormalize the registered
 causal estimand.
 
 \section{Dataset and Artifact Notes}
-\enlargethispage{5\baselineskip}
 GSM8K uses \texttt{openai/gsm8k}, \texttt{main}, training split. NuminaMath-1.5 is pinned at revision \texttt{1b05109f9e5c1ad06c0663519502416c30b300f8}; 896,215 source rows were filtered to 680,786 retained unique problems, with shard hashes in the preflight lock. A credential-free compact reviewer bundle contains results, public protocol projections, a synthetic miniature ledger, and a SHA-256 manifest; it passes a local credential-stripped replay. Raw ledgers and public hosting remain external pending privacy and anonymous-access review, so this document does not claim empirical re-estimation or public availability.
 
 \end{document}

@@ -59,6 +59,12 @@ def published_checks() -> dict[str, object]:
     assert combined_3b["openmath"]["conclusion"] == "MATERIAL"
     assert combined_3b["gsm8k"]["conclusion"] == "INCONCLUSIVE"
     assert all(value["simultaneous_two_contrast_interval"][1] < 0 for value in extension_3b["secondary_3b_minus_1b"].values())
+    downstream = result["downstream_quality"]
+    assert downstream["block_count"] == 16
+    assert downstream["run_count"] == 32
+    assert downstream["conclusion"] == "INCONCLUSIVE"
+    assert math.isclose(downstream["estimate"], -0.044921875)
+    assert downstream["student_interval_95"] == [-0.13394335582884473, 0.04409960582884473]
     provenance = load(ROOT / "data/provenance.json")
     assert set(provenance["acquisitions"]) == {f"A{i}" for i in range(1, 15)}
     assert sum(item["full_window_assignments"] for item in provenance["acquisitions"].values()) == 106_653
@@ -68,6 +74,8 @@ def published_checks() -> dict[str, object]:
         "full_window_assignments": 106_653,
         "llama_1b_extension_assignments": 28_712,
         "llama_3b_extension_assignments": 28_788,
+        "downstream_quality_blocks": downstream["block_count"],
+        "downstream_quality_runs": downstream["run_count"],
         "hac_correlation": synthesis["hac_correlation"],
         "bootstrap_correlation": synthesis["bootstrap_correlation"],
     }
@@ -117,6 +125,21 @@ def circular_bootstrap(values: list[float], draws: int, seed: int) -> list[float
     return shifts
 
 
+def assert_summary_close(actual, expected) -> None:
+    if isinstance(expected, float):
+        assert math.isclose(actual, expected, rel_tol=1e-12, abs_tol=1e-12), (actual, expected)
+    elif isinstance(expected, dict):
+        assert actual.keys() == expected.keys()
+        for key in expected:
+            assert_summary_close(actual[key], expected[key])
+    elif isinstance(expected, list):
+        assert len(actual) == len(expected)
+        for actual_item, expected_item in zip(actual, expected):
+            assert_summary_close(actual_item, expected_item)
+    else:
+        assert actual == expected
+
+
 def synthetic_replay() -> dict[str, object]:
     rows = [json.loads(line) for line in (ROOT / "synthetic/miniature_ledger.jsonl").read_text().splitlines()]
     estimates, effects = cell_estimates(rows)
@@ -149,7 +172,7 @@ def synthetic_replay() -> dict[str, object]:
         "shared_reference_bootstrap_correlation": covariance / (sd_x * sd_y),
     }
     expected = load(ROOT / "synthetic/expected_summary.json")
-    assert summary == expected
+    assert_summary_close(summary, expected)
     return summary
 
 

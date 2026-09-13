@@ -32,7 +32,8 @@ the private provenance ledger retains the reversible mapping.
 
 ## Raw terminal artifacts
 
-The 14 definitive terminal archives total hundreds of megabytes and remain
+The 14 definitive opportunity-loss archives total hundreds of megabytes, and
+the 32 downstream-quality workload archives total about 86 GiB. All remain
 outside Git.
 Preferred access is an anonymous, read-only object store with stable URLs,
 checksums, content length, and no request tracking exposed to authors during
@@ -41,7 +42,8 @@ scrubbing log/environment material; the full raw logs are not necessary for
 recomputing the estimands.
 
 If anonymous public hosting is not approved before submission, ship compact
-records and synthetic data, keep all raw SHA-256 commitments in the paper, and
+records and synthetic data, keep the aggregate raw SHA-256 commitments in the
+paper and artifact, and
 state plainly that authenticated raw ledgers are available to the artifact
 evaluation committee under controlled access. Do not imply public availability.
 
