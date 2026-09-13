@@ -26,7 +26,7 @@ success.
 | C17 | Opportunity loss is lower at Llama 3.2 3B than 1B in both tested workload configurations. | Prespecified fixed-configuration secondary contrasts | Supported | 3B-minus-1B is -0.1370 on OpenMath and -0.1326 on GSM8K; both simultaneous intervals exclude zero |
 | C18 | The Llama results establish a causal or monotonic model-size scaling law. | Broad scaling claim | Unsupported and prohibited | Size was not randomized, only 1B and 3B were tested, and the cross-workload attenuation difference is inconclusive |
 | C19 | A prospectively randomized end-to-end study tested the total effect of the accepted mixed-d5 policy on terminal OpenMath accuracy relative to all-immediate release. | Downstream total-effect endpoint | Supported within the tested Qwen3-0.6B/OpenMath setting | All 16 matched training-seed blocks and 32 runs authenticated; mixed-d5 minus immediate was -0.04492 with paired 95% CI [-0.13394, 0.04410], `INCONCLUSIVE` at the registered 0.02 margin |
-| C20 | The downstream study confirms either material final-quality harm or practical equivalence. | Downstream decision claim | Not supported | The interval contains material harm, zero, and benefit; exact sign-flip p=0.29816 and all registered margin sensitivities remain `INCONCLUSIVE` |
+| C20 | The downstream study precisely establishes either a meaningful terminal-accuracy decrease or practical equivalence. | Downstream decision claim | Not supported | The 95% interval crosses zero and both registered ±0.02 relevance bounds; the estimate does not resolve the direction or practically relevant magnitude of the accuracy difference. The exact sign-flip p-value is 0.29816, and all registered margin sensitivities remain `INCONCLUSIVE`. |
 
 ## Canonical wording
 
@@ -40,10 +40,11 @@ Use:
 > preregistered 3B extension remained positive, confirmed materiality on
 > OpenMath, and showed lower opportunity loss than 1B in both fixed workload
 > configurations. A separate prospective 16-pair run-randomized study then
-> tested terminal OpenMath accuracy; its harmful-direction estimate was
-> imprecise and the registered conclusion was inconclusive.
+> tested terminal OpenMath accuracy; its negative estimate was not precise
+> enough to determine the direction or practically relevant magnitude of the
+> accuracy difference.
 
-Do not use “confirmed model-quality harm,” “equivalent final quality,” “general
-across LLMs,” “pure family effect,” “general scaling law,” or language that
+Do not use “confirmed final-quality decrease,” “equivalent final quality,”
+“general across LLMs,” “pure family effect,” “general scaling law,” or language that
 retroactively reclassifies the initial acquisition or calls the 3B co-primary
 study a joint success.

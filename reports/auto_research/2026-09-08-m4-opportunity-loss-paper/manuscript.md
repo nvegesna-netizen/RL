@@ -17,13 +17,13 @@ adjustment, version-clustered HAC inference, circular-block bootstrap inference,
 and explicit observer-duty accounting.
 
 An initial 224-step acquisition validated the instrument and replicated the
-mechanism but was inconclusive against a prespecified normalized materiality
+mechanism, but its interval crossed a prespecified normalized materiality
 threshold of 0.20. A prospectively redesigned 448-step Qwen3-0.6B/OpenMath
 follow-up estimated normalized opportunity loss of 0.305 (95% conservative
-envelope [0.276, 0.335]) and was material. We then completed a six-cell grid
+envelope [0.276, 0.335]), entirely above the threshold. We then completed a six-cell grid
 covering Qwen3-0.6B and Qwen3-1.7B on OpenMath, GSM8K, and NuminaMath. The six
-definitive acquisitions contain 49,153 primary assignments; five cells are
-material, while Qwen3-1.7B/GSM8K is positive but below the registered threshold.
+definitive acquisitions contain 49,153 primary assignments; five intervals lie
+above the threshold, while the positive Qwen3-1.7B/GSM8K interval lies entirely below it.
 Two prospectively defined model-by-workload contrasts have the same direction.
 A retrospective synthesis that accounts for their shared GSM8K anchors finds
 correlation 0.38–0.41, simultaneous intervals that exclude zero, and a global
@@ -31,17 +31,18 @@ heterogeneity test of χ²(2)=11.53 (p=0.00314). The direct-chain and
 version-advance mechanism replicates in every terminal cell. A preregistered
 cross-family extension then ran two Llama 3.2 1B acquisitions per workload.
 Equal-replicate estimates were 0.399 on OpenMath (envelope [0.350, 0.447]) and
-0.346 on GSM8K ([0.295, 0.390]); both were material. A prospectively frozen
-Llama 3.2 3B size extension added four acquisitions. OpenMath was material at
-0.262 ([0.221, 0.299]); GSM8K was positive but inconclusive at 0.214
-([0.187, 0.240]). Prespecified 3B-minus-1B contrasts were negative on both
+0.346 on GSM8K ([0.295, 0.390]); both intervals were above 0.20. A prospectively frozen
+Llama 3.2 3B size extension added four acquisitions. OpenMath was 0.262
+([0.221, 0.299]), with its interval above 0.20; GSM8K was 0.214
+([0.187, 0.240]), with its interval crossing 0.20. Prespecified 3B-minus-1B contrasts were negative on both
 workloads, with simultaneous intervals excluding zero. The 14 definitive
 acquisitions contain 106,653 primary assignments. These findings establish a
-material, heterogeneous opportunity-loss effect in the tested asynchronous
-GRPO environments. A separate prospective 16-pair experiment estimated the
+positive, heterogeneous opportunity-loss effect that exceeds the prespecified
+threshold in most tested asynchronous GRPO environments. A separate prospective 16-pair experiment estimated the
 total effect of mixed-d5 versus immediate release on terminal OpenMath accuracy
-as -0.0449 (paired 95% CI [-0.1339, 0.0441]) and was inconclusive. It neither
-confirms final-quality harm nor practical equivalence. The evidence also does
+as -0.0449 (paired 95% CI [-0.1339, 0.0441]). The interval crossed zero and
+both registered ±0.02 relevance bounds, leaving the direction and practically
+relevant magnitude of the accuracy difference unresolved. The evidence also does
 not establish a pure model-family effect, a general scaling law, or
 generalization beyond the tested configurations.
 
@@ -74,12 +75,12 @@ auditable.
 
 The study was deliberately sequential. The first acquisition established that
 the instrument and mechanism worked, but its materiality interval crossed the
-registered 0.20 threshold. That result remained `INCONCLUSIVE`. It informed a
+registered 0.20 threshold. It informed a
 new, prospectively frozen design with balanced allocation, pre-treatment
 adjustment, twice as many trainer steps, and an outcome-blind power gate. The
-follow-up confirmed a material effect. Subsequent one-axis transports and a
+follow-up produced an interval entirely above 0.20. Subsequent one-axis transports and a
 paired third-workload extension completed a two-model-by-three-workload map. A
-prospective Llama 3.2 1B study then replicated materiality twice within each of
+prospective Llama 3.2 1B study then produced intervals above 0.20 twice within each of
 OpenMath and GSM8K. A preregistered 3B follow-up tested within-family size
 transport on the same workloads without outcome-guided extension.
 
@@ -206,7 +207,7 @@ this ceiling. Observer support therefore means that instrumentation occupied a
 small registered fraction of the observed runtime; it does not assert
 portability to untested systems.
 
-### 4.2 Initial acquisition: mechanism success, materiality inconclusive
+### 4.2 Initial acquisition: mechanism success, threshold-crossing interval
 
 The first acquisition used 224 trainer steps and three arms: control, d5, and a
 d10 positive control. It scored all 3,298 primary assignments. Direct-chain
@@ -215,8 +216,7 @@ version advances were 0, 0.437, and 0.805. The dose ordering supported the
 registered mechanism.
 
 The primary d5 estimate was 0.210, but its 95% envelope was [0.116, 0.302] and
-crossed the 0.20 materiality threshold. Its registered decision was therefore
-`INCONCLUSIVE`. A packaging error made the parent pipeline red only after the
+crossed the 0.20 materiality threshold. A packaging error made the parent pipeline red only after the
 canonical result had been written. Neither the successful mechanism nor the
 pipeline state converted the primary result into a material finding.
 
@@ -229,17 +229,17 @@ version-cluster simulation estimated 0.816 power under a prospective alternative
 of 0.25, above the frozen 0.80 gate.
 
 The Qwen3-0.6B/OpenMath follow-up scored 7,199 assignments and estimated 0.305
-with envelope [0.276, 0.335]. The result was `MATERIAL`; the mechanism again
+with envelope [0.276, 0.335], entirely above 0.20. The mechanism again
 replicated and corrected observer duty was 0.00217. No outcome-guided retry or
 extension occurred.
 
 ### 4.4 Model and workload extensions
 
 A Qwen3-1.7B/OpenMath acquisition changed model scale while holding the workload
-fixed. It scored 8,673 assignments and produced a material estimate of 0.302.
+fixed. It scored 8,673 assignments and produced an estimate of 0.302 with its interval above 0.20.
 A Qwen3-1.7B/GSM8K acquisition then changed workload, scoring 9,429 assignments
 and estimating 0.138. Its interval [0.115, 0.160] was positive but wholly below
-0.20, yielding `NOT_MATERIAL`.
+0.20.
 
 A prospectively designed Qwen3-0.6B/GSM8K cell completed the 2×2 grid. Finally,
 Qwen3-0.6B and Qwen3-1.7B NuminaMath acquisitions were frozen and submitted as a
@@ -262,7 +262,7 @@ All four acquisitions completed their registered windows with zero terminal
 missingness. OpenMath yielded replicate estimates 0.3947 and 0.4034, for a
 combined estimate of 0.3991 and envelope [0.3504, 0.4467]. GSM8K yielded 0.3550
 and 0.3372, combining to 0.3461 with envelope [0.2952, 0.3898]. Both workload
-endpoints were `MATERIAL`. Replicate-difference envelopes included zero in both
+intervals lay above 0.20. Replicate-difference envelopes included zero in both
 workloads, while the secondary OpenMath-minus-GSM8K contrast was inconclusive
 (0.0530, envelope [-0.0137, 0.1232]). This extends the phenomenon to one tested
 model from another family; it does not identify a pure architecture effect or
@@ -274,9 +274,9 @@ Before inspecting outcomes, we froze four Llama 3.2 3B acquisitions using the
 same two-workload, two-replicate design, totaling 28,788 primary assignments.
 All four registered windows completed
 with zero terminal missingness. OpenMath replicate estimates 0.2905 and 0.2336
-combined to 0.2621 with envelope [0.2215, 0.2994], yielding `MATERIAL` after
+combined to 0.2621 with envelope [0.2215, 0.2994], wholly above 0.20 after
 Holm correction. GSM8K estimates 0.1803 and 0.2468 combined to 0.2135 with
-envelope [0.1872, 0.2398], yielding `INCONCLUSIVE`; consequently the registered
+envelope [0.1872, 0.2398], crossing 0.20; consequently the registered
 joint-success criterion was not met.
 
 The prespecified secondary 3B-minus-1B contrasts were -0.1370 on OpenMath and
@@ -440,8 +440,10 @@ separately preregistered end-to-end experiment with 16 matched training-seed
 blocks, pairing all-immediate release with an equal-mass control/d5 policy. On
 the fixed 1,024-prompt terminal OpenMath endpoint, mean accuracy was 0.25977
 under immediate release and 0.21484 under mixed-d5. The paired difference was
--0.04492 with 95% CI [-0.13394, 0.04410], so the registered 0.02-margin
-conclusion was `INCONCLUSIVE`. This prospective test is evidence about the
+-0.04492 with 95% CI [-0.13394, 0.04410]. Because the interval crossed zero
+and both registered ±0.02 relevance bounds, the estimate was not precise enough
+to determine the direction and practically relevant magnitude of the accuracy
+difference. This prospective test is evidence about the
 total release-policy effect; it does not identify M4 opportunity loss as the
 exclusive causal path.
 
@@ -466,10 +468,9 @@ best described as a prospective same-direction extension with a shared fixed
 reference—not a wholly independent four-cell replication.
 
 A terminal task-accuracy endpoint was measured in the separate run-randomized
-study, but its interval includes material harm, zero, and benefit. The result
-therefore cannot establish that preventing M4 opportunity loss improves final
-benchmark performance or that the two release policies are practically
-equivalent. Convergence and final reward were not tested. The study also does
+study, but its interval crossed zero and both registered relevance bounds. The
+direction and practically relevant magnitude of the accuracy difference remain
+unresolved. Convergence and final reward were not tested. The study also does
 not compare M4-aware scheduling against a production scheduling policy.
 
 ## 10. Reproducibility and provenance
@@ -507,16 +508,15 @@ The evidence sequence is:
 > within-family size extension → prospective end-to-end quality test
 
 Across six definitive Qwen3×math-workload cells, a controlled five-second
-release delay produces positive normalized gradient-opportunity loss and is
-material in five cells at the registered 0.20 threshold. The causal mechanism
+release delay produces positive normalized gradient-opportunity loss; five
+intervals lie above the registered 0.20 threshold. The causal mechanism
 replicates across all terminal settings. A joint analysis that retains the
 shared GSM8K dependence supports heterogeneous scale effects across the three
-tested workloads. Four Llama 3.2 1B acquisitions replicate materiality within
-each workload; four 3B acquisitions retain a positive effect but confirm
-materiality only on OpenMath. The negative prespecified size contrasts show
+tested workloads. Both Llama 3.2 1B workload intervals lie above 0.20; at 3B,
+only the OpenMath interval lies wholly above it. The negative prespecified size contrasts show
 attenuation in both fixed workload configurations. This establishes a material
 M4 opportunity-loss phenomenon across the tested configurations. The subsequent
-run-randomized quality estimate was harmful in direction but imprecise, leaving
-the final-quality consequence inconclusive rather than untested. Pure family
+run-randomized quality estimate was negative but not precise enough to establish
+the direction and practically relevant magnitude of the accuracy difference. Pure family
 effects, general scaling laws, and broader generalization remain for future
 preregistered studies.

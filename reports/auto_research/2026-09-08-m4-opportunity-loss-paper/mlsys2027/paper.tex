@@ -24,7 +24,7 @@
 
 \vskip 0.3in
 \begin{abstract}
-Asynchronous reinforcement learning overlaps rollout generation and policy updates, but release delay can cause a rollout to miss a gradient opportunity before reaching the learner. We introduce M4, a controlled-release instrument that measures pre-release opportunity, randomizes an added zero- or five-second delay, and audits terminal delivery and version advance. An initial acquisition validated the instrument and mechanism but was inconclusive against a prespecified 0.20 materiality threshold; a prospectively redesigned follow-up was material. Six definitive Qwen3-by-math-workload cells contain 49,153 assignments: five are material, while one is positive but below threshold. A dependency-aware synthesis preserves shared GSM8K anchors and finds heterogeneous model-scale effects. Prospective Llama 3.2 1B and 3B extensions add eight acquisitions. Both 1B workload endpoints are material; at 3B, OpenMath is material and GSM8K is positive but inconclusive. Prespecified 3B-minus-1B contrasts are negative on both workloads. Across 14 acquisitions and 106,653 assignments, the results establish a material, heterogeneous opportunity-loss effect in the tested systems, not final-quality, pure-family, or general scaling claims.
+Asynchronous reinforcement learning overlaps rollout generation and policy updates, but release delay can cause a rollout to miss a gradient opportunity before reaching the learner. We introduce M4, a controlled-release instrument that measures pre-release opportunity, randomizes an added zero- or five-second delay, and audits terminal delivery and version advance. An initial acquisition validated the instrument and mechanism, but its interval crossed a prespecified 0.20 materiality threshold; a prospectively redesigned follow-up lay entirely above it. Six definitive Qwen3-by-math-workload cells contain 49,153 assignments: five intervals are above the threshold, while one positive interval is entirely below it. A dependency-aware synthesis preserves shared GSM8K anchors and finds heterogeneous model-scale effects. Prospective Llama 3.2 1B and 3B extensions add eight acquisitions. Both 1B workload intervals are above 0.20; at 3B, the OpenMath interval is above it and the GSM8K interval crosses it. Prespecified 3B-minus-1B contrasts are negative on both workloads. Across 14 acquisitions and 106,653 assignments, the results establish a positive, heterogeneous opportunity-loss effect that exceeds the prespecified threshold in most tested systems, not final-quality, pure-family, or general scaling claims.
 \end{abstract}
 ]
 \printAffiliationsAndNotice{}
@@ -38,7 +38,7 @@ Opportunity loss is distinct from the usual age or staleness of a consumed traje
 
 This distinction matters to system design. A scheduler cannot infer a universal safe delay merely from throughput or average trajectory age. It needs to know how delay interacts with buffer occupancy, update cadence, and the opportunity distribution in its particular execution. M4 provides that causal diagnostic. It deliberately does not assume that every lost opportunity translates into an accuracy decrement. We test that downstream link separately with independently randomized training runs and retain its inconclusive result.
 
-The evidence was accumulated sequentially. A 224-step acquisition established instrument operation and replicated the proposed version-advance mechanism, but its interval crossed the registered materiality threshold. It remained inconclusive. A new design then froze balanced assignment, pre-treatment adjustment, twice the training horizon, and an outcome-blind power gate. That follow-up was material. Model and workload transports and a prospectively paired third workload completed a $2\times3$ map. Subsequent four-acquisition Llama studies prospectively tested family and size transport within two workloads.
+The evidence was accumulated sequentially. A 224-step acquisition established instrument operation and replicated the proposed version-advance mechanism, but its interval crossed the registered materiality threshold. A new design then froze balanced assignment, pre-treatment adjustment, twice the training horizon, and an outcome-blind power gate. The follow-up interval lay entirely above the threshold. Model and workload transports and a prospectively paired third workload completed a $2\times3$ map. Subsequent four-acquisition Llama studies prospectively tested family and size transport within two workloads.
 
 We contribute (i) a protocol-bound causal instrument for opportunity loss; (ii) a prospective sequence that separates pipeline completion, mechanism support, and causal materiality; (iii) a six-cell Qwen grid and eight Llama acquisitions totaling 106,653 assignments with complete terminal scoring; and (iv) dependency-aware Qwen heterogeneity and prespecified Llama size contrasts without overstating shared or fixed factors.
 
@@ -72,9 +72,9 @@ M4 combines a common opportunity ledger, randomized controlled release, terminal
 
 For each group, the lifecycle is: reserve an identity and starting policy version; assign the release arm from a frozen domain; complete all sibling generations; measure the eligible pre-release opportunity; apply the assigned hold; admit the group to the ready buffer; and record whether it is selected, evicted, stale, or otherwise removed. Learner-version advances are written into the same monotonic clock domain. The detached analyzer joins these facts only after terminal execution, reconstructs the delivery indicator, and rejects incomplete or contradictory histories. Assignment, opportunity measurement, and terminal classification are thus separate auditable stages rather than fields produced by one outcome-aware callback.
 
-The first 224-step acquisition scored all 3,298 primary assignments. Direct-chain rates were 0, 0.267, and 0.586 for control, d5, and a d10 positive-control arm; mean version advances were 0, 0.437, and 0.805. The dose ordering supported the mechanism. The primary d5 estimate was 0.210 with envelope $[0.116,0.302]$, crossing 0.20; the registered decision was therefore \texttt{INCONCLUSIVE}.
+The first 224-step acquisition scored all 3,298 primary assignments. Direct-chain rates were 0, 0.267, and 0.586 for control, d5, and a d10 positive-control arm; mean version advances were 0, 0.437, and 0.805. The dose ordering supported the mechanism. The primary d5 estimate was 0.210 with envelope $[0.116,0.302]$, which crossed the prespecified 0.20 threshold.
 
-That completed artifact informed design, not follow-up outcomes. The redesigned study removed d10, balanced control and d5, froze the adjusted estimator, and doubled training to 448 steps. A 20,000-draw version-cluster simulation estimated 0.816 power under a prospective alternative of 0.25, above the frozen 0.80 gate. The Qwen3-0.6B/OpenMath follow-up scored 7,199 assignments and estimated 0.305 with envelope $[0.276,0.335]$: \texttt{MATERIAL}. No outcome-guided extension occurred.
+That completed artifact informed design, not follow-up outcomes. The redesigned study removed d10, balanced control and d5, froze the adjusted estimator, and doubled training to 448 steps. A 20,000-draw version-cluster simulation estimated 0.816 power under a prospective alternative of 0.25, above the frozen 0.80 gate. The Qwen3-0.6B/OpenMath follow-up scored 7,199 assignments and estimated 0.305 with envelope $[0.276,0.335]$, entirely above 0.20. No outcome-guided extension occurred.
 
 One-axis transports then changed model scale on OpenMath and workload to GSM8K. A prospectively designed Qwen3-0.6B/GSM8K cell completed the $2\times2$ grid. Finally, both NuminaMath protocols were frozen and submitted as a pair before either outcome was inspected. These cells supply a third workload while reusing immutable GSM8K anchors for the registered comparison.
 
@@ -82,25 +82,25 @@ After the Qwen grid closed, separate Llama 3.2 1B and 3B protocols each froze tw
 
 \section{Results}
 \begin{table*}[t]
-\caption{Registered full-window causal results. Envelopes are conservative 95\% unions of HAC and block-bootstrap intervals.}
+\caption{Registered full-window causal results. Envelopes are conservative 95\% unions of HAC and block-bootstrap intervals; the prespecified threshold is 0.20.}
 \label{tab:cells}
 \centering
 \small
-\begin{tabular}{llrrlc}
+\begin{tabular}{llrrl}
 \toprule
-Workload & Model & Assignments & Estimate & 95\% envelope & Decision \\
+Workload & Model & Assignments & Estimate & 95\% envelope \\
 \midrule
-OpenMath & Qwen3-0.6B & 7,199 & 0.3054 & [0.2759, 0.3349] & MATERIAL \\
-OpenMath & Qwen3-1.7B & 8,673 & 0.3025 & [0.2769, 0.3281] & MATERIAL \\
-GSM8K & Qwen3-0.6B & 9,573 & 0.2323 & [0.2108, 0.2533] & MATERIAL \\
-GSM8K & Qwen3-1.7B & 9,429 & 0.1378 & [0.1152, 0.1599] & NOT MATERIAL \\
-NuminaMath & Qwen3-0.6B & 7,229 & 0.3155 & [0.2878, 0.3429] & MATERIAL \\
-NuminaMath & Qwen3-1.7B & 7,050 & 0.2979 & [0.2615, 0.3340] & MATERIAL \\
+OpenMath & Qwen3-0.6B & 7,199 & 0.3054 & [0.2759, 0.3349] \\
+OpenMath & Qwen3-1.7B & 8,673 & 0.3025 & [0.2769, 0.3281] \\
+GSM8K & Qwen3-0.6B & 9,573 & 0.2323 & [0.2108, 0.2533] \\
+GSM8K & Qwen3-1.7B & 9,429 & 0.1378 & [0.1152, 0.1599] \\
+NuminaMath & Qwen3-0.6B & 7,229 & 0.3155 & [0.2878, 0.3429] \\
+NuminaMath & Qwen3-1.7B & 7,050 & 0.2979 & [0.2615, 0.3340] \\
 \bottomrule
 \end{tabular}
 \end{table*}
 
-Table~\ref{tab:cells} reports the authoritative full-window decisions. Five cells are material. Qwen3-1.7B/GSM8K is positive and precisely below 0.20, which argues against instrument failure and shows that operational materiality depends on execution context. The six acquisitions total 49,153 assignments.
+Table~\ref{tab:cells} reports the authoritative full-window estimates and intervals. Five lower bounds exceed 0.20. The Qwen3-1.7B/GSM8K estimate is positive and its upper bound is below 0.20, which argues against instrument failure and shows that the threshold relation depends on execution context. The six acquisitions total 49,153 assignments.
 
 \begin{table*}[t]
 \centering
@@ -117,11 +117,11 @@ GSM8K & 14,995 & 0.3550, 0.3372 & 0.3461 & [0.2952, 0.3898] \\
 \end{tabular}
 \end{table*}
 
-Both Llama workload endpoints are \texttt{MATERIAL}. Replicate-difference envelopes include zero in both workloads. The secondary OpenMath-minus-GSM8K contrast is inconclusive (0.0530, envelope $[-0.0137,0.1232]$), so the extension establishes neither a workload difference nor a pure family effect.
+Both Llama 1B workload intervals lie above 0.20. Replicate-difference envelopes include zero in both workloads. The secondary OpenMath-minus-GSM8K contrast is 0.0530 with envelope $[-0.0137,0.1232]$, so the extension establishes neither a workload difference nor a pure family effect.
 
-The 3B extension adds 28,788 assignments. OpenMath estimates 0.2621 with envelope $[0.2215,0.2994]$ and is \texttt{MATERIAL}; GSM8K estimates 0.2135 with $[0.1872,0.2398]$ and is \texttt{INCONCLUSIVE}, so joint success is false. Prespecified 3B-minus-1B contrasts are $-0.1370$ and $-0.1326$, with simultaneous intervals $[-0.2093,-0.0647]$ and $[-0.1939,-0.0712]$. This supports attenuation in both tested fixed configurations, not a causal scaling law.
+The 3B extension adds 28,788 assignments. OpenMath estimates 0.2621 with envelope $[0.2215,0.2994]$, entirely above 0.20; GSM8K estimates 0.2135 with $[0.1872,0.2398]$, crossing 0.20, so the prespecified joint criterion was not met. Prespecified 3B-minus-1B contrasts are $-0.1370$ and $-0.1326$, with simultaneous intervals $[-0.2093,-0.0647]$ and $[-0.1939,-0.0712]$. This supports attenuation in both tested fixed configurations, not a causal scaling law.
 
-A separate prospective Qwen3-0.6B/OpenMath study paired, within each of 16 matched training-seed blocks, one all-immediate run with one equal-mass control/d5 run. On a fixed 1,024-prompt terminal endpoint, mean accuracies were 0.25977 and 0.21484. The paired mixed-d5-minus-immediate difference was $-0.04492$ (95\% CI $[-0.13394,0.04410]$), yielding the registered 0.02-margin decision \texttt{INCONCLUSIVE}. The harmful-direction estimate confirms neither final-quality harm nor practical equivalence; all 32 endpoints were retained.
+A separate prospective Qwen3-0.6B/OpenMath study paired, within each of 16 matched training-seed blocks, one all-immediate run with one equal-mass control/d5 run. On a fixed 1,024-prompt terminal endpoint, mean accuracies were 0.25977 and 0.21484. The paired mixed-d5-minus-immediate difference was $-0.04492$ (95\% CI $[-0.13394,0.04410]$). Because the interval crossed zero and both registered $\pm0.02$ relevance bounds, the estimate was not precise enough to determine the direction and practically relevant magnitude of the accuracy difference. All 32 endpoints were retained.
 
 \begin{figure}[t]
 \centering
@@ -148,7 +148,7 @@ A retrospective audit of the eight authenticated Llama lifecycle ledgers adds do
 \section{Discussion and Limitations}
 The study supports three scoped conclusions: controlled release delay causes opportunity loss in the tested asynchronous GRPO cells; the loss is operationally material in most but not all cells; and the model-scale contrast varies across workloads. A universal delay tolerance would therefore obscure relevant runtime context.
 
-M4 measures a proximal systems consequence. Missing one gradient opportunity need not change final reward if later data compensate, while repeated loss of high-opportunity groups could compound. The separate run-randomized study measured terminal task accuracy, but its interval includes material harm, zero, and benefit; convergence and final reward remain untested. The proximal design covers two small Qwen3 models and two Llama 3.2 sizes, three math workloads, GRPO, one primary nonzero delay, two H100 GPUs, and one cluster environment. Model, family, and workload are fixed rather than randomized factors. Distinct acquisition runs are treated as independent; unrecorded cluster-wide conditions could create residual dependence. NuminaMath is a prospective same-direction extension with a shared reference, and Llama supplies bounded family and size transport rather than causal family or scaling contrasts.
+M4 measures a proximal systems consequence. Missing one gradient opportunity need not change final reward if later data compensate, while repeated loss of high-opportunity groups could compound. The separate run-randomized study measured terminal task accuracy, but its interval crossed zero and both registered relevance bounds; the direction and practically relevant magnitude of the accuracy difference therefore remain unresolved. Convergence and final reward remain untested. The proximal design covers two small Qwen3 models and two Llama 3.2 sizes, three math workloads, GRPO, one primary nonzero delay, two H100 GPUs, and one cluster environment. Model, family, and workload are fixed rather than randomized factors. Distinct acquisition runs are treated as independent; unrecorded cluster-wide conditions could create residual dependence. NuminaMath is a prospective same-direction extension with a shared reference, and Llama supplies bounded family and size transport rather than causal family or scaling contrasts.
 
 The downstream experiment therefore used a different unit of randomization. The within-run control and d5 groups update one shared policy and cannot yield arm-specific final models, so the end-to-end study randomized whole training runs, froze held-out evaluation and budget, and analyzed matched seed blocks. This identifies the total effect of the release regime in that Qwen3-0.6B/OpenMath setting. Even a more precise result would not, without mediation assumptions, prove that opportunity loss is the only path from delay to quality because delay can also alter ordering and staleness. The observed between-run SD of 0.167 further limits precision and transport.
 
@@ -157,7 +157,7 @@ The Qwen3-0.6B/GSM8K acquisition also illustrates why pipeline status is not a s
 \section{Reproducibility and Conclusion}
 Every acquisition binds source, protocol, raw ledgers, and terminal archive by SHA-256. Qualification data never enter estimators; failures remain documented; automatic retry and outcome-guided extension were prohibited. The supplement reports source commits, pipeline states, artifact hashes, observer duty, software identity, and offline robustness. Large raw artifacts remain outside Git pending anonymous access review.
 
-The evidence sequence is: validated instrument $\rightarrow$ replicated mechanism $\rightarrow$ inconclusive initial materiality acquisition $\rightarrow$ prospectively redesigned confirmation $\rightarrow$ cross-model/workload heterogeneity $\rightarrow$ prospective same-direction workload extension $\rightarrow$ prospectively replicated cross-family extension $\rightarrow$ prospective within-family size extension $\rightarrow$ prospective end-to-end quality test. Within six tested Qwen3 environments the effect is material in five; within Llama 3.2 1B it is material on both workloads, while at 3B only OpenMath is confirmed material. Prespecified size contrasts support attenuation in both tested fixed configurations. The downstream estimate is harmful in direction but inconclusive. This supports a causal systems-measurement result without claiming confirmed final-quality harm, equivalence, pure family effects, general scaling laws, or broader generalization.
+The evidence sequence is: validated instrument $\rightarrow$ replicated mechanism $\rightarrow$ threshold-crossing initial interval $\rightarrow$ prospectively redesigned confirmation $\rightarrow$ cross-model/workload heterogeneity $\rightarrow$ prospective same-direction workload extension $\rightarrow$ prospectively replicated cross-family extension $\rightarrow$ prospective within-family size extension $\rightarrow$ prospective end-to-end quality test. Five of six Qwen3 intervals lie above 0.20; both Llama 3.2 1B intervals do, while at 3B only the OpenMath interval lies wholly above it. Prespecified size contrasts support attenuation in both tested fixed configurations. The downstream accuracy estimate is negative but insufficiently precise to establish its direction and practically relevant magnitude. This supports a causal systems-measurement result without claiming a final-quality effect, equivalence, pure family effects, general scaling laws, or broader generalization.
 
 \bibliography{../references}
 \bibliographystyle{mlsys2025}

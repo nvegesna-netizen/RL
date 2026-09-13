@@ -22,10 +22,10 @@ public URL or empirical raw-ledger access is claimed.
 
 | Object | SHA-256 | Structure |
 | --- | --- | --- |
-| Main review PDF | `b148b6646c9af6fb1063211263ca08053c46496f66f11851b251fcb56d63475d` | PDF 1.5, letter, 6 pages; references begin on page 5 |
-| Supplement PDF | `2916961f4295aad4ede8901a6d56d799f704411eb7b96630c91660949924aa69` | PDF 1.5, letter, 3 pages |
-| Reviewer archive | `5e57d8b21d62cf39f1b27e598b20cf11b6609cc72d2c19267e7922d7ccdf3be6` | 27,625 bytes; 17 extracted files including manifest |
-| Archive manifest | `95489b976864bab75d2ca355c7b663039df2c2126269372166568d1432776f53` | 16 hashed members, A1--A14 external commitments, and downstream hash chain |
+| Main review PDF | `ea3a29615709e61a57fd2b368ea69ec1471a4ffead59c30898ac1266643e9ad4` | PDF 1.5, letter, 6 pages; references begin on page 5 |
+| Supplement PDF | `2e45ce2de6a81237e265c98dba8363bcaf8cf74cf9f11bd4a0b262052b56ac3b` | PDF 1.5, letter, 3 pages |
+| Reviewer archive | `d5997a804807e32d70e6aebae16916b26f6c6c95e1db2416611b2cbadbbad254` | 27,649 bytes; 17 extracted files including manifest |
+| Archive manifest | `f514009ba6975e0e74099485d6cd8a7f5141aa84f679d9cef8944343e478805d` | 16 hashed members, A1--A14 external commitments, and downstream hash chain |
 
 ## Adversarial checks
 
@@ -40,7 +40,7 @@ public URL or empirical raw-ledger access is claimed.
 | Llama workload overclaim | Pass | The OpenMath-minus-GSM8K contrast remains `INCONCLUSIVE`; the manuscript does not equate a null contrast with equality. |
 | Llama size overclaim | Pass | Both 3B-minus-1B simultaneous intervals exclude zero, but size was fixed and only two points were tested; the paper prohibits causal and general scaling-law wording. |
 | 3B joint-success inflation | Pass | OpenMath is `MATERIAL`, GSM8K is `INCONCLUSIVE`, and the manuscript explicitly records joint success as false. |
-| Downstream-quality promotion | Pass | The paper reports -0.04492 with paired 95% CI [-0.13394, 0.04410] and labels it `INCONCLUSIVE`; it claims neither confirmed harm nor equivalence. |
+| Downstream-quality promotion | Pass | The paper reports -0.04492 with paired 95% CI [-0.13394, 0.04410]. Because the interval crosses zero and both registered ±0.02 relevance bounds, it states that direction and practically relevant magnitude remain unresolved. |
 | Downstream unit inflation | Pass | All inference uses 16 matched seed blocks, not 32 runs or 32,768 prompt scores as independent causal units. All 32 endpoints remain included. |
 | Mediation overclaim | Pass | The downstream result is labeled a total release-policy effect; the paper does not identify M4 opportunity loss as the exclusive path to quality. |
 | PDF template leakage | Pass | Extracted text contains no `AUTHORERR`, suppressed-title message, private path, or internal execution identifier; metadata says `Anonymous Authors`. |
@@ -73,6 +73,9 @@ public URL or empirical raw-ledger access is claimed.
     reviewer artifact, then passed credential-stripped replay and a byte-
     identical rebuild under Python 3.13, plus direct replay and tests under
     Python 3.10.
+11. Made estimates and 95% intervals primary in the main paper, retained formal
+    registered decisions in evidence-facing records and the supplement, and
+    replaced directional accuracy language with a precision-based statement.
 
 ## Remaining release gates
 

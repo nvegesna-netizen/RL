@@ -136,14 +136,14 @@
       "sha256": "4f12bafe8cca627a48b9ee21f9fb0d05a3964d2004994a5d28568f8d7c3b168a"
     },
     {
-      "bytes": 7013,
+      "bytes": 7225,
       "path": "docs/claim_ledger.md",
-      "sha256": "641657c50919f5136b8b7e78f79e3c4dc4e031e73760b53063623534f83d6db1"
+      "sha256": "a49329f88263b29a1ba17ac4c7fee9b5ebd0ce82992abd6c03b10b0f43874d87"
     },
     {
-      "bytes": 5422,
+      "bytes": 5397,
       "path": "docs/primary_table.md",
-      "sha256": "7a13a12fc6855a51d6f23d510fdbd72aff444f7539eb664686d6857949e2eb1d"
+      "sha256": "19236125f16602a8ea48d199a3ab24dad0d070e54d8e58e8f6f05e75178abccd"
     },
     {
       "bytes": 6104,

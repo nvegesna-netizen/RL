@@ -39,10 +39,11 @@ changes architecture and topology, confounding a clean scale extension.
 
 This prospective study is complete. It used the training run—not the rollout
 group—as the independent unit, froze evaluation and stopping rules, and
-completed all 16 matched seed blocks. Its point estimate is harmful, but high
-run-level heterogeneity leaves the interval compatible with harm, null, and
-benefit. Report it as an inconclusive end-to-end extension and do not exclude
-zero-accuracy runs or add seeds under the frozen protocol.
+completed all 16 matched seed blocks. The negative estimate is not precise
+enough to determine the direction or practically relevant magnitude of the
+accuracy difference. Report the estimate and interval as a bounded end-to-end
+extension, and do not exclude zero-accuracy runs or add seeds under the frozen
+protocol.
 
 The current go/no-go is therefore:
 

@@ -64,10 +64,10 @@ evaluated the same 1,024-prompt terminal OpenMath endpoint.
 | --- | ---: | ---: | ---: | ---: | ---: | --- |
 | Terminal OpenMath accuracy | 16 / 32 | 0.25977 | 0.21484 | -0.04492 | [-0.13394, 0.04410] | `INCONCLUSIVE` |
 
-The interval crosses both zero and the registered 0.02 absolute-accuracy
-margin. The point estimate is in the hypothesized harmful direction, but the
-study confirms neither a material final-quality cost nor practical
-equivalence. All 32 endpoints authenticated; no run was excluded.
+The interval crosses zero and both registered ±0.02 absolute-accuracy relevance
+bounds. The estimate therefore does not resolve the direction or practically
+relevant magnitude of the accuracy difference. All 32 endpoints authenticated;
+no run was excluded.
 
 ## Dependency-aware interaction results
 

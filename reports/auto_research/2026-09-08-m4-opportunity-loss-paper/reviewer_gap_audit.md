@@ -22,9 +22,10 @@ opportunity without changing final reward if later data compensate.
 **Current answer:** A separately preregistered 16-pair training-run study now
 provides a final-quality endpoint. Mixed-d5 minus immediate terminal accuracy is
 -0.04492 with paired 95% interval [-0.13394, 0.04410]; the exact sign-flip
-`p`-value is 0.2982 and the registered conclusion is `INCONCLUSIVE`. The point
-estimate is harmful, but the interval also includes null and benefit, so the
-manuscript must continue to limit its headline claim to normalized
+`p`-value is 0.2982. Because the interval crosses zero and both registered
+±0.02 relevance bounds, the estimate does not resolve the direction or
+practically relevant magnitude of the accuracy difference. The manuscript must
+therefore continue to limit its headline claim to normalized
 gradient-opportunity loss.
 
 **Severity:** High for a broad learning-algorithm claim; reduced for a systems
@@ -32,8 +33,8 @@ measurement paper because the end-to-end question was tested prospectively and
 reported transparently.
 
 **Action completed:** The main paper and supplement now report the complete
-inconclusive study, full interval, and instability caveat. They do not claim
-equivalence, confirmed quality harm, or mediation. Do not extend the frozen
+study, full interval, and instability caveat. They do not claim equivalence, a
+confirmed final-quality decrease, or mediation. Do not extend the frozen
 study post hoc. A future study would need a prospective stability intervention
 and power recalibrated to the observed run-level variance.
 
