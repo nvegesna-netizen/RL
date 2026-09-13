@@ -1,22 +1,55 @@
 {
-  "all_artifacts_authenticated": false,
-  "authenticated_manifest_count": 18,
-  "authenticated_run_count": 0,
+  "all_artifacts_authenticated": true,
+  "authenticated_manifest_count": 32,
+  "authenticated_run_count": 32,
   "outcome_files_parsed": false,
   "run_count": 32,
   "runs": [
     {
       "artifacts_manifest_sha256": "d4e7024e9ff8c7ea1c69484a0e5ab5a982ae6f39ffac2aeb66a4092326c5d9c1",
-      "authenticated": false,
+      "authenticated": true,
       "block_id": "b01",
-      "canonical_job_id": 436019107,
-      "canonical_job_role": "logs_after",
+      "canonical_job_id": 436019106,
+      "canonical_job_role": "workload",
       "canonical_job_status": "success",
       "child_pipeline_id": 67436276,
-      "declared_file_count": 8,
-      "failure": "full byte authentication gated by incomplete 32-run manifest set",
+      "converted_weights_bytes": 1503300296,
+      "converted_weights_sha256": "039c34de3cb3969cf276b31d8c2ba944fec4728430ee89ef67f823a6c9ee3c52",
+      "files": {
+        "evaluation/evaluation_data.json": {
+          "bytes": 10968801,
+          "sha256": "2dbc6d575d141d431a5da995dd39ae4b4af121207b6d6612bf4eeb5e4ce2fed7"
+        },
+        "lifecycle.jsonl": {
+          "bytes": 123995019,
+          "sha256": "9107d396efa20892864bd94faeddaf92844fb08e06e5990470efa2f9fa73cf5c"
+        },
+        "observer-duty.json": {
+          "bytes": 483,
+          "sha256": "f00c9f67e0f6e167ce334a0d765005418282ec897034a95f37431855bf45b436"
+        },
+        "opportunity.jsonl": {
+          "bytes": 18434548,
+          "sha256": "2ecb7b197cbb8cff5e89d67af1ed8c84a4e8c36d4c65aeecfeac17bd94d1d179"
+        },
+        "prompt-manifest.json": {
+          "bytes": 68825,
+          "sha256": "469a34a176febe9d15c5c6d967ff21f135a43cb20a7cb7d5ae1a53066e6b3a0a"
+        },
+        "terminal-policy/resolved_config.json": {
+          "bytes": 10672,
+          "sha256": "651ec5d910bb856b5294eb1d58df5ff7e67c64a54c0b7e7b68ad876607adca70"
+        },
+        "terminal-policy/terminal_policy_export.json": {
+          "bytes": 240,
+          "sha256": "5f0b606294a51bdc2c3839c282db294ce48fe6b8ae379dca0e1fee12d849a9d1"
+        },
+        "trained-run-result.json": {
+          "bytes": 105518,
+          "sha256": "cd2bbd70b1477208d0a35f04f54e6cfa59e394aafd39a337713ac9b9851e5132"
+        }
+      },
       "identity": "b01_immediate",
-      "manifest_authenticated": true,
       "outcome_files_parsed": false,
       "parent_pipeline_id": 67436067,
       "parent_status": "success",
@@ -25,16 +58,49 @@
     },
     {
       "artifacts_manifest_sha256": "b62f6613944cd2e36b207578fb4993c015b091c1bd2b70668a6c7a84891b3f91",
-      "authenticated": false,
+      "authenticated": true,
       "block_id": "b01",
-      "canonical_job_id": 436019206,
-      "canonical_job_role": "logs_after",
+      "canonical_job_id": 436019204,
+      "canonical_job_role": "workload",
       "canonical_job_status": "success",
       "child_pipeline_id": 67436291,
-      "declared_file_count": 8,
-      "failure": "full byte authentication gated by incomplete 32-run manifest set",
+      "converted_weights_bytes": 1503300296,
+      "converted_weights_sha256": "bdd626f56d2d4b9615f116ccb3959a7dadf3c79cd60dac512032a1a4f2bfba00",
+      "files": {
+        "evaluation/evaluation_data.json": {
+          "bytes": 18194932,
+          "sha256": "859275e628516632090e83dceb550b016e85abf7272f038d85207c1b39173915"
+        },
+        "lifecycle.jsonl": {
+          "bytes": 134164844,
+          "sha256": "38749022893d2f6036e50e7748fbb93751bcccf5eeb109396ada3f8a4de928b0"
+        },
+        "observer-duty.json": {
+          "bytes": 489,
+          "sha256": "9daab3aeda0127705f29c550a87e2e5561b96add1304e31aca3b27c7780d89dc"
+        },
+        "opportunity.jsonl": {
+          "bytes": 19828279,
+          "sha256": "ee8c1dd4310c5419b854a351b343f1219706f1fb8df8f323ed157dbbd068c897"
+        },
+        "prompt-manifest.json": {
+          "bytes": 68825,
+          "sha256": "469a34a176febe9d15c5c6d967ff21f135a43cb20a7cb7d5ae1a53066e6b3a0a"
+        },
+        "terminal-policy/resolved_config.json": {
+          "bytes": 10710,
+          "sha256": "602cf6777cebdd0440747531c4aa2cae6287daebae43af6309b4d93ca5514e87"
+        },
+        "terminal-policy/terminal_policy_export.json": {
+          "bytes": 240,
+          "sha256": "5f0b606294a51bdc2c3839c282db294ce48fe6b8ae379dca0e1fee12d849a9d1"
+        },
+        "trained-run-result.json": {
+          "bytes": 105516,
+          "sha256": "b8f8456dc4dcd2d1434563bbf4c382b6400f49e0560737d992e709f610150f73"
+        }
+      },
       "identity": "b01_mixed_d5",
-      "manifest_authenticated": true,
       "outcome_files_parsed": false,
       "parent_pipeline_id": 67436059,
       "parent_status": "success",
@@ -43,16 +109,49 @@
     },
     {
       "artifacts_manifest_sha256": "ecde73befa62ec2adc4f27c60a5ed772463d1785b3098becb153a9881cfbfda1",
-      "authenticated": false,
+      "authenticated": true,
       "block_id": "b02",
       "canonical_job_id": 436019846,
       "canonical_job_role": "workload",
       "canonical_job_status": "success",
       "child_pipeline_id": 67436369,
-      "declared_file_count": 8,
-      "failure": "full byte authentication gated by incomplete 32-run manifest set",
+      "converted_weights_bytes": 1503300296,
+      "converted_weights_sha256": "25d1d54c66a334b5c48a8824a6d20a9cb42e70985dc5358befd66c1a08068eb3",
+      "files": {
+        "evaluation/evaluation_data.json": {
+          "bytes": 12392315,
+          "sha256": "96c1e5f9961b6a036ebb88eb294d7255e299f738471fbb8104b9959bb2319ab0"
+        },
+        "lifecycle.jsonl": {
+          "bytes": 124057118,
+          "sha256": "f392fe7c9318f531f577b8b1b06ce6b4185cee0d0e7e8a0d5b1c9f20a5633e03"
+        },
+        "observer-duty.json": {
+          "bytes": 483,
+          "sha256": "89f4b4081f4f2a5b03c80152493a94056bfa3aea2991afabbd8e766cdde888e1"
+        },
+        "opportunity.jsonl": {
+          "bytes": 18438464,
+          "sha256": "3a81ad597a685b9fb434862ededfe7fd3eaa2b135e827e34370e3deef2a99a56"
+        },
+        "prompt-manifest.json": {
+          "bytes": 68825,
+          "sha256": "469a34a176febe9d15c5c6d967ff21f135a43cb20a7cb7d5ae1a53066e6b3a0a"
+        },
+        "terminal-policy/resolved_config.json": {
+          "bytes": 10672,
+          "sha256": "f106aa835509bb92ad7a58d912ebc424c7660a57d0d28093afd3afd626948b05"
+        },
+        "terminal-policy/terminal_policy_export.json": {
+          "bytes": 240,
+          "sha256": "5f0b606294a51bdc2c3839c282db294ce48fe6b8ae379dca0e1fee12d849a9d1"
+        },
+        "trained-run-result.json": {
+          "bytes": 105518,
+          "sha256": "1ef879ca4a3ef02169d8df98b0acaae5ba1ca9b2a50f42763eead3b696487fd8"
+        }
+      },
       "identity": "b02_immediate",
-      "manifest_authenticated": true,
       "outcome_files_parsed": false,
       "parent_pipeline_id": 67436178,
       "parent_status": "failed",
@@ -61,16 +160,49 @@
     },
     {
       "artifacts_manifest_sha256": "545997836f5e765b890be496873231478b18e0dd7c71042a6db3876882059f18",
-      "authenticated": false,
+      "authenticated": true,
       "block_id": "b02",
-      "canonical_job_id": 436019943,
-      "canonical_job_role": "logs_after",
+      "canonical_job_id": 436019942,
+      "canonical_job_role": "workload",
       "canonical_job_status": "success",
       "child_pipeline_id": 67436378,
-      "declared_file_count": 8,
-      "failure": "full byte authentication gated by incomplete 32-run manifest set",
+      "converted_weights_bytes": 1503300296,
+      "converted_weights_sha256": "14f627a80d84698d33c1fbe4e830c7b1e0aceafd38b0e1a0dca9cd11c71ce402",
+      "files": {
+        "evaluation/evaluation_data.json": {
+          "bytes": 11354889,
+          "sha256": "56d9d0c2f561cd07cf8d743201f6658f4d877a9d74d49377d88a9e39ace54614"
+        },
+        "lifecycle.jsonl": {
+          "bytes": 136518467,
+          "sha256": "1a9e5accc36c929caa1ab9e1ad1a7d2e06d04967c531a0e5f2a93c282b769bf1"
+        },
+        "observer-duty.json": {
+          "bytes": 488,
+          "sha256": "e4c5bf8d00ab6b9a63bd8bc023a75d161653628eb9936ff79606531d5cf1a300"
+        },
+        "opportunity.jsonl": {
+          "bytes": 20206061,
+          "sha256": "2234dc80d144ab8e1d6d5cf413137c8602551fdcedd9d328d8a3753bfaff4a94"
+        },
+        "prompt-manifest.json": {
+          "bytes": 68825,
+          "sha256": "469a34a176febe9d15c5c6d967ff21f135a43cb20a7cb7d5ae1a53066e6b3a0a"
+        },
+        "terminal-policy/resolved_config.json": {
+          "bytes": 10710,
+          "sha256": "dd6287f43dad5c10946d0cf17efc229e5d93f09bce2d0f2d1db3f71f544c42ab"
+        },
+        "terminal-policy/terminal_policy_export.json": {
+          "bytes": 240,
+          "sha256": "5f0b606294a51bdc2c3839c282db294ce48fe6b8ae379dca0e1fee12d849a9d1"
+        },
+        "trained-run-result.json": {
+          "bytes": 105516,
+          "sha256": "be0d3732e0d59df3297ebf0f41aa7184dfeb4d39ccfc4a3d79f05f4a948620f8"
+        }
+      },
       "identity": "b02_mixed_d5",
-      "manifest_authenticated": true,
       "outcome_files_parsed": false,
       "parent_pipeline_id": 67436221,
       "parent_status": "success",
@@ -79,16 +211,49 @@
     },
     {
       "artifacts_manifest_sha256": "7981637d73afd6eed5d3d96d4f1d987e2984a328b6a8ffa3c43161df5f14e6c5",
-      "authenticated": false,
+      "authenticated": true,
       "block_id": "b03",
-      "canonical_job_id": 436021215,
-      "canonical_job_role": "logs_after",
+      "canonical_job_id": 436021214,
+      "canonical_job_role": "workload",
       "canonical_job_status": "success",
       "child_pipeline_id": 67436497,
-      "declared_file_count": 8,
-      "failure": "full byte authentication gated by incomplete 32-run manifest set",
+      "converted_weights_bytes": 1503300296,
+      "converted_weights_sha256": "485a673e2dad9befd09a29fbe3d1a5a0422b46a72d8d54020227ed2f7601c5d7",
+      "files": {
+        "evaluation/evaluation_data.json": {
+          "bytes": 13335087,
+          "sha256": "35acc5d17ebe0f4a8ea75bc7db4574b84ab69874b6bc1a7ba3a73ec9ceffaf71"
+        },
+        "lifecycle.jsonl": {
+          "bytes": 124414832,
+          "sha256": "d56c7e05071966fe9435c9cec91e3aff936a77225956295194d07ded1e925a7d"
+        },
+        "observer-duty.json": {
+          "bytes": 484,
+          "sha256": "0759b20e952e3328bfaad5d9305cf83731a338470129d7e6c358f88a4d042407"
+        },
+        "opportunity.jsonl": {
+          "bytes": 18434901,
+          "sha256": "9f6a8f6d94375135070181f366c4d6c50d4d3a6d29928541581b12019e3c0fa3"
+        },
+        "prompt-manifest.json": {
+          "bytes": 68825,
+          "sha256": "469a34a176febe9d15c5c6d967ff21f135a43cb20a7cb7d5ae1a53066e6b3a0a"
+        },
+        "terminal-policy/resolved_config.json": {
+          "bytes": 10672,
+          "sha256": "de3dfb5a461b929c41acab069a6efbb99c680cd8b1652853cff6f0cd3cb879da"
+        },
+        "terminal-policy/terminal_policy_export.json": {
+          "bytes": 240,
+          "sha256": "5f0b606294a51bdc2c3839c282db294ce48fe6b8ae379dca0e1fee12d849a9d1"
+        },
+        "trained-run-result.json": {
+          "bytes": 105518,
+          "sha256": "6540fdf180b37c102a0e8c1269ca4bada52343ee95d54c6cda0bab0db0ca1d18"
+        }
+      },
       "identity": "b03_immediate",
-      "manifest_authenticated": true,
       "outcome_files_parsed": false,
       "parent_pipeline_id": 67436306,
       "parent_status": "success",
@@ -97,16 +262,49 @@
     },
     {
       "artifacts_manifest_sha256": "8036d76ef8ab0efb65e583442db3de4269fd74332073bb60bbdefee85f72ac19",
-      "authenticated": false,
+      "authenticated": true,
       "block_id": "b03",
-      "canonical_job_id": 436021116,
-      "canonical_job_role": "logs_after",
+      "canonical_job_id": 436021115,
+      "canonical_job_role": "workload",
       "canonical_job_status": "success",
       "child_pipeline_id": 67436484,
-      "declared_file_count": 8,
-      "failure": "full byte authentication gated by incomplete 32-run manifest set",
+      "converted_weights_bytes": 1503300296,
+      "converted_weights_sha256": "7a9579696b5e11de43828579e4bd5efbdc6e03804d8a820c5e47d7a5013608e8",
+      "files": {
+        "evaluation/evaluation_data.json": {
+          "bytes": 12824066,
+          "sha256": "634fdfbbe00cd1aac5c48bdd12ffc5f562b0994cd149387f5ea3d9ba5d247778"
+        },
+        "lifecycle.jsonl": {
+          "bytes": 134824275,
+          "sha256": "8f7d8ab86bb0313fc1ca50d8d9621001e83cf67c55eb140b718ef43aaa970d87"
+        },
+        "observer-duty.json": {
+          "bytes": 488,
+          "sha256": "e0ef67d3b654978afc65074d6729d3b0ba49fb342dcd11baa04ba9e34a089195"
+        },
+        "opportunity.jsonl": {
+          "bytes": 19957528,
+          "sha256": "324f631ce4eda1c1b90831ee771caff7e208a153dae277379118355d354fb87c"
+        },
+        "prompt-manifest.json": {
+          "bytes": 68825,
+          "sha256": "469a34a176febe9d15c5c6d967ff21f135a43cb20a7cb7d5ae1a53066e6b3a0a"
+        },
+        "terminal-policy/resolved_config.json": {
+          "bytes": 10710,
+          "sha256": "08b2c469c5cd6256f1e44b37673e471b9ed34c7783a90903286fe8074b1366a4"
+        },
+        "terminal-policy/terminal_policy_export.json": {
+          "bytes": 240,
+          "sha256": "5f0b606294a51bdc2c3839c282db294ce48fe6b8ae379dca0e1fee12d849a9d1"
+        },
+        "trained-run-result.json": {
+          "bytes": 105516,
+          "sha256": "15660ecbedad5374dc8913247edc4e4c9f7a7df05cf36fe52955758f501ff454"
+        }
+      },
       "identity": "b03_mixed_d5",
-      "manifest_authenticated": true,
       "outcome_files_parsed": false,
       "parent_pipeline_id": 67436284,
       "parent_status": "success",
@@ -115,16 +313,49 @@
     },
     {
       "artifacts_manifest_sha256": "5de4bfd67fb989bb0c7c026c60a467e474092a7954ae7fe0751c56b8365e35e5",
-      "authenticated": false,
+      "authenticated": true,
       "block_id": "b04",
-      "canonical_job_id": 436022710,
-      "canonical_job_role": "logs_after",
+      "canonical_job_id": 436022709,
+      "canonical_job_role": "workload",
       "canonical_job_status": "success",
       "child_pipeline_id": 67436703,
-      "declared_file_count": 8,
-      "failure": "full byte authentication gated by incomplete 32-run manifest set",
+      "converted_weights_bytes": 1503300296,
+      "converted_weights_sha256": "605b708e128eb842c52c666bb171339059bcd4dfa54835a61760c9321b7e0d44",
+      "files": {
+        "evaluation/evaluation_data.json": {
+          "bytes": 12402673,
+          "sha256": "5b878ea5ce01571e2af29fd42a942b5cd02a3286dedbc2c255a47e673a040684"
+        },
+        "lifecycle.jsonl": {
+          "bytes": 124521777,
+          "sha256": "567f3eb1f75cdb5a4ff593388f8bd7bb3dd0dcfcd843e764e71407a271056c79"
+        },
+        "observer-duty.json": {
+          "bytes": 483,
+          "sha256": "ec0d8e4bcc731a250a329c1b7dbaed3d9623e9789af481838f5d70ec10950cfd"
+        },
+        "opportunity.jsonl": {
+          "bytes": 18518688,
+          "sha256": "75733e5acff6d51e2b3aa1ec5d3d0bfe17b7d77eb2de8c0b5a266effee0a5ee0"
+        },
+        "prompt-manifest.json": {
+          "bytes": 68825,
+          "sha256": "469a34a176febe9d15c5c6d967ff21f135a43cb20a7cb7d5ae1a53066e6b3a0a"
+        },
+        "terminal-policy/resolved_config.json": {
+          "bytes": 10672,
+          "sha256": "3fa0f8c0edc3c8aa75d9d5a510b52dc40f7e05a6f05b8ff694d3de476b66982f"
+        },
+        "terminal-policy/terminal_policy_export.json": {
+          "bytes": 240,
+          "sha256": "5f0b606294a51bdc2c3839c282db294ce48fe6b8ae379dca0e1fee12d849a9d1"
+        },
+        "trained-run-result.json": {
+          "bytes": 105518,
+          "sha256": "b3c00326f341b536b0ffc74b85b9aedf5bdde471f18526123e3c7b7daf461294"
+        }
+      },
       "identity": "b04_immediate",
-      "manifest_authenticated": true,
       "outcome_files_parsed": false,
       "parent_pipeline_id": 67436445,
       "parent_status": "success",
@@ -133,16 +364,49 @@
     },
     {
       "artifacts_manifest_sha256": "b37c24dc16e7556e65993fed9a99ac668492938176752c27efb69075b329dbdb",
-      "authenticated": false,
+      "authenticated": true,
       "block_id": "b04",
-      "canonical_job_id": 436191635,
-      "canonical_job_role": "logs_after",
+      "canonical_job_id": 436022684,
+      "canonical_job_role": "workload",
       "canonical_job_status": "success",
       "child_pipeline_id": 67436694,
-      "declared_file_count": 8,
-      "failure": "full byte authentication gated by incomplete 32-run manifest set",
+      "converted_weights_bytes": 1503300296,
+      "converted_weights_sha256": "7d0be2be88b09f6b3748b10161c9c836faa4cba1f62861b139202c19caa46c70",
+      "files": {
+        "evaluation/evaluation_data.json": {
+          "bytes": 11880694,
+          "sha256": "c36c6712781b80e85bf436666590adbb7fc0ee593b33590624860288ba0890ff"
+        },
+        "lifecycle.jsonl": {
+          "bytes": 136286013,
+          "sha256": "2584447bbc92cdebd25d80e8db8a2ee320b62e6e07edf27add3ada6b67915b84"
+        },
+        "observer-duty.json": {
+          "bytes": 490,
+          "sha256": "89813718d9e0e0200bb3be4c9abaca5a82d1ae000847b46b131e1afbcce4f87a"
+        },
+        "opportunity.jsonl": {
+          "bytes": 20211216,
+          "sha256": "841e0099a53c1190fe5d0adb2ce79e66f99dcf5fdbc59db301863d13e0939b68"
+        },
+        "prompt-manifest.json": {
+          "bytes": 68825,
+          "sha256": "469a34a176febe9d15c5c6d967ff21f135a43cb20a7cb7d5ae1a53066e6b3a0a"
+        },
+        "terminal-policy/resolved_config.json": {
+          "bytes": 10710,
+          "sha256": "bf472331263e05619d384b731a339b0f53a15dd32f21962168929a08b6e72a8a"
+        },
+        "terminal-policy/terminal_policy_export.json": {
+          "bytes": 240,
+          "sha256": "5f0b606294a51bdc2c3839c282db294ce48fe6b8ae379dca0e1fee12d849a9d1"
+        },
+        "trained-run-result.json": {
+          "bytes": 105516,
+          "sha256": "758643aafe11c03890180edb4824b5ea98910a6b4893009c380288d8bd5df92c"
+        }
+      },
       "identity": "b04_mixed_d5",
-      "manifest_authenticated": true,
       "outcome_files_parsed": false,
       "parent_pipeline_id": 67436410,
       "parent_status": "success",
@@ -151,16 +415,49 @@
     },
     {
       "artifacts_manifest_sha256": "c39d5930e4e4e4e34236e67188fa92d343072ac5b330fa4b6f662986a3b8e0ce",
-      "authenticated": false,
+      "authenticated": true,
       "block_id": "b05",
-      "canonical_job_id": 436023740,
-      "canonical_job_role": "logs_after",
+      "canonical_job_id": 436023739,
+      "canonical_job_role": "workload",
       "canonical_job_status": "success",
       "child_pipeline_id": 67436830,
-      "declared_file_count": 8,
-      "failure": "full byte authentication gated by incomplete 32-run manifest set",
+      "converted_weights_bytes": 1503300296,
+      "converted_weights_sha256": "708f5f4b6a38cecddae88847a97cfb8a1d2b95c858850c2f58d071f1aedd04c2",
+      "files": {
+        "evaluation/evaluation_data.json": {
+          "bytes": 12821890,
+          "sha256": "aa503e9113d0ab8314ca592e35c68a8ef1f0f41dbc7ebf9a40b979152e8edd34"
+        },
+        "lifecycle.jsonl": {
+          "bytes": 125413254,
+          "sha256": "4a381652c5ab299acac17df07c4fbbcf97678b236a42123fdc9b5d3d92c562a6"
+        },
+        "observer-duty.json": {
+          "bytes": 484,
+          "sha256": "b44ae02883f446750fc4510671ce8e1c8fbe3534ae33d5c7aaff109a4bf32f9d"
+        },
+        "opportunity.jsonl": {
+          "bytes": 18580113,
+          "sha256": "a622e22054d345d7f84366ec0fd3552ee1c1ae35f48e5be216845c314aafe516"
+        },
+        "prompt-manifest.json": {
+          "bytes": 68825,
+          "sha256": "469a34a176febe9d15c5c6d967ff21f135a43cb20a7cb7d5ae1a53066e6b3a0a"
+        },
+        "terminal-policy/resolved_config.json": {
+          "bytes": 10672,
+          "sha256": "e14978cfaa09973ede04f4df251b12a15dbf98d30c8fbb3c19db48870e66a275"
+        },
+        "terminal-policy/terminal_policy_export.json": {
+          "bytes": 240,
+          "sha256": "5f0b606294a51bdc2c3839c282db294ce48fe6b8ae379dca0e1fee12d849a9d1"
+        },
+        "trained-run-result.json": {
+          "bytes": 105518,
+          "sha256": "8fc2d056d0c9ffea7f274d76db4abcdd161c6e1367166f664b0a44ac606c0bda"
+        }
+      },
       "identity": "b05_immediate",
-      "manifest_authenticated": true,
       "outcome_files_parsed": false,
       "parent_pipeline_id": 67436647,
       "parent_status": "success",
@@ -169,16 +466,49 @@
     },
     {
       "artifacts_manifest_sha256": "40d7bd97881a19588487cfc62946cbd8d3ee612306f93e097a2381342b820da2",
-      "authenticated": false,
+      "authenticated": true,
       "block_id": "b05",
-      "canonical_job_id": 436023915,
-      "canonical_job_role": "logs_after",
+      "canonical_job_id": 436023914,
+      "canonical_job_role": "workload",
       "canonical_job_status": "success",
       "child_pipeline_id": 67436846,
-      "declared_file_count": 8,
-      "failure": "full byte authentication gated by incomplete 32-run manifest set",
+      "converted_weights_bytes": 1503300296,
+      "converted_weights_sha256": "1256aeea520427f6a3ad3aa9e5589b02809014a351b85075443610446851c468",
+      "files": {
+        "evaluation/evaluation_data.json": {
+          "bytes": 13365618,
+          "sha256": "f16c1d6dfd30c99841f5b22cd341068c95df0eb619e949d36b4333b7b8cae22c"
+        },
+        "lifecycle.jsonl": {
+          "bytes": 131514128,
+          "sha256": "364a4e332579c595c98f61c1c44e5ef075615a7422f1247ea51cc8a0cf3b2f8b"
+        },
+        "observer-duty.json": {
+          "bytes": 487,
+          "sha256": "3425a63088d9d661a5e497fb17d7bccbaeb2a5d061c6ef7bb023c2a22b215294"
+        },
+        "opportunity.jsonl": {
+          "bytes": 19444108,
+          "sha256": "931676fb74b5a059d4c78230f71c3f963e26ff657654b477d86ad47d44e97a73"
+        },
+        "prompt-manifest.json": {
+          "bytes": 68825,
+          "sha256": "469a34a176febe9d15c5c6d967ff21f135a43cb20a7cb7d5ae1a53066e6b3a0a"
+        },
+        "terminal-policy/resolved_config.json": {
+          "bytes": 10710,
+          "sha256": "cf8de6b198bd8d638b67975e4b00e115c8608ef12cb4f621b547ed9c2a186e8b"
+        },
+        "terminal-policy/terminal_policy_export.json": {
+          "bytes": 240,
+          "sha256": "5f0b606294a51bdc2c3839c282db294ce48fe6b8ae379dca0e1fee12d849a9d1"
+        },
+        "trained-run-result.json": {
+          "bytes": 105516,
+          "sha256": "83f1a449c8f19d99e33eaf821533e0356a13fe8b0a4464840742f4aa3342a4e5"
+        }
+      },
       "identity": "b05_mixed_d5",
-      "manifest_authenticated": true,
       "outcome_files_parsed": false,
       "parent_pipeline_id": 67436683,
       "parent_status": "success",
@@ -187,16 +517,49 @@
     },
     {
       "artifacts_manifest_sha256": "b0cad1b51662439ee9ebbd90a58aa06ac1a1489ce514730cb14fd143a764b2fd",
-      "authenticated": false,
+      "authenticated": true,
       "block_id": "b06",
-      "canonical_job_id": 436024888,
-      "canonical_job_role": "logs_after",
+      "canonical_job_id": 436024886,
+      "canonical_job_role": "workload",
       "canonical_job_status": "success",
       "child_pipeline_id": 67436958,
-      "declared_file_count": 8,
-      "failure": "full byte authentication gated by incomplete 32-run manifest set",
+      "converted_weights_bytes": 1503300296,
+      "converted_weights_sha256": "3deb7e35c889eb341a63e78110df38ef4283ef6147d30662e92ec7f31f0631f3",
+      "files": {
+        "evaluation/evaluation_data.json": {
+          "bytes": 27767573,
+          "sha256": "85f10e38ac74a803812c70eb790b2d43c2d373445559b3406729e743e583b03e"
+        },
+        "lifecycle.jsonl": {
+          "bytes": 123746855,
+          "sha256": "7fe5aa41987492f81820609999f82fa9a87a4b2db3b50cde83d8d2a28f461276"
+        },
+        "observer-duty.json": {
+          "bytes": 483,
+          "sha256": "c328afb763c04c8da40fe29bab78236ce208e462aea96e434490e1748a43b525"
+        },
+        "opportunity.jsonl": {
+          "bytes": 18171558,
+          "sha256": "2f901481694775a3196c0804a083444d3dbe5b3327a03e15e7aa635d74029f60"
+        },
+        "prompt-manifest.json": {
+          "bytes": 68825,
+          "sha256": "469a34a176febe9d15c5c6d967ff21f135a43cb20a7cb7d5ae1a53066e6b3a0a"
+        },
+        "terminal-policy/resolved_config.json": {
+          "bytes": 10672,
+          "sha256": "d1ecb6c2376b273958a3c4328643b95843f3d75e20d64564fda7327c2408abe6"
+        },
+        "terminal-policy/terminal_policy_export.json": {
+          "bytes": 240,
+          "sha256": "5f0b606294a51bdc2c3839c282db294ce48fe6b8ae379dca0e1fee12d849a9d1"
+        },
+        "trained-run-result.json": {
+          "bytes": 105518,
+          "sha256": "07ffa94b583508e787d7466c517dfd6c9f9b7f962aae4e586cfa7ddb7e64cba6"
+        }
+      },
       "identity": "b06_immediate",
-      "manifest_authenticated": true,
       "outcome_files_parsed": false,
       "parent_pipeline_id": 67436835,
       "parent_status": "success",
@@ -205,16 +568,49 @@
     },
     {
       "artifacts_manifest_sha256": "56e7306d93babade42d082349063355bebdd2412e59d323e700a3c10140a1fbf",
-      "authenticated": false,
+      "authenticated": true,
       "block_id": "b06",
-      "canonical_job_id": 436026810,
-      "canonical_job_role": "logs_after",
+      "canonical_job_id": 436026809,
+      "canonical_job_role": "workload",
       "canonical_job_status": "success",
       "child_pipeline_id": 67437214,
-      "declared_file_count": 8,
-      "failure": "full byte authentication gated by incomplete 32-run manifest set",
+      "converted_weights_bytes": 1503300296,
+      "converted_weights_sha256": "2e1b86d88bc18491a0e793ba10b81fa630dff2992a028afd6dd1ec177e20c989",
+      "files": {
+        "evaluation/evaluation_data.json": {
+          "bytes": 5773793,
+          "sha256": "1076041065cd7ded739e06039a69afcaf0c146e76c18aad8cddb9c753f7336a0"
+        },
+        "lifecycle.jsonl": {
+          "bytes": 144091547,
+          "sha256": "8cc549d53fb38c4d7e0bacf292dd7039e721a4879fbc9d3a059f4de52ec47b9e"
+        },
+        "observer-duty.json": {
+          "bytes": 489,
+          "sha256": "b7f0325860e00ff5faaed0309a27061b640d3e6e3a1e97741f6a85e26b1723e0"
+        },
+        "opportunity.jsonl": {
+          "bytes": 20987021,
+          "sha256": "ad59cd06112314b63865a83baf5da4cd9ef2af9f071355ce8cbb752db97b20fc"
+        },
+        "prompt-manifest.json": {
+          "bytes": 68825,
+          "sha256": "469a34a176febe9d15c5c6d967ff21f135a43cb20a7cb7d5ae1a53066e6b3a0a"
+        },
+        "terminal-policy/resolved_config.json": {
+          "bytes": 10710,
+          "sha256": "a0068ae189dad8baac1653842b74c040aba60f4f6ca818fb46f71272ce2e92db"
+        },
+        "terminal-policy/terminal_policy_export.json": {
+          "bytes": 240,
+          "sha256": "5f0b606294a51bdc2c3839c282db294ce48fe6b8ae379dca0e1fee12d849a9d1"
+        },
+        "trained-run-result.json": {
+          "bytes": 105516,
+          "sha256": "e4c77d0a9fafe040c416227e847d339ff845fce5a666ad87d09bf93e27fff62e"
+        }
+      },
       "identity": "b06_mixed_d5",
-      "manifest_authenticated": true,
       "outcome_files_parsed": false,
       "parent_pipeline_id": 67436895,
       "parent_status": "success",
@@ -223,16 +619,49 @@
     },
     {
       "artifacts_manifest_sha256": "12f4cc78bbd68a3e355fa1fd75967aa2b12916e3a0e7c0c51fc6da9b01a68f0d",
-      "authenticated": false,
+      "authenticated": true,
       "block_id": "b07",
-      "canonical_job_id": 436191252,
-      "canonical_job_role": "logs_after",
+      "canonical_job_id": 436028717,
+      "canonical_job_role": "workload",
       "canonical_job_status": "success",
       "child_pipeline_id": 67437550,
-      "declared_file_count": 8,
-      "failure": "full byte authentication gated by incomplete 32-run manifest set",
+      "converted_weights_bytes": 1503300296,
+      "converted_weights_sha256": "d2ab44e6b6c0d4f43cb97b8a41101c37e391c044983e32b9a8ffbf8b3262118c",
+      "files": {
+        "evaluation/evaluation_data.json": {
+          "bytes": 11601884,
+          "sha256": "8ffc50ac163492dfa6d28826d9f68d7407ad1b54ee916fc418dcc627602d10aa"
+        },
+        "lifecycle.jsonl": {
+          "bytes": 124225352,
+          "sha256": "e2eb2877ffd596bf22bbad5d76dd7b83457ab3a485688696f1d5cc309918bd92"
+        },
+        "observer-duty.json": {
+          "bytes": 483,
+          "sha256": "30595b4a2b16bd2dfac45cefedbfee0a36581a115466352b1d9b4dfccf7fa691"
+        },
+        "opportunity.jsonl": {
+          "bytes": 18436207,
+          "sha256": "d2883833348ca029cc30d8b4ad8949b94410fa34fb7fc70c47c523aa692479c1"
+        },
+        "prompt-manifest.json": {
+          "bytes": 68825,
+          "sha256": "469a34a176febe9d15c5c6d967ff21f135a43cb20a7cb7d5ae1a53066e6b3a0a"
+        },
+        "terminal-policy/resolved_config.json": {
+          "bytes": 10672,
+          "sha256": "b6cc289a6eef29d33ec8fb71cbdc05949cb060b5405166088252d36a1f8679c3"
+        },
+        "terminal-policy/terminal_policy_export.json": {
+          "bytes": 240,
+          "sha256": "5f0b606294a51bdc2c3839c282db294ce48fe6b8ae379dca0e1fee12d849a9d1"
+        },
+        "trained-run-result.json": {
+          "bytes": 105518,
+          "sha256": "b4f59af8f7491d7a7dbb76a37318035e6dd3abfba4f07bb711fc3d6ab17c1bd8"
+        }
+      },
       "identity": "b07_immediate",
-      "manifest_authenticated": true,
       "outcome_files_parsed": false,
       "parent_pipeline_id": 67437218,
       "parent_status": "success",
@@ -241,16 +670,49 @@
     },
     {
       "artifacts_manifest_sha256": "9c765397fdc8b1b35d8369316fdc4ec72fb7e718f48c0c5b7686bdf8ea2cefb4",
-      "authenticated": false,
+      "authenticated": true,
       "block_id": "b07",
-      "canonical_job_id": 436029326,
-      "canonical_job_role": "logs_after",
+      "canonical_job_id": 436029322,
+      "canonical_job_role": "workload",
       "canonical_job_status": "success",
       "child_pipeline_id": 67437636,
-      "declared_file_count": 8,
-      "failure": "full byte authentication gated by incomplete 32-run manifest set",
+      "converted_weights_bytes": 1503300296,
+      "converted_weights_sha256": "b9ce5e456a1b307469b4253e5f0bcd13dc7f4cd6448b0a6b79f9943448838b07",
+      "files": {
+        "evaluation/evaluation_data.json": {
+          "bytes": 11521861,
+          "sha256": "8a89e1871d1c29ef4ef3f2d15f6383eb876bb15bdf358b99493c8ee724125e0b"
+        },
+        "lifecycle.jsonl": {
+          "bytes": 133059220,
+          "sha256": "2da57f464307ff2ca27fc27667cd8dfc3cd71f47476a18b2f7721f20eb945f12"
+        },
+        "observer-duty.json": {
+          "bytes": 486,
+          "sha256": "11e64157911798bd166d5f6e2fd81b8ad3b0a02a4a9307bfd548b71ccbcdc53f"
+        },
+        "opportunity.jsonl": {
+          "bytes": 19695028,
+          "sha256": "0395bec05ae143c5eb0b0783f5c6d1445394dbdc1c1ec77c7b9d940e4dd4a13c"
+        },
+        "prompt-manifest.json": {
+          "bytes": 68825,
+          "sha256": "469a34a176febe9d15c5c6d967ff21f135a43cb20a7cb7d5ae1a53066e6b3a0a"
+        },
+        "terminal-policy/resolved_config.json": {
+          "bytes": 10710,
+          "sha256": "15bdf83d7627f5dfefbc3acb04c943f33f60645c4225d12ff9de6f24acdf89d3"
+        },
+        "terminal-policy/terminal_policy_export.json": {
+          "bytes": 240,
+          "sha256": "5f0b606294a51bdc2c3839c282db294ce48fe6b8ae379dca0e1fee12d849a9d1"
+        },
+        "trained-run-result.json": {
+          "bytes": 105516,
+          "sha256": "415c0a214553cad0cf1c8bafcb57f752d47f5d32b8a12ea12edc670c2e22d1a9"
+        }
+      },
       "identity": "b07_mixed_d5",
-      "manifest_authenticated": true,
       "outcome_files_parsed": false,
       "parent_pipeline_id": 67437265,
       "parent_status": "success",
@@ -259,16 +721,49 @@
     },
     {
       "artifacts_manifest_sha256": "e7ff8cd66d6bade6ecfc91c7bc210f571fb7c536d3ee9ff331b5768e2cf48edc",
-      "authenticated": false,
+      "authenticated": true,
       "block_id": "b08",
-      "canonical_job_id": 436194626,
-      "canonical_job_role": "logs_after",
+      "canonical_job_id": 436030519,
+      "canonical_job_role": "workload",
       "canonical_job_status": "success",
       "child_pipeline_id": 67437818,
-      "declared_file_count": 8,
-      "failure": "full byte authentication gated by incomplete 32-run manifest set",
+      "converted_weights_bytes": 1503300296,
+      "converted_weights_sha256": "7321e5baeb00bb58cb5787fd64e3a03a2e127e976e707a7593a965dd240dd085",
+      "files": {
+        "evaluation/evaluation_data.json": {
+          "bytes": 12368334,
+          "sha256": "b5ba10986290e0928badb52e05cdcc29b8fa0bb8aacb661f2dac762dd5681cd8"
+        },
+        "lifecycle.jsonl": {
+          "bytes": 123753047,
+          "sha256": "db5ff0bb7a3d8840740d0137ded889d0bf35cfd09ce31f3adb424cd489bbf94b"
+        },
+        "observer-duty.json": {
+          "bytes": 482,
+          "sha256": "cd2abadb7f6fc5a49954dbc9861244d80e520d11847428bda70e97851065a155"
+        },
+        "opportunity.jsonl": {
+          "bytes": 18327897,
+          "sha256": "2c8cb49b470fb904cc7170363fa04a5435bc525631bdf3c2700eeb339b29c2ed"
+        },
+        "prompt-manifest.json": {
+          "bytes": 68825,
+          "sha256": "469a34a176febe9d15c5c6d967ff21f135a43cb20a7cb7d5ae1a53066e6b3a0a"
+        },
+        "terminal-policy/resolved_config.json": {
+          "bytes": 10672,
+          "sha256": "349e85509a3d42100766e7def692107871ef5e72ecc2eef9c60deadabbe6495e"
+        },
+        "terminal-policy/terminal_policy_export.json": {
+          "bytes": 240,
+          "sha256": "5f0b606294a51bdc2c3839c282db294ce48fe6b8ae379dca0e1fee12d849a9d1"
+        },
+        "trained-run-result.json": {
+          "bytes": 105518,
+          "sha256": "06ebcee22e200f02832b632f8c18b6614a3aaf51c66284adadf5253dbb0bf656"
+        }
+      },
       "identity": "b08_immediate",
-      "manifest_authenticated": true,
       "outcome_files_parsed": false,
       "parent_pipeline_id": 67437544,
       "parent_status": "success",
@@ -277,16 +772,49 @@
     },
     {
       "artifacts_manifest_sha256": "7d34d5b4296af494134063cd09b8ac6df0876bec8fc1ecc6b1ee9351b0eb61d8",
-      "authenticated": false,
+      "authenticated": true,
       "block_id": "b08",
-      "canonical_job_id": 436230921,
-      "canonical_job_role": "logs_after",
+      "canonical_job_id": 436030175,
+      "canonical_job_role": "workload",
       "canonical_job_status": "success",
       "child_pipeline_id": 67437758,
-      "declared_file_count": 8,
-      "failure": "full byte authentication gated by incomplete 32-run manifest set",
+      "converted_weights_bytes": 1503300296,
+      "converted_weights_sha256": "654eef9cf9aad8b6e06c224cf831d75ab28ef8c19b9e2386dbb3ff60809f34c8",
+      "files": {
+        "evaluation/evaluation_data.json": {
+          "bytes": 12217016,
+          "sha256": "bb4dc4d8bb82e0a42365ae79d7ba9fdac023d8f0a945280d47bdb8a30c49feb6"
+        },
+        "lifecycle.jsonl": {
+          "bytes": 134959289,
+          "sha256": "15c0d5b5aa11177e157cf999f0626868ae811d89dbc438314f8bbc1dc6b14b36"
+        },
+        "observer-duty.json": {
+          "bytes": 488,
+          "sha256": "d35292e3502c00d63085ab0b29ebdb2d3b53792b65942e989f9eb5de5a1f9087"
+        },
+        "opportunity.jsonl": {
+          "bytes": 19880665,
+          "sha256": "0377e7281782fd415e98b3d9f2e5dcc3cefb170b69ffcff5fea84b78b314ce91"
+        },
+        "prompt-manifest.json": {
+          "bytes": 68825,
+          "sha256": "469a34a176febe9d15c5c6d967ff21f135a43cb20a7cb7d5ae1a53066e6b3a0a"
+        },
+        "terminal-policy/resolved_config.json": {
+          "bytes": 10710,
+          "sha256": "f0ec0444d5342badfbacebd8fdb1935d853fa5c1e0d50208e7e72a54dec74a36"
+        },
+        "terminal-policy/terminal_policy_export.json": {
+          "bytes": 240,
+          "sha256": "5f0b606294a51bdc2c3839c282db294ce48fe6b8ae379dca0e1fee12d849a9d1"
+        },
+        "trained-run-result.json": {
+          "bytes": 105516,
+          "sha256": "42eaed20dc425516eac4969140e23d74442a04df14e496cccd7d237465955830"
+        }
+      },
       "identity": "b08_mixed_d5",
-      "manifest_authenticated": true,
       "outcome_files_parsed": false,
       "parent_pipeline_id": 67437496,
       "parent_status": "success",
@@ -295,16 +823,49 @@
     },
     {
       "artifacts_manifest_sha256": "29198320691db2754fbe1b142b2fdf6f73e545cd2a27a1f2df60289291e6a30b",
-      "authenticated": false,
+      "authenticated": true,
       "block_id": "b09",
-      "canonical_job_id": 436033296,
-      "canonical_job_role": "logs_after",
+      "canonical_job_id": 436033295,
+      "canonical_job_role": "workload",
       "canonical_job_status": "success",
       "child_pipeline_id": 67438135,
-      "declared_file_count": 8,
-      "failure": "full byte authentication gated by incomplete 32-run manifest set",
+      "converted_weights_bytes": 1503300296,
+      "converted_weights_sha256": "03b9982545bf29b70c483d5677aa810b498c4f8b2c9d75ee45ef97956faf78e7",
+      "files": {
+        "evaluation/evaluation_data.json": {
+          "bytes": 11703214,
+          "sha256": "6a3507940a42242d0b433d43fd1947100a1d4e94d193e41b1f1679d9834765e8"
+        },
+        "lifecycle.jsonl": {
+          "bytes": 123915131,
+          "sha256": "a4da4863d746ba8167d6e9d9aa5bbd57676b147b97f03f7627333f823b306851"
+        },
+        "observer-duty.json": {
+          "bytes": 484,
+          "sha256": "c1d191fabaa39445b1aebe44fc552877900bfec4dde865909c1687a191739220"
+        },
+        "opportunity.jsonl": {
+          "bytes": 18327080,
+          "sha256": "e5d139832ca651685131fbcb060c48b5088ae472259a621e49d84da5eaca08c9"
+        },
+        "prompt-manifest.json": {
+          "bytes": 68825,
+          "sha256": "469a34a176febe9d15c5c6d967ff21f135a43cb20a7cb7d5ae1a53066e6b3a0a"
+        },
+        "terminal-policy/resolved_config.json": {
+          "bytes": 10672,
+          "sha256": "3d73b0b0f0d65582b83997d414f069d8022be3fc3a2e187529120ee603f76a98"
+        },
+        "terminal-policy/terminal_policy_export.json": {
+          "bytes": 240,
+          "sha256": "5f0b606294a51bdc2c3839c282db294ce48fe6b8ae379dca0e1fee12d849a9d1"
+        },
+        "trained-run-result.json": {
+          "bytes": 105518,
+          "sha256": "d7feb2ab4558afc29d5c475eb2bdfa6ca1534b3129db0036e8df0cd332f5c460"
+        }
+      },
       "identity": "b09_immediate",
-      "manifest_authenticated": true,
       "outcome_files_parsed": false,
       "parent_pipeline_id": 67437755,
       "parent_status": "success",
@@ -313,16 +874,49 @@
     },
     {
       "artifacts_manifest_sha256": "5438c36790d8e96193e7bc599b4a3062932ac74b72ea05602e06f591d4e3a552",
-      "authenticated": false,
+      "authenticated": true,
       "block_id": "b09",
-      "canonical_job_id": 436201546,
-      "canonical_job_role": "logs_after",
+      "canonical_job_id": 436032886,
+      "canonical_job_role": "workload",
       "canonical_job_status": "success",
       "child_pipeline_id": 67438103,
-      "declared_file_count": 8,
-      "failure": "full byte authentication gated by incomplete 32-run manifest set",
+      "converted_weights_bytes": 1503300296,
+      "converted_weights_sha256": "eb89c3cc0b6f78e041dc09e821eca3590d32e26e6b3529af597a19b9210dffbf",
+      "files": {
+        "evaluation/evaluation_data.json": {
+          "bytes": 27732036,
+          "sha256": "66a59cbfeb039df1e3f6224e0bbc7b70089dca2347655dd47e8c52ec0595c1cd"
+        },
+        "lifecycle.jsonl": {
+          "bytes": 135541997,
+          "sha256": "71fdd3a53082e5e070a9bd427c4bfcd52b5f5bfa7f7a4ca52e1b150189813826"
+        },
+        "observer-duty.json": {
+          "bytes": 488,
+          "sha256": "db2b12fa9b7924e4defaf0a0bc014ac026e9ee587c64b5efef3c522b204577ae"
+        },
+        "opportunity.jsonl": {
+          "bytes": 19951744,
+          "sha256": "a03f1d74a49304c1bf3f33821196298952fbaca6c236c779c72cd857a6f95316"
+        },
+        "prompt-manifest.json": {
+          "bytes": 68825,
+          "sha256": "469a34a176febe9d15c5c6d967ff21f135a43cb20a7cb7d5ae1a53066e6b3a0a"
+        },
+        "terminal-policy/resolved_config.json": {
+          "bytes": 10710,
+          "sha256": "2df927f31d611b31af11550ea79e1f764233a8d18a135eb0a98440f43e445933"
+        },
+        "terminal-policy/terminal_policy_export.json": {
+          "bytes": 240,
+          "sha256": "5f0b606294a51bdc2c3839c282db294ce48fe6b8ae379dca0e1fee12d849a9d1"
+        },
+        "trained-run-result.json": {
+          "bytes": 105516,
+          "sha256": "28f20dba3288db04b14801d26cf71f1d917b2a98ce7f98166b3c9fab8f46a3a7"
+        }
+      },
       "identity": "b09_mixed_d5",
-      "manifest_authenticated": true,
       "outcome_files_parsed": false,
       "parent_pipeline_id": 67437717,
       "parent_status": "success",
@@ -330,230 +924,720 @@
       "workload_duration_seconds": 6745.340931
     },
     {
-      "authenticated": false,
+      "artifacts_manifest_sha256": "c69f0be8f24d737b75e2e1b55c4c01b8e2e3d59e25bcccb6c9b149fc51ab4c53",
+      "authenticated": true,
       "block_id": "b10",
-      "canonical_job_id": 436041041,
-      "canonical_job_role": "logs_after",
+      "canonical_job_id": 436878779,
+      "canonical_job_role": "workload",
       "canonical_job_status": "success",
-      "child_pipeline_id": 67438865,
-      "failure": "HTTP Error 404: Not Found",
+      "child_pipeline_id": 67534508,
+      "converted_weights_bytes": 1503300296,
+      "converted_weights_sha256": "5443215c0f09d4a52e3f2f7b0576c0868fce5c2a2f0686cde5cb20df802e75d3",
+      "files": {
+        "evaluation/evaluation_data.json": {
+          "bytes": 11663573,
+          "sha256": "51ae8507853614682db18109b2c5cadcbf291a2141abf3327979a4d718ddd744"
+        },
+        "lifecycle.jsonl": {
+          "bytes": 125102704,
+          "sha256": "1cddb12ece6297664129e23966876c02e1481bc4ca91418d296c1d573f7bf7b2"
+        },
+        "observer-duty.json": {
+          "bytes": 482,
+          "sha256": "5bb51e3f7eaf87c8cfe31487825df0b40f1515cb96c73d3c7534d055a046eeca"
+        },
+        "opportunity.jsonl": {
+          "bytes": 18520177,
+          "sha256": "86e80e0c14d5367c4fdb513ddb62a5f1b3bd30c3fd6c48d1ceaef697cd623e7d"
+        },
+        "prompt-manifest.json": {
+          "bytes": 68825,
+          "sha256": "469a34a176febe9d15c5c6d967ff21f135a43cb20a7cb7d5ae1a53066e6b3a0a"
+        },
+        "terminal-policy/resolved_config.json": {
+          "bytes": 10672,
+          "sha256": "54b8400651b56d75b6167a978459ee8350071a2766638980d1b1836a30138899"
+        },
+        "terminal-policy/terminal_policy_export.json": {
+          "bytes": 240,
+          "sha256": "5f0b606294a51bdc2c3839c282db294ce48fe6b8ae379dca0e1fee12d849a9d1"
+        },
+        "trained-run-result.json": {
+          "bytes": 105518,
+          "sha256": "6b69df11b110c0966b9ef4b835aa6e131ddf4760ce3230501536b85a7dcb8066"
+        }
+      },
       "identity": "b10_immediate",
-      "manifest_authenticated": false,
       "outcome_files_parsed": false,
-      "parent_pipeline_id": 67438517,
-      "parent_status": "failed",
+      "parent_pipeline_id": 67534460,
+      "parent_status": "success",
       "regime": "immediate",
-      "workload_duration_seconds": 14472.829448
+      "workload_duration_seconds": 11251.84371
     },
     {
-      "authenticated": false,
+      "artifacts_manifest_sha256": "822495a212568e677d6343a72256252b5b6df463c8079c8fcd0e65f41713427e",
+      "authenticated": true,
       "block_id": "b10",
-      "canonical_job_id": 436043167,
-      "canonical_job_role": "logs_after",
+      "canonical_job_id": 436878839,
+      "canonical_job_role": "workload",
       "canonical_job_status": "success",
-      "child_pipeline_id": 67439027,
-      "failure": "HTTP Error 404: Not Found",
+      "child_pipeline_id": 67534513,
+      "converted_weights_bytes": 1503300296,
+      "converted_weights_sha256": "fb79cc5da2b63a857ea841e06389705e6510e312f426d30555ca58fd06518819",
+      "files": {
+        "evaluation/evaluation_data.json": {
+          "bytes": 12245310,
+          "sha256": "6a4b9d03ab5317d5547f5b10c66505dc4785f24f1e41c532ee29937646312516"
+        },
+        "lifecycle.jsonl": {
+          "bytes": 135131158,
+          "sha256": "79c169c33ec6f99b19e7b4f16e43e32eb49f04e1b2618b56c09146b00c677d7d"
+        },
+        "observer-duty.json": {
+          "bytes": 488,
+          "sha256": "12173577ed5d30450c6421acbf86171de0237b171bbaeb4f9398b1b9ef486a02"
+        },
+        "opportunity.jsonl": {
+          "bytes": 20021467,
+          "sha256": "8c1cc9d413cef931ece01ada73aad85b19f83e9c15565dc0d8110ec3bf01a9a6"
+        },
+        "prompt-manifest.json": {
+          "bytes": 68825,
+          "sha256": "469a34a176febe9d15c5c6d967ff21f135a43cb20a7cb7d5ae1a53066e6b3a0a"
+        },
+        "terminal-policy/resolved_config.json": {
+          "bytes": 10710,
+          "sha256": "e6d1e6965a3d74b85b2301675896e391bc18d1ce4d9851d3f8e209933eb2217b"
+        },
+        "terminal-policy/terminal_policy_export.json": {
+          "bytes": 240,
+          "sha256": "5f0b606294a51bdc2c3839c282db294ce48fe6b8ae379dca0e1fee12d849a9d1"
+        },
+        "trained-run-result.json": {
+          "bytes": 105516,
+          "sha256": "5ba457bf27c334b673c699bc9bbb60e0b55b845c51fdb2f2c3c5f6164dfa976c"
+        }
+      },
       "identity": "b10_mixed_d5",
-      "manifest_authenticated": false,
       "outcome_files_parsed": false,
-      "parent_pipeline_id": 67438624,
-      "parent_status": "failed",
+      "parent_pipeline_id": 67534461,
+      "parent_status": "success",
       "regime": "mixed_d5",
-      "workload_duration_seconds": 14460.148652
+      "workload_duration_seconds": 11562.031599
     },
     {
-      "authenticated": false,
+      "artifacts_manifest_sha256": "d756b015f13506b1a069b27f7779cdd889a3f734924a3d709712b6f983f05f90",
+      "authenticated": true,
       "block_id": "b11",
-      "canonical_job_id": 436047589,
-      "canonical_job_role": "logs_after",
+      "canonical_job_id": 436878852,
+      "canonical_job_role": "workload",
       "canonical_job_status": "success",
-      "child_pipeline_id": 67439657,
-      "failure": "HTTP Error 404: Not Found",
+      "child_pipeline_id": 67534517,
+      "converted_weights_bytes": 1503300296,
+      "converted_weights_sha256": "7123cdc0669f8b9f6a66370bd360a0823c2fc0ed6aa55a41fc2d458158bf7d49",
+      "files": {
+        "evaluation/evaluation_data.json": {
+          "bytes": 12774446,
+          "sha256": "c40c1c9cce1b040cedf5c40886755ecbf2445d6260a901377738068395c4b699"
+        },
+        "lifecycle.jsonl": {
+          "bytes": 124745892,
+          "sha256": "603e7b9337fa2c8c03635bf2ae2b3c010d49526e122aeebad0024bc96bc73900"
+        },
+        "observer-duty.json": {
+          "bytes": 484,
+          "sha256": "b5c99bbf3801e58d22f6b3bd5402096376c2416de2e2032531aa70cb47aea7a9"
+        },
+        "opportunity.jsonl": {
+          "bytes": 18555655,
+          "sha256": "c91c88905106dc2287556b3f058f22b83dcf999538bfe3f7c057f3ac30afe4fc"
+        },
+        "prompt-manifest.json": {
+          "bytes": 68825,
+          "sha256": "469a34a176febe9d15c5c6d967ff21f135a43cb20a7cb7d5ae1a53066e6b3a0a"
+        },
+        "terminal-policy/resolved_config.json": {
+          "bytes": 10672,
+          "sha256": "db2aaad6999cc07eb799276a10d61d7edf6a8194c039532577510426a23f5a2c"
+        },
+        "terminal-policy/terminal_policy_export.json": {
+          "bytes": 240,
+          "sha256": "5f0b606294a51bdc2c3839c282db294ce48fe6b8ae379dca0e1fee12d849a9d1"
+        },
+        "trained-run-result.json": {
+          "bytes": 105518,
+          "sha256": "79c8e9900409dfeca23c4966d894e0c03a5df5cba664ed31770eb0051a510e43"
+        }
+      },
       "identity": "b11_immediate",
-      "manifest_authenticated": false,
       "outcome_files_parsed": false,
-      "parent_pipeline_id": 67439217,
-      "parent_status": "failed",
+      "parent_pipeline_id": 67534468,
+      "parent_status": "success",
       "regime": "immediate",
-      "workload_duration_seconds": 14471.477951
+      "workload_duration_seconds": 11427.186617
     },
     {
-      "authenticated": false,
+      "artifacts_manifest_sha256": "de0a2c43eb46bd7b283a51564e5859b1860c91fee7f56efa38b32f2533beea29",
+      "authenticated": true,
       "block_id": "b11",
-      "canonical_job_id": 436045526,
-      "canonical_job_role": "logs_after",
+      "canonical_job_id": 436879279,
+      "canonical_job_role": "workload",
       "canonical_job_status": "success",
-      "child_pipeline_id": 67439260,
-      "failure": "HTTP Error 404: Not Found",
+      "child_pipeline_id": 67534607,
+      "converted_weights_bytes": 1503300296,
+      "converted_weights_sha256": "05515e4a134fc45426cf2b74db0bf33444aea68e6b348cd93bc4ffde15810715",
+      "files": {
+        "evaluation/evaluation_data.json": {
+          "bytes": 11333995,
+          "sha256": "d59d1fb66407cc02593bb8c889ca3790dbc9ac5136f468f10db58cff2bc939c6"
+        },
+        "lifecycle.jsonl": {
+          "bytes": 133460832,
+          "sha256": "298bf04a39012d6d57b418c6fec3d3a330554e32d7379395a463033b2e992aad"
+        },
+        "observer-duty.json": {
+          "bytes": 488,
+          "sha256": "72918ec64a35b0d693a4eacb941e56a41c439c7182b2071d7cf21b5e20de23ed"
+        },
+        "opportunity.jsonl": {
+          "bytes": 19779571,
+          "sha256": "5c8c9fdcba2f3f4f090f890fd7ddb420292f2539e48e64880bbf1e54e3846cdb"
+        },
+        "prompt-manifest.json": {
+          "bytes": 68825,
+          "sha256": "469a34a176febe9d15c5c6d967ff21f135a43cb20a7cb7d5ae1a53066e6b3a0a"
+        },
+        "terminal-policy/resolved_config.json": {
+          "bytes": 10710,
+          "sha256": "58dcffdeb373d22f1c6acbea7fd55ed0ad0f2114d5e1bba8140ee63c4f5095d4"
+        },
+        "terminal-policy/terminal_policy_export.json": {
+          "bytes": 240,
+          "sha256": "5f0b606294a51bdc2c3839c282db294ce48fe6b8ae379dca0e1fee12d849a9d1"
+        },
+        "trained-run-result.json": {
+          "bytes": 105516,
+          "sha256": "96aad989b5d771d19b8673ee48f9644375f3a0b7cae19231c8c6951879d626b2"
+        }
+      },
       "identity": "b11_mixed_d5",
-      "manifest_authenticated": false,
       "outcome_files_parsed": false,
-      "parent_pipeline_id": 67439079,
-      "parent_status": "failed",
+      "parent_pipeline_id": 67534467,
+      "parent_status": "success",
       "regime": "mixed_d5",
-      "workload_duration_seconds": 14454.895836
+      "workload_duration_seconds": 11538.330114
     },
     {
-      "authenticated": false,
+      "artifacts_manifest_sha256": "42df62678d26f62369f6b23668cdc2c3342aef5f3f064629c6a127b003cc8897",
+      "authenticated": true,
       "block_id": "b12",
-      "canonical_job_id": 436049229,
-      "canonical_job_role": "logs_after",
+      "canonical_job_id": 436879365,
+      "canonical_job_role": "workload",
       "canonical_job_status": "success",
-      "child_pipeline_id": 67439829,
-      "failure": "HTTP Error 404: Not Found",
+      "child_pipeline_id": 67534612,
+      "converted_weights_bytes": 1503300296,
+      "converted_weights_sha256": "019ed6ca9b07af3989d34be29ab26ddcdb1a585c8fff7ccf59b40c4a8fee77a4",
+      "files": {
+        "evaluation/evaluation_data.json": {
+          "bytes": 12768531,
+          "sha256": "c4e3c8a70084f02d30f10b493f62e412eab74153f507fa756756ab174e6bd45a"
+        },
+        "lifecycle.jsonl": {
+          "bytes": 120977208,
+          "sha256": "d3083c020e949b5904a044a20328f727d59f0ffc411510d7d00b33876f3b53f3"
+        },
+        "observer-duty.json": {
+          "bytes": 484,
+          "sha256": "c71f617975f89ac4900d32512de07c99c569f53411da0e5bee8fe5c8b265de2a"
+        },
+        "opportunity.jsonl": {
+          "bytes": 17981254,
+          "sha256": "6ec4a5cbfc4a61e59bf4447409b740aa21635c874c55f794584fe7f1d4d43840"
+        },
+        "prompt-manifest.json": {
+          "bytes": 68825,
+          "sha256": "469a34a176febe9d15c5c6d967ff21f135a43cb20a7cb7d5ae1a53066e6b3a0a"
+        },
+        "terminal-policy/resolved_config.json": {
+          "bytes": 10672,
+          "sha256": "5952b296770f2da47aba94251e1851697dadb6220b8bc02c9b3fc14d6a22207a"
+        },
+        "terminal-policy/terminal_policy_export.json": {
+          "bytes": 240,
+          "sha256": "5f0b606294a51bdc2c3839c282db294ce48fe6b8ae379dca0e1fee12d849a9d1"
+        },
+        "trained-run-result.json": {
+          "bytes": 105518,
+          "sha256": "bdf20a88bb5dd6475bdda38814d5122d4a57df014192e719ef75a9538b1564c8"
+        }
+      },
       "identity": "b12_immediate",
-      "manifest_authenticated": false,
       "outcome_files_parsed": false,
-      "parent_pipeline_id": 67439677,
-      "parent_status": "failed",
+      "parent_pipeline_id": 67534471,
+      "parent_status": "success",
       "regime": "immediate",
-      "workload_duration_seconds": 14456.406834
+      "workload_duration_seconds": 10900.761975
     },
     {
-      "authenticated": false,
+      "artifacts_manifest_sha256": "d3e6de246c890142dd5e8dc308cede6ec41435ae0f404ba533e7fa15a1e80ccc",
+      "authenticated": true,
       "block_id": "b12",
-      "canonical_job_id": 436048855,
-      "canonical_job_role": "logs_after",
+      "canonical_job_id": 436879344,
+      "canonical_job_role": "workload",
       "canonical_job_status": "success",
-      "child_pipeline_id": 67439797,
-      "failure": "HTTP Error 404: Not Found",
+      "child_pipeline_id": 67534609,
+      "converted_weights_bytes": 1503300296,
+      "converted_weights_sha256": "03848650d487419d5b0488eff9de3bb379e3e9b95d86be87e3cf5512bd715746",
+      "files": {
+        "evaluation/evaluation_data.json": {
+          "bytes": 12792678,
+          "sha256": "4170be1ca461b815834814da9fe6c8d0e28b7d0c2622bc79f5d836641ff40f4f"
+        },
+        "lifecycle.jsonl": {
+          "bytes": 134882741,
+          "sha256": "1a70abe0021f47d9bf52ebddfa7da0524df9d26a3d1694649282d3305cafc9b0"
+        },
+        "observer-duty.json": {
+          "bytes": 488,
+          "sha256": "247c5f730b692fc19038241d852df59e9596978239627288237d7274ca060ede"
+        },
+        "opportunity.jsonl": {
+          "bytes": 19962688,
+          "sha256": "df9d6f6a2cdf808ec04b9626961bb6e9eb21425c84577a88392a1a763d9fe943"
+        },
+        "prompt-manifest.json": {
+          "bytes": 68825,
+          "sha256": "469a34a176febe9d15c5c6d967ff21f135a43cb20a7cb7d5ae1a53066e6b3a0a"
+        },
+        "terminal-policy/resolved_config.json": {
+          "bytes": 10710,
+          "sha256": "1e0b918f3bd64c840671d2ff2bf0a22022cb16def43cc5fdfeddc7223fc0dbeb"
+        },
+        "terminal-policy/terminal_policy_export.json": {
+          "bytes": 240,
+          "sha256": "5f0b606294a51bdc2c3839c282db294ce48fe6b8ae379dca0e1fee12d849a9d1"
+        },
+        "trained-run-result.json": {
+          "bytes": 105516,
+          "sha256": "dfd32feac1ca7e2c9fdc17c7079ab482c544c59c64f5d409501667a6dd734c47"
+        }
+      },
       "identity": "b12_mixed_d5",
-      "manifest_authenticated": false,
       "outcome_files_parsed": false,
-      "parent_pipeline_id": 67439611,
-      "parent_status": "failed",
+      "parent_pipeline_id": 67534473,
+      "parent_status": "success",
       "regime": "mixed_d5",
-      "workload_duration_seconds": 14455.456856
+      "workload_duration_seconds": 11644.025433
     },
     {
-      "authenticated": false,
+      "artifacts_manifest_sha256": "2f0d10126dc3cd27bccdc9926a1d28f2963b481659dbbf75279877ae2a047544",
+      "authenticated": true,
       "block_id": "b13",
-      "canonical_job_id": 436051073,
-      "canonical_job_role": "logs_after",
+      "canonical_job_id": 436879462,
+      "canonical_job_role": "workload",
       "canonical_job_status": "success",
-      "child_pipeline_id": 67440083,
-      "failure": "HTTP Error 404: Not Found",
+      "child_pipeline_id": 67534618,
+      "converted_weights_bytes": 1503300296,
+      "converted_weights_sha256": "9fcd93f575d15b6a7b326a8ce0c3d32d57d9b8f515657959291e5dd59c8f24c2",
+      "files": {
+        "evaluation/evaluation_data.json": {
+          "bytes": 11806342,
+          "sha256": "2c8774fbb2812acd898803aac097b97f9a58cd4b6ff77ede45becd02882942a1"
+        },
+        "lifecycle.jsonl": {
+          "bytes": 121904547,
+          "sha256": "2fda6be1579bd9918ab01038ac76d82c91c204f182ff92f6eb1b942a868e4996"
+        },
+        "observer-duty.json": {
+          "bytes": 484,
+          "sha256": "821c7f366fc88ad890ebc04d51c28fbdcad725c14be1a4471e4e435f593e0e7b"
+        },
+        "opportunity.jsonl": {
+          "bytes": 18102465,
+          "sha256": "ebd2db76362a48a9fd1ec9441638d7f2f857d4d3139dcd920fc3ae58f000ee14"
+        },
+        "prompt-manifest.json": {
+          "bytes": 68825,
+          "sha256": "469a34a176febe9d15c5c6d967ff21f135a43cb20a7cb7d5ae1a53066e6b3a0a"
+        },
+        "terminal-policy/resolved_config.json": {
+          "bytes": 10672,
+          "sha256": "cdf95880e2b6792f93d345134fc734b6a15099bb85600522a74a4a5c75beebd4"
+        },
+        "terminal-policy/terminal_policy_export.json": {
+          "bytes": 240,
+          "sha256": "5f0b606294a51bdc2c3839c282db294ce48fe6b8ae379dca0e1fee12d849a9d1"
+        },
+        "trained-run-result.json": {
+          "bytes": 105518,
+          "sha256": "939296bc20e0512b8c004d70086081000264fe57dc3fbeaa63de0f3a1452c8de"
+        }
+      },
       "identity": "b13_immediate",
-      "manifest_authenticated": false,
       "outcome_files_parsed": false,
-      "parent_pipeline_id": 67439832,
-      "parent_status": "failed",
+      "parent_pipeline_id": 67534477,
+      "parent_status": "success",
       "regime": "immediate",
-      "workload_duration_seconds": 14471.019855
+      "workload_duration_seconds": 11106.984482
     },
     {
-      "authenticated": false,
+      "artifacts_manifest_sha256": "7f8174d394a64d4aef9363719920a2b1120034d3bf55c89f323b7b288acb71ef",
+      "authenticated": true,
       "block_id": "b13",
-      "canonical_job_id": 436052607,
-      "canonical_job_role": "logs_after",
+      "canonical_job_id": 436879477,
+      "canonical_job_role": "workload",
       "canonical_job_status": "success",
-      "child_pipeline_id": 67440268,
-      "failure": "HTTP Error 404: Not Found",
+      "child_pipeline_id": 67534621,
+      "converted_weights_bytes": 1503300296,
+      "converted_weights_sha256": "e050e12a2b2a8fd855e4198d4127ee49b839b8977b152272885cc7e2345b9b98",
+      "files": {
+        "evaluation/evaluation_data.json": {
+          "bytes": 13179488,
+          "sha256": "43562b17a43773d0e7580889f77b359e352b07432fc813488171a51ebd595257"
+        },
+        "lifecycle.jsonl": {
+          "bytes": 135567061,
+          "sha256": "f565153c3a1c50df33007f654de89d968cd8de507de01d90ce7e48ac43653d8c"
+        },
+        "observer-duty.json": {
+          "bytes": 487,
+          "sha256": "9782071d3fb656612906dbe24c3498a63217cf5dd9780c3dcb79a00aca9403af"
+        },
+        "opportunity.jsonl": {
+          "bytes": 20058714,
+          "sha256": "686181525942d1b10a497cc12ab5960dc1ba36658a4853ef13413c05f5fd6576"
+        },
+        "prompt-manifest.json": {
+          "bytes": 68825,
+          "sha256": "469a34a176febe9d15c5c6d967ff21f135a43cb20a7cb7d5ae1a53066e6b3a0a"
+        },
+        "terminal-policy/resolved_config.json": {
+          "bytes": 10710,
+          "sha256": "f73391ec2a694cb3aedf9b0547412c61224957e9848bfd7f967bcab293450575"
+        },
+        "terminal-policy/terminal_policy_export.json": {
+          "bytes": 240,
+          "sha256": "5f0b606294a51bdc2c3839c282db294ce48fe6b8ae379dca0e1fee12d849a9d1"
+        },
+        "trained-run-result.json": {
+          "bytes": 105516,
+          "sha256": "77c44a57b2f2e3fe20c3f64ff1ec7bd00166a67a67bd84f3ca1e513afa0bf6aa"
+        }
+      },
       "identity": "b13_mixed_d5",
-      "manifest_authenticated": false,
       "outcome_files_parsed": false,
-      "parent_pipeline_id": 67439992,
-      "parent_status": "failed",
+      "parent_pipeline_id": 67534478,
+      "parent_status": "success",
       "regime": "mixed_d5",
-      "workload_duration_seconds": 14456.583881
+      "workload_duration_seconds": 11487.522533
     },
     {
-      "authenticated": false,
+      "artifacts_manifest_sha256": "52be8d286e95350ab387d254060bc1571b5180778162e59c8146ec64a0d34cf8",
+      "authenticated": true,
       "block_id": "b14",
-      "canonical_job_id": 436054841,
-      "canonical_job_role": "logs_after",
+      "canonical_job_id": 436879513,
+      "canonical_job_role": "workload",
       "canonical_job_status": "success",
-      "child_pipeline_id": 67440474,
-      "failure": "HTTP Error 404: Not Found",
+      "child_pipeline_id": 67534625,
+      "converted_weights_bytes": 1503300296,
+      "converted_weights_sha256": "270b214bb3a9d82589d7ba930f1752f8b8f22839de64c693fb48157f66970bb4",
+      "files": {
+        "evaluation/evaluation_data.json": {
+          "bytes": 20436313,
+          "sha256": "c1f24b34aff8386e3cea7b83b388c8c6ce94774806b0bb09b30d7ff2e17ba5f1"
+        },
+        "lifecycle.jsonl": {
+          "bytes": 123748944,
+          "sha256": "39b533442066107669529dba5e7dc3b4ee07a8347f6e64206faf340098846e2f"
+        },
+        "observer-duty.json": {
+          "bytes": 484,
+          "sha256": "69e5353d965ab90477345ae2b5fbc6e6be2cd2fece1aea1ccb540672981e67cc"
+        },
+        "opportunity.jsonl": {
+          "bytes": 18369889,
+          "sha256": "6d2a8e21f3c4a630fd902668e1f780d2a6eaa379590c03aebd7d36f1bba3edce"
+        },
+        "prompt-manifest.json": {
+          "bytes": 68825,
+          "sha256": "469a34a176febe9d15c5c6d967ff21f135a43cb20a7cb7d5ae1a53066e6b3a0a"
+        },
+        "terminal-policy/resolved_config.json": {
+          "bytes": 10672,
+          "sha256": "c326ec97f007d6bc672ae6ba66c59808d2c8028422e690909e304b8dd8964dc5"
+        },
+        "terminal-policy/terminal_policy_export.json": {
+          "bytes": 240,
+          "sha256": "5f0b606294a51bdc2c3839c282db294ce48fe6b8ae379dca0e1fee12d849a9d1"
+        },
+        "trained-run-result.json": {
+          "bytes": 105518,
+          "sha256": "a1344de7e482479c54ac1b1d48215433c9184f599dfcf522899df1d12f157470"
+        }
+      },
       "identity": "b14_immediate",
-      "manifest_authenticated": false,
       "outcome_files_parsed": false,
-      "parent_pipeline_id": 67440289,
-      "parent_status": "failed",
+      "parent_pipeline_id": 67534483,
+      "parent_status": "success",
       "regime": "immediate",
-      "workload_duration_seconds": 14471.806349
+      "workload_duration_seconds": 10819.33556
     },
     {
-      "authenticated": false,
+      "artifacts_manifest_sha256": "8c0a504f32baec7d532ed71a1b86c607fbf905b13482dd8cbb32d030ba79035e",
+      "authenticated": true,
       "block_id": "b14",
-      "canonical_job_id": 436054748,
-      "canonical_job_role": "logs_after",
+      "canonical_job_id": 436879510,
+      "canonical_job_role": "workload",
       "canonical_job_status": "success",
-      "child_pipeline_id": 67440461,
-      "failure": "HTTP Error 404: Not Found",
+      "child_pipeline_id": 67534623,
+      "converted_weights_bytes": 1503300296,
+      "converted_weights_sha256": "1ab7e0e69bc3ff119fdb6f3b47afa97329640f805e70c3695ef8bc345b01ccd3",
+      "files": {
+        "evaluation/evaluation_data.json": {
+          "bytes": 12935776,
+          "sha256": "814bb06c1b589d0851e027daadbff67aa1814959b9900160d360eb6252214163"
+        },
+        "lifecycle.jsonl": {
+          "bytes": 129629737,
+          "sha256": "4904eead8181ba2a2c2857aeb97696789cdcc9e5a71c2bb839621002d7f9a630"
+        },
+        "observer-duty.json": {
+          "bytes": 488,
+          "sha256": "e8d76b4aa9bfe3090e4529a3551947f6dc533074ded0ca58d2e2f180537e2602"
+        },
+        "opportunity.jsonl": {
+          "bytes": 19217056,
+          "sha256": "6717efea590970b96018cfa697509bd9925b84c3c1cf73c7697f1c0a64fd2560"
+        },
+        "prompt-manifest.json": {
+          "bytes": 68825,
+          "sha256": "469a34a176febe9d15c5c6d967ff21f135a43cb20a7cb7d5ae1a53066e6b3a0a"
+        },
+        "terminal-policy/resolved_config.json": {
+          "bytes": 10710,
+          "sha256": "112aa86639614244435e70d27ab40a98d7b066cce4f7455515ea86399cc7d12b"
+        },
+        "terminal-policy/terminal_policy_export.json": {
+          "bytes": 240,
+          "sha256": "5f0b606294a51bdc2c3839c282db294ce48fe6b8ae379dca0e1fee12d849a9d1"
+        },
+        "trained-run-result.json": {
+          "bytes": 105516,
+          "sha256": "da7e121d807dc4543ff0ab825a5467bd640def6cee1969b93a8b3a966cc87795"
+        }
+      },
       "identity": "b14_mixed_d5",
-      "manifest_authenticated": false,
       "outcome_files_parsed": false,
-      "parent_pipeline_id": 67440265,
-      "parent_status": "failed",
+      "parent_pipeline_id": 67534484,
+      "parent_status": "success",
       "regime": "mixed_d5",
-      "workload_duration_seconds": 14456.334752
+      "workload_duration_seconds": 11335.808534
     },
     {
-      "authenticated": false,
+      "artifacts_manifest_sha256": "28d62667ef3a3a5bf1a2237bae4282a9c68178840435d68f674c2d0a81212d5a",
+      "authenticated": true,
       "block_id": "b15",
-      "canonical_job_id": 436061646,
-      "canonical_job_role": "logs_after",
+      "canonical_job_id": 436879559,
+      "canonical_job_role": "workload",
       "canonical_job_status": "success",
-      "child_pipeline_id": 67441058,
-      "failure": "HTTP Error 404: Not Found",
+      "child_pipeline_id": 67534633,
+      "converted_weights_bytes": 1503300296,
+      "converted_weights_sha256": "8fdfab3cbea39628d34d9df449b5434ef86905be98651ec2420c63e38bc84dd4",
+      "files": {
+        "evaluation/evaluation_data.json": {
+          "bytes": 13007363,
+          "sha256": "23df28de1328f5c9287ae8c2956f098042e2827a689cdf375d5ba14f42408cd7"
+        },
+        "lifecycle.jsonl": {
+          "bytes": 123829736,
+          "sha256": "3e2ee9967ffdf64ecead9a0d927c40403e8324f3baa8a648925ef353587db34c"
+        },
+        "observer-duty.json": {
+          "bytes": 484,
+          "sha256": "4f33877045cd4ff1f8a2de2a808ed3c8f2322f8e123d75e48d7675c3741448e5"
+        },
+        "opportunity.jsonl": {
+          "bytes": 18374454,
+          "sha256": "cd0cb89c008939af463cf0b1d8e1cfafa28d7a3c827933d469e571ebf907050f"
+        },
+        "prompt-manifest.json": {
+          "bytes": 68825,
+          "sha256": "469a34a176febe9d15c5c6d967ff21f135a43cb20a7cb7d5ae1a53066e6b3a0a"
+        },
+        "terminal-policy/resolved_config.json": {
+          "bytes": 10672,
+          "sha256": "e355398234cf93076429d2779da6448ec4151ace1c623745c9db03d3e202ad86"
+        },
+        "terminal-policy/terminal_policy_export.json": {
+          "bytes": 240,
+          "sha256": "5f0b606294a51bdc2c3839c282db294ce48fe6b8ae379dca0e1fee12d849a9d1"
+        },
+        "trained-run-result.json": {
+          "bytes": 105518,
+          "sha256": "2c505661301a0e56847286b4512c2b943b932cc7c8b12061d91c313b057247d0"
+        }
+      },
       "identity": "b15_immediate",
-      "manifest_authenticated": false,
       "outcome_files_parsed": false,
-      "parent_pipeline_id": 67440869,
-      "parent_status": "failed",
+      "parent_pipeline_id": 67534491,
+      "parent_status": "success",
       "regime": "immediate",
-      "workload_duration_seconds": 14455.744095
+      "workload_duration_seconds": 10930.215165
     },
     {
-      "authenticated": false,
+      "artifacts_manifest_sha256": "c4962e2af644ec1fb654631226bbd55b85a89629daa19b32235883071ada7f25",
+      "authenticated": true,
       "block_id": "b15",
-      "canonical_job_id": 436056300,
-      "canonical_job_role": "logs_after",
+      "canonical_job_id": 436879550,
+      "canonical_job_role": "workload",
       "canonical_job_status": "success",
-      "child_pipeline_id": 67440651,
-      "failure": "HTTP Error 404: Not Found",
+      "child_pipeline_id": 67534630,
+      "converted_weights_bytes": 1503300296,
+      "converted_weights_sha256": "51f6a2c151881f21ed96ade171cf93c603696bd5f86f59c814fef418c7e4b066",
+      "files": {
+        "evaluation/evaluation_data.json": {
+          "bytes": 11549264,
+          "sha256": "53f523799595fd76c9dcdbdb8949783d0bea0609d935d65862c97ca6e39f766a"
+        },
+        "lifecycle.jsonl": {
+          "bytes": 134575775,
+          "sha256": "45060fc28fe5e76c979a5ce1321d4bc58e7c85fbdaa605e45117d2912adc851c"
+        },
+        "observer-duty.json": {
+          "bytes": 487,
+          "sha256": "7a58aa15e8621bae7ac57fce36e0f8a2e6692a67b4ff569d6a51229c54f02804"
+        },
+        "opportunity.jsonl": {
+          "bytes": 19887428,
+          "sha256": "2865338d96805e0bb71516d0155a9f29792c16ee560fa42a6cc172be7dd91f6d"
+        },
+        "prompt-manifest.json": {
+          "bytes": 68825,
+          "sha256": "469a34a176febe9d15c5c6d967ff21f135a43cb20a7cb7d5ae1a53066e6b3a0a"
+        },
+        "terminal-policy/resolved_config.json": {
+          "bytes": 10710,
+          "sha256": "d7763fbf52aaee89a1d8217b6df1d137ecb34103fd1d9f27a6c4c1be2faec549"
+        },
+        "terminal-policy/terminal_policy_export.json": {
+          "bytes": 240,
+          "sha256": "5f0b606294a51bdc2c3839c282db294ce48fe6b8ae379dca0e1fee12d849a9d1"
+        },
+        "trained-run-result.json": {
+          "bytes": 105516,
+          "sha256": "f4cfb875daf4fe1143366921355ce1a29c98e88b9e5fd5e72829866841691cee"
+        }
+      },
       "identity": "b15_mixed_d5",
-      "manifest_authenticated": false,
       "outcome_files_parsed": false,
-      "parent_pipeline_id": 67440494,
-      "parent_status": "failed",
+      "parent_pipeline_id": 67534489,
+      "parent_status": "success",
       "regime": "mixed_d5",
-      "workload_duration_seconds": 14471.254423
+      "workload_duration_seconds": 11373.872097
     },
     {
-      "authenticated": false,
+      "artifacts_manifest_sha256": "51c597e4fc4ac19c3a4c4725449933dec290bf599b51fe634208fbd3e00980b8",
+      "authenticated": true,
       "block_id": "b16",
-      "canonical_job_id": 436063645,
-      "canonical_job_role": "logs_after",
+      "canonical_job_id": 436879720,
+      "canonical_job_role": "workload",
       "canonical_job_status": "success",
-      "child_pipeline_id": 67441298,
-      "failure": "HTTP Error 404: Not Found",
+      "child_pipeline_id": 67534652,
+      "converted_weights_bytes": 1503300296,
+      "converted_weights_sha256": "82552b292bdfc08b21b3184414557f7af9f840ca7d33d5b1ace9cf90354ef7f9",
+      "files": {
+        "evaluation/evaluation_data.json": {
+          "bytes": 13771544,
+          "sha256": "7e134c84cd33e28b2c584577deabcf8edc4961c796629f606dc4e9844a94e5e6"
+        },
+        "lifecycle.jsonl": {
+          "bytes": 122303316,
+          "sha256": "2068cb521ecd2b7459026cff6cd1ace4a50c3fbf9fe71942156f7029fd2d1378"
+        },
+        "observer-duty.json": {
+          "bytes": 483,
+          "sha256": "1f737750d5391fb0833dadbf72f396b842a5d49515c5e81447486fe7c07ec128"
+        },
+        "opportunity.jsonl": {
+          "bytes": 18135981,
+          "sha256": "3abbb2d6da1f6502238514cf20352007b6a57bb0e5be5cbc2b04ed3ce1b41abc"
+        },
+        "prompt-manifest.json": {
+          "bytes": 68825,
+          "sha256": "469a34a176febe9d15c5c6d967ff21f135a43cb20a7cb7d5ae1a53066e6b3a0a"
+        },
+        "terminal-policy/resolved_config.json": {
+          "bytes": 10672,
+          "sha256": "ad318823adec27294fe70f4c0094db2b6490bfbf168374aaeeede09320ead5b6"
+        },
+        "terminal-policy/terminal_policy_export.json": {
+          "bytes": 240,
+          "sha256": "5f0b606294a51bdc2c3839c282db294ce48fe6b8ae379dca0e1fee12d849a9d1"
+        },
+        "trained-run-result.json": {
+          "bytes": 105518,
+          "sha256": "ed482fb5102de9ad1f5fe3b974acd1d8a67bd962e7f1005699af5b7d20b9c0b2"
+        }
+      },
       "identity": "b16_immediate",
-      "manifest_authenticated": false,
       "outcome_files_parsed": false,
-      "parent_pipeline_id": 67441099,
-      "parent_status": "failed",
+      "parent_pipeline_id": 67534498,
+      "parent_status": "success",
       "regime": "immediate",
-      "workload_duration_seconds": 14455.885516
+      "workload_duration_seconds": 10687.608545
     },
     {
-      "authenticated": false,
+      "artifacts_manifest_sha256": "3e28b3731f077390125ab1cd7ce9c07861cb4f9f7df6caba0bd0f64a79512fdb",
+      "authenticated": true,
       "block_id": "b16",
-      "canonical_job_id": 436063764,
-      "canonical_job_role": "logs_after",
+      "canonical_job_id": 436879670,
+      "canonical_job_role": "workload",
       "canonical_job_status": "success",
-      "child_pipeline_id": 67441315,
-      "failure": "HTTP Error 404: Not Found",
+      "child_pipeline_id": 67534642,
+      "converted_weights_bytes": 1503300296,
+      "converted_weights_sha256": "be70b1496eb7625f430bab340c063c8db72847cd13bf911f9d8f4e3bdbd101d1",
+      "files": {
+        "evaluation/evaluation_data.json": {
+          "bytes": 27766389,
+          "sha256": "9cf639e43ff71a634eea432ed0fc3e67cf863379ac1a102cd3a7093d0f408ee5"
+        },
+        "lifecycle.jsonl": {
+          "bytes": 135860271,
+          "sha256": "49c0181c1a99ff6a9c7cfb08abe2eca19754253e89a3edcc8f78a780c3d6809a"
+        },
+        "observer-duty.json": {
+          "bytes": 488,
+          "sha256": "0f52b53c76ac09bb46ca005906e2e9f566d5451aba5c96761115c7349d2856e2"
+        },
+        "opportunity.jsonl": {
+          "bytes": 20051322,
+          "sha256": "49b940801615f14a0d24c3e314a6aad03c0699377cb0cdba9df6b179908039f6"
+        },
+        "prompt-manifest.json": {
+          "bytes": 68825,
+          "sha256": "469a34a176febe9d15c5c6d967ff21f135a43cb20a7cb7d5ae1a53066e6b3a0a"
+        },
+        "terminal-policy/resolved_config.json": {
+          "bytes": 10710,
+          "sha256": "a85502f3524700cb4f2e76e5e78cec9c83d150ffcbe6b08c737bfd35ccea66b3"
+        },
+        "terminal-policy/terminal_policy_export.json": {
+          "bytes": 240,
+          "sha256": "5f0b606294a51bdc2c3839c282db294ce48fe6b8ae379dca0e1fee12d849a9d1"
+        },
+        "trained-run-result.json": {
+          "bytes": 105516,
+          "sha256": "dadbf558afb604b26494b0a3385cdba3d10be3bce7ffeababb0d4015bd5ecb65"
+        }
+      },
       "identity": "b16_mixed_d5",
-      "manifest_authenticated": false,
       "outcome_files_parsed": false,
-      "parent_pipeline_id": 67441115,
-      "parent_status": "failed",
+      "parent_pipeline_id": 67534495,
+      "parent_status": "success",
       "regime": "mixed_d5",
-      "workload_duration_seconds": 14485.458852
+      "workload_duration_seconds": 11404.523053
     }
   ],
   "schema": "m4-downstream-quality-terminal-authentication-v1",
-  "status": "FAIL_INCOMPLETE_ARTIFACTS"
+  "status": "PASS"
 }

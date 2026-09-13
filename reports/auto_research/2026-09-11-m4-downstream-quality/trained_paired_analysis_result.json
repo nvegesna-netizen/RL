@@ -1,0 +1,665 @@
+{
+  "as_treated_primary_analysis": false,
+  "automatic_retry_replacement_or_extension": false,
+  "block_differences_mixed_minus_immediate": [
+    -0.326171875,
+    -0.0458984375,
+    0.193359375,
+    -0.017578125,
+    0.0390625,
+    0.0,
+    -0.009765625,
+    -0.2119140625,
+    -0.1796875,
+    0.0126953125,
+    -0.0185546875,
+    0.0283203125,
+    -0.00390625,
+    0.3125,
+    -0.189453125,
+    -0.3017578125
+  ],
+  "causal_unit": "matched_training_seed_block",
+  "claim_boundary": "total effect of randomized release policy in the tested setting; exclusive M4 mediation is not identified",
+  "completion_gate_sha256": "54167b9517dc37b3ae05122e035c95da5bcd50f75d2326c1d6a841c7ddc43887",
+  "historical_v8_enters_primary_estimator": false,
+  "primary": {
+    "block_count": 16,
+    "conclusion": "INCONCLUSIVE",
+    "degrees_of_freedom": 15,
+    "estimate": -0.044921875,
+    "exact_sign_flip": {
+      "enumerated_assignments": 65536,
+      "estimate_maximum": 0.1181640625,
+      "estimate_minimum": -0.1181640625,
+      "two_sided_zero_effect_p_value": 0.29815673828125
+    },
+    "paired_bootstrap": {
+      "draws": 20000,
+      "percentile_interval_95": [
+        -0.12402496337890626,
+        0.034423828125
+      ],
+      "seed": 20261401,
+      "studentized_interval_95": [
+        -0.13185267966142988,
+        0.045976355089986
+      ]
+    },
+    "paired_sample_standard_deviation": 0.16706279726735773,
+    "practical_absolute_accuracy_margin": 0.02,
+    "standard_error": 0.04176569931683943,
+    "student_interval_95": [
+      -0.13394335582884473,
+      0.04409960582884473
+    ]
+  },
+  "prompt_count_is_degrees_of_freedom": false,
+  "protocol_sha256": "dbe7a4f7d1938ef43d24e536ccf9dd57110a01bab5e6cb511980218e472ef2c0",
+  "run_manifest_sha256": "a461e83c7dbccdefa1c5c779062e709f34bfc502639a3e7de663a717fefa93bf",
+  "runs": [
+    {
+      "accuracy": 0.326171875,
+      "block_id": "b01",
+      "correct": 334,
+      "job_id": 436019106,
+      "mechanism": {
+        "lifecycle_path": "lifecycle.jsonl",
+        "observer_duty_path": "observer-duty.json",
+        "opportunity_path": "opportunity.jsonl"
+      },
+      "pipeline_id": 67436067,
+      "regime": "immediate",
+      "result_sha256": "cd2bbd70b1477208d0a35f04f54e6cfa59e394aafd39a337713ac9b9851e5132",
+      "systems": {
+        "gpus": 2,
+        "wall_seconds": 5613
+      }
+    },
+    {
+      "accuracy": 0.0,
+      "block_id": "b01",
+      "correct": 0,
+      "job_id": 436019204,
+      "mechanism": {
+        "lifecycle_path": "lifecycle.jsonl",
+        "observer_duty_path": "observer-duty.json",
+        "opportunity_path": "opportunity.jsonl"
+      },
+      "pipeline_id": 67436059,
+      "regime": "mixed_d5",
+      "result_sha256": "b8f8456dc4dcd2d1434563bbf4c382b6400f49e0560737d992e709f610150f73",
+      "systems": {
+        "gpus": 2,
+        "wall_seconds": 6324
+      }
+    },
+    {
+      "accuracy": 0.3291015625,
+      "block_id": "b02",
+      "correct": 337,
+      "job_id": 436019846,
+      "mechanism": {
+        "lifecycle_path": "lifecycle.jsonl",
+        "observer_duty_path": "observer-duty.json",
+        "opportunity_path": "opportunity.jsonl"
+      },
+      "pipeline_id": 67436178,
+      "regime": "immediate",
+      "result_sha256": "1ef879ca4a3ef02169d8df98b0acaae5ba1ca9b2a50f42763eead3b696487fd8",
+      "systems": {
+        "gpus": 2,
+        "wall_seconds": 5781
+      }
+    },
+    {
+      "accuracy": 0.283203125,
+      "block_id": "b02",
+      "correct": 290,
+      "job_id": 436019942,
+      "mechanism": {
+        "lifecycle_path": "lifecycle.jsonl",
+        "observer_duty_path": "observer-duty.json",
+        "opportunity_path": "opportunity.jsonl"
+      },
+      "pipeline_id": 67436221,
+      "regime": "mixed_d5",
+      "result_sha256": "be0d3732e0d59df3297ebf0f41aa7184dfeb4d39ccfc4a3d79f05f4a948620f8",
+      "systems": {
+        "gpus": 2,
+        "wall_seconds": 6085
+      }
+    },
+    {
+      "accuracy": 0.138671875,
+      "block_id": "b03",
+      "correct": 142,
+      "job_id": 436021214,
+      "mechanism": {
+        "lifecycle_path": "lifecycle.jsonl",
+        "observer_duty_path": "observer-duty.json",
+        "opportunity_path": "opportunity.jsonl"
+      },
+      "pipeline_id": 67436306,
+      "regime": "immediate",
+      "result_sha256": "6540fdf180b37c102a0e8c1269ca4bada52343ee95d54c6cda0bab0db0ca1d18",
+      "systems": {
+        "gpus": 2,
+        "wall_seconds": 5759
+      }
+    },
+    {
+      "accuracy": 0.33203125,
+      "block_id": "b03",
+      "correct": 340,
+      "job_id": 436021115,
+      "mechanism": {
+        "lifecycle_path": "lifecycle.jsonl",
+        "observer_duty_path": "observer-duty.json",
+        "opportunity_path": "opportunity.jsonl"
+      },
+      "pipeline_id": 67436284,
+      "regime": "mixed_d5",
+      "result_sha256": "15660ecbedad5374dc8913247edc4e4c9f7a7df05cf36fe52955758f501ff454",
+      "systems": {
+        "gpus": 2,
+        "wall_seconds": 6026
+      }
+    },
+    {
+      "accuracy": 0.35546875,
+      "block_id": "b04",
+      "correct": 364,
+      "job_id": 436022709,
+      "mechanism": {
+        "lifecycle_path": "lifecycle.jsonl",
+        "observer_duty_path": "observer-duty.json",
+        "opportunity_path": "opportunity.jsonl"
+      },
+      "pipeline_id": 67436445,
+      "regime": "immediate",
+      "result_sha256": "b3c00326f341b536b0ffc74b85b9aedf5bdde471f18526123e3c7b7daf461294",
+      "systems": {
+        "gpus": 2,
+        "wall_seconds": 5551
+      }
+    },
+    {
+      "accuracy": 0.337890625,
+      "block_id": "b04",
+      "correct": 346,
+      "job_id": 436022684,
+      "mechanism": {
+        "lifecycle_path": "lifecycle.jsonl",
+        "observer_duty_path": "observer-duty.json",
+        "opportunity_path": "opportunity.jsonl"
+      },
+      "pipeline_id": 67436410,
+      "regime": "mixed_d5",
+      "result_sha256": "758643aafe11c03890180edb4824b5ea98910a6b4893009c380288d8bd5df92c",
+      "systems": {
+        "gpus": 2,
+        "wall_seconds": 6041
+      }
+    },
+    {
+      "accuracy": 0.2763671875,
+      "block_id": "b05",
+      "correct": 283,
+      "job_id": 436023739,
+      "mechanism": {
+        "lifecycle_path": "lifecycle.jsonl",
+        "observer_duty_path": "observer-duty.json",
+        "opportunity_path": "opportunity.jsonl"
+      },
+      "pipeline_id": 67436647,
+      "regime": "immediate",
+      "result_sha256": "8fc2d056d0c9ffea7f274d76db4abcdd161c6e1367166f664b0a44ac606c0bda",
+      "systems": {
+        "gpus": 2,
+        "wall_seconds": 5780
+      }
+    },
+    {
+      "accuracy": 0.3154296875,
+      "block_id": "b05",
+      "correct": 323,
+      "job_id": 436023914,
+      "mechanism": {
+        "lifecycle_path": "lifecycle.jsonl",
+        "observer_duty_path": "observer-duty.json",
+        "opportunity_path": "opportunity.jsonl"
+      },
+      "pipeline_id": 67436683,
+      "regime": "mixed_d5",
+      "result_sha256": "83f1a449c8f19d99e33eaf821533e0356a13fe8b0a4464840742f4aa3342a4e5",
+      "systems": {
+        "gpus": 2,
+        "wall_seconds": 6105
+      }
+    },
+    {
+      "accuracy": 0.0,
+      "block_id": "b06",
+      "correct": 0,
+      "job_id": 436024886,
+      "mechanism": {
+        "lifecycle_path": "lifecycle.jsonl",
+        "observer_duty_path": "observer-duty.json",
+        "opportunity_path": "opportunity.jsonl"
+      },
+      "pipeline_id": 67436835,
+      "regime": "immediate",
+      "result_sha256": "07ffa94b583508e787d7466c517dfd6c9f9b7f962aae4e586cfa7ddb7e64cba6",
+      "systems": {
+        "gpus": 2,
+        "wall_seconds": 5821
+      }
+    },
+    {
+      "accuracy": 0.0,
+      "block_id": "b06",
+      "correct": 0,
+      "job_id": 436026809,
+      "mechanism": {
+        "lifecycle_path": "lifecycle.jsonl",
+        "observer_duty_path": "observer-duty.json",
+        "opportunity_path": "opportunity.jsonl"
+      },
+      "pipeline_id": 67436895,
+      "regime": "mixed_d5",
+      "result_sha256": "e4c77d0a9fafe040c416227e847d339ff845fce5a666ad87d09bf93e27fff62e",
+      "systems": {
+        "gpus": 2,
+        "wall_seconds": 5513
+      }
+    },
+    {
+      "accuracy": 0.3369140625,
+      "block_id": "b07",
+      "correct": 345,
+      "job_id": 436028717,
+      "mechanism": {
+        "lifecycle_path": "lifecycle.jsonl",
+        "observer_duty_path": "observer-duty.json",
+        "opportunity_path": "opportunity.jsonl"
+      },
+      "pipeline_id": 67437218,
+      "regime": "immediate",
+      "result_sha256": "b4f59af8f7491d7a7dbb76a37318035e6dd3abfba4f07bb711fc3d6ab17c1bd8",
+      "systems": {
+        "gpus": 2,
+        "wall_seconds": 5658
+      }
+    },
+    {
+      "accuracy": 0.3271484375,
+      "block_id": "b07",
+      "correct": 335,
+      "job_id": 436029322,
+      "mechanism": {
+        "lifecycle_path": "lifecycle.jsonl",
+        "observer_duty_path": "observer-duty.json",
+        "opportunity_path": "opportunity.jsonl"
+      },
+      "pipeline_id": 67437265,
+      "regime": "mixed_d5",
+      "result_sha256": "415c0a214553cad0cf1c8bafcb57f752d47f5d32b8a12ea12edc670c2e22d1a9",
+      "systems": {
+        "gpus": 2,
+        "wall_seconds": 6067
+      }
+    },
+    {
+      "accuracy": 0.337890625,
+      "block_id": "b08",
+      "correct": 346,
+      "job_id": 436030519,
+      "mechanism": {
+        "lifecycle_path": "lifecycle.jsonl",
+        "observer_duty_path": "observer-duty.json",
+        "opportunity_path": "opportunity.jsonl"
+      },
+      "pipeline_id": 67437544,
+      "regime": "immediate",
+      "result_sha256": "06ebcee22e200f02832b632f8c18b6614a3aaf51c66284adadf5253dbb0bf656",
+      "systems": {
+        "gpus": 2,
+        "wall_seconds": 5779
+      }
+    },
+    {
+      "accuracy": 0.1259765625,
+      "block_id": "b08",
+      "correct": 129,
+      "job_id": 436030175,
+      "mechanism": {
+        "lifecycle_path": "lifecycle.jsonl",
+        "observer_duty_path": "observer-duty.json",
+        "opportunity_path": "opportunity.jsonl"
+      },
+      "pipeline_id": 67437496,
+      "regime": "mixed_d5",
+      "result_sha256": "42eaed20dc425516eac4969140e23d74442a04df14e496cccd7d237465955830",
+      "systems": {
+        "gpus": 2,
+        "wall_seconds": 6181
+      }
+    },
+    {
+      "accuracy": 0.1796875,
+      "block_id": "b09",
+      "correct": 184,
+      "job_id": 436033295,
+      "mechanism": {
+        "lifecycle_path": "lifecycle.jsonl",
+        "observer_duty_path": "observer-duty.json",
+        "opportunity_path": "opportunity.jsonl"
+      },
+      "pipeline_id": 67437755,
+      "regime": "immediate",
+      "result_sha256": "d7feb2ab4558afc29d5c475eb2bdfa6ca1534b3129db0036e8df0cd332f5c460",
+      "systems": {
+        "gpus": 2,
+        "wall_seconds": 5663
+      }
+    },
+    {
+      "accuracy": 0.0,
+      "block_id": "b09",
+      "correct": 0,
+      "job_id": 436032886,
+      "mechanism": {
+        "lifecycle_path": "lifecycle.jsonl",
+        "observer_duty_path": "observer-duty.json",
+        "opportunity_path": "opportunity.jsonl"
+      },
+      "pipeline_id": 67437717,
+      "regime": "mixed_d5",
+      "result_sha256": "28f20dba3288db04b14801d26cf71f1d917b2a98ce7f98166b3c9fab8f46a3a7",
+      "systems": {
+        "gpus": 2,
+        "wall_seconds": 6228
+      }
+    },
+    {
+      "accuracy": 0.2998046875,
+      "block_id": "b10",
+      "correct": 307,
+      "job_id": 436878779,
+      "mechanism": {
+        "lifecycle_path": "lifecycle.jsonl",
+        "observer_duty_path": "observer-duty.json",
+        "opportunity_path": "opportunity.jsonl"
+      },
+      "pipeline_id": 67534460,
+      "regime": "immediate",
+      "result_sha256": "6b69df11b110c0966b9ef4b835aa6e131ddf4760ce3230501536b85a7dcb8066",
+      "systems": {
+        "gpus": 2,
+        "wall_seconds": 5806
+      }
+    },
+    {
+      "accuracy": 0.3125,
+      "block_id": "b10",
+      "correct": 320,
+      "job_id": 436878839,
+      "mechanism": {
+        "lifecycle_path": "lifecycle.jsonl",
+        "observer_duty_path": "observer-duty.json",
+        "opportunity_path": "opportunity.jsonl"
+      },
+      "pipeline_id": 67534461,
+      "regime": "mixed_d5",
+      "result_sha256": "5ba457bf27c334b673c699bc9bbb60e0b55b845c51fdb2f2c3c5f6164dfa976c",
+      "systems": {
+        "gpus": 2,
+        "wall_seconds": 6006
+      }
+    },
+    {
+      "accuracy": 0.3251953125,
+      "block_id": "b11",
+      "correct": 333,
+      "job_id": 436878852,
+      "mechanism": {
+        "lifecycle_path": "lifecycle.jsonl",
+        "observer_duty_path": "observer-duty.json",
+        "opportunity_path": "opportunity.jsonl"
+      },
+      "pipeline_id": 67534468,
+      "regime": "immediate",
+      "result_sha256": "79c8e9900409dfeca23c4966d894e0c03a5df5cba664ed31770eb0051a510e43",
+      "systems": {
+        "gpus": 2,
+        "wall_seconds": 5684
+      }
+    },
+    {
+      "accuracy": 0.306640625,
+      "block_id": "b11",
+      "correct": 314,
+      "job_id": 436879279,
+      "mechanism": {
+        "lifecycle_path": "lifecycle.jsonl",
+        "observer_duty_path": "observer-duty.json",
+        "opportunity_path": "opportunity.jsonl"
+      },
+      "pipeline_id": 67534467,
+      "regime": "mixed_d5",
+      "result_sha256": "96aad989b5d771d19b8673ee48f9644375f3a0b7cae19231c8c6951879d626b2",
+      "systems": {
+        "gpus": 2,
+        "wall_seconds": 5791
+      }
+    },
+    {
+      "accuracy": 0.3173828125,
+      "block_id": "b12",
+      "correct": 325,
+      "job_id": 436879365,
+      "mechanism": {
+        "lifecycle_path": "lifecycle.jsonl",
+        "observer_duty_path": "observer-duty.json",
+        "opportunity_path": "opportunity.jsonl"
+      },
+      "pipeline_id": 67534471,
+      "regime": "immediate",
+      "result_sha256": "bdf20a88bb5dd6475bdda38814d5122d4a57df014192e719ef75a9538b1564c8",
+      "systems": {
+        "gpus": 2,
+        "wall_seconds": 5370
+      }
+    },
+    {
+      "accuracy": 0.345703125,
+      "block_id": "b12",
+      "correct": 354,
+      "job_id": 436879344,
+      "mechanism": {
+        "lifecycle_path": "lifecycle.jsonl",
+        "observer_duty_path": "observer-duty.json",
+        "opportunity_path": "opportunity.jsonl"
+      },
+      "pipeline_id": 67534473,
+      "regime": "mixed_d5",
+      "result_sha256": "dfd32feac1ca7e2c9fdc17c7079ab482c544c59c64f5d409501667a6dd734c47",
+      "systems": {
+        "gpus": 2,
+        "wall_seconds": 6076
+      }
+    },
+    {
+      "accuracy": 0.328125,
+      "block_id": "b13",
+      "correct": 336,
+      "job_id": 436879462,
+      "mechanism": {
+        "lifecycle_path": "lifecycle.jsonl",
+        "observer_duty_path": "observer-duty.json",
+        "opportunity_path": "opportunity.jsonl"
+      },
+      "pipeline_id": 67534477,
+      "regime": "immediate",
+      "result_sha256": "939296bc20e0512b8c004d70086081000264fe57dc3fbeaa63de0f3a1452c8de",
+      "systems": {
+        "gpus": 2,
+        "wall_seconds": 5620
+      }
+    },
+    {
+      "accuracy": 0.32421875,
+      "block_id": "b13",
+      "correct": 332,
+      "job_id": 436879477,
+      "mechanism": {
+        "lifecycle_path": "lifecycle.jsonl",
+        "observer_duty_path": "observer-duty.json",
+        "opportunity_path": "opportunity.jsonl"
+      },
+      "pipeline_id": 67534478,
+      "regime": "mixed_d5",
+      "result_sha256": "77c44a57b2f2e3fe20c3f64ff1ec7bd00166a67a67bd84f3ca1e513afa0bf6aa",
+      "systems": {
+        "gpus": 2,
+        "wall_seconds": 6119
+      }
+    },
+    {
+      "accuracy": 0.0,
+      "block_id": "b14",
+      "correct": 0,
+      "job_id": 436879513,
+      "mechanism": {
+        "lifecycle_path": "lifecycle.jsonl",
+        "observer_duty_path": "observer-duty.json",
+        "opportunity_path": "opportunity.jsonl"
+      },
+      "pipeline_id": 67534483,
+      "regime": "immediate",
+      "result_sha256": "a1344de7e482479c54ac1b1d48215433c9184f599dfcf522899df1d12f157470",
+      "systems": {
+        "gpus": 2,
+        "wall_seconds": 5472
+      }
+    },
+    {
+      "accuracy": 0.3125,
+      "block_id": "b14",
+      "correct": 320,
+      "job_id": 436879510,
+      "mechanism": {
+        "lifecycle_path": "lifecycle.jsonl",
+        "observer_duty_path": "observer-duty.json",
+        "opportunity_path": "opportunity.jsonl"
+      },
+      "pipeline_id": 67534484,
+      "regime": "mixed_d5",
+      "result_sha256": "da7e121d807dc4543ff0ab825a5467bd640def6cee1969b93a8b3a966cc87795",
+      "systems": {
+        "gpus": 2,
+        "wall_seconds": 5988
+      }
+    },
+    {
+      "accuracy": 0.3037109375,
+      "block_id": "b15",
+      "correct": 311,
+      "job_id": 436879559,
+      "mechanism": {
+        "lifecycle_path": "lifecycle.jsonl",
+        "observer_duty_path": "observer-duty.json",
+        "opportunity_path": "opportunity.jsonl"
+      },
+      "pipeline_id": 67534491,
+      "regime": "immediate",
+      "result_sha256": "2c505661301a0e56847286b4512c2b943b932cc7c8b12061d91c313b057247d0",
+      "systems": {
+        "gpus": 2,
+        "wall_seconds": 5747
+      }
+    },
+    {
+      "accuracy": 0.1142578125,
+      "block_id": "b15",
+      "correct": 117,
+      "job_id": 436879550,
+      "mechanism": {
+        "lifecycle_path": "lifecycle.jsonl",
+        "observer_duty_path": "observer-duty.json",
+        "opportunity_path": "opportunity.jsonl"
+      },
+      "pipeline_id": 67534489,
+      "regime": "mixed_d5",
+      "result_sha256": "f4cfb875daf4fe1143366921355ce1a29c98e88b9e5fd5e72829866841691cee",
+      "systems": {
+        "gpus": 2,
+        "wall_seconds": 6185
+      }
+    },
+    {
+      "accuracy": 0.3017578125,
+      "block_id": "b16",
+      "correct": 309,
+      "job_id": 436879720,
+      "mechanism": {
+        "lifecycle_path": "lifecycle.jsonl",
+        "observer_duty_path": "observer-duty.json",
+        "opportunity_path": "opportunity.jsonl"
+      },
+      "pipeline_id": 67534498,
+      "regime": "immediate",
+      "result_sha256": "ed482fb5102de9ad1f5fe3b974acd1d8a67bd962e7f1005699af5b7d20b9c0b2",
+      "systems": {
+        "gpus": 2,
+        "wall_seconds": 5539
+      }
+    },
+    {
+      "accuracy": 0.0,
+      "block_id": "b16",
+      "correct": 0,
+      "job_id": 436879670,
+      "mechanism": {
+        "lifecycle_path": "lifecycle.jsonl",
+        "observer_duty_path": "observer-duty.json",
+        "opportunity_path": "opportunity.jsonl"
+      },
+      "pipeline_id": 67534495,
+      "regime": "mixed_d5",
+      "result_sha256": "dadbf558afb604b26494b0a3385cdba3d10be3bce7ffeababb0d4015bd5ecb65",
+      "systems": {
+        "gpus": 2,
+        "wall_seconds": 6239
+      }
+    }
+  ],
+  "schema": "m4-downstream-quality-trained-paired-analysis-result-v1",
+  "sensitivities": {
+    "materiality_margin": {
+      "0.01": "INCONCLUSIVE",
+      "0.015": "INCONCLUSIVE",
+      "0.025": "INCONCLUSIVE",
+      "0.03": "INCONCLUSIVE"
+    },
+    "prompt_fixed_effect_clustered_by_training_block": {
+      "cannot_override_primary": true,
+      "cluster_count": 16,
+      "cluster_robust_standard_error": 0.04244404337534313,
+      "estimate": -0.044921875,
+      "method": "balanced_block_and_prompt_fixed_effects_clustered_by_training_block",
+      "prompt_count": 1024
+    },
+    "v8_base_correctness": {
+      "base_correctness_mean": 0.3603515625,
+      "cannot_override_primary": true,
+      "heterogeneity_slope": -0.06375804216057428,
+      "method": "prompt_level_effect_heterogeneity_on_v8_base_correctness",
+      "point_estimate_is_identical_by_balanced_fixed_prompt_design": true,
+      "standardized_mean_effect": -0.044921875,
+      "unadjusted_mean_effect": -0.044921875
+    }
+  },
+  "status": "COMPLETE"
+}

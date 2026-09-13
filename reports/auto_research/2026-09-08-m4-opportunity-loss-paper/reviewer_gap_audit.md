@@ -19,18 +19,23 @@ a systems measurement paper.
 **Reviewer concern:** The endpoint is proximal. A rollout can miss one gradient
 opportunity without changing final reward if later data compensate.
 
-**Current answer:** The manuscript explicitly limits its claim to normalized
-gradient-opportunity loss. Randomization, complete scoring, and mechanism
-evidence establish that proximal causal effect, but no final-quality endpoint
-exists.
+**Current answer:** A separately preregistered 16-pair training-run study now
+provides a final-quality endpoint. Mixed-d5 minus immediate terminal accuracy is
+-0.04492 with paired 95% interval [-0.13394, 0.04410]; the exact sign-flip
+`p`-value is 0.2982 and the registered conclusion is `INCONCLUSIVE`. The point
+estimate is harmful, but the interval also includes null and benefit, so the
+manuscript must continue to limit its headline claim to normalized
+gradient-opportunity loss.
 
-**Severity:** High for a broad learning-algorithm claim; medium for a systems
-measurement paper.
+**Severity:** High for a broad learning-algorithm claim; reduced for a systems
+measurement paper because the end-to-end question was tested prospectively and
+reported transparently.
 
-**Action:** Do not delay the first paper draft or submission package. If venue
-positioning demands an end-to-end claim, preregister a separate control-versus-
-delay training-outcome study with independent run-level seeds. This is the
-highest-value optional new experiment.
+**Action:** Add the complete inconclusive study to the paper or supplement with
+its full interval and instability caveat. Do not claim equivalence, confirmed
+quality harm, or mediation. Do not extend the frozen study post hoc. A future
+study would need a prospective stability intervention and power recalibrated to
+the observed run-level variance.
 
 ### 2. Are the two interactions independent replications?
 

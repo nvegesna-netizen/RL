@@ -1,0 +1,334 @@
+{
+  "all_selected_chains_terminal": true,
+  "all_selected_scientific_workloads_success": true,
+  "checked_at_utc": "2026-09-13T08:12:30.401119+00:00",
+  "complete_pair_count": 16,
+  "original_attempt_run_count": 18,
+  "outcome_or_artifact_content_inspected": false,
+  "run_count": 32,
+  "runs": [
+    {
+      "attempt_source": "original",
+      "child_pipeline_id": 67436276,
+      "child_status": "success",
+      "identity": "b01_immediate",
+      "parent_pipeline_id": 67436067,
+      "parent_status": "success",
+      "workload_job_id": 436019106,
+      "workload_status": "success"
+    },
+    {
+      "attempt_source": "original",
+      "child_pipeline_id": 67436291,
+      "child_status": "success",
+      "identity": "b01_mixed_d5",
+      "parent_pipeline_id": 67436059,
+      "parent_status": "success",
+      "workload_job_id": 436019204,
+      "workload_status": "success"
+    },
+    {
+      "attempt_source": "original",
+      "child_pipeline_id": 67436369,
+      "child_status": "failed",
+      "identity": "b02_immediate",
+      "parent_pipeline_id": 67436178,
+      "parent_status": "failed",
+      "workload_job_id": 436019846,
+      "workload_status": "success"
+    },
+    {
+      "attempt_source": "original",
+      "child_pipeline_id": 67436378,
+      "child_status": "success",
+      "identity": "b02_mixed_d5",
+      "parent_pipeline_id": 67436221,
+      "parent_status": "success",
+      "workload_job_id": 436019942,
+      "workload_status": "success"
+    },
+    {
+      "attempt_source": "original",
+      "child_pipeline_id": 67436497,
+      "child_status": "success",
+      "identity": "b03_immediate",
+      "parent_pipeline_id": 67436306,
+      "parent_status": "success",
+      "workload_job_id": 436021214,
+      "workload_status": "success"
+    },
+    {
+      "attempt_source": "original",
+      "child_pipeline_id": 67436484,
+      "child_status": "success",
+      "identity": "b03_mixed_d5",
+      "parent_pipeline_id": 67436284,
+      "parent_status": "success",
+      "workload_job_id": 436021115,
+      "workload_status": "success"
+    },
+    {
+      "attempt_source": "original",
+      "child_pipeline_id": 67436703,
+      "child_status": "success",
+      "identity": "b04_immediate",
+      "parent_pipeline_id": 67436445,
+      "parent_status": "success",
+      "workload_job_id": 436022709,
+      "workload_status": "success"
+    },
+    {
+      "attempt_source": "original",
+      "child_pipeline_id": 67436694,
+      "child_status": "success",
+      "identity": "b04_mixed_d5",
+      "parent_pipeline_id": 67436410,
+      "parent_status": "success",
+      "workload_job_id": 436022684,
+      "workload_status": "success"
+    },
+    {
+      "attempt_source": "original",
+      "child_pipeline_id": 67436830,
+      "child_status": "success",
+      "identity": "b05_immediate",
+      "parent_pipeline_id": 67436647,
+      "parent_status": "success",
+      "workload_job_id": 436023739,
+      "workload_status": "success"
+    },
+    {
+      "attempt_source": "original",
+      "child_pipeline_id": 67436846,
+      "child_status": "success",
+      "identity": "b05_mixed_d5",
+      "parent_pipeline_id": 67436683,
+      "parent_status": "success",
+      "workload_job_id": 436023914,
+      "workload_status": "success"
+    },
+    {
+      "attempt_source": "original",
+      "child_pipeline_id": 67436958,
+      "child_status": "success",
+      "identity": "b06_immediate",
+      "parent_pipeline_id": 67436835,
+      "parent_status": "success",
+      "workload_job_id": 436024886,
+      "workload_status": "success"
+    },
+    {
+      "attempt_source": "original",
+      "child_pipeline_id": 67437214,
+      "child_status": "success",
+      "identity": "b06_mixed_d5",
+      "parent_pipeline_id": 67436895,
+      "parent_status": "success",
+      "workload_job_id": 436026809,
+      "workload_status": "success"
+    },
+    {
+      "attempt_source": "original",
+      "child_pipeline_id": 67437550,
+      "child_status": "success",
+      "identity": "b07_immediate",
+      "parent_pipeline_id": 67437218,
+      "parent_status": "success",
+      "workload_job_id": 436028717,
+      "workload_status": "success"
+    },
+    {
+      "attempt_source": "original",
+      "child_pipeline_id": 67437636,
+      "child_status": "success",
+      "identity": "b07_mixed_d5",
+      "parent_pipeline_id": 67437265,
+      "parent_status": "success",
+      "workload_job_id": 436029322,
+      "workload_status": "success"
+    },
+    {
+      "attempt_source": "original",
+      "child_pipeline_id": 67437818,
+      "child_status": "success",
+      "identity": "b08_immediate",
+      "parent_pipeline_id": 67437544,
+      "parent_status": "success",
+      "workload_job_id": 436030519,
+      "workload_status": "success"
+    },
+    {
+      "attempt_source": "original",
+      "child_pipeline_id": 67437758,
+      "child_status": "success",
+      "identity": "b08_mixed_d5",
+      "parent_pipeline_id": 67437496,
+      "parent_status": "success",
+      "workload_job_id": 436030175,
+      "workload_status": "success"
+    },
+    {
+      "attempt_source": "original",
+      "child_pipeline_id": 67438135,
+      "child_status": "success",
+      "identity": "b09_immediate",
+      "parent_pipeline_id": 67437755,
+      "parent_status": "success",
+      "workload_job_id": 436033295,
+      "workload_status": "success"
+    },
+    {
+      "attempt_source": "original",
+      "child_pipeline_id": 67438103,
+      "child_status": "success",
+      "identity": "b09_mixed_d5",
+      "parent_pipeline_id": 67437717,
+      "parent_status": "success",
+      "workload_job_id": 436032886,
+      "workload_status": "success"
+    },
+    {
+      "attempt_source": "runtime_recovery_v2",
+      "child_pipeline_id": 67534508,
+      "child_status": "success",
+      "identity": "b10_immediate",
+      "parent_pipeline_id": 67534460,
+      "parent_status": "success",
+      "workload_job_id": 436878779,
+      "workload_status": "success"
+    },
+    {
+      "attempt_source": "runtime_recovery_v2",
+      "child_pipeline_id": 67534513,
+      "child_status": "success",
+      "identity": "b10_mixed_d5",
+      "parent_pipeline_id": 67534461,
+      "parent_status": "success",
+      "workload_job_id": 436878839,
+      "workload_status": "success"
+    },
+    {
+      "attempt_source": "runtime_recovery_v2",
+      "child_pipeline_id": 67534517,
+      "child_status": "success",
+      "identity": "b11_immediate",
+      "parent_pipeline_id": 67534468,
+      "parent_status": "success",
+      "workload_job_id": 436878852,
+      "workload_status": "success"
+    },
+    {
+      "attempt_source": "runtime_recovery_v2",
+      "child_pipeline_id": 67534607,
+      "child_status": "success",
+      "identity": "b11_mixed_d5",
+      "parent_pipeline_id": 67534467,
+      "parent_status": "success",
+      "workload_job_id": 436879279,
+      "workload_status": "success"
+    },
+    {
+      "attempt_source": "runtime_recovery_v2",
+      "child_pipeline_id": 67534612,
+      "child_status": "success",
+      "identity": "b12_immediate",
+      "parent_pipeline_id": 67534471,
+      "parent_status": "success",
+      "workload_job_id": 436879365,
+      "workload_status": "success"
+    },
+    {
+      "attempt_source": "runtime_recovery_v2",
+      "child_pipeline_id": 67534609,
+      "child_status": "success",
+      "identity": "b12_mixed_d5",
+      "parent_pipeline_id": 67534473,
+      "parent_status": "success",
+      "workload_job_id": 436879344,
+      "workload_status": "success"
+    },
+    {
+      "attempt_source": "runtime_recovery_v2",
+      "child_pipeline_id": 67534618,
+      "child_status": "success",
+      "identity": "b13_immediate",
+      "parent_pipeline_id": 67534477,
+      "parent_status": "success",
+      "workload_job_id": 436879462,
+      "workload_status": "success"
+    },
+    {
+      "attempt_source": "runtime_recovery_v2",
+      "child_pipeline_id": 67534621,
+      "child_status": "success",
+      "identity": "b13_mixed_d5",
+      "parent_pipeline_id": 67534478,
+      "parent_status": "success",
+      "workload_job_id": 436879477,
+      "workload_status": "success"
+    },
+    {
+      "attempt_source": "runtime_recovery_v2",
+      "child_pipeline_id": 67534625,
+      "child_status": "success",
+      "identity": "b14_immediate",
+      "parent_pipeline_id": 67534483,
+      "parent_status": "success",
+      "workload_job_id": 436879513,
+      "workload_status": "success"
+    },
+    {
+      "attempt_source": "runtime_recovery_v2",
+      "child_pipeline_id": 67534623,
+      "child_status": "success",
+      "identity": "b14_mixed_d5",
+      "parent_pipeline_id": 67534484,
+      "parent_status": "success",
+      "workload_job_id": 436879510,
+      "workload_status": "success"
+    },
+    {
+      "attempt_source": "runtime_recovery_v2",
+      "child_pipeline_id": 67534633,
+      "child_status": "success",
+      "identity": "b15_immediate",
+      "parent_pipeline_id": 67534491,
+      "parent_status": "success",
+      "workload_job_id": 436879559,
+      "workload_status": "success"
+    },
+    {
+      "attempt_source": "runtime_recovery_v2",
+      "child_pipeline_id": 67534630,
+      "child_status": "success",
+      "identity": "b15_mixed_d5",
+      "parent_pipeline_id": 67534489,
+      "parent_status": "success",
+      "workload_job_id": 436879550,
+      "workload_status": "success"
+    },
+    {
+      "attempt_source": "runtime_recovery_v2",
+      "child_pipeline_id": 67534652,
+      "child_status": "success",
+      "identity": "b16_immediate",
+      "parent_pipeline_id": 67534498,
+      "parent_status": "success",
+      "workload_job_id": 436879720,
+      "workload_status": "success"
+    },
+    {
+      "attempt_source": "runtime_recovery_v2",
+      "child_pipeline_id": 67534642,
+      "child_status": "success",
+      "identity": "b16_mixed_d5",
+      "parent_pipeline_id": 67534495,
+      "parent_status": "success",
+      "workload_job_id": 436879670,
+      "workload_status": "success"
+    }
+  ],
+  "runtime_recovery_v2_run_count": 14,
+  "schema": "m4-downstream-quality-runtime-recovery-v2-terminal-topology-v1",
+  "status": "TERMINAL_32_SELECTED_SCIENTIFIC_WORKLOADS_SUCCESS"
+}
