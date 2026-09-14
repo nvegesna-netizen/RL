@@ -16,6 +16,11 @@ from nemo_rl.algorithms.async_utils.scheduler_assay import (
     SchedulerAssayPlan,
     load_scheduler_assay_plan,
 )
+from nemo_rl.algorithms.async_utils.dapo_operational_mixture import (
+    DapoOperationalMixtureArm,
+    DapoOperationalMixturePlan,
+    load_dapo_operational_mixture_plan,
+)
 
 
 Sha256Hex = Annotated[str, StringConstraints(pattern=r"^[0-9a-f]{64}$")]
@@ -688,9 +693,13 @@ SchedulerProtocolPlan: TypeAlias = (
     | StructuredSchedulerCrossoverPlan
     | DapoSchedulerCrossoverPlan
     | SchedulerPressureResponsePlan
+    | DapoOperationalMixturePlan
 )
 SchedulerProtocolArm: TypeAlias = (
-    SchedulerAssayArm | StructuredSchedulerCrossoverArm | SchedulerPressureResponseArm
+    SchedulerAssayArm
+    | StructuredSchedulerCrossoverArm
+    | SchedulerPressureResponseArm
+    | DapoOperationalMixtureArm
 )
 
 
@@ -835,4 +844,9 @@ def load_scheduler_protocol(path: str | Path) -> SchedulerProtocolPlan:
         == "controlled_zero_update_scheduler_pressure_response_surface"
     ):
         return load_scheduler_pressure_response_plan(plan_path)
+    if (
+        value.get("analysis_status")
+        == "controlled_dapo_operational_mixture_zero_update_shadow"
+    ):
+        return load_dapo_operational_mixture_plan(plan_path)
     raise StructuredSchedulerCrossoverPlanError("unsupported scheduler protocol type")

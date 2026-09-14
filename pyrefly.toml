@@ -49,6 +49,7 @@ project-includes = [
   "nemo_rl/algorithms/async_utils/__init__.py",
   "nemo_rl/algorithms/async_utils/interfaces.py",
   "nemo_rl/algorithms/async_utils/fixed_pool.py",
+  "nemo_rl/algorithms/async_utils/dapo_operational_mixture.py",
   "nemo_rl/algorithms/async_utils/replay_buffer.py",
   "nemo_rl/algorithms/async_utils/scheduler_assay.py",
   "nemo_rl/algorithms/async_utils/scheduler_replay.py",

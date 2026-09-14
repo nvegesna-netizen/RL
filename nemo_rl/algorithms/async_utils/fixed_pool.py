@@ -230,6 +230,12 @@ DAPO_CROSSOVER_PROTOCOL_SHA256: Final[str] = (
 DAPO_CROSSOVER_SELECTION_SEEDS: Final[frozenset[int]] = frozenset(
     {48001, 48002, 48003, 48004}
 )
+DAPO_OPERATIONAL_MIXTURE_PROTOCOL_SHA256: Final[str] = (
+    "e9942c4afbec0b3b622079d1208eaba6a7c83a7759fc307cfd47293e797a9f63"
+)
+DAPO_OPERATIONAL_MIXTURE_SELECTION_SEEDS: Final[frozenset[int]] = frozenset(
+    {50001, 50002, 50003}
+)
 DAPO_OPERATIONAL_SOURCE_IDS: Final[tuple[str, str]] = (
     "dapo_math_a",
     "dapo_math_b",
@@ -1406,6 +1412,8 @@ def validate_dapo_operational_latency_discovery_manifest_design(
     expected_selection_seeds: frozenset[int] | None = None,
     expected_protocol_sha256: str | None = None,
     study_label: str = "DAPO discovery",
+    expected_prompt_groups: int = 16,
+    expected_cohorts: int = 4,
 ) -> None:
     """Enforce one deduplicated DAPO operational-latency discovery pool."""
     if expected_selection_seeds is None:
@@ -1443,14 +1451,19 @@ def validate_dapo_operational_latency_discovery_manifest_design(
         source_id: sum(item.task_name == source_id for item in manifest.items)
         for source_id in DAPO_OPERATIONAL_SOURCE_IDS
     }
-    if len(manifest.items) != 16 or counts != {
-        source_id: 8 for source_id in DAPO_OPERATIONAL_SOURCE_IDS
+    expected_rows_per_source = expected_prompt_groups // len(DAPO_OPERATIONAL_SOURCE_IDS)
+    if len(manifest.items) != expected_prompt_groups or counts != {
+        source_id: expected_rows_per_source for source_id in DAPO_OPERATIONAL_SOURCE_IDS
     }:
-        raise FixedPoolManifestError("DAPO discovery requires two 8-row shards")
+        raise FixedPoolManifestError(
+            f"{study_label} requires two {expected_rows_per_source}-row shards"
+        )
     if (
         any(item.source_id != item.task_name for item in manifest.items)
-        or len({item.source_prompt_id for item in manifest.items}) != 16
-        or len({item.repeated_prompt_cluster_id for item in manifest.items}) != 16
+        or len({item.source_prompt_id for item in manifest.items})
+        != expected_prompt_groups
+        or len({item.repeated_prompt_cluster_id for item in manifest.items})
+        != expected_prompt_groups
     ):
         raise FixedPoolManifestError("DAPO discovery prompts must be unique")
     by_cohort: dict[int, list[FixedPoolManifestItem]] = {}
@@ -1458,7 +1471,7 @@ def validate_dapo_operational_latency_discovery_manifest_design(
         by_cohort.setdefault(item.dispatch_cohort, []).append(item)
         if not 0 < item.input_token_count <= 2048:
             raise FixedPoolManifestError("DAPO discovery input-token bound violated")
-    if len(by_cohort) != 4 or any(
+    if len(by_cohort) != expected_cohorts or any(
         len(items) != 4
         or {item.decorrelation_block for item in items} != {f"cohort-{cohort}"}
         for cohort, items in by_cohort.items()
@@ -1467,7 +1480,8 @@ def validate_dapo_operational_latency_discovery_manifest_design(
 
     source_rows, _ = _load_materialized_source_rows(manifest)
     if any(
-        len(source_rows[source_id]) != 8 for source_id in DAPO_OPERATIONAL_SOURCE_IDS
+        len(source_rows[source_id]) != expected_rows_per_source
+        for source_id in DAPO_OPERATIONAL_SOURCE_IDS
     ):
         raise FixedPoolManifestError("DAPO discovery shard row count mismatch")
     canonical_prompts: set[str] = set()
@@ -1528,7 +1542,7 @@ def validate_dapo_operational_latency_discovery_manifest_design(
                 f"DAPO discovery unique-prompt identity mismatch at {item.ordinal}"
             )
         canonical_prompts.add(canonical_prompt_sha)
-    if len(canonical_prompts) != 16:
+    if len(canonical_prompts) != expected_prompt_groups:
         raise FixedPoolManifestError("DAPO discovery canonical prompts are not unique")
 
 
@@ -1541,6 +1555,20 @@ def validate_dapo_scheduler_crossover_manifest_design(
         expected_selection_seeds=DAPO_CROSSOVER_SELECTION_SEEDS,
         expected_protocol_sha256=DAPO_CROSSOVER_PROTOCOL_SHA256,
         study_label="DAPO crossover",
+    )
+
+
+def validate_dapo_operational_mixture_manifest_design(
+    manifest: FixedPoolManifest,
+) -> None:
+    """Enforce one immutable 32-prompt DAPO operational-mixture pool."""
+    validate_dapo_operational_latency_discovery_manifest_design(
+        manifest,
+        expected_selection_seeds=DAPO_OPERATIONAL_MIXTURE_SELECTION_SEEDS,
+        expected_protocol_sha256=DAPO_OPERATIONAL_MIXTURE_PROTOCOL_SHA256,
+        study_label="DAPO operational mixture",
+        expected_prompt_groups=32,
+        expected_cohorts=8,
     )
 
 
@@ -1727,6 +1755,8 @@ def validate_fixed_pool_manifest_design(
         validate_dapo_operational_latency_discovery_manifest_design(manifest)
     elif design_id == "dapo_math_scheduler_crossover_v1":
         validate_dapo_scheduler_crossover_manifest_design(manifest)
+    elif design_id == "dapo_math_operational_mixture_v1":
+        validate_dapo_operational_mixture_manifest_design(manifest)
     else:
         raise FixedPoolManifestError(f"unsupported fixed-pool design_id: {design_id!r}")
 

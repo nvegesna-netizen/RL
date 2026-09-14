@@ -36,6 +36,7 @@ from nemo_rl.algorithms.async_utils.scheduler_assay import (
     SchedulerAssayPlan,
 )
 from nemo_rl.algorithms.async_utils.structured_scheduler_crossover import (
+    DapoOperationalMixturePlan,
     DapoSchedulerCrossoverPlan,
     SchedulerPressureResponseArm,
     SchedulerPressureResponsePlan,
@@ -410,6 +411,7 @@ def setup_single_controller(
                     StructuredSchedulerCrossoverPlan,
                     DapoSchedulerCrossoverPlan,
                     SchedulerPressureResponsePlan,
+                    DapoOperationalMixturePlan,
                 ),
             ):
                 assay_arm = assay_plan.arm(assay_config.arm_id)
@@ -469,6 +471,36 @@ def setup_single_controller(
                 != assay_plan.hf_config_override_max_position_embeddings
             ):
                 raise ValueError("DAPO crossover runtime does not match frozen plan")
+            if isinstance(assay_plan, DapoOperationalMixturePlan) and (
+                generation_config.get("max_new_tokens") != assay_plan.max_new_tokens
+                or master_config.async_rl.max_inflight_prompts
+                != assay_plan.max_inflight_prompts
+                or master_config.async_rl.max_buffered_rollouts
+                != assay_arm.max_buffered_rollouts
+                or data_config["max_input_seq_length"]
+                != assay_plan.data_max_input_seq_length
+                or policy_config.get("hf_config_overrides", {}).get(
+                    "max_position_embeddings"
+                )
+                != assay_plan.hf_config_override_max_position_embeddings
+                or (
+                    getattr(
+                        master_config.async_rl.sampler,
+                        "max_staleness_versions",
+                        None,
+                    )
+                    if assay_arm.sampler == "ready_first"
+                    else getattr(
+                        master_config.async_rl.sampler,
+                        "max_lookahead_versions",
+                        None,
+                    )
+                )
+                != assay_arm.sampler_lookahead_versions
+            ):
+                raise ValueError(
+                    "DAPO operational-mixture runtime does not match frozen arm"
+                )
             if isinstance(assay_plan, SchedulerPressureResponsePlan):
                 if not isinstance(assay_arm, SchedulerPressureResponseArm):
                     raise ValueError(
