@@ -237,6 +237,20 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
             raise ValueError(
                 "async_rl.opportunity_at_risk_shadow.enabled=true requires output_path"
             )
+        assert opportunity_config.output_path is not None
+        assert opportunity_config.observer_duty_path is not None
+        assert async_config.lifecycle_audit_path is not None
+        shadow_audit_paths = (
+            Path(async_config.lifecycle_audit_path).resolve(),
+            Path(opportunity_config.output_path).resolve(),
+            Path(opportunity_config.observer_duty_path).resolve(),
+            Path(shadow_config.output_path).resolve(),
+        )
+        if len(set(shadow_audit_paths)) != len(shadow_audit_paths):
+            raise ValueError(
+                "lifecycle, opportunity, observer-duty, and OARS shadow paths "
+                "must be distinct"
+            )
         if (
             not math.isfinite(shadow_config.service_budget_multiplier)
             or shadow_config.service_budget_multiplier < 1.0

@@ -279,6 +279,25 @@ def test_opportunity_at_risk_shadow_requires_opportunity_audit() -> None:
         validate_single_controller_config(config)
 
 
+def test_opportunity_at_risk_shadow_requires_distinct_output_path() -> None:
+    config = _controlled_release_master_config(lifecycle_audit_path="lifecycle.jsonl")
+    config.policy["train_global_batch_size"] = 16
+    config.grpo.num_prompts_per_step = 4
+    config.async_rl.sampler = WeightFifoSamplerConfig(max_staleness_versions=1)
+    config.async_rl.gradient_opportunity_audit = GradientOpportunityAuditConfig(
+        enabled=True,
+        output_path="opportunity.jsonl",
+        observer_duty_path="duty.json",
+    )
+    config.async_rl.opportunity_at_risk_shadow = OpportunityAtRiskShadowConfig(
+        enabled=True,
+        output_path="./opportunity.jsonl",
+    )
+
+    with pytest.raises(ValueError, match="OARS shadow paths must be distinct"):
+        validate_single_controller_config(config)
+
+
 @pytest.mark.parametrize("duty_path", [None, ""])
 def test_gradient_opportunity_audit_requires_observer_duty_path(
     duty_path: str | None,
@@ -655,6 +674,7 @@ def _run_lifecycle_controller(
     ctrl._cancel_residual_buffer_groups = AsyncMock()
     ctrl._lifecycle_recorder = MagicMock()
     ctrl._opportunity_recorder = None
+    ctrl._oars_shadow_recorder = None
     ctrl._observer_duty_meter = None
     ctrl._rollout_manager = MagicMock()
     ctrl._master_config = SimpleNamespace(grpo=SimpleNamespace(max_num_steps=128))
@@ -665,6 +685,8 @@ def _run_lifecycle_controller(
         gradient_opportunity_audit=SimpleNamespace(
             output_path=None, observer_duty_path=None
         ),
+        lifecycle_derived_opportunity_audit=SimpleNamespace(enabled=False),
+        opportunity_at_risk_shadow=SimpleNamespace(output_path=None),
     )
     ctrl._logger = MagicMock()
     ctrl._train_steps = train_steps
@@ -693,6 +715,18 @@ def test_run_bounds_and_flushes_common_observer_duty() -> None:
     ctrl._observer_duty_meter.begin_active_window.assert_called_once_with()
     ctrl._observer_duty_meter.end_active_window.assert_called_once_with()
     ctrl._observer_duty_meter.flush_json.assert_called_once_with("duty.json")
+
+
+def test_run_flushes_oars_shadow_ledger() -> None:
+    ctrl = _run_lifecycle_controller()
+    ctrl._oars_shadow_recorder = MagicMock()
+    ctrl._async_cfg.opportunity_at_risk_shadow = SimpleNamespace(
+        output_path="oars.jsonl"
+    )
+
+    asyncio.run(ctrl.run())
+
+    ctrl._oars_shadow_recorder.flush_jsonl.assert_called_once_with("oars.jsonl")
 
 
 @pytest.mark.parametrize(

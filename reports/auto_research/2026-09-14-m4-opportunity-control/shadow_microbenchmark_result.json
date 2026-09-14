@@ -1,0 +1,33 @@
+{
+  "all_combinations_feasible": true,
+  "batch_groups": 4,
+  "benchmark_script_sha256": "478be3c3540b085feebf842352c63728c12b2973fdbe5d4b49d032cb041e2dc7",
+  "candidate_groups": 25,
+  "claim_boundary": "local_cpu_selector_latency_not_controller_end_to_end_latency_or_training_throughput",
+  "combinations_per_trial": 12650,
+  "deterministic_across_trials": true,
+  "elapsed_ns": {
+    "maximum": 10394375,
+    "median": 6336520,
+    "minimum": 5784334,
+    "p95_nearest_rank": 8039958
+  },
+  "environment": {
+    "machine": "arm64",
+    "platform": "macOS-26.5.2-arm64-arm-64bit-Mach-O",
+    "python": "3.13.14"
+  },
+  "implementation_path": "nemo_rl/algorithms/async_utils/opportunity_at_risk.py",
+  "implementation_sha256": "1167c389adfb8754446bbb2647ccd9ff73875549836c661bfb0571730621e813",
+  "proposed_group_ids": [
+    "g21",
+    "g22",
+    "g23",
+    "g24"
+  ],
+  "schema": "m4-opportunity-control-shadow-microbenchmark-v1",
+  "service_budget_satisfied": true,
+  "status": "COMPLETE_CPU_MICROBENCHMARK",
+  "trials": 250,
+  "warmup_trials": 20
+}
