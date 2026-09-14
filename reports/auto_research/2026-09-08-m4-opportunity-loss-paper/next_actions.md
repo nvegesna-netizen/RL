@@ -54,3 +54,16 @@ The current go/no-go is therefore:
 - another final-quality acquisition: **no-go unless separately preregistered
   with a stability intervention and variance-recalibrated power**;
 - manuscript, reproducibility, and artifact preparation: **go now**.
+
+## Post-manuscript novelty decision
+
+The completed secondary analysis and identification audit leave one material
+causal gap: shared-system interference. A prospective successor is frozen at
+`../2026-09-13-m4-saturation-spillover/prospective_protocol.json` (SHA-256
+`a51f182a95eb180a37a24bcb3401606e57a7a7acbcdf63b3b96ce7dfe7a16812`).
+It pairs 25% and 75% delay-saturation policies in 16 training-seed blocks and
+targets control spillover and total policy effects. This has higher scientific
+value than another model cell.
+
+The design is local only. No preflight, qualification, candidate package,
+training acquisition, EOS submission, retry, or extension is authorized.

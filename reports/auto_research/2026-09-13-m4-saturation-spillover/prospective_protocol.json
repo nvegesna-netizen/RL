@@ -1,0 +1,123 @@
+{
+  "schema": "m4-delay-saturation-spillover-protocol-v1",
+  "status": "FROZEN_LOCAL_DESIGN_NO_LAUNCH_AUTHORITY",
+  "predecessor_results_modified": false,
+  "scientific_question": "Does the prevalence of delayed groups change control-group opportunity loss or total system opportunity loss under shared asynchronous RL resources?",
+  "novelty_role": "separates direct assignment, spillover, and total policy effects under intentional shared-system interference",
+  "evidence_anchors": {
+    "downstream_secondary_sha256": "98feee9db8905e3cd45ff961e82db0133cec393ad5307e069e376780eed4ef3a",
+    "metric_discriminant_sha256": "9281f64bd3daf7e75b1c755075e564073b662cea2abc136d3adb26004436bfaf",
+    "planning_standard_deviation": 0.010455788473434488,
+    "planning_source": "paired SD of normalized realized opportunity-loss contrast in the completed 16-block downstream study",
+    "planning_only_not_estimator_input": true
+  },
+  "setting": {
+    "model": "Qwen/Qwen3-0.6B",
+    "workload": "OpenMathInstruct-2",
+    "algorithm": "asynchronous GRPO",
+    "learner_updates": 448,
+    "primary_start_versions": [8, 407],
+    "guard_start_versions": [408, 447],
+    "prompts_per_update": 4,
+    "generations_per_prompt": 8,
+    "train_global_batch_size": 32,
+    "maximum_staleness_versions": 1,
+    "maximum_inflight_prompts": 16,
+    "maximum_buffered_rollouts": 64,
+    "gpus_per_run": 2,
+    "terminal_quality_evaluation": false
+  },
+  "design": {
+    "matched_training_seed_blocks": 16,
+    "runs_per_block": 2,
+    "total_scientific_acquisitions": 32,
+    "saturation_policies": {
+      "low": {
+        "delayed_fraction": 0.25,
+        "arms": [
+          {"label": "control", "delay_seconds": 0.0, "mass": 3},
+          {"label": "d5", "delay_seconds": 5.0, "mass": 1}
+        ]
+      },
+      "high": {
+        "delayed_fraction": 0.75,
+        "arms": [
+          {"label": "control", "delay_seconds": 0.0, "mass": 1},
+          {"label": "d5", "delay_seconds": 5.0, "mass": 3}
+        ]
+      }
+    },
+    "training_seeds": [20261401, 20261402, 20261403, 20261404, 20261405, 20261406, 20261407, 20261408, 20261409, 20261410, 20261411, 20261412, 20261413, 20261414, 20261415, 20261416],
+    "low_assignment_seeds": [20261501, 20261502, 20261503, 20261504, 20261505, 20261506, 20261507, 20261508, 20261509, 20261510, 20261511, 20261512, 20261513, 20261514, 20261515, 20261516],
+    "high_assignment_seeds": [20261601, 20261602, 20261603, 20261604, 20261605, 20261606, 20261607, 20261608, 20261609, 20261610, 20261611, 20261612, 20261613, 20261614, 20261615, 20261616],
+    "assignment_domain_template": "m4-saturation-v1-{block_id}-{policy}",
+    "within_block_submission_order": "sha256('m4-saturation-v1-order|' + block_id)_integer_mod_2",
+    "rerandomization": false,
+    "replacement": false,
+    "optional_extension": false
+  },
+  "primary_estimands": {
+    "control_spillover": "Across matched blocks, high minus low saturation in mean(Q*D | assigned control), normalized by the pooled pre-release control mean Q within block.",
+    "total_policy": "Across matched blocks, high minus low saturation in sum(Q*D)/sum(Q) over all primary-window assignments.",
+    "causal_unit": "matched independent training-seed block",
+    "positive_direction": "higher delay saturation destroys more opportunity",
+    "claim_boundary": "Effects compare 75% with 25% saturation in this fixed setting; they do not identify production prevalence or a universal saturation curve."
+  },
+  "secondary_estimands": {
+    "direct_assignment_effect_low": "d5 minus control M4 contrast within 25% saturation",
+    "direct_assignment_effect_high": "d5 minus control M4 contrast within 75% saturation",
+    "direct_effect_modification": "high-saturation direct effect minus low-saturation direct effect",
+    "mechanism": ["direct_chain_rate", "version_advance", "delay_compliance", "observer_duty"],
+    "systems": ["learner_updates_per_second", "generated_tokens", "wall_time", "ready_buffer_depth"]
+  },
+  "inference": {
+    "primary_interval": "paired Student 95 percent interval over 16 block contrasts",
+    "primary_joint_control": "two-endpoint max-absolute-studentized paired-block bootstrap with 20000 draws and seed 20261701",
+    "report_unadjusted": true,
+    "missing_terminal_bounds": true,
+    "maximum_missing_fraction_per_policy_arm": 0.01,
+    "no_prompt_or_group_as_independent_replicate": true,
+    "direct_effect_inference": "version-clustered lag-4 HAC and 20000-draw circular block bootstrap within acquisition; combined equally over blocks",
+    "stopping_rule": "analyze exactly 16 complete authenticated blocks; otherwise incomplete; no variance-based extension"
+  },
+  "precision_and_capacity": {
+    "planning_n": 16,
+    "planning_sd": 0.010455788473434488,
+    "projected_student_half_width": 0.005571496397541587,
+    "precision_target_half_width": 0.006,
+    "spillover_variance_unknown": true,
+    "if_observed_precision_is_worse": "report_inconclusive_no_extension",
+    "wall_hours_each_cap": 4.0,
+    "h100_gpu_hours_each_cap": 8.0,
+    "aggregate_h100_gpu_hours_cap": 128.0,
+    "planning_reference_h100_gpu_hours": 104.2317
+  },
+  "artifact_contract": {
+    "lifecycle_schema": 4,
+    "pre_release_opportunity_required_for_every_primary_assignment": true,
+    "terminal_disposition_required_or_bounded": true,
+    "observer_duty_ceiling": 0.01,
+    "protocol_source_and_artifact_sha256_required": true,
+    "all_32_terminal_and_authenticated_before_outcome_analysis": true,
+    "large_raw_artifacts_outside_git": true
+  },
+  "execution_sequence": [
+    "credential_free_no_training_preflight",
+    "neutral_short_resource_and_support_qualification_if_separately_authorized",
+    "build_and_clean_room_validate_32_immutable_candidates",
+    "obtain_separate_scientific_acquisition_authority",
+    "submit_all_32_once_before_outcome_inspection",
+    "authenticate_completion_gate",
+    "run_frozen_analysis_once"
+  ],
+  "authority": {
+    "preflight_authorized": false,
+    "qualification_authorized": false,
+    "scientific_acquisition_authorized": false,
+    "eos_submission_authorized": false,
+    "training_authorized": false,
+    "model_access_authorized": false,
+    "automatic_retry": false,
+    "automatic_extension": false
+  }
+}

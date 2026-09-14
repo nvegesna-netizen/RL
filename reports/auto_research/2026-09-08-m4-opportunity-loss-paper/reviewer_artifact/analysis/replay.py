@@ -65,6 +65,12 @@ def published_checks() -> dict[str, object]:
     assert downstream["conclusion"] == "INCONCLUSIVE"
     assert math.isclose(downstream["estimate"], -0.044921875)
     assert downstream["student_interval_95"] == [-0.13394335582884473, 0.04409960582884473]
+    secondary = downstream["secondary"]
+    assert math.isclose(secondary["normalized_realized_opportunity_loss"]["estimate_mixed_d5_minus_immediate"], 0.007385549503757312)
+    assert math.isclose(secondary["opportunity_loss_accuracy_diagnostic"]["pearson_correlation"], -0.09593746695743842)
+    discriminant = result["metric_discriminant"]
+    assert discriminant["assignment_count"] == 106_653
+    assert discriminant["summary"]["positive_opportunity_lost_count"] == 23_254
     provenance = load(ROOT / "data/provenance.json")
     assert set(provenance["acquisitions"]) == {f"A{i}" for i in range(1, 15)}
     assert sum(item["full_window_assignments"] for item in provenance["acquisitions"].values()) == 106_653
@@ -76,6 +82,7 @@ def published_checks() -> dict[str, object]:
         "llama_3b_extension_assignments": 28_788,
         "downstream_quality_blocks": downstream["block_count"],
         "downstream_quality_runs": downstream["run_count"],
+        "metric_discriminant_assignments": discriminant["assignment_count"],
         "hac_correlation": synthesis["hac_correlation"],
         "bootstrap_correlation": synthesis["bootstrap_correlation"],
     }

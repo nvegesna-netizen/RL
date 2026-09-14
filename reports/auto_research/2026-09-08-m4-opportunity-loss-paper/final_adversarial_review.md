@@ -22,10 +22,10 @@ public URL or empirical raw-ledger access is claimed.
 
 | Object | SHA-256 | Structure |
 | --- | --- | --- |
-| Main review PDF | `ea3a29615709e61a57fd2b368ea69ec1471a4ffead59c30898ac1266643e9ad4` | PDF 1.5, letter, 6 pages; references begin on page 5 |
-| Supplement PDF | `2e45ce2de6a81237e265c98dba8363bcaf8cf74cf9f11bd4a0b262052b56ac3b` | PDF 1.5, letter, 3 pages |
-| Reviewer archive | `d5997a804807e32d70e6aebae16916b26f6c6c95e1db2416611b2cbadbbad254` | 27,649 bytes; 17 extracted files including manifest |
-| Archive manifest | `f514009ba6975e0e74099485d6cd8a7f5141aa84f679d9cef8944343e478805d` | 16 hashed members, A1--A14 external commitments, and downstream hash chain |
+| Main review PDF | `5f0e0d1dbaf157bad2e2cbccc0c857580830eb679338582a3bda25e35b722540` | PDF 1.5, letter, 7 pages; references begin on page 6 |
+| Supplement PDF | `f490ee8a78e2845830f6c15125319a25686a9e9b945a38c4fcb2e67702b0a575` | PDF 1.5, letter, 3 pages |
+| Reviewer archive | `010f2150058138aa526630a459bfdb44d9d35d6a1e32d19ec46b7d44bd40907f` | 29,627 bytes; 17 extracted files including manifest |
+| Archive manifest | `f350374c5ae9199625e476b3b29f372d8c82310d00482c640ab0bb90b5883719` | 16 hashed members, A1--A14 external commitments, downstream secondary analysis, and 106,653-assignment metric-discriminant summary |
 
 ## Adversarial checks
 
@@ -43,13 +43,16 @@ public URL or empirical raw-ledger access is claimed.
 | Downstream-quality promotion | Pass | The paper reports -0.04492 with paired 95% CI [-0.13394, 0.04410]. Because the interval crosses zero and both registered ±0.02 relevance bounds, it states that direction and practically relevant magnitude remain unresolved. |
 | Downstream unit inflation | Pass | All inference uses 16 matched seed blocks, not 32 runs or 32,768 prompt scores as independent causal units. All 32 endpoints remain included. |
 | Mediation overclaim | Pass | The downstream result is labeled a total release-policy effect; the paper does not identify M4 opportunity loss as the exclusive path to quality. |
+| Missing planned secondary analysis | Pass after repair | All 32 authenticated mechanism ledgers were reconstructed. The release policy moved opportunity loss, direct-chain rate, and version advance, while the block-level M4/accuracy slope remained unresolved. Unsupported equal-wall-clock and time-to-quality endpoints are explicitly marked unavailable. |
+| Renamed-staleness objection | Pass after repair | The paper supplies a constructive non-identifiability argument. The authenticated discriminant now covers all six Qwen cells and eight Llama acquisitions (106,653 registered-window assignments) and records 23,254 positive-opportunity losses that consumed-only staleness cannot represent. |
+| Shared-system interference | Pass for bounded claim | The manuscript now interprets the contrast at the tested equal-mass saturation and explicitly prohibits prevalence-invariant or deployment-policy claims. Spillovers remain a prospective research question. |
 | PDF template leakage | Pass | Extracted text contains no `AUTHORERR`, suppressed-title message, private path, or internal execution identifier; metadata says `Anonymous Authors`. |
 | Blind source linkage | Pass after repair | Searchable source revision prefixes were removed from the supplement; the private record retains the mapping. |
 | Archive credentials/anonymity | Pass | Decompressed-content scan rejects internal host, repository, cluster, user, job, token, password, and known source-prefix patterns. |
 | Archive traversal/symlink attack | Pass | Extraction validates every member stays under the temporary root and rejects symbolic and hard links. |
 | Hidden project dependency | Pass | Replay, figure rendering, and two tests use Python 3.10+ standard library only under a four-variable credential-stripped environment. |
 | Non-deterministic packaging | Pass | A second independent build is byte-identical to the reviewed archive. |
-| Raw-data reproducibility overclaim | Pass | README and supplement state that empirical raw ledgers and public hosting are absent; the bundle verifies compact results and uses synthetic data only for end-to-end mechanics. |
+| Raw-data reproducibility overclaim | Pass | The compact bundle deliberately excludes empirical raw ledgers and public hosting remains absent; it verifies compact results and uses synthetic data only for end-to-end mechanics. The private analysis authenticates recovered ledgers against the published hashes. |
 
 ## Repairs made during this review
 
@@ -76,6 +79,14 @@ public URL or empirical raw-ledger access is claimed.
 11. Made estimates and 95% intervals primary in the main paper, retained formal
     registered decisions in evidence-facing records and the supplement, and
     replaced directional accuracy language with a precision-based statement.
+12. Completed the frozen downstream secondary analyses from all 32 authenticated
+    workload archives, retained the unresolved mediation diagnostic, and marked
+    unsupported time-to-quality analyses unavailable rather than constructing a
+    post-treatment checkpoint rule.
+13. Added a formal consumed-staleness non-identifiability argument and an
+    authenticated 106,653-assignment Qwen-plus-Llama discriminant summary.
+14. Added the shared-system interference qualification and restricted the
+    current estimand to the tested equal-mass delay saturation.
 
 ## Remaining release gates
 

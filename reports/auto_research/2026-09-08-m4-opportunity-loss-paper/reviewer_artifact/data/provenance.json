@@ -105,8 +105,14 @@
     "completion_gate_sha256": "54167b9517dc37b3ae05122e035c95da5bcd50f75d2326c1d6a841c7ddc43887",
     "protocol_sha256": "dbe7a4f7d1938ef43d24e536ccf9dd57110a01bab5e6cb511980218e472ef2c0",
     "run_manifest_sha256": "a461e83c7dbccdefa1c5c779062e709f34bfc502639a3e7de663a717fefa93bf",
+    "secondary_analysis_sha256": "98feee9db8905e3cd45ff961e82db0133cec393ad5307e069e376780eed4ef3a",
     "terminal_authentication_sha256": "f1c00b24877ba54fc68ff267af86824aa2233f8bdf674416bfaa18c9a801a441",
     "terminal_topology_sha256": "b644466687e59f89d4ddb33d75f3b1c096db9e10f7090b122d263a4b2068d72c"
+  },
+  "metric_discriminant": {
+    "analysis_sha256": "9281f64bd3daf7e75b1c755075e564073b662cea2abc136d3adb26004436bfaf",
+    "qwen_recovery_receipt_sha256": "b1877255bf1eba58406d9326c440244859ab5b425d59c08a1a4306a3fe690ae0",
+    "registered_window_assignments": 106653
   },
   "schema": "m4-anonymous-provenance-v1"
 }

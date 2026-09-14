@@ -14,6 +14,27 @@ a systems measurement paper.
 
 ## Likely major questions
 
+### 0. Can randomized groups interfere through the shared system?
+
+**Reviewer concern:** Delaying one group can change buffer occupancy, selection,
+or capacity available to another group, violating a no-interference reading of
+the unit-level contrast.
+
+**Current answer:** The randomized contrast remains a design-specific direct
+assignment effect under the equal-mass release design: it averages over the
+random treatment exposure of other groups at approximately 50% saturation.
+It is not claimed to be invariant to treatment prevalence. The manuscript now
+states this boundary explicitly.
+
+**Severity:** Medium for the current scoped claim; high for deployment-policy
+generalization.
+
+**Next scientific test:** A new two-stage randomized saturation study would
+randomize independent acquisitions to delay prevalence and groups within each
+acquisition to release arms, thereby separating direct, spillover, and total
+policy effects. It must be preregistered and cannot retroactively change the
+current estimand.
+
 ### 1. Does opportunity loss affect final training quality?
 
 **Reviewer concern:** The endpoint is proximal. A rollout can miss one gradient
@@ -37,6 +58,13 @@ study, full interval, and instability caveat. They do not claim equivalence, a
 confirmed final-quality decrease, or mediation. Do not extend the frozen
 study post hoc. A future study would need a prospective stability intervention
 and power recalibrated to the observed run-level variance.
+
+The frozen secondary analyses are now also complete. Mixed-d5 increased
+run-wide normalized realized opportunity loss by 0.00739 [0.00181, 0.01296],
+but its block-level contrast had correlation -0.096 with the accuracy contrast;
+the descriptive slope interval was [-10.65, 7.58]. Thus the intervention moved
+the proximal mechanism, while mediation and the quality direction remain
+unresolved.
 
 ### 2. Are the two interactions independent replications?
 

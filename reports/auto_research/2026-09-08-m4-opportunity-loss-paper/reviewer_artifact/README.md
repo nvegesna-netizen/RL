@@ -14,7 +14,9 @@ python3 -m unittest discover -s tests -v
 
 `data/published_results.json` contains the six-cell Qwen common-window results,
 the four replicated Llama size/workload endpoints, and the separate 16-pair
-downstream-quality result after removal of private filesystem paths.
+downstream-quality result and secondary mechanism analysis after removal of
+private filesystem paths. It also includes the compact 106,653-assignment
+Qwen-plus-Llama metric-discriminant summary; raw empirical ledgers remain external.
 `data/provenance.json` binds opaque
 acquisition IDs A1--A14 to the frozen protocols, compact records, and external
 terminal archives by SHA-256. The large empirical ledgers are not included;

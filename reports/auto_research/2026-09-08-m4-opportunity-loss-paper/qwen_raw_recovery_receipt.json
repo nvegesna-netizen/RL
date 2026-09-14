@@ -1,0 +1,132 @@
+{
+  "all_authenticated": true,
+  "cells": {
+    "qwen3_0p6b_gsm8k": {
+      "authenticated": true,
+      "file": "qwen3_0p6b_gsm8k-job-429546153.zip",
+      "job_id": 429546153,
+      "ledgers": {
+        "lifecycle": {
+          "authenticated": true,
+          "path": "session/20260907_m4_cross_study_harmonization/grid-acquisition-failure-terminal-artifact/workspace/assets/basic/m4-qwen3-0p6b-gsm8k-grid-control-d5-acquisition/m4-grid-lifecycle.jsonl",
+          "sha256": "ac032de183ec3cb602e83afad92da587b664c3c5a8e20a4fb31eeaf333fa3c84",
+          "size": 177260002
+        },
+        "opportunity": {
+          "authenticated": true,
+          "path": "session/20260907_m4_cross_study_harmonization/grid-acquisition-failure-terminal-artifact/workspace/assets/basic/m4-qwen3-0p6b-gsm8k-grid-control-d5-acquisition/m4-grid-opportunity.jsonl",
+          "sha256": "bc110e951869e5b7b0aa68e6c78e2992f527f5553bb19b9e8e28db98231635eb",
+          "size": 26135015
+        }
+      },
+      "sha256": "6c2ebeb2b2bf67df16be815f372ea87cde8eeff4d23e63291d8a98ac94659075",
+      "size": 137287850
+    },
+    "qwen3_0p6b_numinamath": {
+      "authenticated": true,
+      "file": "qwen3_0p6b_numinamath-job-430968080.zip",
+      "job_id": 430968080,
+      "ledgers": {
+        "lifecycle": {
+          "authenticated": true,
+          "path": "session/20260907_m4_cross_study_harmonization/numinamath-0p6b-acquisition-terminal-artifact/m4-numinamath-0p6b-lifecycle.jsonl",
+          "sha256": "0ff343743550cd5277538dd8f5e164a2bb67afd0b8e9dd4a265e2bc36fc7636f",
+          "size": 135599562
+        },
+        "opportunity": {
+          "authenticated": true,
+          "path": "session/20260907_m4_cross_study_harmonization/numinamath-0p6b-acquisition-terminal-artifact/m4-numinamath-0p6b-opportunity.jsonl",
+          "sha256": "b0d5a90ad70e2d20e822ec6a0d14e9894d706ac96f86843e3bf98aa5264ce184",
+          "size": 19863372
+        }
+      },
+      "sha256": "ad7c556f435b0f9e30a65c201680bf6dab74e077af16e38f299bfc04af969c35",
+      "size": 129888875
+    },
+    "qwen3_0p6b_openmath": {
+      "authenticated": true,
+      "file": "qwen3_0p6b_openmath-job-423739790.zip",
+      "job_id": 423739790,
+      "ledgers": {
+        "lifecycle": {
+          "authenticated": true,
+          "path": "session/20260907_m4_cross_study_harmonization/qwen3_0p6b_openmath/m4-opportunity-loss-followup-lifecycle.jsonl",
+          "sha256": "1852d21b98125c2e07c3cfa20f09a33393e13bd656ed684846bafea29a3c06ec",
+          "size": 134245323
+        },
+        "opportunity": {
+          "authenticated": true,
+          "path": "session/20260907_m4_cross_study_harmonization/qwen3_0p6b_openmath/m4-opportunity-loss-followup-opportunity.jsonl",
+          "sha256": "0a9a48abbd1a87b504e3b2e528695b38c5d7799636b830c4bcd809c23c94b8d6",
+          "size": 19905464
+        }
+      },
+      "sha256": "07cddc489ea20055161f9c435d44d0a52b91113fda9eac16472bdb531dc6ffb6",
+      "size": 54950561
+    },
+    "qwen3_1p7b_gsm8k": {
+      "authenticated": true,
+      "file": "qwen3_1p7b_gsm8k-job-428679288.zip",
+      "job_id": 428679288,
+      "ledgers": {
+        "lifecycle": {
+          "authenticated": true,
+          "path": "session/20260906_m4_gsm8k_r2/acquisition-terminal-artifact/workspace/assets/basic/m4-qwen3-1p7b-gsm8k-confirmatory-control-d5-acquisition-r2/m4-gsm8k-r2-lifecycle.jsonl",
+          "sha256": "aba8b910f0928a4776d58cc8ef56dac2acd13c1d90516dd5144fdadf90ed6b83",
+          "size": 175263266
+        },
+        "opportunity": {
+          "authenticated": true,
+          "path": "session/20260906_m4_gsm8k_r2/acquisition-terminal-artifact/workspace/assets/basic/m4-qwen3-1p7b-gsm8k-confirmatory-control-d5-acquisition-r2/m4-gsm8k-r2-opportunity.jsonl",
+          "sha256": "1d6f39337a6b73756ce0548849f5cc50d40e7c9e159d4130f9c4df49676847a5",
+          "size": 25032552
+        }
+      },
+      "sha256": "966dfbf60548e5fd791d59d3baa2bc3b3a1b8d6b0b1a15de1ef510fc618720ca",
+      "size": 134908947
+    },
+    "qwen3_1p7b_numinamath": {
+      "authenticated": true,
+      "file": "qwen3_1p7b_numinamath-job-430967787.zip",
+      "job_id": 430967787,
+      "ledgers": {
+        "lifecycle": {
+          "authenticated": true,
+          "path": "session/20260907_m4_cross_study_harmonization/numinamath-1p7b-acquisition-terminal-artifact/m4-numinamath-1p7b-lifecycle.jsonl",
+          "sha256": "79b017e7a740a01b4cc81e8ba83ed0746a4a9a345bd53e9136dc38cfa5042935",
+          "size": 131673556
+        },
+        "opportunity": {
+          "authenticated": true,
+          "path": "session/20260907_m4_cross_study_harmonization/numinamath-1p7b-acquisition-terminal-artifact/m4-numinamath-1p7b-opportunity.jsonl",
+          "sha256": "917790b262995f314cde328c9d239592525e2ae17312b5adda735047a1854d4f",
+          "size": 19064964
+        }
+      },
+      "sha256": "6aa61968730833387a15b45a6d0f2be541c6f84b6d4f16a29e7dbf583981fc9b",
+      "size": 128543493
+    },
+    "qwen3_1p7b_openmath": {
+      "authenticated": true,
+      "file": "qwen3_1p7b_openmath-job-425431229.zip",
+      "job_id": 425431229,
+      "ledgers": {
+        "lifecycle": {
+          "authenticated": true,
+          "path": "session/20260907_m4_cross_study_harmonization/qwen3_1p7b_openmath/m4-qwen3-1p7b-confirmatory-lifecycle.jsonl",
+          "sha256": "71238a4c2b7ba0aceeb206514e8564719688d594989f19396653de483c37ba47",
+          "size": 161560728
+        },
+        "opportunity": {
+          "authenticated": true,
+          "path": "session/20260907_m4_cross_study_harmonization/qwen3_1p7b_openmath/m4-qwen3-1p7b-confirmatory-opportunity.jsonl",
+          "sha256": "170cf1cf3cf124b4248cf5173fe6f7e18eaed0eeac3792cb9367b66207184b2d",
+          "size": 23651351
+        }
+      },
+      "sha256": "022e4d18f2eedd2339c3c7eb7decf6e21f929761de46bcd0f85a73f0a2700ac7",
+      "size": 131003667
+    }
+  },
+  "schema": "m4-qwen-six-cell-terminal-artifact-recovery-v1"
+}

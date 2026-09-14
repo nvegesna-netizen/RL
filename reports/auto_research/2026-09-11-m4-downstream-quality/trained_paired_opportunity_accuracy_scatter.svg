@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="500" viewBox="0 0 760 500">
+<rect width="100%" height="100%" fill="white"/>
+<style>text{font-family:Helvetica,Arial,sans-serif;fill:#202124}.axis{font-size:13px}.point{font-size:11px}</style>
+<line x1="90" y1="430" x2="735" y2="430" stroke="#202124"/>
+<line x1="90" y1="35" x2="90" y2="430" stroke="#202124"/>
+<line x1="306.0" y1="35" x2="306.0" y2="430" stroke="#bbb" stroke-dasharray="5 4"/>
+<line x1="90" y1="228.9" x2="735" y2="228.9" stroke="#bbb" stroke-dasharray="5 4"/>
+<circle cx="326.2" cy="402.8" r="5" fill="#1769aa"/>
+<text x="333.2" y="397.8" class="point">b01</text>
+<circle cx="690.5" cy="253.3" r="5" fill="#1769aa"/>
+<text x="697.5" y="248.3" class="point">b02</text>
+<circle cx="429.3" cy="125.8" r="5" fill="#1769aa"/>
+<text x="436.3" y="120.8" class="point">b03</text>
+<circle cx="267.2" cy="238.2" r="5" fill="#1769aa"/>
+<text x="274.2" y="233.2" class="point">b04</text>
+<circle cx="284.2" cy="208.0" r="5" fill="#1769aa"/>
+<text x="291.2" y="203.0" class="point">b05</text>
+<circle cx="410.0" cy="228.9" r="5" fill="#1769aa"/>
+<text x="417.0" y="223.9" class="point">b06</text>
+<circle cx="472.6" cy="234.1" r="5" fill="#1769aa"/>
+<text x="479.6" y="229.1" class="point">b07</text>
+<circle cx="513.2" cy="341.8" r="5" fill="#1769aa"/>
+<text x="520.2" y="336.8" class="point">b08</text>
+<circle cx="262.5" cy="324.7" r="5" fill="#1769aa"/>
+<text x="269.5" y="319.7" class="point">b09</text>
+<circle cx="501.3" cy="222.1" r="5" fill="#1769aa"/>
+<text x="508.3" y="217.1" class="point">b10</text>
+<circle cx="492.5" cy="238.7" r="5" fill="#1769aa"/>
+<text x="499.5" y="233.7" class="point">b11</text>
+<circle cx="134.5" cy="213.8" r="5" fill="#1769aa"/>
+<text x="141.5" y="208.8" class="point">b12</text>
+<circle cx="679.2" cy="230.9" r="5" fill="#1769aa"/>
+<text x="686.2" y="225.9" class="point">b13</text>
+<circle cx="276.5" cy="62.2" r="5" fill="#1769aa"/>
+<text x="283.5" y="57.2" class="point">b14</text>
+<circle cx="511.9" cy="329.9" r="5" fill="#1769aa"/>
+<text x="518.9" y="324.9" class="point">b15</text>
+<circle cx="374.6" cy="389.7" r="5" fill="#1769aa"/>
+<text x="381.6" y="384.7" class="point">b16</text>
+<text x="412.5" y="480" text-anchor="middle" class="axis">mixed-d5 minus immediate normalized realized opportunity loss</text>
+<text transform="translate(20 232.5) rotate(-90)" text-anchor="middle" class="axis">mixed-d5 minus immediate terminal accuracy</text>
+</svg>

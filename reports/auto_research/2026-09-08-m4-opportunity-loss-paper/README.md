@@ -43,6 +43,16 @@ study without promoting its inconclusive result into the headline claim.
   adjusted/unadjusted, missingness, threshold, and window sensitivity.
 - `analyze_update_cadence.py` and `cadence_results.{json,md}` — authenticated,
   retrospective description of the five-second dose relative to update cadence.
+- `analyze_metric_discriminant.py` and `metric_discriminant.json` — authenticated
+  assignment-level comparison of M4 with consumed-only version-age and latency
+  summaries over all six Qwen cells and eight Llama acquisitions (106,653
+  registered-window assignments), with a separate Qwen common-window view.
+- `qwen_raw_recovery_receipt.json` — compact provenance for the six recovered
+  terminal archives and all 12 hash-authenticated Qwen ledgers; large archives
+  remain outside Git.
+- `../2026-09-11-m4-downstream-quality/analyze_trained_paired_secondary.py` —
+  reconstructs the frozen downstream mechanism, systems, and mediation-diagnostic
+  endpoints from all 32 authenticated workload archives.
 - `cell_forest_plot.svg` and `interaction_plot.svg` — generated vector plots.
 - `causal_diagram.md` and `provenance_diagram.md` — Mermaid source diagrams.
 

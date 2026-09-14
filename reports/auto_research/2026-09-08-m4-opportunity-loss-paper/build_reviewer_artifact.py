@@ -100,7 +100,9 @@ python3 -m unittest discover -s tests -v
 
 `data/published_results.json` contains the six-cell Qwen common-window results,
 the four replicated Llama size/workload endpoints, and the separate 16-pair
-downstream-quality result after removal of private filesystem paths.
+downstream-quality result and secondary mechanism analysis after removal of
+private filesystem paths. It also includes the compact 106,653-assignment
+Qwen-plus-Llama metric-discriminant summary; raw empirical ledgers remain external.
 `data/provenance.json` binds opaque
 acquisition IDs A1--A14 to the frozen protocols, compact records, and external
 terminal archives by SHA-256. The large empirical ledgers are not included;
@@ -176,6 +178,12 @@ def published_checks() -> dict[str, object]:
     assert downstream["conclusion"] == "INCONCLUSIVE"
     assert math.isclose(downstream["estimate"], -0.044921875)
     assert downstream["student_interval_95"] == [-0.13394335582884473, 0.04409960582884473]
+    secondary = downstream["secondary"]
+    assert math.isclose(secondary["normalized_realized_opportunity_loss"]["estimate_mixed_d5_minus_immediate"], 0.007385549503757312)
+    assert math.isclose(secondary["opportunity_loss_accuracy_diagnostic"]["pearson_correlation"], -0.09593746695743842)
+    discriminant = result["metric_discriminant"]
+    assert discriminant["assignment_count"] == 106_653
+    assert discriminant["summary"]["positive_opportunity_lost_count"] == 23_254
     provenance = load(ROOT / "data/provenance.json")
     assert set(provenance["acquisitions"]) == {f"A{i}" for i in range(1, 15)}
     assert sum(item["full_window_assignments"] for item in provenance["acquisitions"].values()) == 106_653
@@ -187,6 +195,7 @@ def published_checks() -> dict[str, object]:
         "llama_3b_extension_assignments": 28_788,
         "downstream_quality_blocks": downstream["block_count"],
         "downstream_quality_runs": downstream["run_count"],
+        "metric_discriminant_assignments": discriminant["assignment_count"],
         "hac_correlation": synthesis["hac_correlation"],
         "bootstrap_correlation": synthesis["bootstrap_correlation"],
     }
@@ -628,6 +637,21 @@ def main() -> None:
         "practical_absolute_accuracy_margin": 0.02,
         "conclusion": "INCONCLUSIVE",
     }
+    secondary = json.loads((HERE.parent / "2026-09-11-m4-downstream-quality/trained_paired_secondary_analysis.json").read_bytes())
+    published["downstream_quality"]["secondary"] = {
+        "analysis_role": secondary["analysis_role"],
+        "normalized_realized_opportunity_loss": secondary["paired_release_policy_contrasts"]["normalized_realized_opportunity_loss"],
+        "direct_chain_rate": secondary["paired_release_policy_contrasts"]["direct_chain_rate"],
+        "mean_version_advance_during_release": secondary["paired_release_policy_contrasts"]["mean_version_advance_during_release"],
+        "wall_seconds": secondary["paired_release_policy_contrasts"]["wall_seconds"],
+        "opportunity_loss_accuracy_diagnostic": secondary["opportunity_loss_accuracy_diagnostic"],
+        "unsupported_secondary_endpoints": secondary["unsupported_secondary_endpoints"],
+    }
+    discriminant = json.loads((HERE / "metric_discriminant.json").read_bytes())
+    published["metric_discriminant"] = {
+        key: discriminant[key]
+        for key in ("schema", "status", "analysis_role", "raw_data_scope", "cell_count", "assignment_count", "summary", "subgroup_summaries", "claim_boundary")
+    }
     published["evidence_commitments"] = {
         CELL_IDS[name]: {
             "cell": name,
@@ -672,6 +696,12 @@ def main() -> None:
             "terminal_authentication_sha256": "f1c00b24877ba54fc68ff267af86824aa2233f8bdf674416bfaa18c9a801a441",
             "completion_gate_sha256": "54167b9517dc37b3ae05122e035c95da5bcd50f75d2326c1d6a841c7ddc43887",
             "analysis_sha256": "b412c5bb61ae637bf8e52442df09b8fec8e21800123ed2d900b987feca6da306",
+            "secondary_analysis_sha256": sha256(HERE.parent / "2026-09-11-m4-downstream-quality/trained_paired_secondary_analysis.json"),
+        },
+        "metric_discriminant": {
+            "analysis_sha256": sha256(HERE / "metric_discriminant.json"),
+            "qwen_recovery_receipt_sha256": sha256(HERE / "qwen_raw_recovery_receipt.json"),
+            "registered_window_assignments": discriminant["assignment_count"],
         },
     }
     write_json(output / "data/provenance.json", provenance)

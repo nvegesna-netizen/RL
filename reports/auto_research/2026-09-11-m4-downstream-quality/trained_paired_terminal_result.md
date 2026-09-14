@@ -56,10 +56,11 @@ base correctness leaves the point estimate unchanged. Conclusions remain
 ## Scientific interpretation
 
 The point estimate is in the hypothesized harmful direction, but the interval
-includes material harm, no effect, and benefit. The study therefore neither
-confirms a final-quality cost nor establishes practical equivalence. It does
-show that final-quality effects are much noisier across independent training
-runs than the proximal opportunity-loss mechanism.
+crosses zero and both registered relevance bounds. Direction and practically
+relevant magnitude therefore remain unresolved: the study neither confirms a
+final-quality cost nor establishes practical equivalence. It does show that
+final-quality effects are much noisier across independent training runs than
+the proximal opportunity-loss mechanism.
 
 For the paper, this is useful as a prospective end-to-end test and an honest
 scope boundary. It does not support expanding the headline claim beyond causal

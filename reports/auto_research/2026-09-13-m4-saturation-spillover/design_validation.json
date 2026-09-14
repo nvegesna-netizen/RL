@@ -1,0 +1,11 @@
+{
+  "blocks": 16,
+  "candidate_acquisitions": 32,
+  "launch_authorized": false,
+  "primary_estimands": [
+    "control_spillover",
+    "total_policy"
+  ],
+  "protocol_sha256": "a51f182a95eb180a37a24bcb3401606e57a7a7acbcdf63b3b96ce7dfe7a16812",
+  "status": "PASS_LOCAL_DESIGN_NO_LAUNCH_AUTHORITY"
+}

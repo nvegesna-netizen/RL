@@ -211,6 +211,65 @@
     "prompt_count_per_run": 1024,
     "run_count": 32,
     "schema": "m4-downstream-quality-public-summary-v1",
+    "secondary": {
+      "analysis_role": "prespecified_secondary_cannot_override_primary_accuracy_result",
+      "direct_chain_rate": {
+        "block_count": 16,
+        "estimate_mixed_d5_minus_immediate": 0.1273553433117645,
+        "paired_sample_standard_deviation": 0.009808546899374583,
+        "standard_error": 0.0024521367248436458,
+        "student_interval_95": [
+          0.1221287376039472,
+          0.13258194901958184
+        ]
+      },
+      "mean_version_advance_during_release": {
+        "block_count": 16,
+        "estimate_mixed_d5_minus_immediate": 0.20698546290499995,
+        "paired_sample_standard_deviation": 0.022787246941369032,
+        "standard_error": 0.005696811735342258,
+        "student_interval_95": [
+          0.19484299612056766,
+          0.21912792968943223
+        ]
+      },
+      "normalized_realized_opportunity_loss": {
+        "block_count": 16,
+        "estimate_mixed_d5_minus_immediate": 0.007385549503757312,
+        "paired_sample_standard_deviation": 0.010455788473434488,
+        "standard_error": 0.002613947118358622,
+        "student_interval_95": [
+          0.001814053106215725,
+          0.012957045901298899
+        ]
+      },
+      "opportunity_loss_accuracy_diagnostic": {
+        "block_count": 16,
+        "intercept": -0.03360063437058092,
+        "pearson_correlation": -0.09593746695743842,
+        "role": "descriptive_mediation_diagnostic_not_causal_mediator_estimate",
+        "slope": -1.5328907650892512,
+        "slope_interval_95": [
+          -10.64953842830461,
+          7.583756898126108
+        ],
+        "slope_standard_error": 4.250608097567821
+      },
+      "unsupported_secondary_endpoints": {
+        "equal_wall_clock_quality": "not_identified_only_terminal_equal_update_evaluation_was_frozen_and_preserved",
+        "time_to_fixed_quality": "not_identified_no_in_loop_validation_or_preselected_intermediate_evaluations"
+      },
+      "wall_seconds": {
+        "block_count": 16,
+        "estimate_mixed_d5_minus_immediate": 395.6875,
+        "paired_sample_standard_deviation": 258.17480350852725,
+        "standard_error": 64.54370087713181,
+        "student_interval_95": [
+          258.11585809672056,
+          533.2591419032794
+        ]
+      }
+    },
     "student_interval_95": [
       -0.13394335582884473,
       0.04409960582884473
@@ -928,6 +987,43 @@
       "hac_standard_error": 0.032473386590204247
     },
     "source_terminal_analysis_sha256": "47b14b0caddae4ad055986eeb4d08a3dbaf5be6d4ab156f615503befe49e46b7"
+  },
+  "metric_discriminant": {
+    "analysis_role": "metric_discriminant_not_new_causal_estimator",
+    "assignment_count": 106653,
+    "cell_count": 14,
+    "claim_boundary": "Correlations are descriptive. The identification distinction follows from observability: consumed-rollout staleness excludes candidates that never train.",
+    "raw_data_scope": "all_six_qwen_cells_and_eight_authenticated_llama_acquisitions",
+    "schema": "m4-metric-discriminant-v2",
+    "status": "COMPLETE_RETROSPECTIVE_DESCRIPTIVE",
+    "subgroup_summaries": {
+      "llama_eight_acquisitions": {
+        "assignment_count": 57500,
+        "cell_count": 8,
+        "correlation_m4_with_consumed_ready_latency_contrast": 0.6683343976852667,
+        "correlation_m4_with_consumed_version_age_contrast": -0.5942377596396915
+      },
+      "qwen_six_cells": {
+        "assignment_count": 49153,
+        "cell_count": 6,
+        "correlation_m4_with_consumed_ready_latency_contrast": 0.7374095977725198,
+        "correlation_m4_with_consumed_version_age_contrast": -0.8891152743465053
+      },
+      "qwen_six_cells_common_window": {
+        "assignment_count": 43756,
+        "cell_count": 6,
+        "correlation_m4_with_consumed_ready_latency_contrast": 0.666119494697525,
+        "correlation_m4_with_consumed_version_age_contrast": -0.8125817996508103
+      }
+    },
+    "summary": {
+      "consumed_staleness_conditions_on_selection": true,
+      "correlation_m4_with_consumed_ready_latency_contrast": 0.6379767378566339,
+      "correlation_m4_with_consumed_version_age_contrast": -0.6172187308732092,
+      "m4_retains_pre_release_opportunity_for_unselected_groups": true,
+      "positive_opportunity_count": 28117,
+      "positive_opportunity_lost_count": 23254
+    }
   },
   "schema": "m4-opportunity-loss-publication-six-cell-synthesis-v1"
 }

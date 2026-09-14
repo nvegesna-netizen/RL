@@ -1,0 +1,1856 @@
+{
+  "analysis_role": "prespecified_secondary_cannot_override_primary_accuracy_result",
+  "common_window": [
+    8,
+    407
+  ],
+  "definitions": {
+    "collapse_incidence": "indicator that the registered 1024-prompt terminal accuracy equals zero",
+    "direct_chain": "delay crosses the maximum-staleness boundary and is followed in controller order by completion, ready, and stale eviction",
+    "generated_token_metrics": "all opportunity-ledger group siblings over the complete 448-update run",
+    "normalized_realized_opportunity_loss": "sum(Q for undelivered assignments) / sum(Q for all assignments) within each run and common window",
+    "paired_release_policy_contrast": "equal_weight mean over the 16 matched blocks of mixed_d5 minus immediate"
+  },
+  "metric_discriminant": {
+    "consumed_rollout_staleness_scope": "selected_groups_only",
+    "correlation_policy_loss_with_consumed_rollout_version_age": -0.2523795741708294,
+    "correlation_policy_loss_with_ready_to_terminal_latency": -0.45791108010505843,
+    "interpretation": "descriptive_discriminant_not_an_additional_causal_estimand",
+    "m4_scope": "all_common_window_assignments_with_pre_release_opportunity",
+    "positive_opportunity_assignments": 99558,
+    "positive_opportunity_lost_assignments": 78670,
+    "run_count": 32
+  },
+  "opportunity_loss_accuracy_diagnostic": {
+    "block_count": 16,
+    "intercept": -0.03360063437058092,
+    "pearson_correlation": -0.09593746695743842,
+    "role": "descriptive_mediation_diagnostic_not_causal_mediator_estimate",
+    "slope": -1.5328907650892512,
+    "slope_interval_95": [
+      -10.64953842830461,
+      7.583756898126108
+    ],
+    "slope_standard_error": 4.250608097567821
+  },
+  "paired_release_policy_contrasts": {
+    "direct_chain_rate": {
+      "block_count": 16,
+      "estimate_mixed_d5_minus_immediate": 0.1273553433117645,
+      "paired_sample_standard_deviation": 0.009808546899374583,
+      "standard_error": 0.0024521367248436458,
+      "student_interval_95": [
+        0.1221287376039472,
+        0.13258194901958184
+      ]
+    },
+    "generated_tokens_per_second": {
+      "block_count": 16,
+      "estimate_mixed_d5_minus_immediate": 107.88852868738911,
+      "paired_sample_standard_deviation": 138.303358121619,
+      "standard_error": 34.57583953040475,
+      "student_interval_95": [
+        34.19187123297583,
+        181.5851861418024
+      ]
+    },
+    "generated_valid_actor_tokens": {
+      "block_count": 16,
+      "estimate_mixed_d5_minus_immediate": 7202156.875,
+      "paired_sample_standard_deviation": 4753062.50728646,
+      "standard_error": 1188265.626821615,
+      "student_interval_95": [
+        4669428.644707304,
+        9734885.105292697
+      ]
+    },
+    "learner_updates_per_second": {
+      "block_count": 16,
+      "estimate_mixed_d5_minus_immediate": -0.005130711747349232,
+      "paired_sample_standard_deviation": 0.003440352359433415,
+      "standard_error": 0.0008600880898583538,
+      "student_interval_95": [
+        -0.006963946115618806,
+        -0.0032974773790796575
+      ]
+    },
+    "mean_ready_to_terminal_seconds": {
+      "block_count": 16,
+      "estimate_mixed_d5_minus_immediate": -0.354455907311409,
+      "paired_sample_standard_deviation": 0.34627036832900104,
+      "standard_error": 0.08656759208225026,
+      "student_interval_95": [
+        -0.5389703621152862,
+        -0.16994145250753187
+      ]
+    },
+    "mean_response_tokens": {
+      "block_count": 16,
+      "estimate_mixed_d5_minus_immediate": -19.350767710290498,
+      "paired_sample_standard_deviation": 91.61159094494165,
+      "standard_error": 22.902897736235413,
+      "student_interval_95": [
+        -68.16713868218112,
+        29.465603261600123
+      ]
+    },
+    "mean_selected_version_age": {
+      "block_count": 16,
+      "estimate_mixed_d5_minus_immediate": 0.003828124999999988,
+      "paired_sample_standard_deviation": 0.042122017080342515,
+      "standard_error": 0.010530504270085629,
+      "student_interval_95": [
+        -0.018617113540984536,
+        0.02627336354098451
+      ]
+    },
+    "mean_version_advance_during_release": {
+      "block_count": 16,
+      "estimate_mixed_d5_minus_immediate": 0.20698546290499995,
+      "paired_sample_standard_deviation": 0.022787246941369032,
+      "standard_error": 0.005696811735342258,
+      "student_interval_95": [
+        0.19484299612056766,
+        0.21912792968943223
+      ]
+    },
+    "normalized_realized_opportunity_loss": {
+      "block_count": 16,
+      "estimate_mixed_d5_minus_immediate": 0.007385549503757312,
+      "paired_sample_standard_deviation": 0.010455788473434488,
+      "standard_error": 0.002613947118358622,
+      "student_interval_95": [
+        0.001814053106215725,
+        0.012957045901298899
+      ]
+    },
+    "wall_seconds": {
+      "block_count": 16,
+      "estimate_mixed_d5_minus_immediate": 395.6875,
+      "paired_sample_standard_deviation": 258.17480350852725,
+      "standard_error": 64.54370087713181,
+      "student_interval_95": [
+        258.11585809672056,
+        533.2591419032794
+      ]
+    },
+    "zero_accuracy_indicator": {
+      "block_count": 16,
+      "estimate_mixed_d5_minus_immediate": 0.125,
+      "paired_sample_standard_deviation": 0.5,
+      "standard_error": 0.125,
+      "student_interval_95": [
+        -0.14143119319491537,
+        0.39143119319491537
+      ]
+    }
+  },
+  "primary_result_modified": false,
+  "runs": [
+    {
+      "assignment_count": 6627,
+      "authenticated_member_sha256": {
+        "lifecycle.jsonl": "9107d396efa20892864bd94faeddaf92844fb08e06e5990470efa2f9fa73cf5c",
+        "observer-duty.json": "f00c9f67e0f6e167ce334a0d765005418282ec897034a95f37431855bf45b436",
+        "opportunity.jsonl": "2ecb7b197cbb8cff5e89d67af1ed8c84a4e8c36d4c65aeecfeac17bd94d1d179"
+      },
+      "block_id": "b01",
+      "common_window": [
+        8,
+        407
+      ],
+      "delivered_count": 1600,
+      "direct_chain_rate": 0.0,
+      "generated_tokens_per_second": 16461.42080883663,
+      "generated_valid_actor_tokens": 92397955,
+      "identity": "b01_immediate",
+      "learner_updates_per_second": 0.07981471583823267,
+      "lost_count": 5027,
+      "mean_ready_to_terminal_seconds": 4.004430984043458,
+      "mean_response_tokens": 1556.14987537052,
+      "mean_selected_version_age": 0.61125,
+      "mean_version_advance_during_release": 0.0003017956843217142,
+      "normalized_realized_opportunity_loss": 0.8011735382692843,
+      "observer_duty": 0.001643211775669698,
+      "positive_opportunity_assignment_count": 3112,
+      "positive_opportunity_lost_count": 2455,
+      "regime": "immediate",
+      "terminal_accuracy": 0.326171875,
+      "terminal_missing_count": 0,
+      "wall_seconds": 5613,
+      "within_mixed_d5_minus_control_opportunity_loss": null,
+      "workload_job_id": 436019106,
+      "zero_accuracy_indicator": 0
+    },
+    {
+      "assignment_count": 7204,
+      "authenticated_member_sha256": {
+        "lifecycle.jsonl": "38749022893d2f6036e50e7748fbb93751bcccf5eeb109396ada3f8a4de928b0",
+        "observer-duty.json": "9daab3aeda0127705f29c550a87e2e5561b96add1304e31aca3b27c7780d89dc",
+        "opportunity.jsonl": "ee8c1dd4310c5419b854a351b343f1219706f1fb8df8f323ed157dbbd068c897"
+      },
+      "block_id": "b01",
+      "common_window": [
+        8,
+        407
+      ],
+      "delivered_count": 1600,
+      "direct_chain_rate": 0.10563575791227096,
+      "generated_tokens_per_second": 16408.533839342188,
+      "generated_valid_actor_tokens": 103767568,
+      "identity": "b01_mixed_d5",
+      "learner_updates_per_second": 0.07084123972169513,
+      "lost_count": 5604,
+      "mean_ready_to_terminal_seconds": 3.9104681405725987,
+      "mean_response_tokens": 1612.2990677439404,
+      "mean_selected_version_age": 0.63,
+      "mean_version_advance_during_release": 0.18545252637423654,
+      "normalized_realized_opportunity_loss": 0.802548630080839,
+      "observer_duty": 0.001779965172710794,
+      "positive_opportunity_assignment_count": 3176,
+      "positive_opportunity_lost_count": 2525,
+      "regime": "mixed_d5",
+      "terminal_accuracy": 0.0,
+      "terminal_missing_count": 0,
+      "wall_seconds": 6324,
+      "within_mixed_d5_minus_control_opportunity_loss": {
+        "complete_data_delta_l": 0.2991706962831893,
+        "conclusion": "MATERIAL",
+        "control": {
+          "arm": "control",
+          "assignments": 3527,
+          "lost_opportunity_lower_mean": 3033.7019854985115,
+          "lost_opportunity_upper_mean": 3033.7019854985115,
+          "missing_fraction": 0.0,
+          "missing_opportunity": 0.0,
+          "missing_opportunity_fraction": 0.0,
+          "missing_terminals": 0,
+          "total_opportunity": 16479434.370273262
+        },
+        "control_mean_opportunity": 4672.3658549116135,
+        "coverage_gate_passed": true,
+        "delta_l_lower": 0.2991706962831893,
+        "delta_l_upper": 0.2991706962831893,
+        "material_threshold": 0.2,
+        "max_missing_fraction": 0.01,
+        "treatment": {
+          "arm": "d5",
+          "assignments": 3677,
+          "lost_opportunity_lower_mean": 4431.536931602218,
+          "lost_opportunity_upper_mean": 4431.536931602218,
+          "missing_fraction": 0.0,
+          "missing_opportunity": 0.0,
+          "missing_opportunity_fraction": 0.0,
+          "missing_terminals": 0,
+          "total_opportunity": 17156693.321621865
+        }
+      },
+      "workload_job_id": 436019204,
+      "zero_accuracy_indicator": 1
+    },
+    {
+      "assignment_count": 6662,
+      "authenticated_member_sha256": {
+        "lifecycle.jsonl": "f392fe7c9318f531f577b8b1b06ce6b4185cee0d0e7e8a0d5b1c9f20a5633e03",
+        "observer-duty.json": "89f4b4081f4f2a5b03c80152493a94056bfa3aea2991afabbd8e766cdde888e1",
+        "opportunity.jsonl": "3a81ad597a685b9fb434862ededfe7fd3eaa2b135e827e34370e3deef2a99a56"
+      },
+      "block_id": "b02",
+      "common_window": [
+        8,
+        407
+      ],
+      "delivered_count": 1600,
+      "direct_chain_rate": 0.00015010507355148604,
+      "generated_tokens_per_second": 16454.654385054488,
+      "generated_valid_actor_tokens": 95124357,
+      "identity": "b02_immediate",
+      "learner_updates_per_second": 0.07749524303753676,
+      "lost_count": 5062,
+      "mean_ready_to_terminal_seconds": 4.0869493398350345,
+      "mean_response_tokens": 1600.9889087114582,
+      "mean_selected_version_age": 0.62375,
+      "mean_version_advance_during_release": 0.00015010507355148604,
+      "normalized_realized_opportunity_loss": 0.7879607268844157,
+      "observer_duty": 0.001795242967495721,
+      "positive_opportunity_assignment_count": 3186,
+      "positive_opportunity_lost_count": 2493,
+      "regime": "immediate",
+      "terminal_accuracy": 0.3291015625,
+      "terminal_missing_count": 0,
+      "wall_seconds": 5781,
+      "within_mixed_d5_minus_control_opportunity_loss": null,
+      "workload_job_id": 436019846,
+      "zero_accuracy_indicator": 0
+    },
+    {
+      "assignment_count": 7273,
+      "authenticated_member_sha256": {
+        "lifecycle.jsonl": "1a9e5accc36c929caa1ab9e1ad1a7d2e06d04967c531a0e5f2a93c282b769bf1",
+        "observer-duty.json": "e4c5bf8d00ab6b9a63bd8bc023a75d161653628eb9936ff79606531d5cf1a300",
+        "opportunity.jsonl": "2234dc80d144ab8e1d6d5cf413137c8602551fdcedd9d328d8a3753bfaff4a94"
+      },
+      "block_id": "b02",
+      "common_window": [
+        8,
+        407
+      ],
+      "delivered_count": 1600,
+      "direct_chain_rate": 0.11920802969888629,
+      "generated_tokens_per_second": 16616.703040262943,
+      "generated_valid_actor_tokens": 101112638,
+      "identity": "b02_mixed_d5",
+      "learner_updates_per_second": 0.07362366474938373,
+      "lost_count": 5673,
+      "mean_ready_to_terminal_seconds": 3.8065815961281455,
+      "mean_response_tokens": 1545.3086868810367,
+      "mean_selected_version_age": 0.6275,
+      "mean_version_advance_during_release": 0.19111783308125946,
+      "normalized_realized_opportunity_loss": 0.8142291936392075,
+      "observer_duty": 0.0016985853695243558,
+      "positive_opportunity_assignment_count": 3309,
+      "positive_opportunity_lost_count": 2658,
+      "regime": "mixed_d5",
+      "terminal_accuracy": 0.283203125,
+      "terminal_missing_count": 0,
+      "wall_seconds": 6085,
+      "within_mixed_d5_minus_control_opportunity_loss": {
+        "complete_data_delta_l": 0.3861170032492646,
+        "conclusion": "MATERIAL",
+        "control": {
+          "arm": "control",
+          "assignments": 3642,
+          "lost_opportunity_lower_mean": 2920.6860129660236,
+          "lost_opportunity_upper_mean": 2920.6860129660236,
+          "missing_fraction": 0.0,
+          "missing_opportunity": 0.0,
+          "missing_opportunity_fraction": 0.0,
+          "missing_terminals": 0,
+          "total_opportunity": 16305716.84298855
+        },
+        "control_mean_opportunity": 4477.132576328542,
+        "coverage_gate_passed": true,
+        "delta_l_lower": 0.3861170032492646,
+        "delta_l_upper": 0.3861170032492646,
+        "material_threshold": 0.2,
+        "max_missing_fraction": 0.01,
+        "treatment": {
+          "arm": "d5",
+          "assignments": 3631,
+          "lost_opportunity_lower_mean": 4649.38302648766,
+          "lost_opportunity_upper_mean": 4649.38302648766,
+          "missing_fraction": 0.0,
+          "missing_opportunity": 0.0,
+          "missing_opportunity_fraction": 0.0,
+          "missing_terminals": 0,
+          "total_opportunity": 17491951.483545184
+        }
+      },
+      "workload_job_id": 436019942,
+      "zero_accuracy_indicator": 0
+    },
+    {
+      "assignment_count": 6644,
+      "authenticated_member_sha256": {
+        "lifecycle.jsonl": "d56c7e05071966fe9435c9cec91e3aff936a77225956295194d07ded1e925a7d",
+        "observer-duty.json": "0759b20e952e3328bfaad5d9305cf83731a338470129d7e6c358f88a4d042407",
+        "opportunity.jsonl": "9f6a8f6d94375135070181f366c4d6c50d4d3a6d29928541581b12019e3c0fa3"
+      },
+      "block_id": "b03",
+      "common_window": [
+        8,
+        407
+      ],
+      "delivered_count": 1600,
+      "direct_chain_rate": 0.0,
+      "generated_tokens_per_second": 16438.63830526133,
+      "generated_valid_actor_tokens": 94670118,
+      "identity": "b03_immediate",
+      "learner_updates_per_second": 0.07779128320889044,
+      "lost_count": 5044,
+      "mean_ready_to_terminal_seconds": 4.136012183549518,
+      "mean_response_tokens": 1587.3594567404427,
+      "mean_selected_version_age": 0.638125,
+      "mean_version_advance_during_release": 0.0,
+      "normalized_realized_opportunity_loss": 0.7974410604535145,
+      "observer_duty": 0.0016674749783079828,
+      "positive_opportunity_assignment_count": 2974,
+      "positive_opportunity_lost_count": 2343,
+      "regime": "immediate",
+      "terminal_accuracy": 0.138671875,
+      "terminal_missing_count": 0,
+      "wall_seconds": 5759,
+      "within_mixed_d5_minus_control_opportunity_loss": null,
+      "workload_job_id": 436021214,
+      "zero_accuracy_indicator": 0
+    },
+    {
+      "assignment_count": 7215,
+      "authenticated_member_sha256": {
+        "lifecycle.jsonl": "8f7d8ab86bb0313fc1ca50d8d9621001e83cf67c55eb140b718ef43aaa970d87",
+        "observer-duty.json": "e0ef67d3b654978afc65074d6729d3b0ba49fb342dcd11baa04ba9e34a089195",
+        "opportunity.jsonl": "324f631ce4eda1c1b90831ee771caff7e208a153dae277379118355d354fb87c"
+      },
+      "block_id": "b03",
+      "common_window": [
+        8,
+        407
+      ],
+      "delivered_count": 1600,
+      "direct_chain_rate": 0.120997920997921,
+      "generated_tokens_per_second": 16641.109525389977,
+      "generated_valid_actor_tokens": 100279326,
+      "identity": "b03_mixed_d5",
+      "learner_updates_per_second": 0.0743445071357451,
+      "lost_count": 5615,
+      "mean_ready_to_terminal_seconds": 3.6867923734134442,
+      "mean_response_tokens": 1551.542981804679,
+      "mean_selected_version_age": 0.625625,
+      "mean_version_advance_during_release": 0.20291060291060292,
+      "normalized_realized_opportunity_loss": 0.8058637704269435,
+      "observer_duty": 0.0017046642281317909,
+      "positive_opportunity_assignment_count": 3291,
+      "positive_opportunity_lost_count": 2619,
+      "regime": "mixed_d5",
+      "terminal_accuracy": 0.33203125,
+      "terminal_missing_count": 0,
+      "wall_seconds": 6026,
+      "within_mixed_d5_minus_control_opportunity_loss": {
+        "complete_data_delta_l": 0.3536789249254053,
+        "conclusion": "MATERIAL",
+        "control": {
+          "arm": "control",
+          "assignments": 3549,
+          "lost_opportunity_lower_mean": 2975.4089689040798,
+          "lost_opportunity_upper_mean": 2975.4089689040798,
+          "missing_fraction": 0.0,
+          "missing_opportunity": 0.0,
+          "missing_opportunity_fraction": 0.0,
+          "missing_terminals": 0,
+          "total_opportunity": 16537706.970811486
+        },
+        "control_mean_opportunity": 4659.82163167413,
+        "coverage_gate_passed": true,
+        "delta_l_lower": 0.3536789249254053,
+        "delta_l_upper": 0.3536789249254053,
+        "material_threshold": 0.2,
+        "max_missing_fraction": 0.01,
+        "treatment": {
+          "arm": "d5",
+          "assignments": 3666,
+          "lost_opportunity_lower_mean": 4623.489673938734,
+          "lost_opportunity_upper_mean": 4623.489673938734,
+          "missing_fraction": 0.0,
+          "missing_opportunity": 0.0,
+          "missing_opportunity_fraction": 0.0,
+          "missing_terminals": 0,
+          "total_opportunity": 17598881.103777826
+        }
+      },
+      "workload_job_id": 436021115,
+      "zero_accuracy_indicator": 0
+    },
+    {
+      "assignment_count": 6624,
+      "authenticated_member_sha256": {
+        "lifecycle.jsonl": "567f3eb1f75cdb5a4ff593388f8bd7bb3dd0dcfcd843e764e71407a271056c79",
+        "observer-duty.json": "ec0d8e4bcc731a250a329c1b7dbaed3d9623e9789af481838f5d70ec10950cfd",
+        "opportunity.jsonl": "75733e5acff6d51e2b3aa1ec5d3d0bfe17b7d77eb2de8c0b5a266effee0a5ee0"
+      },
+      "block_id": "b04",
+      "common_window": [
+        8,
+        407
+      ],
+      "delivered_count": 1600,
+      "direct_chain_rate": 0.0,
+      "generated_tokens_per_second": 16464.39830661142,
+      "generated_valid_actor_tokens": 91393875,
+      "identity": "b04_immediate",
+      "learner_updates_per_second": 0.0807061790668348,
+      "lost_count": 5024,
+      "mean_ready_to_terminal_seconds": 3.8809339381364736,
+      "mean_response_tokens": 1532.425804828974,
+      "mean_selected_version_age": 0.589375,
+      "mean_version_advance_during_release": 0.0,
+      "normalized_realized_opportunity_loss": 0.81019147549342,
+      "observer_duty": 0.001657857879241437,
+      "positive_opportunity_assignment_count": 3105,
+      "positive_opportunity_lost_count": 2468,
+      "regime": "immediate",
+      "terminal_accuracy": 0.35546875,
+      "terminal_missing_count": 0,
+      "wall_seconds": 5551,
+      "within_mixed_d5_minus_control_opportunity_loss": null,
+      "workload_job_id": 436022709,
+      "zero_accuracy_indicator": 0
+    },
+    {
+      "assignment_count": 7291,
+      "authenticated_member_sha256": {
+        "lifecycle.jsonl": "2584447bbc92cdebd25d80e8db8a2ee320b62e6e07edf27add3ada6b67915b84",
+        "observer-duty.json": "89813718d9e0e0200bb3be4c9abaca5a82d1ae000847b46b131e1afbcce4f87a",
+        "opportunity.jsonl": "841e0099a53c1190fe5d0adb2ce79e66f99dcf5fdbc59db301863d13e0939b68"
+      },
+      "block_id": "b04",
+      "common_window": [
+        8,
+        407
+      ],
+      "delivered_count": 1600,
+      "direct_chain_rate": 0.12439994513784118,
+      "generated_tokens_per_second": 16627.1753021023,
+      "generated_valid_actor_tokens": 100444766,
+      "identity": "b04_mixed_d5",
+      "learner_updates_per_second": 0.07415990730011587,
+      "lost_count": 5691,
+      "mean_ready_to_terminal_seconds": 3.7456140248971335,
+      "mean_response_tokens": 1537.5454016654421,
+      "mean_selected_version_age": 0.623125,
+      "mean_version_advance_during_release": 0.20477300781785762,
+      "normalized_realized_opportunity_loss": 0.8075397326308202,
+      "observer_duty": 0.0018640464111538192,
+      "positive_opportunity_assignment_count": 3444,
+      "positive_opportunity_lost_count": 2732,
+      "regime": "mixed_d5",
+      "terminal_accuracy": 0.337890625,
+      "terminal_missing_count": 0,
+      "wall_seconds": 6041,
+      "within_mixed_d5_minus_control_opportunity_loss": {
+        "complete_data_delta_l": 0.3104327381955421,
+        "conclusion": "MATERIAL",
+        "control": {
+          "arm": "control",
+          "assignments": 3575,
+          "lost_opportunity_lower_mean": 3129.05934440702,
+          "lost_opportunity_upper_mean": 3129.05934440702,
+          "missing_fraction": 0.0,
+          "missing_opportunity": 0.0,
+          "missing_opportunity_fraction": 0.0,
+          "missing_terminals": 0,
+          "total_opportunity": 17182475.202676177
+        },
+        "control_mean_opportunity": 4806.2867699793505,
+        "coverage_gate_passed": true,
+        "delta_l_lower": 0.3104327381955421,
+        "delta_l_upper": 0.3104327381955421,
+        "material_threshold": 0.2,
+        "max_missing_fraction": 0.01,
+        "treatment": {
+          "arm": "d5",
+          "assignments": 3716,
+          "lost_opportunity_lower_mean": 4621.088106964718,
+          "lost_opportunity_upper_mean": 4621.088106964718,
+          "missing_fraction": 0.0,
+          "missing_opportunity": 0.0,
+          "missing_opportunity_fraction": 0.0,
+          "missing_terminals": 0,
+          "total_opportunity": 17934497.27042994
+        }
+      },
+      "workload_job_id": 436022684,
+      "zero_accuracy_indicator": 0
+    },
+    {
+      "assignment_count": 6676,
+      "authenticated_member_sha256": {
+        "lifecycle.jsonl": "4a381652c5ab299acac17df07c4fbbcf97678b236a42123fdc9b5d3d92c562a6",
+        "observer-duty.json": "b44ae02883f446750fc4510671ce8e1c8fbe3534ae33d5c7aaff109a4bf32f9d",
+        "opportunity.jsonl": "a622e22054d345d7f84366ec0fd3552ee1c1ae35f48e5be216845c314aafe516"
+      },
+      "block_id": "b05",
+      "common_window": [
+        8,
+        407
+      ],
+      "delivered_count": 1600,
+      "direct_chain_rate": 0.00014979029358897544,
+      "generated_tokens_per_second": 16466.533737024223,
+      "generated_valid_actor_tokens": 95176565,
+      "identity": "b05_immediate",
+      "learner_updates_per_second": 0.07750865051903114,
+      "lost_count": 5076,
+      "mean_ready_to_terminal_seconds": 4.220109108691132,
+      "mean_response_tokens": 1584.7969395231119,
+      "mean_selected_version_age": 0.63125,
+      "mean_version_advance_during_release": 0.00014979029358897544,
+      "normalized_realized_opportunity_loss": 0.8012517642834999,
+      "observer_duty": 0.0016681263311976806,
+      "positive_opportunity_assignment_count": 3018,
+      "positive_opportunity_lost_count": 2373,
+      "regime": "immediate",
+      "terminal_accuracy": 0.2763671875,
+      "terminal_missing_count": 0,
+      "wall_seconds": 5780,
+      "within_mixed_d5_minus_control_opportunity_loss": null,
+      "workload_job_id": 436023739,
+      "zero_accuracy_indicator": 0
+    },
+    {
+      "assignment_count": 7010,
+      "authenticated_member_sha256": {
+        "lifecycle.jsonl": "364a4e332579c595c98f61c1c44e5ef075615a7422f1247ea51cc8a0cf3b2f8b",
+        "observer-duty.json": "3425a63088d9d661a5e497fb17d7bccbaeb2a5d061c6ef7bb023c2a22b215294",
+        "opportunity.jsonl": "931676fb74b5a059d4c78230f71c3f963e26ff657654b477d86ad47d44e97a73"
+      },
+      "block_id": "b05",
+      "common_window": [
+        8,
+        407
+      ],
+      "delivered_count": 1600,
+      "direct_chain_rate": 0.12696148359486448,
+      "generated_tokens_per_second": 16453.638001638003,
+      "generated_valid_actor_tokens": 100449460,
+      "identity": "b05_mixed_d5",
+      "learner_updates_per_second": 0.07338247338247338,
+      "lost_count": 5410,
+      "mean_ready_to_terminal_seconds": 3.3202704892757486,
+      "mean_response_tokens": 1593.6264119812158,
+      "mean_selected_version_age": 0.64125,
+      "mean_version_advance_during_release": 0.19514978601997146,
+      "normalized_realized_opportunity_loss": 0.7997612416726994,
+      "observer_duty": 0.0017212087073843205,
+      "positive_opportunity_assignment_count": 3094,
+      "positive_opportunity_lost_count": 2450,
+      "regime": "mixed_d5",
+      "terminal_accuracy": 0.3154296875,
+      "terminal_missing_count": 0,
+      "wall_seconds": 6105,
+      "within_mixed_d5_minus_control_opportunity_loss": {
+        "complete_data_delta_l": 0.27609599879314095,
+        "conclusion": "MATERIAL",
+        "control": {
+          "arm": "control",
+          "assignments": 3625,
+          "lost_opportunity_lower_mean": 3129.8158533054384,
+          "lost_opportunity_upper_mean": 3129.8158533054384,
+          "missing_fraction": 0.0,
+          "missing_opportunity": 0.0,
+          "missing_opportunity_fraction": 0.0,
+          "missing_terminals": 0,
+          "total_opportunity": 17161998.250154436
+        },
+        "control_mean_opportunity": 4734.344344870189,
+        "coverage_gate_passed": true,
+        "delta_l_lower": 0.27609599879314095,
+        "delta_l_upper": 0.27609599879314095,
+        "material_threshold": 0.2,
+        "max_missing_fraction": 0.01,
+        "treatment": {
+          "arm": "d5",
+          "assignments": 3385,
+          "lost_opportunity_lower_mean": 4436.949383833032,
+          "lost_opportunity_upper_mean": 4436.949383833032,
+          "missing_fraction": 0.0,
+          "missing_opportunity": 0.0,
+          "missing_opportunity_fraction": 0.0,
+          "missing_terminals": 0,
+          "total_opportunity": 15803660.447390586
+        }
+      },
+      "workload_job_id": 436023914,
+      "zero_accuracy_indicator": 0
+    },
+    {
+      "assignment_count": 6636,
+      "authenticated_member_sha256": {
+        "lifecycle.jsonl": "7fe5aa41987492f81820609999f82fa9a87a4b2db3b50cde83d8d2a28f461276",
+        "observer-duty.json": "c328afb763c04c8da40fe29bab78236ce208e462aea96e434490e1748a43b525",
+        "opportunity.jsonl": "2f901481694775a3196c0804a083444d3dbe5b3327a03e15e7aa635d74029f60"
+      },
+      "block_id": "b06",
+      "common_window": [
+        8,
+        407
+      ],
+      "delivered_count": 1600,
+      "direct_chain_rate": 0.0006027727546714888,
+      "generated_tokens_per_second": 16375.088129187425,
+      "generated_valid_actor_tokens": 95319388,
+      "identity": "b06_immediate",
+      "learner_updates_per_second": 0.0769627211819275,
+      "lost_count": 5036,
+      "mean_ready_to_terminal_seconds": 4.159512743160187,
+      "mean_response_tokens": 1605.3521288062516,
+      "mean_selected_version_age": 0.646875,
+      "mean_version_advance_during_release": 0.0007534659433393611,
+      "normalized_realized_opportunity_loss": 0.8006078392188019,
+      "observer_duty": 0.001855126704999133,
+      "positive_opportunity_assignment_count": 2641,
+      "positive_opportunity_lost_count": 2072,
+      "regime": "immediate",
+      "terminal_accuracy": 0.0,
+      "terminal_missing_count": 0,
+      "wall_seconds": 5821,
+      "within_mixed_d5_minus_control_opportunity_loss": null,
+      "workload_job_id": 436024886,
+      "zero_accuracy_indicator": 1
+    },
+    {
+      "assignment_count": 7798,
+      "authenticated_member_sha256": {
+        "lifecycle.jsonl": "8cc549d53fb38c4d7e0bacf292dd7039e721a4879fbc9d3a059f4de52ec47b9e",
+        "observer-duty.json": "b7f0325860e00ff5faaed0309a27061b640d3e6e3a1e97741f6a85e26b1723e0",
+        "opportunity.jsonl": "ad59cd06112314b63865a83baf5da4cd9ef2af9f071355ce8cbb752db97b20fc"
+      },
+      "block_id": "b06",
+      "common_window": [
+        8,
+        407
+      ],
+      "delivered_count": 1600,
+      "direct_chain_rate": 0.14490895101308027,
+      "generated_tokens_per_second": 16038.217304552874,
+      "generated_valid_actor_tokens": 88418692,
+      "identity": "b06_mixed_d5",
+      "learner_updates_per_second": 0.0812624705242155,
+      "lost_count": 6198,
+      "mean_ready_to_terminal_seconds": 3.284852389345986,
+      "mean_response_tokens": 1279.7981125521076,
+      "mean_selected_version_age": 0.5275,
+      "mean_version_advance_during_release": 0.287637855860477,
+      "normalized_realized_opportunity_loss": 0.8077098738178147,
+      "observer_duty": 0.0023256906108062316,
+      "positive_opportunity_assignment_count": 2940,
+      "positive_opportunity_lost_count": 2348,
+      "regime": "mixed_d5",
+      "terminal_accuracy": 0.0,
+      "terminal_missing_count": 0,
+      "wall_seconds": 5513,
+      "within_mixed_d5_minus_control_opportunity_loss": {
+        "complete_data_delta_l": 0.2878473322150387,
+        "conclusion": "MATERIAL",
+        "control": {
+          "arm": "control",
+          "assignments": 3920,
+          "lost_opportunity_lower_mean": 1980.6354049786696,
+          "lost_opportunity_upper_mean": 1980.6354049786696,
+          "missing_fraction": 0.0,
+          "missing_opportunity": 0.0,
+          "missing_opportunity_fraction": 0.0,
+          "missing_terminals": 0,
+          "total_opportunity": 11743779.239383012
+        },
+        "control_mean_opportunity": 2995.8620508630133,
+        "coverage_gate_passed": true,
+        "delta_l_lower": 0.2878473322150387,
+        "delta_l_upper": 0.2878473322150387,
+        "material_threshold": 0.2,
+        "max_missing_fraction": 0.01,
+        "treatment": {
+          "arm": "d5",
+          "assignments": 3878,
+          "lost_opportunity_lower_mean": 2842.9863040038626,
+          "lost_opportunity_upper_mean": 2842.9863040038626,
+          "missing_fraction": 0.0,
+          "missing_opportunity": 0.0,
+          "missing_opportunity_fraction": 0.0,
+          "missing_terminals": 0,
+          "total_opportunity": 11518523.57936576
+        }
+      },
+      "workload_job_id": 436026809,
+      "zero_accuracy_indicator": 1
+    },
+    {
+      "assignment_count": 6635,
+      "authenticated_member_sha256": {
+        "lifecycle.jsonl": "e2eb2877ffd596bf22bbad5d76dd7b83457ab3a485688696f1d5cc309918bd92",
+        "observer-duty.json": "30595b4a2b16bd2dfac45cefedbfee0a36581a115466352b1d9b4dfccf7fa691",
+        "opportunity.jsonl": "d2883833348ca029cc30d8b4ad8949b94410fa34fb7fc70c47c523aa692479c1"
+      },
+      "block_id": "b07",
+      "common_window": [
+        8,
+        407
+      ],
+      "delivered_count": 1600,
+      "direct_chain_rate": 0.0,
+      "generated_tokens_per_second": 16528.626899964653,
+      "generated_valid_actor_tokens": 93518971,
+      "identity": "b07_immediate",
+      "learner_updates_per_second": 0.07917992223400495,
+      "lost_count": 5035,
+      "mean_ready_to_terminal_seconds": 3.9873967468828937,
+      "mean_response_tokens": 1571.8530825601722,
+      "mean_selected_version_age": 0.625,
+      "mean_version_advance_during_release": 0.0,
+      "normalized_realized_opportunity_loss": 0.7973396111485207,
+      "observer_duty": 0.001652607944888636,
+      "positive_opportunity_assignment_count": 3031,
+      "positive_opportunity_lost_count": 2381,
+      "regime": "immediate",
+      "terminal_accuracy": 0.3369140625,
+      "terminal_missing_count": 0,
+      "wall_seconds": 5658,
+      "within_mixed_d5_minus_control_opportunity_loss": null,
+      "workload_job_id": 436028717,
+      "zero_accuracy_indicator": 0
+    },
+    {
+      "assignment_count": 7109,
+      "authenticated_member_sha256": {
+        "lifecycle.jsonl": "2da57f464307ff2ca27fc27667cd8dfc3cd71f47476a18b2f7721f20eb945f12",
+        "observer-duty.json": "11e64157911798bd166d5f6e2fd81b8ad3b0a02a4a9307bfd548b71ccbcdc53f",
+        "opportunity.jsonl": "0395bec05ae143c5eb0b0783f5c6d1445394dbdc1c1ec77c7b9d940e4dd4a13c"
+      },
+      "block_id": "b07",
+      "common_window": [
+        8,
+        407
+      ],
+      "delivered_count": 1600,
+      "direct_chain_rate": 0.14207342804895204,
+      "generated_tokens_per_second": 16657.708917092466,
+      "generated_valid_actor_tokens": 101062320,
+      "identity": "b07_mixed_d5",
+      "learner_updates_per_second": 0.07384209658809955,
+      "lost_count": 5509,
+      "mean_ready_to_terminal_seconds": 3.4505989911873685,
+      "mean_response_tokens": 1585.042659974906,
+      "mean_selected_version_age": 0.63875,
+      "mean_version_advance_during_release": 0.21522014348009566,
+      "normalized_realized_opportunity_loss": 0.8087181140501724,
+      "observer_duty": 0.00168156841458351,
+      "positive_opportunity_assignment_count": 3249,
+      "positive_opportunity_lost_count": 2602,
+      "regime": "mixed_d5",
+      "terminal_accuracy": 0.3271484375,
+      "terminal_missing_count": 0,
+      "wall_seconds": 6067,
+      "within_mixed_d5_minus_control_opportunity_loss": {
+        "complete_data_delta_l": 0.3327572516530013,
+        "conclusion": "MATERIAL",
+        "control": {
+          "arm": "control",
+          "assignments": 3529,
+          "lost_opportunity_lower_mean": 3093.5702165818884,
+          "lost_opportunity_upper_mean": 3093.5702165818884,
+          "missing_fraction": 0.0,
+          "missing_opportunity": 0.0,
+          "missing_opportunity_fraction": 0.0,
+          "missing_terminals": 0,
+          "total_opportunity": 16653223.857440889
+        },
+        "control_mean_opportunity": 4718.9639720716605,
+        "coverage_gate_passed": true,
+        "delta_l_lower": 0.3327572516530013,
+        "delta_l_upper": 0.3327572516530013,
+        "material_threshold": 0.2,
+        "max_missing_fraction": 0.01,
+        "treatment": {
+          "arm": "d5",
+          "assignments": 3580,
+          "lost_opportunity_lower_mean": 4663.839698577985,
+          "lost_opportunity_upper_mean": 4663.839698577985,
+          "missing_fraction": 0.0,
+          "missing_opportunity": 0.0,
+          "missing_opportunity_fraction": 0.0,
+          "missing_terminals": 0,
+          "total_opportunity": 17491869.390110046
+        }
+      },
+      "workload_job_id": 436029322,
+      "zero_accuracy_indicator": 0
+    },
+    {
+      "assignment_count": 6628,
+      "authenticated_member_sha256": {
+        "lifecycle.jsonl": "db5ff0bb7a3d8840740d0137ded889d0bf35cfd09ce31f3adb424cd489bbf94b",
+        "observer-duty.json": "cd2abadb7f6fc5a49954dbc9861244d80e520d11847428bda70e97851065a155",
+        "opportunity.jsonl": "2c8cb49b470fb904cc7170363fa04a5435bc525631bdf3c2700eeb339b29c2ed"
+      },
+      "block_id": "b08",
+      "common_window": [
+        8,
+        407
+      ],
+      "delivered_count": 1600,
+      "direct_chain_rate": 0.0,
+      "generated_tokens_per_second": 16541.43640768299,
+      "generated_valid_actor_tokens": 95592961,
+      "identity": "b08_immediate",
+      "learner_updates_per_second": 0.07752206264059526,
+      "lost_count": 5028,
+      "mean_ready_to_terminal_seconds": 4.105246184311406,
+      "mean_response_tokens": 1611.4794504383008,
+      "mean_selected_version_age": 0.65,
+      "mean_version_advance_during_release": 0.0,
+      "normalized_realized_opportunity_loss": 0.7931173532881026,
+      "observer_duty": 0.00168745071876903,
+      "positive_opportunity_assignment_count": 2872,
+      "positive_opportunity_lost_count": 2264,
+      "regime": "immediate",
+      "terminal_accuracy": 0.337890625,
+      "terminal_missing_count": 0,
+      "wall_seconds": 5779,
+      "within_mixed_d5_minus_control_opportunity_loss": null,
+      "workload_job_id": 436030519,
+      "zero_accuracy_indicator": 0
+    },
+    {
+      "assignment_count": 7213,
+      "authenticated_member_sha256": {
+        "lifecycle.jsonl": "15c0d5b5aa11177e157cf999f0626868ae811d89dbc438314f8bbc1dc6b14b36",
+        "observer-duty.json": "d35292e3502c00d63085ab0b29ebdb2d3b53792b65942e989f9eb5de5a1f9087",
+        "opportunity.jsonl": "0377e7281782fd415e98b3d9f2e5dcc3cefb170b69ffcff5fea84b78b314ce91"
+      },
+      "block_id": "b08",
+      "common_window": [
+        8,
+        407
+      ],
+      "delivered_count": 1600,
+      "direct_chain_rate": 0.12990433938721752,
+      "generated_tokens_per_second": 16675.862320012944,
+      "generated_valid_actor_tokens": 103073505,
+      "identity": "b08_mixed_d5",
+      "learner_updates_per_second": 0.072480181200453,
+      "lost_count": 5613,
+      "mean_ready_to_terminal_seconds": 3.7159486146848746,
+      "mean_response_tokens": 1593.3945244867673,
+      "mean_selected_version_age": 0.62625,
+      "mean_version_advance_during_release": 0.20171911825869956,
+      "normalized_realized_opportunity_loss": 0.8072694362409746,
+      "observer_duty": 0.0017246709115054254,
+      "positive_opportunity_assignment_count": 3108,
+      "positive_opportunity_lost_count": 2474,
+      "regime": "mixed_d5",
+      "terminal_accuracy": 0.1259765625,
+      "terminal_missing_count": 0,
+      "wall_seconds": 6181,
+      "within_mixed_d5_minus_control_opportunity_loss": {
+        "complete_data_delta_l": 0.3212333747995383,
+        "conclusion": "MATERIAL",
+        "control": {
+          "arm": "control",
+          "assignments": 3687,
+          "lost_opportunity_lower_mean": 2943.283026408423,
+          "lost_opportunity_upper_mean": 2943.283026408423,
+          "missing_fraction": 0.0,
+          "missing_opportunity": 0.0,
+          "missing_opportunity_fraction": 0.0,
+          "missing_terminals": 0,
+          "total_opportunity": 16450592.889139593
+        },
+        "control_mean_opportunity": 4461.782720135501,
+        "coverage_gate_passed": true,
+        "delta_l_lower": 0.3212333747995383,
+        "delta_l_upper": 0.3212333747995383,
+        "material_threshold": 0.2,
+        "max_missing_fraction": 0.01,
+        "treatment": {
+          "arm": "d5",
+          "assignments": 3526,
+          "lost_opportunity_lower_mean": 4376.556547219814,
+          "lost_opportunity_upper_mean": 4376.556547219814,
+          "missing_fraction": 0.0,
+          "missing_opportunity": 0.0,
+          "missing_opportunity_fraction": 0.0,
+          "missing_terminals": 0,
+          "total_opportunity": 16108081.729156137
+        }
+      },
+      "workload_job_id": 436030175,
+      "zero_accuracy_indicator": 0
+    },
+    {
+      "assignment_count": 6615,
+      "authenticated_member_sha256": {
+        "lifecycle.jsonl": "a4da4863d746ba8167d6e9d9aa5bbd57676b147b97f03f7627333f823b306851",
+        "observer-duty.json": "c1d191fabaa39445b1aebe44fc552877900bfec4dde865909c1687a191739220",
+        "opportunity.jsonl": "e5d139832ca651685131fbcb060c48b5088ae472259a621e49d84da5eaca08c9"
+      },
+      "block_id": "b09",
+      "common_window": [
+        8,
+        407
+      ],
+      "delivered_count": 1600,
+      "direct_chain_rate": 0.0001511715797430083,
+      "generated_tokens_per_second": 16418.359879922304,
+      "generated_valid_actor_tokens": 92977172,
+      "identity": "b09_immediate",
+      "learner_updates_per_second": 0.07911001236093942,
+      "lost_count": 5015,
+      "mean_ready_to_terminal_seconds": 3.986758915413908,
+      "mean_response_tokens": 1566.5381453026014,
+      "mean_selected_version_age": 0.5975,
+      "mean_version_advance_during_release": 0.0001511715797430083,
+      "normalized_realized_opportunity_loss": 0.7927977035090424,
+      "observer_duty": 0.0016837652377981495,
+      "positive_opportunity_assignment_count": 2900,
+      "positive_opportunity_lost_count": 2253,
+      "regime": "immediate",
+      "terminal_accuracy": 0.1796875,
+      "terminal_missing_count": 0,
+      "wall_seconds": 5663,
+      "within_mixed_d5_minus_control_opportunity_loss": null,
+      "workload_job_id": 436033295,
+      "zero_accuracy_indicator": 0
+    },
+    {
+      "assignment_count": 7260,
+      "authenticated_member_sha256": {
+        "lifecycle.jsonl": "71fdd3a53082e5e070a9bd427c4bfcd52b5f5bfa7f7a4ca52e1b150189813826",
+        "observer-duty.json": "db2b12fa9b7924e4defaf0a0bc014ac026e9ee587c64b5efef3c522b204577ae",
+        "opportunity.jsonl": "a03f1d74a49304c1bf3f33821196298952fbaca6c236c779c72cd857a6f95316"
+      },
+      "block_id": "b09",
+      "common_window": [
+        8,
+        407
+      ],
+      "delivered_count": 1600,
+      "direct_chain_rate": 0.12617079889807162,
+      "generated_tokens_per_second": 16587.66040462428,
+      "generated_valid_actor_tokens": 103307949,
+      "identity": "b09_mixed_d5",
+      "learner_updates_per_second": 0.07193320488118175,
+      "lost_count": 5660,
+      "mean_ready_to_terminal_seconds": 3.818202897293526,
+      "mean_response_tokens": 1590.1358976727004,
+      "mean_selected_version_age": 0.6525,
+      "mean_version_advance_during_release": 0.2049586776859504,
+      "normalized_realized_opportunity_loss": 0.7898259066733414,
+      "observer_duty": 0.0017431711255690412,
+      "positive_opportunity_assignment_count": 3242,
+      "positive_opportunity_lost_count": 2553,
+      "regime": "mixed_d5",
+      "terminal_accuracy": 0.0,
+      "terminal_missing_count": 0,
+      "wall_seconds": 6228,
+      "within_mixed_d5_minus_control_opportunity_loss": {
+        "complete_data_delta_l": 0.32407216738856987,
+        "conclusion": "MATERIAL",
+        "control": {
+          "arm": "control",
+          "assignments": 3619,
+          "lost_opportunity_lower_mean": 2879.1245706600193,
+          "lost_opportunity_upper_mean": 2879.1245706600193,
+          "missing_fraction": 0.0,
+          "missing_opportunity": 0.0,
+          "missing_opportunity_fraction": 0.0,
+          "missing_terminals": 0,
+          "total_opportunity": 16799237.687369794
+        },
+        "control_mean_opportunity": 4641.95570250616,
+        "coverage_gate_passed": true,
+        "delta_l_lower": 0.32407216738856987,
+        "delta_l_upper": 0.32407216738856987,
+        "material_threshold": 0.2,
+        "max_missing_fraction": 0.01,
+        "treatment": {
+          "arm": "d5",
+          "assignments": 3641,
+          "lost_opportunity_lower_mean": 4383.453216092922,
+          "lost_opportunity_upper_mean": 4383.453216092922,
+          "missing_fraction": 0.0,
+          "missing_opportunity": 0.0,
+          "missing_opportunity_fraction": 0.0,
+          "missing_terminals": 0,
+          "total_opportunity": 16600154.201560915
+        }
+      },
+      "workload_job_id": 436032886,
+      "zero_accuracy_indicator": 1
+    },
+    {
+      "assignment_count": 6670,
+      "authenticated_member_sha256": {
+        "lifecycle.jsonl": "1cddb12ece6297664129e23966876c02e1481bc4ca91418d296c1d573f7bf7b2",
+        "observer-duty.json": "5bb51e3f7eaf87c8cfe31487825df0b40f1515cb96c73d3c7534d055a046eeca",
+        "opportunity.jsonl": "86e80e0c14d5367c4fdb513ddb62a5f1b3bd30c3fd6c48d1ceaef697cd623e7d"
+      },
+      "block_id": "b10",
+      "common_window": [
+        8,
+        407
+      ],
+      "delivered_count": 1600,
+      "direct_chain_rate": 0.0,
+      "generated_tokens_per_second": 16521.792800551153,
+      "generated_valid_actor_tokens": 95925529,
+      "identity": "b10_immediate",
+      "learner_updates_per_second": 0.07716155700998967,
+      "lost_count": 5070,
+      "mean_ready_to_terminal_seconds": 4.202781464446927,
+      "mean_response_tokens": 1601.1071070903993,
+      "mean_selected_version_age": 0.601875,
+      "mean_version_advance_during_release": 0.0,
+      "normalized_realized_opportunity_loss": 0.7889061740591338,
+      "observer_duty": 0.001648418696993297,
+      "positive_opportunity_assignment_count": 2958,
+      "positive_opportunity_lost_count": 2297,
+      "regime": "immediate",
+      "terminal_accuracy": 0.2998046875,
+      "terminal_missing_count": 0,
+      "wall_seconds": 5806,
+      "within_mixed_d5_minus_control_opportunity_loss": null,
+      "workload_job_id": 436878779,
+      "zero_accuracy_indicator": 0
+    },
+    {
+      "assignment_count": 7241,
+      "authenticated_member_sha256": {
+        "lifecycle.jsonl": "79c169c33ec6f99b19e7b4f16e43e32eb49f04e1b2618b56c09146b00c677d7d",
+        "observer-duty.json": "12173577ed5d30450c6421acbf86171de0237b171bbaeb4f9398b1b9ef486a02",
+        "opportunity.jsonl": "8c1cc9d413cef931ece01ada73aad85b19f83e9c15565dc0d8110ec3bf01a9a6"
+      },
+      "block_id": "b10",
+      "common_window": [
+        8,
+        407
+      ],
+      "delivered_count": 1600,
+      "direct_chain_rate": 0.1291258113520232,
+      "generated_tokens_per_second": 16654.300033300035,
+      "generated_valid_actor_tokens": 100025726,
+      "identity": "b10_mixed_d5",
+      "learner_updates_per_second": 0.07459207459207459,
+      "lost_count": 5641,
+      "mean_ready_to_terminal_seconds": 3.712889792574368,
+      "mean_response_tokens": 1541.3234405818541,
+      "mean_selected_version_age": 0.609375,
+      "mean_version_advance_during_release": 0.20370114625051788,
+      "normalized_realized_opportunity_loss": 0.802245509276128,
+      "observer_duty": 0.0017626646120778339,
+      "positive_opportunity_assignment_count": 3340,
+      "positive_opportunity_lost_count": 2655,
+      "regime": "mixed_d5",
+      "terminal_accuracy": 0.3125,
+      "terminal_missing_count": 0,
+      "wall_seconds": 6006,
+      "within_mixed_d5_minus_control_opportunity_loss": {
+        "complete_data_delta_l": 0.26167775994901415,
+        "conclusion": "MATERIAL",
+        "control": {
+          "arm": "control",
+          "assignments": 3598,
+          "lost_opportunity_lower_mean": 3102.548838934488,
+          "lost_opportunity_upper_mean": 3102.548838934488,
+          "missing_fraction": 0.0,
+          "missing_opportunity": 0.0,
+          "missing_opportunity_fraction": 0.0,
+          "missing_terminals": 0,
+          "total_opportunity": 17143207.0452843
+        },
+        "control_mean_opportunity": 4764.648984236882,
+        "coverage_gate_passed": true,
+        "delta_l_lower": 0.26167775994901415,
+        "delta_l_upper": 0.26167775994901415,
+        "material_threshold": 0.2,
+        "max_missing_fraction": 0.01,
+        "treatment": {
+          "arm": "d5",
+          "assignments": 3643,
+          "lost_opportunity_lower_mean": 4349.351512072941,
+          "lost_opportunity_upper_mean": 4349.351512072941,
+          "missing_fraction": 0.0,
+          "missing_opportunity": 0.0,
+          "missing_opportunity_fraction": 0.0,
+          "missing_terminals": 0,
+          "total_opportunity": 16521871.747537136
+        }
+      },
+      "workload_job_id": 436878839,
+      "zero_accuracy_indicator": 0
+    },
+    {
+      "assignment_count": 6666,
+      "authenticated_member_sha256": {
+        "lifecycle.jsonl": "603e7b9337fa2c8c03635bf2ae2b3c010d49526e122aeebad0024bc96bc73900",
+        "observer-duty.json": "b5c99bbf3801e58d22f6b3bd5402096376c2416de2e2032531aa70cb47aea7a9",
+        "opportunity.jsonl": "c91c88905106dc2287556b3f058f22b83dcf999538bfe3f7c057f3ac30afe4fc"
+      },
+      "block_id": "b11",
+      "common_window": [
+        8,
+        407
+      ],
+      "delivered_count": 1600,
+      "direct_chain_rate": 0.00015001500150015003,
+      "generated_tokens_per_second": 16555.765657987333,
+      "generated_valid_actor_tokens": 94102972,
+      "identity": "b11_immediate",
+      "learner_updates_per_second": 0.07881773399014778,
+      "lost_count": 5066,
+      "mean_ready_to_terminal_seconds": 4.189778601114162,
+      "mean_response_tokens": 1572.1560411654639,
+      "mean_selected_version_age": 0.631875,
+      "mean_version_advance_during_release": 0.00015001500150015003,
+      "normalized_realized_opportunity_loss": 0.7911786694313272,
+      "observer_duty": 0.0016998002102483305,
+      "positive_opportunity_assignment_count": 3146,
+      "positive_opportunity_lost_count": 2455,
+      "regime": "immediate",
+      "terminal_accuracy": 0.3251953125,
+      "terminal_missing_count": 0,
+      "wall_seconds": 5684,
+      "within_mixed_d5_minus_control_opportunity_loss": null,
+      "workload_job_id": 436878852,
+      "zero_accuracy_indicator": 0
+    },
+    {
+      "assignment_count": 7149,
+      "authenticated_member_sha256": {
+        "lifecycle.jsonl": "298bf04a39012d6d57b418c6fec3d3a330554e32d7379395a463033b2e992aad",
+        "observer-duty.json": "72918ec64a35b0d693a4eacb941e56a41c439c7182b2071d7cf21b5e20de23ed",
+        "opportunity.jsonl": "5c8c9fdcba2f3f4f090f890fd7ddb420292f2539e48e64880bbf1e54e3846cdb"
+      },
+      "block_id": "b11",
+      "common_window": [
+        8,
+        407
+      ],
+      "delivered_count": 1600,
+      "direct_chain_rate": 0.1355434326479228,
+      "generated_tokens_per_second": 16720.067000518044,
+      "generated_valid_actor_tokens": 96825908,
+      "identity": "b11_mixed_d5",
+      "learner_updates_per_second": 0.07736142289759973,
+      "lost_count": 5549,
+      "mean_ready_to_terminal_seconds": 3.3595059985308438,
+      "mean_response_tokens": 1512.5266808297924,
+      "mean_selected_version_age": 0.61625,
+      "mean_version_advance_during_release": 0.21541474332074417,
+      "normalized_realized_opportunity_loss": 0.8039189412951149,
+      "observer_duty": 0.0016905757065633306,
+      "positive_opportunity_assignment_count": 3330,
+      "positive_opportunity_lost_count": 2631,
+      "regime": "mixed_d5",
+      "terminal_accuracy": 0.306640625,
+      "terminal_missing_count": 0,
+      "wall_seconds": 5791,
+      "within_mixed_d5_minus_control_opportunity_loss": {
+        "complete_data_delta_l": 0.2480393553468092,
+        "conclusion": "MATERIAL",
+        "control": {
+          "arm": "control",
+          "assignments": 3556,
+          "lost_opportunity_lower_mean": 3172.326937021384,
+          "lost_opportunity_upper_mean": 3172.326937021384,
+          "missing_fraction": 0.0,
+          "missing_opportunity": 0.0,
+          "missing_opportunity_fraction": 0.0,
+          "missing_terminals": 0,
+          "total_opportunity": 17317184.806030333
+        },
+        "control_mean_opportunity": 4869.849495509093,
+        "coverage_gate_passed": true,
+        "delta_l_lower": 0.2480393553468092,
+        "delta_l_upper": 0.2480393553468092,
+        "material_threshold": 0.2,
+        "max_missing_fraction": 0.01,
+        "treatment": {
+          "arm": "d5",
+          "assignments": 3593,
+          "lost_opportunity_lower_mean": 4380.241266523443,
+          "lost_opportunity_upper_mean": 4380.241266523443,
+          "missing_fraction": 0.0,
+          "missing_opportunity": 0.0,
+          "missing_opportunity_fraction": 0.0,
+          "missing_terminals": 0,
+          "total_opportunity": 16291926.847862422
+        }
+      },
+      "workload_job_id": 436879279,
+      "zero_accuracy_indicator": 0
+    },
+    {
+      "assignment_count": 6436,
+      "authenticated_member_sha256": {
+        "lifecycle.jsonl": "d3083c020e949b5904a044a20328f727d59f0ffc411510d7d00b33876f3b53f3",
+        "observer-duty.json": "c71f617975f89ac4900d32512de07c99c569f53411da0e5bee8fe5c8b265de2a",
+        "opportunity.jsonl": "6ec4a5cbfc4a61e59bf4447409b740aa21635c874c55f794584fe7f1d4d43840"
+      },
+      "block_id": "b12",
+      "common_window": [
+        8,
+        407
+      ],
+      "delivered_count": 1600,
+      "direct_chain_rate": 0.00015537600994406463,
+      "generated_tokens_per_second": 16571.68212290503,
+      "generated_valid_actor_tokens": 88989933,
+      "identity": "b12_immediate",
+      "learner_updates_per_second": 0.08342644320297951,
+      "lost_count": 4836,
+      "mean_ready_to_terminal_seconds": 3.508157389877253,
+      "mean_response_tokens": 1535.7920233328732,
+      "mean_selected_version_age": 0.588125,
+      "mean_version_advance_during_release": 0.00015537600994406463,
+      "normalized_realized_opportunity_loss": 0.806229546853424,
+      "observer_duty": 0.0017157092996977568,
+      "positive_opportunity_assignment_count": 3020,
+      "positive_opportunity_lost_count": 2392,
+      "regime": "immediate",
+      "terminal_accuracy": 0.3173828125,
+      "terminal_missing_count": 0,
+      "wall_seconds": 5370,
+      "within_mixed_d5_minus_control_opportunity_loss": null,
+      "workload_job_id": 436879365,
+      "zero_accuracy_indicator": 0
+    },
+    {
+      "assignment_count": 7241,
+      "authenticated_member_sha256": {
+        "lifecycle.jsonl": "1a70abe0021f47d9bf52ebddfa7da0524df9d26a3d1694649282d3305cafc9b0",
+        "observer-duty.json": "247c5f730b692fc19038241d852df59e9596978239627288237d7274ca060ede",
+        "opportunity.jsonl": "df9d6f6a2cdf808ec04b9626961bb6e9eb21425c84577a88392a1a763d9fe943"
+      },
+      "block_id": "b12",
+      "common_window": [
+        8,
+        407
+      ],
+      "delivered_count": 1600,
+      "direct_chain_rate": 0.12594945449523545,
+      "generated_tokens_per_second": 16751.65223831468,
+      "generated_valid_actor_tokens": 101783039,
+      "identity": "b12_mixed_d5",
+      "learner_updates_per_second": 0.07373271889400922,
+      "lost_count": 5641,
+      "mean_ready_to_terminal_seconds": 3.7994466672063254,
+      "mean_response_tokens": 1573.0563643669634,
+      "mean_selected_version_age": 0.62125,
+      "mean_version_advance_during_release": 0.2031487363623809,
+      "normalized_realized_opportunity_loss": 0.7945081418272755,
+      "observer_duty": 0.0017592635224994977,
+      "positive_opportunity_assignment_count": 3248,
+      "positive_opportunity_lost_count": 2571,
+      "regime": "mixed_d5",
+      "terminal_accuracy": 0.345703125,
+      "terminal_missing_count": 0,
+      "wall_seconds": 6076,
+      "within_mixed_d5_minus_control_opportunity_loss": {
+        "complete_data_delta_l": 0.319618535622891,
+        "conclusion": "MATERIAL",
+        "control": {
+          "arm": "control",
+          "assignments": 3682,
+          "lost_opportunity_lower_mean": 3030.6277231192907,
+          "lost_opportunity_upper_mean": 3030.6277231192907,
+          "missing_fraction": 0.0,
+          "missing_opportunity": 0.0,
+          "missing_opportunity_fraction": 0.0,
+          "missing_terminals": 0,
+          "total_opportunity": 17563869.32511112
+        },
+        "control_mean_opportunity": 4770.19807852013,
+        "coverage_gate_passed": true,
+        "delta_l_lower": 0.319618535622891,
+        "delta_l_upper": 0.319618535622891,
+        "material_threshold": 0.2,
+        "max_missing_fraction": 0.01,
+        "treatment": {
+          "arm": "d5",
+          "assignments": 3559,
+          "lost_opportunity_lower_mean": 4555.271447607023,
+          "lost_opportunity_upper_mean": 4555.271447607023,
+          "missing_fraction": 0.0,
+          "missing_opportunity": 0.0,
+          "missing_opportunity_fraction": 0.0,
+          "missing_terminals": 0,
+          "total_opportunity": 16886353.29389009
+        }
+      },
+      "workload_job_id": 436879344,
+      "zero_accuracy_indicator": 0
+    },
+    {
+      "assignment_count": 6518,
+      "authenticated_member_sha256": {
+        "lifecycle.jsonl": "2fda6be1579bd9918ab01038ac76d82c91c204f182ff92f6eb1b942a868e4996",
+        "observer-duty.json": "821c7f366fc88ad890ebc04d51c28fbdcad725c14be1a4471e4e435f593e0e7b",
+        "opportunity.jsonl": "ebd2db76362a48a9fd1ec9441638d7f2f857d4d3139dcd920fc3ae58f000ee14"
+      },
+      "block_id": "b13",
+      "common_window": [
+        8,
+        407
+      ],
+      "delivered_count": 1600,
+      "direct_chain_rate": 0.0,
+      "generated_tokens_per_second": 16588.71512455516,
+      "generated_valid_actor_tokens": 93228579,
+      "identity": "b13_immediate",
+      "learner_updates_per_second": 0.0797153024911032,
+      "lost_count": 4918,
+      "mean_ready_to_terminal_seconds": 3.8938589310599876,
+      "mean_response_tokens": 1596.8172615785147,
+      "mean_selected_version_age": 0.648125,
+      "mean_version_advance_during_release": 0.0,
+      "normalized_realized_opportunity_loss": 0.7793903703894645,
+      "observer_duty": 0.0016524676759705533,
+      "positive_opportunity_assignment_count": 2989,
+      "positive_opportunity_lost_count": 2295,
+      "regime": "immediate",
+      "terminal_accuracy": 0.328125,
+      "terminal_missing_count": 0,
+      "wall_seconds": 5620,
+      "within_mixed_d5_minus_control_opportunity_loss": null,
+      "workload_job_id": 436879462,
+      "zero_accuracy_indicator": 0
+    },
+    {
+      "assignment_count": 7252,
+      "authenticated_member_sha256": {
+        "lifecycle.jsonl": "f565153c3a1c50df33007f654de89d968cd8de507de01d90ce7e48ac43653d8c",
+        "observer-duty.json": "9782071d3fb656612906dbe24c3498a63217cf5dd9780c3dcb79a00aca9403af",
+        "opportunity.jsonl": "686181525942d1b10a497cc12ab5960dc1ba36658a4853ef13413c05f5fd6576"
+      },
+      "block_id": "b13",
+      "common_window": [
+        8,
+        407
+      ],
+      "delivered_count": 1600,
+      "direct_chain_rate": 0.12755102040816327,
+      "generated_tokens_per_second": 16790.185814675602,
+      "generated_valid_actor_tokens": 102739147,
+      "identity": "b13_mixed_d5",
+      "learner_updates_per_second": 0.07321457754535055,
+      "lost_count": 5652,
+      "mean_ready_to_terminal_seconds": 3.770501645789989,
+      "mean_response_tokens": 1581.186084092588,
+      "mean_selected_version_age": 0.631875,
+      "mean_version_advance_during_release": 0.20077220077220076,
+      "normalized_realized_opportunity_loss": 0.8048837009349844,
+      "observer_duty": 0.0017131373486465981,
+      "positive_opportunity_assignment_count": 3284,
+      "positive_opportunity_lost_count": 2619,
+      "regime": "mixed_d5",
+      "terminal_accuracy": 0.32421875,
+      "terminal_missing_count": 0,
+      "wall_seconds": 6119,
+      "within_mixed_d5_minus_control_opportunity_loss": {
+        "complete_data_delta_l": 0.33781986778447537,
+        "conclusion": "MATERIAL",
+        "control": {
+          "arm": "control",
+          "assignments": 3655,
+          "lost_opportunity_lower_mean": 3064.7014891640433,
+          "lost_opportunity_upper_mean": 3064.7014891640433,
+          "missing_fraction": 0.0,
+          "missing_opportunity": 0.0,
+          "missing_opportunity_fraction": 0.0,
+          "missing_terminals": 0,
+          "total_opportunity": 17189196.79061833
+        },
+        "control_mean_opportunity": 4702.926618500227,
+        "coverage_gate_passed": true,
+        "delta_l_lower": 0.33781986778447537,
+        "delta_l_upper": 0.33781986778447537,
+        "material_threshold": 0.2,
+        "max_missing_fraction": 0.01,
+        "treatment": {
+          "arm": "d5",
+          "assignments": 3597,
+          "lost_opportunity_lower_mean": 4653.44353762588,
+          "lost_opportunity_upper_mean": 4653.44353762588,
+          "missing_fraction": 0.0,
+          "missing_opportunity": 0.0,
+          "missing_opportunity_fraction": 0.0,
+          "missing_terminals": 0,
+          "total_opportunity": 17523793.813215196
+        }
+      },
+      "workload_job_id": 436879477,
+      "zero_accuracy_indicator": 0
+    },
+    {
+      "assignment_count": 6614,
+      "authenticated_member_sha256": {
+        "lifecycle.jsonl": "39b533442066107669529dba5e7dc3b4ee07a8347f6e64206faf340098846e2f",
+        "observer-duty.json": "69e5353d965ab90477345ae2b5fbc6e6be2cd2fece1aea1ccb540672981e67cc",
+        "opportunity.jsonl": "6d2a8e21f3c4a630fd902668e1f780d2a6eaa379590c03aebd7d36f1bba3edce"
+      },
+      "block_id": "b14",
+      "common_window": [
+        8,
+        407
+      ],
+      "delivered_count": 1600,
+      "direct_chain_rate": 0.0,
+      "generated_tokens_per_second": 16444.8528874269,
+      "generated_valid_actor_tokens": 89986235,
+      "identity": "b14_immediate",
+      "learner_updates_per_second": 0.08187134502923976,
+      "lost_count": 5014,
+      "mean_ready_to_terminal_seconds": 3.800060843327336,
+      "mean_response_tokens": 1516.7582760248113,
+      "mean_selected_version_age": 0.60875,
+      "mean_version_advance_during_release": 0.0,
+      "normalized_realized_opportunity_loss": 0.8039986076021746,
+      "observer_duty": 0.0016941986522139559,
+      "positive_opportunity_assignment_count": 2990,
+      "positive_opportunity_lost_count": 2347,
+      "regime": "immediate",
+      "terminal_accuracy": 0.0,
+      "terminal_missing_count": 0,
+      "wall_seconds": 5472,
+      "within_mixed_d5_minus_control_opportunity_loss": null,
+      "workload_job_id": 436879513,
+      "zero_accuracy_indicator": 1
+    },
+    {
+      "assignment_count": 6934,
+      "authenticated_member_sha256": {
+        "lifecycle.jsonl": "4904eead8181ba2a2c2857aeb97696789cdcc9e5a71c2bb839621002d7f9a630",
+        "observer-duty.json": "e8d76b4aa9bfe3090e4529a3551947f6dc533074ded0ca58d2e2f180537e2602",
+        "opportunity.jsonl": "6717efea590970b96018cfa697509bd9925b84c3c1cf73c7697f1c0a64fd2560"
+      },
+      "block_id": "b14",
+      "common_window": [
+        8,
+        407
+      ],
+      "delivered_count": 1600,
+      "direct_chain_rate": 0.14003461205653303,
+      "generated_tokens_per_second": 16642.935036740146,
+      "generated_valid_actor_tokens": 99657895,
+      "identity": "b14_mixed_d5",
+      "learner_updates_per_second": 0.07481629926519706,
+      "lost_count": 5334,
+      "mean_ready_to_terminal_seconds": 3.194264385373666,
+      "mean_response_tokens": 1602.4230608438384,
+      "mean_selected_version_age": 0.681875,
+      "mean_version_advance_during_release": 0.21041246034035188,
+      "normalized_realized_opportunity_loss": 0.8019787386423434,
+      "observer_duty": 0.0016429441095157811,
+      "positive_opportunity_assignment_count": 3157,
+      "positive_opportunity_lost_count": 2513,
+      "regime": "mixed_d5",
+      "terminal_accuracy": 0.3125,
+      "terminal_missing_count": 0,
+      "wall_seconds": 5988,
+      "within_mixed_d5_minus_control_opportunity_loss": {
+        "complete_data_delta_l": 0.30599389073973704,
+        "conclusion": "MATERIAL",
+        "control": {
+          "arm": "control",
+          "assignments": 3512,
+          "lost_opportunity_lower_mean": 3173.5751435511274,
+          "lost_opportunity_upper_mean": 3173.5751435511274,
+          "missing_fraction": 0.0,
+          "missing_opportunity": 0.0,
+          "missing_opportunity_fraction": 0.0,
+          "missing_terminals": 0,
+          "total_opportunity": 17118403.48228517
+        },
+        "control_mean_opportunity": 4874.260672632452,
+        "coverage_gate_passed": true,
+        "delta_l_lower": 0.30599389073973704,
+        "delta_l_upper": 0.30599389073973704,
+        "material_threshold": 0.2,
+        "max_missing_fraction": 0.01,
+        "treatment": {
+          "arm": "d5",
+          "assignments": 3422,
+          "lost_opportunity_lower_mean": 4665.069131249619,
+          "lost_opportunity_upper_mean": 4665.069131249619,
+          "missing_fraction": 0.0,
+          "missing_opportunity": 0.0,
+          "missing_opportunity_fraction": 0.0,
+          "missing_terminals": 0,
+          "total_opportunity": 16684814.938668132
+        }
+      },
+      "workload_job_id": 436879510,
+      "zero_accuracy_indicator": 0
+    },
+    {
+      "assignment_count": 6607,
+      "authenticated_member_sha256": {
+        "lifecycle.jsonl": "3e2ee9967ffdf64ecead9a0d927c40403e8324f3baa8a648925ef353587db34c",
+        "observer-duty.json": "4f33877045cd4ff1f8a2de2a808ed3c8f2322f8e123d75e48d7675c3741448e5",
+        "opportunity.jsonl": "cd0cb89c008939af463cf0b1d8e1cfafa28d7a3c827933d469e571ebf907050f"
+      },
+      "block_id": "b15",
+      "common_window": [
+        8,
+        407
+      ],
+      "delivered_count": 1600,
+      "direct_chain_rate": 0.0,
+      "generated_tokens_per_second": 16558.232991125806,
+      "generated_valid_actor_tokens": 95160165,
+      "identity": "b15_immediate",
+      "learner_updates_per_second": 0.0779537149817296,
+      "lost_count": 5007,
+      "mean_ready_to_terminal_seconds": 4.033635449912971,
+      "mean_response_tokens": 1604.6162990692028,
+      "mean_selected_version_age": 0.625625,
+      "mean_version_advance_during_release": 0.00015135462388375965,
+      "normalized_realized_opportunity_loss": 0.7948747914490644,
+      "observer_duty": 0.0016278406439407338,
+      "positive_opportunity_assignment_count": 3033,
+      "positive_opportunity_lost_count": 2383,
+      "regime": "immediate",
+      "terminal_accuracy": 0.3037109375,
+      "terminal_missing_count": 0,
+      "wall_seconds": 5747,
+      "within_mixed_d5_minus_control_opportunity_loss": null,
+      "workload_job_id": 436879559,
+      "zero_accuracy_indicator": 0
+    },
+    {
+      "assignment_count": 7231,
+      "authenticated_member_sha256": {
+        "lifecycle.jsonl": "45060fc28fe5e76c979a5ce1321d4bc58e7c85fbdaa605e45117d2912adc851c",
+        "observer-duty.json": "7a58aa15e8621bae7ac57fce36e0f8a2e6692a67b4ff569d6a51229c54f02804",
+        "opportunity.jsonl": "2865338d96805e0bb71516d0155a9f29792c16ee560fa42a6cc172be7dd91f6d"
+      },
+      "block_id": "b15",
+      "common_window": [
+        8,
+        407
+      ],
+      "delivered_count": 1600,
+      "direct_chain_rate": 0.12252800442539068,
+      "generated_tokens_per_second": 16708.762004850443,
+      "generated_valid_actor_tokens": 103343693,
+      "identity": "b15_mixed_d5",
+      "learner_updates_per_second": 0.07243330638641876,
+      "lost_count": 5631,
+      "mean_ready_to_terminal_seconds": 3.820228068985756,
+      "mean_response_tokens": 1602.3271675762837,
+      "mean_selected_version_age": 0.630625,
+      "mean_version_advance_during_release": 0.19651500484027107,
+      "normalized_realized_opportunity_loss": 0.8089411089516032,
+      "observer_duty": 0.001700588153753625,
+      "positive_opportunity_assignment_count": 3311,
+      "positive_opportunity_lost_count": 2649,
+      "regime": "mixed_d5",
+      "terminal_accuracy": 0.1142578125,
+      "terminal_missing_count": 0,
+      "wall_seconds": 6185,
+      "within_mixed_d5_minus_control_opportunity_loss": {
+        "complete_data_delta_l": 0.2978904284893028,
+        "conclusion": "MATERIAL",
+        "control": {
+          "arm": "control",
+          "assignments": 3682,
+          "lost_opportunity_lower_mean": 3221.2941120481973,
+          "lost_opportunity_upper_mean": 3221.2941120481973,
+          "missing_fraction": 0.0,
+          "missing_opportunity": 0.0,
+          "missing_opportunity_fraction": 0.0,
+          "missing_terminals": 0,
+          "total_opportunity": 17908776.814555407
+        },
+        "control_mean_opportunity": 4863.872030025912,
+        "coverage_gate_passed": true,
+        "delta_l_lower": 0.2978904284893028,
+        "delta_l_upper": 0.2978904284893028,
+        "material_threshold": 0.2,
+        "max_missing_fraction": 0.01,
+        "treatment": {
+          "arm": "d5",
+          "assignments": 3549,
+          "lost_opportunity_lower_mean": 4670.195035189751,
+          "lost_opportunity_upper_mean": 4670.195035189751,
+          "missing_fraction": 0.0,
+          "missing_opportunity": 0.0,
+          "missing_opportunity_fraction": 0.0,
+          "missing_terminals": 0,
+          "total_opportunity": 17242517.61935264
+        }
+      },
+      "workload_job_id": 436879550,
+      "zero_accuracy_indicator": 0
+    },
+    {
+      "assignment_count": 6557,
+      "authenticated_member_sha256": {
+        "lifecycle.jsonl": "2068cb521ecd2b7459026cff6cd1ace4a50c3fbf9fe71942156f7029fd2d1378",
+        "observer-duty.json": "1f737750d5391fb0833dadbf72f396b842a5d49515c5e81447486fe7c07ec128",
+        "opportunity.jsonl": "3abbb2d6da1f6502238514cf20352007b6a57bb0e5be5cbc2b04ed3ce1b41abc"
+      },
+      "block_id": "b16",
+      "common_window": [
+        8,
+        407
+      ],
+      "delivered_count": 1600,
+      "direct_chain_rate": 0.0,
+      "generated_tokens_per_second": 16603.30456761148,
+      "generated_valid_actor_tokens": 91965704,
+      "identity": "b16_immediate",
+      "learner_updates_per_second": 0.08088102545585846,
+      "lost_count": 4957,
+      "mean_ready_to_terminal_seconds": 3.769609283543236,
+      "mean_response_tokens": 1568.5240824123346,
+      "mean_selected_version_age": 0.638125,
+      "mean_version_advance_during_release": 0.0,
+      "normalized_realized_opportunity_loss": 0.8013804608753484,
+      "observer_duty": 0.0015708581256679529,
+      "positive_opportunity_assignment_count": 2887,
+      "positive_opportunity_lost_count": 2270,
+      "regime": "immediate",
+      "terminal_accuracy": 0.3017578125,
+      "terminal_missing_count": 0,
+      "wall_seconds": 5539,
+      "within_mixed_d5_minus_control_opportunity_loss": null,
+      "workload_job_id": 436879720,
+      "zero_accuracy_indicator": 0
+    },
+    {
+      "assignment_count": 7268,
+      "authenticated_member_sha256": {
+        "lifecycle.jsonl": "49c0181c1a99ff6a9c7cfb08abe2eca19754253e89a3edcc8f78a780c3d6809a",
+        "observer-duty.json": "0f52b53c76ac09bb46ca005906e2e9f566d5451aba5c96761115c7349d2856e2",
+        "opportunity.jsonl": "49b940801615f14a0d24c3e314a6aad03c0699377cb0cdba9df6b179908039f6"
+      },
+      "block_id": "b16",
+      "common_window": [
+        8,
+        407
+      ],
+      "delivered_count": 1600,
+      "direct_chain_rate": 0.11805173362685746,
+      "generated_tokens_per_second": 16745.20868728963,
+      "generated_valid_actor_tokens": 104473357,
+      "identity": "b16_mixed_d5",
+      "learner_updates_per_second": 0.07180637922744029,
+      "lost_count": 5668,
+      "mean_ready_to_terminal_seconds": 3.897771515063566,
+      "mean_response_tokens": 1601.566056536669,
+      "mean_selected_version_age": 0.633125,
+      "mean_version_advance_during_release": 0.19482663731425426,
+      "normalized_realized_opportunity_loss": 0.8060664451083936,
+      "observer_duty": 0.0017324755717154441,
+      "positive_opportunity_assignment_count": 3173,
+      "positive_opportunity_lost_count": 2530,
+      "regime": "mixed_d5",
+      "terminal_accuracy": 0.0,
+      "terminal_missing_count": 0,
+      "wall_seconds": 6239,
+      "within_mixed_d5_minus_control_opportunity_loss": {
+        "complete_data_delta_l": 0.3269350243871065,
+        "conclusion": "MATERIAL",
+        "control": {
+          "arm": "control",
+          "assignments": 3635,
+          "lost_opportunity_lower_mean": 2982.0954634194445,
+          "lost_opportunity_upper_mean": 2982.0954634194445,
+          "missing_fraction": 0.0,
+          "missing_opportunity": 0.0,
+          "missing_opportunity_fraction": 0.0,
+          "missing_terminals": 0,
+          "total_opportunity": 16693777.307736367
+        },
+        "control_mean_opportunity": 4592.510951234214,
+        "coverage_gate_passed": true,
+        "delta_l_lower": 0.3269350243871065,
+        "delta_l_upper": 0.3269350243871065,
+        "material_threshold": 0.2,
+        "max_missing_fraction": 0.01,
+        "treatment": {
+          "arm": "d5",
+          "assignments": 3633,
+          "lost_opportunity_lower_mean": 4483.548143259256,
+          "lost_opportunity_upper_mean": 4483.548143259256,
+          "missing_fraction": 0.0,
+          "missing_opportunity": 0.0,
+          "missing_opportunity_fraction": 0.0,
+          "missing_terminals": 0,
+          "total_opportunity": 16961819.670180887
+        }
+      },
+      "workload_job_id": 436879670,
+      "zero_accuracy_indicator": 1
+    }
+  ],
+  "scatter_points": [
+    {
+      "accuracy_difference": -0.326171875,
+      "block_id": "b01",
+      "opportunity_loss_difference": 0.0013750918115547073
+    },
+    {
+      "accuracy_difference": -0.0458984375,
+      "block_id": "b02",
+      "opportunity_loss_difference": 0.026268466754791886
+    },
+    {
+      "accuracy_difference": 0.193359375,
+      "block_id": "b03",
+      "opportunity_loss_difference": 0.008422709973428977
+    },
+    {
+      "accuracy_difference": -0.017578125,
+      "block_id": "b04",
+      "opportunity_loss_difference": -0.0026517428625997264
+    },
+    {
+      "accuracy_difference": 0.0390625,
+      "block_id": "b05",
+      "opportunity_loss_difference": -0.0014905226108005154
+    },
+    {
+      "accuracy_difference": 0.0,
+      "block_id": "b06",
+      "opportunity_loss_difference": 0.007102034599012819
+    },
+    {
+      "accuracy_difference": -0.009765625,
+      "block_id": "b07",
+      "opportunity_loss_difference": 0.011378502901651655
+    },
+    {
+      "accuracy_difference": -0.2119140625,
+      "block_id": "b08",
+      "opportunity_loss_difference": 0.014152082952871958
+    },
+    {
+      "accuracy_difference": -0.1796875,
+      "block_id": "b09",
+      "opportunity_loss_difference": -0.002971796835701035
+    },
+    {
+      "accuracy_difference": 0.0126953125,
+      "block_id": "b10",
+      "opportunity_loss_difference": 0.013339335216994264
+    },
+    {
+      "accuracy_difference": -0.0185546875,
+      "block_id": "b11",
+      "opportunity_loss_difference": 0.012740271863787678
+    },
+    {
+      "accuracy_difference": 0.0283203125,
+      "block_id": "b12",
+      "opportunity_loss_difference": -0.01172140502614849
+    },
+    {
+      "accuracy_difference": -0.00390625,
+      "block_id": "b13",
+      "opportunity_loss_difference": 0.025493330545519943
+    },
+    {
+      "accuracy_difference": 0.3125,
+      "block_id": "b14",
+      "opportunity_loss_difference": -0.0020198689598311947
+    },
+    {
+      "accuracy_difference": -0.189453125,
+      "block_id": "b15",
+      "opportunity_loss_difference": 0.014066317502538839
+    },
+    {
+      "accuracy_difference": -0.3017578125,
+      "block_id": "b16",
+      "opportunity_loss_difference": 0.004685984233045226
+    }
+  ],
+  "schema": "m4-downstream-quality-trained-paired-secondary-analysis-v1",
+  "status": "COMPLETE_OFFLINE_SECONDARY",
+  "training_rerun": false,
+  "unsupported_secondary_endpoints": {
+    "equal_wall_clock_quality": "not_identified_only_terminal_equal_update_evaluation_was_frozen_and_preserved",
+    "time_to_fixed_quality": "not_identified_no_in_loop_validation_or_preselected_intermediate_evaluations"
+  }
+}

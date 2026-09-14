@@ -148,6 +148,14 @@ Assignment is generated from a frozen domain and seed. Opportunity is measured
 before release, so treatment cannot change the recorded \(Q\). The observer
 records lifecycle events without controlling scheduler decisions.
 
+This is an identification distinction rather than a naming distinction. A
+consumed-only log identifies staleness conditional on selection. Two executions
+can preserve every selected rollout and its consumption version while one also
+loses a positive-opportunity candidate before selection. Their consumed-rollout
+staleness distributions are identical but their opportunity losses differ.
+Thus consumed staleness alone cannot identify pre-release opportunity attrition
+without assumptions about candidates that never train.
+
 ### 3.2 Opportunity-loss estimand
 
 For assignment \(i\), let \(Q_i \geq 0\) be the pre-release gradient
@@ -176,6 +184,13 @@ first causal outcome and retained in all transports. The recovered pre-outcome
 record does not contain an external utility derivation, so we describe it as a
 prespecified decision threshold, emphasize continuous estimates and sensitivity,
 and do not retrofit a learning-quality or business interpretation.
+
+Groups share generation, ready-buffer, and learner resources, so assignments
+can affect other groups' scheduling exposure. The within-acquisition contrast
+is a direct assignment effect averaged over the equal-mass randomization of
+other groups—approximately 50% delay saturation—not an isolated effect
+invariant to delay prevalence. Spillover and total policy effects at other
+saturations are untested.
 
 ### 3.3 Missingness, clustering, and uncertainty
 
@@ -447,6 +462,16 @@ difference. This prospective test is evidence about the
 total release-policy effect; it does not identify M4 opportunity loss as the
 exclusive causal path.
 
+The frozen secondary analyses confirm that the run-level intervention moved
+the proximal mechanism. Mixed-d5 increased run-wide normalized realized
+opportunity loss by 0.00739 (descriptive paired 95% CI [0.00181, 0.01296]),
+direct-chain rate by 0.12736 [0.12213, 0.13258], and mean version advance during
+release by 0.20699 [0.19484, 0.21913]. However, the block-level
+opportunity-loss and accuracy contrasts correlate only -0.096, and the
+descriptive slope interval [-10.65, 7.58] does not resolve mediation.
+Equal-wall-clock quality and time-to-fixed-quality are unavailable because the
+design preserved only a prospectively fixed terminal evaluation.
+
 ## 9. Limitations
 
 The model range contains Qwen3-0.6B, Qwen3-1.7B, Llama 3.2 1B, and Llama 3.2
@@ -461,6 +486,11 @@ The treatment has one primary nonzero dose, five seconds. The initial d10 arm
 validates dose ordering for the mechanism but is not part of the definitive
 materiality grid. A fixed wall-clock dose may represent different fractions of
 an update cycle across configurations.
+
+Randomized groups compete for shared system resources. The current effects are
+specific to the tested equal-mass randomization environment; a two-stage study
+that randomizes delay saturation before assigning groups is required to
+separate direct, spillover, and total policy effects.
 
 The two registered interaction comparisons share GSM8K reference cells. The
 dependency-aware synthesis corrects their joint uncertainty, but NuminaMath is
