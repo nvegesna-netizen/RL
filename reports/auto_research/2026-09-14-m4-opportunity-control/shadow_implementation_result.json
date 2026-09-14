@@ -1,0 +1,49 @@
+{
+  "schema": "m4-opportunity-control-shadow-implementation-result-v1",
+  "created_local_date": "2026-09-14",
+  "status": "PASS",
+  "protocol_commit": "a8e121116",
+  "implementation_commit": "46de108fe",
+  "hardening_commit": "97cc6e26e",
+  "parent_service_budget_repair_commit": "55afefd39",
+  "configuration_default": "disabled",
+  "verification": {
+    "disabled_configuration_is_existing_sampler": true,
+    "enabled_shadow_selection_equals_existing_sampler": true,
+    "uncontended_selection_equals_existing_sampler": true,
+    "older_incomplete_fifo_version_waits_without_observation": true,
+    "proposal_is_deterministic": true,
+    "proposal_respects_service_budget": true,
+    "missing_metadata_fails_closed": true,
+    "oversize_candidate_set_fails_closed": true,
+    "observer_sidecar_is_scalar_validated_and_payload_nonmutating": true,
+    "shadow_ledger_flushes_on_controller_shutdown": true,
+    "audit_output_paths_must_be_distinct": true
+  },
+  "focused_test_evidence": {
+    "selector_and_sampler_contract_tests_passed": 6,
+    "replay_buffer_tests_passed": 24,
+    "shadow_config_tests_passed": 4,
+    "controller_shutdown_flush_tests_passed": 1,
+    "type_check": "0_errors_1_suppressed",
+    "ruff": "pass",
+    "diff_check": "pass"
+  },
+  "microbenchmark": {
+    "artifact": "shadow_microbenchmark_result.json",
+    "candidate_groups": 25,
+    "batch_groups": 4,
+    "combinations_per_trial": 12650,
+    "trials": 250,
+    "median_ns": 6336520,
+    "p95_nearest_rank_ns": 8039958,
+    "maximum_ns": 10394375,
+    "deterministic": true,
+    "service_budget_satisfied": true,
+    "implementation_sha256": "1167c389adfb8754446bbb2647ccd9ff73875549836c661bfb0571730621e813",
+    "benchmark_script_sha256": "478be3c3540b085feebf842352c63728c12b2973fdbe5d4b49d032cb041e2dc7"
+  },
+  "environment_note": "Focused tests and the selector microbenchmark ran in an isolated macOS arm64 CPU environment because the repository lock supports Linux only.",
+  "claim_boundary": "implementation_and_local_cpu_shadow_verification_only_not_online_policy_effect_end_to_end_controller_overhead_training_throughput_or_training_quality",
+  "scientific_decision": "Do not actuate OARS or begin a whole-run causal comparison yet. First run a representative Linux shadow-only systems preflight that preserves FIFO selection and measures live metadata coverage, exact selection equivalence, skip reasons, decision latency, and observer duty. Freeze a randomized FIFO-versus-OARS whole-run protocol only if that preflight passes."
+}
