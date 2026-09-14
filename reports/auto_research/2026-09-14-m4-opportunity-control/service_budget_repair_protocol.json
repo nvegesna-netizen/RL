@@ -1,0 +1,57 @@
+{
+  "schema": "m4-opportunity-control-service-budget-repair-v1",
+  "created_local_date": "2026-09-14",
+  "parent_commit": "988ec17f5",
+  "parent_protocol_sha256": "bd5351bbe49acffa159edc664bcff3e0bd6c2f2cabe2d3c1aa7faba6b55c175c",
+  "parent_result_sha256": "ade3b4ccecdc5920f9ab6e21ec84a4c59538b1956042f66362354cb67e744a96",
+  "parent_gate_status": "FAIL_SERVICE_COST_ONLY",
+  "hypothesis": "Constraining opportunity-aware selection to the observable baseline batch token budget preserves at least 10 percent L1 headroom in a majority of acquisitions while satisfying the unchanged 1.02 service-cost ceiling everywhere.",
+  "fixed_inputs": {
+    "reuse_parent_authentication": true,
+    "reuse_parent_metric_inference": true,
+    "reuse_parent_natural_expiry_audit": true,
+    "reuse_parent_reconstructed_choice_sets": true,
+    "candidate_cardinality": 4,
+    "maximum_observed_candidate_set_size": 25
+  },
+  "baseline": {
+    "policy": "weight_fifo",
+    "ordering": "oldest_start_version_then_reservation_timestamp_then_group_id",
+    "observed_parent_shadow_overlap_with_actual": "exact_in_all_acquisitions",
+    "service_budget": "1.02_times_baseline_selected_valid_actor_tokens_per_decision"
+  },
+  "repaired_policy": {
+    "name": "baseline_budgeted_oars",
+    "feasible_set": "every_four_group_combination_with_total_valid_actor_tokens_at_most_the_service_budget",
+    "objective": [
+      "maximize_total_imminent_expiry_l1",
+      "maximize_total_l1",
+      "minimize_total_valid_actor_tokens",
+      "deterministic_lexicographic_group_ids"
+    ],
+    "imminent_expiry": "start_version_plus_one_is_at_most_current_learner_version",
+    "fallback": "baseline_batch_which_is_always_feasible"
+  },
+  "gate": {
+    "inherit_all_parent_conditions": true,
+    "unchanged_shadow_headroom": "at_least_0.10_l1_gain_in_at_least_8_of_14_acquisitions",
+    "unchanged_service_cost": "selected_token_ratio_at_most_1.02_in_every_acquisition",
+    "additional_checks": [
+      "baseline_is_in_every_feasible_set",
+      "selection_is_deterministic",
+      "exactly_four_groups_are_selected",
+      "no_future_or_terminal_field_enters_priority"
+    ]
+  },
+  "claim_boundary": "retrospective_one_step_policy_development_not_online_policy_effect_or_training_quality",
+  "authority": {
+    "local_cpu_analysis": true,
+    "local_code_and_tests": true,
+    "training": false,
+    "eos_launch": false,
+    "qualification": false,
+    "prospective_acquisition": false,
+    "retry": false,
+    "extension": false
+  }
+}
