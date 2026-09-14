@@ -1,0 +1,379 @@
+{
+  "analysis_role": "retrospective_one_step_policy_development_not_online_policy_effect_or_training_quality",
+  "analysis_script_sha256": "59aebda9f01ed2679ed07ff9eccd17d86eabfe06dbb8375295305b5378ddfe36",
+  "cells": {
+    "llama1b-gsm8k-r1": {
+      "aggregate_selected_token_ratio_to_baseline": 0.9860693615013586,
+      "baseline_feasible_every_decision": true,
+      "baseline_selected_l1_mass": 479210.32838481665,
+      "baseline_selected_l2_mass": 8169.529600567053,
+      "baseline_selected_valid_actor_tokens": 7017697,
+      "candidate_group_count": {
+        "maximum": 21,
+        "median": 6.0,
+        "minimum": 5
+      },
+      "combinations_evaluated": 71257,
+      "decision_count": 172,
+      "feasible_combinations": 38653,
+      "four_groups_selected_every_decision": true,
+      "l1_gain_over_baseline_fraction": 0.4541217077889488,
+      "l2_gain_over_baseline_fraction": 0.5150398069163664,
+      "maximum_decision_token_ratio_to_baseline": 1.0197839203030727,
+      "mean_overlap_with_actual": 0.6191860465116279,
+      "priority_uses_only_predecision_fields": true,
+      "repaired_selected_l1_mass": 696830.1411010325,
+      "repaired_selected_l2_mass": 12377.162548640648,
+      "repaired_selected_valid_actor_tokens": 6919936
+    },
+    "llama1b-gsm8k-r2": {
+      "aggregate_selected_token_ratio_to_baseline": 0.9750328986500387,
+      "baseline_feasible_every_decision": true,
+      "baseline_selected_l1_mass": 679829.487377286,
+      "baseline_selected_l2_mass": 10763.975510884726,
+      "baseline_selected_valid_actor_tokens": 7052721,
+      "candidate_group_count": {
+        "maximum": 22,
+        "median": 6,
+        "minimum": 5
+      },
+      "combinations_evaluated": 94895,
+      "decision_count": 185,
+      "feasible_combinations": 40731,
+      "four_groups_selected_every_decision": true,
+      "l1_gain_over_baseline_fraction": 0.5677188053727891,
+      "l2_gain_over_baseline_fraction": 0.5573492311314512,
+      "maximum_decision_token_ratio_to_baseline": 1.0198789974070872,
+      "mean_overlap_with_actual": 0.6013513513513513,
+      "priority_uses_only_predecision_fields": true,
+      "repaired_selected_l1_mass": 1065781.4718083143,
+      "repaired_selected_l2_mass": 16763.268985794097,
+      "repaired_selected_valid_actor_tokens": 6876635
+    },
+    "llama1b-openmath-r1": {
+      "aggregate_selected_token_ratio_to_baseline": 0.9717512359213151,
+      "baseline_feasible_every_decision": true,
+      "baseline_selected_l1_mass": 197155.1921210885,
+      "baseline_selected_l2_mass": 2435.06111841053,
+      "baseline_selected_valid_actor_tokens": 6433662,
+      "candidate_group_count": {
+        "maximum": 15,
+        "median": 5.5,
+        "minimum": 5
+      },
+      "combinations_evaluated": 5709,
+      "decision_count": 126,
+      "feasible_combinations": 3853,
+      "four_groups_selected_every_decision": true,
+      "l1_gain_over_baseline_fraction": 0.5706798234815309,
+      "l2_gain_over_baseline_fraction": 0.5394214235991461,
+      "maximum_decision_token_ratio_to_baseline": 1.0154415312851859,
+      "mean_overlap_with_actual": 0.6845238095238095,
+      "priority_uses_only_predecision_fields": true,
+      "repaired_selected_l1_mass": 309667.6823592186,
+      "repaired_selected_l2_mass": 3748.5852534544674,
+      "repaired_selected_valid_actor_tokens": 6251919
+    },
+    "llama1b-openmath-r2": {
+      "aggregate_selected_token_ratio_to_baseline": 0.9884358194589425,
+      "baseline_feasible_every_decision": true,
+      "baseline_selected_l1_mass": 389096.3929334283,
+      "baseline_selected_l2_mass": 4628.0951831621915,
+      "baseline_selected_valid_actor_tokens": 9304853,
+      "candidate_group_count": {
+        "maximum": 12,
+        "median": 6.0,
+        "minimum": 5
+      },
+      "combinations_evaluated": 4723,
+      "decision_count": 174,
+      "feasible_combinations": 4350,
+      "four_groups_selected_every_decision": true,
+      "l1_gain_over_baseline_fraction": 0.46347862024598663,
+      "l2_gain_over_baseline_fraction": 0.45336848842537547,
+      "maximum_decision_token_ratio_to_baseline": 1.0123913743160604,
+      "mean_overlap_with_actual": 0.6810344827586207,
+      "priority_uses_only_predecision_fields": true,
+      "repaired_selected_l1_mass": 569434.2522729039,
+      "repaired_selected_l2_mass": 6726.327700641195,
+      "repaired_selected_valid_actor_tokens": 9197250
+    },
+    "llama3b-gsm8k-r1": {
+      "aggregate_selected_token_ratio_to_baseline": 0.9160190701529438,
+      "baseline_feasible_every_decision": true,
+      "baseline_selected_l1_mass": 315049.1115242839,
+      "baseline_selected_l2_mass": 5494.565981259046,
+      "baseline_selected_valid_actor_tokens": 1693956,
+      "candidate_group_count": {
+        "maximum": 24,
+        "median": 8.0,
+        "minimum": 5
+      },
+      "combinations_evaluated": 61361,
+      "decision_count": 90,
+      "feasible_combinations": 40834,
+      "four_groups_selected_every_decision": true,
+      "l1_gain_over_baseline_fraction": 0.4645598985676551,
+      "l2_gain_over_baseline_fraction": 0.6291937750448795,
+      "maximum_decision_token_ratio_to_baseline": 1.016453382084095,
+      "mean_overlap_with_actual": 0.5305555555555556,
+      "priority_uses_only_predecision_fields": true,
+      "repaired_selected_l1_mass": 461408.2948178351,
+      "repaired_selected_l2_mass": 8951.712693240597,
+      "repaired_selected_valid_actor_tokens": 1551696
+    },
+    "llama3b-gsm8k-r2": {
+      "aggregate_selected_token_ratio_to_baseline": 0.988042515906766,
+      "baseline_feasible_every_decision": true,
+      "baseline_selected_l1_mass": 310774.64307281375,
+      "baseline_selected_l2_mass": 7605.614059563498,
+      "baseline_selected_valid_actor_tokens": 2179890,
+      "candidate_group_count": {
+        "maximum": 25,
+        "median": 13.0,
+        "minimum": 5
+      },
+      "combinations_evaluated": 152647,
+      "decision_count": 118,
+      "feasible_combinations": 81798,
+      "four_groups_selected_every_decision": true,
+      "l1_gain_over_baseline_fraction": 0.7171923934841635,
+      "l2_gain_over_baseline_fraction": 0.7433913057500514,
+      "maximum_decision_token_ratio_to_baseline": 1.019858897308597,
+      "mean_overlap_with_actual": 0.5,
+      "priority_uses_only_predecision_fields": true,
+      "repaired_selected_l1_mass": 533659.8531723917,
+      "repaired_selected_l2_mass": 13259.561426333355,
+      "repaired_selected_valid_actor_tokens": 2153824
+    },
+    "llama3b-openmath-r1": {
+      "aggregate_selected_token_ratio_to_baseline": 0.971548396031361,
+      "baseline_feasible_every_decision": true,
+      "baseline_selected_l1_mass": 294129.62807643414,
+      "baseline_selected_l2_mass": 5887.782905345434,
+      "baseline_selected_valid_actor_tokens": 2469562,
+      "candidate_group_count": {
+        "maximum": 22,
+        "median": 6.0,
+        "minimum": 5
+      },
+      "combinations_evaluated": 13101,
+      "decision_count": 84,
+      "feasible_combinations": 8972,
+      "four_groups_selected_every_decision": true,
+      "l1_gain_over_baseline_fraction": 0.2523232484938882,
+      "l2_gain_over_baseline_fraction": 0.3027726362481442,
+      "maximum_decision_token_ratio_to_baseline": 1.0167886353852778,
+      "mean_overlap_with_actual": 0.6785714285714286,
+      "priority_uses_only_predecision_fields": true,
+      "repaired_selected_l1_mass": 368345.3713109791,
+      "repaired_selected_l2_mass": 7670.442457253629,
+      "repaired_selected_valid_actor_tokens": 2399299
+    },
+    "llama3b-openmath-r2": {
+      "aggregate_selected_token_ratio_to_baseline": 0.9619865600149156,
+      "baseline_feasible_every_decision": true,
+      "baseline_selected_l1_mass": 95777.49645841122,
+      "baseline_selected_l2_mass": 1928.577520158559,
+      "baseline_selected_valid_actor_tokens": 1373067,
+      "candidate_group_count": {
+        "maximum": 12,
+        "median": 5,
+        "minimum": 5
+      },
+      "combinations_evaluated": 1977,
+      "decision_count": 41,
+      "feasible_combinations": 1515,
+      "four_groups_selected_every_decision": true,
+      "l1_gain_over_baseline_fraction": 0.2933472370953305,
+      "l2_gain_over_baseline_fraction": 0.30666886109391034,
+      "maximum_decision_token_ratio_to_baseline": 1.0124292394782182,
+      "mean_overlap_with_actual": 0.6585365853658537,
+      "priority_uses_only_predecision_fields": true,
+      "repaired_selected_l1_mass": 123873.56042039394,
+      "repaired_selected_l2_mass": 2520.0121917969022,
+      "repaired_selected_valid_actor_tokens": 1320872
+    },
+    "qwen-qwen3_0p6b_gsm8k": {
+      "aggregate_selected_token_ratio_to_baseline": 0.9094530863436576,
+      "baseline_feasible_every_decision": true,
+      "baseline_selected_l1_mass": 1058512.2877916098,
+      "baseline_selected_l2_mass": 12297.572925124861,
+      "baseline_selected_valid_actor_tokens": 2936533,
+      "candidate_group_count": {
+        "maximum": 12,
+        "median": 6.0,
+        "minimum": 5
+      },
+      "combinations_evaluated": 5308,
+      "decision_count": 104,
+      "feasible_combinations": 4204,
+      "four_groups_selected_every_decision": true,
+      "l1_gain_over_baseline_fraction": 0.23170855792823541,
+      "l2_gain_over_baseline_fraction": 0.2711633405730234,
+      "maximum_decision_token_ratio_to_baseline": 1.018130174654016,
+      "mean_overlap_with_actual": 0.6730769230769231,
+      "priority_uses_only_predecision_fields": true,
+      "repaired_selected_l1_mass": 1303778.643545121,
+      "repaired_selected_l2_mass": 15632.223880442087,
+      "repaired_selected_valid_actor_tokens": 2670639
+    },
+    "qwen-qwen3_0p6b_numinamath": {
+      "aggregate_selected_token_ratio_to_baseline": 0.878712040383646,
+      "baseline_feasible_every_decision": true,
+      "baseline_selected_l1_mass": 932666.1678572893,
+      "baseline_selected_l2_mass": 9119.459279261673,
+      "baseline_selected_valid_actor_tokens": 2838971,
+      "candidate_group_count": {
+        "maximum": 13,
+        "median": 6.0,
+        "minimum": 5
+      },
+      "combinations_evaluated": 2458,
+      "decision_count": 58,
+      "feasible_combinations": 2169,
+      "four_groups_selected_every_decision": true,
+      "l1_gain_over_baseline_fraction": 0.3189694550820916,
+      "l2_gain_over_baseline_fraction": 0.3391274409878102,
+      "maximum_decision_token_ratio_to_baseline": 1.0018309580364213,
+      "mean_overlap_with_actual": 0.6551724137931034,
+      "priority_uses_only_predecision_fields": true,
+      "repaired_selected_l1_mass": 1230158.1871922314,
+      "repaired_selected_l2_mass": 12212.118167830224,
+      "repaired_selected_valid_actor_tokens": 2494638
+    },
+    "qwen-qwen3_0p6b_openmath": {
+      "aggregate_selected_token_ratio_to_baseline": 0.8925566683157277,
+      "baseline_feasible_every_decision": true,
+      "baseline_selected_l1_mass": 1502671.068401724,
+      "baseline_selected_l2_mass": 14919.677271293882,
+      "baseline_selected_valid_actor_tokens": 3901210,
+      "candidate_group_count": {
+        "maximum": 15,
+        "median": 6,
+        "minimum": 5
+      },
+      "combinations_evaluated": 4330,
+      "decision_count": 81,
+      "feasible_combinations": 3581,
+      "four_groups_selected_every_decision": true,
+      "l1_gain_over_baseline_fraction": 0.2804415263977331,
+      "l2_gain_over_baseline_fraction": 0.2962933963347878,
+      "maximum_decision_token_ratio_to_baseline": 1.017164565018497,
+      "mean_overlap_with_actual": 0.6759259259259259,
+      "priority_uses_only_predecision_fields": true,
+      "repaired_selected_l1_mass": 1924082.4364980161,
+      "repaired_selected_l2_mass": 19340.279122224485,
+      "repaired_selected_valid_actor_tokens": 3482051
+    },
+    "qwen-qwen3_1p7b_gsm8k": {
+      "aggregate_selected_token_ratio_to_baseline": 0.850580815488413,
+      "baseline_feasible_every_decision": true,
+      "baseline_selected_l1_mass": 322069.4946164191,
+      "baseline_selected_l2_mass": 3299.724639962504,
+      "baseline_selected_valid_actor_tokens": 2727200,
+      "candidate_group_count": {
+        "maximum": 14,
+        "median": 6.0,
+        "minimum": 5
+      },
+      "combinations_evaluated": 6111,
+      "decision_count": 90,
+      "feasible_combinations": 5099,
+      "four_groups_selected_every_decision": true,
+      "l1_gain_over_baseline_fraction": 0.19318345213548804,
+      "l2_gain_over_baseline_fraction": 0.21303697581061076,
+      "maximum_decision_token_ratio_to_baseline": 1.0,
+      "mean_overlap_with_actual": 0.6055555555555555,
+      "priority_uses_only_predecision_fields": true,
+      "repaired_selected_l1_mass": 384287.9914139509,
+      "repaired_selected_l2_mass": 4002.6879982678724,
+      "repaired_selected_valid_actor_tokens": 2319704
+    },
+    "qwen-qwen3_1p7b_numinamath": {
+      "aggregate_selected_token_ratio_to_baseline": 0.8892572390731202,
+      "baseline_feasible_every_decision": true,
+      "baseline_selected_l1_mass": 511466.00821238756,
+      "baseline_selected_l2_mass": 4897.549165824386,
+      "baseline_selected_valid_actor_tokens": 2671371,
+      "candidate_group_count": {
+        "maximum": 12,
+        "median": 5.5,
+        "minimum": 5
+      },
+      "combinations_evaluated": 2468,
+      "decision_count": 54,
+      "feasible_combinations": 2022,
+      "four_groups_selected_every_decision": true,
+      "l1_gain_over_baseline_fraction": 0.5409251957320327,
+      "l2_gain_over_baseline_fraction": 0.5417603988572417,
+      "maximum_decision_token_ratio_to_baseline": 1.003985251857073,
+      "mean_overlap_with_actual": 0.6111111111111112,
+      "priority_uses_only_predecision_fields": true,
+      "repaired_selected_l1_mass": 788130.8588149548,
+      "repaired_selected_l2_mass": 7550.8473553243575,
+      "repaired_selected_valid_actor_tokens": 2375536
+    },
+    "qwen-qwen3_1p7b_openmath": {
+      "aggregate_selected_token_ratio_to_baseline": 0.9176300863062449,
+      "baseline_feasible_every_decision": true,
+      "baseline_selected_l1_mass": 1000128.0508075058,
+      "baseline_selected_l2_mass": 9376.153745452762,
+      "baseline_selected_valid_actor_tokens": 3548990,
+      "candidate_group_count": {
+        "maximum": 12,
+        "median": 6.0,
+        "minimum": 5
+      },
+      "combinations_evaluated": 2381,
+      "decision_count": 70,
+      "feasible_combinations": 1876,
+      "four_groups_selected_every_decision": true,
+      "l1_gain_over_baseline_fraction": 0.36072270364638315,
+      "l2_gain_over_baseline_fraction": 0.36370884030145945,
+      "maximum_decision_token_ratio_to_baseline": 1.0023090586145649,
+      "mean_overlap_with_actual": 0.6535714285714286,
+      "priority_uses_only_predecision_fields": true,
+      "repaired_selected_l1_mass": 1360896.9452873766,
+      "repaired_selected_l2_mass": 12786.343750699572,
+      "repaired_selected_valid_actor_tokens": 3256660
+    }
+  },
+  "gate": {
+    "all_required": true,
+    "conditions": {
+      "authentication_and_coverage": {
+        "inherited": true,
+        "passed": true
+      },
+      "metric_robustness": {
+        "inherited": true,
+        "passed": true
+      },
+      "natural_relevance": {
+        "inherited": true,
+        "passed": true
+      },
+      "repair_contract": {
+        "baseline_feasible_every_decision": true,
+        "passed": true
+      },
+      "service_cost": {
+        "maximum_allowed_token_ratio": 1.02,
+        "passed": true,
+        "scope": "each_decision_and_acquisition_aggregate"
+      },
+      "shadow_headroom": {
+        "acquisitions_at_or_above_0p10": 14,
+        "passed": true,
+        "required": 8
+      }
+    },
+    "passed": true
+  },
+  "next_action": "implement_baseline_budgeted_oars_in_shadow_mode_without_training",
+  "parent_result_sha256": "ade3b4ccecdc5920f9ab6e21ec84a4c59538b1956042f66362354cb67e744a96",
+  "protocol_sha256": "8abf4168a17e08ff51395479829efa2a7754f1899db02491e47e0c5e492d381d",
+  "schema": "m4-opportunity-control-service-budget-repair-result-v1",
+  "status": "COMPLETE_RETROSPECTIVE_POLICY_REPAIR"
+}
