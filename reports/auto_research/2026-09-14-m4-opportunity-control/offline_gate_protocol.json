@@ -1,0 +1,103 @@
+{
+  "schema": "m4-opportunity-control-offline-gate-v1",
+  "created_local_date": "2026-09-14",
+  "source_commit": "b2b2c49c0c546efae08a4dbc25b67ce7d88f647a",
+  "analysis_role": "retrospective_policy_development_not_causal_policy_evaluation",
+  "objective": "Determine whether authenticated M4 records support building a constrained opportunity-at-risk scheduler in shadow mode.",
+  "data_contract": {
+    "expected_acquisitions": 14,
+    "expected_assignments": 106653,
+    "primary_start_weight_version": 8,
+    "primary_end_weight_version": 407,
+    "max_staleness_versions": 1,
+    "siblings_per_group": 8,
+    "groups_per_learner_step": 4,
+    "require_complete_terminal_disposition": true,
+    "require_recorded_hash_match": true,
+    "qwen_cells": 6,
+    "llama_acquisitions": 8
+  },
+  "metric_family": {
+    "registered_l1": "sum_absolute_grpo_coefficients",
+    "l2": "sqrt_sum_squared_grpo_coefficients",
+    "token_normalized_l1": "l1_divided_by_valid_actor_tokens_or_zero",
+    "nonzero_token_support": "count_valid_tokens_with_nonzero_scalar_advantage",
+    "status": "secondary_robustness_cannot_reclassify_registered_endpoints"
+  },
+  "inference": {
+    "unadjusted": "difference_in_mean_lost_metric_normalized_by_control_mean_metric",
+    "adjusted": "eight_contiguous_version_fold_cross_fit_using_metric_and_zero_indicator",
+    "hac_lag_versions": 4,
+    "bootstrap": "circular_start_version_blocks",
+    "bootstrap_block_versions": 8,
+    "bootstrap_draws": 20000,
+    "confidence": 0.95,
+    "random_seed_base": 2026091400
+  },
+  "natural_expiry_audit": {
+    "population": "control_arm_primary_window_only",
+    "natural_loss_reason": "stale_evicted",
+    "report": [
+      "positive_metric_stale_eviction_count_and_mass",
+      "ready_to_removal_latency_by_terminal_reason",
+      "version_slack_at_ready",
+      "choice_set_contention_at_actual_learner_service"
+    ],
+    "claim_boundary": "descriptive_ecological_relevance_not_a_causal_effect"
+  },
+  "shadow_choice_audit": {
+    "unit": "actual_completed_learner_step",
+    "eligible_step": "all_four_consumed_groups_are_primary_window_groups_and_reconstructed_candidates_are_complete",
+    "decision_time": "earliest_selected_removal_timestamp_for_the_completed_step",
+    "candidate_ready_rule": "group_ready_at_or_before_decision_and_not_removed_before_decision",
+    "candidate_version_rule": "start_version_between_previous_learner_version_minus_one_and_previous_learner_version",
+    "policies": [
+      "actual_selection",
+      "ready_fifo",
+      "freshest_first",
+      "weight_fifo",
+      "l1_only",
+      "urgency_only",
+      "deterministic_oars"
+    ],
+    "deterministic_oars": "serve_imminent_expiry_first_by_l1_per_valid_token_then_fill_by_oldest_version_with_l1_per_valid_token_tiebreak",
+    "comparison_endpoints": [
+      "selected_l1_mass",
+      "selected_l2_mass",
+      "selected_valid_actor_tokens",
+      "l1_per_selected_token",
+      "overlap_with_actual_selection"
+    ],
+    "claim_boundary": "one_step_shadow_headroom_only_not_counterfactual_queue_or_training_performance"
+  },
+  "go_gate": {
+    "all_required": true,
+    "conditions": {
+      "authentication_and_coverage": "all_14_acquisitions_and_106653_assignments_reproduce",
+      "metric_robustness": "l2_and_token_normalized_l1_adjusted_estimates_are_positive_in_at_least_12_of_14_acquisitions_each",
+      "natural_relevance": "control_arm_positive_l1_stale_eviction_mass_is_at_least_0.10_in_at_least_10_of_14_acquisitions",
+      "shadow_headroom": "deterministic_oars_improves_selected_l1_mass_by_at_least_0.10_in_at_least_8_of_14_acquisitions",
+      "service_cost": "deterministic_oars_selected_token_count_is_at_most_1.02_times_actual_in_every_acquisition_with_an_eligible_choice_set"
+    },
+    "on_pass": "implement_deterministic_oars_shadow_mode_and_focused_tests_without_training",
+    "on_fail": "do_not_launch_gpu_policy_experiment_revise_or_close_intervention"
+  },
+  "forbidden_claims": [
+    "historical_shadow_replay_identifies_the_online_policy_effect",
+    "coefficient_opportunity_equals_parameter_gradient_norm",
+    "opportunity_preservation_improves_final_accuracy",
+    "the_existing_pre_release_delay_identifies_ready_queue_deferral_cate",
+    "secondary_metrics_reclassify_registered_m4_results"
+  ],
+  "authority": {
+    "local_cpu_analysis": true,
+    "local_code_and_tests": true,
+    "shadow_mode_implementation_after_gate_pass": true,
+    "training": false,
+    "eos_launch": false,
+    "qualification": false,
+    "prospective_acquisition": false,
+    "retry": false,
+    "extension": false
+  }
+}
