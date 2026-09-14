@@ -1,0 +1,71 @@
+{
+  "schema": "m4-opportunity-control-shadow-implementation-v1",
+  "created_local_date": "2026-09-14",
+  "parent_commit": "55afefd39",
+  "parent_repair_result_sha256": "018ba2d69b20938cff49966575639a209ebf01e03461b10022bdd1cedfa71d5a",
+  "purpose": "Implement and verify the passed baseline-budgeted OARS policy as a default-off observer without changing training selection.",
+  "policy_contract": {
+    "supported_baseline": "weight_fifo",
+    "candidate_set": "all ready groups inside the baseline weight window at the selection boundary",
+    "batch_cardinality": 4,
+    "service_budget_multiplier": 1.02,
+    "maximum_candidate_groups": 25,
+    "objective": [
+      "maximize_total_imminent_expiry_l1",
+      "maximize_total_l1",
+      "minimize_total_valid_actor_tokens",
+      "deterministic_lexicographic_group_ids"
+    ],
+    "imminent_expiry": "start_version_plus_one_is_at_most_current_learner_version",
+    "fallback": "record_an_explicit_skip_and_delegate_the_unchanged_baseline"
+  },
+  "observability_contract": {
+    "record": [
+      "baseline_and_proposed_group_ids",
+      "baseline_and_proposed_l1",
+      "baseline_and_proposed_valid_actor_tokens",
+      "token_budget",
+      "candidate_and_feasible_combination_counts",
+      "decision_latency_ns",
+      "skip_reason"
+    ],
+    "allowed_inputs": [
+      "group_id",
+      "start_weight_version",
+      "current_learner_version",
+      "group_l1_coefficient_opportunity",
+      "group_valid_actor_tokens",
+      "ready_state"
+    ],
+    "forbidden_inputs": [
+      "future_arrivals",
+      "terminal_outcomes",
+      "future_learner_versions",
+      "postselection_training_metrics"
+    ]
+  },
+  "verification_gate": {
+    "all_required": true,
+    "conditions": [
+      "disabled_configuration_is_exactly_the_existing_sampler",
+      "enabled_shadow_selection_is_exactly_the_existing_sampler",
+      "uncontended_selection_is_exactly_the_existing_sampler",
+      "proposal_is_deterministic",
+      "proposal_never_exceeds_the_frozen_service_budget",
+      "incomplete_metadata_or_oversize_choice_sets_fail_closed_to_observation_only",
+      "observer_sidecar_cannot_mutate_the_packed_training_payload",
+      "maximum_25_choose_4_selector_microbenchmark_is_reported"
+    ]
+  },
+  "claim_boundary": "implementation_and_cpu_only_shadow_verification_not_an_online_policy_effect_throughput_result_or_training_quality_result",
+  "authority": {
+    "local_code_and_tests": true,
+    "local_cpu_microbenchmark": true,
+    "training": false,
+    "eos_launch": false,
+    "qualification": false,
+    "prospective_acquisition": false,
+    "retry": false,
+    "extension": false
+  }
+}
