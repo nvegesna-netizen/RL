@@ -1,0 +1,341 @@
+# Copyright (c) 2026, NVIDIA CORPORATION.  All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+"""Default-off Opportunity-at-Risk Scheduling (OARS) shadow observer.
+
+The observer proposes a service-budgeted batch from the ready prompt groups,
+then delegates selection to the existing weight-FIFO sampler.  It never removes
+or reorders replay-buffer entries and therefore cannot enact its proposal.
+"""
+
+from __future__ import annotations
+
+import itertools
+import json
+import math
+import time
+from collections.abc import Callable, Mapping, Sequence
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any, Optional
+
+from nemo_rl.algorithms.async_utils.staleness_sampler import (
+    WeightFifoSampler,
+)
+from nemo_rl.algorithms.async_utils.replay_buffer import TQReplayBuffer
+from nemo_rl.data_plane import KVBatchMeta
+
+OPPORTUNITY_GROUP_ID_KEY = "gradient_opportunity_group_id"
+OPPORTUNITY_L1_KEY = "gradient_opportunity_l1"
+OPPORTUNITY_L2_KEY = "gradient_opportunity_l2"
+OPPORTUNITY_VALID_TOKENS_KEY = "gradient_opportunity_valid_actor_tokens"
+
+
+@dataclass(frozen=True)
+class OpportunityCandidate:
+    """Pre-decision scalar metadata for one ready prompt group."""
+
+    group_id: str
+    start_weight_version: int
+    l1: float
+    valid_actor_tokens: int
+
+
+@dataclass(frozen=True)
+class BudgetedOpportunitySelection:
+    """Deterministic proposal and audit counts for one decision."""
+
+    proposed_group_ids: tuple[str, ...]
+    proposed_l1: float
+    proposed_valid_actor_tokens: int
+    baseline_valid_actor_tokens: int
+    token_budget: int
+    combination_count: int
+    feasible_combination_count: int
+
+
+def select_baseline_budgeted_opportunity(
+    candidates: Sequence[OpportunityCandidate],
+    *,
+    baseline_group_ids: Sequence[str],
+    current_train_weight: int,
+    service_budget_multiplier: float,
+) -> BudgetedOpportunitySelection:
+    """Return the frozen exact OARS proposal for one observable choice set."""
+    cardinality = len(baseline_group_ids)
+    if cardinality < 1:
+        raise ValueError("baseline_group_ids must be nonempty")
+    if len(candidates) < cardinality:
+        raise ValueError("candidate set is smaller than the baseline batch")
+    if not math.isfinite(service_budget_multiplier) or service_budget_multiplier < 1:
+        raise ValueError("service_budget_multiplier must be finite and at least one")
+
+    by_id = {candidate.group_id: candidate for candidate in candidates}
+    if len(by_id) != len(candidates):
+        raise ValueError("candidate group IDs must be unique")
+    try:
+        baseline = tuple(by_id[group_id] for group_id in baseline_group_ids)
+    except KeyError as error:
+        raise ValueError("baseline batch must be contained in candidates") from error
+
+    baseline_tokens = sum(group.valid_actor_tokens for group in baseline)
+    token_budget = math.floor(baseline_tokens * service_budget_multiplier + 1e-12)
+    ordered = sorted(candidates, key=lambda group: group.group_id)
+    best: tuple[OpportunityCandidate, ...] | None = None
+    best_score: tuple[float, float, int] | None = None
+    combination_count = 0
+    feasible_count = 0
+    for combination in itertools.combinations(ordered, cardinality):
+        combination_count += 1
+        tokens = sum(group.valid_actor_tokens for group in combination)
+        if tokens > token_budget:
+            continue
+        feasible_count += 1
+        imminent_l1 = math.fsum(
+            group.l1
+            for group in combination
+            if group.start_weight_version + 1 <= current_train_weight
+        )
+        score = (imminent_l1, math.fsum(group.l1 for group in combination), -tokens)
+        # Iteration is group-ID ordered. Strict improvement preserves the
+        # lexicographically first identity tuple on a complete score tie.
+        if best_score is None or score > best_score:
+            best = combination
+            best_score = score
+
+    if best is None:
+        raise RuntimeError("baseline batch was unexpectedly infeasible")
+    proposed_tokens = sum(group.valid_actor_tokens for group in best)
+    return BudgetedOpportunitySelection(
+        proposed_group_ids=tuple(group.group_id for group in best),
+        proposed_l1=math.fsum(group.l1 for group in best),
+        proposed_valid_actor_tokens=proposed_tokens,
+        baseline_valid_actor_tokens=baseline_tokens,
+        token_budget=token_budget,
+        combination_count=combination_count,
+        feasible_combination_count=feasible_count,
+    )
+
+
+class OpportunityAtRiskShadowRecorder:
+    """In-memory canonical JSONL ledger for OARS shadow decisions."""
+
+    SCHEMA_VERSION = 1
+
+    def __init__(self, *, service_budget_multiplier: float, max_candidate_groups: int):
+        self._events: list[dict[str, Any]] = [
+            {
+                "event_type": "header",
+                "max_candidate_groups": max_candidate_groups,
+                "policy": "baseline_budgeted_oars_v1",
+                "schema_version": self.SCHEMA_VERSION,
+                "service_budget_multiplier": service_budget_multiplier,
+            }
+        ]
+
+    @property
+    def events(self) -> tuple[Mapping[str, Any], ...]:
+        """Return immutable views of recorded events for tests and diagnostics."""
+        return tuple(self._events)
+
+    def append(self, event: Mapping[str, Any]) -> None:
+        """Append one fully materialized decision event."""
+        self._events.append({"event_type": "decision", **dict(event)})
+
+    def flush_jsonl(self, output_path: str) -> None:
+        """Write the complete ledger canonically at controller shutdown."""
+        path = Path(output_path)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        payload = "".join(
+            json.dumps(
+                event,
+                allow_nan=False,
+                ensure_ascii=False,
+                separators=(",", ":"),
+                sort_keys=True,
+            )
+            + "\n"
+            for event in self._events
+        )
+        path.write_text(payload, encoding="utf-8")
+
+
+class OpportunityAtRiskShadowSampler:
+    """Observe OARS proposals while delegating every action to weight-FIFO."""
+
+    EXPECTED_BATCH_GROUPS = 4
+
+    def __init__(
+        self,
+        *,
+        buffer: TQReplayBuffer,
+        baseline: WeightFifoSampler,
+        service_budget_multiplier: float,
+        max_candidate_groups: int,
+        record: Callable[[Mapping[str, Any]], None],
+    ) -> None:
+        if max_candidate_groups < self.EXPECTED_BATCH_GROUPS:
+            raise ValueError(
+                f"max_candidate_groups must be at least {self.EXPECTED_BATCH_GROUPS}"
+            )
+        self._baseline = baseline
+        self._buffer = buffer
+        self._service_budget_multiplier = service_budget_multiplier
+        self._max_candidate_groups = max_candidate_groups
+        self._record = record
+
+    async def admit(self, *, trainer_version_fn: Callable[[], int]) -> Optional[int]:
+        """Delegate admission unchanged."""
+        return await self._baseline.admit(trainer_version_fn=trainer_version_fn)
+
+    @property
+    def is_on_policy(self) -> bool:
+        """Delegate the baseline off-policyness fact unchanged."""
+        return self._baseline.is_on_policy
+
+    def required_buffer_capacity(self, groups_per_step: int) -> Optional[int]:
+        """Delegate baseline capacity requirements unchanged."""
+        return self._baseline.required_buffer_capacity(groups_per_step)
+
+    async def evict(self, *, current_train_weight: int) -> int:
+        """Delegate eviction unchanged."""
+        return await self._baseline.evict(current_train_weight=current_train_weight)
+
+    @staticmethod
+    def _candidate(meta: KVBatchMeta, *, start_weight: int) -> OpportunityCandidate:
+        info = meta.extra_info
+        group_id = info[OPPORTUNITY_GROUP_ID_KEY]
+        l1 = info[OPPORTUNITY_L1_KEY]
+        valid_tokens = info[OPPORTUNITY_VALID_TOKENS_KEY]
+        if not isinstance(group_id, str) or not group_id:
+            raise ValueError("opportunity group ID must be a nonempty string")
+        if not isinstance(l1, (int, float)) or not math.isfinite(float(l1)) or l1 < 0:
+            raise ValueError("group L1 opportunity must be finite and nonnegative")
+        if not isinstance(valid_tokens, int) or isinstance(valid_tokens, bool):
+            raise ValueError("valid actor tokens must be an integer")
+        if valid_tokens < 1:
+            raise ValueError("valid actor tokens must be positive")
+        return OpportunityCandidate(
+            group_id=group_id,
+            start_weight_version=start_weight,
+            l1=float(l1),
+            valid_actor_tokens=valid_tokens,
+        )
+
+    def _observe(
+        self,
+        *,
+        current_train_weight: int,
+        min_prompt_groups: int,
+        max_prompt_groups: int,
+    ) -> None:
+        started_ns = time.perf_counter_ns()
+        minimum_version = max(
+            0, current_train_weight - self._baseline.max_staleness_versions
+        )
+        in_window_indices = [
+            index
+            for index, start_weight in enumerate(self._buffer.start_weight_list)
+            if minimum_version <= start_weight <= current_train_weight
+        ]
+        in_window_weights = [
+            self._buffer.start_weight_list[index] for index in in_window_indices
+        ]
+        if not in_window_weights:
+            return
+        target_version = min(in_window_weights)
+        baseline_indices = [
+            index
+            for index in in_window_indices
+            if self._buffer.start_weight_list[index] == target_version
+            and self._buffer.ready_list[index]
+        ]
+        if len(baseline_indices) < min_prompt_groups:
+            return
+        candidate_indices = [
+            index for index in in_window_indices if self._buffer.ready_list[index]
+        ]
+        requested = min(len(baseline_indices), max_prompt_groups)
+        baseline_indices = baseline_indices[:requested]
+        event: dict[str, Any] = {
+            "baseline_group_ids": [],
+            "candidate_group_count": len(candidate_indices),
+            "current_learner_version": current_train_weight,
+            "decision_latency_ns": 0,
+            "proposed_group_ids": [],
+            "skip_reason": None,
+        }
+        if requested != self.EXPECTED_BATCH_GROUPS:
+            event["skip_reason"] = "baseline_cardinality_not_four"
+        elif len(candidate_indices) > self._max_candidate_groups:
+            event["skip_reason"] = "candidate_safety_cap_exceeded"
+        else:
+            try:
+                candidates = [
+                    self._candidate(
+                        self._buffer.meta_list[index],  # type: ignore[arg-type]
+                        start_weight=self._buffer.start_weight_list[index],
+                    )
+                    for index in candidate_indices
+                ]
+                by_index = dict(zip(candidate_indices, candidates))
+                baseline = [by_index[index] for index in baseline_indices]
+                event["baseline_group_ids"] = [group.group_id for group in baseline]
+                event["baseline_l1"] = math.fsum(group.l1 for group in baseline)
+                proposal = select_baseline_budgeted_opportunity(
+                    candidates,
+                    baseline_group_ids=event["baseline_group_ids"],
+                    current_train_weight=current_train_weight,
+                    service_budget_multiplier=self._service_budget_multiplier,
+                )
+                event.update(
+                    {
+                        "baseline_valid_actor_tokens": (
+                            proposal.baseline_valid_actor_tokens
+                        ),
+                        "combination_count": proposal.combination_count,
+                        "feasible_combination_count": (
+                            proposal.feasible_combination_count
+                        ),
+                        "proposed_group_ids": list(proposal.proposed_group_ids),
+                        "proposed_l1": proposal.proposed_l1,
+                        "proposed_valid_actor_tokens": (
+                            proposal.proposed_valid_actor_tokens
+                        ),
+                        "token_budget": proposal.token_budget,
+                    }
+                )
+            except (KeyError, RuntimeError, TypeError, ValueError):
+                event["skip_reason"] = "missing_or_invalid_opportunity_metadata"
+        event["decision_latency_ns"] = time.perf_counter_ns() - started_ns
+        self._record(event)
+
+    async def select(
+        self,
+        *,
+        current_train_weight: int,
+        min_prompt_groups: int,
+        max_prompt_groups: int,
+    ) -> tuple[Optional[KVBatchMeta], int]:
+        """Observe the choice set, then execute the unchanged baseline call."""
+        self._observe(
+            current_train_weight=current_train_weight,
+            min_prompt_groups=min_prompt_groups,
+            max_prompt_groups=max_prompt_groups,
+        )
+        return await self._baseline.select(
+            current_train_weight=current_train_weight,
+            min_prompt_groups=min_prompt_groups,
+            max_prompt_groups=max_prompt_groups,
+        )

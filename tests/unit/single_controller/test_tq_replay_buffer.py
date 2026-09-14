@@ -242,6 +242,26 @@ class TestTQReplayBufferReserveCommit:
         with pytest.raises(ValueError, match="already consumed"):
             _run(buf.commit_prepared(prepared, end_weight_version=4))
 
+    def test_prepare_observer_scalar_metadata_reaches_committed_meta(self):
+        buf = _make_buffer(FakeDataPlaneClient())
+        buf.set_prepare_observer(
+            lambda **kwargs: {
+                "group_id": kwargs["group_id"],
+                "opportunity": 12.5,
+                "valid_tokens": 7,
+            }
+        )
+        group_id = buf.reserve(weight_version=3)
+
+        prepared = buf.prepare_commit(group_id, _make_record(), start_weight_version=3)
+        meta = _run(buf.commit_prepared(prepared, end_weight_version=4))
+
+        assert meta.extra_info == {
+            "group_id": group_id,
+            "opportunity": 12.5,
+            "valid_tokens": 7,
+        }
+
     def test_prepared_payload_is_byte_equal_at_put_after_async_hold(self):
         dp = FakeDataPlaneClient()
         buf = _make_buffer(dp)

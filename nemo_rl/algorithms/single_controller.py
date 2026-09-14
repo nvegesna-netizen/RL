@@ -54,7 +54,18 @@ from nemo_rl.algorithms.async_utils.lifecycle_opportunity import (
     flush_lifecycle_opportunity_rows,
 )
 from nemo_rl.algorithms.async_utils.observer_duty import CommonObserverDutyMeter
-from nemo_rl.algorithms.async_utils.staleness_sampler import create_sampler
+from nemo_rl.algorithms.async_utils.opportunity_at_risk import (
+    OPPORTUNITY_GROUP_ID_KEY,
+    OPPORTUNITY_L1_KEY,
+    OPPORTUNITY_L2_KEY,
+    OPPORTUNITY_VALID_TOKENS_KEY,
+    OpportunityAtRiskShadowRecorder,
+    OpportunityAtRiskShadowSampler,
+)
+from nemo_rl.algorithms.async_utils.staleness_sampler import (
+    WeightFifoSampler,
+    create_sampler,
+)
 from nemo_rl.algorithms.async_utils.rollout_lifecycle import (
     ControllerEventSequencer,
     RolloutLifecycleRecorder,
@@ -141,6 +152,7 @@ class SingleControllerActor:
         self._rollout_manager._tq_buffer = self._buffer
         self._lifecycle_recorder: Optional[RolloutLifecycleRecorder] = None
         self._opportunity_recorder: Optional[GradientOpportunityRecorder] = None
+        self._oars_shadow_recorder: Optional[OpportunityAtRiskShadowRecorder] = None
         self._observer_duty_meter: Optional[CommonObserverDutyMeter] = None
         if self._async_cfg.lifecycle_audit_path is not None:
             opportunity_enabled = self._async_cfg.gradient_opportunity_audit.enabled
@@ -224,7 +236,7 @@ class SingleControllerActor:
                     train_batch: Any,
                     sample_ids: tuple[str, ...],
                     start_weight_version: int,
-                ) -> None:
+                ) -> dict[str, Any]:
                     assert self._observer_duty_meter is not None
                     with self._observer_duty_meter.observe():
                         prepared_inputs = prepare_advantage_inputs_from_data(
@@ -257,6 +269,12 @@ class SingleControllerActor:
                         )
                         assert self._opportunity_recorder is not None
                         self._opportunity_recorder.append_group(summary)
+                        return {
+                            OPPORTUNITY_GROUP_ID_KEY: summary.group_id,
+                            OPPORTUNITY_L1_KEY: summary.opportunity,
+                            OPPORTUNITY_L2_KEY: summary.l2_coefficient_mass,
+                            OPPORTUNITY_VALID_TOKENS_KEY: summary.valid_actor_tokens,
+                        }
 
                 self._buffer.set_prepare_observer(_record_prepared_opportunity)
             elif derived_enabled and not isinstance(
@@ -281,6 +299,23 @@ class SingleControllerActor:
             self._buffer,
             self._async_cfg.sampler,
         )
+        shadow_config = self._async_cfg.opportunity_at_risk_shadow
+        if shadow_config.enabled:
+            if not isinstance(self._sampler, WeightFifoSampler):
+                raise TypeError(
+                    "OARS shadow validation admitted a non-weight-FIFO sampler"
+                )
+            self._oars_shadow_recorder = OpportunityAtRiskShadowRecorder(
+                service_budget_multiplier=shadow_config.service_budget_multiplier,
+                max_candidate_groups=shadow_config.max_candidate_groups,
+            )
+            self._sampler = OpportunityAtRiskShadowSampler(
+                buffer=self._buffer,
+                baseline=self._sampler,
+                service_budget_multiplier=shadow_config.service_budget_multiplier,
+                max_candidate_groups=shadow_config.max_candidate_groups,
+                record=self._oars_shadow_recorder.append,
+            )
         required_capacity = self._sampler.required_buffer_capacity(num_prompts_per_step)
         validate_sampler_buffer_capacity(
             self._async_cfg,
@@ -432,27 +467,31 @@ class SingleControllerActor:
                             )
                 finally:
                     try:
-                        if self._opportunity_recorder is not None:
-                            opportunity_path = (
-                                self._async_cfg.gradient_opportunity_audit.output_path
+                        if self._oars_shadow_recorder is not None:
+                            shadow_path = (
+                                self._async_cfg.opportunity_at_risk_shadow.output_path
                             )
-                            assert opportunity_path is not None
-                            self._opportunity_recorder.flush_jsonl(opportunity_path)
+                            assert shadow_path is not None
+                            self._oars_shadow_recorder.flush_jsonl(shadow_path)
                     finally:
                         try:
-                            if self._observer_duty_meter is not None:
-                                derived_config = (
-                                    self._async_cfg.lifecycle_derived_opportunity_audit
-                                )
-                                duty_path = (
-                                    derived_config.lifecycle_duty_path
-                                    if derived_config.enabled
-                                    else self._async_cfg.gradient_opportunity_audit.observer_duty_path
-                                )
-                                assert duty_path is not None
-                                self._observer_duty_meter.flush_json(duty_path)
+                            if self._opportunity_recorder is not None:
+                                opportunity_path = self._async_cfg.gradient_opportunity_audit.output_path
+                                assert opportunity_path is not None
+                                self._opportunity_recorder.flush_jsonl(opportunity_path)
                         finally:
-                            self._logger.finish()
+                            try:
+                                if self._observer_duty_meter is not None:
+                                    derived_config = self._async_cfg.lifecycle_derived_opportunity_audit
+                                    duty_path = (
+                                        derived_config.lifecycle_duty_path
+                                        if derived_config.enabled
+                                        else self._async_cfg.gradient_opportunity_audit.observer_duty_path
+                                    )
+                                    assert duty_path is not None
+                                    self._observer_duty_meter.flush_json(duty_path)
+                            finally:
+                                self._logger.finish()
 
         export_result = await self._export_terminal_policy()
         result: dict[str, Any] = {

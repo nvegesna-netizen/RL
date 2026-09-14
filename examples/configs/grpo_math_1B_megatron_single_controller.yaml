@@ -40,6 +40,13 @@ async_rl:
     enabled: false
     output_path: null
     observer_duty_path: null
+  # Default-off behavior-neutral OARS proposal observer. This requires the
+  # weight_fifo sampler, four prompts per train step, and the opportunity audit.
+  opportunity_at_risk_shadow:
+    enabled: false
+    output_path: null
+    service_budget_multiplier: 1.02
+    max_candidate_groups: 25
   # Default-off, non-resumable weights/resolved-config export performed only
   # after the configured terminal train-step/version boundary is reached.
   terminal_policy_export:

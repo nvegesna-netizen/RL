@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import asyncio
+import math
 import statistics
 import threading as _threading
 import uuid
@@ -65,6 +66,7 @@ class PreparedTQCommit:
     tags: tuple[dict[str, Any], ...]
     tag_state: tuple[tuple[tuple[str, Any], ...], ...] = field(repr=False)
     sequence_lengths: tuple[int, ...]
+    observer_metadata: tuple[tuple[str, Any], ...]
     payload_state: tuple[tuple[Any, ...], ...] = field(repr=False)
     _owner: object = field(repr=False)
     _capability: object = field(repr=False)
@@ -752,7 +754,7 @@ class TQReplayBuffer:
         self._lifecycle_recorder = recorder
 
     def set_prepare_observer(self, observer: Optional[Any]) -> None:
-        """Attach a synchronous observer of definitive pre-commit train batches."""
+        """Attach an observer that may return scalar-only per-group metadata."""
         self._prepare_observer = observer
 
     @property
@@ -797,8 +799,9 @@ class TQReplayBuffer:
             )
         trace_rollout_payload(keys=sample_ids, data=train_batch)
         payload_state = _tensor_payload_state(fields)
+        observer_metadata: tuple[tuple[str, Any], ...] = ()
         if self._prepare_observer is not None:
-            self._prepare_observer(
+            raw_observer_metadata = self._prepare_observer(
                 group_id=group_id,
                 record=record,
                 train_batch=train_batch,
@@ -809,6 +812,30 @@ class TQReplayBuffer:
                 raise RuntimeError(
                     "prepare observer mutated the packed training payload"
                 )
+            if raw_observer_metadata is not None:
+                if not isinstance(raw_observer_metadata, Mapping):
+                    raise TypeError(
+                        "prepare observer metadata must be a mapping or None"
+                    )
+                frozen_metadata: list[tuple[str, Any]] = []
+                for key, value in raw_observer_metadata.items():
+                    if not isinstance(key, str) or not key:
+                        raise TypeError(
+                            "prepare observer metadata keys must be strings"
+                        )
+                    if (
+                        not isinstance(value, (str, bool, int, float))
+                        and value is not None
+                    ):
+                        raise TypeError(
+                            "prepare observer metadata values must be scalar JSON values"
+                        )
+                    if isinstance(value, float) and not math.isfinite(value):
+                        raise ValueError(
+                            "prepare observer metadata floats must be finite"
+                        )
+                    frozen_metadata.append((key, value))
+                observer_metadata = tuple(sorted(frozen_metadata))
 
         capability = object()
         self._prepared_capabilities[group_id] = capability
@@ -822,6 +849,7 @@ class TQReplayBuffer:
             tags=tuple(dict(tag) for tag in tags),
             tag_state=tuple(tuple(sorted(tag.items())) for tag in tags),
             sequence_lengths=tuple(int(value) for value in lengths.tolist()),
+            observer_metadata=observer_metadata,
             payload_state=payload_state,
             _owner=self._owner_capability,
             _capability=capability,
@@ -911,6 +939,7 @@ class TQReplayBuffer:
                 sample_ids=list(sample_ids),
                 fields=list(prepared.fields.keys()),
                 sequence_lengths=list(prepared.sequence_lengths),
+                extra_info=dict(prepared.observer_metadata),
                 tags=[dict(t) for t in tags],
             )
 

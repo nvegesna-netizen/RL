@@ -23,6 +23,10 @@ import pytest
 import torch
 
 import nemo_rl.algorithms.single_controller as single_controller
+from nemo_rl.algorithms.async_utils.controlled_release import (
+    ControlledReleaseDelayConfig,
+)
+from nemo_rl.algorithms.async_utils.staleness_sampler import WeightFifoSamplerConfig
 from nemo_rl.algorithms.grpo import GRPOConfig
 from nemo_rl.algorithms.loss import ClippedPGLossConfig
 from nemo_rl.algorithms.single_controller import SingleControllerActor
@@ -31,11 +35,9 @@ from nemo_rl.algorithms.single_controller_utils.config import (
     AsyncRLConfig,
     GradientOpportunityAuditConfig,
     MasterConfig,
+    OpportunityAtRiskShadowConfig,
     TerminalPolicyExportConfig,
     validate_single_controller_config,
-)
-from nemo_rl.algorithms.async_utils.controlled_release import (
-    ControlledReleaseDelayConfig,
 )
 from nemo_rl.data_plane import KVBatchMeta
 from nemo_rl.distributed.batched_data_dict import BatchedDataDict
@@ -242,6 +244,39 @@ def test_gradient_opportunity_audit_accepts_supported_configuration() -> None:
     )
 
     validate_single_controller_config(config)
+
+
+def test_opportunity_at_risk_shadow_is_default_off() -> None:
+    assert AsyncRLConfig().opportunity_at_risk_shadow.enabled is False
+
+
+def test_opportunity_at_risk_shadow_accepts_frozen_configuration() -> None:
+    config = _controlled_release_master_config(lifecycle_audit_path="lifecycle.jsonl")
+    config.policy["train_global_batch_size"] = 16
+    config.grpo.num_prompts_per_step = 4
+    config.async_rl.sampler = WeightFifoSamplerConfig(max_staleness_versions=1)
+    config.async_rl.gradient_opportunity_audit = GradientOpportunityAuditConfig(
+        enabled=True,
+        output_path="opportunity.jsonl",
+        observer_duty_path="duty.json",
+    )
+    config.async_rl.opportunity_at_risk_shadow = OpportunityAtRiskShadowConfig(
+        enabled=True,
+        output_path="oars.jsonl",
+    )
+
+    validate_single_controller_config(config)
+
+
+def test_opportunity_at_risk_shadow_requires_opportunity_audit() -> None:
+    config = _controlled_release_master_config(lifecycle_audit_path="lifecycle.jsonl")
+    config.async_rl.opportunity_at_risk_shadow = OpportunityAtRiskShadowConfig(
+        enabled=True,
+        output_path="oars.jsonl",
+    )
+
+    with pytest.raises(ValueError, match="requires.*gradient_opportunity_audit"):
+        validate_single_controller_config(config)
 
 
 @pytest.mark.parametrize("duty_path", [None, ""])
@@ -596,6 +631,7 @@ def test_successful_train_step_advances_audited_learner_version() -> None:
     ctrl._trainer_version = 4
     ctrl._lifecycle_recorder = MagicMock()
     ctrl._opportunity_recorder = None
+    ctrl._oars_shadow_recorder = None
     ctrl._observer_duty_meter = None
     ctrl._rollout_manager = MagicMock()
 

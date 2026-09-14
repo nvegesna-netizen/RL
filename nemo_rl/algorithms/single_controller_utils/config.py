@@ -14,6 +14,7 @@
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Optional
@@ -26,6 +27,7 @@ from nemo_rl.algorithms.async_utils.controlled_release import (
 from nemo_rl.algorithms.async_utils.staleness_sampler import (
     InOrderSamplerConfig,
     SamplerConfig,
+    WeightFifoSamplerConfig,
     required_buffer_capacity_for_config,
 )
 from nemo_rl.algorithms.grpo import GRPOConfig, GRPOLoggerConfig
@@ -54,6 +56,15 @@ class LifecycleDerivedOpportunityAuditConfig(BaseModel, frozen=True):
     output_path: Optional[str] = None
     lifecycle_duty_path: Optional[str] = None
     derivation_summary_path: Optional[str] = None
+
+
+class OpportunityAtRiskShadowConfig(BaseModel, frozen=True):
+    """Default-off, behavior-neutral OARS proposal observer."""
+
+    enabled: bool = False
+    output_path: Optional[str] = None
+    service_budget_multiplier: float = 1.02
+    max_candidate_groups: int = 25
 
 
 class TerminalPolicyExportConfig(BaseModel, frozen=True):
@@ -98,6 +109,9 @@ class AsyncRLConfig(BaseModel, extra="allow"):
     lifecycle_derived_opportunity_audit: LifecycleDerivedOpportunityAuditConfig = Field(
         default_factory=LifecycleDerivedOpportunityAuditConfig
     )
+    opportunity_at_risk_shadow: OpportunityAtRiskShadowConfig = Field(
+        default_factory=OpportunityAtRiskShadowConfig
+    )
     terminal_policy_export: TerminalPolicyExportConfig = Field(
         default_factory=TerminalPolicyExportConfig
     )
@@ -141,6 +155,7 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
     release_config = async_config.controlled_release_delay
     opportunity_config = async_config.gradient_opportunity_audit
     derived_config = async_config.lifecycle_derived_opportunity_audit
+    shadow_config = async_config.opportunity_at_risk_shadow
     export_config = async_config.terminal_policy_export
     if export_config.enabled and not export_config.output_dir:
         raise ValueError(
@@ -201,6 +216,38 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
                 "gradient opportunity audit requires ordinary token-level clipped "
                 "PG (PPO ratio enabled, no sequence-level ratio, CISPO, or "
                 "positive-example NLL)"
+            )
+    if shadow_config.enabled:
+        if not opportunity_config.enabled:
+            raise ValueError(
+                "async_rl.opportunity_at_risk_shadow.enabled=true requires "
+                "gradient_opportunity_audit.enabled=true"
+            )
+        if not isinstance(async_config.sampler, WeightFifoSamplerConfig):
+            raise ValueError(
+                "async_rl.opportunity_at_risk_shadow.enabled=true requires the "
+                "weight_fifo sampler"
+            )
+        if master_config.grpo.num_prompts_per_step != 4:
+            raise ValueError(
+                "async_rl.opportunity_at_risk_shadow.enabled=true requires "
+                "grpo.num_prompts_per_step=4 for the frozen policy"
+            )
+        if not shadow_config.output_path:
+            raise ValueError(
+                "async_rl.opportunity_at_risk_shadow.enabled=true requires output_path"
+            )
+        if (
+            not math.isfinite(shadow_config.service_budget_multiplier)
+            or shadow_config.service_budget_multiplier < 1.0
+        ):
+            raise ValueError(
+                "opportunity_at_risk_shadow.service_budget_multiplier must be "
+                "finite and at least one"
+            )
+        if shadow_config.max_candidate_groups < 4:
+            raise ValueError(
+                "opportunity_at_risk_shadow.max_candidate_groups must be at least four"
             )
     if derived_config.enabled:
         if opportunity_config.enabled:
