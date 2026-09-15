@@ -1,0 +1,22 @@
+{
+  "additional_variables_sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+  "amendment_sha256": "037420f15d914deb05e1a2ee4ccf30328e89683aee342d3246d73ac719efe41a",
+  "authorization_sha256": "b220d569fea7addf7d9c90266f98fb0e6b8a771b7086ba32f3ddd289f1fe5c3b",
+  "automatic_extension": false,
+  "automatic_retry": false,
+  "custom_config_sha256": "b5db8882c7baccd3bf8c0369d7264e80f7ea08c17482559f82875abc5207f42e",
+  "deadline_false_suppression_supported": true,
+  "deadline_value_is_boolean_false": true,
+  "failed_submission_receipt_sha256": "61ff6ce04314f1e4f320ca40375ce0370e222c855a3ee0c180c462600c757bb7",
+  "jet_slurm_renderer_sha256": "e54400feddf228f151a82728f1485d530c2ce445d8fb8b1f7fb697dbb82f4dd0",
+  "manifest_sha256": "82e6d89d6dbb86dc42c7fad3a7560545e9a27ed11c2d40c6dd4b8bda11404192",
+  "manifest_time_limit_seconds": 14400,
+  "manifest_unchanged": true,
+  "replacement_submission_attempt_limit": 1,
+  "runllm_sha256": "30532cd638d8394fa0e651daf4a43ec9424cbaa0949cd59c323191177318e616",
+  "schema": "m4-oars-shadow-preflight-replacement-validation-v1",
+  "scientific_design_changed": false,
+  "source_unchanged": true,
+  "status": "PASS_AUTHORIZED_UNSUBMITTED",
+  "submitted": false
+}

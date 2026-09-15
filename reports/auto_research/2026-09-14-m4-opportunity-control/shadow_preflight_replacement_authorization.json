@@ -1,0 +1,23 @@
+{
+  "schema": "m4-oars-shadow-preflight-operational-replacement-authorization-v1",
+  "scope": "exactly_one_deadline_suppressed_replacement_of_zero_runtime_preflight",
+  "user_authorization": "I authorize",
+  "amendment_sha256": "037420f15d914deb05e1a2ee4ccf30328e89683aee342d3246d73ac719efe41a",
+  "failed_submission_receipt_sha256": "61ff6ce04314f1e4f320ca40375ce0370e222c855a3ee0c180c462600c757bb7",
+  "manifest_sha256": "82e6d89d6dbb86dc42c7fad3a7560545e9a27ed11c2d40c6dd4b8bda11404192",
+  "custom_config_sha256": "b5db8882c7baccd3bf8c0369d7264e80f7ea08c17482559f82875abc5207f42e",
+  "required_launcher": "runllm.py --no_wait",
+  "prebuilt_config_id": "dlalgo-ci/eos",
+  "replacement_submission_attempt_limit": 1,
+  "eos_submission_authorized": true,
+  "deadline_suppression_authorized": true,
+  "fifo_controlled_training_authorized": true,
+  "oars_shadow_observation_authorized": true,
+  "oars_actuation_authorized": false,
+  "scientific_outcome_acquisition_authorized": false,
+  "manifest_change_authorized": false,
+  "source_change_authorized": false,
+  "runtime_limit_change_authorized": false,
+  "automatic_retry": false,
+  "automatic_extension": false
+}

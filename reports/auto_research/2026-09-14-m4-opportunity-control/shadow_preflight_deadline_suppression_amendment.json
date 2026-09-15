@@ -1,0 +1,45 @@
+{
+  "schema": "m4-oars-shadow-preflight-deadline-suppression-amendment-v1",
+  "status": "FROZEN_OPERATIONAL_REPLACEMENT",
+  "created_local_date": "2026-09-14",
+  "failed_submission_receipt_sha256": "61ff6ce04314f1e4f320ca40375ce0370e222c855a3ee0c180c462600c757bb7",
+  "failed_chain": {
+    "upstream_pipeline_id": 67886685,
+    "downstream_pipeline_id": 67886788,
+    "main_job_id": 439889007,
+    "slurm_job_id": 6030233,
+    "queue_time": "04:00:25",
+    "runtime": "00:00:00",
+    "state": "DEADLINE"
+  },
+  "failure_classification": "infrastructure_censored_before_allocation_or_workload_execution",
+  "mechanism": "The inherited --deadline now+8hours flag and four-hour runtime request made the latest feasible allocation start four hours after submission.",
+  "unchanged_inputs": {
+    "source_commit": "6c53561dc63d26f789ac8e5b03e7fd3a794bc462",
+    "source_archive_sha256": "c12c33cdafa2c4777697a3f7553d91f2d3f0b8c208d076a274db32ae97a22ffe",
+    "manifest_sha256": "82e6d89d6dbb86dc42c7fad3a7560545e9a27ed11c2d40c6dd4b8bda11404192",
+    "protocol_sha256": "1482d985a17197a58af018bd4e043a1008b78b6dbe4d99671954dc8452705513",
+    "model": "meta-llama/Llama-3.2-1B-Instruct",
+    "workload": "gsm8k",
+    "trainer_steps": 64,
+    "gpus": 2,
+    "manifest_time_limit_seconds": 14400,
+    "acting_sampler": "weight_fifo",
+    "oars_mode": "observation_only"
+  },
+  "only_change": {
+    "surface": "prebuilt_custom_config.launchers.dgxh100_eos.sbatch_additional_flags.deadline",
+    "old_effective_value": "now+8hours",
+    "new_value": false,
+    "custom_config_sha256": "b5db8882c7baccd3bf8c0369d7264e80f7ea08c17482559f82875abc5207f42e",
+    "expected_effect": "suppress inherited --deadline while retaining one --time 0:14400 flag"
+  },
+  "boundaries": {
+    "scientific_design_changed": false,
+    "runtime_limit_changed": false,
+    "queue_deadline_present": false,
+    "automatic_retry": false,
+    "automatic_extension": false,
+    "replacement_submission_attempt_limit": 1
+  }
+}
