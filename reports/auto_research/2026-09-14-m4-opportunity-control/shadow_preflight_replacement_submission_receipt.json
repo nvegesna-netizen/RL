@@ -1,6 +1,6 @@
 {
   "schema": "m4-oars-shadow-preflight-replacement-submission-receipt-v1",
-  "status": "SUBMITTED_CHAIN_PENDING_NO_OUTCOME_INSPECTION",
+  "status": "SUBMITTED_SLURM_PENDING_NO_OUTCOME_INSPECTION",
   "launcher": "runllm.py --no_wait",
   "replacement_submission_attempts": 1,
   "package_receipt_commit": "51fc452ed026a88720004f0c2e3922c389420adc",
@@ -31,6 +31,16 @@
     "time_flag_count": 1,
     "deadline_flag_present": false,
     "nodes": 1
+  },
+  "observed_slurm_submission": {
+    "job_id": 6030945,
+    "state": "PENDING",
+    "reason": "Priority",
+    "runtime": "00:00:00",
+    "time_limit": "04:00:00",
+    "deadline": "N/A",
+    "deadline_flag_present": false,
+    "time_flag": "--time 0:14400"
   },
   "topology_verified": true,
   "operational_repair_verified_from_generated_artifact": true,
