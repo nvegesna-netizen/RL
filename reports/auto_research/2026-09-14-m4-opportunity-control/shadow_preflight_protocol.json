@@ -1,0 +1,76 @@
+{
+  "schema": "m4-oars-fifo-controlled-shadow-preflight-protocol-v1",
+  "status": "FROZEN_AUTHORIZED_ONE_SHOT_NO_ACTUATION",
+  "created_local_date": "2026-09-14",
+  "purpose": "Verify live OARS metadata coverage, FIFO identity, controller-relative latency, and observer duty on the representative Linux EOS runtime while weight-FIFO remains the sole acting scheduler.",
+  "predecessors": {
+    "shadow_implementation_result_sha256": "5479008ef90b8240a7c1d85bb855c234851ea9f6712b1a314663800e2032a24e",
+    "reviewer_gate_sha256": "eb8a70eb9ff6670a0af821df7e46de22aeef9a6d3e96a5bd8baed36974634fed"
+  },
+  "setting": {
+    "model": "meta-llama/Llama-3.2-1B-Instruct",
+    "workload": "gsm8k",
+    "trainer_steps": 64,
+    "nodes": 1,
+    "gpus": 2,
+    "scheduler_time_limit_seconds": 14400,
+    "queue_deadline_override": null,
+    "config_path": "examples/configs/grpo_math_1B_megatron_single_controller_m4_oars_shadow_preflight.yaml",
+    "config_sha256": "200164a4f7beab123d687a4674ac6ba4d3a1f84299cb676e672b8df282b8acb4",
+    "analyzer_path": "tools/m4_oars_shadow_preflight.py",
+    "analyzer_sha256": "151a9b7e726934647bd3f40ac38723c433622003cc3af772ce21c5f5ec23ae85"
+  },
+  "policy_boundary": {
+    "acting_sampler": "weight_fifo",
+    "oars_mode": "observation_only",
+    "service_budget_multiplier": 1.02,
+    "maximum_candidate_groups": 25,
+    "controlled_release_arm": {
+      "label": "neutral",
+      "delay_seconds": 0.0,
+      "mass": 1
+    },
+    "oars_actuation_forbidden": true,
+    "training_quality_analysis_forbidden": true,
+    "scientific_outcome_interpretation_forbidden": true
+  },
+  "terminal_gate": {
+    "all_required": true,
+    "conditions": {
+      "complete_learner_steps": 64,
+      "one_shadow_decision_per_step": true,
+      "minimum_contended_decisions": 8,
+      "minimum_contended_metadata_coverage": 0.99,
+      "actual_selection_exactly_matches_fifo_every_decision": true,
+      "proposal_groups_each_decision": 4,
+      "service_budget_satisfied_every_decision": true,
+      "shadow_skip_count": 0,
+      "maximum_gradient_observer_duty": 0.01,
+      "maximum_oars_observer_duty": 0.01,
+      "maximum_p95_decision_latency_fraction_of_median_step_interval": 0.1,
+      "maximum_runtime_seconds": 14400
+    },
+    "failure_interpretation": "systems_or_instrumentation_preflight_not_qualified_no_oars_effect_claim",
+    "pass_interpretation": "eligible_to_freeze_a_separate_randomized_fifo_versus_oars_whole_run_protocol"
+  },
+  "artifacts": [
+    "run_log",
+    "lifecycle_jsonl",
+    "gradient_opportunity_jsonl",
+    "gradient_observer_duty_json",
+    "oars_shadow_jsonl",
+    "preflight_result_json",
+    "sha256_manifest"
+  ],
+  "authority": {
+    "required_launcher": "runllm.py --no_wait",
+    "submission_attempt_limit": 1,
+    "eos_submission_authorized": true,
+    "fifo_controlled_training_authorized": true,
+    "oars_actuation_authorized": false,
+    "scientific_outcome_acquisition_authorized": false,
+    "automatic_retry": false,
+    "automatic_extension": false,
+    "user_authorization": "do it"
+  }
+}

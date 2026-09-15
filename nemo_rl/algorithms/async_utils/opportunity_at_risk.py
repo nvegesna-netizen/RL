@@ -239,7 +239,7 @@ class OpportunityAtRiskShadowSampler:
         current_train_weight: int,
         min_prompt_groups: int,
         max_prompt_groups: int,
-    ) -> None:
+    ) -> Optional[dict[str, Any]]:
         started_ns = time.perf_counter_ns()
         minimum_version = max(
             0, current_train_weight - self._baseline.max_staleness_versions
@@ -253,7 +253,7 @@ class OpportunityAtRiskShadowSampler:
             self._buffer.start_weight_list[index] for index in in_window_indices
         ]
         if not in_window_weights:
-            return
+            return None
         target_version = min(in_window_weights)
         baseline_indices = [
             index
@@ -262,7 +262,7 @@ class OpportunityAtRiskShadowSampler:
             and self._buffer.ready_list[index]
         ]
         if len(baseline_indices) < min_prompt_groups:
-            return
+            return None
         candidate_indices = [
             index for index in in_window_indices if self._buffer.ready_list[index]
         ]
@@ -319,7 +319,23 @@ class OpportunityAtRiskShadowSampler:
             except (KeyError, RuntimeError, TypeError, ValueError):
                 event["skip_reason"] = "missing_or_invalid_opportunity_metadata"
         event["decision_latency_ns"] = time.perf_counter_ns() - started_ns
-        self._record(event)
+        return event
+
+    @staticmethod
+    def _actual_group_ids(
+        selected_meta: Optional[KVBatchMeta], *, selected_group_count: int
+    ) -> Optional[tuple[str, ...]]:
+        """Recover ordered group IDs from the replay payload's stable key format."""
+        if selected_meta is None:
+            return None
+        group_ids: list[str] = []
+        for sample_id in selected_meta.sample_ids:
+            group_id, separator, sibling_index = sample_id.rpartition("_g")
+            if separator and group_id and sibling_index == "0":
+                group_ids.append(group_id)
+        if len(group_ids) != selected_group_count:
+            return None
+        return tuple(group_ids)
 
     async def select(
         self,
@@ -329,13 +345,29 @@ class OpportunityAtRiskShadowSampler:
         max_prompt_groups: int,
     ) -> tuple[Optional[KVBatchMeta], int]:
         """Observe the choice set, then execute the unchanged baseline call."""
-        self._observe(
+        event = self._observe(
             current_train_weight=current_train_weight,
             min_prompt_groups=min_prompt_groups,
             max_prompt_groups=max_prompt_groups,
         )
-        return await self._baseline.select(
+        selected_meta, selected_group_count = await self._baseline.select(
             current_train_weight=current_train_weight,
             min_prompt_groups=min_prompt_groups,
             max_prompt_groups=max_prompt_groups,
         )
+        if event is not None:
+            actual_group_ids = self._actual_group_ids(
+                selected_meta, selected_group_count=selected_group_count
+            )
+            event.update(
+                {
+                    "actual_selected_group_count": selected_group_count,
+                    "actual_selected_group_ids": (
+                        list(actual_group_ids) if actual_group_ids is not None else None
+                    ),
+                    "baseline_matches_actual": actual_group_ids
+                    == tuple(event["baseline_group_ids"]),
+                }
+            )
+            self._record(event)
+        return selected_meta, selected_group_count

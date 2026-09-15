@@ -161,6 +161,9 @@ def test_shadow_proposes_but_executes_exact_weight_fifo_selection() -> None:
     assert shadow_ids == baseline_ids == ["a_g0", "b_g0", "c_g0", "d_g0"]
     assert len(events) == 1
     assert events[0]["baseline_group_ids"] == ["a", "b", "c", "d"]
+    assert events[0]["actual_selected_group_ids"] == ["a", "b", "c", "d"]
+    assert events[0]["actual_selected_group_count"] == 4
+    assert events[0]["baseline_matches_actual"] is True
     assert events[0]["proposed_group_ids"] == ["w", "x", "y", "z"]
     assert events[0]["skip_reason"] is None
 
@@ -174,6 +177,7 @@ def test_uncontended_shadow_is_baseline_equivalent() -> None:
 
     assert selected == ["a_g0", "b_g0", "c_g0", "d_g0"]
     assert events[0]["proposed_group_ids"] == ["a", "b", "c", "d"]
+    assert events[0]["baseline_matches_actual"] is True
 
 
 def test_missing_metadata_skips_observation_and_preserves_baseline() -> None:
@@ -185,6 +189,7 @@ def test_missing_metadata_skips_observation_and_preserves_baseline() -> None:
 
     assert selected == ["a_g0", "b_g0", "c_g0", "d_g0"]
     assert events[0]["skip_reason"] == "missing_or_invalid_opportunity_metadata"
+    assert events[0]["baseline_matches_actual"] is False
 
 
 def test_candidate_cap_skips_observation_and_preserves_baseline() -> None:
@@ -212,6 +217,7 @@ def test_candidate_cap_skips_observation_and_preserves_baseline() -> None:
     assert groups == 4
     assert meta.sample_ids == ["a_g0", "b_g0", "c_g0", "d_g0"]
     assert events[0]["skip_reason"] == "candidate_safety_cap_exceeded"
+    assert events[0]["baseline_matches_actual"] is False
 
 
 def test_older_unready_slot_preserves_weight_fifo_wait_without_observation() -> None:
