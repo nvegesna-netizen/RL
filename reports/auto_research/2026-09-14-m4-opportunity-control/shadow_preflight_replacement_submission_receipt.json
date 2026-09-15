@@ -1,6 +1,6 @@
 {
   "schema": "m4-oars-shadow-preflight-replacement-submission-receipt-v1",
-  "status": "SUBMITTED_SLURM_PENDING_NO_OUTCOME_INSPECTION",
+  "status": "TERMINAL_PREFLIGHT_FAIL_NO_CONTENDED_DECISIONS",
   "launcher": "runllm.py --no_wait",
   "replacement_submission_attempts": 1,
   "package_receipt_commit": "51fc452ed026a88720004f0c2e3922c389420adc",
@@ -42,12 +42,106 @@
     "deadline_flag_present": false,
     "time_flag": "--time 0:14400"
   },
+  "terminal": {
+    "upstream_status": "failed",
+    "downstream_status": "failed",
+    "main_job_status": "failed",
+    "main_job_failure_reason": "script_failure",
+    "slurm_job_id": 6030945,
+    "slurm_state": "FAILED",
+    "slurm_queue_time": "00:45:35",
+    "slurm_duration": "00:17:46",
+    "slurm_exit_code": "1:0",
+    "workload_exit_code": 1,
+    "logs_before_status": "success",
+    "logs_after_status": "success"
+  },
+  "deadline_repair_terminal_verification": {
+    "observed_time_flag": "--time 0:14400",
+    "observed_time_flag_count": 1,
+    "observed_deadline": "N/A",
+    "deadline_flag_present": false,
+    "classification": "allocated_and_executed_no_queue_deadline_censoring"
+  },
+  "authenticated_terminal_archives": {
+    "main_job_artifact_bytes": 61093704,
+    "main_job_artifact_sha256": "1d0326b5b0d8992355bdfa8e090db951c04cabe06a74a47a55f0e4a6fd1ce4e7",
+    "logs_after_artifact_bytes": 135129656,
+    "logs_after_artifact_sha256": "29efc794c90ee4abdde01700b7144e888fcf0ac69b10349d7ffc5a56a64fb170"
+  },
+  "authenticated_declared_artifacts": {
+    "gradient_observer_duty_json": {
+      "bytes": 461,
+      "sha256": "53f9076bd9b6ed7e10928f3c691b5a9dbf92db1531951f86a8f862d54ae6f416"
+    },
+    "lifecycle_jsonl": {
+      "bytes": 4376209,
+      "sha256": "466d29ac3c76791a654cd9a443c51b38d4ec1eefab9587df593cafad5d15cc0f"
+    },
+    "oars_shadow_jsonl": {
+      "bytes": 60273,
+      "sha256": "7ed0b16cffbe5edc04310a5af3507175c24058ec907412f7030d126f36c73e17"
+    },
+    "gradient_opportunity_jsonl": {
+      "bytes": 734304,
+      "sha256": "2b77d65eb96e9d345f523f655819621ba0d6e5f8aa46611bca3d8e5aa6b0ef44"
+    },
+    "preflight_result_json": {
+      "bytes": 1063,
+      "sha256": "8903cafd8a24c1dd15ff9f31f709ebabf93cf0ba65e0598f11143ba851debc1b"
+    },
+    "run_log": {
+      "bytes": 217633,
+      "sha256": "f72129d89f4161a75bcd760239ac3e80d56e0fde8fc1f671ec67ecb5366d1523"
+    },
+    "main_and_logs_after_copies_byte_identical": true,
+    "sha256_manifest_present": false,
+    "sha256_manifest_absence_reason": "the frozen analyzer wrote its result and exited nonzero before the subsequent manifest command"
+  },
+  "preflight_result": {
+    "status": "FAIL",
+    "trainer_steps": 64,
+    "decision_count": 64,
+    "candidate_group_count_distribution": {
+      "4": 64
+    },
+    "combination_count_distribution": {
+      "1": 64
+    },
+    "contended_decision_count": 0,
+    "complete_contended_decision_count": 0,
+    "metadata_coverage": 0.0,
+    "failed_checks": [
+      "minimum_contended_support",
+      "metadata_coverage"
+    ],
+    "all_other_frozen_checks_passed": true,
+    "actual_selection_exactly_matches_fifo": true,
+    "shadow_skip_count": 0,
+    "gradient_observer_duty": 0.0008990235350384558,
+    "oars_observer_duty": 0.000012399770692333283,
+    "p95_decision_latency_ns": 57839,
+    "p95_latency_fraction_of_median_step_interval": 0.000016712291834010688,
+    "runtime_seconds": 883.940261616,
+    "oars_actuated": false,
+    "scientific_outcome_acquisition": false
+  },
+  "diagnosis": {
+    "classification": "valid_systems_preflight_rejection_due_to_absent_choice_set_excitation",
+    "evidence": "At every decision exactly four groups were ready, four were required, and the only possible combination selected all four. The observer therefore had no alternative group set to rank.",
+    "instrumentation_failure": false,
+    "partial_artifact_failure": false,
+    "training_failure": false,
+    "oars_effect_claim_supported": false,
+    "whole_run_fifo_vs_oars_protocol_unlocked": false,
+    "automatic_retry_allowed": false
+  },
   "topology_verified": true,
   "operational_repair_verified_from_generated_artifact": true,
   "manifest_unchanged": true,
   "source_unchanged": true,
   "scientific_design_changed": false,
-  "scientific_artifacts_opened": false,
+  "scientific_artifacts_opened": true,
   "automatic_retry": false,
   "automatic_extension": false
 }
