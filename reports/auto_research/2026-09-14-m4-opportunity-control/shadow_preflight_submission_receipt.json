@@ -1,6 +1,6 @@
 {
   "schema": "m4-oars-shadow-preflight-submission-receipt-v1",
-  "status": "SUBMITTED_CHAIN_RUNNING_NO_OUTCOME_INSPECTION",
+  "status": "TERMINAL_INFRASTRUCTURE_FAILURE_ZERO_RUNTIME",
   "launcher": "runllm.py --no_wait",
   "submission_attempts": 1,
   "source_commit": "6c53561dc63d26f789ac8e5b03e7fd3a794bc462",
@@ -22,12 +22,40 @@
     "logs_after": 439889008
   },
   "topology_verified": true,
+  "terminal": {
+    "upstream_status": "failed",
+    "downstream_status": "failed",
+    "main_job_status": "failed",
+    "main_job_failure_reason": "script_failure",
+    "slurm_job_id": 6030233,
+    "slurm_state": "DEADLINE",
+    "slurm_queue_time": "04:00:25",
+    "slurm_runtime": "00:00:00",
+    "slurm_exit_code": "1:0",
+    "sacct_has_no_data": true,
+    "logs_before_status": "success",
+    "logs_after_status": "success"
+  },
+  "scheduler_evidence": {
+    "observed_time_flag": "--time 0:14400",
+    "observed_deadline_flag": "--deadline now+8hours",
+    "classification": "allocation_deadline_before_workload_execution"
+  },
+  "authenticated_terminal_archives": {
+    "main_job_artifact_sha256": "47ae90d2c690e49a2b175c90e8c1e8e73fbaf4f5d1d871357a513254f2844000",
+    "logs_after_artifact_sha256": "0a55243cbf8792230dc01bebb9c7faf66f8c11c7d7ba68dc5db1333c8460c1bc"
+  },
+  "declared_workload_artifacts_present": false,
+  "workload_started": false,
+  "trainer_steps": 0,
+  "scientific_result": "NONE_INFRASTRUCTURE_CENSORED",
   "manifest_time_limit_seconds": 14400,
   "queue_deadline_override": null,
   "acting_sampler": "weight_fifo",
   "oars_actuated": false,
   "scientific_outcome_acquisition": false,
   "scientific_artifacts_opened": false,
+  "replacement_authorized": false,
   "automatic_retry": false,
   "automatic_extension": false
 }
