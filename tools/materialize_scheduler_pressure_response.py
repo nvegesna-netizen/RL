@@ -360,50 +360,49 @@ def materialize(
         identity_field="protocol_id",
         pair_count=16,
     )
+    additional_files: dict[str, bytes]
+    additional_report_hashes: dict[str, object]
+    if order_seed == 49004:
+        assert amendment_raw is not None
+        additional_files = {
+            "scheduler_pressure_response_concurrency_amendment.candidate.v1.json": amendment_raw,
+            "scheduler_pressure_response_concurrency_amendment_confirmation.v1.json": authorization_raw,
+        }
+        additional_report_hashes = {
+            "generation_seed": generation_seed,
+            "concurrency_amendment_sha256": base._sha_bytes(amendment_raw),
+            "concurrency_amendment_confirmation_sha256": base._sha_bytes(
+                authorization_raw
+            ),
+        }
+    elif order_seed == 49005:
+        assert amendment_raw is not None
+        additional_files = {
+            "scheduler_pressure_response_49004_replacement_runtime_amendment.candidate.v1.json": amendment_raw,
+            "scheduler_pressure_response_49004_replacement_runtime_amendment_confirmation.v1.json": authorization_raw,
+        }
+        additional_report_hashes = {
+            "generation_seed": generation_seed,
+            "replacement_runtime_amendment_sha256": base._sha_bytes(amendment_raw),
+            "replacement_runtime_amendment_confirmation_sha256": base._sha_bytes(
+                authorization_raw
+            ),
+        }
+    else:
+        additional_files = {
+            "scheduler_pressure_response_materialization_authorization.v1.json": authorization_raw
+        }
+        additional_report_hashes = {
+            "generation_seed": generation_seed,
+            "materialization_authorization_sha256": base._sha_bytes(authorization_raw),
+        }
     base._materialize_from_protocol(
         output_dir=output_dir,
         protocol_raw=protocol_raw,
         key=key,
         spec=spec,
-        additional_files=(
-            {
-                "scheduler_pressure_response_concurrency_amendment.candidate.v1.json": amendment_raw,
-                "scheduler_pressure_response_concurrency_amendment_confirmation.v1.json": authorization_raw,
-            }
-            if order_seed == 49004
-            else {
-                "scheduler_pressure_response_49004_replacement_runtime_amendment.candidate.v1.json": amendment_raw,
-                "scheduler_pressure_response_49004_replacement_runtime_amendment_confirmation.v1.json": authorization_raw,
-            }
-            if order_seed == 49005
-            else {
-                "scheduler_pressure_response_materialization_authorization.v1.json": authorization_raw
-            }
-        ),
-        additional_report_hashes=(
-            {
-                "generation_seed": generation_seed,
-                "concurrency_amendment_sha256": base._sha_bytes(amendment_raw),
-                "concurrency_amendment_confirmation_sha256": base._sha_bytes(
-                    authorization_raw
-                ),
-            }
-            if order_seed == 49004
-            else {
-                "generation_seed": generation_seed,
-                "replacement_runtime_amendment_sha256": base._sha_bytes(amendment_raw),
-                "replacement_runtime_amendment_confirmation_sha256": base._sha_bytes(
-                    authorization_raw
-                ),
-            }
-            if order_seed == 49005
-            else {
-                "generation_seed": generation_seed,
-                "materialization_authorization_sha256": base._sha_bytes(
-                    authorization_raw
-                ),
-            }
-        ),
+        additional_files=additional_files,
+        additional_report_hashes=additional_report_hashes,
     )
 
 

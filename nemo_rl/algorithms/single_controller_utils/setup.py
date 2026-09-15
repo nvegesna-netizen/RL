@@ -36,6 +36,7 @@ from nemo_rl.algorithms.async_utils.scheduler_assay import (
     SchedulerAssayPlan,
 )
 from nemo_rl.algorithms.async_utils.structured_scheduler_crossover import (
+    DapoOperationalMixtureArm,
     DapoOperationalMixturePlan,
     DapoSchedulerCrossoverPlan,
     SchedulerPressureResponseArm,
@@ -405,13 +406,16 @@ def setup_single_controller(
             assert assay_config.arm_id is not None
             assert assay_config.order_seed is not None
             assay_plan = load_scheduler_protocol(assay_config.plan_path)
-            if isinstance(
+            if isinstance(assay_plan, DapoOperationalMixturePlan):
+                assay_arm = assay_plan.arm(assay_config.arm_id)
+                pool = assay_plan.pool(assay_config.order_seed)
+                expected_generation_seed = pool.scheduler_generation_seed
+            elif isinstance(
                 assay_plan,
                 (
                     StructuredSchedulerCrossoverPlan,
                     DapoSchedulerCrossoverPlan,
                     SchedulerPressureResponsePlan,
-                    DapoOperationalMixturePlan,
                 ),
             ):
                 assay_arm = assay_plan.arm(assay_config.arm_id)
@@ -472,7 +476,8 @@ def setup_single_controller(
             ):
                 raise ValueError("DAPO crossover runtime does not match frozen plan")
             if isinstance(assay_plan, DapoOperationalMixturePlan) and (
-                generation_config.get("max_new_tokens") != assay_plan.max_new_tokens
+                not isinstance(assay_arm, DapoOperationalMixtureArm)
+                or generation_config.get("max_new_tokens") != assay_plan.max_new_tokens
                 or master_config.async_rl.max_inflight_prompts
                 != assay_plan.max_inflight_prompts
                 or master_config.async_rl.max_buffered_rollouts

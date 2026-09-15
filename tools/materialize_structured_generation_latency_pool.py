@@ -347,7 +347,7 @@ def _materialize_from_protocol(
     key: bytes,
     spec: StructuredGenerationMaterializationSpec,
     additional_files: Mapping[str, bytes] | None = None,
-    additional_report_hashes: Mapping[str, str] | None = None,
+    additional_report_hashes: Mapping[str, object] | None = None,
 ) -> None:
     """Create one private pool from already validated protocol bytes."""
     if len(key) < 32:
