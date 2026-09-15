@@ -1,0 +1,125 @@
+{
+  "schema": "m4-oars-shadow-contention-preflight-terminal-receipt-v1",
+  "status": "PASS_SYSTEMS_QUALIFIED_NO_EFFECT_CLAIM",
+  "source_commit": "6d5afa213613367cb296846d2a66cc0cdbb1f39e",
+  "package_receipt_commit": "e548d0e9e9023fa2fa82cc43e6a0accb493fc4f6",
+  "submission_receipt_commit": "d58b35950b62db1fe97a690827599660997e65f4",
+  "frozen_provenance_sha256": {
+    "protocol": "06df90b6d411428cb959b1ee2f8b3d4174ca5284f1841dbcdd88fcd53f2178a1",
+    "authorization": "9b150d35ff37469e39241d02bef3c611b9e1f656faf67f5daf4ba64c80d9bcd8",
+    "package_receipt": "6c287c7ce15ee13db1544f3787e90c920deed6bb2b863e6d58e1deb1986199e7",
+    "submission_receipt": "82f2ca16c07b2e29b49750af47a4f494b56ce3b46e35e1c10f5e06c7c45dc38b"
+  },
+  "execution_provenance": {
+    "upstream_pipeline_id": 67938201,
+    "downstream_pipeline_id": 67938515,
+    "generator_job_id": 440338559,
+    "main_job_id": 440340818,
+    "logs_after_job_id": 440340820,
+    "slurm_job_id": 6031259,
+    "slurm_state": "COMPLETED",
+    "slurm_queue_time": "00:00:00",
+    "slurm_duration": "00:12:38",
+    "workload_step_duration": "00:12:08",
+    "slurm_exit_code": "0:0",
+    "workload_exit_code": 0,
+    "time_flag": "--time 0:14400",
+    "time_flag_count": 1,
+    "deadline": "N/A",
+    "deadline_flag_present": false,
+    "terminal_trace_sha256": "32576d0d7c7bd365b3dbc0e74440463619a569e450f1638a9c1191a6ec8d6d46"
+  },
+  "authenticated_terminal_archives": {
+    "main": {
+      "bytes": 61155320,
+      "sha256": "13af85a685aa51dd6d4f377d0812b303acb007f23d5ba2d4b3bab58027e52677",
+      "zip_integrity_passed": true
+    },
+    "logs_after": {
+      "bytes": 135006962,
+      "sha256": "9fe5c9c46ccf0d0c949388dc06ac3a7ff56a0c2a6582193ac44130bd2769a22a",
+      "zip_integrity_passed": true
+    },
+    "main_and_logs_after_declared_copies_byte_identical": true
+  },
+  "authenticated_declared_artifacts": {
+    "gradient_observer_duty_json": {
+      "bytes": 473,
+      "sha256": "48f499b0fbeb1ed2071cdac4062ced4890665d9561fc6b39621f8573b7aeb970"
+    },
+    "lifecycle_jsonl": {
+      "bytes": 4380829,
+      "sha256": "c9f241a55f18349216b0b9d0314d4bf8d56329a05f80709156658a0d2d53698d"
+    },
+    "oars_shadow_jsonl": {
+      "bytes": 60194,
+      "sha256": "04d160577612cfc7b93a2e007501e9265d552ad19c87d1b665443372756fbd71"
+    },
+    "gradient_opportunity_jsonl": {
+      "bytes": 723720,
+      "sha256": "54668a8f0336b60ea059e402bd6a569c861d522bde6c0492ff83bddebe93b131"
+    },
+    "preflight_result_json": {
+      "bytes": 1300,
+      "sha256": "e5a33e2297ef364192264f8f2cf108818f1d040b414c9fb165cf4def82a68822"
+    },
+    "run_log": {
+      "bytes": 220243,
+      "sha256": "247a04f24c0a641af5cd29b04a65f956285df232809a172f46f11b69faed24db"
+    },
+    "sha256_manifest": {
+      "bytes": 1125,
+      "sha256": "56b3ed191ec2f7cc4157d3659a2300d545255905b9c666a5d6ca81ca468bc295",
+      "coverage_exact": true,
+      "all_hashes_match": true
+    }
+  },
+  "frozen_gate_result": {
+    "status": "PASS",
+    "all_checks_passed": true,
+    "learner_steps": 64,
+    "decision_count": 64,
+    "contended_decision_count": 64,
+    "complete_contended_decision_count": 64,
+    "candidate_group_count_distribution": {
+      "8": 64
+    },
+    "combination_count_distribution": {
+      "70": 64
+    },
+    "proposal_group_count_distribution": {
+      "4": 64
+    },
+    "metadata_coverage": 1.0,
+    "actual_selection_exactly_matches_fifo": true,
+    "skip_reason_counts": {},
+    "maximum_proposed_to_baseline_token_ratio": 1.016243880729862,
+    "gradient_observer_duty": 0.0005351677880560163,
+    "oars_observer_duty": 0.00001610043790602163,
+    "p95_decision_latency_ns": 135132,
+    "maximum_decision_latency_ns": 159715,
+    "median_learner_step_interval_ns": 5287023519.0,
+    "p95_latency_fraction_of_median_step_interval": 0.000025559182688402184,
+    "runtime_seconds": 577.188268746,
+    "oars_actuated": false,
+    "training_quality_analyzed": false,
+    "scientific_outcome_acquisition": false,
+    "natural_eager_fifo_representativeness_claim": false
+  },
+  "independent_audit": {
+    "artifact_authentication_sha256": "27e71b44a731ab60877b09e0c5016493432d14b5c7354452dd58cda2f3a3ad58",
+    "frozen_gate_audit_sha256": "69e0dd7557eb2eff10625d302a0520389b9e68fa2aa98ab0cf4d43f9f1c1d985",
+    "all_checks_passed": true
+  },
+  "scientific_interpretation": {
+    "systems_preflight_qualified": true,
+    "eligible_to_design_separate_randomized_fifo_versus_oars_protocol": true,
+    "oars_effect_claim_supported": false,
+    "training_quality_claim_supported": false,
+    "natural_eager_fifo_representativeness_claim_supported": false,
+    "prior_zero_contention_result_erased": false
+  },
+  "pipeline_status_is_scientific_endpoint": false,
+  "automatic_retry": false,
+  "automatic_extension": false
+}
