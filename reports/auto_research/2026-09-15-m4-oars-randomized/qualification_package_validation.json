@@ -1,0 +1,34 @@
+{
+  "authorization_sha256": "e8600a27f9391d44262ba4606120085b2c52ca6cb8d563e9da85d1f585d90596",
+  "bash_syntax_passed": true,
+  "credential_free_static_gate_passed": true,
+  "deterministic_rebuild_passed": true,
+  "embedded_python_syntax_passed": true,
+  "manifest_time_limit_seconds": 14400,
+  "manifests": [
+    {
+      "arm": "fifo",
+      "manifest_bytes": 16114953,
+      "manifest_sha256": "beb69559cf078395f8a372fd7799dba3a4884ce5c24f0b328cb0d0ca07fa6215",
+      "mode": "observe"
+    },
+    {
+      "arm": "act",
+      "manifest_bytes": 16114925,
+      "manifest_sha256": "e804f9b68c53ca99d651e2fcec588cc286ef751ca3e947540ef63a26d507957b",
+      "mode": "act"
+    }
+  ],
+  "megatron_sha256": "98d98920c0fea3d8ae1216a485dc9b5aa4fc966e469435ad61f2bae456de80d2",
+  "protocol_sha256": "3bc49412a212419635e55b616e080708e17cf265c1926c1d93faebf072a87bfd",
+  "queue_deadline_override": null,
+  "schema": "m4-oars-actuation-qualification-package-validation-v1",
+  "scientific_outcome_acquisition": false,
+  "source_archive_member_count": 2422,
+  "source_archive_sha256": "cddfbfc82423abca4ea080333dcb86eed1760e1b115e9504bd2239b91a78e9b3",
+  "source_archive_symlink_count": 16,
+  "source_commit": "65b991e4ee7f2dfe64b32143b7678ddf7a46385d",
+  "status": "PASS_AUTHORIZED_UNSUBMITTED",
+  "submission_attempt_limit": 2,
+  "terminal_artifact_hash_on_failure_passed": true
+}
