@@ -157,6 +157,23 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
     derived_config = async_config.lifecycle_derived_opportunity_audit
     shadow_config = async_config.opportunity_at_risk_shadow
     export_config = async_config.terminal_policy_export
+    num_prompts_per_step = master_config.grpo.num_prompts_per_step
+    required_capacity = required_buffer_capacity_for_config(
+        async_config.sampler,
+        num_prompts_per_step,
+    )
+    if isinstance(async_config.sampler, WeightFifoSamplerConfig):
+        selection_watermark = async_config.sampler.selection_candidate_watermark
+        if (
+            selection_watermark is not None
+            and required_capacity is not None
+            and selection_watermark > required_capacity
+        ):
+            raise ValueError(
+                "weight_fifo selection_candidate_watermark "
+                f"({selection_watermark}) exceeds the admission window capacity "
+                f"({required_capacity}); selection could never begin"
+            )
     if export_config.enabled and not export_config.output_dir:
         raise ValueError(
             "async_rl.terminal_policy_export.enabled=true requires output_dir"
@@ -263,6 +280,15 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
             raise ValueError(
                 "opportunity_at_risk_shadow.max_candidate_groups must be at least four"
             )
+        selection_watermark = async_config.sampler.selection_candidate_watermark
+        if (
+            selection_watermark is not None
+            and selection_watermark > shadow_config.max_candidate_groups
+        ):
+            raise ValueError(
+                "weight_fifo selection_candidate_watermark must not exceed "
+                "opportunity_at_risk_shadow.max_candidate_groups"
+            )
     if derived_config.enabled:
         if opportunity_config.enabled:
             raise ValueError(
@@ -316,7 +342,6 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
             raise ValueError(
                 "lifecycle-derived opportunity requires ordinary token-level clipped PG"
             )
-    num_prompts_per_step = master_config.grpo.num_prompts_per_step
     if num_prompts_per_step < async_config.min_groups_for_streaming_train:
         raise ValueError(
             f"grpo.num_prompts_per_step ({num_prompts_per_step}) "
@@ -337,10 +362,6 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
             "supported on the SC split path."
         )
 
-    required_capacity = required_buffer_capacity_for_config(
-        async_config.sampler,
-        num_prompts_per_step,
-    )
     validate_sampler_buffer_capacity(
         async_config,
         required_capacity=required_capacity,

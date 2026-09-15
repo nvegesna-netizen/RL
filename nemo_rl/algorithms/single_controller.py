@@ -308,6 +308,9 @@ class SingleControllerActor:
             self._oars_shadow_recorder = OpportunityAtRiskShadowRecorder(
                 service_budget_multiplier=shadow_config.service_budget_multiplier,
                 max_candidate_groups=shadow_config.max_candidate_groups,
+                selection_candidate_watermark=(
+                    self._sampler.selection_candidate_watermark
+                ),
             )
             self._sampler = OpportunityAtRiskShadowSampler(
                 buffer=self._buffer,

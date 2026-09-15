@@ -1,0 +1,49 @@
+{
+  "schema": "m4-oars-shadow-contention-repair-result-v1",
+  "status": "PASS_LOCAL_REPAIR_NO_LAUNCH_AUTHORITY",
+  "predecessor_terminal_receipt_sha256": "c4eea196c0c456fba9c548a218cc53c4e09bcd7af1a69da93fd8fd92f3d505e4",
+  "diagnosis_repaired": "The prior live preflight selected eagerly at four ready groups, leaving no alternative four-group combination.",
+  "implementation": {
+    "selection_candidate_watermark": 8,
+    "selection_cardinality": 4,
+    "acting_policy": "weight_fifo",
+    "ordinary_weight_fifo_default": null,
+    "ordinary_weight_fifo_behavior_changed": false,
+    "oars_actuated": false,
+    "training_quality_analyzed": false
+  },
+  "fail_closed_guards": {
+    "watermark_must_be_positive_when_set": true,
+    "watermark_must_not_exceed_admission_window_capacity": true,
+    "watermark_must_not_exceed_oars_candidate_safety_cap": true,
+    "repaired_gate_requires_64_of_64_eight_candidate_decisions": true,
+    "repaired_gate_requires_70_combinations_per_decision": true,
+    "natural_eager_fifo_representativeness_claim_forbidden": true
+  },
+  "validation": {
+    "focused_sampler_and_oars_contracts": {
+      "passed": 34,
+      "failed": 0
+    },
+    "legacy_and_repaired_analyzer_suites": "PASS",
+    "ruff_format": "PASS",
+    "ruff_check": "PASS",
+    "targeted_pyrefly": "PASS_0_ERRORS_2_SUPPRESSED",
+    "python_compileall": "PASS",
+    "yaml_parse": "PASS",
+    "resolved_inherited_config": "PASS",
+    "protocol_json_gate": "PASS"
+  },
+  "artifact_sha256": {
+    "staleness_sampler": "a996b9b1d68687287ba8984b80160e392786a69fbc4d9f189f1b05ea4d07d957",
+    "opportunity_at_risk": "2a2899eefc98be18ee9e24aa75938815c70dbca71ac41cb14e6dc6e3d70bbce8",
+    "single_controller": "0f26fe028dddbfa8a5597ad079997770f5ddba421902bef11a9bbfe809c9d8b7",
+    "single_controller_config": "e201b098ccb6cbb0e7da8bc3a04727c82beccbca9b5c7aea1397930a4583f827",
+    "contention_preflight_config": "becbd749e516d7af2cf08b24475e13fa544bcdc9a6505bb67735f4f25cd401c9",
+    "contention_preflight_analyzer": "c3b2fd40baff10c7d77cd589a433c2ccb64f81b63c76ab257322fd6f75fd548e",
+    "contention_preflight_protocol": "f9c3d589068b39a522cb44099cbe6b2907b2f4af8af10bd3915865df55e62b44",
+    "contention_preflight_analyzer_tests": "75f2b84814fd06f5b1b7867f8a7e23edc89d7d7fce9dac4de456ea7aec7be97a"
+  },
+  "scientific_interpretation": "The repair creates a controlled live choice set for systems qualification. It does not erase the natural eager-FIFO zero-contention result and does not itself support an OARS effect claim.",
+  "next_gate": "Obtain explicit launch authority, then freeze source and package provenance before exactly one EOS contention preflight."
+}

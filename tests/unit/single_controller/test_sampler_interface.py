@@ -102,7 +102,11 @@ class TestBuiltinsImplementInterface:
         "sampler",
         [
             WindowedSampler(FakeBuffer(), max_staleness_versions=1),
-            WeightFifoSampler(FakeBuffer(), max_staleness_versions=1),
+            WeightFifoSampler(
+                FakeBuffer(),
+                max_staleness_versions=1,
+                selection_candidate_watermark=None,
+            ),
             InOrderSampler(FakeBuffer(), max_lookahead_versions=1),
         ],
     )
@@ -126,7 +130,11 @@ class TestAdmission:
         # dispatch_index starts at -1; window 0 => admits exactly one batch
         # ahead of the trainer, then blocks. Assert the second admit would block
         # by giving it a trainer_version that keeps the gate closed.
-        s = WeightFifoSampler(FakeBuffer(), max_staleness_versions=0)
+        s = WeightFifoSampler(
+            FakeBuffer(),
+            max_staleness_versions=0,
+            selection_candidate_watermark=None,
+        )
         assert _run(s.admit(trainer_version_fn=lambda: 0)) is None  # -1 -> 0
         # Now dispatch_index=0, trainer=0, window=0 -> 0 >= 0 blocks forever.
         with pytest.raises(asyncio.TimeoutError):
@@ -181,10 +189,15 @@ class TestFactory:
         )
 
         s = create_sampler(
-            FakeBuffer(), WeightFifoSamplerConfig(max_staleness_versions=4)
+            FakeBuffer(),
+            WeightFifoSamplerConfig(
+                max_staleness_versions=4,
+                selection_candidate_watermark=8,
+            ),
         )
         assert isinstance(s, WeightFifoSampler)
         assert s.max_staleness_versions == 4
+        assert s.selection_candidate_watermark == 8
 
 
 class TestCustomFqnSampler:
@@ -254,7 +267,11 @@ class TestWeightFifoSelect:
         buf.add("old1", weight=3)
         buf.add("new", weight=5)
         buf.add("old2", weight=3)
-        s = WeightFifoSampler(buf, max_staleness_versions=5)
+        s = WeightFifoSampler(
+            buf,
+            max_staleness_versions=5,
+            selection_candidate_watermark=None,
+        )
         meta, n = _run(
             s.select(current_train_weight=5, min_prompt_groups=1, max_prompt_groups=8)
         )
@@ -264,7 +281,11 @@ class TestWeightFifoSelect:
     def test_waits_for_partial_oldest_batch(self):
         buf = FakeBuffer()
         buf.add("old", weight=3)
-        s = WeightFifoSampler(buf, max_staleness_versions=5)
+        s = WeightFifoSampler(
+            buf,
+            max_staleness_versions=5,
+            selection_candidate_watermark=None,
+        )
         # oldest weight has only 1 group but min is 2 -> wait (None), don't skip
         # ahead to a newer weight.
         assert _run(
@@ -274,9 +295,60 @@ class TestWeightFifoSelect:
     def test_empty_window_returns_none(self):
         buf = FakeBuffer()
         buf.add("future", weight=9)
-        s = WeightFifoSampler(buf, max_staleness_versions=2)
+        s = WeightFifoSampler(
+            buf,
+            max_staleness_versions=2,
+            selection_candidate_watermark=None,
+        )
         assert _run(
             s.select(current_train_weight=5, min_prompt_groups=1, max_prompt_groups=8)
+        ) == (None, 0)
+
+    def test_candidate_watermark_waits_then_preserves_fifo(self):
+        buf = FakeBuffer()
+        for group_id in ("old1", "old2", "old3", "old4"):
+            buf.add(group_id, weight=1)
+        s = WeightFifoSampler(
+            buf,
+            max_staleness_versions=1,
+            selection_candidate_watermark=8,
+        )
+
+        assert _run(
+            s.select(current_train_weight=2, min_prompt_groups=4, max_prompt_groups=4)
+        ) == (None, 0)
+
+        for group_id in ("new1", "new2", "new3", "new4"):
+            buf.add(group_id, weight=2)
+        meta, count = _run(
+            s.select(current_train_weight=2, min_prompt_groups=4, max_prompt_groups=4)
+        )
+
+        assert meta is not None
+        assert count == 4
+        assert meta.sample_ids == [
+            "old1_g0",
+            "old2_g0",
+            "old3_g0",
+            "old4_g0",
+        ]
+        assert buf.start_weight_list == [2, 2, 2, 2]
+
+    def test_candidate_watermark_counts_only_ready_in_window_groups(self):
+        buf = FakeBuffer()
+        for index in range(4):
+            buf.add(f"ready{index}", weight=2)
+        for index in range(3):
+            buf.add(f"unready{index}", weight=2, ready=False)
+        buf.add("stale", weight=0)
+        s = WeightFifoSampler(
+            buf,
+            max_staleness_versions=1,
+            selection_candidate_watermark=5,
+        )
+
+        assert _run(
+            s.select(current_train_weight=2, min_prompt_groups=4, max_prompt_groups=4)
         ) == (None, 0)
 
 

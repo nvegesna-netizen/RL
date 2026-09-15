@@ -1,0 +1,68 @@
+{
+  "schema": "m4-oars-fifo-controlled-shadow-contention-preflight-protocol-v1",
+  "status": "REPAIR_IMPLEMENTED_NO_LAUNCH_AUTHORITY",
+  "created_local_date": "2026-09-15",
+  "purpose": "Qualify live OARS metadata, selection identity, latency, and observer duty under a prospectively induced eight-candidate choice set while weight-FIFO remains the sole acting selector.",
+  "predecessor": {
+    "terminal_receipt_path": "reports/auto_research/2026-09-14-m4-opportunity-control/shadow_preflight_replacement_submission_receipt.json",
+    "terminal_receipt_sha256": "c4eea196c0c456fba9c548a218cc53c4e09bcd7af1a69da93fd8fd92f3d505e4",
+    "result": "FAIL_ZERO_CONTENDED_DECISIONS",
+    "diagnosis": "Eager FIFO selected as soon as four groups were ready, so every four-group batch had only one possible combination."
+  },
+  "repair": {
+    "owner": "weight_fifo_sampler",
+    "selection_candidate_watermark": 8,
+    "selection_cardinality": 4,
+    "maximum_staleness_versions": 1,
+    "admission_window_capacity_groups": 8,
+    "acting_selection": "weight_fifo",
+    "oars_mode": "observation_only",
+    "ordinary_fifo_default_changed": false,
+    "behavioral_disclosure": "The watermark intentionally delays selection relative to eager FIFO. This is an induced-contention systems qualification and cannot establish behavior under the original eager-FIFO cadence."
+  },
+  "setting": {
+    "model": "meta-llama/Llama-3.2-1B-Instruct",
+    "workload": "gsm8k",
+    "trainer_steps": 64,
+    "nodes": 1,
+    "gpus": 2,
+    "scheduler_time_limit_seconds": 14400,
+    "config_path": "examples/configs/grpo_math_1B_megatron_single_controller_m4_oars_shadow_contention_preflight.yaml",
+    "analyzer_path": "tools/m4_oars_shadow_contention_preflight.py"
+  },
+  "terminal_gate": {
+    "all_required": true,
+    "conditions": {
+      "complete_learner_steps": 64,
+      "one_shadow_decision_per_step": true,
+      "candidate_group_count_every_decision": 8,
+      "combination_count_every_decision": 70,
+      "minimum_contended_decisions": 64,
+      "minimum_contended_metadata_coverage": 0.99,
+      "actual_selection_exactly_matches_fifo_every_decision": true,
+      "proposal_groups_each_decision": 4,
+      "service_budget_satisfied_every_decision": true,
+      "shadow_skip_count": 0,
+      "maximum_gradient_observer_duty": 0.01,
+      "maximum_oars_observer_duty": 0.01,
+      "maximum_p95_decision_latency_fraction_of_median_step_interval": 0.1,
+      "maximum_runtime_seconds": 14400
+    },
+    "failure_interpretation": "induced_contention_systems_preflight_not_qualified_no_oars_effect_claim",
+    "pass_interpretation": "eligible_to_design_a_separate_randomized_fifo_versus_oars_protocol_with_the_same_watermark_in_both_arms"
+  },
+  "claim_boundary": {
+    "oars_effect_claim_allowed": false,
+    "training_quality_analysis_allowed": false,
+    "natural_eager_fifo_representativeness_claim_allowed": false,
+    "scientific_outcome_acquisition": false
+  },
+  "authority": {
+    "local_implementation_and_validation_authorized": true,
+    "eos_submission_authorized": false,
+    "submission_attempt_limit": 0,
+    "automatic_retry": false,
+    "automatic_extension": false,
+    "user_authorization": "do the repair"
+  }
+}

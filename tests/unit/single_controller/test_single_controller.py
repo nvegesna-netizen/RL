@@ -268,6 +268,42 @@ def test_opportunity_at_risk_shadow_accepts_frozen_configuration() -> None:
     validate_single_controller_config(config)
 
 
+def test_weight_fifo_rejects_unreachable_candidate_watermark() -> None:
+    config = _controlled_release_master_config(lifecycle_audit_path="lifecycle.jsonl")
+    config.policy["train_global_batch_size"] = 16
+    config.grpo.num_prompts_per_step = 4
+    config.async_rl.sampler = WeightFifoSamplerConfig(
+        max_staleness_versions=1,
+        selection_candidate_watermark=9,
+    )
+
+    with pytest.raises(ValueError, match="exceeds the admission window capacity"):
+        validate_single_controller_config(config)
+
+
+def test_oars_shadow_rejects_watermark_above_candidate_cap() -> None:
+    config = _controlled_release_master_config(lifecycle_audit_path="lifecycle.jsonl")
+    config.policy["train_global_batch_size"] = 16
+    config.grpo.num_prompts_per_step = 4
+    config.async_rl.sampler = WeightFifoSamplerConfig(
+        max_staleness_versions=3,
+        selection_candidate_watermark=16,
+    )
+    config.async_rl.gradient_opportunity_audit = GradientOpportunityAuditConfig(
+        enabled=True,
+        output_path="opportunity.jsonl",
+        observer_duty_path="duty.json",
+    )
+    config.async_rl.opportunity_at_risk_shadow = OpportunityAtRiskShadowConfig(
+        enabled=True,
+        output_path="oars.jsonl",
+        max_candidate_groups=15,
+    )
+
+    with pytest.raises(ValueError, match="must not exceed.*max_candidate_groups"):
+        validate_single_controller_config(config)
+
+
 def test_opportunity_at_risk_shadow_requires_opportunity_audit() -> None:
     config = _controlled_release_master_config(lifecycle_audit_path="lifecycle.jsonl")
     config.async_rl.opportunity_at_risk_shadow = OpportunityAtRiskShadowConfig(

@@ -1,0 +1,26 @@
+# Prospective repair of the OARS systems preflight after the eager-FIFO run
+# produced four candidates for every four-group selection. This qualification
+# deliberately waits for eight ready candidates, then still executes FIFO.
+# It is not a scientific outcome acquisition.
+defaults: grpo_math_1B_megatron_single_controller_m4_oars_shadow_preflight.yaml
+
+grpo:
+  seed: 20261411
+
+async_rl:
+  sampler:
+    name: weight_fifo
+    max_staleness_versions: 1
+    selection_candidate_watermark: 8
+  lifecycle_audit_path: results/m4-oars-shadow-contention-preflight/lifecycle.jsonl
+  controlled_release_delay:
+    seed: 20261413
+    assignment_domain: m4-oars-shadow-contention-preflight-v1
+  gradient_opportunity_audit:
+    output_path: results/m4-oars-shadow-contention-preflight/opportunity.jsonl
+    observer_duty_path: results/m4-oars-shadow-contention-preflight/observer-duty.json
+  opportunity_at_risk_shadow:
+    output_path: results/m4-oars-shadow-contention-preflight/oars-shadow.jsonl
+
+logger:
+  log_dir: results/m4-oars-shadow-contention-preflight/metrics

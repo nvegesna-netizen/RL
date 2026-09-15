@@ -72,7 +72,14 @@ from tests.unit.single_controller._dp_fakes import (
     ("make_sampler", "expected_target_steps"),
     [
         # weight_fifo gates but does not stamp target_step.
-        (lambda buf: WeightFifoSampler(buf, max_staleness_versions=1), [None, None]),
+        (
+            lambda buf: WeightFifoSampler(
+                buf,
+                max_staleness_versions=1,
+                selection_candidate_watermark=None,
+            ),
+            [None, None],
+        ),
         # in_order stamps the dispatch index as target_step.
         (lambda buf: InOrderSampler(buf, max_lookahead_versions=1), [0, 1]),
     ],

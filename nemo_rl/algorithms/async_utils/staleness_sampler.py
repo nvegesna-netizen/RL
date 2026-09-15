@@ -324,9 +324,21 @@ class WeightFifoSampler(_GatedSampler):
     that weight's batch to fill. Evict uses the weight window (default).
     """
 
-    def __init__(self, buffer: TQReplayBuffer, *, max_staleness_versions: int) -> None:
+    def __init__(
+        self,
+        buffer: TQReplayBuffer,
+        *,
+        max_staleness_versions: int,
+        selection_candidate_watermark: Optional[int],
+    ) -> None:
         super().__init__(buffer, gate_window=max_staleness_versions)
+        if (
+            selection_candidate_watermark is not None
+            and selection_candidate_watermark < 1
+        ):
+            raise ValueError("selection_candidate_watermark must be positive")
         self.max_staleness_versions = max_staleness_versions
+        self.selection_candidate_watermark = selection_candidate_watermark
 
     async def select(
         self,
@@ -337,14 +349,22 @@ class WeightFifoSampler(_GatedSampler):
     ) -> tuple[Optional[KVBatchMeta], int]:
         self._validate_group_bounds(min_prompt_groups, max_prompt_groups)
         min_valid_version = max(0, current_train_weight - self.max_staleness_versions)
-        in_window = [
-            weight
-            for weight in self._buffer.start_weight_list
+        in_window_indices = [
+            index
+            for index, weight in enumerate(self._buffer.start_weight_list)
             if min_valid_version <= weight <= current_train_weight
         ]
-        if not in_window:
+        if not in_window_indices:
             return None, 0
-        target_version = min(in_window)
+        if self.selection_candidate_watermark is not None:
+            ready_candidate_count = sum(
+                self._buffer.ready_list[index] for index in in_window_indices
+            )
+            if ready_candidate_count < self.selection_candidate_watermark:
+                return None, 0
+        target_version = min(
+            self._buffer.start_weight_list[index] for index in in_window_indices
+        )
         valid_idxs = [
             i
             for i, weight in enumerate(self._buffer.start_weight_list)
@@ -431,6 +451,9 @@ class WeightFifoSamplerConfig(BaseModel, extra="allow"):
     name: Literal["weight_fifo"] = "weight_fifo"
     # Lookahead + selectable weight window, in trainer versions.
     max_staleness_versions: NonNegativeInt = 1
+    # Optional ready, in-window candidate watermark before FIFO may select.
+    # None preserves ordinary eager FIFO selection.
+    selection_candidate_watermark: Optional[int] = Field(default=None, ge=1)
 
 
 class InOrderSamplerConfig(BaseModel, extra="allow"):
@@ -491,7 +514,9 @@ def create_sampler(
         )
     if isinstance(cfg, WeightFifoSamplerConfig):
         return WeightFifoSampler(
-            buffer, max_staleness_versions=cfg.max_staleness_versions
+            buffer,
+            max_staleness_versions=cfg.max_staleness_versions,
+            selection_candidate_watermark=cfg.selection_candidate_watermark,
         )
     if isinstance(cfg, InOrderSamplerConfig):
         return InOrderSampler(buffer, max_lookahead_versions=cfg.max_lookahead_versions)

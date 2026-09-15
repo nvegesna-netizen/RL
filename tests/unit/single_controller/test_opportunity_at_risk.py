@@ -23,6 +23,7 @@ from nemo_rl.algorithms.async_utils.opportunity_at_risk import (
     OPPORTUNITY_GROUP_ID_KEY,
     OPPORTUNITY_L1_KEY,
     OPPORTUNITY_VALID_TOKENS_KEY,
+    OpportunityAtRiskShadowRecorder,
     OpportunityAtRiskShadowSampler,
     OpportunityCandidate,
     select_baseline_budgeted_opportunity,
@@ -92,7 +93,11 @@ class FakeBuffer:
 def _run_select(
     buffer: FakeBuffer, *, observe: bool
 ) -> tuple[list[str], list[dict[str, Any]]]:
-    baseline = WeightFifoSampler(buffer, max_staleness_versions=1)
+    baseline = WeightFifoSampler(
+        buffer,
+        max_staleness_versions=1,
+        selection_candidate_watermark=None,
+    )
     events: list[dict[str, Any]] = []
     sampler: Any = baseline
     if observe:
@@ -154,6 +159,16 @@ def test_exact_selector_is_deterministic_and_budget_feasible() -> None:
     assert first.token_budget == 408
 
 
+def test_shadow_header_records_fifo_selection_watermark() -> None:
+    recorder = OpportunityAtRiskShadowRecorder(
+        service_budget_multiplier=1.02,
+        max_candidate_groups=25,
+        selection_candidate_watermark=8,
+    )
+
+    assert recorder.events[0]["selection_candidate_watermark"] == 8
+
+
 def test_shadow_proposes_but_executes_exact_weight_fifo_selection() -> None:
     baseline_ids, _ = _run_select(_choice_buffer(), observe=False)
     shadow_ids, events = _run_select(_choice_buffer(), observe=True)
@@ -180,6 +195,51 @@ def test_uncontended_shadow_is_baseline_equivalent() -> None:
     assert events[0]["baseline_matches_actual"] is True
 
 
+def test_shadow_waits_for_configured_candidate_watermark_before_observing() -> None:
+    buffer = FakeBuffer()
+    for group_id in ("a", "b", "c", "d"):
+        buffer.add(group_id, weight=1, l1=1.0, tokens=100)
+    baseline = WeightFifoSampler(
+        buffer,
+        max_staleness_versions=1,
+        selection_candidate_watermark=8,
+    )
+    events: list[dict[str, Any]] = []
+    shadow = OpportunityAtRiskShadowSampler(
+        buffer=buffer,
+        baseline=baseline,
+        service_budget_multiplier=1.02,
+        max_candidate_groups=25,
+        record=lambda event: events.append(dict(event)),
+    )
+
+    assert asyncio.run(
+        shadow.select(
+            current_train_weight=2,
+            min_prompt_groups=4,
+            max_prompt_groups=4,
+        )
+    ) == (None, 0)
+    assert events == []
+
+    for group_id in ("w", "x", "y", "z"):
+        buffer.add(group_id, weight=2, l1=10.0, tokens=100)
+    meta, count = asyncio.run(
+        shadow.select(
+            current_train_weight=2,
+            min_prompt_groups=4,
+            max_prompt_groups=4,
+        )
+    )
+
+    assert meta is not None
+    assert count == 4
+    assert meta.sample_ids == ["a_g0", "b_g0", "c_g0", "d_g0"]
+    assert len(events) == 1
+    assert events[0]["candidate_group_count"] == 8
+    assert events[0]["baseline_matches_actual"] is True
+
+
 def test_missing_metadata_skips_observation_and_preserves_baseline() -> None:
     buffer = _choice_buffer()
     assert buffer.meta_list[-1] is not None
@@ -195,7 +255,11 @@ def test_missing_metadata_skips_observation_and_preserves_baseline() -> None:
 def test_candidate_cap_skips_observation_and_preserves_baseline() -> None:
     buffer = _choice_buffer()
     buffer.add("extra", weight=2, l1=100.0, tokens=100)
-    baseline = WeightFifoSampler(buffer, max_staleness_versions=1)
+    baseline = WeightFifoSampler(
+        buffer,
+        max_staleness_versions=1,
+        selection_candidate_watermark=None,
+    )
     events: list[dict[str, Any]] = []
     shadow = OpportunityAtRiskShadowSampler(
         buffer=buffer,
@@ -225,7 +289,11 @@ def test_older_unready_slot_preserves_weight_fifo_wait_without_observation() -> 
     buffer.add("pending", weight=1, l1=1.0, tokens=100, ready=False)
     for group_id in ("a", "b", "c", "d"):
         buffer.add(group_id, weight=2, l1=10.0, tokens=100)
-    baseline = WeightFifoSampler(buffer, max_staleness_versions=1)
+    baseline = WeightFifoSampler(
+        buffer,
+        max_staleness_versions=1,
+        selection_candidate_watermark=None,
+    )
     events: list[dict[str, Any]] = []
     shadow = OpportunityAtRiskShadowSampler(
         buffer=buffer,

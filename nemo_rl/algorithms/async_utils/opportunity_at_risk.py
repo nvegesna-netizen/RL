@@ -133,13 +133,20 @@ class OpportunityAtRiskShadowRecorder:
 
     SCHEMA_VERSION = 1
 
-    def __init__(self, *, service_budget_multiplier: float, max_candidate_groups: int):
+    def __init__(
+        self,
+        *,
+        service_budget_multiplier: float,
+        max_candidate_groups: int,
+        selection_candidate_watermark: Optional[int],
+    ) -> None:
         self._events: list[dict[str, Any]] = [
             {
                 "event_type": "header",
                 "max_candidate_groups": max_candidate_groups,
                 "policy": "baseline_budgeted_oars_v1",
                 "schema_version": self.SCHEMA_VERSION,
+                "selection_candidate_watermark": selection_candidate_watermark,
                 "service_budget_multiplier": service_budget_multiplier,
             }
         ]
@@ -266,6 +273,9 @@ class OpportunityAtRiskShadowSampler:
         candidate_indices = [
             index for index in in_window_indices if self._buffer.ready_list[index]
         ]
+        watermark = self._baseline.selection_candidate_watermark
+        if watermark is not None and len(candidate_indices) < watermark:
+            return None
         requested = min(len(baseline_indices), max_prompt_groups)
         baseline_indices = baseline_indices[:requested]
         event: dict[str, Any] = {
