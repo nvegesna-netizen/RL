@@ -382,6 +382,7 @@ def materialize(
         ),
         additional_report_hashes=(
             {
+                "generation_seed": generation_seed,
                 "concurrency_amendment_sha256": base._sha_bytes(amendment_raw),
                 "concurrency_amendment_confirmation_sha256": base._sha_bytes(
                     authorization_raw
@@ -389,6 +390,7 @@ def materialize(
             }
             if order_seed == 49004
             else {
+                "generation_seed": generation_seed,
                 "replacement_runtime_amendment_sha256": base._sha_bytes(amendment_raw),
                 "replacement_runtime_amendment_confirmation_sha256": base._sha_bytes(
                     authorization_raw
@@ -396,9 +398,10 @@ def materialize(
             }
             if order_seed == 49005
             else {
+                "generation_seed": generation_seed,
                 "materialization_authorization_sha256": base._sha_bytes(
                     authorization_raw
-                )
+                ),
             }
         ),
     )

@@ -185,6 +185,7 @@ def test_materializes_balanced_32_group_pool(
     assert report[
         "materialization_authorization_sha256"
     ] == materializer.base._sha_path(authorization)
+    assert report["generation_seed"] == 69002
 
 
 def test_materializes_amendment_bound_49004_pool(
@@ -233,6 +234,7 @@ def test_materializes_amendment_bound_49004_pool(
     report = json.loads((output / "materialization_report.v1.json").read_text())
     assert manifest["order_seed"] == 49004
     assert report["selection_seed"] == 2026091004
+    assert report["generation_seed"] == 69004
     assert report["concurrency_amendment_sha256"] == materializer.base._sha_path(
         amendment
     )
