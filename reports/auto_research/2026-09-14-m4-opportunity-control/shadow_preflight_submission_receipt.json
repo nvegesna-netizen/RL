@@ -1,0 +1,33 @@
+{
+  "schema": "m4-oars-shadow-preflight-submission-receipt-v1",
+  "status": "SUBMITTED_CHAIN_RUNNING_NO_OUTCOME_INSPECTION",
+  "launcher": "runllm.py --no_wait",
+  "submission_attempts": 1,
+  "source_commit": "6c53561dc63d26f789ac8e5b03e7fd3a794bc462",
+  "package_receipt_commit": "53cb9478c",
+  "manifest_sha256": "82e6d89d6dbb86dc42c7fad3a7560545e9a27ed11c2d40c6dd4b8bda11404192",
+  "upstream_pipeline": {
+    "id": 67886685,
+    "source": "api",
+    "ref": "dlalgo-ci/eos",
+    "url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67886685"
+  },
+  "downstream_pipeline": {
+    "id": 67886788,
+    "url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67886788"
+  },
+  "initial_jobs": {
+    "logs_before": 439889006,
+    "main": 439889007,
+    "logs_after": 439889008
+  },
+  "topology_verified": true,
+  "manifest_time_limit_seconds": 14400,
+  "queue_deadline_override": null,
+  "acting_sampler": "weight_fifo",
+  "oars_actuated": false,
+  "scientific_outcome_acquisition": false,
+  "scientific_artifacts_opened": false,
+  "automatic_retry": false,
+  "automatic_extension": false
+}
