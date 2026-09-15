@@ -1,0 +1,72 @@
+{
+  "schema": "m4-oars-shadow-contention-preflight-submission-receipt-v1",
+  "status": "SUBMITTED_RUNNING_STATUS_ONLY",
+  "launcher": "runllm.py --no_wait",
+  "submission_attempts": 1,
+  "package_receipt_commit": "e548d0e9e9023fa2fa82cc43e6a0accb493fc4f6",
+  "source_commit": "6d5afa213613367cb296846d2a66cc0cdbb1f39e",
+  "manifest_sha256": "1ea540662eb1567b4235089080d229e32080aeb7ab23ad1dc4846c7d0fd9af82",
+  "custom_config_sha256": "b5db8882c7baccd3bf8c0369d7264e80f7ea08c17482559f82875abc5207f42e",
+  "authorization_sha256": "9b150d35ff37469e39241d02bef3c611b9e1f656faf67f5daf4ba64c80d9bcd8",
+  "upstream_pipeline": {
+    "id": 67938201,
+    "source": "api",
+    "ref": "dlalgo-ci/eos",
+    "url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67938201"
+  },
+  "generator_job": {
+    "id": 440338559,
+    "status": "success",
+    "artifact_bytes": 36335186,
+    "artifact_sha256": "5a10a638697d7863880d3198b54290a84c7b65b65a073ae31244e39c14e4ac06"
+  },
+  "trigger_bridge": {
+    "id": 440338560,
+    "status_at_capture": "running"
+  },
+  "downstream_pipeline": {
+    "id": 67938515,
+    "source": "parent_pipeline",
+    "ref": "dlalgo-ci/eos",
+    "sha": "8f5151cf00e02933a9b92772443d62e95b5150ff",
+    "status_at_capture": "running",
+    "url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67938515"
+  },
+  "initial_jobs": {
+    "logs_before": 440340815,
+    "main": 440340818,
+    "logs_after": 440340820
+  },
+  "generated_scheduler_command": {
+    "time_flag": "--time 0:14400",
+    "time_flag_count": 1,
+    "deadline_flag_present": false,
+    "nodes": 1
+  },
+  "observed_slurm_submission": {
+    "job_id": 6031259,
+    "state_at_capture": "RUNNING",
+    "reason_at_capture": "Prolog",
+    "runtime_at_capture": "00:00:10",
+    "time_limit": "04:00:00",
+    "deadline": "N/A",
+    "start_time": "2026-09-15T01:27:03-07:00",
+    "end_time_limit": "2026-09-15T05:27:03-07:00",
+    "deadline_flag_present": false,
+    "time_flag": "--time 0:14400"
+  },
+  "preflight_boundary": {
+    "trainer_steps": 64,
+    "selection_candidate_watermark": 8,
+    "selection_cardinality": 4,
+    "acting_sampler": "weight_fifo",
+    "oars_observation_only": true,
+    "oars_actuated": false,
+    "scientific_outcome_acquisition": false
+  },
+  "topology_verified": true,
+  "scheduler_boundary_verified_from_generated_artifact_and_live_trace": true,
+  "scientific_artifacts_opened": false,
+  "automatic_retry": false,
+  "automatic_extension": false
+}
