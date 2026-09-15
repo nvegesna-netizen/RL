@@ -1,0 +1,23 @@
+{
+  "schema": "m4-oars-fifo-controlled-shadow-contention-preflight-authorization-v1",
+  "scope": "exactly_one_repaired_fifo_controlled_contention_preflight",
+  "user_authorization": "do the next step",
+  "protocol_sha256": "06df90b6d411428cb959b1ee2f8b3d4174ca5284f1841dbcdd88fcd53f2178a1",
+  "required_launcher": "runllm.py --no_wait",
+  "prebuilt_config_id": "dlalgo-ci/eos",
+  "submission_attempt_limit": 1,
+  "trainer_steps": 64,
+  "nodes": 1,
+  "gpus": 2,
+  "scheduler_time_limit_seconds": 14400,
+  "queue_deadline_override": null,
+  "selection_candidate_watermark": 8,
+  "selection_cardinality": 4,
+  "eos_submission_authorized": true,
+  "fifo_controlled_training_authorized": true,
+  "oars_shadow_observation_authorized": true,
+  "oars_actuation_authorized": false,
+  "scientific_outcome_acquisition_authorized": false,
+  "automatic_retry": false,
+  "automatic_extension": false
+}
