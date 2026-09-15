@@ -17,7 +17,7 @@
 from __future__ import annotations
 
 import asyncio
-from typing import Any
+from typing import Any, Literal
 
 from nemo_rl.algorithms.async_utils.opportunity_at_risk import (
     OPPORTUNITY_GROUP_ID_KEY,
@@ -91,7 +91,10 @@ class FakeBuffer:
 
 
 def _run_select(
-    buffer: FakeBuffer, *, observe: bool
+    buffer: FakeBuffer,
+    *,
+    observe: bool,
+    mode: Literal["observe", "act"] = "observe",
 ) -> tuple[list[str], list[dict[str, Any]]]:
     baseline = WeightFifoSampler(
         buffer,
@@ -107,6 +110,7 @@ def _run_select(
             service_budget_multiplier=1.02,
             max_candidate_groups=25,
             record=lambda event: events.append(dict(event)),
+            mode=mode,
         )
     meta, groups = asyncio.run(
         sampler.select(
@@ -193,6 +197,66 @@ def test_uncontended_shadow_is_baseline_equivalent() -> None:
     assert selected == ["a_g0", "b_g0", "c_g0", "d_g0"]
     assert events[0]["proposed_group_ids"] == ["a", "b", "c", "d"]
     assert events[0]["baseline_matches_actual"] is True
+
+
+def test_act_mode_executes_exact_budgeted_oars_proposal() -> None:
+    selected, events = _run_select(_choice_buffer(), observe=True, mode="act")
+
+    assert selected == ["w_g0", "x_g0", "y_g0", "z_g0"]
+    assert events[0]["actual_selected_group_ids"] == ["w", "x", "y", "z"]
+    assert events[0]["baseline_matches_actual"] is False
+    assert events[0]["proposal_matches_actual"] is True
+    assert events[0]["mode"] == "act"
+
+
+def test_act_mode_is_failure_atomic_on_missing_metadata() -> None:
+    buffer = _choice_buffer()
+    assert buffer.meta_list[-1] is not None
+    buffer.meta_list[-1].extra_info = {}
+    original_ids = [meta.sample_ids for meta in buffer.meta_list if meta is not None]
+
+    try:
+        _run_select(buffer, observe=True, mode="act")
+    except RuntimeError as error:
+        assert "missing_or_invalid_opportunity_metadata" in str(error)
+    else:
+        raise AssertionError("act mode unexpectedly fell back to FIFO")
+
+    assert [meta.sample_ids for meta in buffer.meta_list if meta is not None] == original_ids
+
+
+def test_act_mode_is_failure_atomic_when_candidate_cap_is_exceeded() -> None:
+    buffer = _choice_buffer()
+    buffer.add("extra", weight=2, l1=100.0, tokens=100)
+    baseline = WeightFifoSampler(
+        buffer,
+        max_staleness_versions=1,
+        selection_candidate_watermark=None,
+    )
+    original_ids = [meta.sample_ids for meta in buffer.meta_list if meta is not None]
+    sampler = OpportunityAtRiskShadowSampler(
+        buffer=buffer,
+        baseline=baseline,
+        service_budget_multiplier=1.02,
+        max_candidate_groups=8,
+        record=lambda event: None,
+        mode="act",
+    )
+
+    try:
+        asyncio.run(
+            sampler.select(
+                current_train_weight=2,
+                min_prompt_groups=4,
+                max_prompt_groups=4,
+            )
+        )
+    except RuntimeError as error:
+        assert "candidate_safety_cap_exceeded" in str(error)
+    else:
+        raise AssertionError("act mode unexpectedly mutated an over-cap choice set")
+
+    assert [meta.sample_ids for meta in buffer.meta_list if meta is not None] == original_ids
 
 
 def test_shadow_waits_for_configured_candidate_watermark_before_observing() -> None:

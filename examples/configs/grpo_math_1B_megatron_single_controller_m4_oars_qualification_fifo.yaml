@@ -1,0 +1,21 @@
+# Systems-only FIFO arm of the randomized OARS actuation qualification.
+# This pair is excluded from all confirmatory scientific estimates.
+defaults: grpo_math_1B_megatron_single_controller_m4_oars_shadow_contention_preflight.yaml
+
+grpo:
+  seed: 20261421
+
+async_rl:
+  lifecycle_audit_path: results/m4-oars-qualification-fifo/lifecycle.jsonl
+  controlled_release_delay:
+    seed: 20261423
+    assignment_domain: m4-oars-qualification-pair-v1
+  gradient_opportunity_audit:
+    output_path: results/m4-oars-qualification-fifo/opportunity.jsonl
+    observer_duty_path: results/m4-oars-qualification-fifo/observer-duty.json
+  opportunity_at_risk_shadow:
+    mode: observe
+    output_path: results/m4-oars-qualification-fifo/oars.jsonl
+
+logger:
+  log_dir: results/m4-oars-qualification-fifo/metrics

@@ -12,11 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Default-off Opportunity-at-Risk Scheduling (OARS) shadow observer.
+"""Default-off Opportunity-at-Risk Scheduling (OARS) observer and actuator.
 
-The observer proposes a service-budgeted batch from the ready prompt groups,
-then delegates selection to the existing weight-FIFO sampler.  It never removes
-or reorders replay-buffer entries and therefore cannot enact its proposal.
+Observe mode proposes a service-budgeted batch from the ready prompt groups and
+delegates selection to weight FIFO. Act mode removes exactly the validated OARS
+proposal. Both modes record the same decision ledger.
 """
 
 from __future__ import annotations
@@ -28,12 +28,13 @@ import time
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Literal, Optional
 
 from nemo_rl.algorithms.async_utils.staleness_sampler import (
     WeightFifoSampler,
 )
 from nemo_rl.algorithms.async_utils.replay_buffer import TQReplayBuffer
+from nemo_rl.algorithms.async_utils.rollout_lifecycle import RolloutRemovalReason
 from nemo_rl.data_plane import KVBatchMeta
 
 OPPORTUNITY_GROUP_ID_KEY = "gradient_opportunity_group_id"
@@ -129,9 +130,9 @@ def select_baseline_budgeted_opportunity(
 
 
 class OpportunityAtRiskShadowRecorder:
-    """In-memory canonical JSONL ledger for OARS shadow decisions."""
+    """In-memory canonical JSONL ledger for OARS decisions."""
 
-    SCHEMA_VERSION = 1
+    SCHEMA_VERSION = 2
 
     def __init__(
         self,
@@ -139,11 +140,13 @@ class OpportunityAtRiskShadowRecorder:
         service_budget_multiplier: float,
         max_candidate_groups: int,
         selection_candidate_watermark: Optional[int],
+        mode: Literal["observe", "act"] = "observe",
     ) -> None:
         self._events: list[dict[str, Any]] = [
             {
                 "event_type": "header",
                 "max_candidate_groups": max_candidate_groups,
+                "mode": mode,
                 "policy": "baseline_budgeted_oars_v1",
                 "schema_version": self.SCHEMA_VERSION,
                 "selection_candidate_watermark": selection_candidate_watermark,
@@ -179,7 +182,7 @@ class OpportunityAtRiskShadowRecorder:
 
 
 class OpportunityAtRiskShadowSampler:
-    """Observe OARS proposals while delegating every action to weight-FIFO."""
+    """Observe OARS proposals or enact them after complete validation."""
 
     EXPECTED_BATCH_GROUPS = 4
 
@@ -191,6 +194,7 @@ class OpportunityAtRiskShadowSampler:
         service_budget_multiplier: float,
         max_candidate_groups: int,
         record: Callable[[Mapping[str, Any]], None],
+        mode: Literal["observe", "act"] = "observe",
     ) -> None:
         if max_candidate_groups < self.EXPECTED_BATCH_GROUPS:
             raise ValueError(
@@ -201,6 +205,7 @@ class OpportunityAtRiskShadowSampler:
         self._service_budget_multiplier = service_budget_multiplier
         self._max_candidate_groups = max_candidate_groups
         self._record = record
+        self._mode = mode
 
     async def admit(self, *, trainer_version_fn: Callable[[], int]) -> Optional[int]:
         """Delegate admission unchanged."""
@@ -354,17 +359,71 @@ class OpportunityAtRiskShadowSampler:
         min_prompt_groups: int,
         max_prompt_groups: int,
     ) -> tuple[Optional[KVBatchMeta], int]:
-        """Observe the choice set, then execute the unchanged baseline call."""
+        """Observe the choice set, then execute FIFO or the validated proposal."""
         event = self._observe(
             current_train_weight=current_train_weight,
             min_prompt_groups=min_prompt_groups,
             max_prompt_groups=max_prompt_groups,
         )
-        selected_meta, selected_group_count = await self._baseline.select(
-            current_train_weight=current_train_weight,
-            min_prompt_groups=min_prompt_groups,
-            max_prompt_groups=max_prompt_groups,
-        )
+        if self._mode == "act" and event is not None:
+            skip_reason = event["skip_reason"]
+            if skip_reason is not None:
+                # Fail before mutating the replay buffer. Silent FIFO fallback
+                # would dilute the randomized intervention and make compliance
+                # depend on runtime failures.
+                raise RuntimeError(f"OARS actuation refused: {skip_reason}")
+            proposed_group_ids = tuple(event["proposed_group_ids"])
+            candidate_indices_by_id: dict[str, int] = {}
+            for index, ready in enumerate(self._buffer.ready_list):
+                if not ready:
+                    continue
+                meta = self._buffer.meta_list[index]
+                if meta is None:
+                    continue
+                group_id = meta.extra_info.get(OPPORTUNITY_GROUP_ID_KEY)
+                if isinstance(group_id, str):
+                    if group_id in candidate_indices_by_id:
+                        raise RuntimeError(
+                            "OARS actuation refused: duplicate ready group ID"
+                        )
+                    candidate_indices_by_id[group_id] = index
+            if len(proposed_group_ids) != self.EXPECTED_BATCH_GROUPS or len(
+                set(proposed_group_ids)
+            ) != self.EXPECTED_BATCH_GROUPS:
+                raise RuntimeError(
+                    "OARS actuation refused: proposal cardinality or identity invalid"
+                )
+            try:
+                selected_indices = [
+                    candidate_indices_by_id[group_id]
+                    for group_id in proposed_group_ids
+                ]
+            except KeyError as error:
+                raise RuntimeError(
+                    "OARS actuation refused: proposed group is no longer ready"
+                ) from error
+            selected_metas = [
+                self._buffer.meta_list[index] for index in selected_indices
+            ]
+            if any(meta is None for meta in selected_metas):
+                raise RuntimeError(
+                    "OARS actuation refused: proposed metadata disappeared"
+                )
+            await self._buffer.remove(
+                selected_indices,
+                remove_in_dp=False,
+                reason=RolloutRemovalReason.SELECTED,
+                learner_weight_version=current_train_weight,
+            )
+            concrete_metas = [meta for meta in selected_metas if meta is not None]
+            selected_meta = concrete_metas[0].concat(*concrete_metas[1:])
+            selected_group_count = len(selected_indices)
+        else:
+            selected_meta, selected_group_count = await self._baseline.select(
+                current_train_weight=current_train_weight,
+                min_prompt_groups=min_prompt_groups,
+                max_prompt_groups=max_prompt_groups,
+            )
         if event is not None:
             actual_group_ids = self._actual_group_ids(
                 selected_meta, selected_group_count=selected_group_count
@@ -377,6 +436,9 @@ class OpportunityAtRiskShadowSampler:
                     ),
                     "baseline_matches_actual": actual_group_ids
                     == tuple(event["baseline_group_ids"]),
+                    "mode": self._mode,
+                    "proposal_matches_actual": actual_group_ids
+                    == tuple(event["proposed_group_ids"]),
                 }
             )
             self._record(event)

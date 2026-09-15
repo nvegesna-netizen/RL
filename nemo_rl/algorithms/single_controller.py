@@ -311,6 +311,7 @@ class SingleControllerActor:
                 selection_candidate_watermark=(
                     self._sampler.selection_candidate_watermark
                 ),
+                mode=shadow_config.mode,
             )
             self._sampler = OpportunityAtRiskShadowSampler(
                 buffer=self._buffer,
@@ -318,6 +319,7 @@ class SingleControllerActor:
                 service_budget_multiplier=shadow_config.service_budget_multiplier,
                 max_candidate_groups=shadow_config.max_candidate_groups,
                 record=self._oars_shadow_recorder.append,
+                mode=shadow_config.mode,
             )
         required_capacity = self._sampler.required_buffer_capacity(num_prompts_per_step)
         validate_sampler_buffer_capacity(

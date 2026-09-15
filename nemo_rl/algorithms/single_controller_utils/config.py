@@ -17,7 +17,7 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Literal, Optional
 
 from pydantic import BaseModel, Field
 
@@ -59,9 +59,10 @@ class LifecycleDerivedOpportunityAuditConfig(BaseModel, frozen=True):
 
 
 class OpportunityAtRiskShadowConfig(BaseModel, frozen=True):
-    """Default-off, behavior-neutral OARS proposal observer."""
+    """Default-off OARS proposal observer or explicit actuator."""
 
     enabled: bool = False
+    mode: Literal["observe", "act"] = "observe"
     output_path: Optional[str] = None
     service_budget_multiplier: float = 1.02
     max_candidate_groups: int = 25
@@ -244,6 +245,14 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
             raise ValueError(
                 "async_rl.opportunity_at_risk_shadow.enabled=true requires the "
                 "weight_fifo sampler"
+            )
+        if (
+            shadow_config.mode == "act"
+            and async_config.sampler.selection_candidate_watermark is None
+        ):
+            raise ValueError(
+                "opportunity_at_risk_shadow.mode=act requires a configured "
+                "weight_fifo selection_candidate_watermark"
             )
         if master_config.grpo.num_prompts_per_step != 4:
             raise ValueError(

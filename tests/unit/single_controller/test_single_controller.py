@@ -268,6 +268,26 @@ def test_opportunity_at_risk_shadow_accepts_frozen_configuration() -> None:
     validate_single_controller_config(config)
 
 
+def test_opportunity_at_risk_act_requires_candidate_watermark() -> None:
+    config = _controlled_release_master_config(lifecycle_audit_path="lifecycle.jsonl")
+    config.policy["train_global_batch_size"] = 16
+    config.grpo.num_prompts_per_step = 4
+    config.async_rl.sampler = WeightFifoSamplerConfig(max_staleness_versions=1)
+    config.async_rl.gradient_opportunity_audit = GradientOpportunityAuditConfig(
+        enabled=True,
+        output_path="opportunity.jsonl",
+        observer_duty_path="duty.json",
+    )
+    config.async_rl.opportunity_at_risk_shadow = OpportunityAtRiskShadowConfig(
+        enabled=True,
+        mode="act",
+        output_path="oars.jsonl",
+    )
+
+    with pytest.raises(ValueError, match="mode=act requires.*watermark"):
+        validate_single_controller_config(config)
+
+
 def test_weight_fifo_rejects_unreachable_candidate_watermark() -> None:
     config = _controlled_release_master_config(lifecycle_audit_path="lifecycle.jsonl")
     config.policy["train_global_batch_size"] = 16

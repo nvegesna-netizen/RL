@@ -1,0 +1,121 @@
+{
+  "analysis_state": "frozen_before_actuation_qualification",
+  "arms": {
+    "fifo": "weight-FIFO selection with the OARS observer enabled but behavior-neutral",
+    "oars": "enacted baseline-budgeted OARS v1 with the identical observer and 1.02 per-decision token ceiling"
+  },
+  "claim_boundary": {
+    "allowed_if_all_confirmatory_gates_pass": "In the tested Llama-3.2-1B/GSM8K asynchronous training setting, enacted OARS increased retained registered L1 coefficient opportunity while meeting the preregistered systems-utility gates.",
+    "forbidden": [
+      "an isolated group-level causal effect",
+      "mediation through M4",
+      "generalization to other models, workloads, horizons, hardware, or training quality",
+      "a training-quality improvement unless the secondary interval independently supports it"
+    ]
+  },
+  "confirmatory_design": {
+    "analysis_unit": "matched run pair",
+    "common_window": "learner updates 1 through 64 inclusive",
+    "fixed_complete_pairs": 10,
+    "incomplete_pair_rule": "A missing or invalid arm makes that pair incomplete. No replacement, retry, or extension is permitted under this protocol; the primary result is INCONCLUSIVE unless all ten pairs are valid.",
+    "interim_outcome_access": "prohibited",
+    "model": "meta-llama/Llama-3.2-1B-Instruct",
+    "pairing": [
+      "model",
+      "GSM8K workload",
+      "training seed",
+      "64-update budget",
+      "two-GPU EOS resource envelope",
+      "sampler watermark 8",
+      "four groups selected per update",
+      "maximum staleness 1",
+      "controlled-release schedule"
+    ],
+    "randomization_method": "Python random.Random(20260915).getrandbits(1), generated once before qualification",
+    "randomization_seed": 20260915,
+    "run_order": [
+      {"order": ["oars", "fifo"], "pair": 1, "training_seed": 20261501},
+      {"order": ["oars", "fifo"], "pair": 2, "training_seed": 20261502},
+      {"order": ["oars", "fifo"], "pair": 3, "training_seed": 20261503},
+      {"order": ["fifo", "oars"], "pair": 4, "training_seed": 20261504},
+      {"order": ["oars", "fifo"], "pair": 5, "training_seed": 20261505},
+      {"order": ["fifo", "oars"], "pair": 6, "training_seed": 20261506},
+      {"order": ["fifo", "oars"], "pair": 7, "training_seed": 20261507},
+      {"order": ["oars", "fifo"], "pair": 8, "training_seed": 20261508},
+      {"order": ["fifo", "oars"], "pair": 9, "training_seed": 20261509},
+      {"order": ["oars", "fifo"], "pair": 10, "training_seed": 20261510}
+    ],
+    "shared_resource_interference_control": "Run the two arms of each pair serially in the frozen order; do not overlap confirmatory arms intentionally."
+  },
+  "decision_rule": {
+    "overall": "MATERIAL only if all ten pairs are valid, the primary opportunity endpoint passes superiority, and both ordered systems-utility gates pass. Otherwise the registered result is INCONCLUSIVE or NON-MATERIAL according to the primary interval; all estimates and intervals are still reported.",
+    "primary_superiority": "The two-sided 95% paired-t confidence interval for the OARS-minus-FIFO mean retained-L1 difference must have lower bound above zero; report the exact paired sign-flip randomization p-value as a robustness result.",
+    "utility_1_policy_compliance": "Every OARS decision selects exactly four unique ready groups, has complete opportunity metadata, has no fallback or skip, and remains at or below 1.02 times that decision's FIFO token budget.",
+    "utility_2_wall_time": "The two-sided 95% paired-t confidence interval for the mean paired log(OARS/FIFO) time-to-64-updates ratio must have upper bound below log(1.10).",
+    "valid_actor_tokens": "Report the paired valid-actor-tokens-per-update ratio and 95% interval as the realized training-dose endpoint. It is not relabeled as throughput and is not hidden if lower under OARS."
+  },
+  "estimands": {
+    "primary": "mean across matched run pairs of OARS minus FIFO retained registered L1 coefficient opportunity per selected eligible prompt group over updates 1-64",
+    "secondary_final_quality": "paired difference in the frozen terminal GSM8K evaluation metric, with a two-sided 95% interval; explicitly not powered as a success gate",
+    "systems": [
+      "paired log ratio of wall time to update 64",
+      "paired log ratio of valid actor tokens per update",
+      "enacted-policy compliance and fallback frequency",
+      "OARS decision duty and per-decision service-budget compliance"
+    ]
+  },
+  "power": {
+    "alpha_equivalent": 0.025,
+    "basis": "A two-sided 95% paired-t interval excluding zero is equivalent to a one-sided 0.025 superiority test.",
+    "design_sensitivity": "With ten complete pairs, a Gaussian paired standardized effect of 1.0 has approximately 0.803 power and an effect of 1.31 has approximately 0.957 power in the frozen 100000-draw simulation.",
+    "important_limitation": "The 14-cell retrospective screen is policy-development evidence, not an actuation effect and not a paired variance estimate; its effect size is used only as a sensitivity reference.",
+    "retrospective_reference": {
+      "cell_count": 14,
+      "conservative_half_mean_standardized_effect": 1.3105802756041993,
+      "l1_gain_mean": 0.4078123303894469,
+      "l1_gain_sample_sd": 0.15558464368061645
+    },
+    "simulation_draws_per_cell": 100000,
+    "simulation_seed": 20260915
+  },
+  "qualification": {
+    "arms": ["fifo", "oars"],
+    "excluded_from_confirmatory_analysis": true,
+    "gate": [
+      "both arms reach exactly 64 updates and exit zero",
+      "all expected lifecycle, opportunity, OARS, duty, result, and SHA-256 artifacts authenticate",
+      "FIFO actual selections match the recorded FIFO baseline at every observed decision",
+      "OARS actual selections match the recorded OARS proposal at every enacted decision",
+      "every decision observes exactly eight ready candidates and enumerates 70 four-group combinations",
+      "zero missing or invalid opportunity metadata, zero policy fallback, and zero skipped decisions",
+      "four unique groups selected per decision and all were ready before mutation",
+      "the 1.02 per-decision token ceiling holds",
+      "observer/controller duty is at most 1% of controller active time"
+    ],
+    "interpretation": "systems-only; no arm outcomes may be used to modify the confirmatory protocol",
+    "training_seed": 20261421
+  },
+  "provenance": {
+    "frozen_preflight_commit": "7e4becd16",
+    "retrospective_screen": {
+      "path": "reports/auto_research/2026-09-14-m4-opportunity-control/service_budget_repair_result.json",
+      "sha256": "018ba2d69b20938cff49966575639a209ebf01e03461b10022bdd1cedfa71d5a"
+    },
+    "shadow_preflight_archive": {
+      "path_outside_git": "session/20260914_m4_opportunity_control/contention-terminal-archives/main-440340818.zip",
+      "sha256": "13af85a685aa51dd6d4f377d0812b303acb007f23d5ba2d4b3bab58027e52677"
+    },
+    "shadow_preflight_terminal_receipt": {
+      "path": "reports/auto_research/2026-09-14-m4-opportunity-control/shadow_contention_preflight_terminal_receipt.json",
+      "sha256": "9581a047c07b1a4eb31b06ce2da2518ccef8262cd14b3f9d5bf3539b50cd4ac9"
+    }
+  },
+  "protocol_id": "m4-oars-randomized-actuation-v1",
+  "qualification_and_confirmatory_separation": "The qualification seed, artifacts, and estimates are never pooled with the ten confirmatory pairs.",
+  "stopping_rules": [
+    "Stop before qualification if local safety, replay, package-authentication, or configuration gates fail.",
+    "Stop after qualification if any systems gate fails; diagnose only, with no outcome interpretation and no automatic retry.",
+    "After a passing qualification, run exactly the frozen ten confirmatory pairs with no interim outcome inspection.",
+    "A platform or code failure does not authorize replacement; any repair requires a separately versioned amendment and explicit user authorization."
+  ]
+}

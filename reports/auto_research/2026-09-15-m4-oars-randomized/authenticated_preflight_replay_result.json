@@ -1,0 +1,11 @@
+{
+  "archive_sha256": "13af85a685aa51dd6d4f377d0812b303acb007f23d5ba2d4b3bab58027e52677",
+  "candidate_group_count_max": 8,
+  "candidate_group_count_min": 8,
+  "decision_count": 64,
+  "failure_count": 0,
+  "failures": [],
+  "policy": "baseline_budgeted_oars_v1",
+  "replay_status": "PASS",
+  "service_budget_multiplier": 1.02
+}
