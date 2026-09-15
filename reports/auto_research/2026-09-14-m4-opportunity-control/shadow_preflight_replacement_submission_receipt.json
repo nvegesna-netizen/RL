@@ -1,0 +1,43 @@
+{
+  "schema": "m4-oars-shadow-preflight-replacement-submission-receipt-v1",
+  "status": "SUBMITTED_CHAIN_PENDING_NO_OUTCOME_INSPECTION",
+  "launcher": "runllm.py --no_wait",
+  "replacement_submission_attempts": 1,
+  "package_receipt_commit": "51fc452ed026a88720004f0c2e3922c389420adc",
+  "manifest_sha256": "82e6d89d6dbb86dc42c7fad3a7560545e9a27ed11c2d40c6dd4b8bda11404192",
+  "custom_config_sha256": "b5db8882c7baccd3bf8c0369d7264e80f7ea08c17482559f82875abc5207f42e",
+  "upstream_pipeline": {
+    "id": 67919688,
+    "source": "api",
+    "ref": "dlalgo-ci/eos",
+    "url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67919688"
+  },
+  "generator_job": {
+    "id": 440185048,
+    "status": "success",
+    "artifact_sha256": "b25f62de1b7db2584321b6453af0d37fc57d0b549192bfb9dee4b2ffd0123253"
+  },
+  "downstream_pipeline": {
+    "id": 67920052,
+    "url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/67920052"
+  },
+  "initial_jobs": {
+    "logs_before": 440187407,
+    "main": 440187408,
+    "logs_after": 440187409
+  },
+  "generated_scheduler_command": {
+    "time_flag": "--time 0:14400",
+    "time_flag_count": 1,
+    "deadline_flag_present": false,
+    "nodes": 1
+  },
+  "topology_verified": true,
+  "operational_repair_verified_from_generated_artifact": true,
+  "manifest_unchanged": true,
+  "source_unchanged": true,
+  "scientific_design_changed": false,
+  "scientific_artifacts_opened": false,
+  "automatic_retry": false,
+  "automatic_extension": false
+}
