@@ -50,6 +50,7 @@ from nemo_rl.algorithms.async_utils.scheduler_trace import (
 
 
 FIXED_POOL_MANIFEST_SCHEMA_VERSION: Final[int] = 1
+FIXED_POOL_RUN_MODE: Final[str] = "fixed_pool"
 MAX_FIXED_POOL_MANIFEST_BYTES: Final[int] = 16 * 1024 * 1024
 MAX_FIXED_POOL_SOURCE_BYTES: Final[int] = 64 * 1024 * 1024
 MAX_FIXED_POOL_ITEMS: Final[int] = 1_000_000
@@ -1873,7 +1874,7 @@ def validate_fixed_pool_trace(
     events = list(iter_scheduler_trace(trace_path))
     run_start, run_end = events[0], events[-1]
     for boundary in (run_start, run_end):
-        if boundary.run_mode != "fixed_pool":
+        if boundary.run_mode != FIXED_POOL_RUN_MODE:
             raise SchedulerTraceValidationError("fixed-pool run mode is missing")
         if boundary.pool_id != manifest.pool_id:
             raise SchedulerTraceValidationError("fixed-pool pool ID mismatch")

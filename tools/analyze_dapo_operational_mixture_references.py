@@ -12,6 +12,7 @@ import statistics
 from collections.abc import Mapping, Sequence
 from pathlib import Path
 from nemo_rl.algorithms.async_utils.fixed_pool import (
+    FIXED_POOL_RUN_MODE,
     load_fixed_pool_manifest,
     validate_fixed_pool_manifest_design,
     validate_fixed_pool_materialization,
@@ -127,7 +128,7 @@ def _analyze_collection(
     starts = [event for event in events if event.event_type.value == "run_started"]
     _require(
         len(starts) == 1
-        and starts[0].run_mode == "fixed_pool_collection"
+        and starts[0].run_mode == FIXED_POOL_RUN_MODE
         and starts[0].scalar_summaries.get("generation_study_seed") == generation_seed,
         "reference run identity or generation seed mismatch",
     )
