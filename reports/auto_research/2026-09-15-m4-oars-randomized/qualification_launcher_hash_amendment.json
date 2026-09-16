@@ -1,0 +1,30 @@
+{
+  "act_attempt_consumed_before_amendment": false,
+  "automatic_extension": false,
+  "automatic_retry": false,
+  "change_scope": "launcher_file_hash_only",
+  "current_launcher_sha256": "7e5ca7cb2b9807404123b19009d8d975f390f38690bf0a691f65f291b49c3cbb",
+  "current_launcher_worktree_state": "modified_relative_to_jet_llm_commit_826c161cb",
+  "frozen_launcher_sha256": "30532cd638d8394fa0e651daf4a43ec9424cbaa0949cd59c323191177318e616",
+  "predecessor_package_receipt": {
+    "path": "reports/auto_research/2026-09-15-m4-oars-randomized/qualification_package_receipt.json",
+    "sha256": "cbcbbda2a30d9136eb237effaa015f520c89056f1f2ab548552110eb292c671b"
+  },
+  "preserved_inputs": {
+    "act_manifest_sha256": "e804f9b68c53ca99d651e2fcec588cc286ef751ca3e947540ef63a26d507957b",
+    "additional_variables_sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+    "custom_config_sha256": "b5db8882c7baccd3bf8c0369d7264e80f7ea08c17482559f82875abc5207f42e",
+    "queue_deadline_override": null,
+    "time_limit_seconds": 14400
+  },
+  "revalidation": {
+    "both_prebuilt_manifests_model_validated": true,
+    "launcher_python_compilation_passed": true,
+    "no_wait_cli_surface_present": true,
+    "prebuilt_loader_and_submission_path_present": true,
+    "scientific_or_runtime_manifest_changed": false,
+    "wait_for_validation_false_present": true
+  },
+  "schema": "m4-oars-actuation-qualification-launcher-hash-amendment-v1",
+  "status": "PASS_OPERATIONAL_HASH_REFRESH_ACT_ARM_UNSUBMITTED"
+}
