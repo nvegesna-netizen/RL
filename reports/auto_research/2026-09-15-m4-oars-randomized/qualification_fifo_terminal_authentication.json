@@ -1,0 +1,51 @@
+{
+  "archives": {
+    "logs_after": {
+      "job_id": 440834493,
+      "sha256": "29bedb8972030d78c3dbaadf8c6a8ac92dde28adc1d0789b280433322d4e60d7",
+      "zip_integrity_passed": true
+    },
+    "main": {
+      "job_id": 440834491,
+      "sha256": "758c3579c49d5dfbbb24d3619e4f42a90de1a23853e258b654dec4fc357a0d55",
+      "zip_integrity_passed": true
+    }
+  },
+  "artifact_manifest_exact_coverage": true,
+  "artifacts": {
+    "m4-oars-qualification-fifo-gradient-observer-duty.json": {
+      "bytes": 464,
+      "copies_byte_identical": true,
+      "sha256": "087e822b1d16310e530e4cffaaaefb05542071d0340e11e67b46dc6920a9488b"
+    },
+    "m4-oars-qualification-fifo-lifecycle.jsonl": {
+      "bytes": 4381937,
+      "copies_byte_identical": true,
+      "sha256": "3bb902c1e2f5daa08c64e7d672d4fd55725548234d9a99a9fe5bca9dd846bf22"
+    },
+    "m4-oars-qualification-fifo-oars.jsonl": {
+      "bytes": 63175,
+      "copies_byte_identical": true,
+      "sha256": "bfebe28b378fbe9ebd0af384b46d648a904923b93376d88d94fd6cee1d7ee516"
+    },
+    "m4-oars-qualification-fifo-opportunity.jsonl": {
+      "bytes": 713511,
+      "copies_byte_identical": true,
+      "sha256": "6544df0f7ab2e60a4f92e3c582e90d5aa0fdebf8141454d75774fe0a456b7773"
+    },
+    "m4-oars-qualification-fifo-result.json": {
+      "bytes": 699,
+      "copies_byte_identical": true,
+      "sha256": "77ca1898b04378219925d1993135b60c413ad3636b3cf3a8d74e84a09ef5e73e"
+    },
+    "m4-oars-qualification-fifo-run.log": {
+      "bytes": 219676,
+      "copies_byte_identical": true,
+      "sha256": "74f1f74ac932cc99a31fd39a374fd91e0315eea7a82160373b3d19c7c41afa4e"
+    }
+  },
+  "copies_byte_identical": true,
+  "result_opened": false,
+  "schema": "m4-oars-actuation-qualification-terminal-authentication-v1",
+  "status": "PASS_AUTHENTICATED_RESULT_UNOPENED"
+}

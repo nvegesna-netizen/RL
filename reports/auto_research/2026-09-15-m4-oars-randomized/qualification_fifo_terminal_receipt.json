@@ -1,0 +1,41 @@
+{
+  "archives": {
+    "logs_after": {
+      "job_id": 440834493,
+      "sha256": "29bedb8972030d78c3dbaadf8c6a8ac92dde28adc1d0789b280433322d4e60d7"
+    },
+    "main": {
+      "job_id": 440834491,
+      "sha256": "758c3579c49d5dfbbb24d3619e4f42a90de1a23853e258b654dec4fc357a0d55"
+    }
+  },
+  "artifact_authentication": {
+    "copies_byte_identical": true,
+    "internal_manifest_exact_coverage": true,
+    "path": "reports/auto_research/2026-09-15-m4-oars-randomized/qualification_fifo_terminal_authentication.json",
+    "sha256": "20a47b463b27288f815dfe3bf688e57f97402cb0aebceca14903b2d3a1c31301",
+    "status": "PASS_AUTHENTICATED_RESULT_UNOPENED"
+  },
+  "gate_result": {
+    "all_checks_passed": true,
+    "decision_count": 64,
+    "gradient_observer_duty": 0.0004656617347534255,
+    "mode": "observe",
+    "oars_actuated": false,
+    "oars_decision_duty": 0.000012523639440442945,
+    "runtime_seconds": 850.456432071,
+    "sha256": "77ca1898b04378219925d1993135b60c413ad3636b3cf3a8d74e84a09ef5e73e",
+    "status": "PASS",
+    "training_quality_analyzed": false
+  },
+  "interpretation": "FIFO systems-only qualification passed and unlocks the single frozen OARS qualification arm. It is excluded from confirmatory estimates and supports no OARS-effect or training-quality claim.",
+  "pipeline": {
+    "child_id": 68001570,
+    "child_status": "success",
+    "upstream_id": 68001430,
+    "upstream_status": "success"
+  },
+  "schema": "m4-oars-actuation-qualification-fifo-terminal-receipt-v1",
+  "source_commit": "65b991e4ee7f2dfe64b32143b7678ddf7a46385d",
+  "status": "PASS_SYSTEMS_ONLY_OARS_ARM_UNLOCKED"
+}
