@@ -1,0 +1,66 @@
+{
+  "schema": "m4-oars-llama-evaluation-preflight-protocol-v1",
+  "status": "FROZEN_BEFORE_EOS_SUBMISSION",
+  "purpose": "operationally exercise the exact Llama terminal-export, Megatron-to-Hugging-Face conversion, and full GSM8K evaluator path before confirmatory acquisition",
+  "scientific_endpoint": false,
+  "runtime": {
+    "source_commit": "90dbb632026591f24c966a43edd05b1e4933358b",
+    "source_archive_sha256": "1d9e17a430fc1a184d767413de829ad9ee1375091485b5e7e0b24572f61f7690",
+    "image_path": "/lustre/fsw/coreai_dlalgo_ci/nvegesna/nemo_rl_images/nemo-rl-nightly-5802754.sqsh",
+    "image_commit": "ae07eafe8035b5b2e84efa7234e70e7fd7e493c1",
+    "megatron_bridge_commit": "573e088c9c6740082c39744e03dc5b009e730ed4",
+    "megatron_bridge_archive_sha256": "1429945d1d50045900e40314fa283fa5f66484e945aad4920da137d7ad2c9313",
+    "megatron_lm_commit": "6513e3e23d6b5eda6a1c934990b15e804237732b",
+    "megatron_lm_archive_sha256": "98d98920c0fea3d8ae1216a485dc9b5aa4fc966e469435ad61f2bae456de80d2",
+    "anchor_config": "examples/configs/grpo_math_1B_megatron_single_controller_m4_oars_qualification_fifo.yaml",
+    "anchor_config_sha256": "17ad965489aa9595d266295125880fe55edb4af303bd95aed66a61034c943c9b"
+  },
+  "model": {
+    "name": "meta-llama/Llama-3.2-1B-Instruct",
+    "weights_accessed": true,
+    "optimizer_initialized": false,
+    "optimizer_steps": 0,
+    "trainer_steps": 0,
+    "learner_version_advances": 0,
+    "terminal_export_train_steps": 0,
+    "terminal_export_trainer_version": 0,
+    "terminal_export_optimizer": false,
+    "terminal_export_resumable": false
+  },
+  "evaluation": {
+    "dataset": "openai/gsm8k",
+    "subset": "main",
+    "split": "test",
+    "selection": "all_rows_in_repository_order",
+    "expected_prompt_count": 1319,
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "top_k": -1,
+    "num_tests_per_prompt": 1,
+    "seed": 20260915,
+    "max_input_seq_length": 2048,
+    "max_new_tokens": 1792,
+    "artifact_contract": "prompt identities, binary rewards, terminal-export metadata, conversion file hashes, and evaluation serialization must be preserved"
+  },
+  "execution": {
+    "environment": "EOS",
+    "required_launcher": "runllm.py --no_wait",
+    "submission_attempt_limit": 1,
+    "workload_time_limit_seconds": 14400,
+    "queue_deadline_override": null,
+    "automatic_retry": false,
+    "automatic_replacement": false,
+    "automatic_extension": false
+  },
+  "interpretation": {
+    "allowed": "operational feasibility of the exact no-training export, conversion, reload, full-prompt evaluation, and artifact serialization path",
+    "forbidden": [
+      "systems qualification",
+      "scientific acquisition",
+      "scheduler comparison",
+      "training-quality inference",
+      "confirmatory estimate",
+      "generalization claim"
+    ]
+  }
+}
