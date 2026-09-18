@@ -188,7 +188,13 @@ def _fixture(
             start_weight_version=0,
             **release_fields,
         )
-        if state in {"selected", "selected_incomplete", "stale", "failed"}:
+        if state in {
+            "selected",
+            "selected_incomplete",
+            "stale",
+            "oars_excess",
+            "failed",
+        }:
             lifecycle.record(
                 group_id=group_id,
                 stage=RolloutLifecycleStage.GROUP_READY,
@@ -221,6 +227,14 @@ def _fixture(
                 sample_ids=summary.sample_ids,
                 removal_reason=RolloutRemovalReason.STALE_EVICTED,
             )
+        elif state == "oars_excess":
+            lifecycle.record(
+                group_id=group_id,
+                stage=RolloutLifecycleStage.REMOVED,
+                start_weight_version=0,
+                sample_ids=summary.sample_ids,
+                removal_reason=RolloutRemovalReason.OARS_CANDIDATE_EXCESS,
+            )
         elif state == "failed":
             lifecycle.record(
                 group_id=group_id,
@@ -251,7 +265,14 @@ def _fixture(
 
 def test_join_classifies_completed_stale_failed_and_missing_terminal() -> None:
     lifecycle, opportunity, protocol = _fixture(
-        ["selected", "stale", "failed", "missing", "selected_incomplete"]
+        [
+            "selected",
+            "stale",
+            "oars_excess",
+            "failed",
+            "missing",
+            "selected_incomplete",
+        ]
     )
 
     rows = join_opportunity_ledgers(
@@ -260,11 +281,25 @@ def test_join_classifies_completed_stale_failed_and_missing_terminal() -> None:
         opportunity_rows=opportunity,
     )
 
-    assert [row.assignment_id for row in rows] == ["g0", "g1", "g2", "g3", "g4"]
-    assert [row.ordinal for row in rows] == [0, 1, 2, 3, 4]
+    assert [row.assignment_id for row in rows] == [
+        "g0",
+        "g1",
+        "g2",
+        "g3",
+        "g4",
+        "g5",
+    ]
+    assert [row.ordinal for row in rows] == [0, 1, 2, 3, 4, 5]
     assert {row.start_version for row in rows} == {0}
-    assert [row.delivered for row in rows] == [True, False, False, None, None]
-    assert [row.opportunity for row in rows] == [2.0] * 5
+    assert [row.delivered for row in rows] == [
+        True,
+        False,
+        False,
+        False,
+        None,
+        None,
+    ]
+    assert [row.opportunity for row in rows] == [2.0] * 6
 
 
 def test_joined_rows_feed_observed_q_missingness_bounds() -> None:

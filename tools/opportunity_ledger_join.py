@@ -933,6 +933,7 @@ def join_opportunity_ledgers(
                 delivered = True if completed else None
             elif reason in {
                 "stale_evicted",
+                "oars_candidate_excess",
                 "failed",
                 "cancelled",
                 "bounded_shutdown",

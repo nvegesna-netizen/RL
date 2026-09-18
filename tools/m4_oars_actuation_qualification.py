@@ -108,18 +108,31 @@ def assess_oars_actuation_qualification(
     checks = {
         "header": (
             header.get("event_type") == "header"
-            and header.get("schema_version") == 2
+            and header.get("schema_version") == 3
             and header.get("policy") == "baseline_budgeted_oars_v1"
+            and header.get("candidate_window_policy")
+            == "oldest_ready_exact_watermark_v1"
             and header.get("mode") == mode
             and header.get("service_budget_multiplier") == 1.02
             and header.get("max_candidate_groups") == 25
             and header.get("selection_candidate_watermark") == EXPECTED_CANDIDATES
+            and header.get("stale_replenishment_policy")
+            == ("one_batch_drop_newest_excess_v1" if mode == "act" else "none")
         ),
         "complete_learner_steps": advances == list(range(1, EXPECTED_STEPS + 1)),
         "one_decision_per_step": len(decisions) == EXPECTED_STEPS,
         "exact_candidate_set": all(
             row.get("candidate_group_count") == EXPECTED_CANDIDATES
             and row.get("combination_count") == 70
+            for row in decisions
+        ),
+        "bounded_replenishment": all(
+            isinstance(row.get("eligible_candidate_count"), int)
+            and EXPECTED_CANDIDATES
+            <= int(row["eligible_candidate_count"])
+            <= EXPECTED_CANDIDATES + EXPECTED_GROUPS - 1
+            and row.get("candidate_excess_count")
+            == int(row["eligible_candidate_count"]) - EXPECTED_CANDIDATES
             for row in decisions
         ),
         "complete_metadata_no_skip": all(
@@ -131,8 +144,7 @@ def assess_oars_actuation_qualification(
         "selection_cardinality_and_uniqueness": all(
             row.get("actual_selected_group_count") == EXPECTED_GROUPS
             and len(row.get("actual_selected_group_ids") or ()) == EXPECTED_GROUPS
-            and len(set(row.get("actual_selected_group_ids") or ()))
-            == EXPECTED_GROUPS
+            and len(set(row.get("actual_selected_group_ids") or ())) == EXPECTED_GROUPS
             for row in decisions
         ),
         "service_budget": all(
@@ -157,6 +169,9 @@ def assess_oars_actuation_qualification(
         "status": "PASS" if all(checks.values()) else "FAIL",
         "checks": checks,
         "decision_count": len(decisions),
+        "candidate_excess_count": sum(
+            int(row.get("candidate_excess_count", 0)) for row in decisions
+        ),
         "gradient_observer_duty": gradient_duty,
         "oars_decision_duty": oars_duty,
         "runtime_seconds": (run_end_ns - run_start_ns) / 1e9,

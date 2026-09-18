@@ -1,0 +1,52 @@
+{
+  "adversarial_checks": {
+    "candidate_window_exactly_eight": true,
+    "counterfactual_fifo_handles_partial_oldest_cohort": true,
+    "ordinary_admission_cadence_unchanged": true,
+    "replenishment_above_one_partial_batch_fails_before_mutation": true,
+    "surplus_has_distinct_nonstale_lifecycle_disposition": true,
+    "whole_batch_surplus_bounded": true
+  },
+  "changed_file_sha256": {
+    "nemo_rl/algorithms/async_utils/opportunity_at_risk.py": "40f4600394c34862ececcbdb4d626733c74864423256f6bdaeba59d0a77f20c3",
+    "nemo_rl/algorithms/async_utils/rollout_lifecycle.py": "fc5464eb3b5eb1448afff872d8793c28a414c424786264a2b1a267d245b9e939",
+    "nemo_rl/algorithms/async_utils/staleness_sampler.py": "a04f5fce8c3863ef97b05b08484412ad70510c71e4abd5d698c39b9a4e13ff6b",
+    "reports/auto_research/2026-09-15-m4-oars-randomized/test_actuation_qualification.py": "e85e7cd37ae1815a1e91a5885b59a9e8485c08adc9a5fa0c074b2f23dd931ccc",
+    "tests/unit/single_controller/test_opportunity_at_risk.py": "031fe1d336fe1641dcc4a6c95c6a768f014de57194c82554df0e4e732babdec8",
+    "tests/unit/tools/test_opportunity_ledger_join.py": "ec4ed349ddd9cf314730a63c0702bae8c3b3c90d91aaaad9f7ed92007479f93d",
+    "tools/m4_oars_actuation_qualification.py": "53f07de5206bdb11392c5363c39d675b60443c969294cf6a6e61188a7a62fbcd",
+    "tools/opportunity_ledger_join.py": "92ee442aa5d7dfe6472cc5826324860cce418f7408fdae61341e6c236fa28db4"
+  },
+  "failure_reproduction": {
+    "old_behavior": "the replacement admission timed out after one stale eviction left seven of eight required candidates",
+    "status": "PASS_RED_BEFORE_REPAIR"
+  },
+  "repair_contract": {
+    "candidate_window_policy": "oldest_ready_exact_watermark_v1",
+    "counterfactual_fifo_policy": "oldest_four_ready_within_fixed_candidate_window_v1",
+    "ordinary_dispatch_index_advanced_by_replacement": false,
+    "replenishment_policy": "one_batch_drop_newest_excess_v1",
+    "surplus_removal_reason": "oars_candidate_excess"
+  },
+  "schema": "m4-oars-qualification-liveness-repair-validation-v1",
+  "status": "PASS_OFFLINE_REPAIR_GATES",
+  "tests": {
+    "ledger_join": {
+      "passed": 16,
+      "status": "PASS"
+    },
+    "qualification_gate": {
+      "passed": 4,
+      "status": "PASS"
+    },
+    "ruff": "PASS",
+    "sampler_and_oars": {
+      "maximum_buffered_groups_in_64_update_stress": 12,
+      "passed": 40,
+      "stress_candidate_count": 8,
+      "stress_combination_count": 70,
+      "stress_updates": 64
+    },
+    "targeted_pyrefly": "PASS_0_ERRORS"
+  }
+}

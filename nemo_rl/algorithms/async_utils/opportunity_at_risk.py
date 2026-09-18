@@ -132,7 +132,7 @@ def select_baseline_budgeted_opportunity(
 class OpportunityAtRiskShadowRecorder:
     """In-memory canonical JSONL ledger for OARS decisions."""
 
-    SCHEMA_VERSION = 2
+    SCHEMA_VERSION = 3
 
     def __init__(
         self,
@@ -145,12 +145,16 @@ class OpportunityAtRiskShadowRecorder:
         self._events: list[dict[str, Any]] = [
             {
                 "event_type": "header",
+                "candidate_window_policy": "oldest_ready_exact_watermark_v1",
                 "max_candidate_groups": max_candidate_groups,
                 "mode": mode,
                 "policy": "baseline_budgeted_oars_v1",
                 "schema_version": self.SCHEMA_VERSION,
                 "selection_candidate_watermark": selection_candidate_watermark,
                 "service_budget_multiplier": service_budget_multiplier,
+                "stale_replenishment_policy": (
+                    "one_batch_drop_newest_excess_v1" if mode == "act" else "none"
+                ),
             }
         ]
 
@@ -206,10 +210,21 @@ class OpportunityAtRiskShadowSampler:
         self._max_candidate_groups = max_candidate_groups
         self._record = record
         self._mode = mode
+        self._replenishment_credits = 0
+        self._pending_excess_sample_ids: set[tuple[str, ...]] = set()
+
+    def _consume_replenishment_credit(self) -> bool:
+        if self._replenishment_credits == 0:
+            return False
+        self._replenishment_credits -= 1
+        return True
 
     async def admit(self, *, trainer_version_fn: Callable[[], int]) -> Optional[int]:
-        """Delegate admission unchanged."""
-        return await self._baseline.admit(trainer_version_fn=trainer_version_fn)
+        """Admit ordinary cadence or replace one batch after stale eviction."""
+        return await self._baseline.admit_with_replenishment(
+            trainer_version_fn=trainer_version_fn,
+            consume_replenishment=self._consume_replenishment_credit,
+        )
 
     @property
     def is_on_policy(self) -> bool:
@@ -221,8 +236,35 @@ class OpportunityAtRiskShadowSampler:
         return self._baseline.required_buffer_capacity(groups_per_step)
 
     async def evict(self, *, current_train_weight: int) -> int:
-        """Delegate eviction unchanged."""
-        return await self._baseline.evict(current_train_weight=current_train_weight)
+        """Drop prior candidate excess, then replace any newly stale batch."""
+        excess_indices = [
+            index
+            for index, meta in enumerate(self._buffer.meta_list)
+            if meta is not None
+            and tuple(meta.sample_ids) in self._pending_excess_sample_ids
+            and self._buffer.ready_list[index]
+        ]
+        excess_removed = 0
+        if excess_indices:
+            excess_removed = await self._buffer.remove(
+                excess_indices,
+                remove_in_dp=True,
+                reason=RolloutRemovalReason.OARS_CANDIDATE_EXCESS,
+                learner_weight_version=current_train_weight,
+            )
+        self._pending_excess_sample_ids.clear()
+
+        stale_evicted = await self._baseline.evict(
+            current_train_weight=current_train_weight
+        )
+        if self._mode == "act" and stale_evicted:
+            if stale_evicted > self.EXPECTED_BATCH_GROUPS:
+                raise RuntimeError(
+                    "OARS actuation liveness invariant violated: one decision "
+                    "evicted more than one batch"
+                )
+            self._replenishment_credits += 1
+        return excess_removed + stale_evicted
 
     @staticmethod
     def _candidate(meta: KVBatchMeta, *, start_weight: int) -> OpportunityCandidate:
@@ -261,33 +303,66 @@ class OpportunityAtRiskShadowSampler:
             for index, start_weight in enumerate(self._buffer.start_weight_list)
             if minimum_version <= start_weight <= current_train_weight
         ]
-        in_window_weights = [
-            self._buffer.start_weight_list[index] for index in in_window_indices
-        ]
-        if not in_window_weights:
+        if not in_window_indices:
             return None
-        target_version = min(in_window_weights)
-        baseline_indices = [
-            index
-            for index in in_window_indices
-            if self._buffer.start_weight_list[index] == target_version
-            and self._buffer.ready_list[index]
-        ]
-        if len(baseline_indices) < min_prompt_groups:
-            return None
-        candidate_indices = [
+        eligible_candidate_indices = [
             index for index in in_window_indices if self._buffer.ready_list[index]
         ]
+        eligible_candidate_indices.sort(
+            key=lambda index: (self._buffer.start_weight_list[index], index)
+        )
         watermark = self._baseline.selection_candidate_watermark
-        if watermark is not None and len(candidate_indices) < watermark:
+        if watermark is not None and len(eligible_candidate_indices) < watermark:
             return None
+        if (
+            self._mode == "act"
+            and watermark is not None
+            and len(eligible_candidate_indices)
+            > watermark + self.EXPECTED_BATCH_GROUPS - 1
+        ):
+            raise RuntimeError(
+                "OARS actuation refused: candidate replenishment exceeded one "
+                "partial batch"
+            )
+        candidate_indices = eligible_candidate_indices[:watermark]
+        if self._mode == "act":
+            pending_excess_sample_ids: set[tuple[str, ...]] = set()
+            for index in eligible_candidate_indices[len(candidate_indices) :]:
+                meta = self._buffer.meta_list[index]
+                if meta is None:
+                    raise RuntimeError(
+                        "OARS actuation refused: ready candidate metadata disappeared"
+                    )
+                pending_excess_sample_ids.add(tuple(meta.sample_ids))
+            self._pending_excess_sample_ids = pending_excess_sample_ids
+        if self._mode == "observe":
+            target_version = min(
+                self._buffer.start_weight_list[index] for index in in_window_indices
+            )
+            baseline_indices = [
+                index
+                for index in candidate_indices
+                if self._buffer.start_weight_list[index] == target_version
+            ]
+            if len(baseline_indices) < min_prompt_groups:
+                return None
+        else:
+            # Enacted OARS can leave a partial oldest weight cohort, a state
+            # strict batch-FIFO cannot itself create. Define the next
+            # counterfactual FIFO batch as the oldest ready groups in the fixed
+            # candidate window so actuation remains live and auditable.
+            baseline_indices = candidate_indices
         requested = min(len(baseline_indices), max_prompt_groups)
         baseline_indices = baseline_indices[:requested]
         event: dict[str, Any] = {
             "baseline_group_ids": [],
+            "candidate_excess_count": (
+                len(eligible_candidate_indices) - len(candidate_indices)
+            ),
             "candidate_group_count": len(candidate_indices),
             "current_learner_version": current_train_weight,
             "decision_latency_ns": 0,
+            "eligible_candidate_count": len(eligible_candidate_indices),
             "proposed_group_ids": [],
             "skip_reason": None,
         }
@@ -387,16 +462,16 @@ class OpportunityAtRiskShadowSampler:
                             "OARS actuation refused: duplicate ready group ID"
                         )
                     candidate_indices_by_id[group_id] = index
-            if len(proposed_group_ids) != self.EXPECTED_BATCH_GROUPS or len(
-                set(proposed_group_ids)
-            ) != self.EXPECTED_BATCH_GROUPS:
+            if (
+                len(proposed_group_ids) != self.EXPECTED_BATCH_GROUPS
+                or len(set(proposed_group_ids)) != self.EXPECTED_BATCH_GROUPS
+            ):
                 raise RuntimeError(
                     "OARS actuation refused: proposal cardinality or identity invalid"
                 )
             try:
                 selected_indices = [
-                    candidate_indices_by_id[group_id]
-                    for group_id in proposed_group_ids
+                    candidate_indices_by_id[group_id] for group_id in proposed_group_ids
                 ]
             except KeyError as error:
                 raise RuntimeError(

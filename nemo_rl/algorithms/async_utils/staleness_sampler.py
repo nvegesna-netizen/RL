@@ -307,11 +307,23 @@ class _GatedSampler(BaseSampler):
             gate_window=self._gate_window,
         )
 
-    async def admit(self, *, trainer_version_fn: Callable[[], int]) -> Optional[int]:
+    async def _admit(
+        self,
+        *,
+        trainer_version_fn: Callable[[], int],
+        consume_replenishment: Optional[Callable[[], bool]] = None,
+    ) -> Optional[int]:
         while self._dispatch_index >= trainer_version_fn() + self._gate_window:
+            if consume_replenishment is not None and consume_replenishment():
+                # Replenishment replaces a batch containing evicted groups. It
+                # must not advance the ordinary one-batch-per-step cadence.
+                return self._stamp()
             await asyncio.sleep(_GATE_POLL_SECONDS)
         self._dispatch_index += 1
         return self._stamp()
+
+    async def admit(self, *, trainer_version_fn: Callable[[], int]) -> Optional[int]:
+        return await self._admit(trainer_version_fn=trainer_version_fn)
 
     def _stamp(self) -> Optional[int]:
         return None
@@ -339,6 +351,18 @@ class WeightFifoSampler(_GatedSampler):
             raise ValueError("selection_candidate_watermark must be positive")
         self.max_staleness_versions = max_staleness_versions
         self.selection_candidate_watermark = selection_candidate_watermark
+
+    async def admit_with_replenishment(
+        self,
+        *,
+        trainer_version_fn: Callable[[], int],
+        consume_replenishment: Callable[[], bool],
+    ) -> Optional[int]:
+        """Admit ordinary cadence first, or one externally earned replacement."""
+        return await self._admit(
+            trainer_version_fn=trainer_version_fn,
+            consume_replenishment=consume_replenishment,
+        )
 
     async def select(
         self,

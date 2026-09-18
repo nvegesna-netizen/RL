@@ -12,16 +12,22 @@ from tools.m4_oars_actuation_qualification import (
 )
 
 
-def _inputs(mode: str) -> tuple[list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
+def _inputs(
+    mode: str,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]], dict[str, Any]]:
     rows: list[dict[str, Any]] = [
         {
+            "candidate_window_policy": "oldest_ready_exact_watermark_v1",
             "event_type": "header",
             "max_candidate_groups": 25,
             "mode": mode,
             "policy": "baseline_budgeted_oars_v1",
-            "schema_version": 2,
+            "schema_version": 3,
             "selection_candidate_watermark": 8,
             "service_budget_multiplier": 1.02,
+            "stale_replenishment_policy": (
+                "one_batch_drop_newest_excess_v1" if mode == "act" else "none"
+            ),
         }
     ]
     for index in range(64):
@@ -31,8 +37,10 @@ def _inputs(mode: str) -> tuple[list[dict[str, Any]], list[dict[str, Any]], dict
         rows.append(
             {
                 "event_type": "decision",
+                "candidate_excess_count": 0,
                 "candidate_group_count": 8,
                 "combination_count": 70,
+                "eligible_candidate_count": 8,
                 "baseline_group_ids": baseline,
                 "proposed_group_ids": proposal,
                 "actual_selected_group_ids": actual,
@@ -101,3 +109,15 @@ def test_gate_rejects_unsafe_candidate_or_budget() -> None:
     assert result["status"] == "FAIL"
     assert result["checks"]["exact_candidate_set"] is False
     assert result["checks"]["service_budget"] is False
+
+
+def test_gate_rejects_unbounded_replenishment() -> None:
+    rows, _, _ = _inputs("act")
+    failed = copy.deepcopy(rows)
+    failed[1]["eligible_candidate_count"] = 12
+    failed[1]["candidate_excess_count"] = 4
+
+    result = _assess("act", failed)
+
+    assert result["status"] == "FAIL"
+    assert result["checks"]["bounded_replenishment"] is False
