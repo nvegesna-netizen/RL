@@ -17,5 +17,11 @@ async_rl:
     mode: act
     output_path: results/m4-oars-qualification-act/oars.jsonl
 
+# This qualification is constrained to one live Ray node. Inherit the pinned
+# TransferQueue package already present in the image instead of creating a
+# redundant actor runtime environment that fetches it from GitHub.
+data_plane:
+  actor_runtime_env_mode: inherit_baked_single_node
+
 logger:
   log_dir: results/m4-oars-qualification-act/metrics
