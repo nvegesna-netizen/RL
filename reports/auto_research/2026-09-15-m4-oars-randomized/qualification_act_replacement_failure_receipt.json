@@ -1,0 +1,76 @@
+{
+  "artifact_authentication": {
+    "path": "reports/auto_research/2026-09-15-m4-oars-randomized/qualification_act_replacement_terminal_authentication.json",
+    "sha256": "1f9636bf911f632bdb430e86512f1d24e8703d42516ca446e82de32b44ba26ca",
+    "status": "PASS_CROSS_COPY_AUTHENTICATED_NO_RESULT_OR_MANIFEST"
+  },
+  "classification": "SYSTEMS_LIVENESS_FAILURE_CONSISTENT_WITH_WATERMARK_ADMISSION_DEADLOCK",
+  "confirmatory_acquisition_unlocked": false,
+  "execution": {
+    "child_id": 68601714,
+    "child_status": "failed",
+    "generate_job_id": 445936939,
+    "generate_job_status": "success",
+    "logs_after_job_id": 445937796,
+    "logs_after_job_status": "success",
+    "logs_before_job_id": 445937794,
+    "logs_before_job_status": "success",
+    "main_job_id": 445937795,
+    "main_job_status": "failed",
+    "slurm_job_id": 6052198,
+    "slurm_job_state": "TIMEOUT",
+    "slurm_queue_time": "00:00:53",
+    "slurm_step_exit_code": "0:15",
+    "slurm_step_state": "CANCELLED",
+    "slurm_workload_duration": "03:59:44",
+    "upstream_id": 68601608,
+    "upstream_status": "failed"
+  },
+  "observed_execution": {
+    "dependency_repair_reached_controller_execution": true,
+    "last_authenticated_run_log_line": "evicted 1 stale prompt group(s)",
+    "python_traceback_present": false,
+    "result_artifact_present": false,
+    "scientific_ledgers_present": false,
+    "terminal_manifest_present": false,
+    "training_steps_completed": 2,
+    "training_steps_planned": 64
+  },
+  "protocol_disposition": {
+    "automatic_extension_authorized": false,
+    "automatic_retry_authorized": false,
+    "confirmatory_study_locked": true,
+    "replacement_attempt_limit": 1,
+    "replacement_attempts_consumed": 1,
+    "repair_requires_new_versioned_plan_and_explicit_authorization": true
+  },
+  "run_log": {
+    "bytes": 91109,
+    "copies_byte_identical": true,
+    "opened_only_after_cross_copy_authentication": true,
+    "sha256": "521ec26c407f057513f6d5dff955134b1151541b02fda8f61520e474c8d1d4a7"
+  },
+  "scientific_interpretation": "No terminal qualification endpoint or scientific outcome was produced. The two partial training updates are not an interpretable result, and the confirmatory acquisition remains locked.",
+  "source_commit": "a9b5927de18d1a331aaf33aefb83a69d1187b75c",
+  "systems_diagnosis": {
+    "confidence": "high; exact terminal buffer contents are unavailable because the job was killed before ledgers and the terminal manifest were copied",
+    "evidence_chain": [
+      "The frozen configuration uses four prompt groups per training step, max staleness one, and an eight-group selection watermark.",
+      "The gated sampler therefore admits whole four-group dispatch batches and reserves exactly eight groups of capacity.",
+      "OARS actuation can select four groups across weight versions instead of draining the oldest four as FIFO does.",
+      "After two completed updates, the authenticated run log records one stale-group eviction and no later progress.",
+      "Three surviving groups plus one admissible four-group dispatch yield seven ready candidates, below the eight-group watermark.",
+      "The version gate cannot admit a second whole dispatch batch until the trainer advances, while the trainer cannot advance without eight candidates."
+    ],
+    "inferred_blocked_state": {
+      "candidate_watermark": 8,
+      "ready_groups_after_one_replenishment": 7,
+      "stale_groups_evicted": 1,
+      "whole_dispatch_batch_groups": 4
+    },
+    "not_a_queue_failure": true,
+    "not_fixed_by_a_longer_time_limit": true
+  },
+  "schema": "m4-oars-actuation-qualification-replacement-failure-receipt-v1",
+  "status": "CLOSED_SYSTEMS_LIVENESS_FAILURE_NO_SCIENTIFIC_RESULT"
+}

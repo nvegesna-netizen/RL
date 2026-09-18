@@ -1,0 +1,18 @@
+{
+  "archives": {
+    "logs_after_sha256": "8c321474f9a7201c25def06dfd65c0de1fc476c2f77e49f8f33fbd81b052ad9d",
+    "main_sha256": "4b4ffc41053716e21c66d09b4c817cffc774c763bf6a1def0ab44727c141e19c"
+  },
+  "artifact_manifest_present": false,
+  "artifacts": {
+    "m4-oars-qualification-act-replacement-run.log": {
+      "bytes": 91109,
+      "copies_byte_identical": true,
+      "sha256": "521ec26c407f057513f6d5dff955134b1151541b02fda8f61520e474c8d1d4a7"
+    }
+  },
+  "result_artifact_present": false,
+  "result_opened": false,
+  "schema": "m4-oars-actuation-qualification-replacement-terminal-authentication-v1",
+  "status": "PASS_CROSS_COPY_AUTHENTICATED_NO_RESULT_OR_MANIFEST"
+}
