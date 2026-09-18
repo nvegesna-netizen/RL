@@ -1,0 +1,54 @@
+{
+  "allowed_changes": {
+    "admission": "one replacement batch may bypass the closed version gate after an enacted-OARS stale eviction without advancing ordinary dispatch cadence",
+    "candidate_window": "each decision exposes exactly the eight oldest ready in-window groups",
+    "counterfactual_fifo": "the enacted arm budgets against the oldest four groups in its fixed candidate window after OARS creates a partial weight cohort",
+    "lifecycle": "newest whole-batch surplus outside the fixed window is removed as oars_candidate_excess and is not labeled stale",
+    "qualification_ledger_schema": 3
+  },
+  "authorization": {
+    "path": "reports/auto_research/2026-09-15-m4-oars-randomized/qualification_liveness_repair_authorization.json",
+    "repair_attempt_limit": 1
+  },
+  "failed_replacement": {
+    "classification": "SYSTEMS_LIVENESS_FAILURE_CONSISTENT_WITH_WATERMARK_ADMISSION_DEADLOCK",
+    "main_job_id": 445937795,
+    "receipt_path": "reports/auto_research/2026-09-15-m4-oars-randomized/qualification_act_replacement_failure_receipt.json",
+    "receipt_sha256": "8ac14f9eb1db22fe78b8971abb66705a4050351abf355f749686eae6052ecad3"
+  },
+  "frozen_inputs_preserved": {
+    "config_sha256": "9cd92f17e96193f584f206747132c7ced70dd2e1a9eda44f53d4af752b1967fc",
+    "controlled_release_assignment_domain": "m4-oars-qualification-pair-v1",
+    "gpus": 2,
+    "max_staleness_versions": 1,
+    "mode": "act",
+    "oars_service_budget_multiplier": 1.02,
+    "pair_training_seed": 20261421,
+    "protocol_sha256": "3bc49412a212419635e55b616e080708e17cf265c1926c1d93faebf072a87bfd",
+    "queue_deadline_override": null,
+    "scheduler_time_limit_seconds": 14400,
+    "selection_candidate_watermark": 8,
+    "selected_groups_per_decision": 4,
+    "trainer_steps": 64
+  },
+  "interpretation": {
+    "confirmatory_acquisition_unlocked_by_authorization": false,
+    "scientific_outcome_acquisition": false,
+    "systems_qualification_only": true
+  },
+  "prohibited_changes": [
+    "training seed or controlled-release assignment changes",
+    "service budget or opportunity score changes",
+    "training-step, model, workload, or resource changes",
+    "candidate windows other than exactly eight",
+    "automatic retry or extension",
+    "qualification outcome use in confirmatory estimates"
+  ],
+  "repair_provenance": {
+    "offline_validation_path": "reports/auto_research/2026-09-15-m4-oars-randomized/qualification_liveness_repair_validation.json",
+    "offline_validation_sha256": "7407a3da260f18578b4ff4038814bc933caa81140aa71f8e6211033a0dd99a86",
+    "repair_source_commit": "90dbb632026591f24c966a43edd05b1e4933358b"
+  },
+  "schema": "m4-oars-actuation-qualification-liveness-repair-amendment-v1",
+  "status": "FROZEN_BEFORE_LIVENESS_REPAIR_SUBMISSION"
+}

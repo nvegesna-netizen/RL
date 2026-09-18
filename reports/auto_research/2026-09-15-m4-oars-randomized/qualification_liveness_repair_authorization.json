@@ -1,0 +1,22 @@
+{
+  "automatic_extension": false,
+  "automatic_retry": false,
+  "eos_submission_authorized": true,
+  "gpus": 2,
+  "oars_actuation_authorized_for_qualification_only": true,
+  "pair_training_seed": 20261421,
+  "protocol_sha256": "3bc49412a212419635e55b616e080708e17cf265c1926c1d93faebf072a87bfd",
+  "queue_deadline_override": null,
+  "repair_attempt_limit": 1,
+  "required_launcher": "runllm.py --no_wait",
+  "scheduler_time_limit_seconds": 14400,
+  "schema": "m4-oars-actuation-qualification-liveness-repair-authorization-v1",
+  "scientific_outcome_acquisition_authorized": false,
+  "source_commit": "90dbb632026591f24c966a43edd05b1e4933358b",
+  "systems_qualification_authorized": true,
+  "trainer_steps": 64,
+  "user_authorization": [
+    "do it carefully. I authorize",
+    "I authorize launches on eos as well"
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "amendment_sha256": "1b8c10c157d3136bc1f02171920e0afc3ef25d64ea8030036ca64c0b2c32b7a0",
+  "authorization_sha256": "6a07e6f7a1375537bd3634d2d16e39e8f886d24749253b6918f6332e04bd04f8",
+  "bash_syntax_passed": true,
+  "credential_free_static_gate_passed": true,
+  "deterministic_rebuild_passed": true,
+  "embedded_python_syntax_passed": true,
+  "exact_source_change_scope_passed": true,
+  "manifest": {
+    "manifest_bytes": 16149463,
+    "manifest_sha256": "bf82f7ce187a1127236f268a63b9c5474fe16562c36cc429253df650f51d4fc0",
+    "mode": "act",
+    "name": "m4-oars-qualification-act-liveness-repair"
+  },
+  "manifest_time_limit_seconds": 14400,
+  "megatron_sha256": "98d98920c0fea3d8ae1216a485dc9b5aa4fc966e469435ad61f2bae456de80d2",
+  "offline_64_update_liveness_gate_passed": true,
+  "predecessor_config_and_protocol_preserved": true,
+  "protocol_sha256": "3bc49412a212419635e55b616e080708e17cf265c1926c1d93faebf072a87bfd",
+  "queue_deadline_override": null,
+  "repair_attempt_limit": 1,
+  "schema": "m4-oars-actuation-qualification-liveness-package-validation-v1",
+  "scientific_outcome_acquisition": false,
+  "single_node_inheritance_guard_executed": true,
+  "source_archive_member_count": 2446,
+  "source_archive_sha256": "1d9e17a430fc1a184d767413de829ad9ee1375091485b5e7e0b24572f61f7690",
+  "source_archive_symlink_count": 16,
+  "source_commit": "90dbb632026591f24c966a43edd05b1e4933358b",
+  "status": "PASS_AUTHORIZED_UNSUBMITTED",
+  "terminal_artifact_hash_on_failure_passed": true
+}
