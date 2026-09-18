@@ -1,0 +1,25 @@
+{
+  "classification": {
+    "incomplete": "INCONCLUSIVE",
+    "material": "all 10 pairs valid, primary 95% CI lower bound above 0, policy compliance passes, and wall-time 95% log-ratio CI upper bound below log(1.10)",
+    "non_material": "all 10 pairs valid and primary 95% CI upper bound is at or below 0",
+    "otherwise": "INCONCLUSIVE"
+  },
+  "confidence_intervals": {
+    "confidence": 0.95,
+    "df": 9,
+    "method": "two_sided_paired_t",
+    "t_critical": 2.2621571628540993
+  },
+  "exact_randomization": {
+    "enumeration_count": 1024,
+    "method": "two_sided_inclusive_paired_sign_flip_on_10_primary_differences"
+  },
+  "outcome_access_gate": "authenticate all 20 terminal result artifacts and verify the complete-run gate before opening any result",
+  "primary": "mean across pairs of OARS minus FIFO retained registered L1 coefficient opportunity per selected group over updates 1-64",
+  "protocol_sha256": "3bc49412a212419635e55b616e080708e17cf265c1926c1d93faebf072a87bfd",
+  "schema": "m4-oars-randomized-confirmatory-analysis-plan-v1",
+  "secondary_quality": "paired OARS minus FIFO terminal GSM8K accuracy with a two-sided 95% paired-t interval; not a success gate",
+  "training_dose": "geometric mean OARS/FIFO ratio of valid actor tokens per update with a two-sided 95% paired-t interval on log ratios",
+  "wall_time": "geometric mean OARS/FIFO ratio of seconds to update 64 with a two-sided 95% paired-t interval on log ratios"
+}

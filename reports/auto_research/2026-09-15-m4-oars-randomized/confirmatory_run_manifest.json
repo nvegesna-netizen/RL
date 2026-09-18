@@ -1,0 +1,78 @@
+{
+  "analysis": {
+    "common_window": "learner_updates_1_through_64_inclusive",
+    "completion_rule": "all_20_runs_terminal_valid_and_authenticated_before_any_outcome_access",
+    "primary": "paired_mean_oars_minus_fifo_retained_registered_l1_per_selected_group",
+    "secondary_quality": "paired_difference_in_terminal_gsm8k_test_accuracy",
+    "systems": [
+      "paired_log_oars_over_fifo_time_to_update_64",
+      "paired_log_oars_over_fifo_valid_actor_tokens_per_update",
+      "per_decision_policy_and_service_budget_compliance"
+    ]
+  },
+  "evaluation": {
+    "dataset": "openai/gsm8k",
+    "decoding": {
+      "k_value": 1,
+      "max_new_tokens": 1792,
+      "num_tests_per_prompt": 1,
+      "temperature": 0.0,
+      "top_k": -1,
+      "top_p": 1.0
+    },
+    "metric": "pass_at_1_equivalent_accuracy",
+    "prompt_count": 1319,
+    "prompt_manifest_rule": "all_rows_in_repository_gsm8k_main_test_order",
+    "seed": 20260915,
+    "split": "test",
+    "timing": "after_update_64_from_nonresumable_terminal_policy_export"
+  },
+  "execution": {
+    "automatic_extension": false,
+    "automatic_replacement": false,
+    "automatic_retry": false,
+    "gpus_per_run": 2,
+    "intentional_overlap": false,
+    "queue_deadline_override": null,
+    "required_launcher": "runllm.py --no_wait",
+    "scheduler_time_limit_seconds": 14400,
+    "sequence_policy": "strict_global_sequence_one_run_at_a_time"
+  },
+  "model": "meta-llama/Llama-3.2-1B-Instruct",
+  "protocol_id": "m4-oars-randomized-actuation-v1",
+  "protocol_sha256": "3bc49412a212419635e55b616e080708e17cf265c1926c1d93faebf072a87bfd",
+  "qualification_gate": {
+    "path": "reports/auto_research/2026-09-15-m4-oars-randomized/qualification_pair_terminal_gate.json",
+    "sha256": "d359c5536147b74c4255a3edf090d98460cff3c8fae4507ac9dcdef15ec43ca9",
+    "status": "PASS"
+  },
+  "run_count": 20,
+  "runs": [
+    {"arm":"oars","assignment_domain":"m4-oars-confirmatory-pair-01-v1","assignment_seed":20261601,"global_sequence":1,"identity":"p01-oars","mode":"act","pair":1,"predecessor":null,"training_seed":20261501},
+    {"arm":"fifo","assignment_domain":"m4-oars-confirmatory-pair-01-v1","assignment_seed":20261601,"global_sequence":2,"identity":"p01-fifo","mode":"observe","pair":1,"predecessor":"p01-oars","training_seed":20261501},
+    {"arm":"oars","assignment_domain":"m4-oars-confirmatory-pair-02-v1","assignment_seed":20261602,"global_sequence":3,"identity":"p02-oars","mode":"act","pair":2,"predecessor":"p01-fifo","training_seed":20261502},
+    {"arm":"fifo","assignment_domain":"m4-oars-confirmatory-pair-02-v1","assignment_seed":20261602,"global_sequence":4,"identity":"p02-fifo","mode":"observe","pair":2,"predecessor":"p02-oars","training_seed":20261502},
+    {"arm":"oars","assignment_domain":"m4-oars-confirmatory-pair-03-v1","assignment_seed":20261603,"global_sequence":5,"identity":"p03-oars","mode":"act","pair":3,"predecessor":"p02-fifo","training_seed":20261503},
+    {"arm":"fifo","assignment_domain":"m4-oars-confirmatory-pair-03-v1","assignment_seed":20261603,"global_sequence":6,"identity":"p03-fifo","mode":"observe","pair":3,"predecessor":"p03-oars","training_seed":20261503},
+    {"arm":"fifo","assignment_domain":"m4-oars-confirmatory-pair-04-v1","assignment_seed":20261604,"global_sequence":7,"identity":"p04-fifo","mode":"observe","pair":4,"predecessor":"p03-fifo","training_seed":20261504},
+    {"arm":"oars","assignment_domain":"m4-oars-confirmatory-pair-04-v1","assignment_seed":20261604,"global_sequence":8,"identity":"p04-oars","mode":"act","pair":4,"predecessor":"p04-fifo","training_seed":20261504},
+    {"arm":"oars","assignment_domain":"m4-oars-confirmatory-pair-05-v1","assignment_seed":20261605,"global_sequence":9,"identity":"p05-oars","mode":"act","pair":5,"predecessor":"p04-oars","training_seed":20261505},
+    {"arm":"fifo","assignment_domain":"m4-oars-confirmatory-pair-05-v1","assignment_seed":20261605,"global_sequence":10,"identity":"p05-fifo","mode":"observe","pair":5,"predecessor":"p05-oars","training_seed":20261505},
+    {"arm":"fifo","assignment_domain":"m4-oars-confirmatory-pair-06-v1","assignment_seed":20261606,"global_sequence":11,"identity":"p06-fifo","mode":"observe","pair":6,"predecessor":"p05-fifo","training_seed":20261506},
+    {"arm":"oars","assignment_domain":"m4-oars-confirmatory-pair-06-v1","assignment_seed":20261606,"global_sequence":12,"identity":"p06-oars","mode":"act","pair":6,"predecessor":"p06-fifo","training_seed":20261506},
+    {"arm":"fifo","assignment_domain":"m4-oars-confirmatory-pair-07-v1","assignment_seed":20261607,"global_sequence":13,"identity":"p07-fifo","mode":"observe","pair":7,"predecessor":"p06-oars","training_seed":20261507},
+    {"arm":"oars","assignment_domain":"m4-oars-confirmatory-pair-07-v1","assignment_seed":20261607,"global_sequence":14,"identity":"p07-oars","mode":"act","pair":7,"predecessor":"p07-fifo","training_seed":20261507},
+    {"arm":"oars","assignment_domain":"m4-oars-confirmatory-pair-08-v1","assignment_seed":20261608,"global_sequence":15,"identity":"p08-oars","mode":"act","pair":8,"predecessor":"p07-oars","training_seed":20261508},
+    {"arm":"fifo","assignment_domain":"m4-oars-confirmatory-pair-08-v1","assignment_seed":20261608,"global_sequence":16,"identity":"p08-fifo","mode":"observe","pair":8,"predecessor":"p08-oars","training_seed":20261508},
+    {"arm":"fifo","assignment_domain":"m4-oars-confirmatory-pair-09-v1","assignment_seed":20261609,"global_sequence":17,"identity":"p09-fifo","mode":"observe","pair":9,"predecessor":"p08-fifo","training_seed":20261509},
+    {"arm":"oars","assignment_domain":"m4-oars-confirmatory-pair-09-v1","assignment_seed":20261609,"global_sequence":18,"identity":"p09-oars","mode":"act","pair":9,"predecessor":"p09-fifo","training_seed":20261509},
+    {"arm":"oars","assignment_domain":"m4-oars-confirmatory-pair-10-v1","assignment_seed":20261610,"global_sequence":19,"identity":"p10-oars","mode":"act","pair":10,"predecessor":"p09-oars","training_seed":20261510},
+    {"arm":"fifo","assignment_domain":"m4-oars-confirmatory-pair-10-v1","assignment_seed":20261610,"global_sequence":20,"identity":"p10-fifo","mode":"observe","pair":10,"predecessor":"p10-oars","training_seed":20261510}
+  ],
+  "runtime_source": {
+    "archive_sha256": "1d9e17a430fc1a184d767413de829ad9ee1375091485b5e7e0b24572f61f7690",
+    "commit": "90dbb632026591f24c966a43edd05b1e4933358b"
+  },
+  "schema": "m4-oars-randomized-confirmatory-run-manifest-v1",
+  "workload": "openai/gsm8k_main_train"
+}

@@ -1,0 +1,197 @@
+{
+  "analysis_plan_sha256": "66431cf76f3314b1bc1a0d6ece2735f9842e4790ed3eb673322c58b84d268d58",
+  "authorization_sha256": "644a66c15b83125b70add145cfed4a48daf7f80298a8d565165319cd27d5b1f2",
+  "candidate_count": 20,
+  "candidates": [
+    {
+      "bash_syntax": true,
+      "bytes": 16168468,
+      "embedded_python_blocks": 7,
+      "execution_authority": false,
+      "execution_denial_exercised": true,
+      "identity": "p01-oars",
+      "sha256": "0c342af915a8eb7834dccc50e3ec093f94b2bac93fd9f3d0d970b96aa3df05bf"
+    },
+    {
+      "bash_syntax": true,
+      "bytes": 16168501,
+      "embedded_python_blocks": 7,
+      "execution_authority": false,
+      "execution_denial_exercised": true,
+      "identity": "p01-fifo",
+      "sha256": "22f58c2dd869eab4e7662c8a3be786e18da6f121b0373d5df1d0d39103a3bef3"
+    },
+    {
+      "bash_syntax": true,
+      "bytes": 16168468,
+      "embedded_python_blocks": 7,
+      "execution_authority": false,
+      "execution_denial_exercised": true,
+      "identity": "p02-oars",
+      "sha256": "62ba06f3b8073e632f08cb153b50c724a2546eb7631fddec00ab03c1b44f7511"
+    },
+    {
+      "bash_syntax": true,
+      "bytes": 16168501,
+      "embedded_python_blocks": 7,
+      "execution_authority": false,
+      "execution_denial_exercised": true,
+      "identity": "p02-fifo",
+      "sha256": "6e8b5f370f88f201efa2401118df4521679783a143256884873a0c41fb2c39fa"
+    },
+    {
+      "bash_syntax": true,
+      "bytes": 16168468,
+      "embedded_python_blocks": 7,
+      "execution_authority": false,
+      "execution_denial_exercised": true,
+      "identity": "p03-oars",
+      "sha256": "cd41381694efa0813bed181b4197c3bbcc23e7668062d0f13923959b196c95e4"
+    },
+    {
+      "bash_syntax": true,
+      "bytes": 16168501,
+      "embedded_python_blocks": 7,
+      "execution_authority": false,
+      "execution_denial_exercised": true,
+      "identity": "p03-fifo",
+      "sha256": "cfa0198f344a52c844aae6fa3a53a8ee58f7be0508b66aa8b2e20a7590f066f4"
+    },
+    {
+      "bash_syntax": true,
+      "bytes": 16168501,
+      "embedded_python_blocks": 7,
+      "execution_authority": false,
+      "execution_denial_exercised": true,
+      "identity": "p04-fifo",
+      "sha256": "9c12c6561d0c814bed9e1b6896d7aaa218ae8499addd8629e2c61dedf2f94d59"
+    },
+    {
+      "bash_syntax": true,
+      "bytes": 16168468,
+      "embedded_python_blocks": 7,
+      "execution_authority": false,
+      "execution_denial_exercised": true,
+      "identity": "p04-oars",
+      "sha256": "99868f0bb7a7880f9b1d1115364e67b025154eb1ebe5b6339b2906e0143737ce"
+    },
+    {
+      "bash_syntax": true,
+      "bytes": 16168468,
+      "embedded_python_blocks": 7,
+      "execution_authority": false,
+      "execution_denial_exercised": true,
+      "identity": "p05-oars",
+      "sha256": "364b4fd4c0d90df36595996522887a7ddd775fdb8b552abd648c26f8df376134"
+    },
+    {
+      "bash_syntax": true,
+      "bytes": 16168502,
+      "embedded_python_blocks": 7,
+      "execution_authority": false,
+      "execution_denial_exercised": true,
+      "identity": "p05-fifo",
+      "sha256": "fe502add69b804d88b8a530efacc5c1b79436c2d27bd4e9219215aa51d7220b7"
+    },
+    {
+      "bash_syntax": true,
+      "bytes": 16168502,
+      "embedded_python_blocks": 7,
+      "execution_authority": false,
+      "execution_denial_exercised": true,
+      "identity": "p06-fifo",
+      "sha256": "054743c232dedaf4325d0544c46832b30cec8c6db91f575d0b6c970347f1bab9"
+    },
+    {
+      "bash_syntax": true,
+      "bytes": 16168469,
+      "embedded_python_blocks": 7,
+      "execution_authority": false,
+      "execution_denial_exercised": true,
+      "identity": "p06-oars",
+      "sha256": "943ba39ef0a498ba9cce043899c3ddee19bff623df39549b399ef7210b6ff3bd"
+    },
+    {
+      "bash_syntax": true,
+      "bytes": 16168502,
+      "embedded_python_blocks": 7,
+      "execution_authority": false,
+      "execution_denial_exercised": true,
+      "identity": "p07-fifo",
+      "sha256": "1512e37fe74a8945cb8632f850a32c0f768bea3dd5019689f35b34906339fe9f"
+    },
+    {
+      "bash_syntax": true,
+      "bytes": 16168469,
+      "embedded_python_blocks": 7,
+      "execution_authority": false,
+      "execution_denial_exercised": true,
+      "identity": "p07-oars",
+      "sha256": "3be846d70d63db7087ed2c628298bb0912d9368501296bca9cb5d1b01f39a248"
+    },
+    {
+      "bash_syntax": true,
+      "bytes": 16168469,
+      "embedded_python_blocks": 7,
+      "execution_authority": false,
+      "execution_denial_exercised": true,
+      "identity": "p08-oars",
+      "sha256": "4611ffecfa36f808947c233f036ec8300bc05b609e35632d3c5a110150b5173a"
+    },
+    {
+      "bash_syntax": true,
+      "bytes": 16168502,
+      "embedded_python_blocks": 7,
+      "execution_authority": false,
+      "execution_denial_exercised": true,
+      "identity": "p08-fifo",
+      "sha256": "0dd159173272fd17d37d71f6d6b6b68e4f52fa1e94591105e93800cc231ec1e5"
+    },
+    {
+      "bash_syntax": true,
+      "bytes": 16168502,
+      "embedded_python_blocks": 7,
+      "execution_authority": false,
+      "execution_denial_exercised": true,
+      "identity": "p09-fifo",
+      "sha256": "0e1de33f324cff7a775e71d99b463589a0c0b4978f2d67a9b7bad906f8b9096d"
+    },
+    {
+      "bash_syntax": true,
+      "bytes": 16168469,
+      "embedded_python_blocks": 7,
+      "execution_authority": false,
+      "execution_denial_exercised": true,
+      "identity": "p09-oars",
+      "sha256": "08ae0888de231d2203932f0f8fb34576b63376aaaf06c7976b80c73c586686af"
+    },
+    {
+      "bash_syntax": true,
+      "bytes": 16168471,
+      "embedded_python_blocks": 7,
+      "execution_authority": false,
+      "execution_denial_exercised": true,
+      "identity": "p10-oars",
+      "sha256": "adc6b4a37e516eb62416176691c1318bf9dbab5feb6f3d3f069e95d5b061f704"
+    },
+    {
+      "bash_syntax": true,
+      "bytes": 16168504,
+      "embedded_python_blocks": 7,
+      "execution_authority": false,
+      "execution_denial_exercised": true,
+      "identity": "p10-fifo",
+      "sha256": "ebb5d41b8bcc6124ef52ea6c5a2b95455921b33237565cb173922b5cf8f8bb26"
+    }
+  ],
+  "qualification_gate_sha256": "d359c5536147b74c4255a3edf090d98460cff3c8fae4507ac9dcdef15ec43ca9",
+  "run_manifest_sha256": "1f59d8cf3339d70b58b084af48bd2f192a880d7a43fca8190fb1d54649db5b39",
+  "runtime_source_commit": "90dbb632026591f24c966a43edd05b1e4933358b",
+  "runtime_source_sha256": "1d9e17a430fc1a184d767413de829ad9ee1375091485b5e7e0b24572f61f7690",
+  "schema": "m4-oars-randomized-confirmatory-package-validation-v1",
+  "source_validation": {
+    "member_count": 2446,
+    "symlink_count": 16
+  },
+  "status": "PASS_CLEAN_ROOM_NONLAUNCHABLE"
+}

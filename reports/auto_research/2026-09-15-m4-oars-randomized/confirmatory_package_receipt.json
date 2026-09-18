@@ -1,0 +1,43 @@
+{
+  "analysis": {
+    "analysis_plan_sha256": "66431cf76f3314b1bc1a0d6ece2735f9842e4790ed3eb673322c58b84d268d58",
+    "analyzer_sha256": "37d9553fec2bdd491d742341099f1a2916598b82b4d16eefb3022177385105b8",
+    "synthetic_tests": "5_passed"
+  },
+  "authorization": {
+    "eos_submission_authorized": false,
+    "model_weight_access_authorized": false,
+    "optimizer_initialization_authorized": false,
+    "scientific_acquisition_authorized": false,
+    "sha256": "644a66c15b83125b70add145cfed4a48daf7f80298a8d565165319cd27d5b1f2",
+    "training_authorized": false
+  },
+  "candidates": {
+    "all_distinct": true,
+    "all_dynamic_execution_denials_passed": true,
+    "count": 20,
+    "directory_outside_git": "session/20260914_m4_opportunity_control/oars-confirmatory-local-candidates",
+    "total_bytes": 323369705
+  },
+  "evaluation_contract": {
+    "dataset": "openai/gsm8k",
+    "deterministic_decoding": true,
+    "prompt_count": 1319,
+    "split": "main/test"
+  },
+  "known_unexercised_runtime_boundary": "The qualified training path has passed, but Llama terminal-policy conversion and the all-1319-prompt evaluator have not yet been exercised together on EOS.",
+  "package_builder_sha256": "c011007ffd0a2da1fb3313e87a09b2394fabf59c83fd98cdc5da586984dcc17e",
+  "qualification_gate_sha256": "d359c5536147b74c4255a3edf090d98460cff3c8fae4507ac9dcdef15ec43ca9",
+  "recommended_prelaunch_gate": "one credential-free no-training Llama terminal-export/conversion/evaluation plumbing preflight before authorizing the 20-run acquisition",
+  "run_manifest_sha256": "1f59d8cf3339d70b58b084af48bd2f192a880d7a43fca8190fb1d54649db5b39",
+  "runtime_source": {
+    "archive_sha256": "1d9e17a430fc1a184d767413de829ad9ee1375091485b5e7e0b24572f61f7690",
+    "commit": "90dbb632026591f24c966a43edd05b1e4933358b"
+  },
+  "schema": "m4-oars-randomized-confirmatory-package-receipt-v1",
+  "status": "FROZEN_CLEAN_ROOM_PASS_NONLAUNCHABLE",
+  "validation": {
+    "path": "reports/auto_research/2026-09-15-m4-oars-randomized/confirmatory_package_validation.json",
+    "sha256": "5e7eb77842d3a6d5149deb741da55e3277dba1fd39bc0373aee4f7310be64e3c"
+  }
+}
