@@ -1,0 +1,35 @@
+{
+  "child": {
+    "id": 68601714,
+    "jobs": {
+      "logs_after": 445937796,
+      "logs_before": 445937794,
+      "main": 445937795
+    },
+    "status_at_receipt": "running"
+  },
+  "command_boundary": "runllm.py --no_wait",
+  "guard": {
+    "automatic_extension": false,
+    "automatic_retry": false,
+    "replacement_attempt_limit": 1,
+    "replacement_attempts_consumed": 1,
+    "status": "SUBMITTED_NO_WAIT"
+  },
+  "launch_invoked_at": "2026-09-18T07:11:07.227833-07:00",
+  "manifest_sha256": "2e13ce4631139058dace452bb9ffdaa8aaa231d17b1e0eee6bdfbb93ec675ef5",
+  "package_commit": "1d5946a33f86ed057d2e6c3cb71f7b58991f1a7f",
+  "package_receipt_sha256": "b36058d7150fdc4b187c627b28c42814627c4ca7b26ad7dea5cd3478bfeb6050",
+  "schema": "m4-oars-actuation-qualification-replacement-submission-receipt-v1",
+  "scientific_artifacts_opened": false,
+  "scientific_outcome_acquisition": false,
+  "source_commit": "a9b5927de18d1a331aaf33aefb83a69d1187b75c",
+  "status": "SUBMITTED_RUNNING_STATUS_ONLY",
+  "upstream": {
+    "generate_job_id": 445936939,
+    "generate_job_status": "success",
+    "id": 68601608,
+    "trigger_job_id": 445936940,
+    "trigger_job_status": "running"
+  }
+}
