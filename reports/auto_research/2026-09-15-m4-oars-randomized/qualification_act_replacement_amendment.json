@@ -1,0 +1,47 @@
+{
+  "allowed_change": {
+    "actor_runtime_env_mode": "inherit_baked_single_node",
+    "base_dependency_source": "the pinned TransferQueue package already installed in the single-node image environment",
+    "guard": "exactly one live Ray node",
+    "removed_failure_surface": "redundant per-actor network installation from GitHub"
+  },
+  "authorization": {
+    "path": "reports/auto_research/2026-09-15-m4-oars-randomized/qualification_act_replacement_authorization.json",
+    "replacement_attempt_limit": 1
+  },
+  "failed_attempt": {
+    "classification": "INFRASTRUCTURE_CENSORED_BEFORE_OARS_EXECUTION",
+    "main_job_id": 443029384,
+    "receipt_path": "reports/auto_research/2026-09-15-m4-oars-randomized/qualification_act_failure_receipt.json",
+    "receipt_sha256": "c5ae2545dd393092b1f796222b55da18183ab5a6dd44850085a5d12bc6ca3640"
+  },
+  "frozen_inputs_preserved": {
+    "analyzer_sha256": "19dbdad60bd1352eb2430b00cbe763663194f97a8bce8333af382a676c3e5d92",
+    "controlled_release_assignment_domain": "m4-oars-qualification-pair-v1",
+    "gpus": 2,
+    "mode": "act",
+    "oars_service_budget_multiplier": 1.02,
+    "pair_training_seed": 20261421,
+    "protocol_sha256": "3bc49412a212419635e55b616e080708e17cf265c1926c1d93faebf072a87bfd",
+    "queue_deadline_override": null,
+    "scheduler_time_limit_seconds": 14400,
+    "selection_candidate_watermark": 8,
+    "trainer_steps": 64
+  },
+  "prohibited_changes": [
+    "scientific endpoint changes",
+    "seed or assignment changes",
+    "OARS policy or service-budget changes",
+    "training-step or resource changes",
+    "outcome inspection",
+    "automatic retry or extension"
+  ],
+  "repair_provenance": {
+    "backported_commit": "1eb92eb2081316f4acde4a9fd1a1f4662bb628d2",
+    "replacement_source_commit": "a9b5927de18d1a331aaf33aefb83a69d1187b75c",
+    "transferqueue_full_commit": "b266d39a15aae114730de36cf8317b6285436f7f"
+  },
+  "schema": "m4-oars-actuation-qualification-replacement-amendment-v1",
+  "scientific_outcome_acquisition": false,
+  "status": "FROZEN_BEFORE_REPLACEMENT_SUBMISSION"
+}

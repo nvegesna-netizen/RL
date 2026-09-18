@@ -1,0 +1,19 @@
+{
+  "automatic_extension": false,
+  "automatic_retry": false,
+  "eos_submission_authorized": true,
+  "gpus": 2,
+  "oars_actuation_authorized_for_qualification_only": true,
+  "pair_training_seed": 20261421,
+  "protocol_sha256": "3bc49412a212419635e55b616e080708e17cf265c1926c1d93faebf072a87bfd",
+  "queue_deadline_override": null,
+  "replacement_attempt_limit": 1,
+  "required_launcher": "runllm.py --no_wait",
+  "scheduler_time_limit_seconds": 14400,
+  "schema": "m4-oars-actuation-qualification-replacement-authorization-v1",
+  "scientific_outcome_acquisition_authorized": false,
+  "source_commit": "a9b5927de18d1a331aaf33aefb83a69d1187b75c",
+  "systems_qualification_authorized": true,
+  "trainer_steps": 64,
+  "user_authorization": "do the sequence. I authorize launches on eos"
+}

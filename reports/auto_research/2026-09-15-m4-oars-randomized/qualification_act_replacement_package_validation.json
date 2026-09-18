@@ -1,0 +1,31 @@
+{
+  "amendment_sha256": "38a23ae7829ef328013f9bac90c74859eb36c7d7ddf16be236f7be76e669637a",
+  "authorization_sha256": "78f89bf5ed94bd9a905d48a2a4e282c79bc9c7de91adf3bdda0ebd9e47b36e7b",
+  "baked_dependency_commit": "b266d39a15aae114730de36cf8317b6285436f7f",
+  "bash_syntax_passed": true,
+  "credential_free_static_gate_passed": true,
+  "deterministic_rebuild_passed": true,
+  "embedded_python_syntax_passed": true,
+  "manifest": {
+    "manifest_bytes": 16132502,
+    "manifest_sha256": "2e13ce4631139058dace452bb9ffdaa8aaa231d17b1e0eee6bdfbb93ec675ef5",
+    "mode": "act",
+    "name": "m4-oars-qualification-act-replacement"
+  },
+  "manifest_time_limit_seconds": 14400,
+  "megatron_sha256": "98d98920c0fea3d8ae1216a485dc9b5aa4fc966e469435ad61f2bae456de80d2",
+  "predecessor_scientific_config_and_analyzer_preserved": true,
+  "protocol_sha256": "3bc49412a212419635e55b616e080708e17cf265c1926c1d93faebf072a87bfd",
+  "queue_deadline_override": null,
+  "replacement_attempt_limit": 1,
+  "schema": "m4-oars-actuation-qualification-replacement-package-validation-v1",
+  "scientific_outcome_acquisition": false,
+  "single_node_inheritance_guard_executed": true,
+  "single_node_inheritance_guard_present": true,
+  "source_archive_member_count": 2435,
+  "source_archive_sha256": "e98214d90c622f63c31d93a6720a40db78653b154eb01c8ad94053ca4eb9dc26",
+  "source_archive_symlink_count": 16,
+  "source_commit": "a9b5927de18d1a331aaf33aefb83a69d1187b75c",
+  "status": "PASS_AUTHORIZED_UNSUBMITTED",
+  "terminal_artifact_hash_on_failure_passed": true
+}
