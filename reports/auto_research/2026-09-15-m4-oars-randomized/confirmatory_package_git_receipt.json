@@ -1,0 +1,12 @@
+{
+  "branch": "autoresearch/2026-09-15-m4-oars-randomized/confirmatory-package",
+  "candidate_manifests_committed": false,
+  "candidate_manifests_location": "session/20260914_m4_opportunity_control/oars-confirmatory-local-candidates",
+  "candidate_manifests_reason": "20 generated credential-free manifests total 323369705 bytes and remain outside Git; their individual SHA-256 digests are preserved in the committed validation record",
+  "package_commit": "f329cc77eadde07698f2177c7dd1fb37de8e6668",
+  "package_parent_commit": "2b441ebbbbfdd219b09d89f3ad991cb4a56de462",
+  "package_receipt_sha256": "3c64e7c632c9a31aa7df74e69438f59b630e2cf71cff27e0d9c77bf473f6a842",
+  "package_tree": "fe3c64fb90e232d7bd52ab3c1089ff0341926dc0",
+  "schema": "m4-oars-randomized-confirmatory-package-git-receipt-v1",
+  "status": "FROZEN_LOCAL_NOT_PUSHED_NOT_LAUNCHED"
+}
