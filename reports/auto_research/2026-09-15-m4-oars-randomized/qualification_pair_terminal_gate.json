@@ -1,0 +1,38 @@
+{
+  "confirmatory_acquisition_authorized": false,
+  "confirmatory_acquisition_launched": false,
+  "confirmatory_package_freeze_allowed": true,
+  "fifo": {
+    "archive_authentication_sha256": "20a47b463b27288f815dfe3bf688e57f97402cb0aebceca14903b2d3a1c31301",
+    "decision_count": 64,
+    "gradient_observer_duty": 0.0004656617347534255,
+    "job_id": 440834491,
+    "mode": "observe",
+    "oars_decision_duty": 0.000012523639440442945,
+    "runtime_seconds": 850.456432071,
+    "status": "PASS"
+  },
+  "interpretation": {
+    "confirmatory_estimate": false,
+    "scientific_outcome_acquisition": false,
+    "systems_qualification_only": true,
+    "training_quality_analyzed": false
+  },
+  "oars": {
+    "archive_authentication_sha256": "4cb1b96f30f564a0009be2eba91103ad81a2679af6f32ed7cd8b079c93050dcd",
+    "bounded_replenishment_exercised": true,
+    "candidate_excess_count": 1,
+    "decision_count": 64,
+    "gradient_observer_duty": 0.001862944842362997,
+    "job_id": 446349100,
+    "mode": "act",
+    "oars_decision_duty": 0.00002692652768785273,
+    "runtime_seconds": 390.801637919,
+    "source_commit": "90dbb632026591f24c966a43edd05b1e4933358b",
+    "status": "PASS"
+  },
+  "protocol_id": "m4-oars-randomized-actuation-v1",
+  "protocol_sha256": "3bc49412a212419635e55b616e080708e17cf265c1926c1d93faebf072a87bfd",
+  "qualification_gate": "PASS",
+  "schema": "m4-oars-randomized-qualification-pair-terminal-gate-v1"
+}

@@ -1,0 +1,42 @@
+{
+  "archives": {
+    "logs_after_sha256": "cb076a0a68ac111073821dadc0dd9d356d5bca4d68ab99d4766eb970c2dfc82b",
+    "main_sha256": "edc652eaf6c9ea43603fdda946a64f23404796807cbb8fb3ef66154e3677d395"
+  },
+  "artifact_manifest_exact_coverage": true,
+  "artifacts": {
+    "m4-oars-qualification-act-liveness-repair-gradient-observer-duty.json": {
+      "bytes": 463,
+      "copies_byte_identical": true,
+      "sha256": "d122ae8298ab7d4cb14b18a0b7657571a0f35b69db2ee62696fd970a86a2b351"
+    },
+    "m4-oars-qualification-act-liveness-repair-lifecycle.jsonl": {
+      "bytes": 8416602,
+      "copies_byte_identical": true,
+      "sha256": "85225c7eb0764f07bfbcac3c4ef9ce6f49831039e4aafbe79f9cba5c15430d20"
+    },
+    "m4-oars-qualification-act-liveness-repair-oars.jsonl": {
+      "bytes": 67079,
+      "copies_byte_identical": true,
+      "sha256": "e62815180ae9d1aa86239a9e3569cf31aab66031a80a9be3ef0c3f604f927bd9"
+    },
+    "m4-oars-qualification-act-liveness-repair-opportunity.jsonl": {
+      "bytes": 1316267,
+      "copies_byte_identical": true,
+      "sha256": "2e83a27f10b1187c05c9a35b33a2437de86571d8f610c93fedd574eaaad4878c"
+    },
+    "m4-oars-qualification-act-liveness-repair-result.json": {
+      "bytes": 748,
+      "copies_byte_identical": true,
+      "sha256": "898e0902aaa1d57cb18731580be20eafc7c4d4fdac0bd56f07b6ededcb545177"
+    },
+    "m4-oars-qualification-act-liveness-repair-run.log": {
+      "bytes": 223769,
+      "copies_byte_identical": true,
+      "sha256": "ea7ff154a5ef3fccb3314d79d06836355afabc44db95559c3ebaa382a0b25f21"
+    }
+  },
+  "result_opened": false,
+  "schema": "m4-oars-actuation-qualification-liveness-terminal-authentication-v1",
+  "status": "PASS_AUTHENTICATED_RESULT_UNOPENED"
+}
