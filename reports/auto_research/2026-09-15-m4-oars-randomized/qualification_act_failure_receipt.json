@@ -1,0 +1,57 @@
+{
+  "artifact_authentication": {
+    "path": "reports/auto_research/2026-09-15-m4-oars-randomized/qualification_act_failure_authentication.json",
+    "sha256": "af02537e2db1856b59860098fcfcc080c03e13dacf3151f516b4892e16a05046",
+    "status": "PASS_AUTHENTICATED_FAILURE_RESULT_UNOPENED"
+  },
+  "classification": "INFRASTRUCTURE_CENSORED_BEFORE_OARS_EXECUTION",
+  "confirmatory_acquisition_unlocked": false,
+  "execution": {
+    "child_id": 68263624,
+    "child_status": "failed",
+    "generate_job_id": 443027845,
+    "generate_job_status": "success",
+    "logs_after_job_id": 443029385,
+    "logs_after_job_status": "success",
+    "logs_before_job_id": 443029383,
+    "logs_before_job_status": "success",
+    "main_job_id": 443029384,
+    "main_job_status": "failed",
+    "slurm_job_id": 6042589,
+    "upstream_id": 68263389,
+    "upstream_status": "failed"
+  },
+  "failure_result": {
+    "mode": "act",
+    "scientific_outcome_acquisition": false,
+    "sha256": "a07838b040e05b40313da67fa81d15b25b57f379a3d608ce177abddd247fbbba",
+    "status": "TRAINING_FAILURE",
+    "training_exit_code": 1,
+    "training_quality_analyzed": false
+  },
+  "missing_required_scientific_artifacts": [
+    "gradient-observer-duty.json",
+    "lifecycle.jsonl",
+    "oars.jsonl",
+    "opportunity.jsonl"
+  ],
+  "protocol_disposition": {
+    "automatic_replacement_authorized": false,
+    "automatic_retry_authorized": false,
+    "attempt_consumed": true,
+    "confirmatory_study_locked": true,
+    "repair_requires_separately_versioned_amendment": true,
+    "replacement_requires_explicit_user_authorization": true
+  },
+  "root_cause": {
+    "failed_component": "Ray per-actor runtime-environment setup for TransferQueueController",
+    "failed_requirement": "TransferQueue @ git+https://github.com/Ascend/TransferQueue.git@b266d39",
+    "failure_stage": "before controller creation, scheduler decisions, or training updates",
+    "git_error": "fatal: could not read Username for 'https://github.com': No such device or address; fatal: expected flush after ref listing",
+    "source_path": "nemo_rl/data_plane/adapters/transfer_queue.py:_patch_tq_actor_runtime_env"
+  },
+  "schema": "m4-oars-actuation-qualification-act-failure-receipt-v1",
+  "scientific_interpretation": "No OARS systems or training-quality endpoint was observed. This failure supplies no evidence for or against OARS and cannot unlock confirmatory acquisition.",
+  "source_commit": "65b991e4ee7f2dfe64b32143b7678ddf7a46385d",
+  "status": "CLOSED_INFRASTRUCTURE_FAILURE_NO_SCIENTIFIC_RESULT"
+}

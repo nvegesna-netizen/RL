@@ -1,0 +1,28 @@
+{
+  "archives": {
+    "logs_after_sha256": "97bad3e3d15693d207a34e192e23c69189c3b284cd22251b65eb3f44bbe29dec",
+    "main_sha256": "5d325198b42eb8c78df7767431105f46d8aed87f21045d651fd72a9504a0e8d1"
+  },
+  "artifact_manifest_exact_coverage": true,
+  "artifacts": {
+    "m4-oars-qualification-act-result.json": {
+      "bytes": 196,
+      "copies_byte_identical": true,
+      "sha256": "a07838b040e05b40313da67fa81d15b25b57f379a3d608ce177abddd247fbbba"
+    },
+    "m4-oars-qualification-act-run.log": {
+      "bytes": 87876,
+      "copies_byte_identical": true,
+      "sha256": "b1360713a7a255bb6adc5ea5e5551ceb93e81af26fd1575420882d3c90130f40"
+    }
+  },
+  "missing_scientific_artifacts": [
+    "gradient-observer-duty.json",
+    "lifecycle.jsonl",
+    "oars.jsonl",
+    "opportunity.jsonl"
+  ],
+  "result_opened": false,
+  "schema": "m4-oars-actuation-qualification-failure-authentication-v1",
+  "status": "PASS_AUTHENTICATED_FAILURE_RESULT_UNOPENED"
+}
