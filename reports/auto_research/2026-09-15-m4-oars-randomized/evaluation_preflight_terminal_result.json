@@ -1,0 +1,72 @@
+{
+  "artifact_authentication_sha256": "e4b540b042c4c2d685e67fe9d5cbc62af6e27e42b87d4cd128d5e6addaadd4cc",
+  "automatic_extension": false,
+  "automatic_replacement": false,
+  "automatic_retry": false,
+  "checks": {
+    "binary_reward_serialization_pass": true,
+    "compact_schema_pass": true,
+    "compact_status_pass": true,
+    "evaluation_config_pass": true,
+    "evaluation_data_hash_pass": true,
+    "full_prompt_count_pass": true,
+    "hf_conversion_reload_pass": true,
+    "model_identity_pass": true,
+    "no_automatic_followup_pass": true,
+    "non_scientific_boundary_pass": true,
+    "prompt_manifest_hash_pass": true,
+    "resolved_model_pass": true,
+    "resolved_zero_step_pass": true,
+    "source_commit_pass": true,
+    "terminal_export_identity_pass": true,
+    "unique_prompt_identity_pass": true,
+    "zero_optimizer_pass": true,
+    "zero_step_terminal_export_pass": true,
+    "zero_training_pass": true
+  },
+  "compact_result_sha256": "286475ae9d3a1f6bafa9db6a1ba3544c02d4c02b232e600357922f06ca091f03",
+  "confirmatory_acquisition_launched": false,
+  "converted_hf_file_count": 6,
+  "evaluation": {
+    "binary_reward_count": 1319,
+    "dataset": "openai/gsm8k",
+    "interpretation": "deterministic base-model evaluator sanity check only; not a scientific endpoint",
+    "prompt_count": 1319,
+    "sanity_accuracy": 0.36239575435936316,
+    "sanity_correct_count": 478,
+    "split": "test",
+    "subset": "main",
+    "unique_prompt_count": 1319
+  },
+  "jobs": {
+    "logs_after": 446612170,
+    "logs_before": 446612168,
+    "main": 446612169
+  },
+  "live_log_checksum_race": {
+    "classification": "JET_OUTPUT_LOG_MUTATED_AFTER_EXIT_TRAP_HASH",
+    "declared_sha256": "bd69781b79ee83275fe421b0d38d5fc8c3e334f2ea32e40486ae5a270287fa2e",
+    "path": "jet_assets/output_logs/output_script-0.log",
+    "terminal_copies_byte_identical": true,
+    "terminal_sha256": "804a70de339bec40fa9b0ded6672f0302a02c7839ae19ceb02b32d070c9d501b"
+  },
+  "model": "meta-llama/Llama-3.2-1B-Instruct",
+  "pipelines": {
+    "child": 68680637,
+    "parent": 68680309
+  },
+  "result_opened_after_core_authentication": true,
+  "schema": "m4-oars-llama-evaluation-preflight-terminal-result-v1",
+  "scientific_outcome": false,
+  "source_commit": "90dbb632026591f24c966a43edd05b1e4933358b",
+  "status": "PASS_OPERATIONAL_PREFLIGHT",
+  "terminal_export": {
+    "optimizer_exported": false,
+    "resolved_config_path": "resolved_config.json",
+    "resumable_training_checkpoint": false,
+    "schema": "single-controller-terminal-policy-export-v1",
+    "train_steps": 0,
+    "trainer_version": 0,
+    "weights_path": "policy/weights"
+  }
+}
