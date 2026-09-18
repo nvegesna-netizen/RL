@@ -1,0 +1,35 @@
+{
+  "schema": "m4-oars-llama-evaluation-preflight-submission-receipt-v1",
+  "status": "SUBMITTED_NO_WAIT_NONTERMINAL",
+  "package_commit": "ad32370e486e07ed49d78d3e2ceec06d6b35306d",
+  "manifest_sha256": "7f69a44d4c2e20930097e7dc086c2e3727dd1b76f204cc1f79ca714aa86f8718",
+  "authorization_sha256": "6e6545403c7052d26379524f747f98d5e79fb20a0e0a73274c1740bc57b89081",
+  "package_validation_sha256": "98eb649a8cee934097dd0a92e4cc62c70f56b01d46b506a0b048709a887db1ff",
+  "one_shot_guard_sha256_after_submission": "f0a1e4b4acd881fc0f75fa44853a5b53b86bc53c5bb5d17afe15115e26efc72d",
+  "launch_invoked_at": "2026-09-18T15:11:19.916475-07:00",
+  "required_launcher": "runllm.py --no_wait",
+  "launcher_return_code": 0,
+  "submission_attempt_limit": 1,
+  "submission_attempts_consumed": 1,
+  "upstream_pipeline": {
+    "id": 68680309,
+    "url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/68680309",
+    "generate_job_id": 446609535,
+    "generate_status_at_topology_capture": "success"
+  },
+  "downstream_pipeline": {
+    "id": 68680637,
+    "url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/68680637",
+    "status_at_topology_capture": "running",
+    "logs_before_job_id": 446612168,
+    "workload_job_id": 446612169,
+    "logs_after_job_id": 446612170
+  },
+  "topology_captured_at": "2026-09-18T15:13:44-07:00",
+  "terminal_status_known": false,
+  "artifacts_opened": false,
+  "scientific_outcome_accessed": false,
+  "automatic_retry": false,
+  "automatic_replacement": false,
+  "automatic_extension": false
+}
