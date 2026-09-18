@@ -1,0 +1,35 @@
+{
+  "child": {
+    "id": 68651075,
+    "jobs": {
+      "logs_after": 446349119,
+      "logs_before": 446349098,
+      "main": 446349100
+    },
+    "status_at_receipt": "running"
+  },
+  "command_boundary": "runllm.py --no_wait",
+  "guard": {
+    "automatic_extension": false,
+    "automatic_retry": false,
+    "repair_attempt_limit": 1,
+    "repair_attempts_consumed": 1,
+    "status": "SUBMITTED_NO_WAIT"
+  },
+  "launch_invoked_at": "2026-09-18T11:58:15.920456-07:00",
+  "manifest_sha256": "bf82f7ce187a1127236f268a63b9c5474fe16562c36cc429253df650f51d4fc0",
+  "package_commit": "cef88a73a0cd15dd8d6bd8f021d352236d4b99d2",
+  "package_receipt_sha256": "819b1fd2975796ddf94436d8ae34ca7190224f40bd640488a48e115ffce32fa7",
+  "protocol_sha256": "3bc49412a212419635e55b616e080708e17cf265c1926c1d93faebf072a87bfd",
+  "schema": "m4-oars-actuation-qualification-liveness-submission-receipt-v1",
+  "scientific_artifacts_opened": false,
+  "scientific_outcome_acquisition": false,
+  "source_commit": "90dbb632026591f24c966a43edd05b1e4933358b",
+  "status": "SUBMITTED_RUNNING_STATUS_ONLY",
+  "upstream": {
+    "generate_job_id": 446344055,
+    "generate_job_status": "success",
+    "id": 68650696,
+    "status_at_receipt": "running"
+  }
+}
