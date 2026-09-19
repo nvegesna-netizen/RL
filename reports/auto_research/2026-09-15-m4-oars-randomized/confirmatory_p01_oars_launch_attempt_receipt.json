@@ -1,0 +1,43 @@
+{
+  "schema": "m4-oars-randomized-confirmatory-launch-attempt-receipt-v1",
+  "status": "CLIENT_TRANSPORT_INTERRUPTED_NO_PIPELINE_OBSERVED",
+  "identity": "p01-oars",
+  "global_sequence": 1,
+  "predecessor": null,
+  "package_commit": "461bd3fccfcb8214caf3e3475f81c4bfade7e7af",
+  "manifest_sha256": "c08d2788c28e55fe0e9f21550d6bc2183f485fa7bfed037aceb6b762f9420c66",
+  "acquisition_authorization_sha256": "90e48c344e5056121a020e16e0b49db0203026a8e524c73bf8101069b154384a",
+  "package_validation_sha256": "9cb053bc6d4ddac8b53107b3dcb04b847b125fc18fb49239a2c2671cd66e31e3",
+  "one_shot_guard": {
+    "path_outside_git": "session/20260914_m4_opportunity_control/confirmatory-p01-oars-one-shot-guard.json",
+    "sha256_after_diagnosis": "69020d8b915094df299e2c6163ecbc11e6aa7da2effff08e139894123bf85f55",
+    "submission_attempt_limit": 1,
+    "submission_attempts_consumed": 1,
+    "automatic_retry": false,
+    "automatic_replacement": false,
+    "automatic_extension": false
+  },
+  "launcher": {
+    "command_boundary": "runllm.py --no_wait",
+    "invoked_at": "2026-09-18T17:40:34.667237-07:00",
+    "local_wrapper_runtime_limit_seconds": 120,
+    "local_wrapper_terminated_before_return": true,
+    "launch_log_created": false,
+    "returned_pipeline_id": null
+  },
+  "status_only_gitlab_audit": {
+    "audited_at": "2026-09-18T17:43:46-07:00",
+    "pipelines_created_at_or_after_invocation": 0,
+    "latest_observed_pipeline_id": 68699878,
+    "latest_observed_pipeline_created_at": "2026-09-18T17:37:10.022-07:00",
+    "latest_observed_pipeline_precedes_invocation": true
+  },
+  "interpretation": {
+    "eos_submission_observed": false,
+    "scientific_run_started": false,
+    "scientific_artifact_opened": false,
+    "scientific_outcome_accessed": false,
+    "classification": "client_transport_interruption_before_observable_submission",
+    "next_gate": "separately_frozen_transport_replacement_authority_required"
+  }
+}
