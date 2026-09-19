@@ -143,7 +143,7 @@ test ! -e "$RUN_REPO"
 mkdir -p "$ASSETS" "$METRICS" "$EVAL_OUTPUT"
 finalize_artifacts() {{
   set +e
-  (cd "$ASSETS"; find . -type f ! -name artifacts.sha256 ! -name .artifacts.sha256.tmp -print0 | sort -z | xargs -0 sha256sum > .artifacts.sha256.tmp && mv .artifacts.sha256.tmp artifacts.sha256)
+  (cd "$ASSETS"; find . -type f ! -path './jet_assets/output_logs/*' ! -name artifacts.sha256 ! -name .artifacts.sha256.tmp -print0 | sort -z | xargs -0 sha256sum > .artifacts.sha256.tmp && mv .artifacts.sha256.tmp artifacts.sha256)
 }}
 trap finalize_artifacts EXIT
 printf %s '{payload(args.source)}' | base64 -d > "$SOURCE"

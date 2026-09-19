@@ -1,0 +1,61 @@
+{
+  "schema": "m4-oars-randomized-confirmatory-finalizer-repair-amendment-v1",
+  "status": "FROZEN_BEFORE_OFFLINE_PACKAGE_REBUILD",
+  "scope": "repair_only_the_workload_artifact_hash_ownership_boundary_in_all_20_nonlaunchable_confirmatory_candidates",
+  "evidence": {
+    "evaluation_preflight_terminal_authentication_sha256": "e4b540b042c4c2d685e67fe9d5cbc62af6e27e42b87d4cd128d5e6addaadd4cc",
+    "evaluation_preflight_terminal_result_sha256": "0a963ee55475483e4e5d511c632e9e0bb6b1ded0d6058e6c79125793bf38ab2f",
+    "classification": "JET_OUTPUT_LOG_MUTATED_AFTER_EXIT_TRAP_HASH",
+    "affected_path": "jet_assets/output_logs/output_script-0.log"
+  },
+  "historical_package": {
+    "package_commit": "f329cc77eadde07698f2177c7dd1fb37de8e6668",
+    "provenance_commit": "3b8851088a0ee77f2729191c3167f7b9bd448b57",
+    "builder_sha256": "c011007ffd0a2da1fb3313e87a09b2394fabf59c83fd98cdc5da586984dcc17e",
+    "validator_sha256": "e875b4630900a94c95e422a6d5bc12df4c1ede4d3391ac0c2723b23a87d98a4e",
+    "validation_sha256": "5e7eb77842d3a6d5149deb741da55e3277dba1fd39bc0373aee4f7310be64e3c",
+    "receipt_sha256": "3c64e7c632c9a31aa7df74e69438f59b630e2cf71cff27e0d9c77bf473f6a842"
+  },
+  "allowed_change": {
+    "old": "find . -type f ! -name artifacts.sha256 ! -name .artifacts.sha256.tmp -print0",
+    "new": "find . -type f ! -path './jet_assets/output_logs/*' ! -name artifacts.sha256 ! -name .artifacts.sha256.tmp -print0",
+    "reason": "JET owns and continues mutating output logs after the workload EXIT trap; workload-owned scientific artifacts remain covered"
+  },
+  "unchanged_frozen_inputs": {
+    "runtime_source_commit": "90dbb632026591f24c966a43edd05b1e4933358b",
+    "runtime_source_archive_sha256": "1d9e17a430fc1a184d767413de829ad9ee1375091485b5e7e0b24572f61f7690",
+    "megatron_archive_sha256": "98d98920c0fea3d8ae1216a485dc9b5aa4fc966e469435ad61f2bae456de80d2",
+    "protocol_sha256": "3bc49412a212419635e55b616e080708e17cf265c1926c1d93faebf072a87bfd",
+    "run_manifest_sha256": "1f59d8cf3339d70b58b084af48bd2f192a880d7a43fca8190fb1d54649db5b39",
+    "analysis_plan_sha256": "66431cf76f3314b1bc1a0d6ece2735f9842e4790ed3eb673322c58b84d268d58",
+    "qualification_gate_sha256": "d359c5536147b74c4255a3edf090d98460cff3c8fae4507ac9dcdef15ec43ca9",
+    "local_authorization_sha256": "644a66c15b83125b70add145cfed4a48daf7f80298a8d565165319cd27d5b1f2"
+  },
+  "required_validation": {
+    "candidate_count": 20,
+    "preserve_historical_candidates": true,
+    "deterministic_rebuild": true,
+    "exact_old_to_new_single_replacement": true,
+    "dynamic_live_log_exclusion_test": true,
+    "dynamic_workload_artifact_inclusion_test": true,
+    "dynamic_execution_denial": true
+  },
+  "prohibited_changes": [
+    "run order, pairing, seeds, or assignment domains",
+    "FIFO or OARS policy and service budget",
+    "model, data, prompt selection, decoding, training, or resources",
+    "terminal export, conversion, evaluation, result schema, or analysis rules",
+    "EOS authority, model access authority, optimizer authority, training authority, or scientific acquisition authority",
+    "retry, replacement, or extension authority"
+  ],
+  "execution_authority": {
+    "eos_submission_authorized": false,
+    "model_weight_access_authorized": false,
+    "optimizer_initialization_authorized": false,
+    "training_authorized": false,
+    "scientific_acquisition_authorized": false,
+    "automatic_retry": false,
+    "automatic_replacement": false,
+    "automatic_extension": false
+  }
+}

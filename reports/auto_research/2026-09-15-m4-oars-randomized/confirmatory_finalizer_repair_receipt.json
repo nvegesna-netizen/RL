@@ -1,0 +1,43 @@
+{
+  "amendment": {
+    "path": "reports/auto_research/2026-09-15-m4-oars-randomized/confirmatory_finalizer_repair_amendment.json",
+    "sha256": "fbe1d0cdfc08e5b05994741c0b9c0d57653ea1a23a95960df1fa1754b092d3f7"
+  },
+  "authorization": {
+    "eos_submission_authorized": false,
+    "model_weight_access_authorized": false,
+    "optimizer_initialization_authorized": false,
+    "scientific_acquisition_authorized": false,
+    "training_authorized": false
+  },
+  "candidates": {
+    "all_distinct": true,
+    "all_dynamic_execution_denials_passed": true,
+    "count": 20,
+    "directory_outside_git": "session/20260914_m4_opportunity_control/oars-confirmatory-finalizer-repaired-candidates",
+    "historical_directory_preserved": "session/20260914_m4_opportunity_control/oars-confirmatory-local-candidates",
+    "total_bytes": 323370445
+  },
+  "change_control": {
+    "change_from_each_historical_candidate": "EXACT_SINGLE_FINALIZER_REPLACEMENT",
+    "jet_managed_live_logs_excluded_from_workload_hash_manifest": true,
+    "run_design_or_scientific_change": false,
+    "stable_non_log_jet_assets_remain_authenticated": true,
+    "workload_owned_artifacts_remain_authenticated": true
+  },
+  "package_builder_sha256": "13291df374756d9f172425ea2f57437fd219b9002467991503f308c9ff7a7fc1",
+  "package_validator_sha256": "76b4d7ba634f0b086273efda8d7577941f8510c9d712c2d89efcf9a182bfd1a9",
+  "preflight_evidence": {
+    "classification": "JET_OUTPUT_LOG_MUTATED_AFTER_EXIT_TRAP_HASH",
+    "evaluation_preflight_terminal_authentication_sha256": "e4b540b042c4c2d685e67fe9d5cbc62af6e27e42b87d4cd128d5e6addaadd4cc",
+    "evaluation_preflight_terminal_result_sha256": "0a963ee55475483e4e5d511c632e9e0bb6b1ded0d6058e6c79125793bf38ab2f",
+    "operational_gate": "PASS_NO_TRAINING_FULL_EVALUATOR",
+    "scientific_endpoint": false
+  },
+  "schema": "m4-oars-randomized-confirmatory-finalizer-repair-receipt-v1",
+  "status": "REPAIRED_CLEAN_ROOM_PASS_NONLAUNCHABLE",
+  "validation": {
+    "path": "reports/auto_research/2026-09-15-m4-oars-randomized/confirmatory_finalizer_repair_validation.json",
+    "sha256": "b28cb2a8ced5eeddc7a05973d0bd388e96d2656b3d755f8b3346e63c4d0dde2d"
+  }
+}

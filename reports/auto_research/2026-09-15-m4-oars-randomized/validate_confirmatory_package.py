@@ -42,10 +42,180 @@ EXPECTED_ORDER = [
     ("oars", "fifo"),
 ]
 
+OLD_FINALIZER_FIND = (
+    "find . -type f ! -name artifacts.sha256 ! -name .artifacts.sha256.tmp -print0"
+)
+NEW_FINALIZER_FIND = (
+    "find . -type f ! -path './jet_assets/output_logs/*' "
+    "! -name artifacts.sha256 ! -name .artifacts.sha256.tmp -print0"
+)
+HISTORICAL_VALIDATION_SHA256 = (
+    "5e7eb77842d3a6d5149deb741da55e3277dba1fd39bc0373aee4f7310be64e3c"
+)
+PREFLIGHT_AUTHENTICATION_SHA256 = (
+    "e4b540b042c4c2d685e67fe9d5cbc62af6e27e42b87d4cd128d5e6addaadd4cc"
+)
+PREFLIGHT_RESULT_SHA256 = (
+    "0a963ee55475483e4e5d511c632e9e0bb6b1ded0d6058e6c79125793bf38ab2f"
+)
+
 
 def sha256(path: Path) -> str:
     """Return the SHA-256 digest of a file."""
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def validate_amendment(path: Path) -> dict[str, object]:
+    """Validate the frozen repair boundary and return its decoded record."""
+    amendment = json.loads(path.read_bytes())
+    authority = amendment["execution_authority"]
+    required = amendment["required_validation"]
+    frozen = amendment["unchanged_frozen_inputs"]
+    historical = amendment["historical_package"]
+    if (
+        amendment["schema"]
+        != "m4-oars-randomized-confirmatory-finalizer-repair-amendment-v1"
+        or amendment["status"] != "FROZEN_BEFORE_OFFLINE_PACKAGE_REBUILD"
+        or amendment["scope"]
+        != (
+            "repair_only_the_workload_artifact_hash_ownership_boundary_in_all_20_"
+            "nonlaunchable_confirmatory_candidates"
+        )
+        or amendment["allowed_change"]
+        != {
+            "old": OLD_FINALIZER_FIND,
+            "new": NEW_FINALIZER_FIND,
+            "reason": (
+                "JET owns and continues mutating output logs after the workload "
+                "EXIT trap; workload-owned scientific artifacts remain covered"
+            ),
+        }
+        or amendment["evidence"]
+        != {
+            "evaluation_preflight_terminal_authentication_sha256": (
+                PREFLIGHT_AUTHENTICATION_SHA256
+            ),
+            "evaluation_preflight_terminal_result_sha256": PREFLIGHT_RESULT_SHA256,
+            "classification": "JET_OUTPUT_LOG_MUTATED_AFTER_EXIT_TRAP_HASH",
+            "affected_path": "jet_assets/output_logs/output_script-0.log",
+        }
+        or frozen
+        != {
+            "runtime_source_commit": SOURCE_COMMIT,
+            "runtime_source_archive_sha256": SOURCE_SHA256,
+            "megatron_archive_sha256": MEGATRON_SHA256,
+            "protocol_sha256": PROTOCOL_SHA256,
+            "run_manifest_sha256": RUN_MANIFEST_SHA256,
+            "analysis_plan_sha256": ANALYSIS_PLAN_SHA256,
+            "qualification_gate_sha256": QUALIFICATION_GATE_SHA256,
+            "local_authorization_sha256": AUTHORIZATION_SHA256,
+        }
+        or historical["package_commit"] != "f329cc77eadde07698f2177c7dd1fb37de8e6668"
+        or historical["provenance_commit"] != "3b8851088a0ee77f2729191c3167f7b9bd448b57"
+        or historical["builder_sha256"]
+        != "c011007ffd0a2da1fb3313e87a09b2394fabf59c83fd98cdc5da586984dcc17e"
+        or historical["validator_sha256"]
+        != "e875b4630900a94c95e422a6d5bc12df4c1ede4d3391ac0c2723b23a87d98a4e"
+        or historical["validation_sha256"] != HISTORICAL_VALIDATION_SHA256
+        or historical["receipt_sha256"]
+        != "3c64e7c632c9a31aa7df74e69438f59b630e2cf71cff27e0d9c77bf473f6a842"
+        or required
+        != {
+            "candidate_count": 20,
+            "preserve_historical_candidates": True,
+            "deterministic_rebuild": True,
+            "exact_old_to_new_single_replacement": True,
+            "dynamic_live_log_exclusion_test": True,
+            "dynamic_workload_artifact_inclusion_test": True,
+            "dynamic_execution_denial": True,
+        }
+        or amendment["prohibited_changes"]
+        != [
+            "run order, pairing, seeds, or assignment domains",
+            "FIFO or OARS policy and service budget",
+            "model, data, prompt selection, decoding, training, or resources",
+            (
+                "terminal export, conversion, evaluation, result schema, or "
+                "analysis rules"
+            ),
+            (
+                "EOS authority, model access authority, optimizer authority, "
+                "training authority, or scientific acquisition authority"
+            ),
+            "retry, replacement, or extension authority",
+        ]
+        or authority
+        != {
+            "eos_submission_authorized": False,
+            "model_weight_access_authorized": False,
+            "optimizer_initialization_authorized": False,
+            "training_authorized": False,
+            "scientific_acquisition_authorized": False,
+            "automatic_retry": False,
+            "automatic_replacement": False,
+            "automatic_extension": False,
+        }
+    ):
+        raise RuntimeError("frozen finalizer-repair amendment differs")
+    return amendment
+
+
+def exercise_finalizer(rendered: str, identity: str) -> dict[str, object]:
+    """Run only the rendered hash finalizer against synthetic owned/live files."""
+    match = re.search(
+        r"(finalize_artifacts\(\) \{\n.*?\n\})", rendered, flags=re.DOTALL
+    )
+    if match is None:
+        raise RuntimeError(f"{identity}: finalizer function missing")
+    with tempfile.TemporaryDirectory(
+        prefix=f"m4-oars-confirmatory-finalizer-{identity}-"
+    ) as raw:
+        assets = Path(raw)
+        (assets / "evaluation").mkdir()
+        (assets / "jet_assets" / "output_logs" / "nested").mkdir(parents=True)
+        (assets / "core.txt").write_text("core\n")
+        (assets / "evaluation" / "nested.txt").write_text("nested\n")
+        (assets / "jet_assets" / "stable.txt").write_text("stable\n")
+        live_log = assets / "jet_assets" / "output_logs" / "output_script-0.log"
+        live_log.write_text("JET may append after the workload EXIT trap\n")
+        (assets / "jet_assets" / "output_logs" / "nested" / "later.log").write_text(
+            "nested JET live log\n"
+        )
+        program = (
+            'set -euo pipefail\nASSETS="$1"\n'
+            + match.group(1)
+            + "\nfinalize_artifacts\n"
+        )
+        subprocess.run(
+            ["bash", "-s", "--", str(assets)],
+            input=program,
+            text=True,
+            check=True,
+            capture_output=True,
+        )
+        entries = {
+            line.split(maxsplit=1)[1]: line.split(maxsplit=1)[0]
+            for line in (assets / "artifacts.sha256").read_text().splitlines()
+        }
+        if set(entries) != {
+            "./core.txt",
+            "./evaluation/nested.txt",
+            "./jet_assets/stable.txt",
+        }:
+            raise RuntimeError(f"{identity}: finalizer ownership boundary differs")
+        expected_hashes = {
+            "./core.txt": sha256(assets / "core.txt"),
+            "./evaluation/nested.txt": sha256(assets / "evaluation" / "nested.txt"),
+            "./jet_assets/stable.txt": sha256(assets / "jet_assets" / "stable.txt"),
+        }
+        if entries != expected_hashes:
+            raise RuntimeError(f"{identity}: workload artifacts were not authenticated")
+    return {
+        "jet_managed_live_log_excluded": True,
+        "nested_jet_managed_live_log_excluded": True,
+        "stable_non_log_jet_asset_included": True,
+        "workload_owned_artifacts_included": True,
+    }
 
 
 def validate_design(
@@ -168,13 +338,30 @@ def validate_source(source: Path, output: Path) -> dict[str, int]:
 
 def validate_candidate(
     path: Path,
+    historical_path: Path,
     run: dict[str, object],
     payload_hashes: list[str],
+    historical_sha256: str,
 ) -> dict[str, object]:
     """Validate one manifest, embedded programs, payloads, and authority denial."""
     manifest = json.loads(path.read_bytes())
+    historical_manifest = json.loads(historical_path.read_bytes())
     spec = manifest["spec"]
     identity = str(run["identity"])
+    script = spec["script"]
+    historical_script = historical_manifest["spec"]["script"]
+    if (
+        sha256(historical_path) != historical_sha256
+        or historical_script.count(OLD_FINALIZER_FIND) != 1
+        or historical_script.count(NEW_FINALIZER_FIND) != 0
+        or script.count(OLD_FINALIZER_FIND) != 0
+        or script.count(NEW_FINALIZER_FIND) != 1
+    ):
+        raise RuntimeError(f"{identity}: historical/repaired finalizer differs")
+    restored = json.loads(path.read_bytes())
+    restored["spec"]["script"] = script.replace(NEW_FINALIZER_FIND, OLD_FINALIZER_FIND)
+    if restored != historical_manifest:
+        raise RuntimeError(f"{identity}: change exceeds exact finalizer replacement")
     if (
         manifest["format_version"] != 1
         or manifest["labels"] != {"target": "silicon"}
@@ -187,7 +374,7 @@ def validate_candidate(
         or spec["image_source"] != {"local_path": IMAGE_PATH}
     ):
         raise RuntimeError(f"{identity}: JET boundary differs")
-    rendered = spec["script"].format(
+    rendered = script.format(
         assets_dir=f"/tmp/m4-oars-confirmatory-{identity}"
     )
     subprocess.run(["bash", "-n"], input=rendered, text=True, check=True)
@@ -266,14 +453,18 @@ def validate_candidate(
     )
     if not denial_index < extraction_index < training_index:
         raise RuntimeError(f"{identity}: authority denial is not fail-closed")
+    finalizer_test = exercise_finalizer(rendered, identity)
     return {
         "bytes": path.stat().st_size,
+        "change_from_historical": "EXACT_SINGLE_FINALIZER_REPLACEMENT",
         "identity": identity,
         "sha256": sha256(path),
+        "historical_sha256": historical_sha256,
         "bash_syntax": True,
         "embedded_python_blocks": len(blocks),
         "execution_authority": False,
         "execution_denial_exercised": True,
+        **finalizer_test,
     }
 
 
@@ -287,8 +478,11 @@ def main() -> None:
     parser.add_argument("--analysis-plan", type=Path, required=True)
     parser.add_argument("--qualification-gate", type=Path, required=True)
     parser.add_argument("--authorization", type=Path, required=True)
+    parser.add_argument("--amendment", type=Path, required=True)
     parser.add_argument("--builder", type=Path, required=True)
     parser.add_argument("--candidates-dir", type=Path, required=True)
+    parser.add_argument("--historical-candidates-dir", type=Path, required=True)
+    parser.add_argument("--historical-validation", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     for path, expected in (
@@ -299,9 +493,25 @@ def main() -> None:
         (args.analysis_plan, ANALYSIS_PLAN_SHA256),
         (args.qualification_gate, QUALIFICATION_GATE_SHA256),
         (args.authorization, AUTHORIZATION_SHA256),
+        (args.historical_validation, HISTORICAL_VALIDATION_SHA256),
     ):
         if sha256(path) != expected:
             raise RuntimeError(f"frozen clean-room input moved: {path.name}")
+    amendment = validate_amendment(args.amendment)
+    historical_validation = json.loads(args.historical_validation.read_bytes())
+    if (
+        historical_validation["schema"]
+        != "m4-oars-randomized-confirmatory-package-validation-v1"
+        or historical_validation["status"] != "PASS_CLEAN_ROOM_NONLAUNCHABLE"
+        or historical_validation["candidate_count"] != 20
+    ):
+        raise RuntimeError("historical validation record differs")
+    historical_hashes = {
+        record["identity"]: record["sha256"]
+        for record in historical_validation["candidates"]
+    }
+    if len(historical_hashes) != 20:
+        raise RuntimeError("historical validation candidate set differs")
     runs = validate_design(
         args.protocol,
         args.run_manifest,
@@ -325,6 +535,7 @@ def main() -> None:
         for run in runs:
             identity = str(run["identity"])
             candidate = args.candidates_dir / f"{identity}.json"
+            historical_candidate = args.historical_candidates_dir / f"{identity}.json"
             rebuilt = root / f"{identity}.json"
             subprocess.run(
                 [
@@ -355,21 +566,43 @@ def main() -> None:
             )
             if rebuilt.read_bytes() != candidate.read_bytes():
                 raise RuntimeError(f"{identity}: deterministic rebuild differs")
-            records.append(validate_candidate(candidate, run, payload_hashes))
+            records.append(
+                validate_candidate(
+                    candidate,
+                    historical_candidate,
+                    run,
+                    payload_hashes,
+                    historical_hashes[identity],
+                )
+            )
     if len({record["sha256"] for record in records}) != 20:
         raise RuntimeError("candidate manifests are not all distinct")
     result = {
         "analysis_plan_sha256": ANALYSIS_PLAN_SHA256,
+        "amendment_sha256": sha256(args.amendment),
         "authorization_sha256": AUTHORIZATION_SHA256,
         "candidate_count": 20,
         "candidates": records,
+        "dynamic_finalizer_test": {
+            "jet_managed_live_log_excluded_in_all_candidates": True,
+            "nested_jet_managed_live_log_excluded_in_all_candidates": True,
+            "stable_non_log_jet_asset_included_in_all_candidates": True,
+            "workload_owned_artifacts_included_in_all_candidates": True,
+        },
+        "exact_change_from_historical": {
+            "new": amendment["allowed_change"]["new"],
+            "old": amendment["allowed_change"]["old"],
+            "single_replacement_in_all_candidates": True,
+        },
+        "historical_candidates_preserved": True,
+        "historical_validation_sha256": HISTORICAL_VALIDATION_SHA256,
         "qualification_gate_sha256": QUALIFICATION_GATE_SHA256,
         "run_manifest_sha256": RUN_MANIFEST_SHA256,
         "runtime_source_commit": SOURCE_COMMIT,
         "runtime_source_sha256": SOURCE_SHA256,
-        "schema": "m4-oars-randomized-confirmatory-package-validation-v1",
+        "schema": ("m4-oars-randomized-confirmatory-finalizer-repair-validation-v1"),
         "source_validation": source_validation,
-        "status": "PASS_CLEAN_ROOM_NONLAUNCHABLE",
+        "status": "PASS_REPAIRED_CLEAN_ROOM_NONLAUNCHABLE",
     }
     args.output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
     print(json.dumps(result, indent=2, sort_keys=True))
