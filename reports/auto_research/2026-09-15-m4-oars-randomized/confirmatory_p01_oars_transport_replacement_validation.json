@@ -1,0 +1,40 @@
+{
+  "schema": "m4-oars-randomized-confirmatory-transport-replacement-validation-v1",
+  "status": "PASS_REPLACEMENT_AUTHORIZED_UNSUBMITTED",
+  "authorization_sha256": "e995d90a49a1b71586e7d91f213cd1bd5b373d0c4aeb77f790899aa1114d43ae",
+  "identity": "p01-oars",
+  "global_sequence": 1,
+  "predecessor": null,
+  "manifest": {
+    "sha256": "c08d2788c28e55fe0e9f21550d6bc2183f485fa7bfed037aceb6b762f9420c66",
+    "matches_clean_room_acquisition_package": true,
+    "scientific_or_runtime_change": false,
+    "scheduler_time_limit_seconds": 14400,
+    "queue_deadline_present": false
+  },
+  "prior_attempt": {
+    "receipt_sha256": "91d06c4b8dfe193f1b3b40ea57791ace2b261eee096de66e38b6d9f0ec37c6db",
+    "guard_sha256": "69020d8b915094df299e2c6163ecbc11e6aa7da2effff08e139894123bf85f55",
+    "guard_consumed": true,
+    "returned_pipeline_id": null,
+    "launch_log_created": false,
+    "scientific_run_started": false
+  },
+  "delayed_pipeline_audit": {
+    "audited_at": "2026-09-19T02:21:52-07:00",
+    "audit_method": "locally_filter_latest_100_dlalgo_ci_eos_pipelines_by_created_at",
+    "original_invocation_window_start": "2026-09-18T17:40:34.667237-07:00",
+    "original_invocation_window_end": "2026-09-18T18:10:00-07:00",
+    "pipelines_in_original_invocation_window": 0,
+    "delayed_or_hidden_submission_observed": false
+  },
+  "replacement": {
+    "attempt_limit": 1,
+    "local_client_runtime_allowance_seconds": 900,
+    "required_launcher": "runllm.py --no_wait",
+    "outcome_embargo_preserved": true,
+    "automatic_retry": false,
+    "automatic_replacement": false,
+    "automatic_extension": false
+  }
+}

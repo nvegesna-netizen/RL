@@ -1,0 +1,29 @@
+{
+  "schema": "m4-oars-randomized-confirmatory-transport-replacement-package-receipt-v1",
+  "status": "FROZEN_VALIDATED_UNSUBMITTED",
+  "identity": "p01-oars",
+  "authorization": {
+    "path": "reports/auto_research/2026-09-15-m4-oars-randomized/confirmatory_p01_oars_transport_replacement_authorization.json",
+    "sha256": "e995d90a49a1b71586e7d91f213cd1bd5b373d0c4aeb77f790899aa1114d43ae"
+  },
+  "validation": {
+    "path": "reports/auto_research/2026-09-15-m4-oars-randomized/confirmatory_p01_oars_transport_replacement_validation.json",
+    "sha256": "bc5611ced01f2615a4481ca463a3a9e42e9f0d5352f9d5f81c979d604ae8f2a9"
+  },
+  "manifest_sha256": "c08d2788c28e55fe0e9f21550d6bc2183f485fa7bfed037aceb6b762f9420c66",
+  "scientific_or_runtime_change": false,
+  "transport_change": {
+    "previous_local_client_runtime_limit_seconds": 120,
+    "replacement_local_client_runtime_allowance_seconds": 900,
+    "eos_scheduler_time_limit_seconds": 14400,
+    "queue_deadline_override": null
+  },
+  "execution": {
+    "required_launcher": "runllm.py --no_wait",
+    "replacement_attempt_limit": 1,
+    "submitted": false,
+    "automatic_retry": false,
+    "automatic_replacement": false,
+    "automatic_extension": false
+  }
+}
