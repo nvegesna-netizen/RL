@@ -1,0 +1,40 @@
+{
+  "schema": "m4-oars-randomized-confirmatory-acquisition-amendment-v1",
+  "status": "FROZEN_BEFORE_ACQUISITION_PACKAGE_BUILD",
+  "purpose": "replace_only_the_local_no_execution_authority_with_user_authorized_strict_sequence_acquisition_authority",
+  "repair_provenance": {
+    "repair_commit": "4416ee32b144bb9345b333ed40a4d336d4a01eb7",
+    "repair_amendment_sha256": "fbe1d0cdfc08e5b05994741c0b9c0d57653ea1a23a95960df1fa1754b092d3f7",
+    "repair_validation_sha256": "b28cb2a8ced5eeddc7a05973d0bd388e96d2656b3d755f8b3346e63c4d0dde2d",
+    "repair_receipt_sha256": "8fb91697eed217fd58fd08ae6673394523aeb92612550774c7ac488a33e69735",
+    "repair_builder_sha256": "13291df374756d9f172425ea2f57437fd219b9002467991503f308c9ff7a7fc1",
+    "repair_validator_sha256": "76b4d7ba634f0b086273efda8d7577941f8510c9d712c2d89efcf9a182bfd1a9"
+  },
+  "allowed_package_changes": [
+    "replace the embedded local no-execution authorization payload with the frozen positive acquisition authorization",
+    "replace the exact embedded authorization hash, schema, scope, and authority assertions",
+    "bind each candidate identity and global sequence position to the ordered authorized identity list",
+    "rename the JET spec from local-candidate to acquisition"
+  ],
+  "prohibited_scientific_changes": [
+    "run order, predecessor, pairing, seeds, or assignment domains",
+    "FIFO or OARS policy, candidate watermark, or service budget",
+    "model, dataset, prompts, decoding, training steps, or GPU count",
+    "terminal export, conversion, evaluation, result schema, or analysis plan",
+    "four-hour execution limit or absence of a queue deadline",
+    "retry, replacement, extension, overlap, or early outcome access"
+  ],
+  "execution": {
+    "candidate_count": 20,
+    "first_identity": "p01-oars",
+    "first_identity_predecessor": null,
+    "later_identity_gate": "authenticated_terminal_predecessor_required",
+    "one_shot_guard_per_identity": true,
+    "required_launcher": "runllm.py --no_wait",
+    "strict_global_sequence_one_run_at_a_time": true,
+    "complete_outcome_embargo_until_all_20_authenticated": true,
+    "automatic_retry": false,
+    "automatic_replacement": false,
+    "automatic_extension": false
+  }
+}
