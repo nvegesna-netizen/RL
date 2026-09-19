@@ -1,0 +1,50 @@
+{
+  "schema": "m4-oars-randomized-confirmatory-submission-receipt-v1",
+  "status": "SUBMITTED_PENDING_STATUS_ONLY",
+  "identity": "p01-oars",
+  "global_sequence": 1,
+  "predecessor": null,
+  "package_commit": "5dafb072b3076a8fa198e2b8ae8bb8f2629da4b8",
+  "manifest_sha256": "c08d2788c28e55fe0e9f21550d6bc2183f485fa7bfed037aceb6b762f9420c66",
+  "transport_replacement_authorization_sha256": "e995d90a49a1b71586e7d91f213cd1bd5b373d0c4aeb77f790899aa1114d43ae",
+  "transport_replacement_validation_sha256": "bc5611ced01f2615a4481ca463a3a9e42e9f0d5352f9d5f81c979d604ae8f2a9",
+  "transport_replacement_package_receipt_sha256": "38d086c8cfbcaf23a9c7dab2e8a537fa7a24375e4530bf961097b5bc7c346a3c",
+  "guard": {
+    "path_outside_git": "session/20260914_m4_opportunity_control/confirmatory-p01-oars-transport-replacement-guard.json",
+    "sha256_after_submission": "894f7e427e4b2a73890274167972cfd3acd3683b928b1ef12221cf5162f17e8e",
+    "replacement_attempt_limit": 1,
+    "replacement_attempts_consumed": 1,
+    "automatic_retry": false,
+    "automatic_replacement": false,
+    "automatic_extension": false
+  },
+  "launcher": {
+    "required_launcher": "runllm.py --no_wait",
+    "invoked_at": "2026-09-19T02:24:59.235519-07:00",
+    "return_code": 0,
+    "launch_log_sha256": "87ff671ebcb8836f6bde7c82af7f18c816a4d74c9624a60620879a60d4f5ac10",
+    "local_client_elapsed_seconds": 19.430363958
+  },
+  "upstream_pipeline": {
+    "id": 68748993,
+    "url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/68748993",
+    "generate_job_id": 447249077,
+    "generate_status_at_topology_capture": "success"
+  },
+  "downstream_pipeline": {
+    "id": 68749029,
+    "url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/68749029",
+    "status_at_topology_capture": "pending",
+    "logs_before_job_id": 447249288,
+    "logs_before_status": "pending",
+    "workload_job_id": 447249289,
+    "workload_status": "created",
+    "logs_after_job_id": 447249290,
+    "logs_after_status": "created"
+  },
+  "topology_captured_at": "2026-09-19T02:27:13-07:00",
+  "terminal_status_known": false,
+  "artifacts_opened": false,
+  "scientific_outcome_accessed": false,
+  "next_action": "status_only_monitor_until_terminal"
+}
