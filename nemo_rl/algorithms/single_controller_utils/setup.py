@@ -36,6 +36,8 @@ from nemo_rl.algorithms.async_utils.scheduler_assay import (
     SchedulerAssayPlan,
 )
 from nemo_rl.algorithms.async_utils.structured_scheduler_crossover import (
+    DapoLoadAlignmentArm,
+    DapoLoadAlignmentPlan,
     DapoOperationalMixtureArm,
     DapoOperationalMixturePlan,
     DapoSchedulerCrossoverPlan,
@@ -406,7 +408,11 @@ def setup_single_controller(
             assert assay_config.arm_id is not None
             assert assay_config.order_seed is not None
             assay_plan = load_scheduler_protocol(assay_config.plan_path)
-            if isinstance(assay_plan, DapoOperationalMixturePlan):
+            if isinstance(assay_plan, DapoLoadAlignmentPlan):
+                assay_arm = assay_plan.arm(assay_config.arm_id)
+                pool = assay_plan.pool(assay_config.order_seed)
+                expected_generation_seed = pool.scheduler_generation_seed
+            elif isinstance(assay_plan, DapoOperationalMixturePlan):
                 assay_arm = assay_plan.arm(assay_config.arm_id)
                 pool = assay_plan.pool(assay_config.order_seed)
                 expected_generation_seed = pool.scheduler_generation_seed
@@ -431,6 +437,14 @@ def setup_single_controller(
                 or manifest.manifest_sha256 != pool.manifest_sha256
             ):
                 raise ValueError("scheduler assay plan/source manifest mismatch")
+            if isinstance(assay_plan, DapoLoadAlignmentPlan) and {
+                item.source_prompt_id for item in manifest.items
+            } != set(pool.fixed_lower_load_prompt_ids).union(
+                pool.fixed_higher_load_prompt_ids
+            ):
+                raise ValueError(
+                    "DAPO load-alignment frozen halves do not partition the pool"
+                )
             if master_config.async_rl.sampler.name != assay_arm.sampler:
                 raise ValueError("scheduler assay arm/sampler mismatch")
             if (
@@ -505,6 +519,37 @@ def setup_single_controller(
             ):
                 raise ValueError(
                     "DAPO operational-mixture runtime does not match frozen arm"
+                )
+            if isinstance(assay_plan, DapoLoadAlignmentPlan) and (
+                not isinstance(assay_arm, DapoLoadAlignmentArm)
+                or generation_config.get("max_new_tokens") != assay_plan.max_new_tokens
+                or master_config.async_rl.max_inflight_prompts
+                != assay_plan.max_inflight_prompts
+                or master_config.async_rl.max_buffered_rollouts
+                != assay_arm.max_buffered_rollouts
+                or data_config["max_input_seq_length"]
+                != assay_plan.data_max_input_seq_length
+                or policy_config.get("hf_config_overrides", {}).get(
+                    "max_position_embeddings"
+                )
+                != assay_plan.hf_config_override_max_position_embeddings
+                or (
+                    getattr(
+                        master_config.async_rl.sampler,
+                        "max_staleness_versions",
+                        None,
+                    )
+                    if assay_arm.sampler == "ready_first"
+                    else getattr(
+                        master_config.async_rl.sampler,
+                        "max_lookahead_versions",
+                        None,
+                    )
+                )
+                != assay_arm.sampler_lookahead_versions
+            ):
+                raise ValueError(
+                    "DAPO load-alignment runtime does not match frozen arm"
                 )
             if isinstance(assay_plan, SchedulerPressureResponsePlan):
                 if not isinstance(assay_arm, SchedulerPressureResponseArm):
@@ -673,10 +718,22 @@ def setup_single_controller(
     )
     delay_arm = (
         assay_arm
-        if isinstance(assay_arm, (SchedulerAssayArm, SchedulerPressureResponseArm))
+        if isinstance(
+            assay_arm,
+            (SchedulerAssayArm, SchedulerPressureResponseArm, DapoLoadAlignmentArm),
+        )
         else None
     )
-    if isinstance(assay_arm, SchedulerPressureResponseArm):
+    delayed_prompt_ids: frozenset[str] | None = None
+    if isinstance(assay_arm, DapoLoadAlignmentArm):
+        if not isinstance(assay_plan, DapoLoadAlignmentPlan):
+            raise ValueError("DAPO load-alignment arm/plan type mismatch")
+        delay_seconds = assay_arm.release_delay_seconds
+        delayed_prompt_ids = assay_plan.delayed_prompt_ids(
+            assay_arm.arm_id,
+            assay_config.order_seed,  # type: ignore[arg-type]
+        )
+    elif isinstance(assay_arm, SchedulerPressureResponseArm):
         delay_seconds = assay_arm.release_delay_seconds
     elif isinstance(assay_arm, SchedulerAssayArm):
         if not isinstance(assay_plan, SchedulerAssayPlan):
@@ -697,6 +754,7 @@ def setup_single_controller(
         tq_buffer=tq_buffer,
         scheduler_assay_arm=delay_arm,
         scheduler_assay_delay_seconds=delay_seconds,
+        scheduler_assay_delayed_prompt_ids=delayed_prompt_ids,
     )
 
     return SingleControllerActorArgs(

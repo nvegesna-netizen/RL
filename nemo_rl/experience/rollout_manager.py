@@ -65,9 +65,6 @@ class SchedulerDelayArm(Protocol):
     @property
     def arm_id(self) -> str: ...
 
-    @property
-    def delayed_task(self) -> str: ...
-
 
 @dataclass(frozen=True, slots=True)
 class RolloutGroupHandle:
@@ -941,6 +938,7 @@ class RolloutManager:
         tq_buffer: Optional[TQReplayBuffer] = None,
         scheduler_assay_arm: Optional[SchedulerDelayArm] = None,
         scheduler_assay_delay_seconds: Optional[float] = None,
+        scheduler_assay_delayed_prompt_ids: Optional[frozenset[str]] = None,
     ) -> None:
         assert num_generations_per_prompt >= 1, (
             "num_generations_per_prompt must be >= 1"
@@ -979,6 +977,12 @@ class RolloutManager:
             )
         self._scheduler_assay_arm = scheduler_assay_arm
         self._scheduler_assay_delay_seconds = scheduler_assay_delay_seconds
+        if (
+            scheduler_assay_delayed_prompt_ids is not None
+            and scheduler_assay_arm is None
+        ):
+            raise ValueError("delayed prompt IDs require a scheduler assay arm")
+        self._scheduler_assay_delayed_prompt_ids = scheduler_assay_delayed_prompt_ids
 
     def set_scheduler_trace_sink(self, sink: SchedulerTraceSink) -> None:
         """Bind the controller-owned trace sink after Ray deserialization."""
@@ -1116,15 +1120,27 @@ class RolloutManager:
                     reward_max=max(rewards),
                 )
             assay_arm = getattr(self, "_scheduler_assay_arm", None)
+            delayed_task = getattr(assay_arm, "delayed_task", "none")
+            delay_target = getattr(assay_arm, "delay_target", delayed_task)
+            delayed_prompt_ids = getattr(
+                self, "_scheduler_assay_delayed_prompt_ids", None
+            )
+            source_prompt_id = input_sample.get("source_prompt_id")
+            delay_selected = (
+                source_prompt_id in delayed_prompt_ids
+                if delayed_prompt_ids is not None
+                else task_name == delayed_task
+            )
             release_delay_seconds = (
                 getattr(self, "_scheduler_assay_delay_seconds", None)
-                if assay_arm is not None and task_name == assay_arm.delayed_task
+                if assay_arm is not None and delay_selected
                 else 0.0
             )
             if assay_arm is not None:
                 summaries.update(
                     scheduler_assay_arm=assay_arm.arm_id,
-                    scheduler_assay_delayed_task=assay_arm.delayed_task,
+                    scheduler_assay_delayed_task=delayed_task,
+                    scheduler_assay_delay_target=delay_target,
                     scheduler_assay_release_delay_seconds=release_delay_seconds,
                 )
             tool_call_counts = [
@@ -1209,7 +1225,8 @@ class RolloutManager:
                 scalar_summaries=(
                     {
                         "scheduler_assay_arm": assay_arm.arm_id,
-                        "scheduler_assay_delayed_task": assay_arm.delayed_task,
+                        "scheduler_assay_delayed_task": delayed_task,
+                        "scheduler_assay_delay_target": delay_target,
                         "scheduler_assay_release_delay_seconds": (
                             release_delay_seconds
                         ),

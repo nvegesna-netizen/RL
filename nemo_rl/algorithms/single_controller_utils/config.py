@@ -49,6 +49,7 @@ FixedPoolDesignId: TypeAlias = Literal[
     "dapo_math_operational_latency_discovery_v2",
     "dapo_math_scheduler_crossover_v1",
     "dapo_math_operational_mixture_v1",
+    "dapo_math_load_alignment_v1",
 ]
 
 
@@ -215,6 +216,7 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
                 "structured_scheduler_pressure_response_v1",
                 "dapo_math_scheduler_crossover_v1",
                 "dapo_math_operational_mixture_v1",
+                "dapo_math_load_alignment_v1",
             }:
                 raise ValueError(
                     "scheduler assay requires a controlled ready-bias, "
@@ -240,6 +242,7 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
             elif assay_design in {
                 "structured_scheduler_pressure_response_v1",
                 "dapo_math_operational_mixture_v1",
+                "dapo_math_load_alignment_v1",
             }:
                 expected_buffer = None
             else:
@@ -260,6 +263,7 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
                 in {
                     "dapo_math_scheduler_crossover_v1",
                     "dapo_math_operational_mixture_v1",
+                    "dapo_math_load_alignment_v1",
                 }
                 else 2
             )
@@ -274,6 +278,7 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
                 "structured_scheduler_pressure_response_v1": 768,
                 "dapo_math_scheduler_crossover_v1": 6144,
                 "dapo_math_operational_mixture_v1": 6144,
+                "dapo_math_load_alignment_v1": 6144,
             }[assay_design]
             if (
                 master_config.policy["max_total_sequence_length"]
@@ -317,6 +322,7 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
             elif assay_design in {
                 "structured_scheduler_pressure_response_v1",
                 "dapo_math_operational_mixture_v1",
+                "dapo_math_load_alignment_v1",
             }:
                 if async_config.max_buffered_rollouts not in {4, 8, 16}:
                     raise ValueError(

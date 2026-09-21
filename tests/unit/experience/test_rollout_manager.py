@@ -376,6 +376,63 @@ class TestGenerateAndPushFlow:
         ready_index = mgr._scheduler_trace.events.index(SchedulerEventType.GROUP_READY)
         assert completed_index < ready_index
 
+    def test_scheduler_assay_holds_only_frozen_delayed_prompt_ids(
+        self, monkeypatch
+    ) -> None:
+        record = PromptGroupRecord(
+            prompt_idx=17,
+            prompt=[],
+            extra_env_info=None,
+            metadata={"task_name": "dapo_math_a"},
+            completions=[Completion([], None, False, 1.0)],
+            rollout_metrics={},
+        )
+        buf = _FakeBuffer()
+        mgr = _make_manager(buf, _FakeImpl(record=record))
+        mgr._scheduler_trace = _TraceSink()
+        mgr._scheduler_assay_arm = type(
+            "LoadArm",
+            (),
+            {
+                "arm_id": "l3_low_load_delayed_ready_first",
+                "delay_target": "fixed_lower_load_half",
+            },
+        )()
+        mgr._scheduler_assay_delay_seconds = 16.0
+        mgr._scheduler_assay_delayed_prompt_ids = frozenset({"a" * 64})
+        sleeps: list[float] = []
+
+        async def _sleep(seconds: float) -> None:
+            sleeps.append(seconds)
+
+        monkeypatch.setattr(asyncio, "sleep", _sleep)
+        _run(
+            mgr.generate_and_push(
+                {
+                    "idx": 17,
+                    "task_name": "dapo_math_a",
+                    "source_prompt_id": "a" * 64,
+                    "repeated_prompt_cluster_id": "b" * 64,
+                    "source_pool_ordinal": 3,
+                    "dispatch_cohort": 1,
+                },
+                target_step=1,
+                admission_id="cohort-1",
+            )
+        )
+
+        assert sleeps == [16.0]
+        completed = mgr._scheduler_trace.event_fields[
+            mgr._scheduler_trace.events.index(SchedulerEventType.ROLLOUT_COMPLETED)
+        ]
+        assert completed["scalar_summaries"]["scheduler_assay_delay_target"] == (
+            "fixed_lower_load_half"
+        )
+        assert (
+            completed["scalar_summaries"]["scheduler_assay_release_delay_seconds"]
+            == 16.0
+        )
+
     def test_completion_trace_preserves_length_and_termination_diagnostics(self):
         record = PromptGroupRecord(
             prompt_idx=1,

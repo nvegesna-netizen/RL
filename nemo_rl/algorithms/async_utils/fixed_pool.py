@@ -237,6 +237,12 @@ DAPO_OPERATIONAL_MIXTURE_PROTOCOL_SHA256: Final[str] = (
 DAPO_OPERATIONAL_MIXTURE_SELECTION_SEEDS: Final[frozenset[int]] = frozenset(
     {50001, 50002, 50003}
 )
+DAPO_LOAD_ALIGNMENT_PROTOCOL_SHA256: Final[str] = (
+    "00e9c7d481a101cd79d3b155ada9b395346e7de0d6ca8e6e9f827846d2dc4147"
+)
+DAPO_LOAD_ALIGNMENT_SELECTION_SEEDS: Final[frozenset[int]] = frozenset(
+    {51001, 51002, 51003}
+)
 DAPO_OPERATIONAL_SOURCE_IDS: Final[tuple[str, str]] = (
     "dapo_math_a",
     "dapo_math_b",
@@ -1452,7 +1458,9 @@ def validate_dapo_operational_latency_discovery_manifest_design(
         source_id: sum(item.task_name == source_id for item in manifest.items)
         for source_id in DAPO_OPERATIONAL_SOURCE_IDS
     }
-    expected_rows_per_source = expected_prompt_groups // len(DAPO_OPERATIONAL_SOURCE_IDS)
+    expected_rows_per_source = expected_prompt_groups // len(
+        DAPO_OPERATIONAL_SOURCE_IDS
+    )
     if len(manifest.items) != expected_prompt_groups or counts != {
         source_id: expected_rows_per_source for source_id in DAPO_OPERATIONAL_SOURCE_IDS
     }:
@@ -1568,6 +1576,20 @@ def validate_dapo_operational_mixture_manifest_design(
         expected_selection_seeds=DAPO_OPERATIONAL_MIXTURE_SELECTION_SEEDS,
         expected_protocol_sha256=DAPO_OPERATIONAL_MIXTURE_PROTOCOL_SHA256,
         study_label="DAPO operational mixture",
+        expected_prompt_groups=32,
+        expected_cohorts=8,
+    )
+
+
+def validate_dapo_load_alignment_manifest_design(
+    manifest: FixedPoolManifest,
+) -> None:
+    """Enforce one immutable 32-prompt DAPO load-alignment pool."""
+    validate_dapo_operational_latency_discovery_manifest_design(
+        manifest,
+        expected_selection_seeds=DAPO_LOAD_ALIGNMENT_SELECTION_SEEDS,
+        expected_protocol_sha256=DAPO_LOAD_ALIGNMENT_PROTOCOL_SHA256,
+        study_label="DAPO load alignment",
         expected_prompt_groups=32,
         expected_cohorts=8,
     )
@@ -1758,6 +1780,8 @@ def validate_fixed_pool_manifest_design(
         validate_dapo_scheduler_crossover_manifest_design(manifest)
     elif design_id == "dapo_math_operational_mixture_v1":
         validate_dapo_operational_mixture_manifest_design(manifest)
+    elif design_id == "dapo_math_load_alignment_v1":
+        validate_dapo_load_alignment_manifest_design(manifest)
     else:
         raise FixedPoolManifestError(f"unsupported fixed-pool design_id: {design_id!r}")
 
