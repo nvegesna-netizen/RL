@@ -91,7 +91,8 @@ def _load_design(
     )
     fields = set(base_analyzer.DesignItem.__dataclass_fields__)
     raw_items = value.get("items")
-    _require(isinstance(raw_items, list), "selection design items missing")
+    if not isinstance(raw_items, list):
+        raise DapoLoadAlignmentReferenceError("selection design items missing")
     items = []
     for item in raw_items:
         _require(isinstance(item, dict) and set(item) == fields, "design item mismatch")
@@ -209,8 +210,8 @@ def analyze(
         for reference_seed in reference_seeds
     )
     _require(tuple(runs) == expected, "all six reference runs are required in order")
-    private_pools = []
-    public_pools = []
+    private_pools: list[dict[str, object]] = []
+    public_pools: list[dict[str, object]] = []
     pooled_rewards: tuple[list[float], list[float]] = ([], [])
     pooled_loads: tuple[list[float], list[float]] = ([], [])
     all_collection_valid = True
@@ -311,7 +312,7 @@ def analyze(
         all(pool["stability_checks"].values())  # type: ignore[union-attr]
         for pool in public_pools
     )
-    private = {
+    private: dict[str, object] = {
         "schema_version": 1,
         "analysis_status": "frozen_private_dapo_load_alignment_reference",
         "protocol_sha256": materializer.PROTOCOL_SHA256,
@@ -327,7 +328,7 @@ def analyze(
         "pooled_reward_mean_pearson_ge_0_75": pooled_reward >= 0.75,
         "pooled_generated_load_spearman_ge_0_7": pooled_load >= 0.7,
     }
-    public = {
+    public: dict[str, object] = {
         "schema_version": 1,
         "analysis_status": "calibration_only_dapo_load_alignment_reference",
         "calibration_only": True,
@@ -374,8 +375,8 @@ def main() -> None:
     for path in (args.private_output, args.public_output):
         if path.exists():
             raise FileExistsError(f"refusing to overwrite {path}")
-    parsed = args.run
-    runs = dict(parsed)
+    parsed: list[tuple[tuple[int, int], Path]] = args.run
+    runs: dict[tuple[int, int], Path] = dict(parsed)
     _require(len(runs) == len(parsed), "duplicate reference run")
     private, public = analyze(runs, materialization_root=args.materialization_root)
     args.private_output.write_text(json.dumps(private, indent=2, sort_keys=True) + "\n")

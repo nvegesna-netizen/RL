@@ -10,7 +10,7 @@ import json
 import statistics
 from collections.abc import Mapping
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 from nemo_rl.algorithms.async_utils.dapo_load_alignment import (
     DapoLoadAlignmentArm,
@@ -61,7 +61,8 @@ def _load_fixed_reference(
         "reference manifest labels mismatch",
     )
     pools = value.get("pools")
-    _require(isinstance(pools, list), "reference pools missing")
+    if not isinstance(pools, list):
+        raise DapoLoadAlignmentShadowError("reference pools missing")
     matches = [
         item
         for item in pools
@@ -69,9 +70,8 @@ def _load_fixed_reference(
     ]
     _require(len(matches) == 1, "reference pool identity mismatch")
     prompts = matches[0].get("prompts")
-    _require(
-        isinstance(prompts, list) and len(prompts) == 32, "reference prompts missing"
-    )
+    if not isinstance(prompts, list) or len(prompts) != 32:
+        raise DapoLoadAlignmentShadowError("reference prompts missing")
     lower_load: dict[str, bool] = {}
     easier: dict[str, bool] = {}
     load_scores: dict[str, float] = {}
@@ -221,10 +221,10 @@ def analyze_block(
     results: dict[str, dict[str, Any]] = {}
     for arm_id in pool.arm_execution_order:
         arm = plan.arm(arm_id)
-        result, _ = analyze_run(  # type: ignore[arg-type]
+        result, _ = analyze_run(
             run_dir=runs[arm_id],
-            plan=plan,
-            arm=arm,
+            plan=cast(Any, plan),
+            arm=cast(Any, arm),
             order_seed=order_seed,
             materialization_manifest_path=materialization_manifest_path,
         )

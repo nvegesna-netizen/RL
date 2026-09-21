@@ -127,8 +127,8 @@ class DapoLoadAlignmentPlan(BaseModel, extra="forbid", frozen=True):
     data_max_input_seq_length: Literal[2048]
     hf_config_override_max_position_embeddings: Literal[6144]
     max_new_tokens: Literal[4096]
-    temperature: Literal[1.0]
-    top_p: Literal[0.7]
+    temperature: float
+    top_p: float
     replication_order: tuple[Literal[51001, 51002, 51003], ...]
     thresholds: DapoLoadAlignmentThresholds
     plan_id: Sha256Hex
@@ -162,6 +162,8 @@ class DapoLoadAlignmentPlan(BaseModel, extra="forbid", frozen=True):
             raise ValueError("load-alignment replication bindings mismatch")
         if tuple(pool.order_seed for pool in self.pools) != self.replication_order:
             raise ValueError("load-alignment pool order mismatch")
+        if (self.temperature, self.top_p) != (1.0, 0.7):
+            raise ValueError("load-alignment sampling parameters mismatch")
         expected_arms = {
             f"l0_natural_{sampler}" for sampler in ("in_order", "ready_first")
         } | {

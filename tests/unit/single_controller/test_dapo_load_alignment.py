@@ -128,3 +128,11 @@ def test_plan_rejects_changed_signed_threshold() -> None:
     value["thresholds"]["signed_separation_median_min"] = 0.01
     with pytest.raises(ValueError, match="thresholds mismatch"):
         DapoLoadAlignmentPlan.model_validate(value)
+
+
+@pytest.mark.parametrize(("field", "value"), [("temperature", 0.9), ("top_p", 0.8)])
+def test_plan_rejects_changed_sampling_parameter(field: str, value: float) -> None:
+    plan = _plan().model_dump(mode="json")
+    plan[field] = value
+    with pytest.raises(ValueError, match="sampling parameters mismatch"):
+        DapoLoadAlignmentPlan.model_validate(plan)

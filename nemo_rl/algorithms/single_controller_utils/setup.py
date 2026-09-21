@@ -437,14 +437,14 @@ def setup_single_controller(
                 or manifest.manifest_sha256 != pool.manifest_sha256
             ):
                 raise ValueError("scheduler assay plan/source manifest mismatch")
-            if isinstance(assay_plan, DapoLoadAlignmentPlan) and {
-                item.source_prompt_id for item in manifest.items
-            } != set(pool.fixed_lower_load_prompt_ids).union(
-                pool.fixed_higher_load_prompt_ids
-            ):
-                raise ValueError(
-                    "DAPO load-alignment frozen halves do not partition the pool"
-                )
+            if isinstance(assay_plan, DapoLoadAlignmentPlan):
+                load_alignment_pool = assay_plan.pool(assay_config.order_seed)
+                if {item.source_prompt_id for item in manifest.items} != set(
+                    load_alignment_pool.fixed_lower_load_prompt_ids
+                ).union(load_alignment_pool.fixed_higher_load_prompt_ids):
+                    raise ValueError(
+                        "DAPO load-alignment frozen halves do not partition the pool"
+                    )
             if master_config.async_rl.sampler.name != assay_arm.sampler:
                 raise ValueError("scheduler assay arm/sampler mismatch")
             if (
