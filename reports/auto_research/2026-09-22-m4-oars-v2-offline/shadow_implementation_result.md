@@ -2,9 +2,11 @@
 
 ## Result
 
-The default-off, observe-only OARS-v2 shadow is implemented and passes the
-local implementation gate. It is not yet live-shadow qualified and it has not
-been enabled for training or submitted to EOS.
+The default-off, observe-only OARS-v2 shadow is implemented and passes both the
+local implementation gate and the live safety/overhead gate. In the frozen
+64-update live qualification, eager FIFO remained the sole acting selector at
+every decision. The run did not provide natural policy-comparison support:
+every decision exposed exactly four ready groups for a four-group batch.
 
 The observer leaves eager weight-FIFO in control of admission, eviction, and
 selection. At every natural dispatch point it evaluates four counterfactual
@@ -58,23 +60,27 @@ A local selector microbenchmark showed median per-scorer costs of 0.086 ms at
 frontier of 16 under the 5 ms per-scorer guard; larger sets are deterministically
 pruned while retaining FIFO and every imminent candidate.
 
-## Claim boundary and next gate
+## Live qualification and claim boundary
 
-This result establishes a locally verified instrument, not an improved live
-scheduler. It does not estimate queue feedback, cumulative training dose,
-learning quality, wall time, convergence, or causal mediation.
+The authenticated live result is
+`PASS_SAFE_INSUFFICIENT_NATURAL_CONTENTION`. All 64 updates and shadow
+decisions completed; actual identities matched eager FIFO in every decision;
+proposal contracts were complete; there were no skips or fallbacks; combined
+observer duty was 0.1032%; and p95 shadow latency was 0.212 ms, or 0.00595% of
+the median learner-step interval. These observations qualify implementation
+safety and overhead in this setting.
 
-The next scientific step is one frozen live shadow qualification. It must use
-a dependency-complete build and show:
+They do not qualify scheduler discrimination. Ready-set size was exactly four
+at all 64 decisions, so each scorer had only the FIFO batch available and all
+proposal overlaps were mechanically four of four. Repeating the same eager
+FIFO design is not justified: it cannot reveal relative choices unless the
+runtime happens to accumulate more than one feasible batch.
 
-1. actual selected identities match FIFO at every decision;
-2. naturally occurring ready-set contention is sufficient to compare scorers;
-3. proposal token bands and metadata coverage are complete;
-4. fallback rates are acceptable and fully explained; and
-5. p95 shadow latency plus combined observer duty remain below the prospective
-   systems threshold.
-
-Only after those gates pass should an enacted matched-seed comparison of FIFO,
-reward variance, and absolute M4 be designed. The primary outcome of that later
-study should be fixed-token learning-curve area, with fixed-update and
-fixed-wall-time views secondary.
+The next defensible study must explicitly target a contention regime and apply
+the same admission rule to every randomized policy arm. That design change is
+an estimand change, not a repair or retry of the natural-cadence qualification.
+It should compare FIFO, reward variance, and absolute M4 under a common
+prospectively declared candidate frontier, with fixed-token learning-curve area
+primary and fixed-update and fixed-wall-time views secondary. This result does
+not estimate queue feedback, cumulative training dose, learning quality,
+convergence, or causal mediation.
