@@ -255,6 +255,7 @@ def test_opportunity_at_risk_v2_shadow_is_default_off() -> None:
     shadow = AsyncRLConfig().opportunity_at_risk_v2_shadow
     assert shadow.enabled is False
     assert shadow.exact_search_max_candidates == 16
+    assert shadow.candidate_window_policy == "natural_eager"
 
 
 def test_opportunity_at_risk_v2_shadow_accepts_adaptive_configuration() -> None:
@@ -296,7 +297,52 @@ def test_opportunity_at_risk_v2_shadow_rejects_fixed_watermark() -> None:
         output_path="oars-v2.jsonl",
     )
 
-    with pytest.raises(ValueError, match="requires eager weight_fifo"):
+    with pytest.raises(ValueError, match="natural_eager OARS-v2"):
+        validate_single_controller_config(config)
+
+
+def test_opportunity_at_risk_v2_shadow_accepts_controlled_frontier() -> None:
+    config = _controlled_release_master_config(lifecycle_audit_path="lifecycle.jsonl")
+    config.policy["train_global_batch_size"] = 16
+    config.grpo.num_prompts_per_step = 4
+    config.async_rl.sampler = WeightFifoSamplerConfig(
+        max_staleness_versions=1,
+        selection_candidate_watermark=8,
+    )
+    config.async_rl.gradient_opportunity_audit = GradientOpportunityAuditConfig(
+        enabled=True,
+        output_path="opportunity.jsonl",
+        observer_duty_path="duty.json",
+    )
+    config.async_rl.opportunity_at_risk_v2_shadow = OpportunityAtRiskV2ShadowConfig(
+        enabled=True,
+        output_path="oars-v2.jsonl",
+        candidate_window_policy="controlled_frontier",
+    )
+
+    validate_single_controller_config(config)
+
+
+def test_controlled_frontier_rejects_missing_watermark() -> None:
+    config = _controlled_release_master_config(lifecycle_audit_path="lifecycle.jsonl")
+    config.policy["train_global_batch_size"] = 16
+    config.grpo.num_prompts_per_step = 4
+    config.async_rl.sampler = WeightFifoSamplerConfig(
+        max_staleness_versions=1,
+        selection_candidate_watermark=None,
+    )
+    config.async_rl.gradient_opportunity_audit = GradientOpportunityAuditConfig(
+        enabled=True,
+        output_path="opportunity.jsonl",
+        observer_duty_path="duty.json",
+    )
+    config.async_rl.opportunity_at_risk_v2_shadow = OpportunityAtRiskV2ShadowConfig(
+        enabled=True,
+        output_path="oars-v2.jsonl",
+        candidate_window_policy="controlled_frontier",
+    )
+
+    with pytest.raises(ValueError, match="controlled_frontier OARS-v2"):
         validate_single_controller_config(config)
 
 

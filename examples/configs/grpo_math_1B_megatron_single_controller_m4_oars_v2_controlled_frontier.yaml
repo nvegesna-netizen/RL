@@ -1,0 +1,51 @@
+# Systems-only OARS-v2 controlled-contention qualification.
+# Weight-FIFO with the declared eight-candidate frontier is the sole actor.
+defaults: grpo_math_1B_megatron_single_controller_m4_llama3p2_1b_gsm8k_family_transport.yaml
+
+grpo:
+  max_num_steps: 64
+  max_num_epochs: 2
+  seed: 20262211
+
+async_rl:
+  sampler:
+    name: weight_fifo
+    max_staleness_versions: 1
+    selection_candidate_watermark: 8
+  lifecycle_audit_path: results/m4-oars-v2-controlled-frontier/lifecycle.jsonl
+  controlled_release_delay:
+    enabled: true
+    seed: 20262213
+    assignment_domain: m4-oars-v2-controlled-frontier-v1
+    arms:
+      - label: neutral
+        delay_seconds: 0.0
+        mass: 1
+  gradient_opportunity_audit:
+    enabled: true
+    output_path: results/m4-oars-v2-controlled-frontier/opportunity.jsonl
+    observer_duty_path: results/m4-oars-v2-controlled-frontier/observer-duty.json
+  lifecycle_derived_opportunity_audit:
+    enabled: false
+  opportunity_at_risk_shadow:
+    enabled: false
+  opportunity_at_risk_v2_shadow:
+    enabled: true
+    output_path: results/m4-oars-v2-controlled-frontier/oars-v2.jsonl
+    candidate_window_policy: controlled_frontier
+    minimum_service_multiplier: 0.98
+    maximum_service_multiplier: 1.02
+    max_candidate_groups: 64
+    exact_search_max_candidates: 16
+    decision_time_budget_ns: 5000000
+
+logger:
+  log_dir: results/m4-oars-v2-controlled-frontier/metrics
+  wandb_enabled: false
+  tensorboard_enabled: false
+  mlflow_enabled: false
+  swanlab_enabled: false
+  monitor_gpus: false
+
+data_plane:
+  actor_runtime_env_mode: inherit_baked_single_node

@@ -345,6 +345,10 @@ class SingleControllerActor:
                     "OARS-v2 shadow validation admitted a non-weight-FIFO sampler"
                 )
             self._oars_v2_shadow_recorder = OpportunityAtRiskV2ShadowRecorder(
+                candidate_window_policy=shadow_v2_config.candidate_window_policy,
+                selection_candidate_watermark=(
+                    self._sampler.selection_candidate_watermark
+                ),
                 minimum_service_multiplier=(
                     shadow_v2_config.minimum_service_multiplier
                 ),
@@ -360,6 +364,7 @@ class SingleControllerActor:
             self._sampler = OpportunityAtRiskV2ShadowSampler(
                 buffer=self._buffer,
                 baseline=self._sampler,
+                candidate_window_policy=shadow_v2_config.candidate_window_policy,
                 minimum_service_multiplier=(
                     shadow_v2_config.minimum_service_multiplier
                 ),

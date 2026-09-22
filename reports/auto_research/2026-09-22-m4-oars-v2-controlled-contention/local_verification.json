@@ -1,0 +1,43 @@
+{
+  "schema": "m4-oars-v2-controlled-frontier-local-verification-v1",
+  "status": "PASS_LOCAL_AWAITING_DEPENDENCY_COMPLETE_PREFLIGHT",
+  "branch": "autoresearch/2026-09-22-m4-oars-v2/controlled-contention-qualification",
+  "parent_commit": "42beabf7e8db6f1f076b6c72e56bfb59267bfdf7",
+  "implementation_boundary": {
+    "default_candidate_window_policy": "natural_eager",
+    "controlled_frontier_requires_explicit_opt_in": true,
+    "controlled_frontier_requires_watermark_greater_than_four": true,
+    "oars_v2_mode": "observe_only",
+    "acting_policy": "weight_fifo",
+    "qualification_watermark": 8
+  },
+  "checks": {
+    "qualification_analyzer_tests": "PASS_5",
+    "ruff_check": "PASS",
+    "ruff_format_check": "PASS",
+    "python_compile": "PASS",
+    "git_diff_check": "PASS",
+    "repository_unit_tests": "BLOCKED_LOCAL_ENVIRONMENT_MISSING_RAY",
+    "dependency_complete_preflight_required_before_training": true,
+    "training_or_eos_launched": false
+  },
+  "sha256": {
+    "examples/configs/grpo_math_1B_megatron_single_controller.yaml": "fc2e0dac70c4f849f6c67b26446af500b0d51ec49897668b0b7f56cddb6146cc",
+    "examples/configs/grpo_math_1B_megatron_single_controller_m4_oars_v2_controlled_frontier.yaml": "939218f0217fbef784b77ce5c978ff6a8c9cb1fffcabf2ecb2a468892a8a16da",
+    "nemo_rl/algorithms/async_utils/opportunity_at_risk_v2.py": "7d066071874673095e31330cccc84bc755d948f82770dd3e13b1cdf444b0a593",
+    "nemo_rl/algorithms/single_controller.py": "1a5b8ffd6aec15282ff3e522d8c24ed6aa5e4098fd636a83dfc9ac600526f80e",
+    "nemo_rl/algorithms/single_controller_utils/config.py": "92ea5606567ce20e8ffdeb888719fc287b2624de9e0a54df05f4a44d70f76cd8",
+    "tools/m4_oars_v2_live_shadow_qualification.py": "79b0d819c27da7c563a6532f4ad718f1c281d1e71b2c0d48463020cc8505ba3e",
+    "tools/m4_oars_v2_controlled_frontier_qualification.py": "caff44951b2bcb269bba94d78a6ef5e8f5de52232b0e149590f4f16e3641634d",
+    "tests/unit/single_controller/test_opportunity_at_risk_v2.py": "3072216c95a612e48291e2e34f4c53d2110de854820924525a98d5c2025e6e73",
+    "tests/unit/single_controller/test_single_controller.py": "bd1af6a4b2b024e2a0eac2f42a6eddceb18aea84b7cb9bf0883507d8fcb317b8",
+    "reports/auto_research/2026-09-22-m4-oars-v2-offline/test_live_shadow_qualification.py": "e56298d25ad5375907088afd6e0450afef72adcd30258b0b638318094ee4fc40",
+    "reports/auto_research/2026-09-22-m4-oars-v2-controlled-contention/qualification_protocol.json": "8a900d218866347c4ce5ebd41c85b954badcaf5021a956209bd61fc8fb1fe5d5"
+  },
+  "claim_boundary": {
+    "natural_eager_fifo_representativeness": false,
+    "oars_v2_actuation": false,
+    "training_quality_analysis": false,
+    "scientific_outcome_acquisition": false
+  }
+}

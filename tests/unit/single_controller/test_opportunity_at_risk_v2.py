@@ -204,6 +204,7 @@ def _shadow(buffer: FakeBuffer, *, max_candidates: int = 64):
     sampler = OpportunityAtRiskV2ShadowSampler(
         buffer=buffer,
         baseline=baseline,
+        candidate_window_policy="natural_eager",
         minimum_service_multiplier=0.98,
         maximum_service_multiplier=1.02,
         max_candidate_groups=max_candidates,
@@ -280,6 +281,40 @@ def test_uncontended_shadow_dispatches_without_waiting() -> None:
         proposal["proposed_group_ids"] == ["a", "b", "c", "d"]
         for proposal in events[0]["proposals"].values()
     )
+
+
+def test_controlled_frontier_observes_choice_but_executes_fifo() -> None:
+    buffer = _natural_choice_buffer()
+    baseline = WeightFifoSampler(
+        buffer,
+        max_staleness_versions=1,
+        selection_candidate_watermark=6,
+    )
+    events: list[dict[str, Any]] = []
+    sampler = OpportunityAtRiskV2ShadowSampler(
+        buffer=buffer,
+        baseline=baseline,
+        candidate_window_policy="controlled_frontier",
+        minimum_service_multiplier=0.98,
+        maximum_service_multiplier=1.02,
+        max_candidate_groups=64,
+        exact_search_max_candidates=16,
+        decision_time_budget_ns=100_000_000,
+        record=lambda event: events.append(dict(event)),
+    )
+
+    meta, count = asyncio.run(
+        sampler.select(
+            current_train_weight=2,
+            min_prompt_groups=4,
+            max_prompt_groups=4,
+        )
+    )
+
+    assert meta is not None and count == 4
+    assert meta.sample_ids == ["a_g0", "b_g0", "c_g0", "d_g0"]
+    assert events[0]["candidate_group_count"] == 6
+    assert events[0]["baseline_matches_actual"] is True
 
 
 def test_missing_metadata_falls_back_without_extra_mutation() -> None:
@@ -510,6 +545,8 @@ def test_sustained_overload_never_removes_more_than_fifo() -> None:
 
 def test_recorder_declares_behavior_neutral_adaptive_policy(tmp_path) -> None:
     recorder = OpportunityAtRiskV2ShadowRecorder(
+        candidate_window_policy="natural_eager",
+        selection_candidate_watermark=None,
         minimum_service_multiplier=0.98,
         maximum_service_multiplier=1.02,
         max_candidate_groups=64,
@@ -519,7 +556,8 @@ def test_recorder_declares_behavior_neutral_adaptive_policy(tmp_path) -> None:
 
     header = recorder.events[0]
     assert header["mode"] == "observe"
-    assert header["candidate_window_policy"] == "all_naturally_ready_in_window_v2"
+    assert header["candidate_window_policy"] == "natural_eager"
+    assert header["selection_candidate_watermark"] is None
     assert header["candidate_mutation"] == "none"
     assert header["decision_time_budget_scope"] == "per_scorer"
 

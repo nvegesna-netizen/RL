@@ -10,6 +10,9 @@ from tools.m4_oars_v2_live_shadow_qualification import (
     OARSV2_SCORERS,
     assess_live_shadow,
 )
+from tools.m4_oars_v2_controlled_frontier_qualification import (
+    assess_controlled_frontier,
+)
 
 
 def _artifacts(*, contended: int = 8) -> tuple[list[dict], list[dict], dict]:
@@ -18,7 +21,8 @@ def _artifacts(*, contended: int = 8) -> tuple[list[dict], list[dict], dict]:
         "schema_version": 1,
         "mode": "observe",
         "policy": "multi_scorer_oars_v2_shadow",
-        "candidate_window_policy": "all_naturally_ready_in_window_v2",
+        "candidate_window_policy": "natural_eager",
+        "selection_candidate_watermark": None,
         "scorers": list(OARSV2_SCORERS),
         "minimum_service_multiplier": 0.98,
         "maximum_service_multiplier": 1.02,
@@ -54,6 +58,9 @@ def _artifacts(*, contended: int = 8) -> tuple[list[dict], list[dict], dict]:
                 "proposed_valid_actor_tokens": 400,
                 "fifo_overlap_count": overlap,
                 "decision_latency_ns": 100_000,
+                "combination_count": 70 if count == 8 else 1,
+                "search_candidate_count": count,
+                "search_strategy": "exact",
             }
         decisions.append(
             {
@@ -126,3 +133,36 @@ def test_fifo_identity_mismatch_fails_safety() -> None:
     )
     assert result["status"] == "FAIL_SHADOW_SYSTEMS_GATE"
     assert result["checks"]["actual_selection_exactly_matches_fifo"] is False
+
+
+def test_controlled_frontier_passes_with_eight_candidates() -> None:
+    oars, lifecycle, duty = _artifacts(contended=64)
+    oars[0]["candidate_window_policy"] = "controlled_frontier"
+    oars[0]["selection_candidate_watermark"] = 8
+    result = assess_controlled_frontier(
+        oars_rows=oars,
+        lifecycle_rows=lifecycle,
+        observer_duty=duty,
+        source_commit="c" * 40,
+        run_start_ns=0,
+        run_end_ns=6_500_000_000,
+    )
+    assert result["status"] == "PASS_CONTROLLED_FRONTIER_SYSTEMS_READY"
+    assert result["checks"]["exact_choice_space_every_proposal"] is True
+
+
+def test_controlled_frontier_rejects_incomplete_choice_space() -> None:
+    oars, lifecycle, duty = _artifacts(contended=64)
+    oars[0]["candidate_window_policy"] = "controlled_frontier"
+    oars[0]["selection_candidate_watermark"] = 8
+    oars[1]["proposals"]["absolute_m4_risk"]["combination_count"] = 69
+    result = assess_controlled_frontier(
+        oars_rows=oars,
+        lifecycle_rows=lifecycle,
+        observer_duty=duty,
+        source_commit="d" * 40,
+        run_start_ns=0,
+        run_end_ns=6_500_000_000,
+    )
+    assert result["status"] == "FAIL_CONTROLLED_FRONTIER_SYSTEMS_GATE"
+    assert result["checks"]["exact_choice_space_every_proposal"] is False

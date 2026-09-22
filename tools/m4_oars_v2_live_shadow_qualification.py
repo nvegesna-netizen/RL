@@ -64,6 +64,9 @@ def assess_live_shadow(
     source_commit: str,
     run_start_ns: int,
     run_end_ns: int,
+    expected_candidate_window_policy: str = "natural_eager",
+    expected_selection_candidate_watermark: int | None = None,
+    minimum_contended_decisions: int = MINIMUM_CONTENDED_DECISIONS,
 ) -> dict[str, Any]:
     """Evaluate safety, equivalence, overhead, and natural support only."""
     if len(oars_rows) < 2 or run_start_ns < 0 or run_end_ns <= run_start_ns:
@@ -75,7 +78,8 @@ def assess_live_shadow(
         "schema_version": 1,
         "mode": "observe",
         "policy": "multi_scorer_oars_v2_shadow",
-        "candidate_window_policy": "all_naturally_ready_in_window_v2",
+        "candidate_window_policy": expected_candidate_window_policy,
+        "selection_candidate_watermark": expected_selection_candidate_watermark,
         "scorers": list(OARSV2_SCORERS),
         "minimum_service_multiplier": 0.98,
         "maximum_service_multiplier": 1.02,
@@ -225,7 +229,7 @@ def assess_live_shadow(
     }
     support_checks = {
         "minimum_natural_contended_decisions": complete_contended
-        >= MINIMUM_CONTENDED_DECISIONS
+        >= minimum_contended_decisions
     }
     safety_pass = all(safety_checks.values())
     support_pass = all(support_checks.values())
@@ -270,7 +274,7 @@ def assess_live_shadow(
         "p95_latency_fraction_of_median_step_interval": latency_fraction,
         "runtime_seconds": (run_end_ns - run_start_ns) / 1e9,
         "acting_policy": "eager_weight_fifo",
-        "candidate_watermark": None,
+        "candidate_watermark": expected_selection_candidate_watermark,
         "oars_v2_actuated": False,
         "training_quality_analyzed": False,
         "scientific_outcome_acquisition": False,

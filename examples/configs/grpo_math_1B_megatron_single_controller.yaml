@@ -57,6 +57,9 @@ async_rl:
     enabled: false
     # Required and distinct from lifecycle/opportunity/duty paths when enabled.
     output_path: null
+    # natural_eager requires no FIFO watermark. controlled_frontier is an
+    # explicit experimental regime and requires a watermark greater than four.
+    candidate_window_policy: natural_eager
     # Proposals must stay within 98%--102% of the FIFO batch's valid tokens.
     minimum_service_multiplier: 0.98
     maximum_service_multiplier: 1.02

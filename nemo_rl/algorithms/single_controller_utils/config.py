@@ -69,7 +69,7 @@ class OpportunityAtRiskShadowConfig(BaseModel, frozen=True):
 
 
 class OpportunityAtRiskV2ShadowConfig(BaseModel, frozen=True, extra="allow"):
-    """Default-off, behavior-neutral adaptive multi-scorer OARS-v2 observer."""
+    """Default-off adaptive multi-scorer OARS-v2 observer."""
 
     enabled: bool = Field(
         default=False,
@@ -78,6 +78,13 @@ class OpportunityAtRiskV2ShadowConfig(BaseModel, frozen=True, extra="allow"):
     output_path: Optional[str] = Field(
         default=None,
         description="Shutdown JSONL path; required and distinct when enabled.",
+    )
+    candidate_window_policy: Literal["natural_eager", "controlled_frontier"] = Field(
+        default="natural_eager",
+        description=(
+            "Whether to observe eager FIFO ready sets or a prospectively "
+            "controlled weight-FIFO candidate frontier."
+        ),
     )
     minimum_service_multiplier: float = Field(
         default=0.98,
@@ -348,10 +355,21 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
                 "async_rl.opportunity_at_risk_v2_shadow.enabled=true requires "
                 "the weight_fifo sampler"
             )
-        if async_config.sampler.selection_candidate_watermark is not None:
+        selection_watermark = async_config.sampler.selection_candidate_watermark
+        if (
+            shadow_v2_config.candidate_window_policy == "natural_eager"
+            and selection_watermark is not None
+        ):
             raise ValueError(
-                "opportunity_at_risk_v2_shadow requires eager weight_fifo with "
+                "natural_eager OARS-v2 requires weight_fifo with "
                 "selection_candidate_watermark=null"
+            )
+        if shadow_v2_config.candidate_window_policy == "controlled_frontier" and (
+            selection_watermark is None or selection_watermark <= 4
+        ):
+            raise ValueError(
+                "controlled_frontier OARS-v2 requires weight_fifo with "
+                "selection_candidate_watermark greater than four"
             )
         if master_config.grpo.num_prompts_per_step != 4:
             raise ValueError(
@@ -394,6 +412,14 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
             raise ValueError(
                 "opportunity_at_risk_v2_shadow.max_candidate_groups must be at "
                 "least four"
+            )
+        if (
+            selection_watermark is not None
+            and selection_watermark > shadow_v2_config.max_candidate_groups
+        ):
+            raise ValueError(
+                "weight_fifo selection_candidate_watermark must not exceed "
+                "opportunity_at_risk_v2_shadow.max_candidate_groups"
             )
         if not (
             4

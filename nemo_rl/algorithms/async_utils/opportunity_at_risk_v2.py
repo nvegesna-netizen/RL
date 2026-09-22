@@ -320,6 +320,8 @@ class OpportunityAtRiskV2ShadowRecorder:
     def __init__(
         self,
         *,
+        candidate_window_policy: Literal["natural_eager", "controlled_frontier"],
+        selection_candidate_watermark: Optional[int],
         minimum_service_multiplier: float,
         maximum_service_multiplier: float,
         max_candidate_groups: int,
@@ -332,7 +334,8 @@ class OpportunityAtRiskV2ShadowRecorder:
                 "schema_version": self.SCHEMA_VERSION,
                 "mode": "observe",
                 "policy": "multi_scorer_oars_v2_shadow",
-                "candidate_window_policy": "all_naturally_ready_in_window_v2",
+                "candidate_window_policy": candidate_window_policy,
+                "selection_candidate_watermark": selection_candidate_watermark,
                 "scorers": list(OARSV2_SCORERS),
                 "minimum_service_multiplier": minimum_service_multiplier,
                 "maximum_service_multiplier": maximum_service_multiplier,
@@ -381,6 +384,7 @@ class OpportunityAtRiskV2ShadowSampler:
         *,
         buffer: TQReplayBuffer,
         baseline: WeightFifoSampler,
+        candidate_window_policy: Literal["natural_eager", "controlled_frontier"],
         minimum_service_multiplier: float,
         maximum_service_multiplier: float,
         max_candidate_groups: int,
@@ -388,9 +392,20 @@ class OpportunityAtRiskV2ShadowSampler:
         decision_time_budget_ns: int,
         record: Callable[[Mapping[str, Any]], None],
     ) -> None:
-        if baseline.selection_candidate_watermark is not None:
+        if (
+            candidate_window_policy == "natural_eager"
+            and baseline.selection_candidate_watermark is not None
+        ):
             raise ValueError(
-                "OARS-v2 shadow requires eager WeightFIFO without a watermark"
+                "natural_eager OARS-v2 requires WeightFIFO without a watermark"
+            )
+        if candidate_window_policy == "controlled_frontier" and (
+            baseline.selection_candidate_watermark is None
+            or baseline.selection_candidate_watermark <= self.EXPECTED_BATCH_GROUPS
+        ):
+            raise ValueError(
+                "controlled_frontier OARS-v2 requires a WeightFIFO watermark "
+                "greater than the batch cardinality"
             )
         if max_candidate_groups < self.EXPECTED_BATCH_GROUPS:
             raise ValueError("max_candidate_groups must be at least four")
