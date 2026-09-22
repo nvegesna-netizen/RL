@@ -1,0 +1,49 @@
+{
+  "schema": "m4-oars-confirmatory-arm-prelaunch-validation-v1",
+  "status": "PASS_AUTHORIZED_UNSUBMITTED",
+  "identity": "p09-oars",
+  "global_sequence": 18,
+  "pair": 9,
+  "arm": "oars",
+  "mode": "act",
+  "predecessor": "p09-fifo",
+  "predecessor_terminal_authentication": {
+    "path": "reports/auto_research/2026-09-15-m4-oars-randomized/confirmatory_p09_fifo_terminal_authentication.json",
+    "sha256": "73819987d6dfc27d8f10148362f75d6d422f8f33ff53dec369468e2cd52cbb2f",
+    "status": "PASS_AUTHENTICATED_OUTCOME_EMBARGOED",
+    "successor_gate": "PASS_AUTHENTICATED_TERMINAL_PREDECESSOR"
+  },
+  "candidate": {
+    "path": "session/20260914_m4_opportunity_control/oars-confirmatory-acquisition-candidates/p09-oars.json",
+    "sha256": "6a7dbbc1fd340aa5cc678311f8719fd24609e615de18b53f2303e92724c2e1c0",
+    "spec_name": "m4-oars-confirmatory-p09-oars-acquisition",
+    "time_limit_seconds": 14400,
+    "queue_deadline_override": null
+  },
+  "frozen_assignment": {
+    "training_seed": 20261509,
+    "assignment_seed": 20261609,
+    "assignment_domain": "m4-oars-confirmatory-pair-09-v1"
+  },
+  "authorization": {
+    "path": "reports/auto_research/2026-09-15-m4-oars-randomized/confirmatory_acquisition_authorization.json",
+    "sha256": "90e48c344e5056121a020e16e0b49db0203026a8e524c73bf8101069b154384a",
+    "required_launcher": "runllm.py --no_wait",
+    "submission_attempt_limit": 1,
+    "automatic_retry": false,
+    "automatic_replacement": false,
+    "automatic_extension": false
+  },
+  "checks": {
+    "candidate_hash_matches_frozen_package": true,
+    "candidate_identity_matches_sequence_18": true,
+    "candidate_scientific_inputs_unchanged": true,
+    "predecessor_terminal_and_authenticated": true,
+    "predecessor_outcome_unopened": true,
+    "strict_serial_order_preserved": true,
+    "complete_outcome_embargo_preserved": true,
+    "successor_not_previously_submitted": true
+  },
+  "scientific_outcome_accessed": false,
+  "launch_permitted": true
+}
