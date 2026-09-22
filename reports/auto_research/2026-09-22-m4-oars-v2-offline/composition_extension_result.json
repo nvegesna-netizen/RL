@@ -1,0 +1,954 @@
+{
+  "aggregate": {
+    "m4_risk_band": {
+      "aggregate_token_ratio_to_fifo": 0.9948535345640238,
+      "mean_group_reward": 0.358349609375,
+      "mean_group_reward_variance": 0.114007568359375,
+      "selected_imminent_l1": 5931600.648281753,
+      "selected_l1": 6627716.346340001,
+      "selected_l2": 139542.9570233723,
+      "selected_valid_actor_tokens": 26251822.0
+    },
+    "reward_variance_risk_band": {
+      "aggregate_token_ratio_to_fifo": 0.9944054836310581,
+      "mean_group_reward": 0.3542236328125,
+      "mean_group_reward_variance": 0.1146575927734375,
+      "selected_imminent_l1": 5900108.151021123,
+      "selected_l1": 6586024.282216519,
+      "selected_l2": 138633.46629353237,
+      "selected_valid_actor_tokens": 26239999.0
+    },
+    "token_normalized_m4_risk_band": {
+      "aggregate_token_ratio_to_fifo": 0.9945344455971312,
+      "mean_group_reward": 0.3559814453125,
+      "mean_group_reward_variance": 0.1141998291015625,
+      "selected_imminent_l1": 5916668.778764814,
+      "selected_l1": 6607531.325924605,
+      "selected_l2": 139465.8843769722,
+      "selected_valid_actor_tokens": 26243402.0
+    }
+  },
+  "arms": [
+    {
+      "identity": "p01-fifo",
+      "m4_l1_gain_over_reward_variance_percent": 0.031478857935085536,
+      "m4_l1_gain_over_token_normalized_percent": 0.031478857935085536,
+      "m4_vs_reward_variance_selection": {
+        "identical_selection_fraction": 0.984375,
+        "mean_overlap_fraction": 0.99609375
+      },
+      "m4_vs_token_normalized_selection": {
+        "identical_selection_fraction": 0.984375,
+        "mean_overlap_fraction": 0.99609375
+      },
+      "policies": {
+        "m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9996899097663047,
+          "mean_fifo_overlap_fraction": 0.86328125,
+          "mean_group_reward": 0.39453125,
+          "mean_group_reward_variance": 0.1395263671875,
+          "selected_imminent_l1": 229132.0839113593,
+          "selected_l1": 270577.8468747139,
+          "selected_l2": 7521.2115254935925,
+          "selected_valid_actor_tokens": 390088.0
+        },
+        "reward_variance_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9994336368458954,
+          "mean_fifo_overlap_fraction": 0.859375,
+          "mean_group_reward": 0.39404296875,
+          "mean_group_reward_variance": 0.13970947265625,
+          "selected_imminent_l1": 229132.0839113593,
+          "selected_l1": 270492.6988623142,
+          "selected_l2": 7512.973152824457,
+          "selected_valid_actor_tokens": 389988.0
+        },
+        "token_normalized_m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9994336368458954,
+          "mean_fifo_overlap_fraction": 0.859375,
+          "mean_group_reward": 0.39404296875,
+          "mean_group_reward_variance": 0.13970947265625,
+          "selected_imminent_l1": 229132.0839113593,
+          "selected_l1": 270492.6988623142,
+          "selected_l2": 7512.973152824457,
+          "selected_valid_actor_tokens": 389988.0
+        }
+      }
+    },
+    {
+      "identity": "p01-oars",
+      "m4_l1_gain_over_reward_variance_percent": 0.5577305833703639,
+      "m4_l1_gain_over_token_normalized_percent": 0.343570031904572,
+      "m4_vs_reward_variance_selection": {
+        "identical_selection_fraction": 0.75,
+        "mean_overlap_fraction": 0.90625
+      },
+      "m4_vs_token_normalized_selection": {
+        "identical_selection_fraction": 0.796875,
+        "mean_overlap_fraction": 0.9140625
+      },
+      "policies": {
+        "m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9986661367345341,
+          "mean_fifo_overlap_fraction": 0.6640625,
+          "mean_group_reward": 0.4541015625,
+          "mean_group_reward_variance": 0.1605224609375,
+          "selected_imminent_l1": 708521.163139075,
+          "selected_l1": 714707.5010169148,
+          "selected_l2": 11111.232471101906,
+          "selected_valid_actor_tokens": 995025.0
+        },
+        "reward_variance_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9971937684798776,
+          "mean_fifo_overlap_fraction": 0.63671875,
+          "mean_group_reward": 0.451171875,
+          "mean_group_reward_variance": 0.1617431640625,
+          "selected_imminent_l1": 704775.2617717981,
+          "selected_l1": 710743.4673303068,
+          "selected_l2": 11023.503295993265,
+          "selected_valid_actor_tokens": 993558.0
+        },
+        "token_normalized_m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9975450492495639,
+          "mean_fifo_overlap_fraction": 0.6484375,
+          "mean_group_reward": 0.45751953125,
+          "mean_group_reward_variance": 0.16058349609375,
+          "selected_imminent_l1": 706113.4486515522,
+          "selected_l1": 712260.3877753913,
+          "selected_l2": 11110.986415024006,
+          "selected_valid_actor_tokens": 993908.0
+        }
+      }
+    },
+    {
+      "identity": "p02-fifo",
+      "m4_l1_gain_over_reward_variance_percent": 0.36454675322221686,
+      "m4_l1_gain_over_token_normalized_percent": 0.15415868993955417,
+      "m4_vs_reward_variance_selection": {
+        "identical_selection_fraction": 0.953125,
+        "mean_overlap_fraction": 0.98046875
+      },
+      "m4_vs_token_normalized_selection": {
+        "identical_selection_fraction": 0.96875,
+        "mean_overlap_fraction": 0.98828125
+      },
+      "policies": {
+        "m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9938513330437112,
+          "mean_fifo_overlap_fraction": 0.8359375,
+          "mean_group_reward": 0.43017578125,
+          "mean_group_reward_variance": 0.13983154296875,
+          "selected_imminent_l1": 274047.59669044614,
+          "selected_l1": 326748.89294180274,
+          "selected_l2": 8027.356345896178,
+          "selected_valid_actor_tokens": 656569.0
+        },
+        "reward_variance_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9931656249858091,
+          "mean_fifo_overlap_fraction": 0.83984375,
+          "mean_group_reward": 0.42822265625,
+          "mean_group_reward_variance": 0.13983154296875,
+          "selected_imminent_l1": 274047.59669044614,
+          "selected_l1": 325562.0669968426,
+          "selected_l2": 8010.894947864374,
+          "selected_valid_actor_tokens": 656116.0
+        },
+        "token_normalized_m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9933457558001365,
+          "mean_fifo_overlap_fraction": 0.83984375,
+          "mean_group_reward": 0.43212890625,
+          "mean_group_reward_variance": 0.13983154296875,
+          "selected_imminent_l1": 274047.59669044614,
+          "selected_l1": 326245.95644935966,
+          "selected_l2": 8019.5966121527745,
+          "selected_valid_actor_tokens": 656235.0
+        }
+      }
+    },
+    {
+      "identity": "p02-oars",
+      "m4_l1_gain_over_reward_variance_percent": 0.1785183207215102,
+      "m4_l1_gain_over_token_normalized_percent": 0.036464688198645234,
+      "m4_vs_reward_variance_selection": {
+        "identical_selection_fraction": 0.90625,
+        "mean_overlap_fraction": 0.96484375
+      },
+      "m4_vs_token_normalized_selection": {
+        "identical_selection_fraction": 0.953125,
+        "mean_overlap_fraction": 0.984375
+      },
+      "policies": {
+        "m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.993109892811916,
+          "mean_fifo_overlap_fraction": 0.625,
+          "mean_group_reward": 0.26611328125,
+          "mean_group_reward_variance": 0.08929443359375,
+          "selected_imminent_l1": 310159.98597964644,
+          "selected_l1": 321201.35074326396,
+          "selected_l2": 5886.060323137245,
+          "selected_valid_actor_tokens": 2043699.0
+        },
+        "reward_variance_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9928810162701579,
+          "mean_fifo_overlap_fraction": 0.62890625,
+          "mean_group_reward": 0.2578125,
+          "mean_group_reward_variance": 0.0899658203125,
+          "selected_imminent_l1": 309587.6045279205,
+          "selected_l1": 320628.969291538,
+          "selected_l2": 5877.258993119615,
+          "selected_valid_actor_tokens": 2043228.0
+        },
+        "token_normalized_m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9929485615765367,
+          "mean_fifo_overlap_fraction": 0.62109375,
+          "mean_group_reward": 0.2626953125,
+          "mean_group_reward_variance": 0.0897216796875,
+          "selected_imminent_l1": 310042.9036023319,
+          "selected_l1": 321084.2683659494,
+          "selected_l2": 5897.9932715097775,
+          "selected_valid_actor_tokens": 2043367.0
+        }
+      }
+    },
+    {
+      "identity": "p03-fifo",
+      "m4_l1_gain_over_reward_variance_percent": 0.09597251506483495,
+      "m4_l1_gain_over_token_normalized_percent": 0.017383910336632447,
+      "m4_vs_reward_variance_selection": {
+        "identical_selection_fraction": 0.953125,
+        "mean_overlap_fraction": 0.98828125
+      },
+      "m4_vs_token_normalized_selection": {
+        "identical_selection_fraction": 0.984375,
+        "mean_overlap_fraction": 0.99609375
+      },
+      "policies": {
+        "m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9944903051882273,
+          "mean_fifo_overlap_fraction": 0.74609375,
+          "mean_group_reward": 0.29736328125,
+          "mean_group_reward_variance": 0.11419677734375,
+          "selected_imminent_l1": 601895.0308501124,
+          "selected_l1": 806773.7700775266,
+          "selected_l2": 10424.726730209324,
+          "selected_valid_actor_tokens": 2173560.0
+        },
+        "reward_variance_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9942075455641054,
+          "mean_fifo_overlap_fraction": 0.74609375,
+          "mean_group_reward": 0.29833984375,
+          "mean_group_reward_variance": 0.11444091796875,
+          "selected_imminent_l1": 601895.0308501124,
+          "selected_l1": 806000.2313840389,
+          "selected_l2": 10407.347939454521,
+          "selected_valid_actor_tokens": 2172942.0
+        },
+        "token_normalized_m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9943205579057852,
+          "mean_fifo_overlap_fraction": 0.74609375,
+          "mean_group_reward": 0.29736328125,
+          "mean_group_reward_variance": 0.11419677734375,
+          "selected_imminent_l1": 601895.0308501124,
+          "selected_l1": 806633.5456252098,
+          "selected_l2": 10424.274451693747,
+          "selected_valid_actor_tokens": 2173189.0
+        }
+      }
+    },
+    {
+      "identity": "p03-oars",
+      "m4_l1_gain_over_reward_variance_percent": 0.8992515221474484,
+      "m4_l1_gain_over_token_normalized_percent": 0.5809187471724098,
+      "m4_vs_reward_variance_selection": {
+        "identical_selection_fraction": 0.75,
+        "mean_overlap_fraction": 0.90625
+      },
+      "m4_vs_token_normalized_selection": {
+        "identical_selection_fraction": 0.828125,
+        "mean_overlap_fraction": 0.93359375
+      },
+      "policies": {
+        "m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9940549024902744,
+          "mean_fifo_overlap_fraction": 0.625,
+          "mean_group_reward": 0.4140625,
+          "mean_group_reward_variance": 0.1280517578125,
+          "selected_imminent_l1": 222582.44744324684,
+          "selected_l1": 233991.37636485696,
+          "selected_l2": 6452.185390572113,
+          "selected_valid_actor_tokens": 942372.0
+        },
+        "reward_variance_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9927848710137467,
+          "mean_fifo_overlap_fraction": 0.640625,
+          "mean_group_reward": 0.408203125,
+          "mean_group_reward_variance": 0.128662109375,
+          "selected_imminent_l1": 220497.02958145738,
+          "selected_l1": 231905.9585030675,
+          "selected_l2": 6438.561085131991,
+          "selected_valid_actor_tokens": 941168.0
+        },
+        "token_normalized_m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9929715782989174,
+          "mean_fifo_overlap_fraction": 0.62890625,
+          "mean_group_reward": 0.40576171875,
+          "mean_group_reward_variance": 0.12786865234375,
+          "selected_imminent_l1": 221230.99849149585,
+          "selected_l1": 232639.92741310596,
+          "selected_l2": 6485.544694908003,
+          "selected_valid_actor_tokens": 941345.0
+        }
+      }
+    },
+    {
+      "identity": "p04-fifo",
+      "m4_l1_gain_over_reward_variance_percent": 0.2887041490168052,
+      "m4_l1_gain_over_token_normalized_percent": 0.0,
+      "m4_vs_reward_variance_selection": {
+        "identical_selection_fraction": 0.96875,
+        "mean_overlap_fraction": 0.9921875
+      },
+      "m4_vs_token_normalized_selection": {
+        "identical_selection_fraction": 1.0,
+        "mean_overlap_fraction": 1.0
+      },
+      "policies": {
+        "m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9955190693012949,
+          "mean_fifo_overlap_fraction": 0.74609375,
+          "mean_group_reward": 0.3076171875,
+          "mean_group_reward_variance": 0.0831298828125,
+          "selected_imminent_l1": 224270.04778766632,
+          "selected_l1": 252522.23928809166,
+          "selected_l2": 5504.490825170968,
+          "selected_valid_actor_tokens": 1885317.0
+        },
+        "reward_variance_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9954308869507547,
+          "mean_fifo_overlap_fraction": 0.74609375,
+          "mean_group_reward": 0.3076171875,
+          "mean_group_reward_variance": 0.0831298828125,
+          "selected_imminent_l1": 224270.04778766632,
+          "selected_l1": 251795.29582202435,
+          "selected_l2": 5486.877210826553,
+          "selected_valid_actor_tokens": 1885150.0
+        },
+        "token_normalized_m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9955190693012949,
+          "mean_fifo_overlap_fraction": 0.74609375,
+          "mean_group_reward": 0.3076171875,
+          "mean_group_reward_variance": 0.0831298828125,
+          "selected_imminent_l1": 224270.04778766632,
+          "selected_l1": 252522.23928809166,
+          "selected_l2": 5504.490825170968,
+          "selected_valid_actor_tokens": 1885317.0
+        }
+      }
+    },
+    {
+      "identity": "p04-oars",
+      "m4_l1_gain_over_reward_variance_percent": 1.5975818245635098,
+      "m4_l1_gain_over_token_normalized_percent": 0.928726754170861,
+      "m4_vs_reward_variance_selection": {
+        "identical_selection_fraction": 0.796875,
+        "mean_overlap_fraction": 0.92578125
+      },
+      "m4_vs_token_normalized_selection": {
+        "identical_selection_fraction": 0.90625,
+        "mean_overlap_fraction": 0.9609375
+      },
+      "policies": {
+        "m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9934551749456275,
+          "mean_fifo_overlap_fraction": 0.6484375,
+          "mean_group_reward": 0.35888671875,
+          "mean_group_reward_variance": 0.10626220703125,
+          "selected_imminent_l1": 256962.906003654,
+          "selected_l1": 267510.29888373613,
+          "selected_l2": 6302.893729484744,
+          "selected_valid_actor_tokens": 1036439.0
+        },
+        "reward_variance_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9926241316939959,
+          "mean_fifo_overlap_fraction": 0.625,
+          "mean_group_reward": 0.35302734375,
+          "mean_group_reward_variance": 0.10687255859375,
+          "selected_imminent_l1": 253124.31208476424,
+          "selected_l1": 263303.805149287,
+          "selected_l2": 6209.0738613846115,
+          "selected_valid_actor_tokens": 1035572.0
+        },
+        "token_normalized_m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9928551367962372,
+          "mean_fifo_overlap_fraction": 0.6328125,
+          "mean_group_reward": 0.357421875,
+          "mean_group_reward_variance": 0.1064453125,
+          "selected_imminent_l1": 254501.32762473822,
+          "selected_l1": 265048.72050482035,
+          "selected_l2": 6265.037490837524,
+          "selected_valid_actor_tokens": 1035813.0
+        }
+      }
+    },
+    {
+      "identity": "p05-fifo",
+      "m4_l1_gain_over_reward_variance_percent": 0.2594882392872755,
+      "m4_l1_gain_over_token_normalized_percent": 0.25306869148069566,
+      "m4_vs_reward_variance_selection": {
+        "identical_selection_fraction": 0.953125,
+        "mean_overlap_fraction": 0.98046875
+      },
+      "m4_vs_token_normalized_selection": {
+        "identical_selection_fraction": 0.953125,
+        "mean_overlap_fraction": 0.98046875
+      },
+      "policies": {
+        "m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9929626930749842,
+          "mean_fifo_overlap_fraction": 0.7109375,
+          "mean_group_reward": 0.33837890625,
+          "mean_group_reward_variance": 0.09039306640625,
+          "selected_imminent_l1": 179779.65513813496,
+          "selected_l1": 232835.2161913514,
+          "selected_l2": 5297.1767670094905,
+          "selected_valid_actor_tokens": 1662438.0
+        },
+        "reward_variance_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9928073968773519,
+          "mean_fifo_overlap_fraction": 0.7109375,
+          "mean_group_reward": 0.33349609375,
+          "mean_group_reward_variance": 0.09112548828125,
+          "selected_imminent_l1": 179779.65513813496,
+          "selected_l1": 232232.59990680218,
+          "selected_l2": 5296.028251095713,
+          "selected_valid_actor_tokens": 1662178.0
+        },
+        "token_normalized_m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9928677234772013,
+          "mean_fifo_overlap_fraction": 0.7109375,
+          "mean_group_reward": 0.33154296875,
+          "mean_group_reward_variance": 0.09088134765625,
+          "selected_imminent_l1": 179779.65513813496,
+          "selected_l1": 232247.47055661678,
+          "selected_l2": 5310.675661953686,
+          "selected_valid_actor_tokens": 1662279.0
+        }
+      }
+    },
+    {
+      "identity": "p05-oars",
+      "m4_l1_gain_over_reward_variance_percent": 1.211454155690106,
+      "m4_l1_gain_over_token_normalized_percent": 0.3013113307338777,
+      "m4_vs_reward_variance_selection": {
+        "identical_selection_fraction": 0.90625,
+        "mean_overlap_fraction": 0.96484375
+      },
+      "m4_vs_token_normalized_selection": {
+        "identical_selection_fraction": 0.9375,
+        "mean_overlap_fraction": 0.9765625
+      },
+      "policies": {
+        "m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9928352600506776,
+          "mean_fifo_overlap_fraction": 0.59765625,
+          "mean_group_reward": 0.32861328125,
+          "mean_group_reward_variance": 0.10650634765625,
+          "selected_imminent_l1": 356781.07298108935,
+          "selected_l1": 370387.46156421304,
+          "selected_l2": 6952.740266879829,
+          "selected_valid_actor_tokens": 1679359.0
+        },
+        "reward_variance_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.992627749222869,
+          "mean_fifo_overlap_fraction": 0.58984375,
+          "mean_group_reward": 0.32421875,
+          "mean_group_reward_variance": 0.10693359375,
+          "selected_imminent_l1": 354560.1921517551,
+          "selected_l1": 365954.0954667628,
+          "selected_l2": 6863.250063661494,
+          "selected_valid_actor_tokens": 1679008.0
+        },
+        "token_normalized_m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9927442154139753,
+          "mean_fifo_overlap_fraction": 0.59375,
+          "mean_group_reward": 0.32568359375,
+          "mean_group_reward_variance": 0.10650634765625,
+          "selected_imminent_l1": 355813.18887344,
+          "selected_l1": 369274.79476603866,
+          "selected_l2": 6947.271660541339,
+          "selected_valid_actor_tokens": 1679205.0
+        }
+      }
+    },
+    {
+      "identity": "p06-fifo",
+      "m4_l1_gain_over_reward_variance_percent": 0.26240514951993976,
+      "m4_l1_gain_over_token_normalized_percent": 0.0,
+      "m4_vs_reward_variance_selection": {
+        "identical_selection_fraction": 0.96875,
+        "mean_overlap_fraction": 0.984375
+      },
+      "m4_vs_token_normalized_selection": {
+        "identical_selection_fraction": 1.0,
+        "mean_overlap_fraction": 1.0
+      },
+      "policies": {
+        "m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9917892084146304,
+          "mean_fifo_overlap_fraction": 0.78125,
+          "mean_group_reward": 0.3212890625,
+          "mean_group_reward_variance": 0.1004638671875,
+          "selected_imminent_l1": 228106.84858837724,
+          "selected_l1": 253337.94448196888,
+          "selected_l2": 6021.846913286591,
+          "selected_valid_actor_tokens": 1420743.0
+        },
+        "reward_variance_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9918066603606969,
+          "mean_fifo_overlap_fraction": 0.7890625,
+          "mean_group_reward": 0.31884765625,
+          "mean_group_reward_variance": 0.10064697265625,
+          "selected_imminent_l1": 228106.84858837724,
+          "selected_l1": 252674.91250002384,
+          "selected_l2": 6000.730786791547,
+          "selected_valid_actor_tokens": 1420768.0
+        },
+        "token_normalized_m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9917892084146304,
+          "mean_fifo_overlap_fraction": 0.78125,
+          "mean_group_reward": 0.3212890625,
+          "mean_group_reward_variance": 0.1004638671875,
+          "selected_imminent_l1": 228106.84858837724,
+          "selected_l1": 253337.94448196888,
+          "selected_l2": 6021.846913286591,
+          "selected_valid_actor_tokens": 1420743.0
+        }
+      }
+    },
+    {
+      "identity": "p06-oars",
+      "m4_l1_gain_over_reward_variance_percent": 1.7976168063591258,
+      "m4_l1_gain_over_token_normalized_percent": 1.0578715202225863,
+      "m4_vs_reward_variance_selection": {
+        "identical_selection_fraction": 0.625,
+        "mean_overlap_fraction": 0.8515625
+      },
+      "m4_vs_token_normalized_selection": {
+        "identical_selection_fraction": 0.765625,
+        "mean_overlap_fraction": 0.90234375
+      },
+      "policies": {
+        "m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 1.0015517097037345,
+          "mean_fifo_overlap_fraction": 0.64453125,
+          "mean_group_reward": 0.521484375,
+          "mean_group_reward_variance": 0.158203125,
+          "selected_imminent_l1": 376482.2808111608,
+          "selected_l1": 392582.3605622351,
+          "selected_l2": 9441.282935986163,
+          "selected_valid_actor_tokens": 514424.0
+        },
+        "reward_variance_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9971827805002463,
+          "mean_fifo_overlap_fraction": 0.66015625,
+          "mean_group_reward": 0.50244140625,
+          "mean_group_reward_variance": 0.15997314453125,
+          "selected_imminent_l1": 370513.6828877926,
+          "selected_l1": 385649.8539735079,
+          "selected_l2": 9326.892623803995,
+          "selected_valid_actor_tokens": 512180.0
+        },
+        "token_normalized_m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9990907798850138,
+          "mean_fifo_overlap_fraction": 0.68359375,
+          "mean_group_reward": 0.505859375,
+          "mean_group_reward_variance": 0.1590576171875,
+          "selected_imminent_l1": 373336.6461788714,
+          "selected_l1": 388472.8172645867,
+          "selected_l2": 9422.476445239141,
+          "selected_valid_actor_tokens": 513160.0
+        }
+      }
+    },
+    {
+      "identity": "p07-fifo",
+      "m4_l1_gain_over_reward_variance_percent": 0.0,
+      "m4_l1_gain_over_token_normalized_percent": 0.0,
+      "m4_vs_reward_variance_selection": {
+        "identical_selection_fraction": 1.0,
+        "mean_overlap_fraction": 1.0
+      },
+      "m4_vs_token_normalized_selection": {
+        "identical_selection_fraction": 1.0,
+        "mean_overlap_fraction": 1.0
+      },
+      "policies": {
+        "m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9946647358883252,
+          "mean_fifo_overlap_fraction": 0.7734375,
+          "mean_group_reward": 0.26220703125,
+          "mean_group_reward_variance": 0.09051513671875,
+          "selected_imminent_l1": 222107.07516878843,
+          "selected_l1": 242905.02227133512,
+          "selected_l2": 5363.437303513562,
+          "selected_valid_actor_tokens": 1915031.0
+        },
+        "reward_variance_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9946647358883252,
+          "mean_fifo_overlap_fraction": 0.7734375,
+          "mean_group_reward": 0.26220703125,
+          "mean_group_reward_variance": 0.09051513671875,
+          "selected_imminent_l1": 222107.07516878843,
+          "selected_l1": 242905.02227133512,
+          "selected_l2": 5363.437303513562,
+          "selected_valid_actor_tokens": 1915031.0
+        },
+        "token_normalized_m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9946647358883252,
+          "mean_fifo_overlap_fraction": 0.7734375,
+          "mean_group_reward": 0.26220703125,
+          "mean_group_reward_variance": 0.09051513671875,
+          "selected_imminent_l1": 222107.07516878843,
+          "selected_l1": 242905.02227133512,
+          "selected_l2": 5363.437303513562,
+          "selected_valid_actor_tokens": 1915031.0
+        }
+      }
+    },
+    {
+      "identity": "p07-oars",
+      "m4_l1_gain_over_reward_variance_percent": 1.88684758210107,
+      "m4_l1_gain_over_token_normalized_percent": 0.12482107130162845,
+      "m4_vs_reward_variance_selection": {
+        "identical_selection_fraction": 0.875,
+        "mean_overlap_fraction": 0.953125
+      },
+      "m4_vs_token_normalized_selection": {
+        "identical_selection_fraction": 0.96875,
+        "mean_overlap_fraction": 0.98828125
+      },
+      "policies": {
+        "m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9910944496412614,
+          "mean_fifo_overlap_fraction": 0.58984375,
+          "mean_group_reward": 0.22607421875,
+          "mean_group_reward_variance": 0.07952880859375,
+          "selected_imminent_l1": 243116.48560646176,
+          "selected_l1": 260658.92667487264,
+          "selected_l2": 5045.929203957104,
+          "selected_valid_actor_tokens": 2087235.0
+        },
+        "reward_variance_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9909610207076007,
+          "mean_fifo_overlap_fraction": 0.59765625,
+          "mean_group_reward": 0.22119140625,
+          "mean_group_reward_variance": 0.08026123046875,
+          "selected_imminent_l1": 238822.25182321668,
+          "selected_l1": 255831.7710878551,
+          "selected_l2": 4947.105831703348,
+          "selected_valid_actor_tokens": 2086954.0
+        },
+        "token_normalized_m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9909363292323325,
+          "mean_fifo_overlap_fraction": 0.58984375,
+          "mean_group_reward": 0.22509765625,
+          "mean_group_reward_variance": 0.07928466796875,
+          "selected_imminent_l1": 242791.5339498818,
+          "selected_l1": 260333.97501829267,
+          "selected_l2": 5054.601158539296,
+          "selected_valid_actor_tokens": 2086902.0
+        }
+      }
+    },
+    {
+      "identity": "p08-fifo",
+      "m4_l1_gain_over_reward_variance_percent": 0.5873352732192361,
+      "m4_l1_gain_over_token_normalized_percent": 0.9691133824759168,
+      "m4_vs_reward_variance_selection": {
+        "identical_selection_fraction": 0.953125,
+        "mean_overlap_fraction": 0.984375
+      },
+      "m4_vs_token_normalized_selection": {
+        "identical_selection_fraction": 0.953125,
+        "mean_overlap_fraction": 0.98046875
+      },
+      "policies": {
+        "m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.998317656842993,
+          "mean_fifo_overlap_fraction": 0.8125,
+          "mean_group_reward": 0.28857421875,
+          "mean_group_reward_variance": 0.10955810546875,
+          "selected_imminent_l1": 248240.0258693695,
+          "selected_l1": 290578.4689272642,
+          "selected_l2": 6666.871295950484,
+          "selected_valid_actor_tokens": 1363654.0
+        },
+        "reward_variance_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9986383123272268,
+          "mean_fifo_overlap_fraction": 0.80859375,
+          "mean_group_reward": 0.2890625,
+          "mean_group_reward_variance": 0.10986328125,
+          "selected_imminent_l1": 248240.0258693695,
+          "selected_l1": 288881.76442688704,
+          "selected_l2": 6641.730814972862,
+          "selected_valid_actor_tokens": 1364092.0
+        },
+        "token_normalized_m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9986851660966125,
+          "mean_fifo_overlap_fraction": 0.8125,
+          "mean_group_reward": 0.28564453125,
+          "mean_group_reward_variance": 0.10968017578125,
+          "selected_imminent_l1": 248240.0258693695,
+          "selected_l1": 287789.4627305865,
+          "selected_l2": 6636.459886545111,
+          "selected_valid_actor_tokens": 1364156.0
+        }
+      }
+    },
+    {
+      "identity": "p08-oars",
+      "m4_l1_gain_over_reward_variance_percent": 1.0454574307078301,
+      "m4_l1_gain_over_token_normalized_percent": 0.44271844127170557,
+      "m4_vs_reward_variance_selection": {
+        "identical_selection_fraction": 0.8125,
+        "mean_overlap_fraction": 0.9453125
+      },
+      "m4_vs_token_normalized_selection": {
+        "identical_selection_fraction": 0.90625,
+        "mean_overlap_fraction": 0.96875
+      },
+      "policies": {
+        "m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.992136477900029,
+          "mean_fifo_overlap_fraction": 0.5546875,
+          "mean_group_reward": 0.2451171875,
+          "mean_group_reward_variance": 0.0899658203125,
+          "selected_imminent_l1": 242647.97522106767,
+          "selected_l1": 250214.72308769822,
+          "selected_l2": 5321.542441812107,
+          "selected_valid_actor_tokens": 1413729.0
+        },
+        "reward_variance_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9912964389929639,
+          "mean_fifo_overlap_fraction": 0.55859375,
+          "mean_group_reward": 0.2392578125,
+          "mean_group_reward_variance": 0.091552734375,
+          "selected_imminent_l1": 240059.1518521011,
+          "selected_l1": 247625.89971873164,
+          "selected_l2": 5210.8492625934105,
+          "selected_valid_actor_tokens": 1412532.0
+        },
+        "token_normalized_m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9914059177477693,
+          "mean_fifo_overlap_fraction": 0.56640625,
+          "mean_group_reward": 0.24462890625,
+          "mean_group_reward_variance": 0.09014892578125,
+          "selected_imminent_l1": 241545.11108210683,
+          "selected_l1": 249111.85894873738,
+          "selected_l2": 5305.802170435118,
+          "selected_valid_actor_tokens": 1412688.0
+        }
+      }
+    },
+    {
+      "identity": "p09-fifo",
+      "m4_l1_gain_over_reward_variance_percent": 0.0306738117110239,
+      "m4_l1_gain_over_token_normalized_percent": 0.0,
+      "m4_vs_reward_variance_selection": {
+        "identical_selection_fraction": 0.984375,
+        "mean_overlap_fraction": 0.99609375
+      },
+      "m4_vs_token_normalized_selection": {
+        "identical_selection_fraction": 1.0,
+        "mean_overlap_fraction": 1.0
+      },
+      "policies": {
+        "m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 1.0007252251178242,
+          "mean_fifo_overlap_fraction": 0.8828125,
+          "mean_group_reward": 0.54150390625,
+          "mean_group_reward_variance": 0.16412353515625,
+          "selected_imminent_l1": 338866.83488830924,
+          "selected_l1": 388408.8517997563,
+          "selected_l2": 9613.80134074113,
+          "selected_valid_actor_tokens": 503657.0
+        },
+        "reward_variance_risk_band": {
+          "aggregate_token_ratio_to_fifo": 1.0007172774453001,
+          "mean_fifo_overlap_fraction": 0.8828125,
+          "mean_group_reward": 0.54052734375,
+          "mean_group_reward_variance": 0.16436767578125,
+          "selected_imminent_l1": 338866.83488830924,
+          "selected_l1": 388289.7485333979,
+          "selected_l2": 9599.738293794537,
+          "selected_valid_actor_tokens": 503653.0
+        },
+        "token_normalized_m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 1.0007252251178242,
+          "mean_fifo_overlap_fraction": 0.8828125,
+          "mean_group_reward": 0.54150390625,
+          "mean_group_reward_variance": 0.16412353515625,
+          "selected_imminent_l1": 338866.83488830924,
+          "selected_l1": 388408.8517997563,
+          "selected_l2": 9613.80134074113,
+          "selected_valid_actor_tokens": 503657.0
+        }
+      }
+    },
+    {
+      "identity": "p09-oars",
+      "m4_l1_gain_over_reward_variance_percent": 0.8232632776852489,
+      "m4_l1_gain_over_token_normalized_percent": 0.11724732484579281,
+      "m4_vs_reward_variance_selection": {
+        "identical_selection_fraction": 0.875,
+        "mean_overlap_fraction": 0.953125
+      },
+      "m4_vs_token_normalized_selection": {
+        "identical_selection_fraction": 0.90625,
+        "mean_overlap_fraction": 0.96875
+      },
+      "policies": {
+        "m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9979923565665829,
+          "mean_fifo_overlap_fraction": 0.5859375,
+          "mean_group_reward": 0.25439453125,
+          "mean_group_reward_variance": 0.08782958984375,
+          "selected_imminent_l1": 198306.30056619644,
+          "selected_l1": 210142.95132607222,
+          "selected_l2": 4997.132343466428,
+          "selected_valid_actor_tokens": 1928237.0
+        },
+        "reward_variance_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9974597798475868,
+          "mean_fifo_overlap_fraction": 0.58203125,
+          "mean_group_reward": 0.251953125,
+          "mean_group_reward_variance": 0.0887451171875,
+          "selected_imminent_l1": 196590.39721941948,
+          "selected_l1": 208427.04797929525,
+          "selected_l2": 4913.152078091407,
+          "selected_valid_actor_tokens": 1927208.0
+        },
+        "token_normalized_m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9976166027298567,
+          "mean_fifo_overlap_fraction": 0.5859375,
+          "mean_group_reward": 0.25341796875,
+          "mean_group_reward_variance": 0.08795166015625,
+          "selected_imminent_l1": 198060.20212125778,
+          "selected_l1": 209896.85288113356,
+          "selected_l2": 4990.616642805645,
+          "selected_valid_actor_tokens": 1927511.0
+        }
+      }
+    },
+    {
+      "identity": "p10-fifo",
+      "m4_l1_gain_over_reward_variance_percent": 0.020575511806031344,
+      "m4_l1_gain_over_token_normalized_percent": 0.0,
+      "m4_vs_reward_variance_selection": {
+        "identical_selection_fraction": 0.984375,
+        "mean_overlap_fraction": 0.99609375
+      },
+      "m4_vs_token_normalized_selection": {
+        "identical_selection_fraction": 1.0,
+        "mean_overlap_fraction": 1.0
+      },
+      "policies": {
+        "m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9995304279853674,
+          "mean_fifo_overlap_fraction": 0.75390625,
+          "mean_group_reward": 0.4482421875,
+          "mean_group_reward_variance": 0.1107177734375,
+          "selected_imminent_l1": 183867.62861430645,
+          "selected_l1": 244548.91782543063,
+          "selected_l2": 6129.685769783254,
+          "selected_valid_actor_tokens": 1066428.0
+        },
+        "reward_variance_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9994966862837171,
+          "mean_fifo_overlap_fraction": 0.75390625,
+          "mean_group_reward": 0.4482421875,
+          "mean_group_reward_variance": 0.1107177734375,
+          "selected_imminent_l1": 183867.62861430645,
+          "selected_l1": 244498.61098486185,
+          "selected_l2": 6128.227452106891,
+          "selected_valid_actor_tokens": 1066392.0
+        },
+        "token_normalized_m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9995304279853674,
+          "mean_fifo_overlap_fraction": 0.75390625,
+          "mean_group_reward": 0.4482421875,
+          "mean_group_reward_variance": 0.1107177734375,
+          "selected_imminent_l1": 183867.62861430645,
+          "selected_l1": 244548.91782543063,
+          "selected_l2": 6129.685769783254,
+          "selected_valid_actor_tokens": 1066428.0
+        }
+      }
+    },
+    {
+      "identity": "p10-oars",
+      "m4_l1_gain_over_reward_variance_percent": 1.5247612481848583,
+      "m4_l1_gain_over_token_normalized_percent": 0.9537359591200945,
+      "m4_vs_reward_variance_selection": {
+        "identical_selection_fraction": 0.6875,
+        "mean_overlap_fraction": 0.875
+      },
+      "m4_vs_token_normalized_selection": {
+        "identical_selection_fraction": 0.796875,
+        "mean_overlap_fraction": 0.9140625
+      },
+      "policies": {
+        "m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9970305476545844,
+          "mean_fifo_overlap_fraction": 0.640625,
+          "mean_group_reward": 0.46826171875,
+          "mean_group_reward_variance": 0.13153076171875,
+          "selected_imminent_l1": 285727.2030232847,
+          "selected_l1": 297082.2254368961,
+          "selected_l2": 7461.353099920066,
+          "selected_valid_actor_tokens": 573818.0
+        },
+        "reward_variance_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9943599518354482,
+          "mean_fifo_overlap_fraction": 0.66015625,
+          "mean_group_reward": 0.45458984375,
+          "mean_group_reward_variance": 0.13409423828125,
+          "selected_imminent_l1": 281265.43961402774,
+          "selected_l1": 292620.46202763915,
+          "selected_l2": 7375.833044804216,
+          "selected_valid_actor_tokens": 572281.0
+        },
+        "token_normalized_m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9947057218862017,
+          "mean_fifo_overlap_fraction": 0.67578125,
+          "mean_group_reward": 0.4599609375,
+          "mean_group_reward_variance": 0.1331787109375,
+          "selected_imminent_l1": 282920.59068226814,
+          "selected_l1": 294275.61309587955,
+          "selected_l2": 7448.312509467044,
+          "selected_valid_actor_tokens": 572480.0
+        }
+      }
+    }
+  ],
+  "diagnostics": {
+    "m4_imminent_l1_gain_over_reward_variance_percent": 0.5337613558012544,
+    "m4_l1_gain_over_reward_variance_percent": 0.6330384210100348,
+    "m4_l1_gain_over_token_normalized_percent": 0.3054850506148954,
+    "m4_l1_positive_vs_reward_variance_arms": 19,
+    "m4_l1_positive_vs_token_normalized_arms": 15,
+    "m4_vs_reward_variance_identical_selection_fraction": 0.884375,
+    "m4_vs_reward_variance_mean_overlap_fraction": 0.9572265625,
+    "m4_vs_token_normalized_mean_overlap_fraction": 0.97265625
+  },
+  "interpretation_boundary": "Exploratory one-step replay only. It can inform comparator choice but cannot estimate live queue, quality, wall-time, or mediation effects.",
+  "protocol": {
+    "path": "reports/auto_research/2026-09-22-m4-oars-v2-offline/composition_extension_protocol.json",
+    "sha256": "199026fdfc92ccd758f921016af138275f5f3a4b33fcca0ae761a613a4034b25"
+  },
+  "schema": "m4-oars-v2-composition-extension-result-v1",
+  "scope": {
+    "authenticated_arms": 20,
+    "reconstructed_decisions": 1280
+  },
+  "status": "COMPLETE_EXPLORATORY_DIAGNOSTIC"
+}

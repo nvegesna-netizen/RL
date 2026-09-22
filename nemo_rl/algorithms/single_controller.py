@@ -62,6 +62,13 @@ from nemo_rl.algorithms.async_utils.opportunity_at_risk import (
     OpportunityAtRiskShadowRecorder,
     OpportunityAtRiskShadowSampler,
 )
+from nemo_rl.algorithms.async_utils.opportunity_at_risk_v2 import (
+    OPPORTUNITY_REWARD_MEAN_KEY,
+    OPPORTUNITY_REWARD_VARIANCE_KEY,
+    OpportunityAtRiskV2ShadowRecorder,
+    OpportunityAtRiskV2ShadowSampler,
+    compute_reward_moments,
+)
 from nemo_rl.algorithms.async_utils.staleness_sampler import (
     WeightFifoSampler,
     create_sampler,
@@ -153,6 +160,9 @@ class SingleControllerActor:
         self._lifecycle_recorder: Optional[RolloutLifecycleRecorder] = None
         self._opportunity_recorder: Optional[GradientOpportunityRecorder] = None
         self._oars_shadow_recorder: Optional[OpportunityAtRiskShadowRecorder] = None
+        self._oars_v2_shadow_recorder: Optional[OpportunityAtRiskV2ShadowRecorder] = (
+            None
+        )
         self._observer_duty_meter: Optional[CommonObserverDutyMeter] = None
         if self._async_cfg.lifecycle_audit_path is not None:
             opportunity_enabled = self._async_cfg.gradient_opportunity_audit.enabled
@@ -269,12 +279,19 @@ class SingleControllerActor:
                         )
                         assert self._opportunity_recorder is not None
                         self._opportunity_recorder.append_group(summary)
-                        return {
+                        metadata = {
                             OPPORTUNITY_GROUP_ID_KEY: summary.group_id,
                             OPPORTUNITY_L1_KEY: summary.opportunity,
                             OPPORTUNITY_L2_KEY: summary.l2_coefficient_mass,
                             OPPORTUNITY_VALID_TOKENS_KEY: summary.valid_actor_tokens,
                         }
+                        if self._async_cfg.opportunity_at_risk_v2_shadow.enabled:
+                            reward_mean, reward_variance = compute_reward_moments(
+                                [sibling.reward for sibling in summary.siblings]
+                            )
+                            metadata[OPPORTUNITY_REWARD_MEAN_KEY] = reward_mean
+                            metadata[OPPORTUNITY_REWARD_VARIANCE_KEY] = reward_variance
+                        return metadata
 
                 self._buffer.set_prepare_observer(_record_prepared_opportunity)
             elif derived_enabled and not isinstance(
@@ -320,6 +337,41 @@ class SingleControllerActor:
                 max_candidate_groups=shadow_config.max_candidate_groups,
                 record=self._oars_shadow_recorder.append,
                 mode=shadow_config.mode,
+            )
+        shadow_v2_config = self._async_cfg.opportunity_at_risk_v2_shadow
+        if shadow_v2_config.enabled:
+            if not isinstance(self._sampler, WeightFifoSampler):
+                raise TypeError(
+                    "OARS-v2 shadow validation admitted a non-weight-FIFO sampler"
+                )
+            self._oars_v2_shadow_recorder = OpportunityAtRiskV2ShadowRecorder(
+                minimum_service_multiplier=(
+                    shadow_v2_config.minimum_service_multiplier
+                ),
+                maximum_service_multiplier=(
+                    shadow_v2_config.maximum_service_multiplier
+                ),
+                max_candidate_groups=shadow_v2_config.max_candidate_groups,
+                exact_search_max_candidates=(
+                    shadow_v2_config.exact_search_max_candidates
+                ),
+                decision_time_budget_ns=shadow_v2_config.decision_time_budget_ns,
+            )
+            self._sampler = OpportunityAtRiskV2ShadowSampler(
+                buffer=self._buffer,
+                baseline=self._sampler,
+                minimum_service_multiplier=(
+                    shadow_v2_config.minimum_service_multiplier
+                ),
+                maximum_service_multiplier=(
+                    shadow_v2_config.maximum_service_multiplier
+                ),
+                max_candidate_groups=shadow_v2_config.max_candidate_groups,
+                exact_search_max_candidates=(
+                    shadow_v2_config.exact_search_max_candidates
+                ),
+                decision_time_budget_ns=shadow_v2_config.decision_time_budget_ns,
+                record=self._oars_v2_shadow_recorder.append,
             )
         required_capacity = self._sampler.required_buffer_capacity(num_prompts_per_step)
         validate_sampler_buffer_capacity(
@@ -472,12 +524,18 @@ class SingleControllerActor:
                             )
                 finally:
                     try:
-                        if self._oars_shadow_recorder is not None:
-                            shadow_path = (
-                                self._async_cfg.opportunity_at_risk_shadow.output_path
-                            )
-                            assert shadow_path is not None
-                            self._oars_shadow_recorder.flush_jsonl(shadow_path)
+                        try:
+                            if self._oars_v2_shadow_recorder is not None:
+                                shadow_v2_path = self._async_cfg.opportunity_at_risk_v2_shadow.output_path
+                                assert shadow_v2_path is not None
+                                self._oars_v2_shadow_recorder.flush_jsonl(
+                                    shadow_v2_path
+                                )
+                        finally:
+                            if self._oars_shadow_recorder is not None:
+                                shadow_path = self._async_cfg.opportunity_at_risk_shadow.output_path
+                                assert shadow_path is not None
+                                self._oars_shadow_recorder.flush_jsonl(shadow_path)
                     finally:
                         try:
                             if self._opportunity_recorder is not None:

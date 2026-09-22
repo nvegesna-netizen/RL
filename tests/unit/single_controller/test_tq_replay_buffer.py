@@ -375,6 +375,7 @@ class TestTQReplayBufferReserveCommit:
         assert buf.meta_list == [None]
         assert buf.end_weight_list == [-1]
         assert buf.ready_list == [False]
+        assert buf.ready_timestamp_ns_list == [None]
         assert dp.depth() == 0
         with pytest.raises(ValueError, match="already consumed"):
             _run(buf.commit_prepared(prepared, end_weight_version=4))
@@ -396,6 +397,7 @@ class TestTQReplayBufferReserveCommit:
         assert buf.meta_list == [None]
         assert buf.end_weight_list == [-1]
         assert buf.ready_list == [False]
+        assert buf.ready_timestamp_ns_list == [None]
         assert all(
             event.stage is not RolloutLifecycleStage.GROUP_READY
             for event in recorder.snapshot()
@@ -417,6 +419,7 @@ class TestTQReplayBufferReserveCommit:
         assert buf.meta_list == [None]
         assert buf.end_weight_list == [-1]
         assert buf.ready_list == [False]
+        assert buf.ready_timestamp_ns_list == [None]
 
     def test_lifecycle_records_reserve_ready_and_selected(self):
         timestamps = iter((10, 20, 30))
@@ -478,6 +481,7 @@ class TestTQReplayBufferReserveCommit:
         # of the reserved buffer slot.
         assert buf.size() == 1
         assert buf.ready_list == [False]
+        assert buf.ready_timestamp_ns_list == [None]
         assert buf.meta_list == [None]
 
     def test_reserve_appends_placeholder_unready(self):
@@ -491,6 +495,7 @@ class TestTQReplayBufferReserveCommit:
         assert buf.start_weight_list == [3]
         assert buf.end_weight_list == [-1]
         assert buf.ready_list == [False]
+        assert buf.ready_timestamp_ns_list == [None]
         assert buf.meta_list == [None]
         assert dp.depth() == 0
         assert dp.put_calls == []
@@ -525,6 +530,9 @@ class TestTQReplayBufferReserveCommit:
         assert buf.start_weight_list == [3]
         assert buf.end_weight_list == [4]
         assert buf.ready_list == [True]
+        assert len(buf.ready_timestamp_ns_list) == 1
+        assert isinstance(buf.ready_timestamp_ns_list[0], int)
+        assert buf.ready_timestamp_ns_list[0] >= 0
         assert buf.meta_list[0].sample_ids == meta.sample_ids
         # TQ tag uses start_weight_version (dispatch time).
         assert meta.tags == [{"weight_version": 3}] * _N_GENS
@@ -629,6 +637,7 @@ class TestTQReplayBufferRemove:
         assert buf.size() == 1
         assert buf.start_weight_list == [1]
         assert buf.end_weight_list == [1]
+        assert len(buf.ready_timestamp_ns_list) == 1
         assert buf.meta_list[0].sample_ids == list(metas[1].sample_ids)
         assert dp.depth() == _N_GENS
         assert set(dp._rows) == set(metas[1].sample_ids)

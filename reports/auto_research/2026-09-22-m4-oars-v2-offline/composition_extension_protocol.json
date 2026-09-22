@@ -1,0 +1,14 @@
+{
+  "schema": "m4-oars-v2-composition-extension-protocol-v1",
+  "status": "OUTCOME_AWARE_EXPLORATORY_DIAGNOSTIC",
+  "date": "2026-09-22",
+  "parent_result": "offline_autopsy_result.json",
+  "trigger": "The frozen autopsy showed that M4 selection changes reward composition and that acting OARS performs opportunity-weighted load shedding. This diagnostic was specified after that result and does not modify its gate.",
+  "question": "Does two-sided-budget M4 selection recover more true L1 opportunity than simple reward-variance and token-normalized opportunity policies on the same authenticated choice sets?",
+  "policies": {
+    "reward_variance_risk_band": "Within 0.98-1.02 times FIFO tokens, maximize imminent group reward variance, then total group reward variance, then lower tokens.",
+    "token_normalized_m4_risk_band": "Within the same band, maximize imminent L1 opportunity per valid actor token, then total normalized L1, then lower tokens.",
+    "m4_risk_band": "The frozen autopsy's absolute-L1 risk policy."
+  },
+  "interpretation_boundary": "Exploratory one-step replay only. It can inform comparator choice but cannot estimate live queue, quality, wall-time, or mediation effects."
+}

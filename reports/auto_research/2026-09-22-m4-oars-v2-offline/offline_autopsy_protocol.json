@@ -1,0 +1,46 @@
+{
+  "schema": "m4-oars-v2-offline-autopsy-protocol-v1",
+  "status": "FROZEN_RETROSPECTIVE_DEVELOPMENT_GATE",
+  "date": "2026-09-22",
+  "purpose": "Determine whether the authenticated OARS confirmatory decision traces justify a signal-isolating OARS-v2 shadow implementation.",
+  "scope": {
+    "source_study": "2026-09-15-m4-oars-randomized",
+    "arms": 20,
+    "expected_decisions_per_arm": 64,
+    "expected_candidate_groups_per_decision": 8,
+    "selected_groups_per_decision": 4,
+    "raw_artifacts": [
+      "lifecycle.jsonl",
+      "opportunity.jsonl",
+      "oars.jsonl"
+    ]
+  },
+  "provenance_requirements": [
+    "Authenticate every main archive against its terminal authentication receipt.",
+    "Authenticate each raw ledger against the receipt's declared artifact SHA-256.",
+    "Reconstruct every choice set from controller-ordered lifecycle events.",
+    "Require exact agreement with recorded baseline, proposal, candidate count, selected identities, opportunity sums, and token sums."
+  ],
+  "policies": {
+    "recorded_fifo": "The recorded four-group baseline at each decision.",
+    "recorded_oars_v1": "The recorded one-sided <=1.02-token-budget OARS proposal.",
+    "age_only_band": "Within 0.98-1.02 times FIFO tokens, maximize total learner-version lag, then total ready age, then lower tokens.",
+    "m4_total_band": "Within the same two-sided token band, maximize total registered L1 opportunity, then lower tokens.",
+    "m4_risk_band": "Within the same two-sided token band, maximize imminent-expiry registered L1, then total registered L1, then lower tokens.",
+    "shuffled_m4_risk_band": "Apply the m4_risk_band optimizer after independently permuting the eight observed L1 values within each decision; evaluate selections using the unpermuted L1 values."
+  },
+  "shuffled_replays_per_arm": 2000,
+  "shuffle_seed": "m4-oars-v2-offline-autopsy-v1",
+  "development_gate": {
+    "provenance": "All 20 arms and all 1280 decisions must authenticate and reconstruct exactly.",
+    "service": "Every m4_risk_band decision must select four groups with a token ratio in [0.98, 1.02] relative to recorded FIFO.",
+    "signal_ablation": "m4_risk_band must exceed mean shuffled selected true L1 in all 20 arms and by at least 10 percent after aggregation.",
+    "staleness_comparator": "m4_risk_band must exceed age_only_band selected L1 in at least 16 of 20 arms and by at least 5 percent after aggregation.",
+    "metric_robustness": "m4_risk_band must exceed age_only_band selected L2 in at least 16 of 20 arms."
+  },
+  "interpretation_boundary": [
+    "This is a retrospective one-step policy-development analysis on policy-generated choice sets.",
+    "It cannot estimate a counterfactual queue trajectory, training-quality effect, wall-time effect, or causal mediation through M4.",
+    "A passing gate authorizes only local OARS-v2 design, implementation, tests, and shadow qualification planning; it does not authorize training or EOS submission."
+  ]
+}

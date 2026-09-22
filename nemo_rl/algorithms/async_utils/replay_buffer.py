@@ -16,6 +16,7 @@ import asyncio
 import math
 import statistics
 import threading as _threading
+import time
 import uuid
 from collections import Counter
 from collections.abc import Mapping
@@ -682,8 +683,8 @@ class ReplayBuffer(ReplayBufferImpl):
 class TQReplayBuffer:
     """Meta cache + TQ writer with reserve-then-commit slot semantics.
 
-    meta_list, weight_list, ready_list, _group_ids are parallel; a slot stays
-    ready=False until commit fills it.
+    Metadata, weight, readiness, ready-timestamp, and group-ID lists are
+    parallel; a slot stays ready=False until commit fills it.
     """
 
     def __init__(
@@ -709,6 +710,10 @@ class TQReplayBuffer:
         # Per-slot target training step (set when force_in_order=True, else None).
         self.target_step_list: list[Optional[int]] = []
         self.ready_list: list[bool] = []
+        # Controller-local monotonic time when a committed group became ready.
+        # Kept parallel to the other slot lists so observation-only schedulers
+        # can compare ready age without parsing the lifecycle ledger.
+        self.ready_timestamp_ns_list: list[Optional[int]] = []
         self._group_ids: list[str] = []
 
     def reserve(
@@ -737,6 +742,7 @@ class TQReplayBuffer:
         self.end_weight_list.append(-1)
         self.target_step_list.append(target_step)
         self.ready_list.append(False)
+        self.ready_timestamp_ns_list.append(None)
         self._group_ids.append(group_id)
         if self._lifecycle_recorder is not None:
             self._lifecycle_recorder.record(
@@ -954,11 +960,13 @@ class TQReplayBuffer:
                 )
             self.meta_list[idx] = meta
             self.end_weight_list[idx] = end_weight_version
+            self.ready_timestamp_ns_list[idx] = time.perf_counter_ns()
             self.ready_list[idx] = True
             return meta
         except BaseException as commit_error:
             self.meta_list[idx] = None
             self.end_weight_list[idx] = -1
+            self.ready_timestamp_ns_list[idx] = None
             self.ready_list[idx] = False
             try:
                 await self._call_dp(
@@ -1063,6 +1071,7 @@ class TQReplayBuffer:
             del self.end_weight_list[i]
             del self.target_step_list[i]
             del self.ready_list[i]
+            del self.ready_timestamp_ns_list[i]
             del self._group_ids[i]
 
         if remove_in_dp:

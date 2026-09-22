@@ -1,0 +1,2326 @@
+{
+  "aggregate": {
+    "age_only_band": {
+      "aggregate_token_ratio_to_fifo": 0.999499159170255,
+      "selected_l1": 5051781.818382621,
+      "selected_l2": 111008.15231024458,
+      "selected_valid_actor_tokens": 26374409
+    },
+    "m4_risk_band": {
+      "aggregate_token_ratio_to_fifo": 0.9948535345640238,
+      "selected_l1": 6627716.346340001,
+      "selected_l2": 139542.9570233723,
+      "selected_valid_actor_tokens": 26251822
+    },
+    "m4_total_band": {
+      "aggregate_token_ratio_to_fifo": 0.9953647211524341,
+      "selected_l1": 6984975.85146004,
+      "selected_l2": 147203.72485639248,
+      "selected_valid_actor_tokens": 26265311
+    },
+    "recorded_fifo": {
+      "aggregate_token_ratio_to_fifo": 1.0,
+      "selected_l1": 5149163.014698565,
+      "selected_l2": 113173.94869704287,
+      "selected_valid_actor_tokens": 26387625
+    },
+    "recorded_oars_v1": {
+      "aggregate_token_ratio_to_fifo": 0.9485686188127957,
+      "selected_l1": 7215667.006826103,
+      "selected_l2": 153906.29980217636,
+      "selected_valid_actor_tokens": 25030473
+    },
+    "shuffled_m4_risk_band": {
+      "selected_l2_mean": 113220.44018741486,
+      "selected_true_l1_mean": 5188497.733993972
+    }
+  },
+  "arms": [
+    {
+      "decision_count": 64,
+      "first_deferred_group_fates": {
+        "bounded_shutdown": {
+          "groups": 4,
+          "l1": 1090.2352639436722,
+          "l2": 55.24345554950277
+        },
+        "selected": {
+          "groups": 252,
+          "l1": 229132.0839113593,
+          "l2": 6310.254303039379
+        }
+      },
+      "identity": "p01-fifo",
+      "m4_l1_gain_over_age_percent": 15.210848968090973,
+      "m4_l1_gain_over_shuffled_mean_percent": 14.411782118541216,
+      "m4_l2_gain_over_age_percent": 15.942803422674778,
+      "mode": "observe",
+      "policies": {
+        "age_only_band": {
+          "aggregate_token_ratio_to_fifo": 0.9999077417486526,
+          "maximum_decision_token_ratio_to_fifo": 1.0,
+          "mean_fifo_overlap_fraction": 0.99609375,
+          "mean_group_reward": 0.37646484375,
+          "mean_group_reward_variance": 0.11981201171875,
+          "mean_ready_age_seconds": 4.8347817549570316,
+          "mean_version_lag": 0.984375,
+          "minimum_decision_token_ratio_to_fifo": 0.9938303341902314,
+          "selected_imminent_l1": 229132.0839113593,
+          "selected_l1": 234854.48575216532,
+          "selected_l2": 6487.001610677527,
+          "selected_valid_actor_tokens": 390173
+        },
+        "m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9996899097663047,
+          "maximum_decision_token_ratio_to_fifo": 1.0177919170496053,
+          "mean_fifo_overlap_fraction": 0.86328125,
+          "mean_group_reward": 0.39453125,
+          "mean_group_reward_variance": 0.1395263671875,
+          "mean_ready_age_seconds": 4.3041322970937514,
+          "mean_version_lag": 0.85546875,
+          "minimum_decision_token_ratio_to_fifo": 0.9843054869006426,
+          "selected_imminent_l1": 229132.0839113593,
+          "selected_l1": 270577.8468747139,
+          "selected_l2": 7521.2115254935925,
+          "selected_valid_actor_tokens": 390088
+        },
+        "m4_total_band": {
+          "aggregate_token_ratio_to_fifo": 1.001373622853394,
+          "maximum_decision_token_ratio_to_fifo": 1.0189509306260576,
+          "mean_fifo_overlap_fraction": 0.609375,
+          "mean_group_reward": 0.3935546875,
+          "mean_group_reward_variance": 0.1517333984375,
+          "mean_ready_age_seconds": 3.0731507021875006,
+          "mean_version_lag": 0.6015625,
+          "minimum_decision_token_ratio_to_fifo": 0.9813664596273292,
+          "selected_imminent_l1": 163151.30868551135,
+          "selected_l1": 297593.0248863697,
+          "selected_l2": 8220.704822154366,
+          "selected_valid_actor_tokens": 390745
+        },
+        "recorded_fifo": {
+          "aggregate_token_ratio_to_fifo": 1.0,
+          "maximum_decision_token_ratio_to_fifo": 1.0,
+          "mean_fifo_overlap_fraction": 1.0,
+          "mean_group_reward": 0.375,
+          "mean_group_reward_variance": 0.11962890625,
+          "mean_ready_age_seconds": 4.834165631632813,
+          "mean_version_lag": 0.984375,
+          "minimum_decision_token_ratio_to_fifo": 1.0,
+          "selected_imminent_l1": 229132.0839113593,
+          "selected_l1": 234713.7483087182,
+          "selected_l2": 6489.050472235547,
+          "selected_valid_actor_tokens": 390209
+        },
+        "recorded_oars_v1": {
+          "aggregate_token_ratio_to_fifo": 0.9337226973237419,
+          "maximum_decision_token_ratio_to_fifo": 1.0177919170496053,
+          "mean_fifo_overlap_fraction": 0.75,
+          "mean_group_reward": 0.4365234375,
+          "mean_group_reward_variance": 0.15673828125,
+          "mean_ready_age_seconds": 3.8573699255156244,
+          "mean_version_lag": 0.7421875,
+          "minimum_decision_token_ratio_to_fifo": 0.6597462514417531,
+          "selected_imminent_l1": 229132.0839113593,
+          "selected_l1": 298335.81892096996,
+          "selected_l2": 8424.325301233874,
+          "selected_valid_actor_tokens": 364347
+        }
+      },
+      "shuffled_m4_risk_band": {
+        "selected_l2_mean": 6505.434542223322,
+        "selected_tokens_mean": 389727.521,
+        "selected_true_l1_mean": 236494.7401958744,
+        "selected_true_l1_q025": 228174.07597738877,
+        "selected_true_l1_q975": 245341.73556983622
+      }
+    },
+    {
+      "decision_count": 64,
+      "first_deferred_group_fates": {
+        "bounded_shutdown": {
+          "groups": 4,
+          "l1": 0.0,
+          "l2": 0.0
+        },
+        "selected": {
+          "groups": 11,
+          "l1": 16761.521310299635,
+          "l2": 418.71856323066714
+        },
+        "stale_evicted": {
+          "groups": 236,
+          "l1": 146084.12790104747,
+          "l2": 3120.6608360070786
+        }
+      },
+      "identity": "p01-oars",
+      "m4_l1_gain_over_age_percent": 76.79535724371125,
+      "m4_l1_gain_over_shuffled_mean_percent": 51.76233814914557,
+      "m4_l2_gain_over_age_percent": 49.1487119196238,
+      "mode": "act",
+      "policies": {
+        "age_only_band": {
+          "aggregate_token_ratio_to_fifo": 0.9981663143822377,
+          "maximum_decision_token_ratio_to_fifo": 1.0154621848739496,
+          "mean_fifo_overlap_fraction": 0.796875,
+          "mean_group_reward": 0.43896484375,
+          "mean_group_reward_variance": 0.11773681640625,
+          "mean_ready_age_seconds": 2.4835792111289066,
+          "mean_version_lag": 0.98046875,
+          "minimum_decision_token_ratio_to_fifo": 0.9804753820033956,
+          "selected_imminent_l1": 398288.73430654407,
+          "selected_l1": 404256.9398650527,
+          "selected_l2": 7449.767636672415,
+          "selected_valid_actor_tokens": 994527
+        },
+        "m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9986661367345341,
+          "maximum_decision_token_ratio_to_fifo": 1.0182251216733975,
+          "mean_fifo_overlap_fraction": 0.6640625,
+          "mean_group_reward": 0.4541015625,
+          "mean_group_reward_variance": 0.1605224609375,
+          "mean_ready_age_seconds": 2.4285234168593752,
+          "mean_version_lag": 0.98046875,
+          "minimum_decision_token_ratio_to_fifo": 0.9812445575725098,
+          "selected_imminent_l1": 708521.163139075,
+          "selected_l1": 714707.5010169148,
+          "selected_l2": 11111.232471101906,
+          "selected_valid_actor_tokens": 995025
+        },
+        "m4_total_band": {
+          "aggregate_token_ratio_to_fifo": 0.9986872135807153,
+          "maximum_decision_token_ratio_to_fifo": 1.0182251216733975,
+          "mean_fifo_overlap_fraction": 0.640625,
+          "mean_group_reward": 0.45361328125,
+          "mean_group_reward_variance": 0.16229248046875,
+          "mean_ready_age_seconds": 2.2444491407187495,
+          "mean_version_lag": 0.9609375,
+          "minimum_decision_token_ratio_to_fifo": 0.9812445575725098,
+          "selected_imminent_l1": 703895.4330726266,
+          "selected_l1": 718716.5812423527,
+          "selected_l2": 11219.078131474282,
+          "selected_valid_actor_tokens": 995046
+        },
+        "recorded_fifo": {
+          "aggregate_token_ratio_to_fifo": 1.0,
+          "maximum_decision_token_ratio_to_fifo": 1.0,
+          "mean_fifo_overlap_fraction": 1.0,
+          "mean_group_reward": 0.431640625,
+          "mean_group_reward_variance": 0.1258544921875,
+          "mean_ready_age_seconds": 2.4593548840234383,
+          "mean_version_lag": 0.98046875,
+          "minimum_decision_token_ratio_to_fifo": 1.0,
+          "selected_imminent_l1": 411195.82951396704,
+          "selected_l1": 417226.0309996903,
+          "selected_l2": 7844.28196362769,
+          "selected_valid_actor_tokens": 996354
+        },
+        "recorded_oars_v1": {
+          "aggregate_token_ratio_to_fifo": 0.9522850312238421,
+          "maximum_decision_token_ratio_to_fifo": 1.0171323141802846,
+          "mean_fifo_overlap_fraction": 0.5859375,
+          "mean_group_reward": 0.50341796875,
+          "mean_group_reward_variance": 0.18292236328125,
+          "mean_ready_age_seconds": 2.4419030324023434,
+          "mean_version_lag": 0.97265625,
+          "minimum_decision_token_ratio_to_fifo": 0.32406725165784717,
+          "selected_imminent_l1": 741959.6243310571,
+          "selected_l1": 753739.5270240307,
+          "selected_l2": 12205.970415929492,
+          "selected_valid_actor_tokens": 948813
+        }
+      },
+      "shuffled_m4_risk_band": {
+        "selected_l2_mean": 8086.0170081982715,
+        "selected_tokens_mean": 994533.3825,
+        "selected_true_l1_mean": 470938.6463949512,
+        "selected_true_l1_q025": 411479.5999180704,
+        "selected_true_l1_q975": 532875.2281731352
+      }
+    },
+    {
+      "decision_count": 64,
+      "first_deferred_group_fates": {
+        "bounded_shutdown": {
+          "groups": 4,
+          "l1": 0.0,
+          "l2": 0.0
+        },
+        "selected": {
+          "groups": 252,
+          "l1": 274047.59669044614,
+          "l2": 6723.845045769039
+        }
+      },
+      "identity": "p02-fifo",
+      "m4_l1_gain_over_age_percent": 16.658896974438562,
+      "m4_l1_gain_over_shuffled_mean_percent": 14.886029091937258,
+      "m4_l2_gain_over_age_percent": 16.680198313135897,
+      "mode": "observe",
+      "policies": {
+        "age_only_band": {
+          "aggregate_token_ratio_to_fifo": 0.9997684032387217,
+          "maximum_decision_token_ratio_to_fifo": 1.0,
+          "mean_fifo_overlap_fraction": 0.99609375,
+          "mean_group_reward": 0.42333984375,
+          "mean_group_reward_variance": 0.12054443359375,
+          "mean_ready_age_seconds": 5.9381385333125,
+          "mean_version_lag": 0.984375,
+          "minimum_decision_token_ratio_to_fifo": 0.9820780133536371,
+          "selected_imminent_l1": 274047.59669044614,
+          "selected_l1": 280089.13286176324,
+          "selected_l2": 6879.793197088229,
+          "selected_valid_actor_tokens": 660478
+        },
+        "m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9938513330437112,
+          "maximum_decision_token_ratio_to_fifo": 1.019639150566821,
+          "mean_fifo_overlap_fraction": 0.8359375,
+          "mean_group_reward": 0.43017578125,
+          "mean_group_reward_variance": 0.13983154296875,
+          "mean_ready_age_seconds": 4.996338134999999,
+          "mean_version_lag": 0.82421875,
+          "minimum_decision_token_ratio_to_fifo": 0.980026486615575,
+          "selected_imminent_l1": 274047.59669044614,
+          "selected_l1": 326748.89294180274,
+          "selected_l2": 8027.356345896178,
+          "selected_valid_actor_tokens": 656569
+        },
+        "m4_total_band": {
+          "aggregate_token_ratio_to_fifo": 0.9966168708401513,
+          "maximum_decision_token_ratio_to_fifo": 1.0194780272500479,
+          "mean_fifo_overlap_fraction": 0.6640625,
+          "mean_group_reward": 0.4443359375,
+          "mean_group_reward_variance": 0.1536865234375,
+          "mean_ready_age_seconds": 4.154006990410156,
+          "mean_version_lag": 0.65234375,
+          "minimum_decision_token_ratio_to_fifo": 0.980026486615575,
+          "selected_imminent_l1": 232449.70175790787,
+          "selected_l1": 363055.28188580275,
+          "selected_l2": 8913.683180430211,
+          "selected_valid_actor_tokens": 658396
+        },
+        "recorded_fifo": {
+          "aggregate_token_ratio_to_fifo": 1.0,
+          "maximum_decision_token_ratio_to_fifo": 1.0,
+          "mean_fifo_overlap_fraction": 1.0,
+          "mean_group_reward": 0.42529296875,
+          "mean_group_reward_variance": 0.12054443359375,
+          "mean_ready_age_seconds": 5.937166704328124,
+          "mean_version_lag": 0.984375,
+          "minimum_decision_token_ratio_to_fifo": 1.0,
+          "selected_imminent_l1": 274047.59669044614,
+          "selected_l1": 280429.3741981089,
+          "selected_l2": 6886.4258829699265,
+          "selected_valid_actor_tokens": 660631
+        },
+        "recorded_oars_v1": {
+          "aggregate_token_ratio_to_fifo": 0.9132041941719357,
+          "maximum_decision_token_ratio_to_fifo": 1.019639150566821,
+          "mean_fifo_overlap_fraction": 0.73046875,
+          "mean_group_reward": 0.48486328125,
+          "mean_group_reward_variance": 0.16119384765625,
+          "mean_ready_age_seconds": 4.513580696695311,
+          "mean_version_lag": 0.72265625,
+          "minimum_decision_token_ratio_to_fifo": 0.5725121907169948,
+          "selected_imminent_l1": 274047.59669044614,
+          "selected_l1": 373233.25571140647,
+          "selected_l2": 9211.170362241874,
+          "selected_valid_actor_tokens": 603291
+        }
+      },
+      "shuffled_m4_risk_band": {
+        "selected_l2_mean": 6910.479228166729,
+        "selected_tokens_mean": 657504.3885,
+        "selected_true_l1_mean": 284411.338371111,
+        "selected_true_l1_q025": 271547.35870140867,
+        "selected_true_l1_q975": 296213.4219722167
+      }
+    },
+    {
+      "decision_count": 64,
+      "first_deferred_group_fates": {
+        "bounded_shutdown": {
+          "groups": 4,
+          "l1": 0.0,
+          "l2": 0.0
+        },
+        "selected": {
+          "groups": 19,
+          "l1": 25679.67187550664,
+          "l2": 697.8763448413702
+        },
+        "stale_evicted": {
+          "groups": 228,
+          "l1": 109320.49265891314,
+          "l2": 2174.3783567689356
+        }
+      },
+      "identity": "p02-oars",
+      "m4_l1_gain_over_age_percent": 42.38667745024098,
+      "m4_l1_gain_over_shuffled_mean_percent": 44.868299935728075,
+      "m4_l2_gain_over_age_percent": 31.645863607925783,
+      "mode": "act",
+      "policies": {
+        "age_only_band": {
+          "aggregate_token_ratio_to_fifo": 1.0001443234244207,
+          "maximum_decision_token_ratio_to_fifo": 1.0188971936257227,
+          "mean_fifo_overlap_fraction": 0.875,
+          "mean_group_reward": 0.2470703125,
+          "mean_group_reward_variance": 0.070556640625,
+          "mean_ready_age_seconds": 2.114223221007813,
+          "mean_version_lag": 0.98046875,
+          "minimum_decision_token_ratio_to_fifo": 0.9802408511633345,
+          "selected_imminent_l1": 217709.8941746354,
+          "selected_l1": 225583.85130906105,
+          "selected_l2": 4471.131991406431,
+          "selected_valid_actor_tokens": 2058175
+        },
+        "m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.993109892811916,
+          "maximum_decision_token_ratio_to_fifo": 1.0188971936257227,
+          "mean_fifo_overlap_fraction": 0.625,
+          "mean_group_reward": 0.26611328125,
+          "mean_group_reward_variance": 0.08929443359375,
+          "mean_ready_age_seconds": 2.005939835875,
+          "mean_version_lag": 0.9765625,
+          "minimum_decision_token_ratio_to_fifo": 0.9802371541501976,
+          "selected_imminent_l1": 310159.98597964644,
+          "selected_l1": 321201.35074326396,
+          "selected_l2": 5886.060323137245,
+          "selected_valid_actor_tokens": 2043699
+        },
+        "m4_total_band": {
+          "aggregate_token_ratio_to_fifo": 0.9932323490508184,
+          "maximum_decision_token_ratio_to_fifo": 1.0184164369832123,
+          "mean_fifo_overlap_fraction": 0.59375,
+          "mean_group_reward": 0.263671875,
+          "mean_group_reward_variance": 0.0908203125,
+          "mean_ready_age_seconds": 1.7364677828125006,
+          "mean_version_lag": 0.9453125,
+          "minimum_decision_token_ratio_to_fifo": 0.9802371541501976,
+          "selected_imminent_l1": 299780.16540262103,
+          "selected_l1": 326219.6300728917,
+          "selected_l2": 6013.382683177143,
+          "selected_valid_actor_tokens": 2043951
+        },
+        "recorded_fifo": {
+          "aggregate_token_ratio_to_fifo": 1.0,
+          "maximum_decision_token_ratio_to_fifo": 1.0,
+          "mean_fifo_overlap_fraction": 1.0,
+          "mean_group_reward": 0.25146484375,
+          "mean_group_reward_variance": 0.07049560546875,
+          "mean_ready_age_seconds": 2.0930211361992193,
+          "mean_version_lag": 0.98046875,
+          "minimum_decision_token_ratio_to_fifo": 1.0,
+          "selected_imminent_l1": 222821.2670122087,
+          "selected_l1": 231044.83410289884,
+          "selected_l2": 4572.302793361902,
+          "selected_valid_actor_tokens": 2057878
+        },
+        "recorded_oars_v1": {
+          "aggregate_token_ratio_to_fifo": 0.960430112961021,
+          "maximum_decision_token_ratio_to_fifo": 1.0184164369832123,
+          "mean_fifo_overlap_fraction": 0.59765625,
+          "mean_group_reward": 0.27734375,
+          "mean_group_reward_variance": 0.0955810546875,
+          "mean_ready_age_seconds": 1.9821963821093755,
+          "mean_version_lag": 0.97265625,
+          "minimum_decision_token_ratio_to_fifo": 0.781568047953046,
+          "selected_imminent_l1": 323908.8205077052,
+          "selected_l1": 339961.53988820314,
+          "selected_l2": 6311.965650091629,
+          "selected_valid_actor_tokens": 1976448
+        }
+      },
+      "shuffled_m4_risk_band": {
+        "selected_l2_mean": 4420.816705967988,
+        "selected_tokens_mean": 2042892.891,
+        "selected_true_l1_mean": 221719.55554511744,
+        "selected_true_l1_q025": 197441.25467082413,
+        "selected_true_l1_q975": 245689.94031892045
+      }
+    },
+    {
+      "decision_count": 64,
+      "first_deferred_group_fates": {
+        "bounded_shutdown": {
+          "groups": 4,
+          "l1": 6533.173934936523,
+          "l2": 59.8664398101225
+        },
+        "selected": {
+          "groups": 252,
+          "l1": 601895.0308501124,
+          "l2": 8117.537538942584
+        }
+      },
+      "identity": "p03-fifo",
+      "m4_l1_gain_over_age_percent": 32.87867241711273,
+      "m4_l1_gain_over_shuffled_mean_percent": 31.987380734861137,
+      "m4_l2_gain_over_age_percent": 26.2477795705397,
+      "mode": "observe",
+      "policies": {
+        "age_only_band": {
+          "aggregate_token_ratio_to_fifo": 1.000012811115656,
+          "maximum_decision_token_ratio_to_fifo": 1.0042219541616406,
+          "mean_fifo_overlap_fraction": 0.98828125,
+          "mean_group_reward": 0.2763671875,
+          "mean_group_reward_variance": 0.0941162109375,
+          "mean_ready_age_seconds": 8.804733636351562,
+          "mean_version_lag": 0.984375,
+          "minimum_decision_token_ratio_to_fifo": 1.0,
+          "selected_imminent_l1": 601895.0308501124,
+          "selected_l1": 607150.6852093041,
+          "selected_l2": 8257.35451797361,
+          "selected_valid_actor_tokens": 2185630
+        },
+        "m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9944903051882273,
+          "maximum_decision_token_ratio_to_fifo": 1.0174951402388226,
+          "mean_fifo_overlap_fraction": 0.74609375,
+          "mean_group_reward": 0.29736328125,
+          "mean_group_reward_variance": 0.11419677734375,
+          "mean_ready_age_seconds": 6.372291270726562,
+          "mean_version_lag": 0.73828125,
+          "minimum_decision_token_ratio_to_fifo": 0.980133387584694,
+          "selected_imminent_l1": 601895.0308501124,
+          "selected_l1": 806773.7700775266,
+          "selected_l2": 10424.726730209324,
+          "selected_valid_actor_tokens": 2173560
+        },
+        "m4_total_band": {
+          "aggregate_token_ratio_to_fifo": 0.9966544686544028,
+          "maximum_decision_token_ratio_to_fifo": 1.019181740925094,
+          "mean_fifo_overlap_fraction": 0.59375,
+          "mean_group_reward": 0.30126953125,
+          "mean_group_reward_variance": 0.12371826171875,
+          "mean_ready_age_seconds": 5.306788045925781,
+          "mean_version_lag": 0.5859375,
+          "minimum_decision_token_ratio_to_fifo": 0.980133387584694,
+          "selected_imminent_l1": 479041.1124698818,
+          "selected_l1": 879543.3905270398,
+          "selected_l2": 11244.494137716374,
+          "selected_valid_actor_tokens": 2178290
+        },
+        "recorded_fifo": {
+          "aggregate_token_ratio_to_fifo": 1.0,
+          "maximum_decision_token_ratio_to_fifo": 1.0,
+          "mean_fifo_overlap_fraction": 1.0,
+          "mean_group_reward": 0.279296875,
+          "mean_group_reward_variance": 0.0941162109375,
+          "mean_ready_age_seconds": 8.803501392566407,
+          "mean_version_lag": 0.984375,
+          "minimum_decision_token_ratio_to_fifo": 1.0,
+          "selected_imminent_l1": 601895.0308501124,
+          "selected_l1": 607234.8510835767,
+          "selected_l2": 8259.249792758726,
+          "selected_valid_actor_tokens": 2185602
+        },
+        "recorded_oars_v1": {
+          "aggregate_token_ratio_to_fifo": 0.9692908406928618,
+          "maximum_decision_token_ratio_to_fifo": 1.0174951402388226,
+          "mean_fifo_overlap_fraction": 0.6953125,
+          "mean_group_reward": 0.3115234375,
+          "mean_group_reward_variance": 0.1219482421875,
+          "mean_ready_age_seconds": 5.950614591062499,
+          "mean_version_lag": 0.6875,
+          "minimum_decision_token_ratio_to_fifo": 0.7293257781062659,
+          "selected_imminent_l1": 601895.0308501124,
+          "selected_l1": 876483.0418292284,
+          "selected_l2": 11249.122593351014,
+          "selected_valid_actor_tokens": 2118484
+        }
+      },
+      "shuffled_m4_risk_band": {
+        "selected_l2_mean": 8257.329421267006,
+        "selected_tokens_mean": 2174825.199,
+        "selected_true_l1_mean": 611250.6859259445,
+        "selected_true_l1_q025": 558238.4801530249,
+        "selected_true_l1_q975": 666724.9019317864
+      }
+    },
+    {
+      "decision_count": 64,
+      "first_deferred_group_fates": {
+        "bounded_shutdown": {
+          "groups": 4,
+          "l1": 0.0,
+          "l2": 0.0
+        },
+        "selected": {
+          "groups": 8,
+          "l1": 8424.339893370867,
+          "l2": 231.86566707893982
+        },
+        "stale_evicted": {
+          "groups": 240,
+          "l1": 96327.53030562401,
+          "l2": 2671.4637011256596
+        }
+      },
+      "identity": "p03-oars",
+      "m4_l1_gain_over_age_percent": 35.288895573051505,
+      "m4_l1_gain_over_shuffled_mean_percent": 30.120276049662586,
+      "m4_l2_gain_over_age_percent": 34.08239505410406,
+      "mode": "act",
+      "policies": {
+        "age_only_band": {
+          "aggregate_token_ratio_to_fifo": 0.9981097205930751,
+          "maximum_decision_token_ratio_to_fifo": 1.0189671361502348,
+          "mean_fifo_overlap_fraction": 0.74609375,
+          "mean_group_reward": 0.3759765625,
+          "mean_group_reward_variance": 0.09521484375,
+          "mean_ready_age_seconds": 2.535835774703124,
+          "mean_version_lag": 0.98046875,
+          "minimum_decision_token_ratio_to_fifo": 0.9813326486070099,
+          "selected_imminent_l1": 166596.4506815374,
+          "selected_l1": 172956.82352474332,
+          "selected_l2": 4812.104816570862,
+          "selected_valid_actor_tokens": 946216
+        },
+        "m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9940549024902744,
+          "maximum_decision_token_ratio_to_fifo": 1.0199960792001568,
+          "mean_fifo_overlap_fraction": 0.625,
+          "mean_group_reward": 0.4140625,
+          "mean_group_reward_variance": 0.1280517578125,
+          "mean_ready_age_seconds": 2.433034692820311,
+          "mean_version_lag": 0.97265625,
+          "minimum_decision_token_ratio_to_fifo": 0.9803395399780942,
+          "selected_imminent_l1": 222582.44744324684,
+          "selected_l1": 233991.37636485696,
+          "selected_l2": 6452.185390572113,
+          "selected_valid_actor_tokens": 942372
+        },
+        "m4_total_band": {
+          "aggregate_token_ratio_to_fifo": 0.9938871823866465,
+          "maximum_decision_token_ratio_to_fifo": 1.0199960792001568,
+          "mean_fifo_overlap_fraction": 0.60546875,
+          "mean_group_reward": 0.41064453125,
+          "mean_group_reward_variance": 0.12908935546875,
+          "mean_ready_age_seconds": 2.2564648778242176,
+          "mean_version_lag": 0.95703125,
+          "minimum_decision_token_ratio_to_fifo": 0.9803395399780942,
+          "selected_imminent_l1": 220083.4416629076,
+          "selected_l1": 236091.68826714158,
+          "selected_l2": 6499.562261766725,
+          "selected_valid_actor_tokens": 942213
+        },
+        "recorded_fifo": {
+          "aggregate_token_ratio_to_fifo": 1.0,
+          "maximum_decision_token_ratio_to_fifo": 1.0,
+          "mean_fifo_overlap_fraction": 1.0,
+          "mean_group_reward": 0.39013671875,
+          "mean_group_reward_variance": 0.09722900390625,
+          "mean_ready_age_seconds": 2.4934227189531244,
+          "mean_version_lag": 0.98046875,
+          "minimum_decision_token_ratio_to_fifo": 1.0,
+          "selected_imminent_l1": 170101.61173439026,
+          "selected_l1": 176461.9845775962,
+          "selected_l2": 4979.242571806164,
+          "selected_valid_actor_tokens": 948008
+        },
+        "recorded_oars_v1": {
+          "aggregate_token_ratio_to_fifo": 0.9326988801782263,
+          "maximum_decision_token_ratio_to_fifo": 1.0178724866815605,
+          "mean_fifo_overlap_fraction": 0.5859375,
+          "mean_group_reward": 0.412109375,
+          "mean_group_reward_variance": 0.13623046875,
+          "mean_ready_age_seconds": 2.4114557273789052,
+          "mean_version_lag": 0.96484375,
+          "minimum_decision_token_ratio_to_fifo": 0.42567196928140427,
+          "selected_imminent_l1": 229476.82979351282,
+          "selected_l1": 244574.3671965897,
+          "selected_l2": 6853.780005004786,
+          "selected_valid_actor_tokens": 884206
+        }
+      },
+      "shuffled_m4_risk_band": {
+        "selected_l2_mean": 5016.058821087731,
+        "selected_tokens_mean": 941067.3615,
+        "selected_true_l1_mean": 179826.9904342581,
+        "selected_true_l1_q025": 168550.6108863145,
+        "selected_true_l1_q975": 190628.1336475022
+      }
+    },
+    {
+      "decision_count": 64,
+      "first_deferred_group_fates": {
+        "bounded_shutdown": {
+          "groups": 4,
+          "l1": 0.0,
+          "l2": 0.0
+        },
+        "selected": {
+          "groups": 252,
+          "l1": 224270.04778766632,
+          "l2": 4793.7355788123195
+        }
+      },
+      "identity": "p04-fifo",
+      "m4_l1_gain_over_age_percent": 10.21313523092564,
+      "m4_l1_gain_over_shuffled_mean_percent": 12.328193352257477,
+      "m4_l2_gain_over_age_percent": 11.607631313328337,
+      "mode": "observe",
+      "policies": {
+        "age_only_band": {
+          "aggregate_token_ratio_to_fifo": 0.9999815186690485,
+          "maximum_decision_token_ratio_to_fifo": 1.0,
+          "mean_fifo_overlap_fraction": 0.98828125,
+          "mean_group_reward": 0.30859375,
+          "mean_group_reward_variance": 0.07373046875,
+          "mean_ready_age_seconds": 8.398935044121096,
+          "mean_version_lag": 0.984375,
+          "minimum_decision_token_ratio_to_fifo": 0.9943310657596371,
+          "selected_imminent_l1": 224270.04778766632,
+          "selected_l1": 229121.72742295265,
+          "selected_l2": 4932.00219411306,
+          "selected_valid_actor_tokens": 1893768
+        },
+        "m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9955190693012949,
+          "maximum_decision_token_ratio_to_fifo": 1.0197728228859908,
+          "mean_fifo_overlap_fraction": 0.74609375,
+          "mean_group_reward": 0.3076171875,
+          "mean_group_reward_variance": 0.0831298828125,
+          "mean_ready_age_seconds": 6.003397537414064,
+          "mean_version_lag": 0.73828125,
+          "minimum_decision_token_ratio_to_fifo": 0.9801971044505667,
+          "selected_imminent_l1": 224270.04778766632,
+          "selected_l1": 252522.23928809166,
+          "selected_l2": 5504.490825170968,
+          "selected_valid_actor_tokens": 1885317
+        },
+        "m4_total_band": {
+          "aggregate_token_ratio_to_fifo": 0.9954852748675549,
+          "maximum_decision_token_ratio_to_fifo": 1.0197728228859908,
+          "mean_fifo_overlap_fraction": 0.63671875,
+          "mean_group_reward": 0.31005859375,
+          "mean_group_reward_variance": 0.08953857421875,
+          "mean_ready_age_seconds": 5.366986639609375,
+          "mean_version_lag": 0.62890625,
+          "minimum_decision_token_ratio_to_fifo": 0.9801971044505667,
+          "selected_imminent_l1": 189093.79877597094,
+          "selected_l1": 278791.6389910877,
+          "selected_l2": 6093.524921522557,
+          "selected_valid_actor_tokens": 1885253
+        },
+        "recorded_fifo": {
+          "aggregate_token_ratio_to_fifo": 1.0,
+          "maximum_decision_token_ratio_to_fifo": 1.0,
+          "mean_fifo_overlap_fraction": 1.0,
+          "mean_group_reward": 0.30859375,
+          "mean_group_reward_variance": 0.073486328125,
+          "mean_ready_age_seconds": 8.397059617003908,
+          "mean_version_lag": 0.984375,
+          "minimum_decision_token_ratio_to_fifo": 1.0,
+          "selected_imminent_l1": 224270.04778766632,
+          "selected_l1": 228331.97149834037,
+          "selected_l2": 4905.09774380131,
+          "selected_valid_actor_tokens": 1893803
+        },
+        "recorded_oars_v1": {
+          "aggregate_token_ratio_to_fifo": 0.9686181720062752,
+          "maximum_decision_token_ratio_to_fifo": 1.0197728228859908,
+          "mean_fifo_overlap_fraction": 0.69921875,
+          "mean_group_reward": 0.32275390625,
+          "mean_group_reward_variance": 0.08905029296875,
+          "mean_ready_age_seconds": 5.656245987410157,
+          "mean_version_lag": 0.69140625,
+          "minimum_decision_token_ratio_to_fifo": 0.764314957631153,
+          "selected_imminent_l1": 224270.04778766632,
+          "selected_l1": 281566.07438510656,
+          "selected_l2": 5967.021255946799,
+          "selected_valid_actor_tokens": 1834372
+        }
+      },
+      "shuffled_m4_risk_band": {
+        "selected_l2_mean": 4862.957983865741,
+        "selected_tokens_mean": 1884740.219,
+        "selected_true_l1_mean": 224807.53206471534,
+        "selected_true_l1_q025": 209706.2361364506,
+        "selected_true_l1_q975": 236848.49760709255
+      }
+    },
+    {
+      "decision_count": 64,
+      "first_deferred_group_fates": {
+        "bounded_shutdown": {
+          "groups": 4,
+          "l1": 0.0,
+          "l2": 0.0
+        },
+        "selected": {
+          "groups": 14,
+          "l1": 22173.05271202326,
+          "l2": 577.7476334512222
+        },
+        "stale_evicted": {
+          "groups": 232,
+          "l1": 76945.58333706856,
+          "l2": 1887.0434660236554
+        }
+      },
+      "identity": "p04-oars",
+      "m4_l1_gain_over_age_percent": 42.34013221770787,
+      "m4_l1_gain_over_shuffled_mean_percent": 38.9598325985518,
+      "m4_l2_gain_over_age_percent": 34.85193897636396,
+      "mode": "act",
+      "policies": {
+        "age_only_band": {
+          "aggregate_token_ratio_to_fifo": 0.9990826892828011,
+          "maximum_decision_token_ratio_to_fifo": 1.018664675767918,
+          "mean_fifo_overlap_fraction": 0.77734375,
+          "mean_group_reward": 0.3505859375,
+          "mean_group_reward_variance": 0.07958984375,
+          "mean_ready_age_seconds": 2.438402665886719,
+          "mean_version_lag": 0.98046875,
+          "minimum_decision_token_ratio_to_fifo": 0.9812911725955205,
+          "selected_imminent_l1": 182914.67618730664,
+          "selected_l1": 187937.36855223775,
+          "selected_l2": 4673.936301790572,
+          "selected_valid_actor_tokens": 1042310
+        },
+        "m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9934551749456275,
+          "maximum_decision_token_ratio_to_fifo": 1.01816091954023,
+          "mean_fifo_overlap_fraction": 0.6484375,
+          "mean_group_reward": 0.35888671875,
+          "mean_group_reward_variance": 0.10626220703125,
+          "mean_ready_age_seconds": 2.287863591636719,
+          "mean_version_lag": 0.96875,
+          "minimum_decision_token_ratio_to_fifo": 0.980185892355357,
+          "selected_imminent_l1": 256962.906003654,
+          "selected_l1": 267510.29888373613,
+          "selected_l2": 6302.893729484744,
+          "selected_valid_actor_tokens": 1036439
+        },
+        "m4_total_band": {
+          "aggregate_token_ratio_to_fifo": 0.9938251665201717,
+          "maximum_decision_token_ratio_to_fifo": 1.019625137816979,
+          "mean_fifo_overlap_fraction": 0.625,
+          "mean_group_reward": 0.36181640625,
+          "mean_group_reward_variance": 0.10699462890625,
+          "mean_ready_age_seconds": 2.0506247597656255,
+          "mean_version_lag": 0.9453125,
+          "minimum_decision_token_ratio_to_fifo": 0.980185892355357,
+          "selected_imminent_l1": 248414.0285986364,
+          "selected_l1": 269488.1131183505,
+          "selected_l2": 6336.696251455505,
+          "selected_valid_actor_tokens": 1036825
+        },
+        "recorded_fifo": {
+          "aggregate_token_ratio_to_fifo": 1.0,
+          "maximum_decision_token_ratio_to_fifo": 1.0,
+          "mean_fifo_overlap_fraction": 1.0,
+          "mean_group_reward": 0.341796875,
+          "mean_group_reward_variance": 0.0806884765625,
+          "mean_ready_age_seconds": 2.3834979492421873,
+          "mean_version_lag": 0.98046875,
+          "minimum_decision_token_ratio_to_fifo": 1.0,
+          "selected_imminent_l1": 185190.96206143498,
+          "selected_l1": 189252.88577210903,
+          "selected_l2": 4664.358639609147,
+          "selected_valid_actor_tokens": 1043267
+        },
+        "recorded_oars_v1": {
+          "aggregate_token_ratio_to_fifo": 0.871907191543488,
+          "maximum_decision_token_ratio_to_fifo": 1.01816091954023,
+          "mean_fifo_overlap_fraction": 0.56640625,
+          "mean_group_reward": 0.3779296875,
+          "mean_group_reward_variance": 0.1226806640625,
+          "mean_ready_age_seconds": 2.396616130007812,
+          "mean_version_lag": 0.9609375,
+          "minimum_decision_token_ratio_to_fifo": 0.461332706269657,
+          "selected_imminent_l1": 283009.41147199273,
+          "selected_l1": 297648.3080365658,
+          "selected_l2": 7145.220025673265,
+          "selected_valid_actor_tokens": 909632
+        }
+      },
+      "shuffled_m4_risk_band": {
+        "selected_l2_mean": 4749.285220593861,
+        "selected_tokens_mean": 1036562.1725,
+        "selected_true_l1_mean": 192509.08257536578,
+        "selected_true_l1_q025": 176621.74288527964,
+        "selected_true_l1_q975": 208672.4577096887
+      }
+    },
+    {
+      "decision_count": 64,
+      "first_deferred_group_fates": {
+        "bounded_shutdown": {
+          "groups": 4,
+          "l1": 0.0,
+          "l2": 0.0
+        },
+        "selected": {
+          "groups": 252,
+          "l1": 179779.65513813496,
+          "l2": 4190.133728565279
+        }
+      },
+      "identity": "p05-fifo",
+      "m4_l1_gain_over_age_percent": 24.41239642670061,
+      "m4_l1_gain_over_shuffled_mean_percent": 22.866222272424142,
+      "m4_l2_gain_over_age_percent": 20.65595201610131,
+      "mode": "observe",
+      "policies": {
+        "age_only_band": {
+          "aggregate_token_ratio_to_fifo": 1.0,
+          "maximum_decision_token_ratio_to_fifo": 1.0,
+          "mean_fifo_overlap_fraction": 1.0,
+          "mean_group_reward": 0.34130859375,
+          "mean_group_reward_variance": 0.07598876953125,
+          "mean_ready_age_seconds": 7.853825655410156,
+          "mean_version_lag": 0.984375,
+          "minimum_decision_token_ratio_to_fifo": 1.0,
+          "selected_imminent_l1": 179779.65513813496,
+          "selected_l1": 187147.92326062918,
+          "selected_l2": 4390.315337533114,
+          "selected_valid_actor_tokens": 1674220
+        },
+        "m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9929626930749842,
+          "maximum_decision_token_ratio_to_fifo": 1.0198400492156259,
+          "mean_fifo_overlap_fraction": 0.7109375,
+          "mean_group_reward": 0.33837890625,
+          "mean_group_reward_variance": 0.09039306640625,
+          "mean_ready_age_seconds": 5.205803299980468,
+          "mean_version_lag": 0.6953125,
+          "minimum_decision_token_ratio_to_fifo": 0.9801357186921653,
+          "selected_imminent_l1": 179779.65513813496,
+          "selected_l1": 232835.2161913514,
+          "selected_l2": 5297.1767670094905,
+          "selected_valid_actor_tokens": 1662438
+        },
+        "m4_total_band": {
+          "aggregate_token_ratio_to_fifo": 0.9935988101922089,
+          "maximum_decision_token_ratio_to_fifo": 1.0199169240600703,
+          "mean_fifo_overlap_fraction": 0.62890625,
+          "mean_group_reward": 0.3251953125,
+          "mean_group_reward_variance": 0.0931396484375,
+          "mean_ready_age_seconds": 4.784522811128905,
+          "mean_version_lag": 0.61328125,
+          "minimum_decision_token_ratio_to_fifo": 0.9801357186921653,
+          "selected_imminent_l1": 149903.06204614043,
+          "selected_l1": 240969.0172381103,
+          "selected_l2": 5485.3634279756625,
+          "selected_valid_actor_tokens": 1663503
+        },
+        "recorded_fifo": {
+          "aggregate_token_ratio_to_fifo": 1.0,
+          "maximum_decision_token_ratio_to_fifo": 1.0,
+          "mean_fifo_overlap_fraction": 1.0,
+          "mean_group_reward": 0.34130859375,
+          "mean_group_reward_variance": 0.07598876953125,
+          "mean_ready_age_seconds": 7.853825655410156,
+          "mean_version_lag": 0.984375,
+          "minimum_decision_token_ratio_to_fifo": 1.0,
+          "selected_imminent_l1": 179779.65513813496,
+          "selected_l1": 187147.92326062918,
+          "selected_l2": 4390.315337533114,
+          "selected_valid_actor_tokens": 1674220
+        },
+        "recorded_oars_v1": {
+          "aggregate_token_ratio_to_fifo": 0.9561849697172414,
+          "maximum_decision_token_ratio_to_fifo": 1.0,
+          "mean_fifo_overlap_fraction": 0.65234375,
+          "mean_group_reward": 0.34619140625,
+          "mean_group_reward_variance": 0.10443115234375,
+          "mean_ready_age_seconds": 4.9780375951640625,
+          "mean_version_lag": 0.63671875,
+          "minimum_decision_token_ratio_to_fifo": 0.4437964368458896,
+          "selected_imminent_l1": 179779.65513813496,
+          "selected_l1": 259083.58708807826,
+          "selected_l2": 6014.706830081355,
+          "selected_valid_actor_tokens": 1600864
+        }
+      },
+      "shuffled_m4_risk_band": {
+        "selected_l2_mean": 4434.526126813233,
+        "selected_tokens_mean": 1662779.3235,
+        "selected_true_l1_mean": 189503.03174057018,
+        "selected_true_l1_q025": 176156.6009666383,
+        "selected_true_l1_q975": 204583.1954539962
+      }
+    },
+    {
+      "decision_count": 64,
+      "first_deferred_group_fates": {
+        "bounded_shutdown": {
+          "groups": 4,
+          "l1": 0.0,
+          "l2": 0.0
+        },
+        "selected": {
+          "groups": 13,
+          "l1": 22145.262070834637,
+          "l2": 534.5302749217573
+        },
+        "stale_evicted": {
+          "groups": 228,
+          "l1": 85077.80157071352,
+          "l2": 1869.9166987253238
+        }
+      },
+      "identity": "p05-oars",
+      "m4_l1_gain_over_age_percent": 44.57646298473976,
+      "m4_l1_gain_over_shuffled_mean_percent": 40.51636970333941,
+      "m4_l2_gain_over_age_percent": 39.29804948135895,
+      "mode": "act",
+      "policies": {
+        "age_only_band": {
+          "aggregate_token_ratio_to_fifo": 0.9992391269647019,
+          "maximum_decision_token_ratio_to_fifo": 1.0176422093981863,
+          "mean_fifo_overlap_fraction": 0.80859375,
+          "mean_group_reward": 0.349609375,
+          "mean_group_reward_variance": 0.07861328125,
+          "mean_ready_age_seconds": 2.3151277965625,
+          "mean_version_lag": 0.98046875,
+          "minimum_decision_token_ratio_to_fifo": 0.9821648721952824,
+          "selected_imminent_l1": 250025.72731658816,
+          "selected_l1": 256187.9395287931,
+          "selected_l2": 4991.268932168539,
+          "selected_valid_actor_tokens": 1690191
+        },
+        "m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9928352600506776,
+          "maximum_decision_token_ratio_to_fifo": 1.0192667915440192,
+          "mean_fifo_overlap_fraction": 0.59765625,
+          "mean_group_reward": 0.32861328125,
+          "mean_group_reward_variance": 0.10650634765625,
+          "mean_ready_age_seconds": 2.177920154871094,
+          "mean_version_lag": 0.97265625,
+          "minimum_decision_token_ratio_to_fifo": 0.9801045200330063,
+          "selected_imminent_l1": 356781.07298108935,
+          "selected_l1": 370387.46156421304,
+          "selected_l2": 6952.740266879829,
+          "selected_valid_actor_tokens": 1679359
+        },
+        "m4_total_band": {
+          "aggregate_token_ratio_to_fifo": 0.9928429456368927,
+          "maximum_decision_token_ratio_to_fifo": 1.0192667915440192,
+          "mean_fifo_overlap_fraction": 0.56640625,
+          "mean_group_reward": 0.33056640625,
+          "mean_group_reward_variance": 0.10845947265625,
+          "mean_ready_age_seconds": 1.8829932141640624,
+          "mean_version_lag": 0.9453125,
+          "minimum_decision_token_ratio_to_fifo": 0.9801045200330063,
+          "selected_imminent_l1": 347961.38040572405,
+          "selected_l1": 376152.30225777626,
+          "selected_l2": 7068.79953483619,
+          "selected_valid_actor_tokens": 1679372
+        },
+        "recorded_fifo": {
+          "aggregate_token_ratio_to_fifo": 1.0,
+          "maximum_decision_token_ratio_to_fifo": 1.0,
+          "mean_fifo_overlap_fraction": 1.0,
+          "mean_group_reward": 0.341796875,
+          "mean_group_reward_variance": 0.080810546875,
+          "mean_ready_age_seconds": 2.2751499867109373,
+          "mean_version_lag": 0.98046875,
+          "minimum_decision_token_ratio_to_fifo": 1.0,
+          "selected_imminent_l1": 254651.69153755903,
+          "selected_l1": 265436.9024594426,
+          "selected_l2": 5167.037962105994,
+          "selected_valid_actor_tokens": 1691478
+        },
+        "recorded_oars_v1": {
+          "aggregate_token_ratio_to_fifo": 0.9242821958074536,
+          "maximum_decision_token_ratio_to_fifo": 1.0192667915440192,
+          "mean_fifo_overlap_fraction": 0.53125,
+          "mean_group_reward": 0.34716796875,
+          "mean_group_reward_variance": 0.11859130859375,
+          "mean_ready_age_seconds": 2.107253876585939,
+          "mean_version_lag": 0.9609375,
+          "minimum_decision_token_ratio_to_fifo": 0.3486743371685843,
+          "selected_imminent_l1": 389975.16274401546,
+          "selected_l1": 408878.79475975037,
+          "selected_l2": 7680.535893581453,
+          "selected_valid_actor_tokens": 1563403
+        }
+      },
+      "shuffled_m4_risk_band": {
+        "selected_l2_mean": 5164.12831486954,
+        "selected_tokens_mean": 1679888.9665,
+        "selected_true_l1_mean": 263590.25809318974,
+        "selected_true_l1_q025": 234697.53747951912,
+        "selected_true_l1_q975": 290983.81979284436
+      }
+    },
+    {
+      "decision_count": 64,
+      "first_deferred_group_fates": {
+        "bounded_shutdown": {
+          "groups": 4,
+          "l1": 0.0,
+          "l2": 0.0
+        },
+        "selected": {
+          "groups": 252,
+          "l1": 228106.84858837724,
+          "l2": 5416.0378295764
+        }
+      },
+      "identity": "p06-fifo",
+      "m4_l1_gain_over_age_percent": 6.827015960522997,
+      "m4_l1_gain_over_shuffled_mean_percent": 6.40922170730327,
+      "m4_l2_gain_over_age_percent": 6.797124247074038,
+      "mode": "observe",
+      "policies": {
+        "age_only_band": {
+          "aggregate_token_ratio_to_fifo": 0.9999581153294403,
+          "maximum_decision_token_ratio_to_fifo": 1.0,
+          "mean_fifo_overlap_fraction": 0.9921875,
+          "mean_group_reward": 0.333984375,
+          "mean_group_reward_variance": 0.0936279296875,
+          "mean_ready_age_seconds": 7.651480118640626,
+          "mean_version_lag": 0.984375,
+          "minimum_decision_token_ratio_to_fifo": 0.9931686212000456,
+          "selected_imminent_l1": 228106.84858837724,
+          "selected_l1": 237147.8246435225,
+          "selected_l2": 5638.58526691703,
+          "selected_valid_actor_tokens": 1432445
+        },
+        "m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9917892084146304,
+          "maximum_decision_token_ratio_to_fifo": 1.0181240063593004,
+          "mean_fifo_overlap_fraction": 0.78125,
+          "mean_group_reward": 0.3212890625,
+          "mean_group_reward_variance": 0.1004638671875,
+          "mean_ready_age_seconds": 5.712212112113281,
+          "mean_version_lag": 0.7734375,
+          "minimum_decision_token_ratio_to_fifo": 0.9806076660011466,
+          "selected_imminent_l1": 228106.84858837724,
+          "selected_l1": 253337.94448196888,
+          "selected_l2": 6021.846913286591,
+          "selected_valid_actor_tokens": 1420743
+        },
+        "m4_total_band": {
+          "aggregate_token_ratio_to_fifo": 0.9928111943762848,
+          "maximum_decision_token_ratio_to_fifo": 1.0192785161384548,
+          "mean_fifo_overlap_fraction": 0.59765625,
+          "mean_group_reward": 0.31201171875,
+          "mean_group_reward_variance": 0.11285400390625,
+          "mean_ready_age_seconds": 4.695828689109375,
+          "mean_version_lag": 0.58984375,
+          "minimum_decision_token_ratio_to_fifo": 0.9806076660011466,
+          "selected_imminent_l1": 170901.25701865554,
+          "selected_l1": 286621.3864134848,
+          "selected_l2": 6808.620569091157,
+          "selected_valid_actor_tokens": 1422207
+        },
+        "recorded_fifo": {
+          "aggregate_token_ratio_to_fifo": 1.0,
+          "maximum_decision_token_ratio_to_fifo": 1.0,
+          "mean_fifo_overlap_fraction": 1.0,
+          "mean_group_reward": 0.33154296875,
+          "mean_group_reward_variance": 0.09381103515625,
+          "mean_ready_age_seconds": 7.650858546750001,
+          "mean_version_lag": 0.984375,
+          "minimum_decision_token_ratio_to_fifo": 1.0,
+          "selected_imminent_l1": 228106.84858837724,
+          "selected_l1": 236951.7715062201,
+          "selected_l2": 5625.175350627767,
+          "selected_valid_actor_tokens": 1432505
+        },
+        "recorded_oars_v1": {
+          "aggregate_token_ratio_to_fifo": 0.9284840192529868,
+          "maximum_decision_token_ratio_to_fifo": 1.0181240063593004,
+          "mean_fifo_overlap_fraction": 0.72265625,
+          "mean_group_reward": 0.326171875,
+          "mean_group_reward_variance": 0.1080322265625,
+          "mean_ready_age_seconds": 5.338366971683593,
+          "mean_version_lag": 0.71484375,
+          "minimum_decision_token_ratio_to_fifo": 0.7376289663227564,
+          "selected_imminent_l1": 228106.84858837724,
+          "selected_l1": 274316.0840576887,
+          "selected_l2": 6523.348588359514,
+          "selected_valid_actor_tokens": 1330058
+        }
+      },
+      "shuffled_m4_risk_band": {
+        "selected_l2_mean": 5663.547519954171,
+        "selected_tokens_mean": 1420545.243,
+        "selected_true_l1_mean": 238078.93753684068,
+        "selected_true_l1_q025": 231328.32732683123,
+        "selected_true_l1_q975": 245311.42992752494
+      }
+    },
+    {
+      "decision_count": 64,
+      "first_deferred_group_fates": {
+        "bounded_shutdown": {
+          "groups": 4,
+          "l1": 465.84491539001465,
+          "l2": 15.496519522688624
+        },
+        "selected": {
+          "groups": 11,
+          "l1": 21808.787442058325,
+          "l2": 491.67969562968153
+        },
+        "stale_evicted": {
+          "groups": 236,
+          "l1": 171302.38539788127,
+          "l2": 3982.484412380045
+        }
+      },
+      "identity": "p06-oars",
+      "m4_l1_gain_over_age_percent": 32.49255483988895,
+      "m4_l1_gain_over_shuffled_mean_percent": 28.502480645355057,
+      "m4_l2_gain_over_age_percent": 32.63476643195935,
+      "mode": "act",
+      "policies": {
+        "age_only_band": {
+          "aggregate_token_ratio_to_fifo": 0.9965344500970549,
+          "maximum_decision_token_ratio_to_fifo": 1.0193356470004957,
+          "mean_fifo_overlap_fraction": 0.66015625,
+          "mean_group_reward": 0.51318359375,
+          "mean_group_reward_variance": 0.11883544921875,
+          "mean_ready_age_seconds": 3.031073321007812,
+          "mean_version_lag": 0.98046875,
+          "minimum_decision_token_ratio_to_fifo": 0.9802153968887116,
+          "selected_imminent_l1": 286613.0465617478,
+          "selected_l1": 296305.22336643934,
+          "selected_l2": 7118.25654009763,
+          "selected_valid_actor_tokens": 511847
+        },
+        "m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 1.0015517097037345,
+          "maximum_decision_token_ratio_to_fifo": 1.0191589703281587,
+          "mean_fifo_overlap_fraction": 0.64453125,
+          "mean_group_reward": 0.521484375,
+          "mean_group_reward_variance": 0.158203125,
+          "mean_ready_age_seconds": 2.9388052378593748,
+          "mean_version_lag": 0.97265625,
+          "minimum_decision_token_ratio_to_fifo": 0.9821131979046889,
+          "selected_imminent_l1": 376482.2808111608,
+          "selected_l1": 392582.3605622351,
+          "selected_l2": 9441.282935986163,
+          "selected_valid_actor_tokens": 514424
+        },
+        "m4_total_band": {
+          "aggregate_token_ratio_to_fifo": 1.0013005546826783,
+          "maximum_decision_token_ratio_to_fifo": 1.0191589703281587,
+          "mean_fifo_overlap_fraction": 0.62890625,
+          "mean_group_reward": 0.51953125,
+          "mean_group_reward_variance": 0.158935546875,
+          "mean_ready_age_seconds": 2.800920412148437,
+          "mean_version_lag": 0.95703125,
+          "minimum_decision_token_ratio_to_fifo": 0.9821131979046889,
+          "selected_imminent_l1": 370470.06761336327,
+          "selected_l1": 393680.3404865861,
+          "selected_l2": 9488.577899779551,
+          "selected_valid_actor_tokens": 514295
+        },
+        "recorded_fifo": {
+          "aggregate_token_ratio_to_fifo": 1.0,
+          "maximum_decision_token_ratio_to_fifo": 1.0,
+          "mean_fifo_overlap_fraction": 1.0,
+          "mean_group_reward": 0.4912109375,
+          "mean_group_reward_variance": 0.129638671875,
+          "mean_ready_age_seconds": 2.9847974904492185,
+          "mean_version_lag": 0.98046875,
+          "minimum_decision_token_ratio_to_fifo": 1.0,
+          "selected_imminent_l1": 311201.765258044,
+          "selected_l1": 322644.1929527819,
+          "selected_l2": 7706.2563973997585,
+          "selected_valid_actor_tokens": 513627
+        },
+        "recorded_oars_v1": {
+          "aggregate_token_ratio_to_fifo": 0.9661953129411032,
+          "maximum_decision_token_ratio_to_fifo": 1.0173793975142196,
+          "mean_fifo_overlap_fraction": 0.61328125,
+          "mean_group_reward": 0.53515625,
+          "mean_group_reward_variance": 0.1685791015625,
+          "mean_ready_age_seconds": 2.9401232314765626,
+          "mean_version_lag": 0.96875,
+          "minimum_decision_token_ratio_to_fifo": 0.800831518511186,
+          "selected_imminent_l1": 395687.05789500475,
+          "selected_l1": 413633.3748819828,
+          "selected_l2": 10082.600679899659,
+          "selected_valid_actor_tokens": 496264
+        }
+      },
+      "shuffled_m4_risk_band": {
+        "selected_l2_mean": 7291.02570193283,
+        "selected_tokens_mean": 513382.6465,
+        "selected_true_l1_mean": 305505.6669650569,
+        "selected_true_l1_q025": 289481.0284724884,
+        "selected_true_l1_q975": 321412.9470476918
+      }
+    },
+    {
+      "decision_count": 64,
+      "first_deferred_group_fates": {
+        "bounded_shutdown": {
+          "groups": 4,
+          "l1": 0.0,
+          "l2": 0.0
+        },
+        "selected": {
+          "groups": 252,
+          "l1": 222107.07516878843,
+          "l2": 4888.684122823154
+        }
+      },
+      "identity": "p07-fifo",
+      "m4_l1_gain_over_age_percent": 8.063053400646947,
+      "m4_l1_gain_over_shuffled_mean_percent": 8.14881551236899,
+      "m4_l2_gain_over_age_percent": 7.9841473858691,
+      "mode": "observe",
+      "policies": {
+        "age_only_band": {
+          "aggregate_token_ratio_to_fifo": 0.9998940426519878,
+          "maximum_decision_token_ratio_to_fifo": 1.0,
+          "mean_fifo_overlap_fraction": 0.98828125,
+          "mean_group_reward": 0.255859375,
+          "mean_group_reward_variance": 0.0838623046875,
+          "mean_ready_age_seconds": 8.568971555105469,
+          "mean_version_lag": 0.984375,
+          "minimum_decision_token_ratio_to_fifo": 0.9806286202639826,
+          "selected_imminent_l1": 222107.07516878843,
+          "selected_l1": 224780.82436811924,
+          "selected_l2": 4966.874706476986,
+          "selected_valid_actor_tokens": 1925099
+        },
+        "m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9946647358883252,
+          "maximum_decision_token_ratio_to_fifo": 1.0184429574016647,
+          "mean_fifo_overlap_fraction": 0.7734375,
+          "mean_group_reward": 0.26220703125,
+          "mean_group_reward_variance": 0.09051513671875,
+          "mean_ready_age_seconds": 6.18969149621875,
+          "mean_version_lag": 0.7578125,
+          "minimum_decision_token_ratio_to_fifo": 0.9801881671793016,
+          "selected_imminent_l1": 222107.07516878843,
+          "selected_l1": 242905.02227133512,
+          "selected_l2": 5363.437303513562,
+          "selected_valid_actor_tokens": 1915031
+        },
+        "m4_total_band": {
+          "aggregate_token_ratio_to_fifo": 0.995456819004593,
+          "maximum_decision_token_ratio_to_fifo": 1.0194895132568262,
+          "mean_fifo_overlap_fraction": 0.58984375,
+          "mean_group_reward": 0.2822265625,
+          "mean_group_reward_variance": 0.1009521484375,
+          "mean_ready_age_seconds": 5.124343301550782,
+          "mean_version_lag": 0.57421875,
+          "minimum_decision_token_ratio_to_fifo": 0.9801881671793016,
+          "selected_imminent_l1": 155436.50319954753,
+          "selected_l1": 281071.3244831562,
+          "selected_l2": 6163.184826759918,
+          "selected_valid_actor_tokens": 1916556
+        },
+        "recorded_fifo": {
+          "aggregate_token_ratio_to_fifo": 1.0,
+          "maximum_decision_token_ratio_to_fifo": 1.0,
+          "mean_fifo_overlap_fraction": 1.0,
+          "mean_group_reward": 0.2587890625,
+          "mean_group_reward_variance": 0.0855712890625,
+          "mean_ready_age_seconds": 8.562735831882812,
+          "mean_version_lag": 0.984375,
+          "minimum_decision_token_ratio_to_fifo": 1.0,
+          "selected_imminent_l1": 222107.07516878843,
+          "selected_l1": 232195.15147531033,
+          "selected_l2": 5098.677917484175,
+          "selected_valid_actor_tokens": 1925303
+        },
+        "recorded_oars_v1": {
+          "aggregate_token_ratio_to_fifo": 0.9706191700734897,
+          "maximum_decision_token_ratio_to_fifo": 1.0184429574016647,
+          "mean_fifo_overlap_fraction": 0.703125,
+          "mean_group_reward": 0.29296875,
+          "mean_group_reward_variance": 0.101318359375,
+          "mean_ready_age_seconds": 5.6544210004101565,
+          "mean_version_lag": 0.6875,
+          "minimum_decision_token_ratio_to_fifo": 0.49594380688563516,
+          "selected_imminent_l1": 222107.07516878843,
+          "selected_l1": 268791.391569376,
+          "selected_l2": 5965.352525900745,
+          "selected_valid_actor_tokens": 1868736
+        }
+      },
+      "shuffled_m4_risk_band": {
+        "selected_l2_mean": 4948.696379661122,
+        "selected_tokens_mean": 1914775.9385,
+        "selected_true_l1_mean": 224602.5729644298,
+        "selected_true_l1_q025": 213724.2872234136,
+        "selected_true_l1_q975": 235075.74137616303
+      }
+    },
+    {
+      "decision_count": 64,
+      "first_deferred_group_fates": {
+        "bounded_shutdown": {
+          "groups": 4,
+          "l1": 0.0,
+          "l2": 0.0
+        },
+        "selected": {
+          "groups": 7,
+          "l1": 7437.202186077833,
+          "l2": 224.64441685796868
+        },
+        "stale_evicted": {
+          "groups": 240,
+          "l1": 70948.99909391999,
+          "l2": 1722.0510299157058
+        }
+      },
+      "identity": "p07-oars",
+      "m4_l1_gain_over_age_percent": 39.586181149494635,
+      "m4_l1_gain_over_shuffled_mean_percent": 48.52784091865556,
+      "m4_l2_gain_over_age_percent": 36.2475814011199,
+      "mode": "act",
+      "policies": {
+        "age_only_band": {
+          "aggregate_token_ratio_to_fifo": 0.9998233609846201,
+          "maximum_decision_token_ratio_to_fifo": 1.0198183319570602,
+          "mean_fifo_overlap_fraction": 0.87890625,
+          "mean_group_reward": 0.22216796875,
+          "mean_group_reward_variance": 0.06011962890625,
+          "mean_ready_age_seconds": 2.1634937502929694,
+          "mean_version_lag": 0.9765625,
+          "minimum_decision_token_ratio_to_fifo": 0.9803182194426561,
+          "selected_imminent_l1": 179225.8916347921,
+          "selected_l1": 186736.91373196244,
+          "selected_l2": 3703.5000196455803,
+          "selected_valid_actor_tokens": 2105618
+        },
+        "m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9910944496412614,
+          "maximum_decision_token_ratio_to_fifo": 1.0180291769887146,
+          "mean_fifo_overlap_fraction": 0.58984375,
+          "mean_group_reward": 0.22607421875,
+          "mean_group_reward_variance": 0.07952880859375,
+          "mean_ready_age_seconds": 2.0047015236093753,
+          "mean_version_lag": 0.96875,
+          "minimum_decision_token_ratio_to_fifo": 0.9801130079829483,
+          "selected_imminent_l1": 243116.48560646176,
+          "selected_l1": 260658.92667487264,
+          "selected_l2": 5045.929203957104,
+          "selected_valid_actor_tokens": 2087235
+        },
+        "m4_total_band": {
+          "aggregate_token_ratio_to_fifo": 0.9911822943128885,
+          "maximum_decision_token_ratio_to_fifo": 1.0183023347843292,
+          "mean_fifo_overlap_fraction": 0.5859375,
+          "mean_group_reward": 0.22705078125,
+          "mean_group_reward_variance": 0.07952880859375,
+          "mean_ready_age_seconds": 1.9322118036679694,
+          "mean_version_lag": 0.96484375,
+          "minimum_decision_token_ratio_to_fifo": 0.9801130079829483,
+          "selected_imminent_l1": 241920.15216699243,
+          "selected_l1": 260974.0966297686,
+          "selected_l2": 5052.245153873496,
+          "selected_valid_actor_tokens": 2087420
+        },
+        "recorded_fifo": {
+          "aggregate_token_ratio_to_fifo": 1.0,
+          "maximum_decision_token_ratio_to_fifo": 1.0,
+          "mean_fifo_overlap_fraction": 1.0,
+          "mean_group_reward": 0.22509765625,
+          "mean_group_reward_variance": 0.06353759765625,
+          "mean_ready_age_seconds": 2.135787819261719,
+          "mean_version_lag": 0.9765625,
+          "minimum_decision_token_ratio_to_fifo": 1.0,
+          "selected_imminent_l1": 186923.59223097563,
+          "selected_l1": 201793.81381702423,
+          "selected_l2": 4006.4004748817374,
+          "selected_valid_actor_tokens": 2105990
+        },
+        "recorded_oars_v1": {
+          "aggregate_token_ratio_to_fifo": 0.9503340471702145,
+          "maximum_decision_token_ratio_to_fifo": 1.0180291769887146,
+          "mean_fifo_overlap_fraction": 0.50390625,
+          "mean_group_reward": 0.2744140625,
+          "mean_group_reward_variance": 0.0928955078125,
+          "mean_ready_age_seconds": 1.8857078657734376,
+          "mean_version_lag": 0.953125,
+          "minimum_decision_token_ratio_to_fifo": 0.4894143252869015,
+          "selected_imminent_l1": 269390.7889752686,
+          "selected_l1": 292177.4222266972,
+          "selected_l2": 5857.54617748277,
+          "selected_valid_actor_tokens": 2001394
+        }
+      },
+      "shuffled_m4_risk_band": {
+        "selected_l2_mean": 3670.6350956686983,
+        "selected_tokens_mean": 2086446.819,
+        "selected_true_l1_mean": 175494.99478527266,
+        "selected_true_l1_q025": 157315.6151085265,
+        "selected_true_l1_q975": 197741.37708295064
+      }
+    },
+    {
+      "decision_count": 64,
+      "first_deferred_group_fates": {
+        "bounded_shutdown": {
+          "groups": 4,
+          "l1": 0.0,
+          "l2": 0.0
+        },
+        "selected": {
+          "groups": 252,
+          "l1": 248240.0258693695,
+          "l2": 5751.864210922361
+        }
+      },
+      "identity": "p08-fifo",
+      "m4_l1_gain_over_age_percent": 16.426121919794223,
+      "m4_l1_gain_over_shuffled_mean_percent": 13.627700022859601,
+      "m4_l2_gain_over_age_percent": 14.962225407967345,
+      "mode": "observe",
+      "policies": {
+        "age_only_band": {
+          "aggregate_token_ratio_to_fifo": 1.0,
+          "maximum_decision_token_ratio_to_fifo": 1.0,
+          "mean_fifo_overlap_fraction": 1.0,
+          "mean_group_reward": 0.287109375,
+          "mean_group_reward_variance": 0.095947265625,
+          "mean_ready_age_seconds": 7.52691985189453,
+          "mean_version_lag": 0.984375,
+          "minimum_decision_token_ratio_to_fifo": 1.0,
+          "selected_imminent_l1": 248240.0258693695,
+          "selected_l1": 249581.84996271133,
+          "selected_l2": 5799.184273174694,
+          "selected_valid_actor_tokens": 1365952
+        },
+        "m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.998317656842993,
+          "maximum_decision_token_ratio_to_fifo": 1.0190184865008645,
+          "mean_fifo_overlap_fraction": 0.8125,
+          "mean_group_reward": 0.28857421875,
+          "mean_group_reward_variance": 0.10955810546875,
+          "mean_ready_age_seconds": 5.965282025683595,
+          "mean_version_lag": 0.8046875,
+          "minimum_decision_token_ratio_to_fifo": 0.9806021104903786,
+          "selected_imminent_l1": 248240.0258693695,
+          "selected_l1": 290578.4689272642,
+          "selected_l2": 6666.871295950484,
+          "selected_valid_actor_tokens": 1363654
+        },
+        "m4_total_band": {
+          "aggregate_token_ratio_to_fifo": 0.9981946656983555,
+          "maximum_decision_token_ratio_to_fifo": 1.0199480642115204,
+          "mean_fifo_overlap_fraction": 0.64453125,
+          "mean_group_reward": 0.302734375,
+          "mean_group_reward_variance": 0.1192626953125,
+          "mean_ready_age_seconds": 4.980015576488282,
+          "mean_version_lag": 0.63671875,
+          "minimum_decision_token_ratio_to_fifo": 0.9801867743563857,
+          "selected_imminent_l1": 202948.80840539932,
+          "selected_l1": 321392.9178022444,
+          "selected_l2": 7393.076730161185,
+          "selected_valid_actor_tokens": 1363486
+        },
+        "recorded_fifo": {
+          "aggregate_token_ratio_to_fifo": 1.0,
+          "maximum_decision_token_ratio_to_fifo": 1.0,
+          "mean_fifo_overlap_fraction": 1.0,
+          "mean_group_reward": 0.287109375,
+          "mean_group_reward_variance": 0.095947265625,
+          "mean_ready_age_seconds": 7.52691985189453,
+          "mean_version_lag": 0.984375,
+          "minimum_decision_token_ratio_to_fifo": 1.0,
+          "selected_imminent_l1": 248240.0258693695,
+          "selected_l1": 249581.84996271133,
+          "selected_l2": 5799.184273174694,
+          "selected_valid_actor_tokens": 1365952
+        },
+        "recorded_oars_v1": {
+          "aggregate_token_ratio_to_fifo": 0.946707497774446,
+          "maximum_decision_token_ratio_to_fifo": 1.0190184865008645,
+          "mean_fifo_overlap_fraction": 0.73046875,
+          "mean_group_reward": 0.306640625,
+          "mean_group_reward_variance": 0.1241455078125,
+          "mean_ready_age_seconds": 5.51622415852344,
+          "mean_version_lag": 0.7265625,
+          "minimum_decision_token_ratio_to_fifo": 0.5418221820610537,
+          "selected_imminent_l1": 248240.0258693695,
+          "selected_l1": 332261.0703253448,
+          "selected_l2": 7592.396585758564,
+          "selected_valid_actor_tokens": 1293157
+        }
+      },
+      "shuffled_m4_risk_band": {
+        "selected_l2_mean": 5876.583552312731,
+        "selected_tokens_mean": 1364464.464,
+        "selected_true_l1_mean": 255728.54934915138,
+        "selected_true_l1_q025": 240919.39067542777,
+        "selected_true_l1_q975": 267966.25129282626
+      }
+    },
+    {
+      "decision_count": 64,
+      "first_deferred_group_fates": {
+        "bounded_shutdown": {
+          "groups": 4,
+          "l1": 0.0,
+          "l2": 0.0
+        },
+        "selected": {
+          "groups": 9,
+          "l1": 11333.153583109379,
+          "l2": 289.90385911589345
+        },
+        "stale_evicted": {
+          "groups": 240,
+          "l1": 92433.31336587667,
+          "l2": 2328.179424273456
+        }
+      },
+      "identity": "p08-oars",
+      "m4_l1_gain_over_age_percent": 54.29971975682215,
+      "m4_l1_gain_over_shuffled_mean_percent": 38.28710477954249,
+      "m4_l2_gain_over_age_percent": 43.27066135810298,
+      "mode": "act",
+      "policies": {
+        "age_only_band": {
+          "aggregate_token_ratio_to_fifo": 0.9982700953166954,
+          "maximum_decision_token_ratio_to_fifo": 1.0128488590380043,
+          "mean_fifo_overlap_fraction": 0.80859375,
+          "mean_group_reward": 0.22900390625,
+          "mean_group_reward_variance": 0.06463623046875,
+          "mean_ready_age_seconds": 2.4102772514531257,
+          "mean_version_lag": 0.9765625,
+          "minimum_decision_token_ratio_to_fifo": 0.9806379718623763,
+          "selected_imminent_l1": 156426.9471964538,
+          "selected_l1": 162161.48900467157,
+          "selected_l2": 3714.3281055365464,
+          "selected_valid_actor_tokens": 1422469
+        },
+        "m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.992136477900029,
+          "maximum_decision_token_ratio_to_fifo": 1.0198034325949832,
+          "mean_fifo_overlap_fraction": 0.5546875,
+          "mean_group_reward": 0.2451171875,
+          "mean_group_reward_variance": 0.0899658203125,
+          "mean_ready_age_seconds": 2.3165927653359386,
+          "mean_version_lag": 0.9765625,
+          "minimum_decision_token_ratio_to_fifo": 0.9803675628510662,
+          "selected_imminent_l1": 242647.97522106767,
+          "selected_l1": 250214.72308769822,
+          "selected_l2": 5321.542441812107,
+          "selected_valid_actor_tokens": 1413729
+        },
+        "m4_total_band": {
+          "aggregate_token_ratio_to_fifo": 0.9921371796869188,
+          "maximum_decision_token_ratio_to_fifo": 1.0198034325949832,
+          "mean_fifo_overlap_fraction": 0.5390625,
+          "mean_group_reward": 0.24267578125,
+          "mean_group_reward_variance": 0.09075927734375,
+          "mean_ready_age_seconds": 2.131643514781251,
+          "mean_version_lag": 0.9609375,
+          "minimum_decision_token_ratio_to_fifo": 0.9803675628510662,
+          "selected_imminent_l1": 240431.65352401137,
+          "selected_l1": 252288.633749336,
+          "selected_l2": 5381.596445911411,
+          "selected_valid_actor_tokens": 1413730
+        },
+        "recorded_fifo": {
+          "aggregate_token_ratio_to_fifo": 1.0,
+          "maximum_decision_token_ratio_to_fifo": 1.0,
+          "mean_fifo_overlap_fraction": 1.0,
+          "mean_group_reward": 0.22119140625,
+          "mean_group_reward_variance": 0.06365966796875,
+          "mean_ready_age_seconds": 2.374215391050781,
+          "mean_version_lag": 0.9765625,
+          "minimum_decision_token_ratio_to_fifo": 1.0,
+          "selected_imminent_l1": 159587.94091400504,
+          "selected_l1": 165322.4827222228,
+          "selected_l2": 3689.5633203013354,
+          "selected_valid_actor_tokens": 1424934
+        },
+        "recorded_oars_v1": {
+          "aggregate_token_ratio_to_fifo": 0.939649836413476,
+          "maximum_decision_token_ratio_to_fifo": 1.0198034325949832,
+          "mean_fifo_overlap_fraction": 0.49609375,
+          "mean_group_reward": 0.259765625,
+          "mean_group_reward_variance": 0.09814453125,
+          "mean_ready_age_seconds": 2.2775134321953123,
+          "mean_version_lag": 0.96484375,
+          "minimum_decision_token_ratio_to_fifo": 0.6353288667963404,
+          "selected_imminent_l1": 250216.17529571056,
+          "selected_l1": 265823.9392607808,
+          "selected_l2": 5783.825905377451,
+          "selected_valid_actor_tokens": 1338939
+        }
+      },
+      "shuffled_m4_risk_band": {
+        "selected_l2_mean": 4067.6166111707807,
+        "selected_tokens_mean": 1412316.33,
+        "selected_true_l1_mean": 180938.57954911335,
+        "selected_true_l1_q025": 163876.75978856758,
+        "selected_true_l1_q975": 198284.47986388655
+      }
+    },
+    {
+      "decision_count": 64,
+      "first_deferred_group_fates": {
+        "bounded_shutdown": {
+          "groups": 4,
+          "l1": 4977.064604997635,
+          "l2": 108.61819430588736
+        },
+        "selected": {
+          "groups": 252,
+          "l1": 338866.83488830924,
+          "l2": 8399.42484571336
+        }
+      },
+      "identity": "p09-fifo",
+      "m4_l1_gain_over_age_percent": 11.883336269865797,
+      "m4_l1_gain_over_shuffled_mean_percent": 12.00854076973279,
+      "m4_l2_gain_over_age_percent": 11.84622739762984,
+      "mode": "observe",
+      "policies": {
+        "age_only_band": {
+          "aggregate_token_ratio_to_fifo": 1.0,
+          "maximum_decision_token_ratio_to_fifo": 1.0,
+          "mean_fifo_overlap_fraction": 0.99609375,
+          "mean_group_reward": 0.5341796875,
+          "mean_group_reward_variance": 0.1456298828125,
+          "mean_ready_age_seconds": 5.476249382406251,
+          "mean_version_lag": 0.984375,
+          "minimum_decision_token_ratio_to_fifo": 1.0,
+          "selected_imminent_l1": 338866.83488830924,
+          "selected_l1": 347155.22860607505,
+          "selected_l2": 8595.5526300969,
+          "selected_valid_actor_tokens": 503292
+        },
+        "m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 1.0007252251178242,
+          "maximum_decision_token_ratio_to_fifo": 1.0198879551820728,
+          "mean_fifo_overlap_fraction": 0.8828125,
+          "mean_group_reward": 0.54150390625,
+          "mean_group_reward_variance": 0.16412353515625,
+          "mean_ready_age_seconds": 4.948307580402344,
+          "mean_version_lag": 0.875,
+          "minimum_decision_token_ratio_to_fifo": 0.9828174186778594,
+          "selected_imminent_l1": 338866.83488830924,
+          "selected_l1": 388408.8517997563,
+          "selected_l2": 9613.80134074113,
+          "selected_valid_actor_tokens": 503657
+        },
+        "m4_total_band": {
+          "aggregate_token_ratio_to_fifo": 1.001885585306343,
+          "maximum_decision_token_ratio_to_fifo": 1.018327067669173,
+          "mean_fifo_overlap_fraction": 0.66015625,
+          "mean_group_reward": 0.52880859375,
+          "mean_group_reward_variance": 0.17779541015625,
+          "mean_ready_age_seconds": 3.7770658048749985,
+          "mean_version_lag": 0.65234375,
+          "minimum_decision_token_ratio_to_fifo": 0.9820761762509336,
+          "selected_imminent_l1": 268472.8082138598,
+          "selected_l1": 425829.9313643873,
+          "selected_l2": 10632.803864873658,
+          "selected_valid_actor_tokens": 504241
+        },
+        "recorded_fifo": {
+          "aggregate_token_ratio_to_fifo": 1.0,
+          "maximum_decision_token_ratio_to_fifo": 1.0,
+          "mean_fifo_overlap_fraction": 1.0,
+          "mean_group_reward": 0.5322265625,
+          "mean_group_reward_variance": 0.1446533203125,
+          "mean_ready_age_seconds": 5.476170986332032,
+          "mean_version_lag": 0.984375,
+          "minimum_decision_token_ratio_to_fifo": 1.0,
+          "selected_imminent_l1": 338866.83488830924,
+          "selected_l1": 345274.7819981277,
+          "selected_l2": 8550.716503457312,
+          "selected_valid_actor_tokens": 503292
+        },
+        "recorded_oars_v1": {
+          "aggregate_token_ratio_to_fifo": 0.9572971555280037,
+          "maximum_decision_token_ratio_to_fifo": 1.0198879551820728,
+          "mean_fifo_overlap_fraction": 0.828125,
+          "mean_group_reward": 0.552734375,
+          "mean_group_reward_variance": 0.177734375,
+          "mean_ready_age_seconds": 4.702147267363281,
+          "mean_version_lag": 0.8203125,
+          "minimum_decision_token_ratio_to_fifo": 0.5933344278443605,
+          "selected_imminent_l1": 338866.83488830924,
+          "selected_l1": 419399.9034936428,
+          "selected_l2": 10415.411290541339,
+          "selected_valid_actor_tokens": 481800
+        }
+      },
+      "shuffled_m4_risk_band": {
+        "selected_l2_mean": 8579.964716981074,
+        "selected_tokens_mean": 503198.5295,
+        "selected_true_l1_mean": 346767.1742981166,
+        "selected_true_l1_q025": 336448.1680942394,
+        "selected_true_l1_q975": 357283.0393531382
+      }
+    },
+    {
+      "decision_count": 64,
+      "first_deferred_group_fates": {
+        "bounded_shutdown": {
+          "groups": 4,
+          "l1": 0.0,
+          "l2": 0.0
+        },
+        "selected": {
+          "groups": 8,
+          "l1": 15606.467877686024,
+          "l2": 377.073545540661
+        },
+        "stale_evicted": {
+          "groups": 240,
+          "l1": 67464.8909868002,
+          "l2": 1579.758905595342
+        }
+      },
+      "identity": "p09-oars",
+      "m4_l1_gain_over_age_percent": 49.726304545975196,
+      "m4_l1_gain_over_shuffled_mean_percent": 32.353047901018314,
+      "m4_l2_gain_over_age_percent": 48.81104592725008,
+      "mode": "act",
+      "policies": {
+        "age_only_band": {
+          "aggregate_token_ratio_to_fifo": 0.9995217678441667,
+          "maximum_decision_token_ratio_to_fifo": 1.0160180037066455,
+          "mean_fifo_overlap_fraction": 0.82421875,
+          "mean_group_reward": 0.27294921875,
+          "mean_group_reward_variance": 0.05853271484375,
+          "mean_ready_age_seconds": 2.007329252214844,
+          "mean_version_lag": 0.98046875,
+          "minimum_decision_token_ratio_to_fifo": 0.9812927756653992,
+          "selected_imminent_l1": 131096.0507619381,
+          "selected_l1": 140351.39113551378,
+          "selected_l2": 3358.0385866714482,
+          "selected_valid_actor_tokens": 1931192
+        },
+        "m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9979923565665829,
+          "maximum_decision_token_ratio_to_fifo": 1.019375126800568,
+          "mean_fifo_overlap_fraction": 0.5859375,
+          "mean_group_reward": 0.25439453125,
+          "mean_group_reward_variance": 0.08782958984375,
+          "mean_ready_age_seconds": 1.8891421721953128,
+          "mean_version_lag": 0.9765625,
+          "minimum_decision_token_ratio_to_fifo": 0.9800507314096084,
+          "selected_imminent_l1": 198306.30056619644,
+          "selected_l1": 210142.95132607222,
+          "selected_l2": 4997.132343466428,
+          "selected_valid_actor_tokens": 1928237
+        },
+        "m4_total_band": {
+          "aggregate_token_ratio_to_fifo": 0.9980554997733055,
+          "maximum_decision_token_ratio_to_fifo": 1.019375126800568,
+          "mean_fifo_overlap_fraction": 0.578125,
+          "mean_group_reward": 0.2578125,
+          "mean_group_reward_variance": 0.08837890625,
+          "mean_ready_age_seconds": 1.7178306884765626,
+          "mean_version_lag": 0.96484375,
+          "minimum_decision_token_ratio_to_fifo": 0.9800507314096084,
+          "selected_imminent_l1": 194935.48576831818,
+          "selected_l1": 213359.98147720098,
+          "selected_l2": 5055.1150659764935,
+          "selected_valid_actor_tokens": 1928359
+        },
+        "recorded_fifo": {
+          "aggregate_token_ratio_to_fifo": 1.0,
+          "maximum_decision_token_ratio_to_fifo": 1.0,
+          "mean_fifo_overlap_fraction": 1.0,
+          "mean_group_reward": 0.26611328125,
+          "mean_group_reward_variance": 0.06488037109375,
+          "mean_ready_age_seconds": 1.9630211622382814,
+          "mean_version_lag": 0.98046875,
+          "minimum_decision_token_ratio_to_fifo": 1.0,
+          "selected_imminent_l1": 143355.38147374988,
+          "selected_l1": 152664.17400303483,
+          "selected_l2": 3696.522438285065,
+          "selected_valid_actor_tokens": 1932116
+        },
+        "recorded_oars_v1": {
+          "aggregate_token_ratio_to_fifo": 0.959730161129042,
+          "maximum_decision_token_ratio_to_fifo": 1.019375126800568,
+          "mean_fifo_overlap_fraction": 0.53125,
+          "mean_group_reward": 0.26123046875,
+          "mean_group_reward_variance": 0.09564208984375,
+          "mean_ready_age_seconds": 1.897832711953125,
+          "mean_version_lag": 0.97265625,
+          "minimum_decision_token_ratio_to_fifo": 0.4019725944887818,
+          "selected_imminent_l1": 210469.69888406992,
+          "selected_l1": 223965.50435066223,
+          "selected_l2": 5426.141523658725,
+          "selected_valid_actor_tokens": 1854310
+        }
+      },
+      "shuffled_m4_risk_band": {
+        "selected_l2_mean": 3828.877834334678,
+        "selected_tokens_mean": 1926859.0065,
+        "selected_true_l1_mean": 158774.54630529546,
+        "selected_true_l1_q025": 145151.3324888244,
+        "selected_true_l1_q975": 172177.08641266671
+      }
+    },
+    {
+      "decision_count": 64,
+      "first_deferred_group_fates": {
+        "bounded_shutdown": {
+          "groups": 4,
+          "l1": 15053.611297607422,
+          "l2": 131.45315662234268
+        },
+        "selected": {
+          "groups": 252,
+          "l1": 183867.62861430645,
+          "l2": 4834.486564923869
+        }
+      },
+      "identity": "p10-fifo",
+      "m4_l1_gain_over_age_percent": 28.824920288180333,
+      "m4_l1_gain_over_shuffled_mean_percent": 28.93411308663061,
+      "m4_l2_gain_over_age_percent": 23.33651504054115,
+      "mode": "observe",
+      "policies": {
+        "age_only_band": {
+          "aggregate_token_ratio_to_fifo": 1.0000927896795382,
+          "maximum_decision_token_ratio_to_fifo": 1.013069306930693,
+          "mean_fifo_overlap_fraction": 0.99609375,
+          "mean_group_reward": 0.4453125,
+          "mean_group_reward_variance": 0.0919189453125,
+          "mean_ready_age_seconds": 6.122229018960939,
+          "mean_version_lag": 0.984375,
+          "minimum_decision_token_ratio_to_fifo": 1.0,
+          "selected_imminent_l1": 183867.62861430645,
+          "selected_l1": 189830.44373586774,
+          "selected_l2": 4969.8872777201495,
+          "selected_valid_actor_tokens": 1067028
+        },
+        "m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9995304279853674,
+          "maximum_decision_token_ratio_to_fifo": 1.0172208013640238,
+          "mean_fifo_overlap_fraction": 0.75390625,
+          "mean_group_reward": 0.4482421875,
+          "mean_group_reward_variance": 0.1107177734375,
+          "mean_ready_age_seconds": 4.4454753474648445,
+          "mean_version_lag": 0.74609375,
+          "minimum_decision_token_ratio_to_fifo": 0.9811659192825112,
+          "selected_imminent_l1": 183867.62861430645,
+          "selected_l1": 244548.91782543063,
+          "selected_l2": 6129.685769783254,
+          "selected_valid_actor_tokens": 1066428
+        },
+        "m4_total_band": {
+          "aggregate_token_ratio_to_fifo": 1.0003083616623036,
+          "maximum_decision_token_ratio_to_fifo": 1.0197189750856064,
+          "mean_fifo_overlap_fraction": 0.63671875,
+          "mean_group_reward": 0.43017578125,
+          "mean_group_reward_variance": 0.11859130859375,
+          "mean_ready_age_seconds": 3.8115952632500005,
+          "mean_version_lag": 0.62890625,
+          "minimum_decision_token_ratio_to_fifo": 0.9811659192825112,
+          "selected_imminent_l1": 148247.6009491384,
+          "selected_l1": 263880.7969252765,
+          "selected_l2": 6616.980421214521,
+          "selected_valid_actor_tokens": 1067258
+        },
+        "recorded_fifo": {
+          "aggregate_token_ratio_to_fifo": 1.0,
+          "maximum_decision_token_ratio_to_fifo": 1.0,
+          "mean_fifo_overlap_fraction": 1.0,
+          "mean_group_reward": 0.44482421875,
+          "mean_group_reward_variance": 0.09222412109375,
+          "mean_ready_age_seconds": 6.122136145859378,
+          "mean_version_lag": 0.984375,
+          "minimum_decision_token_ratio_to_fifo": 1.0,
+          "selected_imminent_l1": 183867.62861430645,
+          "selected_l1": 190228.88043266535,
+          "selected_l2": 4988.387227042407,
+          "selected_valid_actor_tokens": 1066929
+        },
+        "recorded_oars_v1": {
+          "aggregate_token_ratio_to_fifo": 0.9878398656330458,
+          "maximum_decision_token_ratio_to_fifo": 1.0121897163120568,
+          "mean_fifo_overlap_fraction": 0.68359375,
+          "mean_group_reward": 0.45947265625,
+          "mean_group_reward_variance": 0.12542724609375,
+          "mean_ready_age_seconds": 4.152308413183594,
+          "mean_version_lag": 0.67578125,
+          "minimum_decision_token_ratio_to_fifo": 0.7479965899403239,
+          "selected_imminent_l1": 183867.62861430645,
+          "selected_l1": 266914.0264271796,
+          "selected_l2": 6797.942640478919,
+          "selected_valid_actor_tokens": 1053955
+        }
+      },
+      "shuffled_m4_risk_band": {
+        "selected_l2_mean": 4945.119830365245,
+        "selected_tokens_mean": 1066437.2075,
+        "selected_true_l1_mean": 189669.67854435748,
+        "selected_true_l1_q025": 175742.5401976332,
+        "selected_true_l1_q975": 208849.56063037956
+      }
+    },
+    {
+      "decision_count": 64,
+      "first_deferred_group_fates": {
+        "bounded_shutdown": {
+          "groups": 4,
+          "l1": 2027.9353684186935,
+          "l2": 47.872505327427895
+        },
+        "selected": {
+          "groups": 8,
+          "l1": 13136.156123995781,
+          "l2": 317.41620852908414
+        },
+        "stale_evicted": {
+          "groups": 240,
+          "l1": 124549.92435064912,
+          "l2": 3148.7539665579598
+        }
+      },
+      "identity": "p10-oars",
+      "m4_l1_gain_over_age_percent": 27.808221210182648,
+      "m4_l1_gain_over_shuffled_mean_percent": 24.88471748598795,
+      "m4_l2_gain_over_age_percent": 28.66024861347953,
+      "mode": "act",
+      "policies": {
+        "age_only_band": {
+          "aggregate_token_ratio_to_fifo": 0.9969627836747885,
+          "maximum_decision_token_ratio_to_fifo": 1.0196724585580188,
+          "mean_fifo_overlap_fraction": 0.69140625,
+          "mean_group_reward": 0.470703125,
+          "mean_group_reward_variance": 0.1026611328125,
+          "mean_ready_age_seconds": 2.8261858584218755,
+          "mean_version_lag": 0.98046875,
+          "minimum_decision_token_ratio_to_fifo": 0.9806442693211669,
+          "selected_imminent_l1": 225516.66442787647,
+          "selected_l1": 232443.7525410354,
+          "selected_l2": 5799.268367913251,
+          "selected_valid_actor_tokens": 573779
+        },
+        "m4_risk_band": {
+          "aggregate_token_ratio_to_fifo": 0.9970305476545844,
+          "maximum_decision_token_ratio_to_fifo": 1.0194652908067543,
+          "mean_fifo_overlap_fraction": 0.640625,
+          "mean_group_reward": 0.46826171875,
+          "mean_group_reward_variance": 0.13153076171875,
+          "mean_ready_age_seconds": 2.6715742626718746,
+          "mean_version_lag": 0.97265625,
+          "minimum_decision_token_ratio_to_fifo": 0.9802513464991023,
+          "selected_imminent_l1": 285727.2030232847,
+          "selected_l1": 297082.2254368961,
+          "selected_l2": 7461.353099920066,
+          "selected_valid_actor_tokens": 573818
+        },
+        "m4_total_band": {
+          "aggregate_token_ratio_to_fifo": 0.9976334733209736,
+          "maximum_decision_token_ratio_to_fifo": 1.0199386503067485,
+          "mean_fifo_overlap_fraction": 0.62890625,
+          "mean_group_reward": 0.46435546875,
+          "mean_group_reward_variance": 0.13238525390625,
+          "mean_ready_age_seconds": 2.5192075965390623,
+          "mean_version_lag": 0.9609375,
+          "minimum_decision_token_ratio_to_fifo": 0.9802513464991023,
+          "selected_imminent_l1": 281569.1742402017,
+          "selected_l1": 299255.7736416757,
+          "selected_l2": 7516.234526242081,
+          "selected_valid_actor_tokens": 574165
+        },
+        "recorded_fifo": {
+          "aggregate_token_ratio_to_fifo": 1.0,
+          "maximum_decision_token_ratio_to_fifo": 1.0,
+          "mean_fifo_overlap_fraction": 1.0,
+          "mean_group_reward": 0.45458984375,
+          "mean_group_reward_variance": 0.10296630859375,
+          "mean_ready_age_seconds": 2.76651681559375,
+          "mean_version_lag": 0.98046875,
+          "minimum_decision_token_ratio_to_fifo": 1.0,
+          "selected_imminent_l1": 227043.98422336578,
+          "selected_l1": 235225.4095673561,
+          "selected_l2": 5855.701634579096,
+          "selected_valid_actor_tokens": 575527
+        },
+        "recorded_oars_v1": {
+          "aggregate_token_ratio_to_fifo": 0.8826692752902991,
+          "maximum_decision_token_ratio_to_fifo": 1.0194652908067543,
+          "mean_fifo_overlap_fraction": 0.55078125,
+          "mean_group_reward": 0.5,
+          "mean_group_reward_variance": 0.1494140625,
+          "mean_ready_age_seconds": 2.7420712160507796,
+          "mean_version_lag": 0.96875,
+          "minimum_decision_token_ratio_to_fifo": 0.5763930497303775,
+          "selected_imminent_l1": 310850.41758978367,
+          "selected_l1": 324879.97539281845,
+          "selected_l2": 8397.915551583137,
+          "selected_valid_actor_tokens": 508000
+        }
+      },
+      "shuffled_m4_risk_band": {
+        "selected_l2_mean": 5941.339571980112,
+        "selected_tokens_mean": 572253.528,
+        "selected_true_l1_mean": 237885.17235523928,
+        "selected_true_l1_q025": 224485.49230279253,
+        "selected_true_l1_q975": 250577.70618568582
+      }
+    }
+  ],
+  "gate_checks": {
+    "metric_robustness": true,
+    "provenance": true,
+    "service": true,
+    "signal_ablation": true,
+    "staleness_comparator": true
+  },
+  "gate_diagnostics": {
+    "m4_band_maximum_decision_token_ratio": 1.0199960792001568,
+    "m4_band_minimum_decision_token_ratio": 0.980026486615575,
+    "m4_l1_gain_over_age_percent": 31.19561740023704,
+    "m4_l1_gain_over_shuffled_mean_percent": 27.73863815949198,
+    "m4_l1_positive_vs_age_arms": 20,
+    "m4_l1_positive_vs_shuffled_arms": 20,
+    "m4_l2_gain_over_age_percent": 25.705143378460082,
+    "m4_l2_positive_vs_age_arms": 20
+  },
+  "interpretation_boundary": [
+    "This is a retrospective one-step policy-development analysis on policy-generated choice sets.",
+    "It cannot estimate a counterfactual queue trajectory, training-quality effect, wall-time effect, or causal mediation through M4.",
+    "A passing gate authorizes only local OARS-v2 design, implementation, tests, and shadow qualification planning; it does not authorize training or EOS submission."
+  ],
+  "protocol": {
+    "path": "reports/auto_research/2026-09-22-m4-oars-v2-offline/offline_autopsy_protocol.json",
+    "sha256": "eda6abc50bf3327c2994de522062f9cca0c706d0168e02a9e5745e89d1891eea"
+  },
+  "provenance": {
+    "p01-fifo": {
+      "archive": "session/20260914_m4_opportunity_control/confirmatory-p01-fifo-terminal-archives/main-448299976.zip",
+      "archive_sha256": "51fa5760fbeb6f226f4f590ab9621155d6a475f6b4ebb0c28aed40405f34b9fa",
+      "authentication_receipt": "reports/auto_research/2026-09-15-m4-oars-randomized/confirmatory_p01_fifo_terminal_authentication.json",
+      "authentication_receipt_sha256": "27ed39fd33c28b5a03c7feef6d4a870fdd730819c329c87e9b491720e6f67ae0",
+      "ledger_sha256": {
+        "lifecycle.jsonl": "a71a9b44a0351bf6124a05dcc2e5c4174337718ded25a8be78c382f70a7879de",
+        "oars.jsonl": "1a2636f9e367b2db1c43c63d4dc7c3bf4b2a2ec3652510a41e1d464e56e01233",
+        "opportunity.jsonl": "3bc5983161a8e81cd2e8ca40867bf783a4b3fd0802050e0323baff01eb06720e"
+      }
+    },
+    "p01-oars": {
+      "archive": "session/20260914_m4_opportunity_control/confirmatory-p01-oars-terminal-archives/main-447249289.zip",
+      "archive_sha256": "8cad08741599c9194f06bf1068eed013bbeafcadeae18c3b0d6070180a3f8764",
+      "authentication_receipt": "reports/auto_research/2026-09-15-m4-oars-randomized/confirmatory_p01_oars_terminal_authentication.json",
+      "authentication_receipt_sha256": "64ec52b236ef7366250d5590f8a32a1ebb827bfd4f6adaf68670960e8c8d1f1c",
+      "ledger_sha256": {
+        "lifecycle.jsonl": "0a0671aa94e2b20078835f7b3fae74671ca20515c6c5e913403a98629739b7ed",
+        "oars.jsonl": "baad8d59074d3cd5b1f1ce4c7f4cf5b6b07669e1c15eece72d0c1ad713b4d3b2",
+        "opportunity.jsonl": "ed239e4a8f8a73bdec3adaea3356ccda5de623eb1b48de4b01d21dbb62d9ef8e"
+      }
+    },
+    "p02-fifo": {
+      "archive": "session/20260914_m4_opportunity_control/confirmatory-p02-fifo-terminal-archives/main-449951953.zip",
+      "archive_sha256": "7c6f3cac982184ad2aa5f4973602bfd8342d58e59d40388e3e8e85ad4cc5ebfe",
+      "authentication_receipt": "reports/auto_research/2026-09-15-m4-oars-randomized/confirmatory_p02_fifo_terminal_authentication.json",
+      "authentication_receipt_sha256": "9eac79a88272138d1dd701d9ceb7913b18f81a92a5457d64a2898405ecc908d9",
+      "ledger_sha256": {
+        "lifecycle.jsonl": "c7943af4fcc3b5d81bd3d162ac6aa2929fd38c91571c5934a0d744b6e160aae3",
+        "oars.jsonl": "3ce4de3e0d5f865fd8b7b01811817e9f6ca3e341c0cf744aeb91a204115cc737",
+        "opportunity.jsonl": "6dea2237638cc1e6ab1fe14dbabf62936197bf55272504489fc79190224d6a9f"
+      }
+    },
+    "p02-oars": {
+      "archive": "session/20260914_m4_opportunity_control/confirmatory-p02-oars-terminal-archives/main-449161431.zip",
+      "archive_sha256": "5da1f9361c535063fb77890734d191eb0116164c07996efa82ba185e7f37f7fe",
+      "authentication_receipt": "reports/auto_research/2026-09-15-m4-oars-randomized/confirmatory_p02_oars_terminal_authentication.json",
+      "authentication_receipt_sha256": "1800b1ca67b852ae7223006e262a37362415094008efab9e7c37f47b47e635f2",
+      "ledger_sha256": {
+        "lifecycle.jsonl": "97a6b2b9e84d36517bb9816493924630e112c03b2d31d140841475d8d227c34d",
+        "oars.jsonl": "1bc0d509d3ebdd90dcda57e23f61fde244fc6163ea6d1ee63ae6a38fac74266a",
+        "opportunity.jsonl": "31a4c9009aa099d566e8f15433596e93f7398e4d2a6dce3440a8551dcf2a97c0"
+      }
+    },
+    "p03-fifo": {
+      "archive": "session/20260914_m4_opportunity_control/confirmatory-p03-fifo-terminal-archives/main-450642826.zip",
+      "archive_sha256": "4c4135d2683a6eccbdaa881a52d1ae4b18b704b1308a7dc0d532440d7eaa8a9e",
+      "authentication_receipt": "reports/auto_research/2026-09-15-m4-oars-randomized/confirmatory_p03_fifo_terminal_authentication.json",
+      "authentication_receipt_sha256": "7de75428d158d0f427febae6bbdca824187638d5d1ab102297931e14618e1a0d",
+      "ledger_sha256": {
+        "lifecycle.jsonl": "c1a54d48c948b0c547c4bdf39312b7d3dc4d92d2d38f96bec22a81c2239c04ae",
+        "oars.jsonl": "a957d5837f8c531fe57a69dd1d4d41f3b0edb3482ca247a7c1a099ca5283a789",
+        "opportunity.jsonl": "94d6a71d863d035e3cb01b36335af2bd1bea3825d825af27308a45cdfbbe58f5"
+      }
+    },
+    "p03-oars": {
+      "archive": "session/20260914_m4_opportunity_control/confirmatory-p03-oars-terminal-archives/main-450556771.zip",
+      "archive_sha256": "bb9b1fd33c9783668cee58da9d24492f14719b8117cd3329b9eb647718fa2bbe",
+      "authentication_receipt": "reports/auto_research/2026-09-15-m4-oars-randomized/confirmatory_p03_oars_terminal_authentication.json",
+      "authentication_receipt_sha256": "5249d8fe760dfbba3fee598a2baad7f42f99c606cf1523369704b7312f13ab36",
+      "ledger_sha256": {
+        "lifecycle.jsonl": "2cda5fbca59e8d7987839b8098220ff2a6aa3d1f0982383b52184058327e4584",
+        "oars.jsonl": "c94ec5ff7e21518e96eb9eadc98f3f740a453154e6b87f0a178cc4da8ae32088",
+        "opportunity.jsonl": "df0cb8375723dd6d21faec3404c0e7d73ed560d5b253c7d26ecbb189fa1c217c"
+      }
+    },
+    "p04-fifo": {
+      "archive": "session/20260914_m4_opportunity_control/confirmatory-p04-fifo-terminal-archives/main-450681030.zip",
+      "archive_sha256": "69d7d1eb5665918c800b6837b5a39dd9c4518a4bb6395b6794f1d714758f30eb",
+      "authentication_receipt": "reports/auto_research/2026-09-15-m4-oars-randomized/confirmatory_p04_fifo_terminal_authentication.json",
+      "authentication_receipt_sha256": "2caf657127cebd0727813ed30a2f5beffca1ad926195978e13729c5e06df5442",
+      "ledger_sha256": {
+        "lifecycle.jsonl": "f8cc218e8ef03096df5277745a7fe164a7531e3c43284738fc4e8d5e95372fc8",
+        "oars.jsonl": "e95b44f097f0940cef6cf742af0d33fae63bd7889a21be6d8a8d7f49444c086d",
+        "opportunity.jsonl": "3027035672dbbf7ea21ce8fc39d4d9f607d990d3e388cc537ca6f094eb16d800"
+      }
+    },
+    "p04-oars": {
+      "archive": "session/20260914_m4_opportunity_control/confirmatory-p04-oars-terminal-archives/main-450712808.zip",
+      "archive_sha256": "b87842aa319c36da49a28afde72cd186f00981de592a8aa609697ed9a58d337f",
+      "authentication_receipt": "reports/auto_research/2026-09-15-m4-oars-randomized/confirmatory_p04_oars_terminal_authentication.json",
+      "authentication_receipt_sha256": "e52090ba06ffdad0db567b207e199e4a488e9d4ed2a0f3e3b2934441533d318b",
+      "ledger_sha256": {
+        "lifecycle.jsonl": "b4578ff8fe7bb2a584c8cdd1b3baf06c428ab3d9d5594e4d5983d47ba54c2c5d",
+        "oars.jsonl": "5ff4d9dbb20883b04280289d5ad4feae1fcaa575e6a96ade613e5402da69bdea",
+        "opportunity.jsonl": "e9167e46bead6ea7cab45295d94e3219376ee1db97bf39cc615af693fb85e773"
+      }
+    },
+    "p05-fifo": {
+      "archive": "session/20260914_m4_opportunity_control/confirmatory-p05-fifo-terminal-archives/main-450772427.zip",
+      "archive_sha256": "3f530712005904a3f7050a49b7899847cb8cde5a06d3600ceb8d461c8ba248a4",
+      "authentication_receipt": "reports/auto_research/2026-09-15-m4-oars-randomized/confirmatory_p05_fifo_terminal_authentication.json",
+      "authentication_receipt_sha256": "89a4c8ef36eab6351dd4245e42e2d499e27db0dddd610e60b0f497f5848aa6e8",
+      "ledger_sha256": {
+        "lifecycle.jsonl": "d07799600905325408128db064f691afc9d466e24b046981fdbdef7d4c417a26",
+        "oars.jsonl": "ad2d9c305982992518bafff0f86fb710b3d510bf194195418a0423aa46555a1b",
+        "opportunity.jsonl": "f8b784bece4d2ab536bc7f1b9586d5ab4c7b820a3faf03d1377ccff75c677db8"
+      }
+    },
+    "p05-oars": {
+      "archive": "session/20260914_m4_opportunity_control/confirmatory-p05-oars-terminal-archives/main-450744776.zip",
+      "archive_sha256": "64a0ef2191287eea7409695c2d6842ed5ac5e6cd46a8e16bad5542111feefcb5",
+      "authentication_receipt": "reports/auto_research/2026-09-15-m4-oars-randomized/confirmatory_p05_oars_terminal_authentication.json",
+      "authentication_receipt_sha256": "4f573037f124650578777e3dbd648b181a630401eb97510c5492a27e7678fb88",
+      "ledger_sha256": {
+        "lifecycle.jsonl": "15c5d4c6a860136a03bcb632cb4273b9b3d33af507e15bb3378da91c28f43755",
+        "oars.jsonl": "db5d9ad172e3302729673b2220ee3eb02b4919f0aca5fc1f8119887578cbcf8c",
+        "opportunity.jsonl": "9e6bcdba553e1c5347e9a0518f6a929f29f3f49d238967a88fdff244f8925f96"
+      }
+    },
+    "p06-fifo": {
+      "archive": "session/20260914_m4_opportunity_control/confirmatory-p06-fifo-terminal-archives/main-450814848.zip",
+      "archive_sha256": "a713ae46252fd023aefa4392d32626d3e213c8c80fd6a2727d0da41d03811c4d",
+      "authentication_receipt": "reports/auto_research/2026-09-15-m4-oars-randomized/confirmatory_p06_fifo_terminal_authentication.json",
+      "authentication_receipt_sha256": "d8f99c1341c693705f90603c66acc2f0fe5befa8f4f0eef5a8d141fa4cb1ab9e",
+      "ledger_sha256": {
+        "lifecycle.jsonl": "f071ab6e0d4fddf05614092868d2435944d9be53e7062d6e5ac9d7e7a65f2bf7",
+        "oars.jsonl": "2379eed9cb904d94c8d8883d0d18bd241f73e449af03208fdf9362af19544f82",
+        "opportunity.jsonl": "37092d298af0bc930149579366b96fe6d6354fe40eb0e42c3d000a5ec943f1a4"
+      }
+    },
+    "p06-oars": {
+      "archive": "session/20260914_m4_opportunity_control/confirmatory-p06-oars-terminal-archives/main-450848692.zip",
+      "archive_sha256": "5487f1d7d63ca4e88185d641d827a03504f06cde663ffa46c744ad7039fc08e6",
+      "authentication_receipt": "reports/auto_research/2026-09-15-m4-oars-randomized/confirmatory_p06_oars_terminal_authentication.json",
+      "authentication_receipt_sha256": "dbe599737b81c6e796273e3402e2339c572c440fcbd98bb83aa25b27c4d3b4ae",
+      "ledger_sha256": {
+        "lifecycle.jsonl": "ba6866848df6bcf4ef6a65e20b01bda22840266db983ced92e0defc8a39828df",
+        "oars.jsonl": "ed83d6480bd1668e320faf397103ee365e039056da451cfc39ab038dd2c80b51",
+        "opportunity.jsonl": "19a287e4e25e90fec10f626ad3574fdc8acdd5bfd210725f0823a6a6ad084cad"
+      }
+    },
+    "p07-fifo": {
+      "archive": "session/20260914_m4_opportunity_control/confirmatory-p07-fifo-terminal-archives/main-450881862.zip",
+      "archive_sha256": "01aa3eb2fd347901ca654cf7ee63b40672b8310d430758ea2fdb2c25c7760d95",
+      "authentication_receipt": "reports/auto_research/2026-09-15-m4-oars-randomized/confirmatory_p07_fifo_terminal_authentication.json",
+      "authentication_receipt_sha256": "4f8ab9620aa37fc9d90a451f4579d799d69a27974cc0fd9e9a7028ba75c508b2",
+      "ledger_sha256": {
+        "lifecycle.jsonl": "d099c959f68ca881b936d20099af8c7fbaebc040884c1e17ffcb9ea10c48aa7f",
+        "oars.jsonl": "a61856657962c8a6040e64a393e58c2dac145aac028f54a1c8f5188e3ecef1a0",
+        "opportunity.jsonl": "342ae5cf13d6cde90eb3d49680b0e566b241338d00c04d274b3965ce3582bf5e"
+      }
+    },
+    "p07-oars": {
+      "archive": "session/20260914_m4_opportunity_control/confirmatory-p07-oars-terminal-archives/main-450915777.zip",
+      "archive_sha256": "73eaee6bd5f4293442e8b407567f2045fb7c75883b79c5b8313bb067ed6b01eb",
+      "authentication_receipt": "reports/auto_research/2026-09-15-m4-oars-randomized/confirmatory_p07_oars_terminal_authentication.json",
+      "authentication_receipt_sha256": "c78ef8bc2c49457bbc19f52b885bf912dafa406823edfb01fc1f120b2cf85576",
+      "ledger_sha256": {
+        "lifecycle.jsonl": "ba8e6c6d00877d3ea2656155cbd4a8c53e27791da1c268225ad544f1fbc7b11e",
+        "oars.jsonl": "b0b00f01b8ffcb96f48bf6b334fd8b91a13e7b2c909e9b85671eeb3db6fde332",
+        "opportunity.jsonl": "ffe656c17313b7bce00cd7ac02ea3c80796e5e6fccdd05c4c71ecf1618574946"
+      }
+    },
+    "p08-fifo": {
+      "archive": "session/20260914_m4_opportunity_control/confirmatory-p08-fifo-terminal-archives/main-451108877.zip",
+      "archive_sha256": "2addf4b609d5bac6562479b2e32ddac4004ecfabd4e2e32ee2466dfc1038886c",
+      "authentication_receipt": "reports/auto_research/2026-09-15-m4-oars-randomized/confirmatory_p08_fifo_terminal_authentication.json",
+      "authentication_receipt_sha256": "e998e0a8dd17ca8d188c5fd788997bbafb1f2a2b99e9fbff98f12ed0eb78cfad",
+      "ledger_sha256": {
+        "lifecycle.jsonl": "d6f3c3b7a785ecec5406b6d3fda8dcc18cf1df194e392096a67ce18497f9c5ec",
+        "oars.jsonl": "1102b02f30c41d265aef319f53d4eacd5d98be922d3abc4e6e7b47ca72fe5a1c",
+        "opportunity.jsonl": "a5b45442991f1da861e7232060c49e6a024c4e241b120051189b10f51e8cd95f"
+      }
+    },
+    "p08-oars": {
+      "archive": "session/20260914_m4_opportunity_control/confirmatory-p08-oars-terminal-archives/main-450949276.zip",
+      "archive_sha256": "9f0737170a1a0b3bdfbd5642dd1981af24b5b9ca85d0411432e70b7889a3c530",
+      "authentication_receipt": "reports/auto_research/2026-09-15-m4-oars-randomized/confirmatory_p08_oars_terminal_authentication.json",
+      "authentication_receipt_sha256": "831d4ffc5b4fcd0a4153d56059b108019c04645c677e995078d4d25dab149a40",
+      "ledger_sha256": {
+        "lifecycle.jsonl": "b2e7d6560d93cd1063bb888cf8a4f11247faa9411cf174e73f36adcf47a3fc7c",
+        "oars.jsonl": "659088b15ccf41a4f751afac47953afb6155bba315ccb0095d83b61a69be4177",
+        "opportunity.jsonl": "e662b2a0d23dde21439819c69a2e76d115e1bbcceeb2f06a1b6704a310d7e4f8"
+      }
+    },
+    "p09-fifo": {
+      "archive": "session/20260914_m4_opportunity_control/confirmatory-p09-fifo-terminal-archives/main-451136511.zip",
+      "archive_sha256": "84dfa10b570aede9a0df32ea0a8266b6c2b36c901a4a4fadc3b30690e75c4a6c",
+      "authentication_receipt": "reports/auto_research/2026-09-15-m4-oars-randomized/confirmatory_p09_fifo_terminal_authentication.json",
+      "authentication_receipt_sha256": "73819987d6dfc27d8f10148362f75d6d422f8f33ff53dec369468e2cd52cbb2f",
+      "ledger_sha256": {
+        "lifecycle.jsonl": "24bd4126eff38bd282e2f19d7ad56ea36777f6de8a11944197869db6cc2e38f4",
+        "oars.jsonl": "a42db90ff353550c12a852b57477a2fd6134554629e6533de974a5ba26534f64",
+        "opportunity.jsonl": "80bbbca53ae54078ecdd1d1ea73fee83fbfec2d9e7410ae1ab254bd12f973058"
+      }
+    },
+    "p09-oars": {
+      "archive": "session/20260914_m4_opportunity_control/confirmatory-p09-oars-terminal-archives/main-451168938.zip",
+      "archive_sha256": "0bcdb34d2548f34e640384e1f5aab561848067262c1346f8112d95f2419b40c5",
+      "authentication_receipt": "reports/auto_research/2026-09-15-m4-oars-randomized/confirmatory_p09_oars_terminal_authentication.json",
+      "authentication_receipt_sha256": "62f9d7755715ee8a5db335e729aec06bc1b1b0176293fc0272b8d8e459b5c506",
+      "ledger_sha256": {
+        "lifecycle.jsonl": "c0219a42e71b196973788d4798c9732651d9b7b7f7899c56229105c1b699041d",
+        "oars.jsonl": "16bea845850885f10052a6b19b23db5510ec0f6a0c7d72feb98200573568816d",
+        "opportunity.jsonl": "2296fe8880653cbd89550aec005f62a3d6958c8bb3549407d04a76eebd0ea627"
+      }
+    },
+    "p10-fifo": {
+      "archive": "session/20260914_m4_opportunity_control/confirmatory-p10-fifo-terminal-archives/main-451234864.zip",
+      "archive_sha256": "a6a632ff6abd24a8195285db05a090fb46103a64178b249f3d85d92d947ec80f",
+      "authentication_receipt": "reports/auto_research/2026-09-15-m4-oars-randomized/confirmatory_p10_fifo_terminal_authentication.json",
+      "authentication_receipt_sha256": "d50797201ed46cd98c346a6b8d3a62053f003a5b40bda42f377dbb96f0d82b4a",
+      "ledger_sha256": {
+        "lifecycle.jsonl": "2c4b7333961315063ea39a7c65f72a34a643a95f47730a5607eddb8b727ed5ce",
+        "oars.jsonl": "a68b6059b8a392e4ab6e049679b8e2c0cdd7d31d16cdf74748b1dbb4e38a76f1",
+        "opportunity.jsonl": "847562e7d9b87667a29d490c981a48ba9eb3744189310567dde0129ae4532a80"
+      }
+    },
+    "p10-oars": {
+      "archive": "session/20260914_m4_opportunity_control/confirmatory-p10-oars-terminal-archives/main-451202214.zip",
+      "archive_sha256": "eb773874deaa203a912f8c30408e6f40adf960782c07a926c4462fb3b21eef7e",
+      "authentication_receipt": "reports/auto_research/2026-09-15-m4-oars-randomized/confirmatory_p10_oars_terminal_authentication.json",
+      "authentication_receipt_sha256": "51441343a75dfd943390b6d09c51c9dd1a42874fa1a339a0d3ccc4dbc9e41db0",
+      "ledger_sha256": {
+        "lifecycle.jsonl": "e8a9bef6a76e159cdf4ab1816385e2d745b3fb1dead7a3afa596e5b62dd8fb2c",
+        "oars.jsonl": "bcf6d3a14b52b73732333fd6ac49882046ef44fbcd850de9c930391cc8995ad5",
+        "opportunity.jsonl": "76b0aac7b1676a66c0f5817130aa2ac65e944cad8f2dbb22e599011f8455088a"
+      }
+    }
+  },
+  "schema": "m4-oars-v2-offline-autopsy-result-v1",
+  "scope": {
+    "authenticated_arms": 20,
+    "candidate_rows": 10240,
+    "reconstructed_decisions": 1280,
+    "shuffled_replays_per_arm": 2000
+  },
+  "status": "PASS_OARS_V2_SHADOW_IMPLEMENTATION_GATE"
+}

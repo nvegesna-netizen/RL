@@ -1,0 +1,87 @@
+{
+  "schema": "m4-oars-v2-shadow-implementation-verification-v1",
+  "status": "PASS_LOCAL_IMPLEMENTATION_AWAITING_LIVE_SHADOW_QUALIFICATION",
+  "date": "2026-09-22",
+  "branch": "autoresearch/2026-09-15-m4-oars-randomized/confirmatory-acquisition",
+  "base_commit": "373dcfce27bca427aa07adc29bebb553c538127f",
+  "scientific_basis": {
+    "offline_autopsy_status": "PASS_OARS_V2_SHADOW_IMPLEMENTATION_GATE",
+    "authenticated_arms": 20,
+    "reconstructed_decisions": 1280,
+    "candidate_rows": 10240,
+    "m4_l1_gain_over_age_percent": 31.19561740023704,
+    "m4_l1_gain_over_reward_variance_percent": 0.6330384210100348,
+    "m4_vs_reward_variance_mean_overlap_fraction": 0.9572265625,
+    "offline_result_sha256": "c7d1d48bf9f2f8268187301d840e74c46c48c1b936045473446658df55f44e86",
+    "composition_result_sha256": "987b5aedb970b1a4b4ec0ec3335a007f7e6b8564bf6a8560b4e22e391fe3017e"
+  },
+  "implementation_contract": {
+    "default_enabled": false,
+    "mode": "observe_only",
+    "acting_sampler": "eager_weight_fifo",
+    "fixed_candidate_watermark": null,
+    "minimum_service_multiplier": 0.98,
+    "maximum_service_multiplier": 1.02,
+    "candidate_safety_cap": 64,
+    "exact_search_max_candidates": 16,
+    "per_scorer_time_budget_ns": 5000000,
+    "scorers": [
+      "age",
+      "reward_variance_risk",
+      "token_normalized_m4_risk",
+      "absolute_m4_risk"
+    ],
+    "fallbacks": [
+      "candidate_safety_cap_exceeded",
+      "missing_or_invalid_opportunity_metadata",
+      "mandatory_candidates_exceed_exact_search_cap",
+      "decision_time_budget_exceeded",
+      "selector_invariant_failure"
+    ]
+  },
+  "checks": {
+    "offline_autopsy_unit_tests": "PASS_4",
+    "composition_extension_unit_tests": "PASS_2",
+    "offline_autopsy_clean_replay_byte_identical": true,
+    "composition_extension_clean_replay_byte_identical": true,
+    "oars_v2_behavioral_contracts": "PASS_14_DEPENDENCY_ISOLATED",
+    "candidate_count_stress_domain": "4_THROUGH_64",
+    "ruff_check": "PASS",
+    "ruff_format_check": "PASS",
+    "python_3_13_compile": "PASS",
+    "git_diff_check": "PASS",
+    "full_repository_pytest": "BLOCKED_LOCAL_ENVIRONMENT_MISSING_RAY_AND_TORCH",
+    "training_or_eos_launched": false
+  },
+  "selector_microbenchmark": {
+    "status": "INFORMATIVE_NOT_A_QUALIFICATION_GATE",
+    "environment": "dependency-isolated local Python; nine repetitions per count",
+    "median_ns_by_exact_candidate_count": {
+      "8": 85834,
+      "12": 563375,
+      "16": 2053166,
+      "20": 5528750,
+      "25": 14469458
+    },
+    "decision": "Use a default exact frontier of 16; larger ready sets retain FIFO and every imminent candidate, prune deterministically, and fall back explicitly if the mandatory set or time budget cannot be honored."
+  },
+  "sha256": {
+    "nemo_rl/algorithms/async_utils/opportunity_at_risk_v2.py": "f34b02659f41b05b746b57ae269471adb637f1b007684e80ee800c1576318461",
+    "nemo_rl/algorithms/async_utils/replay_buffer.py": "31cd33b352b8d27fb18d5b8a8f8e7009539595a547c9eb5506a5baaef0012a49",
+    "nemo_rl/algorithms/single_controller.py": "ec8dc1ee8cb22ecebc985fbfbe3fa7a21728a1af33289c78ea64b25ae611f837",
+    "nemo_rl/algorithms/single_controller_utils/config.py": "c75966f96596a76293e4051b4c5a590990c30f396f299038ea5e6e0e0deae076",
+    "examples/configs/grpo_math_1B_megatron_single_controller.yaml": "8df16e503500a1506150dd6f866f38e421530d1159b5419a426a8ffb1fd8558b",
+    "pyrefly.toml": "0d7331a188d6a6d4aa98da2161fe018763c2836fcd714f4ad82e66ab188ecbf5",
+    "tests/unit/single_controller/test_opportunity_at_risk_v2.py": "f31848bed222dcc04d7fee7e756b653e531daebf87baa7e010a0c45511bd33bb",
+    "tests/unit/single_controller/test_single_controller.py": "5a82b9e7eade741683eb65b721bba35ac592c44b10191a9920d11040d3c5e876",
+    "tests/unit/single_controller/test_tq_replay_buffer.py": "45559aba17f6ba6ef04295742bf37e310ab0bcd2198f02ff5d2be489d3564f18",
+    "tests/unit/single_controller/test_train_pump.py": "8ca282cdd1fee0a6e1d926984168552648d8897adc55076ad96135c4cbba93a4"
+  },
+  "remaining_gates": [
+    "Run the ordinary repository unit suite in a dependency-complete environment.",
+    "Freeze a separate live shadow qualification before any training launch.",
+    "Demonstrate actual FIFO identity equivalence at every decision.",
+    "Measure natural contention, proposal coverage, fallback rates, p95 decision latency, and combined observer duty.",
+    "Do not enable actuation or make training-quality claims from this local result."
+  ]
+}

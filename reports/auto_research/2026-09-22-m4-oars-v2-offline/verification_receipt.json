@@ -1,0 +1,26 @@
+{
+  "schema": "m4-oars-v2-offline-verification-receipt-v1",
+  "status": "PASS",
+  "date": "2026-09-22",
+  "checks": {
+    "offline_autopsy_unit_tests": "PASS_4",
+    "composition_extension_unit_tests": "PASS_2",
+    "offline_autopsy_clean_replay_byte_identical": true,
+    "composition_extension_clean_replay_byte_identical": true,
+    "json_result_contracts": true,
+    "git_diff_check": true
+  },
+  "sha256": {
+    "analyze_offline_autopsy.py": "9f37ac2da8ea13b0a24017ece2e241576958d811b54a59ebf5ce5cb5c0dac50b",
+    "test_analyze_offline_autopsy.py": "d5176ff73f2d85af74207c6d50be44eadb01067a27407251cd54e58e05daf5cd",
+    "offline_autopsy_protocol.json": "eda6abc50bf3327c2994de522062f9cca0c706d0168e02a9e5745e89d1891eea",
+    "offline_autopsy_result.json": "c7d1d48bf9f2f8268187301d840e74c46c48c1b936045473446658df55f44e86",
+    "analyze_composition_extension.py": "6dab69aa2106af55fe9d812718698d3ac7414d4ee867d4b2d49550fdb9f8481b",
+    "test_analyze_composition_extension.py": "f29e1197dfe72ae63aa13e619c67ac0a54cc289d662a68faee56dc7a1b2ae653",
+    "composition_extension_protocol.json": "199026fdfc92ccd758f921016af138275f5f3a4b33fcca0ae761a613a4034b25",
+    "composition_extension_result.json": "987b5aedb970b1a4b4ec0ec3335a007f7e6b8564bf6a8560b4e22e391fe3017e",
+    "offline_autopsy_result.md": "ed8a2582f5c9961ae20f0d1081ba30a2b4bbd6110840f4788568e13e3639fdbe",
+    "oars_v2_shadow_design.md": "6498e8515237a0550ab0e17da2e7c76c618abf93d703aafedd539368e3e09c41"
+  },
+  "raw_artifact_policy": "Large authenticated terminal archives remain outside Git and are referenced per arm by path and SHA-256 in offline_autopsy_result.json."
+}

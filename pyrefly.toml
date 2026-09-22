@@ -50,6 +50,7 @@ project-includes = [
   "nemo_rl/algorithms/async_utils/controlled_release.py",
   "nemo_rl/algorithms/async_utils/interfaces.py",
   "nemo_rl/algorithms/async_utils/opportunity_at_risk.py",
+  "nemo_rl/algorithms/async_utils/opportunity_at_risk_v2.py",
   "nemo_rl/algorithms/async_utils/replay_buffer.py",
   "nemo_rl/algorithms/async_utils/rollout_lifecycle.py",
   "nemo_rl/algorithms/async_utils/staleness_sampler.py",

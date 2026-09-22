@@ -50,6 +50,22 @@ async_rl:
     output_path: null
     service_budget_multiplier: 1.02
     max_candidate_groups: 25
+  # Default-off, behavior-neutral OARS-v2 observer. It compares eager FIFO
+  # with age, reward-variance, normalized-M4, and absolute-M4 proposals on
+  # naturally available choice sets under a two-sided token band.
+  opportunity_at_risk_v2_shadow:
+    enabled: false
+    # Required and distinct from lifecycle/opportunity/duty paths when enabled.
+    output_path: null
+    # Proposals must stay within 98%--102% of the FIFO batch's valid tokens.
+    minimum_service_multiplier: 0.98
+    maximum_service_multiplier: 1.02
+    # Larger natural ready sets record an explicit FIFO safety fallback.
+    max_candidate_groups: 64
+    # Larger sets are safely pruned before fixed-cardinality enumeration.
+    exact_search_max_candidates: 16
+    # Each scorer independently falls back to FIFO after five milliseconds.
+    decision_time_budget_ns: 5000000
   # Default-off, non-resumable weights/resolved-config export performed only
   # after the configured terminal train-step/version boundary is reached.
   terminal_policy_export:

@@ -68,6 +68,39 @@ class OpportunityAtRiskShadowConfig(BaseModel, frozen=True):
     max_candidate_groups: int = 25
 
 
+class OpportunityAtRiskV2ShadowConfig(BaseModel, frozen=True, extra="allow"):
+    """Default-off, behavior-neutral adaptive multi-scorer OARS-v2 observer."""
+
+    enabled: bool = Field(
+        default=False,
+        description="Enable observe-only OARS-v2 proposals; FIFO still acts.",
+    )
+    output_path: Optional[str] = Field(
+        default=None,
+        description="Shutdown JSONL path; required and distinct when enabled.",
+    )
+    minimum_service_multiplier: float = Field(
+        default=0.98,
+        description="Minimum proposal tokens relative to the FIFO batch.",
+    )
+    maximum_service_multiplier: float = Field(
+        default=1.02,
+        description="Maximum proposal tokens relative to the FIFO batch.",
+    )
+    max_candidate_groups: int = Field(
+        default=64,
+        description="Natural ready-set safety cap before explicit FIFO fallback.",
+    )
+    exact_search_max_candidates: int = Field(
+        default=16,
+        description="Candidate count retained for exact fixed-cardinality search.",
+    )
+    decision_time_budget_ns: int = Field(
+        default=5_000_000,
+        description="Per-scorer monotonic-time budget before FIFO fallback.",
+    )
+
+
 class TerminalPolicyExportConfig(BaseModel, frozen=True):
     """Default-off terminal weight export for completed bounded runs.
 
@@ -113,6 +146,9 @@ class AsyncRLConfig(BaseModel, extra="allow"):
     opportunity_at_risk_shadow: OpportunityAtRiskShadowConfig = Field(
         default_factory=OpportunityAtRiskShadowConfig
     )
+    opportunity_at_risk_v2_shadow: OpportunityAtRiskV2ShadowConfig = Field(
+        default_factory=OpportunityAtRiskV2ShadowConfig
+    )
     terminal_policy_export: TerminalPolicyExportConfig = Field(
         default_factory=TerminalPolicyExportConfig
     )
@@ -157,6 +193,7 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
     opportunity_config = async_config.gradient_opportunity_audit
     derived_config = async_config.lifecycle_derived_opportunity_audit
     shadow_config = async_config.opportunity_at_risk_shadow
+    shadow_v2_config = async_config.opportunity_at_risk_v2_shadow
     export_config = async_config.terminal_policy_export
     num_prompts_per_step = master_config.grpo.num_prompts_per_step
     required_capacity = required_buffer_capacity_for_config(
@@ -297,6 +334,79 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
             raise ValueError(
                 "weight_fifo selection_candidate_watermark must not exceed "
                 "opportunity_at_risk_shadow.max_candidate_groups"
+            )
+    if shadow_v2_config.enabled:
+        if shadow_config.enabled:
+            raise ValueError("OARS-v1 and OARS-v2 shadows are mutually exclusive")
+        if not opportunity_config.enabled:
+            raise ValueError(
+                "async_rl.opportunity_at_risk_v2_shadow.enabled=true requires "
+                "gradient_opportunity_audit.enabled=true"
+            )
+        if not isinstance(async_config.sampler, WeightFifoSamplerConfig):
+            raise ValueError(
+                "async_rl.opportunity_at_risk_v2_shadow.enabled=true requires "
+                "the weight_fifo sampler"
+            )
+        if async_config.sampler.selection_candidate_watermark is not None:
+            raise ValueError(
+                "opportunity_at_risk_v2_shadow requires eager weight_fifo with "
+                "selection_candidate_watermark=null"
+            )
+        if master_config.grpo.num_prompts_per_step != 4:
+            raise ValueError(
+                "async_rl.opportunity_at_risk_v2_shadow.enabled=true requires "
+                "grpo.num_prompts_per_step=4 for the development policy"
+            )
+        if not shadow_v2_config.output_path:
+            raise ValueError(
+                "async_rl.opportunity_at_risk_v2_shadow.enabled=true requires "
+                "output_path"
+            )
+        assert opportunity_config.output_path is not None
+        assert opportunity_config.observer_duty_path is not None
+        assert async_config.lifecycle_audit_path is not None
+        shadow_v2_paths = (
+            Path(async_config.lifecycle_audit_path).resolve(),
+            Path(opportunity_config.output_path).resolve(),
+            Path(opportunity_config.observer_duty_path).resolve(),
+            Path(shadow_v2_config.output_path).resolve(),
+        )
+        if len(set(shadow_v2_paths)) != len(shadow_v2_paths):
+            raise ValueError(
+                "lifecycle, opportunity, observer-duty, and OARS-v2 shadow "
+                "paths must be distinct"
+            )
+        if (
+            not math.isfinite(shadow_v2_config.minimum_service_multiplier)
+            or not math.isfinite(shadow_v2_config.maximum_service_multiplier)
+            or shadow_v2_config.minimum_service_multiplier <= 0
+            or shadow_v2_config.minimum_service_multiplier > 1
+            or shadow_v2_config.maximum_service_multiplier < 1
+            or shadow_v2_config.minimum_service_multiplier
+            > shadow_v2_config.maximum_service_multiplier
+        ):
+            raise ValueError(
+                "opportunity_at_risk_v2_shadow service multipliers must define "
+                "a finite positive band containing 1"
+            )
+        if shadow_v2_config.max_candidate_groups < 4:
+            raise ValueError(
+                "opportunity_at_risk_v2_shadow.max_candidate_groups must be at "
+                "least four"
+            )
+        if not (
+            4
+            <= shadow_v2_config.exact_search_max_candidates
+            <= shadow_v2_config.max_candidate_groups
+        ):
+            raise ValueError(
+                "opportunity_at_risk_v2_shadow.exact_search_max_candidates must "
+                "be between four and max_candidate_groups"
+            )
+        if shadow_v2_config.decision_time_budget_ns < 1:
+            raise ValueError(
+                "opportunity_at_risk_v2_shadow.decision_time_budget_ns must be positive"
             )
     if derived_config.enabled:
         if opportunity_config.enabled:

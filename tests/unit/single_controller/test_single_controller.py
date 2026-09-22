@@ -36,6 +36,7 @@ from nemo_rl.algorithms.single_controller_utils.config import (
     GradientOpportunityAuditConfig,
     MasterConfig,
     OpportunityAtRiskShadowConfig,
+    OpportunityAtRiskV2ShadowConfig,
     TerminalPolicyExportConfig,
     validate_single_controller_config,
 )
@@ -248,6 +249,102 @@ def test_gradient_opportunity_audit_accepts_supported_configuration() -> None:
 
 def test_opportunity_at_risk_shadow_is_default_off() -> None:
     assert AsyncRLConfig().opportunity_at_risk_shadow.enabled is False
+
+
+def test_opportunity_at_risk_v2_shadow_is_default_off() -> None:
+    shadow = AsyncRLConfig().opportunity_at_risk_v2_shadow
+    assert shadow.enabled is False
+    assert shadow.exact_search_max_candidates == 16
+
+
+def test_opportunity_at_risk_v2_shadow_accepts_adaptive_configuration() -> None:
+    config = _controlled_release_master_config(lifecycle_audit_path="lifecycle.jsonl")
+    config.policy["train_global_batch_size"] = 16
+    config.grpo.num_prompts_per_step = 4
+    config.async_rl.sampler = WeightFifoSamplerConfig(
+        max_staleness_versions=1,
+        selection_candidate_watermark=None,
+    )
+    config.async_rl.gradient_opportunity_audit = GradientOpportunityAuditConfig(
+        enabled=True,
+        output_path="opportunity.jsonl",
+        observer_duty_path="duty.json",
+    )
+    config.async_rl.opportunity_at_risk_v2_shadow = OpportunityAtRiskV2ShadowConfig(
+        enabled=True,
+        output_path="oars-v2.jsonl",
+    )
+
+    validate_single_controller_config(config)
+
+
+def test_opportunity_at_risk_v2_shadow_rejects_fixed_watermark() -> None:
+    config = _controlled_release_master_config(lifecycle_audit_path="lifecycle.jsonl")
+    config.policy["train_global_batch_size"] = 16
+    config.grpo.num_prompts_per_step = 4
+    config.async_rl.sampler = WeightFifoSamplerConfig(
+        max_staleness_versions=1,
+        selection_candidate_watermark=8,
+    )
+    config.async_rl.gradient_opportunity_audit = GradientOpportunityAuditConfig(
+        enabled=True,
+        output_path="opportunity.jsonl",
+        observer_duty_path="duty.json",
+    )
+    config.async_rl.opportunity_at_risk_v2_shadow = OpportunityAtRiskV2ShadowConfig(
+        enabled=True,
+        output_path="oars-v2.jsonl",
+    )
+
+    with pytest.raises(ValueError, match="requires eager weight_fifo"):
+        validate_single_controller_config(config)
+
+
+def test_opportunity_at_risk_v2_shadow_rejects_invalid_service_band() -> None:
+    config = _controlled_release_master_config(lifecycle_audit_path="lifecycle.jsonl")
+    config.policy["train_global_batch_size"] = 16
+    config.grpo.num_prompts_per_step = 4
+    config.async_rl.sampler = WeightFifoSamplerConfig(max_staleness_versions=1)
+    config.async_rl.gradient_opportunity_audit = GradientOpportunityAuditConfig(
+        enabled=True,
+        output_path="opportunity.jsonl",
+        observer_duty_path="duty.json",
+    )
+    config.async_rl.opportunity_at_risk_v2_shadow = OpportunityAtRiskV2ShadowConfig(
+        enabled=True,
+        output_path="oars-v2.jsonl",
+        minimum_service_multiplier=1.01,
+    )
+
+    with pytest.raises(ValueError, match="service multipliers"):
+        validate_single_controller_config(config)
+
+
+def test_opportunity_at_risk_v2_shadow_rejects_v1_shadow() -> None:
+    config = _controlled_release_master_config(lifecycle_audit_path="lifecycle.jsonl")
+    config.policy["train_global_batch_size"] = 16
+    config.grpo.num_prompts_per_step = 4
+    config.async_rl.sampler = WeightFifoSamplerConfig(
+        max_staleness_versions=1,
+        selection_candidate_watermark=None,
+    )
+    config.async_rl.gradient_opportunity_audit = GradientOpportunityAuditConfig(
+        enabled=True,
+        output_path="opportunity.jsonl",
+        observer_duty_path="duty.json",
+    )
+    config.async_rl.opportunity_at_risk_shadow = OpportunityAtRiskShadowConfig(
+        enabled=True,
+        output_path="oars-v1.jsonl",
+        max_candidate_groups=8,
+    )
+    config.async_rl.opportunity_at_risk_v2_shadow = OpportunityAtRiskV2ShadowConfig(
+        enabled=True,
+        output_path="oars-v2.jsonl",
+    )
+
+    with pytest.raises(ValueError, match="mutually exclusive"):
+        validate_single_controller_config(config)
 
 
 def test_opportunity_at_risk_shadow_accepts_frozen_configuration() -> None:
@@ -707,6 +804,7 @@ def test_successful_train_step_advances_audited_learner_version() -> None:
     ctrl._lifecycle_recorder = MagicMock()
     ctrl._opportunity_recorder = None
     ctrl._oars_shadow_recorder = None
+    ctrl._oars_v2_shadow_recorder = None
     ctrl._observer_duty_meter = None
     ctrl._rollout_manager = MagicMock()
 
@@ -731,6 +829,7 @@ def _run_lifecycle_controller(
     ctrl._lifecycle_recorder = MagicMock()
     ctrl._opportunity_recorder = None
     ctrl._oars_shadow_recorder = None
+    ctrl._oars_v2_shadow_recorder = None
     ctrl._observer_duty_meter = None
     ctrl._rollout_manager = MagicMock()
     ctrl._master_config = SimpleNamespace(grpo=SimpleNamespace(max_num_steps=128))
@@ -743,6 +842,7 @@ def _run_lifecycle_controller(
         ),
         lifecycle_derived_opportunity_audit=SimpleNamespace(enabled=False),
         opportunity_at_risk_shadow=SimpleNamespace(output_path=None),
+        opportunity_at_risk_v2_shadow=SimpleNamespace(output_path=None),
     )
     ctrl._logger = MagicMock()
     ctrl._train_steps = train_steps
@@ -783,6 +883,18 @@ def test_run_flushes_oars_shadow_ledger() -> None:
     asyncio.run(ctrl.run())
 
     ctrl._oars_shadow_recorder.flush_jsonl.assert_called_once_with("oars.jsonl")
+
+
+def test_run_flushes_oars_v2_shadow_ledger() -> None:
+    ctrl = _run_lifecycle_controller()
+    ctrl._oars_v2_shadow_recorder = MagicMock()
+    ctrl._async_cfg.opportunity_at_risk_v2_shadow = SimpleNamespace(
+        output_path="oars-v2.jsonl"
+    )
+
+    asyncio.run(ctrl.run())
+
+    ctrl._oars_v2_shadow_recorder.flush_jsonl.assert_called_once_with("oars-v2.jsonl")
 
 
 @pytest.mark.parametrize(
