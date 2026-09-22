@@ -3,7 +3,8 @@
 This directory is the review-ready publication workspace for the completed M4
 opportunity-loss campaign and its prospective Llama 3.2 1B and 3B extensions.
 It also integrates the separately preregistered 16-pair downstream-quality
-study without promoting its inconclusive result into the headline claim.
+study and 10-pair OARS/FIFO policy study without promoting either study's
+inconclusive registered primary result into the headline claim.
 
 ## Start here
 
@@ -13,8 +14,8 @@ study without promoting its inconclusive result into the headline claim.
 - `claim_ledger.md` — supported, bounded, and prohibited claims.
 - `primary_table.md` — registered cell results and the dependency-aware joint
   interaction table.
-- `post_llama3b_reviewer_gap_audit.md` — current adversarial scientific review
-  and go/no-go decision; `reviewer_gap_audit.md` preserves the earlier audit.
+- `post_oars_reviewer_gap_audit.md` — current adversarial scientific review and
+  go/no-go decision; the earlier audit files preserve prior review stages.
 - `next_actions.md` — ordered submission sequence and new-compute decision.
 - `reproducibility_appendix.md` — hardware/software, protocol, acquisition,
   observer-duty, and provenance details.
@@ -53,6 +54,9 @@ study without promoting its inconclusive result into the headline claim.
 - `../2026-09-11-m4-downstream-quality/analyze_trained_paired_secondary.py` —
   reconstructs the frozen downstream mechanism, systems, and mediation-diagnostic
   endpoints from all 32 authenticated workload archives.
+- `../2026-09-15-m4-oars-randomized/confirmatory_terminal_analysis_result.json`
+  — frozen paired OARS/FIFO opportunity, quality, wall-time, and training-dose
+  results from 20 authenticated runs.
 - `cell_forest_plot.svg` and `interaction_plot.svg` — generated vector plots.
 - `causal_diagram.md` and `provenance_diagram.md` — Mermaid source diagrams.
 

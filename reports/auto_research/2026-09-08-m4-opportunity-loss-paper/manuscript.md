@@ -44,7 +44,14 @@ as -0.0449 (paired 95% CI [-0.1339, 0.0441]). The interval crossed zero and
 both registered ±0.02 relevance bounds, leaving the direction and practically
 relevant magnitude of the accuracy difference unresolved. The evidence also does
 not establish a pure model-family effect, a general scaling law, or
-generalization beyond the tested configurations.
+generalization beyond the tested configurations. Finally, a preregistered
+10-pair Llama-3.2-1B/GSM8K policy study compared Opportunity-at-Risk Scheduling
+(OARS) with FIFO under a 1.02 token-budget ceiling. Its primary retained-
+opportunity contrast was 302.03 (95% CI [-334.21, 938.26]; exact sign-flip
+\(p=0.322\)), so the registered result was `INCONCLUSIVE`. Secondary endpoints
+favored OARS: terminal accuracy increased by 0.0998 [0.0275, 0.1720] and the
+wall-time ratio was 0.7668 [0.6635, 0.8861]. These are scoped policy results,
+not evidence of mediation or a production-ready scheduler.
 
 ## 1. Introduction
 
@@ -82,14 +89,16 @@ follow-up produced an interval entirely above 0.20. Subsequent one-axis transpor
 paired third-workload extension completed a two-model-by-three-workload map. A
 prospective Llama 3.2 1B study then produced intervals above 0.20 twice within each of
 OpenMath and GSM8K. A preregistered 3B follow-up tested within-family size
-transport on the same workloads without outcome-guided extension.
+transport on the same workloads without outcome-guided extension. A final
+paired study tested whether the opportunity signal could inform a bounded
+selection policy rather than merely diagnose delay.
 
 Our contributions are:
 
 1. A protocol-bound instrument for causal measurement of gradient-opportunity
    loss under controlled rollout-release delay.
 2. A prospective sequence that distinguishes instrument validation, mechanism
-   replication, and materiality rather than treating pipeline completion as a
+   replication, and materiality rather than treating execution completion as a
    scientific result.
 3. Six definitive Qwen3×workload cells with complete terminal scoring and
    49,153 primary assignments.
@@ -101,6 +110,9 @@ Our contributions are:
 6. Prospectively replicated Llama 3.2 1B and 3B extensions with 57,500
    additional assignments, including prespecified fixed-configuration size
    contrasts while avoiding pure-family and general-scaling claims.
+7. A preregistered paired test of a token-budgeted opportunity-aware selection
+   rule, reported with its inconclusive primary endpoint and favorable
+   secondary accuracy and wall-time estimates kept in their registered roles.
 
 ## 2. Related work
 
@@ -119,14 +131,16 @@ optimization to staleness. Scheduling work such as
 [TailSieve](https://arxiv.org/abs/2608.22788) targets long-tail rollout latency
 and regeneration decisions.
 
-M4 addresses a narrower measurement question. It does not propose a new
-asynchronous optimizer or scheduler. Instead, it experimentally perturbs
+M4's core contribution addresses a narrower measurement question rather than
+introducing a new asynchronous optimizer. It experimentally perturbs
 release time after measuring an opportunity and estimates how many normalized
 gradient opportunities are destroyed by that perturbation. The randomized
 instrument separates the causal effect of controlled delay from the natural
 association between difficult examples and long completion times. Mechanism
 ledgers, terminal bounds, and observer-duty audits connect that estimate to an
-auditable systems path.
+auditable systems path. OARS is a downstream proof-of-concept policy that uses
+the measured opportunity signal; it is evaluated separately from the M4
+instrument and is not presented as a production scheduler.
 
 ## 3. Setting and estimand
 
@@ -231,9 +245,9 @@ version advances were 0, 0.437, and 0.805. The dose ordering supported the
 registered mechanism.
 
 The primary d5 estimate was 0.210, but its 95% envelope was [0.116, 0.302] and
-crossed the 0.20 materiality threshold. A packaging error made the parent pipeline red only after the
-canonical result had been written. Neither the successful mechanism nor the
-pipeline state converted the primary result into a material finding.
+crossed the 0.20 materiality threshold. Neither the successful mechanism nor
+the complete terminal record converted the primary result into a material
+finding.
 
 ### 4.3 Prospective redesign and confirmation
 
@@ -301,6 +315,28 @@ was lower at 3B in both tested fixed configurations. The cross-workload
 difference between those attenuations was inconclusive (0.0045, envelope
 [-0.0766, 0.0878]). Model size was not randomized and only two sizes were
 tested, so these results do not establish a causal or monotonic scaling law.
+
+### 4.7 Prospective opportunity-aware policy study
+
+Opportunity-at-Risk Scheduling (OARS) is a proof-of-concept actuation rule,
+separate from M4's controlled-delay estimand. At each decision, it observes
+eight ready candidates, chooses four by enumerating all 70 subsets, and
+lexicographically maximizes imminent registered L1 opportunity, then total L1
+opportunity, then lower token count, with deterministic tie-breaking. Its
+selected token count may not exceed 1.02 times the FIFO selection's count.
+The observer and opportunity definition are identical in both arms.
+
+The preregistered confirmatory study paired OARS and FIFO within 10 independent
+training-seed blocks (20 Llama-3.2-1B/GSM8K runs), with policy order frozen
+within blocks. All pairs were valid and policy-compliant. The primary
+OARS-minus-FIFO retained-opportunity estimate was 302.03, with 95% CI
+[-334.21, 938.26] and exact sign-flip \(p=0.322\); it did not satisfy the
+registered superiority gate, so the study classification is `INCONCLUSIVE`.
+The secondary terminal-accuracy difference was 0.0998 [0.0275, 0.1720]. The
+OARS/FIFO wall-time ratio was 0.7668 [0.6635, 0.8861], while the valid actor-
+token ratio was 0.9800 [0.5281, 1.8188]. The favorable secondary results do not
+rescue the primary classification or identify retained opportunity as the
+mediator of the accuracy difference.
 
 ## 5. Six-cell synthesis
 
@@ -472,6 +508,15 @@ descriptive slope interval [-10.65, 7.58] does not resolve mediation.
 Equal-wall-clock quality and time-to-fixed-quality are unavailable because the
 design preserved only a prospectively fixed terminal evaluation.
 
+The OARS study asks a complementary policy question. Unlike mixed-d5, it does
+not intentionally delay half of the groups; it chooses a token-budgeted subset
+of ready work using the pre-existing opportunity signal. Its positive accuracy
+interval and sub-one wall-time interval show that this bounded policy can
+outperform FIFO on those secondary endpoints in the tested 64-update setting.
+Its much wider primary interval shows that the experiment did not establish
+the registered retained-opportunity superiority claim. The two policy studies
+therefore are not contradictory, and neither supports a causal mediation claim.
+
 ## 9. Limitations
 
 The model range contains Qwen3-0.6B, Qwen3-1.7B, Llama 3.2 1B, and Llama 3.2
@@ -497,11 +542,14 @@ dependency-aware synthesis corrects their joint uncertainty, but NuminaMath is
 best described as a prospective same-direction extension with a shared fixed
 reference—not a wholly independent four-cell replication.
 
-A terminal task-accuracy endpoint was measured in the separate run-randomized
-study, but its interval crossed zero and both registered relevance bounds. The
-direction and practically relevant magnitude of the accuracy difference remain
-unresolved. Convergence and final reward were not tested. The study also does
-not compare M4-aware scheduling against a production scheduling policy.
+Terminal task accuracy was measured in two separate run-randomized studies.
+The mixed-d5 interval crossed zero and both registered relevance bounds. The
+OARS secondary accuracy interval favored OARS, but the primary retained-
+opportunity interval crossed zero and the registered study decision was
+`INCONCLUSIVE`. OARS was tested for 64 updates on Llama-3.2-1B/GSM8K; longer-
+horizon convergence, other workloads and scales, and comparisons against
+production schedulers remain untested. The accuracy contrast cannot be
+attributed specifically to retained opportunity without a mediation design.
 
 ## 10. Reproducibility and provenance
 
@@ -512,7 +560,7 @@ retry or outcome-guided extension. Failed preflights and packaging attempts are
 preserved as engineering evidence but excluded from scientific estimators.
 
 Large terminal artifacts remain outside Git and are referenced by SHA-256.
-Compact result records retain source commits, protocol hashes, pipeline and job
+Compact result records retain source commits, protocol hashes, execution
 identifiers, raw-ledger hashes, and analysis hashes. The publication runner
 authenticates those ledgers and deterministically reconstructs the six Qwen
 cells before computing the joint synthesis. Separate runners reconstruct the
@@ -525,6 +573,10 @@ The downstream-quality analysis record has SHA-256
 its completion gate and 32-run authentication records are separately hash
 bound. All 16 matched blocks and 32 terminal endpoints enter the frozen
 analysis.
+The OARS protocol, completion gate, extracted dataset, analysis, and execution
+receipt are independently SHA-256 bound. Its analysis record has SHA-256
+`480180bee539b88c46f36274c9627ef99f8dae1185995f5ddaffbbbf248a25a2`;
+all 10 matched pairs and 20 terminal runs enter the frozen analysis.
 The full evidence flow appears in `provenance_diagram.md`.
 
 ## 11. Conclusion
@@ -535,7 +587,8 @@ The evidence sequence is:
 > materiality acquisition → prospectively redesigned confirmation →
 > cross-model/workload heterogeneity → prospective same-direction workload
 > extension → prospectively replicated cross-family extension → prospective
-> within-family size extension → prospective end-to-end quality test
+> within-family size extension → prospective end-to-end quality test →
+> prospective opportunity-aware policy test
 
 Across six definitive Qwen3×math-workload cells, a controlled five-second
 release delay produces positive normalized gradient-opportunity loss; five
@@ -545,8 +598,11 @@ shared GSM8K dependence supports heterogeneous scale effects across the three
 tested workloads. Both Llama 3.2 1B workload intervals lie above 0.20; at 3B,
 only the OpenMath interval lies wholly above it. The negative prespecified size contrasts show
 attenuation in both fixed workload configurations. This establishes a material
-M4 opportunity-loss phenomenon across the tested configurations. The subsequent
+M4 opportunity-loss phenomenon across the tested configurations. The mixed-d5
 run-randomized quality estimate was negative but not precise enough to establish
-the direction and practically relevant magnitude of the accuracy difference. Pure family
-effects, general scaling laws, and broader generalization remain for future
-preregistered studies.
+its direction and practically relevant magnitude. In the separate OARS study,
+the registered primary retained-opportunity comparison was inconclusive, while
+secondary terminal accuracy and wall time favored OARS. This supplies a
+promising proof of concept rather than a confirmed mechanism or deployment-
+ready scheduler. Pure family effects, general scaling laws, causal mediation,
+and broader generalization remain for future preregistered studies.

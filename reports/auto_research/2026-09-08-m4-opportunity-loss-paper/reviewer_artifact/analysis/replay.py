@@ -68,6 +68,14 @@ def published_checks() -> dict[str, object]:
     secondary = downstream["secondary"]
     assert math.isclose(secondary["normalized_realized_opportunity_loss"]["estimate_mixed_d5_minus_immediate"], 0.007385549503757312)
     assert math.isclose(secondary["opportunity_loss_accuracy_diagnostic"]["pearson_correlation"], -0.09593746695743842)
+    oars = result["oars_confirmatory"]
+    assert oars["classification"] == "INCONCLUSIVE"
+    assert oars["primary"]["n"] == 10
+    assert math.isclose(oars["primary"]["mean"], 302.028300505341)
+    assert math.isclose(oars["secondary_terminal_gsm8k_accuracy"]["mean"], 0.09977255496588325)
+    assert math.isclose(oars["wall_time_ratio"]["geometric_mean"], 0.7667760632976284)
+    assert oars["gates"]["policy_compliance"]
+    assert not oars["gates"]["primary_superiority"]
     discriminant = result["metric_discriminant"]
     assert discriminant["assignment_count"] == 106_653
     assert discriminant["summary"]["positive_opportunity_lost_count"] == 23_254
@@ -82,6 +90,8 @@ def published_checks() -> dict[str, object]:
         "llama_3b_extension_assignments": 28_788,
         "downstream_quality_blocks": downstream["block_count"],
         "downstream_quality_runs": downstream["run_count"],
+        "oars_pairs": oars["primary"]["n"],
+        "oars_runs": 20,
         "metric_discriminant_assignments": discriminant["assignment_count"],
         "hac_correlation": synthesis["hac_correlation"],
         "bootstrap_correlation": synthesis["bootstrap_correlation"],

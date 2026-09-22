@@ -17,6 +17,12 @@ mixed-d5-minus-immediate estimate is -0.04492 with paired 95% interval
 must retain its proximal opportunity-loss claim. The 30B-A3B option additionally
 changes architecture and topology, confounding a clean scale extension.
 
+The separately preregistered 10-pair OARS/FIFO study is also complete. Its
+primary retained-opportunity interval crossed zero, so its registered result is
+`INCONCLUSIVE`. Its prespecified secondary accuracy interval and wall-time
+ratio favored OARS. Treat this as a bounded policy proof of concept, not as a
+successful primary endpoint, mediation result, or production scheduler claim.
+
 ## Ordered submission sequence
 
 1. **Human scientific review.** Approve the claim ledger, title, abstract,
@@ -53,6 +59,8 @@ The current go/no-go is therefore:
   wording**;
 - another final-quality acquisition: **no-go unless separately preregistered
   with a stability intervention and variance-recalibrated power**;
+- another same-design OARS acquisition: **no-go; analyze and report the frozen
+  confirmatory study without outcome-guided extension**;
 - manuscript, reproducibility, and artifact preparation: **go now**.
 
 ## Post-manuscript novelty decision

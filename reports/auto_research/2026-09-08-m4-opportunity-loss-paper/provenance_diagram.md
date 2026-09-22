@@ -8,11 +8,15 @@ flowchart TD
     Q --> A[One-shot prospective acquisition]
     A --> R[Immutable lifecycle and opportunity ledgers]
     R --> H[SHA-256 authentication + terminal scoring]
-    H --> G[Registered cell / interaction analysis]
+    H --> G[Registered analyses]
     G --> S[Retrospective dependency-aware Qwen 2×3 synthesis]
     G --> L[Prospective replicated Llama size/workload synthesis]
+    G --> D[Prospective mixed-d5 quality study]
+    G --> O[Prospective OARS policy study]
     S --> M[Claim ledger, robustness tables, figures, manuscript]
     L --> M
+    D --> M
+    O --> M
 
     X[Failed packaging or preflight attempts] -. documented, excluded from estimator .-> H
     N[No outcome-guided retry or extension] -. constraint .-> A
@@ -27,8 +31,8 @@ flowchart TD
 ```
 
 The publication synthesis authenticates the raw ledgers against the preserved
-four-cell grid, NuminaMath, and eight Llama terminal records before
-reconstructing any estimate. It does not consume qualification observations,
-add acquisitions, or change registered conclusions. The Llama endpoints remain
-separate from the Qwen interaction model; the Llama 3B-minus-1B comparisons are
-prespecified fixed-configuration secondary contrasts.
+four-cell grid, NuminaMath, eight Llama controlled-delay records, 32 mixed-d5
+quality runs, and 20 OARS/FIFO policy runs before reconstructing any estimate.
+It does not consume qualification observations, add acquisitions, or change
+registered conclusions. The controlled-delay, mixed-d5, and OARS studies retain
+their distinct randomization units, endpoints, and registered claim roles.

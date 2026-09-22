@@ -53,7 +53,9 @@ exclude zero. The cross-workload difference in attenuation was inconclusive.
 These are fixed-configuration secondary contrasts, not a randomized size effect
 or general scaling law.
 
-## Prospective downstream-quality study
+## Prospective downstream-quality and policy studies
+
+### Mixed-d5 versus immediate release
 
 This separately preregistered experiment changed the causal unit from rollout
 groups within one shared policy to 16 matched training-seed blocks. Each block
@@ -68,6 +70,30 @@ The interval crosses zero and both registered ±0.02 absolute-accuracy relevance
 bounds. The estimate therefore does not resolve the direction or practically
 relevant magnitude of the accuracy difference. All 32 endpoints authenticated;
 no run was excluded.
+
+### Baseline-budgeted OARS versus FIFO
+
+This separately preregistered experiment used 10 matched
+Llama-3.2-1B-Instruct/GSM8K training-seed pairs and 20 total 64-update runs.
+Within each pair, one run enacted baseline-budgeted Opportunity-at-Risk
+Scheduling (OARS) and one retained weight FIFO with the identical observer.
+OARS selected four groups from eight ready candidates subject to a per-decision
+ceiling of 1.02 times the FIFO valid-actor-token budget. Pair order was frozen
+before acquisition, and all 20 compact results authenticated before access.
+
+| Endpoint | Pairs / runs | OARS minus FIFO estimate | Paired 95% interval | Registered role or conclusion |
+| --- | ---: | ---: | ---: | --- |
+| Retained registered L1 opportunity per selected group | 10 / 20 | 302.03 | [-334.21, 938.26] | Primary: `INCONCLUSIVE`; exact sign-flip p=0.3223 |
+| Terminal GSM8K accuracy | 10 / 20 | 0.0998 | [0.0275, 0.1720] | Prespecified secondary; favors OARS |
+| Time-to-update-64 ratio, OARS/FIFO | 10 / 20 | 0.7668 | [0.6635, 0.8861] | Registered wall-time utility passed |
+| Valid-actor-token ratio, OARS/FIFO | 10 / 20 | 0.9800 | [0.5281, 1.8188] | Training-dose estimate is imprecise |
+
+The positive quality interval is a prespecified secondary result, not the
+confirmatory success gate. Because the primary retained-opportunity interval
+crosses zero, the experiment does not establish that OARS increased the
+registered proximal endpoint or that this endpoint mediated the accuracy
+difference. The result is scoped to the tested model, workload, horizon,
+candidate watermark, service budget, and runtime environment.
 
 ## Dependency-aware interaction results
 

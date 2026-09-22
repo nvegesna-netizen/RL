@@ -123,6 +123,38 @@ test gives p=0.29816; paired-bootstrap and covariate-adjusted sensitivities do
 not change the `INCONCLUSIVE` decision. No run, including six zero-accuracy
 endpoints, was excluded.
 
+## Prospective OARS policy provenance
+
+The opportunity-aware policy study used 10 matched training-seed blocks and 20
+Llama-3.2-1B/GSM8K runs. Within each block, one run used FIFO and one used
+Opportunity-at-Risk Scheduling (OARS); policy order was frozen in the protocol.
+Each run targeted 64 updates and the same ordered 1,319-prompt terminal
+evaluation. OARS enumerated the 70 four-of-eight ready-candidate subsets under
+a per-decision ceiling of 1.02 times the FIFO token count. The training-seed
+block is the causal unit.
+
+| Record | SHA-256 |
+| --- | --- |
+| Runtime source archive (commit `90dbb632026591f24c966a43edd05b1e4933358b`) | `1d9e17a430fc1a184d767413de829ad9ee1375091485b5e7e0b24572f61f7690` |
+| Protocol | `3bc49412a212419635e55b616e080708e17cf265c1926c1d93faebf072a87bfd` |
+| 20-run manifest | `1f59d8cf3339d70b58b084af48bd2f192a880d7a43fca8190fb1d54649db5b39` |
+| Completion gate | `4f844e49aaaeb99e19edd2b24bd3e7eb0664a9cb466321ddb20d2d3bab3fcb11` |
+| Extraction receipt | `2911b5fad4cae38ec75aa24a5cf87f989830a4678796acb933f61cdd2bedd144` |
+| Frozen analysis | `480180bee539b88c46f36274c9627ef99f8dae1185995f5ddaffbbbf248a25a2` |
+| Analysis execution receipt | `86165211b84972c8b24266b1655706b15579265e9c133a74552dd9900058d3db` |
+| Frozen extractor | `b8577148b22c93392b0954c680848226e36125a673e4e49e9d7eb9fe8a64125e` |
+| Frozen analyzer | `37d9553fec2bdd491d742341099f1a2916598b82b4d16eefb3022177385105b8` |
+
+All 20 run artifacts authenticated before the evaluation payloads were opened;
+all 10 pairs were valid and policy-compliant. The registered primary
+OARS-minus-FIFO retained-opportunity estimate is 302.03 with paired 95% CI
+[-334.21, 938.26] and exact sign-flip p=0.32227, giving classification
+`INCONCLUSIVE`. The prespecified secondary terminal-accuracy estimate is
+0.09977 [0.02754, 0.17201]. The OARS/FIFO time-to-update-64 ratio is 0.76678
+[0.66350, 0.88613], while the valid-actor-token ratio is 0.98004
+[0.52808, 1.81883]. The secondary endpoints neither override the primary
+classification nor identify retained opportunity as a mediator.
+
 ## Assignment and observer-duty audit
 
 | Cell | Full-window assignments | Unscored | Corrected observer duty | Mechanism |

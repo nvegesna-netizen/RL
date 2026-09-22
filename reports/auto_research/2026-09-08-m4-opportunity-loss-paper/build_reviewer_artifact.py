@@ -99,9 +99,9 @@ python3 -m unittest discover -s tests -v
 ```
 
 `data/published_results.json` contains the six-cell Qwen common-window results,
-the four replicated Llama size/workload endpoints, and the separate 16-pair
-downstream-quality result and secondary mechanism analysis after removal of
-private filesystem paths. It also includes the compact 106,653-assignment
+the four replicated Llama size/workload endpoints, the separate 16-pair
+downstream-quality result, and the 10-pair OARS/FIFO policy result after removal
+of private filesystem paths. It also includes the compact 106,653-assignment
 Qwen-plus-Llama metric-discriminant summary; raw empirical ledgers remain external.
 `data/provenance.json` binds opaque
 acquisition IDs A1--A14 to the frozen protocols, compact records, and external
@@ -181,6 +181,14 @@ def published_checks() -> dict[str, object]:
     secondary = downstream["secondary"]
     assert math.isclose(secondary["normalized_realized_opportunity_loss"]["estimate_mixed_d5_minus_immediate"], 0.007385549503757312)
     assert math.isclose(secondary["opportunity_loss_accuracy_diagnostic"]["pearson_correlation"], -0.09593746695743842)
+    oars = result["oars_confirmatory"]
+    assert oars["classification"] == "INCONCLUSIVE"
+    assert oars["primary"]["n"] == 10
+    assert math.isclose(oars["primary"]["mean"], 302.028300505341)
+    assert math.isclose(oars["secondary_terminal_gsm8k_accuracy"]["mean"], 0.09977255496588325)
+    assert math.isclose(oars["wall_time_ratio"]["geometric_mean"], 0.7667760632976284)
+    assert oars["gates"]["policy_compliance"]
+    assert not oars["gates"]["primary_superiority"]
     discriminant = result["metric_discriminant"]
     assert discriminant["assignment_count"] == 106_653
     assert discriminant["summary"]["positive_opportunity_lost_count"] == 23_254
@@ -195,6 +203,8 @@ def published_checks() -> dict[str, object]:
         "llama_3b_extension_assignments": 28_788,
         "downstream_quality_blocks": downstream["block_count"],
         "downstream_quality_runs": downstream["run_count"],
+        "oars_pairs": oars["primary"]["n"],
+        "oars_runs": 20,
         "metric_discriminant_assignments": discriminant["assignment_count"],
         "hac_correlation": synthesis["hac_correlation"],
         "bootstrap_correlation": synthesis["bootstrap_correlation"],
@@ -454,6 +464,8 @@ class ReviewerArtifactTest(unittest.TestCase):
         self.assertEqual(output["published"]["llama_3b_extension_assignments"], 28_788)
         self.assertEqual(output["published"]["downstream_quality_blocks"], 16)
         self.assertEqual(output["published"]["downstream_quality_runs"], 32)
+        self.assertEqual(output["published"]["oars_pairs"], 10)
+        self.assertEqual(output["published"]["oars_runs"], 20)
         self.assertEqual(output["synthetic"]["row_count"], 192)
 
     def test_figure_reproduction(self) -> None:
@@ -647,6 +659,9 @@ def main() -> None:
         "opportunity_loss_accuracy_diagnostic": secondary["opportunity_loss_accuracy_diagnostic"],
         "unsupported_secondary_endpoints": secondary["unsupported_secondary_endpoints"],
     }
+    published["oars_confirmatory"] = json.loads(
+        (HERE.parent / "2026-09-15-m4-oars-randomized/confirmatory_terminal_analysis_result.json").read_bytes()
+    )
     discriminant = json.loads((HERE / "metric_discriminant.json").read_bytes())
     published["metric_discriminant"] = {
         key: discriminant[key]
@@ -697,6 +712,20 @@ def main() -> None:
             "completion_gate_sha256": "54167b9517dc37b3ae05122e035c95da5bcd50f75d2326c1d6a841c7ddc43887",
             "analysis_sha256": "b412c5bb61ae637bf8e52442df09b8fec8e21800123ed2d900b987feca6da306",
             "secondary_analysis_sha256": sha256(HERE.parent / "2026-09-11-m4-downstream-quality/trained_paired_secondary_analysis.json"),
+        },
+        "oars_confirmatory": {
+            "runtime_source_commit": "90dbb632026591f24c966a43edd05b1e4933358b",
+            "runtime_source_archive_sha256": "1d9e17a430fc1a184d767413de829ad9ee1375091485b5e7e0b24572f61f7690",
+            "protocol_sha256": "3bc49412a212419635e55b616e080708e17cf265c1926c1d93faebf072a87bfd",
+            "run_manifest_sha256": "1f59d8cf3339d70b58b084af48bd2f192a880d7a43fca8190fb1d54649db5b39",
+            "completion_gate_sha256": "4f844e49aaaeb99e19edd2b24bd3e7eb0664a9cb466321ddb20d2d3bab3fcb11",
+            "extraction_receipt_sha256": "2911b5fad4cae38ec75aa24a5cf87f989830a4678796acb933f61cdd2bedd144",
+            "analysis_sha256": "480180bee539b88c46f36274c9627ef99f8dae1185995f5ddaffbbbf248a25a2",
+            "analysis_execution_receipt_sha256": "86165211b84972c8b24266b1655706b15579265e9c133a74552dd9900058d3db",
+            "extractor_sha256": "b8577148b22c93392b0954c680848226e36125a673e4e49e9d7eb9fe8a64125e",
+            "analyzer_sha256": "37d9553fec2bdd491d742341099f1a2916598b82b4d16eefb3022177385105b8",
+            "pair_count": 10,
+            "run_count": 20,
         },
         "metric_discriminant": {
             "analysis_sha256": sha256(HERE / "metric_discriminant.json"),

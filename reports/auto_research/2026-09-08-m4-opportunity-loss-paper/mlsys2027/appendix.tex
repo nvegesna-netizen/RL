@@ -16,7 +16,7 @@
 \mlsyscorrespondingauthor{Anonymous Author}{anon.email@domain.com}
 \vskip 0.3in
 \begin{abstract}
-This supplement reports reproducibility, provenance, mechanism, observer-duty, and robustness details for the M4 controlled-release study, its prospective Llama 3.2 1B and 3B extensions, and the separate 16-pair downstream-quality study. It does not replace the registered primary analyses.
+This supplement reports reproducibility, provenance, mechanism, observer-duty, and robustness details for the M4 controlled-release study, its prospective Llama 3.2 1B and 3B extensions, the separate 16-pair downstream-quality study, and the 10-pair OARS policy study. It does not replace the registered primary analyses.
 \end{abstract}
 ]
 \printAffiliationsAndNotice{}
@@ -118,6 +118,26 @@ Registered decision & INCONCLUSIVE \\
 The 20,000-draw paired-bootstrap percentile interval is [-0.12402, 0.03442], and the studentized interval is [-0.13185, 0.04598]. Prompt fixed effects give the same point estimate with seed-block-clustered SE 0.04244; balanced base-correctness adjustment also leaves the point estimate unchanged. Absolute materiality margins 0.01, 0.015, 0.025, and 0.03 remain \texttt{INCONCLUSIVE}. Ten block contrasts are negative, five positive, and one zero. No zero-accuracy endpoint or other run was excluded. The analysis record, completion gate, and terminal authentication records are SHA-256 bound in the private evidence map. This is a total release-policy effect in one tested setting, not an identified mediation effect through M4 alone.
 
 The prespecified secondary analysis reconstructs the mechanism from all 32 authenticated lifecycle and opportunity ledgers over start versions 8--407. Mixed-d5 minus immediate increased normalized realized opportunity loss by 0.00739 [0.00181, 0.01296], direct-chain rate by 0.12736 [0.12213, 0.13258], and version advance during release by 0.20699 [0.19484, 0.21913]. Runtime increased by 395.7 seconds [258.1, 533.3] per 448-update run. The block-level opportunity-loss/accuracy correlation was -0.096, with descriptive slope -1.53 [-10.65, 7.58]. These secondary intervals do not override the accuracy endpoint and do not identify causal mediation. Equal-wall-clock quality and time-to-fixed-quality were unsupported because no prospectively selected intermediate evaluations exist.
+
+\section{Opportunity-at-Risk Scheduling}
+The preregistered confirmatory policy study paired OARS and FIFO within 10 Llama-3.2-1B/GSM8K training-seed blocks. Each of the 20 runs targeted 64 updates and an ordered 1,319-prompt terminal evaluation. At a decision, OARS enumerated all 70 four-of-eight candidate subsets and maximized imminent then total registered L1 opportunity, then lower token count, under a ceiling of 1.02 times the FIFO selection's tokens. The observer was identical in both arms. All artifacts authenticated before evaluation payloads were opened, and all pairs were valid and policy-compliant.
+
+\begin{table}[h]
+\caption{OARS versus FIFO paired endpoints.}
+\centering\scriptsize
+\begin{tabular}{lrr}
+\toprule
+Endpoint & Estimate/ratio & 95\% interval \\
+\midrule
+Retained L1 opportunity & 302.03 & [-334.21, 938.26] \\
+Terminal accuracy & 0.0998 & [0.0275, 0.1720] \\
+Time to update 64 ratio & 0.7668 & [0.6635, 0.8861] \\
+Actor-token ratio & 0.9800 & [0.5281, 1.8188] \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The exact primary sign-flip test gives $p=0.32227$ and registered classification \texttt{INCONCLUSIVE}. The accuracy endpoint is secondary and cannot rescue that classification; no mediation estimand was registered. Protocol, manifest, completion gate, extraction, and analysis SHA-256 prefixes are \texttt{3bc49412a212}, \texttt{1f59d8cf3339}, \texttt{4f844e49aaae}, \texttt{2911b5fad4ca}, and \texttt{480180bee539}, respectively. Full hashes are in the compact evidence map.
 
 Across all six Qwen cells and eight authenticated Llama acquisitions, 23,254 of 28,117 positive-opportunity assignments were lost before consumption. Consumed-rollout version age excludes those observations. Its d5-minus-control contrast correlates -0.617 with the M4 estimate across the 14 acquisitions; the ready-latency contrast correlates 0.638. The Qwen-only registered-window correlation with version age is -0.889 (and -0.813 in the harmonized common window). These small-sample retrospective statistics are descriptive, but the observability mismatch is exact: consumed-only staleness cannot represent a candidate that never trains.
 

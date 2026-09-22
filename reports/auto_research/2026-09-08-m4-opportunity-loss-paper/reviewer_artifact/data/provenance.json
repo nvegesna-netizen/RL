@@ -114,5 +114,19 @@
     "qwen_recovery_receipt_sha256": "b1877255bf1eba58406d9326c440244859ab5b425d59c08a1a4306a3fe690ae0",
     "registered_window_assignments": 106653
   },
+  "oars_confirmatory": {
+    "analysis_execution_receipt_sha256": "86165211b84972c8b24266b1655706b15579265e9c133a74552dd9900058d3db",
+    "analysis_sha256": "480180bee539b88c46f36274c9627ef99f8dae1185995f5ddaffbbbf248a25a2",
+    "analyzer_sha256": "37d9553fec2bdd491d742341099f1a2916598b82b4d16eefb3022177385105b8",
+    "completion_gate_sha256": "4f844e49aaaeb99e19edd2b24bd3e7eb0664a9cb466321ddb20d2d3bab3fcb11",
+    "extraction_receipt_sha256": "2911b5fad4cae38ec75aa24a5cf87f989830a4678796acb933f61cdd2bedd144",
+    "extractor_sha256": "b8577148b22c93392b0954c680848226e36125a673e4e49e9d7eb9fe8a64125e",
+    "pair_count": 10,
+    "protocol_sha256": "3bc49412a212419635e55b616e080708e17cf265c1926c1d93faebf072a87bfd",
+    "run_count": 20,
+    "run_manifest_sha256": "1f59d8cf3339d70b58b084af48bd2f192a880d7a43fca8190fb1d54649db5b39",
+    "runtime_source_archive_sha256": "1d9e17a430fc1a184d767413de829ad9ee1375091485b5e7e0b24572f61f7690",
+    "runtime_source_commit": "90dbb632026591f24c966a43edd05b1e4933358b"
+  },
   "schema": "m4-anonymous-provenance-v1"
 }

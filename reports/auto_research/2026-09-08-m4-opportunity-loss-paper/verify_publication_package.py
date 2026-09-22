@@ -94,6 +94,30 @@ def main() -> None:
     ) + sum(cell["assignment_count"] for cell in three_b.values())
     assert campaign_total == 106_653
 
+    oars_path = (
+        ROOT
+        / "reports/auto_research/2026-09-15-m4-oars-randomized/confirmatory_terminal_analysis_result.json"
+    )
+    oars = load(oars_path)
+    assert sha256(oars_path) == (
+        "480180bee539b88c46f36274c9627ef99f8dae1185995f5ddaffbbbf248a25a2"
+    )
+    assert oars["classification"] == "INCONCLUSIVE"
+    assert oars["primary"]["n"] == 10
+    assert abs(oars["primary"]["mean"] - 302.028300505341) < 1e-9
+    assert oars["primary"]["ci95_lower"] < 0 < oars["primary"]["ci95_upper"]
+    assert abs(
+        oars["secondary_terminal_gsm8k_accuracy"]["mean"] - 0.09977255496588325
+    ) < 1e-12
+    assert oars["secondary_terminal_gsm8k_accuracy"]["ci95_lower"] > 0
+    assert oars["wall_time_ratio"]["ci95_upper"] < 1
+    assert oars["gates"] == {
+        "all_ten_pairs_valid": True,
+        "policy_compliance": True,
+        "primary_superiority": False,
+        "wall_time_utility": True,
+    }
+
     cadence_path = HERE / "cadence_results.json"
     cadence = load(cadence_path)
     assert len(cadence["cells"]) == 6
@@ -120,6 +144,9 @@ def main() -> None:
             "p=0.00314",
             "0.00329",
             "Qwen3-0.6B/GSM8K",
+            "302.03",
+            "0.0998",
+            "0.7668",
             sha256(synthesis_path),
         ],
     )
@@ -144,6 +171,10 @@ def main() -> None:
             "034d6e57440593a48a28f705534474b1c36c8aeb0170c22e54d869f4e33a9aaa",
             "6714f77466a5d3e3c854339f69d19ac4d8312276cc3627c25fe3d8ef79b26163",
             "e535f0ce6c1fdb4f1863eca4142596f4543190d53dfd70cee7ddaf35d25a5920",
+            "90dbb632026591f24c966a43edd05b1e4933358b",
+            "1d9e17a430fc1a184d767413de829ad9ee1375091485b5e7e0b24572f61f7690",
+            "3bc49412a212419635e55b616e080708e17cf265c1926c1d93faebf072a87bfd",
+            "480180bee539b88c46f36274c9627ef99f8dae1185995f5ddaffbbbf248a25a2",
         ],
     )
 
@@ -171,6 +202,7 @@ def main() -> None:
     print(f"llama_3b_extension_assignments={sum(cell['assignment_count'] for cell in three_b.values())}")
     print(f"campaign_full_window_assignments={campaign_total}")
     print(f"common_window_assignments={sum(c['assignment_count'] for c in cells.values())}")
+    print(f"oars_confirmatory_pairs={oars['primary']['n']}")
     print(f"six_cell_synthesis_sha256={sha256(synthesis_path)}")
 
 

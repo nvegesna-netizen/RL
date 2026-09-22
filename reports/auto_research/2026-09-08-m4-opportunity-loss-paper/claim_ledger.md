@@ -19,7 +19,7 @@ success.
 | C10 | The result is robust to HAC versus circular-block bootstrap uncertainty. | Retrospective robustness description | Supported | Qwen conclusions and all four Llama size/workload syntheses agree under the conservative outer-envelope construction; both Qwen interaction interval families and both Llama size-contrast interval families agree |
 | C11 | Terminal missingness drives the findings. | Retrospective sensitivity claim | Not supported | All 14 definitive acquisitions have terminal dispositions; lower and upper sharp endpoints coincide |
 | C12 | Pre-treatment adjustment creates the positive effects. | Retrospective sensitivity claim | Not supported | Adjusted and unadjusted estimates are positive throughout; 3B combined unadjusted estimates are 0.2358 on OpenMath and 0.2635 on GSM8K |
-| C13 | The opportunity-loss results prove a final reward, accuracy, convergence, or benchmark-quality effect. | Downstream outcome claim | Unsupported and prohibited | The separate run-randomized quality study was `INCONCLUSIVE`; it cannot promote the proximal M4 endpoint into a confirmed quality effect |
+| C13 | The opportunity-loss measurements alone prove a final reward, accuracy, convergence, or benchmark-quality effect. | Downstream outcome claim | Unsupported and prohibited | The 16-pair mixed-d5 study was `INCONCLUSIVE`; a distinct 10-pair OARS/FIFO study found a positive prespecified secondary GSM8K interval, but its primary retained-opportunity endpoint was `INCONCLUSIVE` and neither study identifies mediation through M4 alone |
 | C14 | A material M4 opportunity-loss effect appears in the tested Llama 3.2 1B setting on OpenMath and GSM8K. | Prospective replicated cross-family extension | Supported within the tested setting | Two acquisitions per workload; OpenMath 0.3991 [0.3504, 0.4467], GSM8K 0.3461 [0.2952, 0.3898]; both `MATERIAL` |
 | C15 | The evidence identifies a pure architecture effect or generalizes across Llama models, all model families, RL algorithms, hardware, or deployment environments. | Broad external-validity claim | Unsupported and prohibited | Two Llama sizes were tested, but family and size were not randomized and all runs retain the same algorithm and accelerator environment |
 | C16 | The Llama 3.2 3B extension jointly confirms materiality on both workloads. | Prospective co-primary size extension | Not supported | OpenMath 0.2621 [0.2215, 0.2994] is `MATERIAL`; GSM8K 0.2135 [0.1872, 0.2398] is `INCONCLUSIVE`, so joint success is false |
@@ -31,6 +31,10 @@ success.
 | C22 | The randomized mixed-d5 regime moved the M4 mechanism during the downstream-quality study. | Prespecified secondary analysis | Supported in the tested setting | Across 16 blocks, run-wide normalized realized opportunity loss increased by 0.00739 [0.00181, 0.01296], direct-chain rate by 0.12736 [0.12213, 0.13258], and version advance by 0.20699 [0.19484, 0.21913]. |
 | C23 | Block-level M4 variation explains the downstream accuracy contrasts. | Descriptive mediation diagnostic | Not supported | Correlation -0.096; descriptive slope -1.53 with 95% interval [-10.65, 7.58]. This is not a causal mediation estimate. |
 | C24 | The within-acquisition M4 contrast is invariant to the prevalence of delayed groups. | Interference/generalization claim | Unsupported and prohibited | Groups share generation, ready-buffer, and learner resources. Current effects are direct assignment effects under the tested equal-mass, approximately 50% delay saturation; other saturations remain untested. |
+| C25 | Baseline-budgeted OARS conclusively increased retained registered L1 opportunity relative to FIFO. | Prospective randomized policy primary endpoint | Not supported | Across 10 matched Llama-3.2-1B/GSM8K run pairs, OARS minus FIFO was 302.03 with paired 95% CI [-334.21, 938.26] and exact sign-flip p=0.3223; the registered classification is `INCONCLUSIVE` |
+| C26 | The prespecified terminal GSM8K estimate favored OARS over FIFO in the tested 64-update Llama-3.2-1B setting. | Prospective randomized policy secondary endpoint | Supported within the tested setting | OARS minus FIFO accuracy was +0.0998 with paired 95% CI [0.0275, 0.1720]; seven pair differences were positive, two zero, and one negative. This endpoint was not the confirmatory success gate. |
+| C27 | OARS met its registered policy-compliance and wall-time utility requirements in the tested setting. | Prospective randomized policy systems endpoints | Supported within the tested setting | All admitted decisions complied; geometric-mean OARS/FIFO time-to-update-64 ratio was 0.7668 with 95% CI [0.6635, 0.8861]. The valid-actor-token ratio was imprecise: 0.9800 [0.5281, 1.8188]. |
+| C28 | The OARS experiment proves a general production-scheduler benefit or that retained M4 opportunity mediated the quality difference. | Policy generalization and mediation claim | Unsupported and prohibited | One model, workload, 64-update horizon, candidate watermark, service budget, and environment were tested; the primary opportunity-retention interval crossed zero and no mediation estimand was registered |
 
 ## Canonical wording
 
@@ -46,9 +50,14 @@ Use:
 > configurations. A separate prospective 16-pair run-randomized study then
 > tested terminal OpenMath accuracy; its negative estimate was not precise
 > enough to determine the direction or practically relevant magnitude of the
-> accuracy difference.
+> accuracy difference. Finally, a 10-pair randomized Llama-3.2-1B/GSM8K policy
+> study compared baseline-budgeted OARS with FIFO. Its registered primary
+> retained-opportunity result was inconclusive, while the prespecified
+> secondary terminal-accuracy estimate favored OARS by 9.98 percentage points
+> (95% CI [2.75, 17.20]) and its wall-time utility criterion passed.
 
 Do not use “confirmed final-quality decrease,” “equivalent final quality,”
-“general across LLMs,” “pure family effect,” “general scaling law,” or language that
-retroactively reclassifies the initial acquisition or calls the 3B co-primary
-study a joint success.
+“OARS confirmed opportunity retention,” “M4 mediated the OARS quality effect,”
+“production-ready scheduler,” “general across LLMs,” “pure family effect,”
+“general scaling law,” or language that retroactively reclassifies the initial
+acquisition or calls the 3B co-primary study a joint success.
