@@ -1,0 +1,70 @@
+{
+  "schema": "m4-oars-confirmatory-arm-terminal-authentication-v1",
+  "status": "PASS_AUTHENTICATED_OUTCOME_EMBARGOED",
+  "authenticated_at_utc": "2026-09-22T06:27:03Z",
+  "identity": "p05-fifo",
+  "pipeline_ids": {
+    "upstream": 69189293,
+    "child": 69189396
+  },
+  "pipeline_status": {
+    "upstream": "success",
+    "child": "success"
+  },
+  "jobs": {
+    "generator": 450771781,
+    "logs_before": 450772425,
+    "main": 450772427,
+    "logs_after": 450772430
+  },
+  "job_status": {
+    "generator": "success",
+    "logs_before": "success",
+    "main": "success",
+    "logs_after": "success"
+  },
+  "main_job_duration_seconds_including_allocation_wait": 1113.4678,
+  "archives": {
+    "main": {
+      "bytes": 64388301,
+      "member_count": 41,
+      "sha256": "3f530712005904a3f7050a49b7899847cb8cde5a06d3600ceb8d461c8ba248a4",
+      "zip_integrity_passed": true
+    },
+    "logs_after": {
+      "bytes": 143779805,
+      "member_count": 48,
+      "sha256": "10a23fcd9fc0a717d971f39562e2a264c849659fe82eefe6204321b0ac3b4810",
+      "zip_integrity_passed": true
+    }
+  },
+  "checksum_manifest_sha256": "362ac4a2e9f8aefd87251f9b8948a3358021a13d201ba405fea08353a1b5669f",
+  "declared_artifact_count": 14,
+  "artifact_sha256": {
+    "arm-result.json": "2ea04d61a716a02cff0fb0f0d4f3866df90c15557704065687722c90bbdfd642",
+    "converted-hf-files.sha256": "4af43e079d80b4d9fe96fae51214d2c9c1b03fca4ea5efc2569223c99d6f405b",
+    "evaluation/config.json": "8afb9e0e4581968f823604ce6107aacc0c3e2f5af0913226b541b6141dafd6b4",
+    "evaluation/evaluation_data.json": "ecba025c708799bfe0505d65f5861b57efb5b78fbc3598026302a0780a009194",
+    "gsm8k-prompt-manifest.json": "f098a31a286e32131b234c27d1baaa4b88d9c4cbf4aebdd3b2f6e4ebdda28d6e",
+    "lifecycle.jsonl": "d07799600905325408128db064f691afc9d466e24b046981fdbdef7d4c417a26",
+    "oars.jsonl": "ad2d9c305982992518bafff0f86fb710b3d510bf194195418a0423aa46555a1b",
+    "observer-duty.json": "94f6f17af80f3f7739aa735f1751b8a10137a840633f56388594cdc554fcb4bc",
+    "opportunity.jsonl": "f8b784bece4d2ab536bc7f1b9586d5ab4c7b820a3faf03d1377ccff75c677db8",
+    "systems-result.json": "92f82c468f5ec73f990a53fdec10bfe94693378033bdc380a693c67bb2680755",
+    "terminal-policy-export.json": "26f487eb7a134427f780e0cf28f86f4276ece6c05350e16bce738e3556bcd0ed",
+    "terminal-policy-files.sha256": "cbf2094dbe037513cb1ec13d357985472853425467609e6722fd52b21140a6ca",
+    "terminal-resolved-config.json": "d585c3b7f297c660b6f3db221a86d8efd240c1fe840878c714c0511dffe45151",
+    "training.log": "1d601c2570fbe1a28e3ceca6d64728d8a756d921040dfa5a2a1fa8e89e1bb59b"
+  },
+  "declared_hashes_match": true,
+  "terminal_copies_byte_identical": true,
+  "workload_exit_codes": {
+    "main": 0,
+    "logs_after": 0
+  },
+  "result_opened": false,
+  "evaluation_data_opened": false,
+  "scientific_outcome_accessed": false,
+  "complete_outcome_embargo_preserved": true,
+  "successor_gate": "PASS_AUTHENTICATED_TERMINAL_PREDECESSOR"
+}
