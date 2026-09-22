@@ -1,0 +1,319 @@
+{
+  "analysis": {
+    "primary_evidence_criterion": "the primary 95% interval lower bound exceeds zero",
+    "primary_interval": "two-sided 95% matched-block t interval over 18 absolute_m4-minus-fifo differences",
+    "primary_robustness": "inclusive exact two-sided sign-flip randomization p-value over all 2^18 matched-block sign assignments",
+    "reporting": "Always report estimates, intervals, all block outcomes, policy compliance, dose, and wall time; do not suppress mixed results.",
+    "secondary_intervals": "two-sided 95% matched-block t intervals, reported descriptively without replacing or modifying the primary"
+  },
+  "arms": {
+    "absolute_m4": "OARS-v2 exact four-of-eight selection maximizing absolute M4 risk within the 0.98-1.02 FIFO token band",
+    "fifo": "controlled WeightFIFO at a common eight-ready-group frontier",
+    "reward_variance": "OARS-v2 exact four-of-eight selection maximizing reward-variance risk within the 0.98-1.02 FIFO token band"
+  },
+  "claim_boundary": {
+    "allowed": "A causal scheduler effect on terminal GSM8K accuracy in the tested Llama-3.2-1B, 64-update, two-GPU controlled-frontier setting.",
+    "forbidden": [
+      "generalization beyond the tested model, workload, horizon, or hardware",
+      "calling proposal disagreement a quality effect",
+      "pooling either actuation qualification with acquisition outcomes",
+      "changing the primary endpoint after any outcome access",
+      "treating pipeline status as a scientific endpoint"
+    ]
+  },
+  "design": {
+    "analysis_unit": "matched three-arm training-seed block",
+    "balanced_order_counts": {
+      "absolute_m4-fifo-reward_variance": 3,
+      "absolute_m4-reward_variance-fifo": 3,
+      "fifo-absolute_m4-reward_variance": 3,
+      "fifo-reward_variance-absolute_m4": 3,
+      "reward_variance-absolute_m4-fifo": 3,
+      "reward_variance-fifo-absolute_m4": 3
+    },
+    "block_count": 18,
+    "blocks": [
+      {
+        "assignment_domain": "m4-oars-v2-quality-block-01-v1",
+        "assignment_seed": 20262401,
+        "block": 1,
+        "order": [
+          "fifo",
+          "reward_variance",
+          "absolute_m4"
+        ],
+        "training_seed": 20262301
+      },
+      {
+        "assignment_domain": "m4-oars-v2-quality-block-02-v1",
+        "assignment_seed": 20262402,
+        "block": 2,
+        "order": [
+          "reward_variance",
+          "fifo",
+          "absolute_m4"
+        ],
+        "training_seed": 20262302
+      },
+      {
+        "assignment_domain": "m4-oars-v2-quality-block-03-v1",
+        "assignment_seed": 20262403,
+        "block": 3,
+        "order": [
+          "absolute_m4",
+          "fifo",
+          "reward_variance"
+        ],
+        "training_seed": 20262303
+      },
+      {
+        "assignment_domain": "m4-oars-v2-quality-block-04-v1",
+        "assignment_seed": 20262404,
+        "block": 4,
+        "order": [
+          "absolute_m4",
+          "reward_variance",
+          "fifo"
+        ],
+        "training_seed": 20262304
+      },
+      {
+        "assignment_domain": "m4-oars-v2-quality-block-05-v1",
+        "assignment_seed": 20262405,
+        "block": 5,
+        "order": [
+          "reward_variance",
+          "absolute_m4",
+          "fifo"
+        ],
+        "training_seed": 20262305
+      },
+      {
+        "assignment_domain": "m4-oars-v2-quality-block-06-v1",
+        "assignment_seed": 20262406,
+        "block": 6,
+        "order": [
+          "absolute_m4",
+          "fifo",
+          "reward_variance"
+        ],
+        "training_seed": 20262306
+      },
+      {
+        "assignment_domain": "m4-oars-v2-quality-block-07-v1",
+        "assignment_seed": 20262407,
+        "block": 7,
+        "order": [
+          "absolute_m4",
+          "reward_variance",
+          "fifo"
+        ],
+        "training_seed": 20262307
+      },
+      {
+        "assignment_domain": "m4-oars-v2-quality-block-08-v1",
+        "assignment_seed": 20262408,
+        "block": 8,
+        "order": [
+          "fifo",
+          "absolute_m4",
+          "reward_variance"
+        ],
+        "training_seed": 20262308
+      },
+      {
+        "assignment_domain": "m4-oars-v2-quality-block-09-v1",
+        "assignment_seed": 20262409,
+        "block": 9,
+        "order": [
+          "fifo",
+          "absolute_m4",
+          "reward_variance"
+        ],
+        "training_seed": 20262309
+      },
+      {
+        "assignment_domain": "m4-oars-v2-quality-block-10-v1",
+        "assignment_seed": 20262410,
+        "block": 10,
+        "order": [
+          "reward_variance",
+          "absolute_m4",
+          "fifo"
+        ],
+        "training_seed": 20262310
+      },
+      {
+        "assignment_domain": "m4-oars-v2-quality-block-11-v1",
+        "assignment_seed": 20262411,
+        "block": 11,
+        "order": [
+          "fifo",
+          "reward_variance",
+          "absolute_m4"
+        ],
+        "training_seed": 20262311
+      },
+      {
+        "assignment_domain": "m4-oars-v2-quality-block-12-v1",
+        "assignment_seed": 20262412,
+        "block": 12,
+        "order": [
+          "absolute_m4",
+          "fifo",
+          "reward_variance"
+        ],
+        "training_seed": 20262312
+      },
+      {
+        "assignment_domain": "m4-oars-v2-quality-block-13-v1",
+        "assignment_seed": 20262413,
+        "block": 13,
+        "order": [
+          "reward_variance",
+          "fifo",
+          "absolute_m4"
+        ],
+        "training_seed": 20262313
+      },
+      {
+        "assignment_domain": "m4-oars-v2-quality-block-14-v1",
+        "assignment_seed": 20262414,
+        "block": 14,
+        "order": [
+          "fifo",
+          "absolute_m4",
+          "reward_variance"
+        ],
+        "training_seed": 20262314
+      },
+      {
+        "assignment_domain": "m4-oars-v2-quality-block-15-v1",
+        "assignment_seed": 20262415,
+        "block": 15,
+        "order": [
+          "reward_variance",
+          "fifo",
+          "absolute_m4"
+        ],
+        "training_seed": 20262315
+      },
+      {
+        "assignment_domain": "m4-oars-v2-quality-block-16-v1",
+        "assignment_seed": 20262416,
+        "block": 16,
+        "order": [
+          "fifo",
+          "reward_variance",
+          "absolute_m4"
+        ],
+        "training_seed": 20262316
+      },
+      {
+        "assignment_domain": "m4-oars-v2-quality-block-17-v1",
+        "assignment_seed": 20262417,
+        "block": 17,
+        "order": [
+          "reward_variance",
+          "absolute_m4",
+          "fifo"
+        ],
+        "training_seed": 20262317
+      },
+      {
+        "assignment_domain": "m4-oars-v2-quality-block-18-v1",
+        "assignment_seed": 20262418,
+        "block": 18,
+        "order": [
+          "absolute_m4",
+          "reward_variance",
+          "fifo"
+        ],
+        "training_seed": 20262318
+      }
+    ],
+    "execution": "all 54 arms serial in the frozen global order",
+    "gpus_per_run": 2,
+    "maximum_staleness_versions": 1,
+    "model": "meta-llama/Llama-3.2-1B-Instruct",
+    "nodes_per_run": 1,
+    "order_randomization_seed": 20260922,
+    "selection_candidate_watermark": 8,
+    "selection_cardinality": 4,
+    "total_run_count": 54,
+    "updates": 64,
+    "workload": "gsm8k"
+  },
+  "estimands": {
+    "primary": "mean matched-block difference in terminal GSM8K accuracy, absolute_m4 minus fifo",
+    "secondary": [
+      "reward_variance minus fifo terminal GSM8K accuracy",
+      "absolute_m4 minus reward_variance terminal GSM8K accuracy",
+      "matched log wall-time ratios",
+      "matched log valid-actor-token-per-update ratios",
+      "policy disagreement, overlap, and retained opportunity summaries"
+    ]
+  },
+  "objective": "Estimate whether absolute-M4 scheduling changes terminal GSM8K accuracy relative to controlled FIFO under a shared eight-candidate frontier, with reward variance as an active mechanistic comparator.",
+  "outcome_embargo": {
+    "completion_gate": "All 54 frozen identities and duplicate terminal artifact copies must authenticate before any arm outcome is opened.",
+    "incomplete_block_rule": "A missing or invalid arm makes its block incomplete. No automatic retry, replacement, or extension is allowed.",
+    "interim_outcome_access": "PROHIBITED"
+  },
+  "power": {
+    "chosen_design": "18 blocks provide about 85% sensitivity for a +0.075 accuracy effect under the planning variance.",
+    "planning_paired_sd": 0.1009742867702437,
+    "planning_source": "The authenticated predecessor v1 OARS/FIFO study's terminal-quality paired SD; its mean is not assumed as the new effect.",
+    "simulated_power": {
+      "12": {
+        "0.05": 0.34638,
+        "0.075": 0.64846,
+        "0.1": 0.87857
+      },
+      "15": {
+        "0.05": 0.4303,
+        "0.075": 0.76002,
+        "0.1": 0.94469
+      },
+      "18": {
+        "0.05": 0.50831,
+        "0.075": 0.84231,
+        "0.1": 0.97655
+      }
+    },
+    "simulation_draws_per_cell": 100000,
+    "simulation_seed": 20260923,
+    "two_sided_alpha": 0.05
+  },
+  "prerequisites": {
+    "absolute_m4_actuation_qualification": "REQUIRED_AND_EXCLUDED",
+    "acquisition_launch_requires_both_qualifications": true,
+    "controlled_frontier_systems_gate": "PASS_CONTROLLED_FRONTIER_SYSTEMS_READY",
+    "reward_variance_actuation_qualification": "REQUIRED_AND_EXCLUDED"
+  },
+  "qualification": {
+    "excluded_from_outcome_analysis": true,
+    "order": [
+      "reward_variance",
+      "absolute_m4"
+    ],
+    "required_gates": [
+      "exactly 64 complete learner steps and decisions",
+      "exactly eight candidates and 70 combinations per decision",
+      "actual selections exactly match the configured scorer proposal",
+      "four unique ready groups selected per decision",
+      "zero skips and zero fallbacks",
+      "complete candidate-excess and stale-replenishment accounting",
+      "combined observer/controller duty at most one percent",
+      "runtime at most 14400 seconds"
+    ],
+    "training_seeds": {
+      "absolute_m4": 20262232,
+      "reward_variance": 20262231
+    },
+    "updates": 64
+  },
+  "schema": "m4-oars-v2-quality-primary-protocol-v1",
+  "status": "FROZEN_BEFORE_ACTUATION_IMPLEMENTATION_COMMIT",
+  "user_direction": "do it"
+}
