@@ -50,11 +50,13 @@ async_rl:
     output_path: null
     service_budget_multiplier: 1.02
     max_candidate_groups: 25
-  # Default-off, behavior-neutral OARS-v2 observer. It compares eager FIFO
-  # with age, reward-variance, normalized-M4, and absolute-M4 proposals on
-  # naturally available choice sets under a two-sided token band.
+  # Default-off OARS-v2 observer or explicit controlled-frontier actuator.
   opportunity_at_risk_v2_shadow:
     enabled: false
+    # act requires controlled_frontier and one of reward_variance_risk or
+    # absolute_m4_risk. Observe mode forbids an actuation scorer.
+    mode: observe
+    actuation_scorer: null
     # Required and distinct from lifecycle/opportunity/duty paths when enabled.
     output_path: null
     # natural_eager requires no FIFO watermark. controlled_frontier is an

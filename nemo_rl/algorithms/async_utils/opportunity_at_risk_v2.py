@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Default-off, behavior-neutral multi-scorer OARS-v2 shadow observer."""
+"""Default-off multi-scorer OARS-v2 observer and fail-closed actuator."""
 
 from __future__ import annotations
 
@@ -32,6 +32,7 @@ from nemo_rl.algorithms.async_utils.opportunity_at_risk import (
     OPPORTUNITY_VALID_TOKENS_KEY,
 )
 from nemo_rl.algorithms.async_utils.replay_buffer import TQReplayBuffer
+from nemo_rl.algorithms.async_utils.rollout_lifecycle import RolloutRemovalReason
 from nemo_rl.algorithms.async_utils.staleness_sampler import WeightFifoSampler
 from nemo_rl.data_plane import KVBatchMeta
 
@@ -45,6 +46,7 @@ OARSV2_SCORERS = (
     "token_normalized_m4_risk",
     "absolute_m4_risk",
 )
+OARSV2_ACTUATION_SCORERS = ("reward_variance_risk", "absolute_m4_risk")
 
 
 class OARSV2SelectionFallback(RuntimeError):
@@ -313,13 +315,15 @@ def select_two_sided_oars_v2(
 
 
 class OpportunityAtRiskV2ShadowRecorder:
-    """In-memory canonical JSONL ledger for behavior-neutral OARS-v2 decisions."""
+    """In-memory canonical JSONL ledger for OARS-v2 decisions."""
 
     SCHEMA_VERSION = 1
 
     def __init__(
         self,
         *,
+        mode: Literal["observe", "act"] = "observe",
+        actuation_scorer: Optional[str] = None,
         candidate_window_policy: Literal["natural_eager", "controlled_frontier"],
         selection_candidate_watermark: Optional[int],
         minimum_service_multiplier: float,
@@ -328,24 +332,40 @@ class OpportunityAtRiskV2ShadowRecorder:
         exact_search_max_candidates: int,
         decision_time_budget_ns: int,
     ) -> None:
-        self._events: list[dict[str, Any]] = [
-            {
-                "event_type": "header",
-                "schema_version": self.SCHEMA_VERSION,
-                "mode": "observe",
-                "policy": "multi_scorer_oars_v2_shadow",
-                "candidate_window_policy": candidate_window_policy,
-                "selection_candidate_watermark": selection_candidate_watermark,
-                "scorers": list(OARSV2_SCORERS),
-                "minimum_service_multiplier": minimum_service_multiplier,
-                "maximum_service_multiplier": maximum_service_multiplier,
-                "max_candidate_groups": max_candidate_groups,
-                "exact_search_max_candidates": exact_search_max_candidates,
-                "decision_time_budget_ns": decision_time_budget_ns,
-                "decision_time_budget_scope": "per_scorer",
-                "candidate_mutation": "none",
-            }
-        ]
+        if mode == "observe" and actuation_scorer is not None:
+            raise ValueError("observe mode forbids an actuation scorer")
+        if mode == "act" and actuation_scorer not in OARSV2_ACTUATION_SCORERS:
+            raise ValueError("act mode requires a supported actuation scorer")
+        header: dict[str, Any] = {
+            "event_type": "header",
+            "schema_version": self.SCHEMA_VERSION if mode == "observe" else 2,
+            "mode": mode,
+            "policy": (
+                "multi_scorer_oars_v2_shadow"
+                if mode == "observe"
+                else "multi_scorer_oars_v2_actuator"
+            ),
+            "candidate_window_policy": candidate_window_policy,
+            "selection_candidate_watermark": selection_candidate_watermark,
+            "scorers": list(OARSV2_SCORERS),
+            "minimum_service_multiplier": minimum_service_multiplier,
+            "maximum_service_multiplier": maximum_service_multiplier,
+            "max_candidate_groups": max_candidate_groups,
+            "exact_search_max_candidates": exact_search_max_candidates,
+            "decision_time_budget_ns": decision_time_budget_ns,
+            "decision_time_budget_scope": "per_scorer",
+            "candidate_mutation": (
+                "none" if mode == "observe" else "configured_scorer_exact_removal"
+            ),
+        }
+        if mode == "act":
+            header.update(
+                {
+                    "actuation_scorer": actuation_scorer,
+                    "stale_replenishment_policy": "one_batch_drop_newest_excess_v1",
+                }
+            )
+        self._events: list[dict[str, Any]] = [header]
 
     @property
     def events(self) -> tuple[Mapping[str, Any], ...]:
@@ -375,7 +395,7 @@ class OpportunityAtRiskV2ShadowRecorder:
 
 
 class OpportunityAtRiskV2ShadowSampler:
-    """Observe adaptive multi-scorer proposals, then execute eager WeightFIFO."""
+    """Observe all v2 proposals and optionally enact one validated scorer."""
 
     EXPECTED_BATCH_GROUPS = 4
 
@@ -384,6 +404,8 @@ class OpportunityAtRiskV2ShadowSampler:
         *,
         buffer: TQReplayBuffer,
         baseline: WeightFifoSampler,
+        mode: Literal["observe", "act"] = "observe",
+        actuation_scorer: Optional[str] = None,
         candidate_window_policy: Literal["natural_eager", "controlled_frontier"],
         minimum_service_multiplier: float,
         maximum_service_multiplier: float,
@@ -407,6 +429,12 @@ class OpportunityAtRiskV2ShadowSampler:
                 "controlled_frontier OARS-v2 requires a WeightFIFO watermark "
                 "greater than the batch cardinality"
             )
+        if mode == "observe" and actuation_scorer is not None:
+            raise ValueError("observe mode forbids an actuation scorer")
+        if mode == "act" and actuation_scorer not in OARSV2_ACTUATION_SCORERS:
+            raise ValueError("act mode requires a supported actuation scorer")
+        if mode == "act" and candidate_window_policy != "controlled_frontier":
+            raise ValueError("act mode requires a controlled candidate frontier")
         if max_candidate_groups < self.EXPECTED_BATCH_GROUPS:
             raise ValueError("max_candidate_groups must be at least four")
         if not (
@@ -434,14 +462,63 @@ class OpportunityAtRiskV2ShadowSampler:
         self._exact_search_max_candidates = exact_search_max_candidates
         self._decision_time_budget_ns = decision_time_budget_ns
         self._record = record
+        self._mode = mode
+        self._actuation_scorer = actuation_scorer
+        self._replenishment_credits = 0
+        self._pending_excess_sample_ids: set[tuple[str, ...]] = set()
+        self._candidate_excess_removed_groups_total = 0
+        self._stale_evicted_groups_total = 0
+        self._replenishment_batches_earned_total = 0
+        self._replenishment_batches_consumed_total = 0
+
+    def _consume_replenishment_credit(self) -> bool:
+        if self._replenishment_credits == 0:
+            return False
+        self._replenishment_credits -= 1
+        self._replenishment_batches_consumed_total += 1
+        return True
 
     async def admit(self, *, trainer_version_fn: Callable[[], int]) -> Optional[int]:
-        """Delegate admission to eager FIFO without changing its cadence."""
-        return await self._baseline.admit(trainer_version_fn=trainer_version_fn)
+        """Admit ordinary cadence or one replacement after stale eviction."""
+        if self._mode == "observe":
+            return await self._baseline.admit(trainer_version_fn=trainer_version_fn)
+        return await self._baseline.admit_with_replenishment(
+            trainer_version_fn=trainer_version_fn,
+            consume_replenishment=self._consume_replenishment_credit,
+        )
 
     async def evict(self, *, current_train_weight: int) -> int:
-        """Delegate stale eviction to FIFO without adding removal policy."""
-        return await self._baseline.evict(current_train_weight=current_train_weight)
+        """Drop bounded candidate excess, then replace a newly stale batch."""
+        excess_indices = [
+            index
+            for index, meta in enumerate(self._buffer.meta_list)
+            if meta is not None
+            and tuple(meta.sample_ids) in self._pending_excess_sample_ids
+            and self._buffer.ready_list[index]
+        ]
+        excess_removed = 0
+        if excess_indices:
+            excess_removed = await self._buffer.remove(
+                excess_indices,
+                remove_in_dp=True,
+                reason=RolloutRemovalReason.OARS_CANDIDATE_EXCESS,
+                learner_weight_version=current_train_weight,
+            )
+            self._candidate_excess_removed_groups_total += excess_removed
+        self._pending_excess_sample_ids.clear()
+        stale_evicted = await self._baseline.evict(
+            current_train_weight=current_train_weight
+        )
+        if self._mode == "act" and stale_evicted:
+            if stale_evicted > self.EXPECTED_BATCH_GROUPS:
+                raise RuntimeError(
+                    "OARS-v2 actuation liveness invariant violated: one decision "
+                    "evicted more than one batch"
+                )
+            self._replenishment_credits += 1
+            self._stale_evicted_groups_total += stale_evicted
+            self._replenishment_batches_earned_total += 1
+        return excess_removed + stale_evicted
 
     @property
     def is_on_policy(self) -> bool:
@@ -578,17 +655,38 @@ class OpportunityAtRiskV2ShadowSampler:
         watermark = self._baseline.selection_candidate_watermark
         if watermark is not None and len(eligible_indices) < watermark:
             return None
+        if (
+            self._mode == "act"
+            and watermark is not None
+            and len(eligible_indices) > watermark + self.EXPECTED_BATCH_GROUPS - 1
+        ):
+            raise RuntimeError(
+                "OARS-v2 actuation refused: candidate replenishment exceeded one "
+                "partial batch"
+            )
         candidate_indices = (
             eligible_indices[:watermark] if watermark is not None else eligible_indices
         )
-        target_version = min(
-            self._buffer.start_weight_list[index] for index in in_window_indices
-        )
-        baseline_indices = [
-            index
-            for index in candidate_indices
-            if self._buffer.start_weight_list[index] == target_version
-        ]
+        if self._mode == "act":
+            pending_excess_sample_ids: set[tuple[str, ...]] = set()
+            for index in eligible_indices[len(candidate_indices) :]:
+                meta = self._buffer.meta_list[index]
+                if meta is None:
+                    raise RuntimeError(
+                        "OARS-v2 actuation refused: ready candidate metadata disappeared"
+                    )
+                pending_excess_sample_ids.add(tuple(meta.sample_ids))
+            self._pending_excess_sample_ids = pending_excess_sample_ids
+            baseline_indices = candidate_indices
+        else:
+            target_version = min(
+                self._buffer.start_weight_list[index] for index in in_window_indices
+            )
+            baseline_indices = [
+                index
+                for index in candidate_indices
+                if self._buffer.start_weight_list[index] == target_version
+            ]
         requested = min(len(baseline_indices), max_prompt_groups)
         if requested < min_prompt_groups:
             return None
@@ -607,11 +705,27 @@ class OpportunityAtRiskV2ShadowSampler:
             "actual_selected_group_ids": None,
             "baseline_group_ids": baseline_group_ids,
             "baseline_matches_actual": None,
+            "candidate_excess_count": len(eligible_indices) - len(candidate_indices),
             "candidate_group_count": len(candidate_indices),
             "current_learner_version": current_train_weight,
             "decision_latency_ns": 0,
             "proposals": {},
             "skip_reason": None,
+            "eligible_candidate_count": len(eligible_indices),
+            "liveness_accounting": {
+                "candidate_excess_pending_groups": len(self._pending_excess_sample_ids),
+                "candidate_excess_removed_groups_total": (
+                    self._candidate_excess_removed_groups_total
+                ),
+                "replenishment_batches_consumed_total": (
+                    self._replenishment_batches_consumed_total
+                ),
+                "replenishment_batches_earned_total": (
+                    self._replenishment_batches_earned_total
+                ),
+                "replenishment_credits_outstanding": self._replenishment_credits,
+                "stale_evicted_groups_total": self._stale_evicted_groups_total,
+            },
         }
         if requested != self.EXPECTED_BATCH_GROUPS:
             event["skip_reason"] = "baseline_cardinality_not_four"
@@ -760,17 +874,74 @@ class OpportunityAtRiskV2ShadowSampler:
         min_prompt_groups: int,
         max_prompt_groups: int,
     ) -> tuple[Optional[KVBatchMeta], int]:
-        """Observe every scorer proposal, then enact the unmodified FIFO choice."""
+        """Observe every scorer proposal, then execute FIFO or one frozen scorer."""
         event = self._observe(
             current_train_weight=current_train_weight,
             min_prompt_groups=min_prompt_groups,
             max_prompt_groups=max_prompt_groups,
         )
-        selected_meta, selected_group_count = await self._baseline.select(
-            current_train_weight=current_train_weight,
-            min_prompt_groups=min_prompt_groups,
-            max_prompt_groups=max_prompt_groups,
-        )
+        if self._mode == "act" and event is not None:
+            if event["skip_reason"] is not None:
+                raise RuntimeError(f"OARS-v2 actuation refused: {event['skip_reason']}")
+            assert self._actuation_scorer is not None
+            proposal = event["proposals"][self._actuation_scorer]
+            if proposal["status"] != "proposed":
+                raise RuntimeError(
+                    "OARS-v2 actuation refused: configured scorer fell back: "
+                    f"{proposal.get('fallback_reason', 'unknown')}"
+                )
+            proposed_group_ids = tuple(proposal["proposed_group_ids"])
+            if (
+                len(proposed_group_ids) != self.EXPECTED_BATCH_GROUPS
+                or len(set(proposed_group_ids)) != self.EXPECTED_BATCH_GROUPS
+            ):
+                raise RuntimeError(
+                    "OARS-v2 actuation refused: proposal cardinality or identity invalid"
+                )
+            candidate_indices_by_id: dict[str, int] = {}
+            for index, ready in enumerate(self._buffer.ready_list):
+                if not ready:
+                    continue
+                meta = self._buffer.meta_list[index]
+                if meta is None:
+                    continue
+                group_id = meta.extra_info.get(OPPORTUNITY_GROUP_ID_KEY)
+                if isinstance(group_id, str):
+                    if group_id in candidate_indices_by_id:
+                        raise RuntimeError(
+                            "OARS-v2 actuation refused: duplicate ready group ID"
+                        )
+                    candidate_indices_by_id[group_id] = index
+            try:
+                selected_indices = [
+                    candidate_indices_by_id[group_id] for group_id in proposed_group_ids
+                ]
+            except KeyError as error:
+                raise RuntimeError(
+                    "OARS-v2 actuation refused: proposed group is no longer ready"
+                ) from error
+            selected_metas = [
+                self._buffer.meta_list[index] for index in selected_indices
+            ]
+            if any(meta is None for meta in selected_metas):
+                raise RuntimeError(
+                    "OARS-v2 actuation refused: proposed metadata disappeared"
+                )
+            await self._buffer.remove(
+                selected_indices,
+                remove_in_dp=False,
+                reason=RolloutRemovalReason.SELECTED,
+                learner_weight_version=current_train_weight,
+            )
+            concrete_metas = [meta for meta in selected_metas if meta is not None]
+            selected_meta = concrete_metas[0].concat(*concrete_metas[1:])
+            selected_group_count = len(selected_indices)
+        else:
+            selected_meta, selected_group_count = await self._baseline.select(
+                current_train_weight=current_train_weight,
+                min_prompt_groups=min_prompt_groups,
+                max_prompt_groups=max_prompt_groups,
+            )
         if event is not None:
             actual_ids = self._actual_group_ids(
                 selected_meta, selected_group_count=selected_group_count
@@ -782,5 +953,11 @@ class OpportunityAtRiskV2ShadowSampler:
             event["baseline_matches_actual"] = actual_ids == tuple(
                 event["baseline_group_ids"]
             )
+            event["mode"] = self._mode
+            if self._actuation_scorer is not None:
+                event["actuation_scorer"] = self._actuation_scorer
+                event["proposal_matches_actual"] = actual_ids == tuple(
+                    event["proposals"][self._actuation_scorer]["proposed_group_ids"]
+                )
             self._record(event)
         return selected_meta, selected_group_count

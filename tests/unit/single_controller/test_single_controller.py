@@ -323,6 +323,55 @@ def test_opportunity_at_risk_v2_shadow_accepts_controlled_frontier() -> None:
     validate_single_controller_config(config)
 
 
+@pytest.mark.parametrize("scorer", ["reward_variance_risk", "absolute_m4_risk"])
+def test_opportunity_at_risk_v2_accepts_controlled_actuation(scorer: str) -> None:
+    config = _controlled_release_master_config(lifecycle_audit_path="lifecycle.jsonl")
+    config.policy["train_global_batch_size"] = 16
+    config.grpo.num_prompts_per_step = 4
+    config.async_rl.sampler = WeightFifoSamplerConfig(
+        max_staleness_versions=1,
+        selection_candidate_watermark=8,
+    )
+    config.async_rl.gradient_opportunity_audit = GradientOpportunityAuditConfig(
+        enabled=True,
+        output_path="opportunity.jsonl",
+        observer_duty_path="duty.json",
+    )
+    config.async_rl.opportunity_at_risk_v2_shadow = OpportunityAtRiskV2ShadowConfig(
+        enabled=True,
+        mode="act",
+        actuation_scorer=scorer,
+        output_path="oars-v2.jsonl",
+        candidate_window_policy="controlled_frontier",
+    )
+
+    validate_single_controller_config(config)
+
+
+def test_opportunity_at_risk_v2_rejects_actuation_without_scorer() -> None:
+    config = _controlled_release_master_config(lifecycle_audit_path="lifecycle.jsonl")
+    config.policy["train_global_batch_size"] = 16
+    config.grpo.num_prompts_per_step = 4
+    config.async_rl.sampler = WeightFifoSamplerConfig(
+        max_staleness_versions=1,
+        selection_candidate_watermark=8,
+    )
+    config.async_rl.gradient_opportunity_audit = GradientOpportunityAuditConfig(
+        enabled=True,
+        output_path="opportunity.jsonl",
+        observer_duty_path="duty.json",
+    )
+    config.async_rl.opportunity_at_risk_v2_shadow = OpportunityAtRiskV2ShadowConfig(
+        enabled=True,
+        mode="act",
+        output_path="oars-v2.jsonl",
+        candidate_window_policy="controlled_frontier",
+    )
+
+    with pytest.raises(ValueError, match="act mode requires an actuation_scorer"):
+        validate_single_controller_config(config)
+
+
 def test_controlled_frontier_rejects_missing_watermark() -> None:
     config = _controlled_release_master_config(lifecycle_audit_path="lifecycle.jsonl")
     config.policy["train_global_batch_size"] = 16

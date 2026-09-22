@@ -69,11 +69,21 @@ class OpportunityAtRiskShadowConfig(BaseModel, frozen=True):
 
 
 class OpportunityAtRiskV2ShadowConfig(BaseModel, frozen=True, extra="allow"):
-    """Default-off adaptive multi-scorer OARS-v2 observer."""
+    """Default-off adaptive multi-scorer OARS-v2 observer or actuator."""
 
     enabled: bool = Field(
         default=False,
-        description="Enable observe-only OARS-v2 proposals; FIFO still acts.",
+        description="Enable OARS-v2 observation or explicit scorer actuation.",
+    )
+    mode: Literal["observe", "act"] = Field(
+        default="observe",
+        description="Observe proposals without mutation or enact one frozen scorer.",
+    )
+    actuation_scorer: Optional[Literal["reward_variance_risk", "absolute_m4_risk"]] = (
+        Field(
+            default=None,
+            description="Frozen scorer enacted in act mode; forbidden in observe mode.",
+        )
     )
     output_path: Optional[str] = Field(
         default=None,
@@ -356,6 +366,21 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
                 "the weight_fifo sampler"
             )
         selection_watermark = async_config.sampler.selection_candidate_watermark
+        if shadow_v2_config.mode == "observe" and (
+            shadow_v2_config.actuation_scorer is not None
+        ):
+            raise ValueError("OARS-v2 observe mode forbids an actuation_scorer")
+        if shadow_v2_config.mode == "act" and (
+            shadow_v2_config.actuation_scorer is None
+        ):
+            raise ValueError("OARS-v2 act mode requires an actuation_scorer")
+        if (
+            shadow_v2_config.mode == "act"
+            and shadow_v2_config.candidate_window_policy != "controlled_frontier"
+        ):
+            raise ValueError(
+                "OARS-v2 act mode requires candidate_window_policy=controlled_frontier"
+            )
         if (
             shadow_v2_config.candidate_window_policy == "natural_eager"
             and selection_watermark is not None

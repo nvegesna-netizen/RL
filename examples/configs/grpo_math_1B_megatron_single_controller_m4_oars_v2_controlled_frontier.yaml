@@ -31,6 +31,8 @@ async_rl:
     enabled: false
   opportunity_at_risk_v2_shadow:
     enabled: true
+    mode: observe
+    actuation_scorer: null
     output_path: results/m4-oars-v2-controlled-frontier/oars-v2.jsonl
     candidate_window_policy: controlled_frontier
     minimum_service_multiplier: 0.98

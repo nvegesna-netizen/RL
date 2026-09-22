@@ -1,0 +1,37 @@
+{
+  "schema": "m4-oars-v2-actuation-implementation-verification-v1",
+  "status": "PASS_LOCAL_REMOTE_DEPENDENCY_PREFLIGHT_REQUIRED",
+  "protocol_sha256": "e0e0b26cc1a592bf14c4b0f77d990662f6c3ff3e09bfb6a772a3efbf149b9d2d",
+  "implementation": {
+    "allowed_actuation_scorers": [
+      "reward_variance_risk",
+      "absolute_m4_risk"
+    ],
+    "candidate_window_policy": "controlled_frontier",
+    "candidate_watermark": 8,
+    "selection_cardinality": 4,
+    "failure_policy": "raise_before_replay_buffer_selection_mutation",
+    "liveness_policy": "validated_v1_stale_replenishment_and_bounded_excess_cleanup",
+    "outcome_access": false
+  },
+  "local_checks": {
+    "python_compile": "PASS",
+    "ruff_format": "PASS",
+    "ruff_check": "PASS",
+    "git_diff_check": "PASS",
+    "actuation_gate_unit_tests": "3 passed",
+    "actuation_gate_unit_test_command": "PYTHONPATH=. uv run --no-sync pytest -q --confcutdir=reports/auto_research/2026-09-22-m4-oars-v2-quality-primary reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/test_actuation_qualification.py"
+  },
+  "local_environment_limit": {
+    "repository_unit_collection": "NOT_RUN_LOCALLY",
+    "reason": "The local locked environment lacks ray and numpy.",
+    "required_resolution": "Run the focused repository tests in the dependency-complete EOS image before training begins."
+  },
+  "remote_preflight_required": [
+    "tests/unit/single_controller/test_opportunity_at_risk_v2.py",
+    "tests/unit/single_controller/test_single_controller.py -k opportunity_at_risk_v2",
+    "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/test_actuation_qualification.py"
+  ],
+  "scientific_outcome_acquisition": false,
+  "training_quality_analyzed": false
+}

@@ -215,6 +215,48 @@ def _shadow(buffer: FakeBuffer, *, max_candidates: int = 64):
     return sampler, events
 
 
+def _controlled_actuator(
+    buffer: FakeBuffer, *, scorer: str, decision_time_budget_ns: int = 100_000_000
+):
+    baseline = WeightFifoSampler(
+        buffer,
+        max_staleness_versions=1,
+        selection_candidate_watermark=8,
+    )
+    events: list[dict[str, Any]] = []
+    sampler = OpportunityAtRiskV2ShadowSampler(
+        buffer=buffer,
+        baseline=baseline,
+        mode="act",
+        actuation_scorer=scorer,
+        candidate_window_policy="controlled_frontier",
+        minimum_service_multiplier=0.98,
+        maximum_service_multiplier=1.02,
+        max_candidate_groups=64,
+        exact_search_max_candidates=16,
+        decision_time_budget_ns=decision_time_budget_ns,
+        record=lambda event: events.append(dict(event)),
+    )
+    return sampler, events
+
+
+def _actuation_choice_buffer() -> FakeBuffer:
+    buffer = FakeBuffer()
+    for index, group_id in enumerate(("a", "b", "c", "d", "w", "x", "y", "z")):
+        high_risk = index >= 4
+        buffer.add(
+            group_id,
+            weight=1,
+            l1=20.0 if high_risk else 1.0,
+            l2=10.0 if high_risk else 0.5,
+            tokens=100,
+            reward_mean=0.5,
+            reward_variance=0.5 if high_risk else 0.1,
+            ready_timestamp_ns=100 + index,
+        )
+    return buffer
+
+
 def test_adaptive_shadow_observes_natural_choice_and_executes_fifo() -> None:
     buffer = _natural_choice_buffer()
     sampler, events = _shadow(buffer)
@@ -347,6 +389,164 @@ def test_controlled_frontier_does_not_observe_below_watermark() -> None:
 
     assert meta is None and count == 0
     assert events == []
+
+
+@pytest.mark.parametrize("scorer", ["reward_variance_risk", "absolute_m4_risk"])
+def test_controlled_frontier_actuation_enacts_configured_proposal(scorer: str) -> None:
+    buffer = _actuation_choice_buffer()
+    sampler, events = _controlled_actuator(buffer, scorer=scorer)
+
+    meta, count = asyncio.run(
+        sampler.select(
+            current_train_weight=2,
+            min_prompt_groups=4,
+            max_prompt_groups=4,
+        )
+    )
+
+    assert meta is not None and count == 4
+    assert meta.sample_ids == ["w_g0", "x_g0", "y_g0", "z_g0"]
+    assert [item.sample_ids for item in buffer.meta_list if item is not None] == [
+        ["a_g0"],
+        ["b_g0"],
+        ["c_g0"],
+        ["d_g0"],
+    ]
+    assert events[0]["mode"] == "act"
+    assert events[0]["actuation_scorer"] == scorer
+    assert events[0]["proposal_matches_actual"] is True
+    assert events[0]["baseline_matches_actual"] is False
+    assert events[0]["candidate_group_count"] == 8
+    assert events[0]["proposals"][scorer]["combination_count"] == 70
+
+
+def test_actuation_is_failure_atomic_on_missing_metadata() -> None:
+    buffer = _actuation_choice_buffer()
+    assert buffer.meta_list[-1] is not None
+    buffer.meta_list[-1].extra_info = {}
+    original_ids = [item.sample_ids for item in buffer.meta_list if item is not None]
+    sampler, events = _controlled_actuator(buffer, scorer="absolute_m4_risk")
+
+    with pytest.raises(RuntimeError, match="missing_or_invalid_opportunity_metadata"):
+        asyncio.run(
+            sampler.select(
+                current_train_weight=2,
+                min_prompt_groups=4,
+                max_prompt_groups=4,
+            )
+        )
+
+    assert [
+        item.sample_ids for item in buffer.meta_list if item is not None
+    ] == original_ids
+    assert events == []
+
+
+def test_actuation_rejects_more_than_one_partial_replenishment_batch() -> None:
+    buffer = _actuation_choice_buffer()
+    for index in range(4):
+        buffer.add(
+            f"excess-{index}",
+            weight=1,
+            l1=100.0,
+            l2=50.0,
+            tokens=100,
+            reward_mean=0.5,
+            reward_variance=1.0,
+            ready_timestamp_ns=200 + index,
+        )
+    original_ids = [item.sample_ids for item in buffer.meta_list if item is not None]
+    sampler, events = _controlled_actuator(buffer, scorer="absolute_m4_risk")
+
+    with pytest.raises(RuntimeError, match="replenishment exceeded one partial batch"):
+        asyncio.run(
+            sampler.select(
+                current_train_weight=2,
+                min_prompt_groups=4,
+                max_prompt_groups=4,
+            )
+        )
+
+    assert [
+        item.sample_ids for item in buffer.meta_list if item is not None
+    ] == original_ids
+    assert events == []
+
+
+def test_absolute_m4_actuation_remains_live_for_64_updates() -> None:
+    buffer = FakeBuffer()
+    sampler, events = _controlled_actuator(buffer, scorer="absolute_m4_risk")
+    next_group = 0
+    maximum_buffered = 0
+    replacement_batches = 0
+
+    def add_batch(weight: int) -> None:
+        nonlocal next_group, maximum_buffered
+        for l1 in (0.0, 1.0, 2.0, 10.0):
+            buffer.add(
+                f"group-{next_group:03d}",
+                weight=weight,
+                l1=l1,
+                l2=l1 / 2,
+                tokens=100,
+                reward_mean=0.25,
+                reward_variance=l1 / 20,
+                ready_timestamp_ns=100 + next_group,
+            )
+            next_group += 1
+        maximum_buffered = max(maximum_buffered, len(buffer.ready_list))
+
+    async def run_updates() -> None:
+        nonlocal replacement_batches, maximum_buffered
+        trainer_version = 0
+        for _ in range(2):
+            await sampler.admit(trainer_version_fn=lambda: trainer_version)
+            add_batch(trainer_version)
+
+        for update in range(64):
+            evicted = await sampler.evict(current_train_weight=trainer_version)
+            if evicted:
+                await asyncio.wait_for(
+                    sampler.admit(trainer_version_fn=lambda: trainer_version),
+                    timeout=0.05,
+                )
+                add_batch(trainer_version)
+                replacement_batches += 1
+
+            meta, count = await sampler.select(
+                current_train_weight=trainer_version,
+                min_prompt_groups=4,
+                max_prompt_groups=4,
+            )
+            assert meta is not None and count == 4
+            maximum_buffered = max(maximum_buffered, len(buffer.ready_list))
+
+            if update < 63:
+                trainer_version += 1
+                await sampler.admit(trainer_version_fn=lambda: trainer_version)
+                add_batch(trainer_version)
+
+    asyncio.run(run_updates())
+
+    assert replacement_batches > 0
+    assert RolloutRemovalReason.OARS_CANDIDATE_EXCESS in buffer.remove_reasons
+    assert len(events) == 64
+    assert all(event["candidate_group_count"] == 8 for event in events)
+    assert all(
+        event["proposals"]["absolute_m4_risk"]["combination_count"] == 70
+        for event in events
+    )
+    assert all(event["proposal_matches_actual"] is True for event in events)
+    assert all(8 <= event["eligible_candidate_count"] <= 11 for event in events)
+    final_accounting = events[-1]["liveness_accounting"]
+    assert final_accounting["stale_evicted_groups_total"] > 0
+    assert final_accounting["candidate_excess_removed_groups_total"] > 0
+    assert (
+        final_accounting["replenishment_batches_earned_total"]
+        == (final_accounting["replenishment_batches_consumed_total"])
+    )
+    assert final_accounting["replenishment_credits_outstanding"] == 0
+    assert maximum_buffered <= 12
 
 
 def test_controlled_frontier_observes_only_the_common_watermark_window() -> None:
@@ -652,3 +852,24 @@ def test_recorder_declares_behavior_neutral_adaptive_policy(tmp_path) -> None:
     output_path = tmp_path / "oars-v2.jsonl"
     recorder.flush_jsonl(str(output_path))
     assert json.loads(output_path.read_text().splitlines()[0]) == header
+
+
+def test_recorder_declares_fail_closed_actuation_policy() -> None:
+    recorder = OpportunityAtRiskV2ShadowRecorder(
+        mode="act",
+        actuation_scorer="absolute_m4_risk",
+        candidate_window_policy="controlled_frontier",
+        selection_candidate_watermark=8,
+        minimum_service_multiplier=0.98,
+        maximum_service_multiplier=1.02,
+        max_candidate_groups=64,
+        exact_search_max_candidates=16,
+        decision_time_budget_ns=5_000_000,
+    )
+
+    header = recorder.events[0]
+    assert header["schema_version"] == 2
+    assert header["mode"] == "act"
+    assert header["actuation_scorer"] == "absolute_m4_risk"
+    assert header["candidate_mutation"] == "configured_scorer_exact_removal"
+    assert header["stale_replenishment_policy"] == ("one_batch_drop_newest_excess_v1")
