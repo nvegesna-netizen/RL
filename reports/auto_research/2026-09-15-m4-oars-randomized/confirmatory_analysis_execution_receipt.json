@@ -1,0 +1,67 @@
+{
+  "schema": "m4-oars-randomized-confirmatory-analysis-execution-v1",
+  "status": "PASS_FROZEN_ANALYSIS_EXECUTED_AND_INDEPENDENTLY_RECONCILED",
+  "analyzed_at_utc": "2026-09-22T14:18:15Z",
+  "classification": "INCONCLUSIVE",
+  "inputs": {
+    "analysis_script": {
+      "path": "reports/auto_research/2026-09-15-m4-oars-randomized/analyze_confirmatory_pairs.py",
+      "sha256": "37d9553fec2bdd491d742341099f1a2916598b82b4d16eefb3022177385105b8"
+    },
+    "completion_gate": {
+      "path": "reports/auto_research/2026-09-15-m4-oars-randomized/confirmatory_terminal_authentication_gate.json",
+      "sha256": "4f844e49aaaeb99e19edd2b24bd3e7eb0664a9cb466321ddb20d2d3bab3fcb11",
+      "status": "PASS_ALL_20_AUTHENTICATED_RESULTS_UNOPENED"
+    },
+    "extraction_receipt": {
+      "path": "reports/auto_research/2026-09-15-m4-oars-randomized/confirmatory_result_extraction_receipt.json",
+      "sha256": "2911b5fad4cae38ec75aa24a5cf87f989830a4678796acb933f61cdd2bedd144",
+      "status": "PASS_20_RESULTS_EXTRACTED_AND_HASH_AUTHENTICATED"
+    },
+    "extraction_script": {
+      "path": "reports/auto_research/2026-09-15-m4-oars-randomized/extract_confirmatory_compact_results.py",
+      "sha256": "b8577148b22c93392b0954c680848226e36125a673e4e49e9d7eb9fe8a64125e",
+      "frozen_commit": "7919ff2916e444b6738d7f570a353c6fb7b30ad5"
+    },
+    "run_manifest": {
+      "path": "reports/auto_research/2026-09-15-m4-oars-randomized/confirmatory_run_manifest.json",
+      "sha256": "1f59d8cf3339d70b58b084af48bd2f192a880d7a43fca8190fb1d54649db5b39"
+    },
+    "authenticated_compact_result_count": 20
+  },
+  "execution": {
+    "initial_invocation": {
+      "interpreter": "Python 3.9.6",
+      "status": "NO_OUTPUT_INTERPRETER_INCOMPATIBILITY",
+      "error": "TypeError: zip() takes no keyword arguments",
+      "analysis_output_created": false
+    },
+    "successful_invocation": {
+      "interpreter": "Python 3.10.20",
+      "analysis_script_unchanged": true,
+      "scientific_inputs_unchanged": true,
+      "return_code": 0
+    }
+  },
+  "output": {
+    "path": "reports/auto_research/2026-09-15-m4-oars-randomized/confirmatory_terminal_analysis_result.json",
+    "sha256": "480180bee539b88c46f36274c9627ef99f8dae1185995f5ddaffbbbf248a25a2"
+  },
+  "verification": {
+    "deterministic_rerun_byte_identical": true,
+    "frozen_analyzer_tests_passed": 5,
+    "independent_implementation": "Ruby 2.6.10 standard library",
+    "independent_recomputation_matches": {
+      "primary_mean_sd_ci95": true,
+      "primary_exact_sign_flip_p": true,
+      "secondary_quality_mean_sd_ci95": true,
+      "training_dose_geometric_mean_ci95": true,
+      "wall_time_geometric_mean_ci95": true,
+      "per_pair_quality_correct_count_differences": true
+    }
+  },
+  "outcome_access": {
+    "compact_arm_results_accessed": true,
+    "evaluation_data_accessed": false
+  }
+}

@@ -1,0 +1,215 @@
+{
+  "completion_gate": {
+    "path": "reports/auto_research/2026-09-15-m4-oars-randomized/confirmatory_terminal_authentication_gate.json",
+    "sha256": "4f844e49aaaeb99e19edd2b24bd3e7eb0664a9cb466321ddb20d2d3bab3fcb11",
+    "status": "PASS_ALL_20_AUTHENTICATED_RESULTS_UNOPENED"
+  },
+  "evaluation_data_accessed": false,
+  "extracted_at_utc": "2026-09-22T14:14:35Z",
+  "result_count": 20,
+  "results": {
+    "p01-fifo": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/confirmatory-p01-fifo-terminal-archives/main-448299976.zip",
+        "sha256": "51fa5760fbeb6f226f4f590ab9621155d6a475f6b4ebb0c28aed40405f34b9fa"
+      },
+      "authentication_receipt_sha256": "27ed39fd33c28b5a03c7feef6d4a870fdd730819c329c87e9b491720e6f67ae0",
+      "bytes": 1384,
+      "member": "workspace/assets/basic/m4-oars-confirmatory-p01-fifo-acquisition/arm-result.json",
+      "sha256": "d4d3da8116caf58b192ee0fabba5b5b27ddf37c684f06d05a6f8884e483875e6"
+    },
+    "p01-oars": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/confirmatory-p01-oars-terminal-archives/main-447249289.zip",
+        "sha256": "8cad08741599c9194f06bf1068eed013bbeafcadeae18c3b0d6070180a3f8764"
+      },
+      "authentication_receipt_sha256": "64ec52b236ef7366250d5590f8a32a1ebb827bfd4f6adaf68670960e8c8d1f1c",
+      "bytes": 1381,
+      "member": "workspace/assets/basic/m4-oars-confirmatory-p01-oars-acquisition/arm-result.json",
+      "sha256": "837e0e2cf19ae0c276b031aa84022d661c6425be1b84f5c6288dc9a58ef5fd8f"
+    },
+    "p02-fifo": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/confirmatory-p02-fifo-terminal-archives/main-449951953.zip",
+        "sha256": "7c6f3cac982184ad2aa5f4973602bfd8342d58e59d40388e3e8e85ad4cc5ebfe"
+      },
+      "authentication_receipt_sha256": "9eac79a88272138d1dd701d9ceb7913b18f81a92a5457d64a2898405ecc908d9",
+      "bytes": 1368,
+      "member": "workspace/assets/basic/m4-oars-confirmatory-p02-fifo-acquisition/arm-result.json",
+      "sha256": "7596322fb00c5f0407fc6a593d359735fff181244ee5d9caa000fabe5c683b62"
+    },
+    "p02-oars": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/confirmatory-p02-oars-terminal-archives/main-449161431.zip",
+        "sha256": "5da1f9361c535063fb77890734d191eb0116164c07996efa82ba185e7f37f7fe"
+      },
+      "authentication_receipt_sha256": "1800b1ca67b852ae7223006e262a37362415094008efab9e7c37f47b47e635f2",
+      "bytes": 1376,
+      "member": "workspace/assets/basic/m4-oars-confirmatory-p02-oars-acquisition/arm-result.json",
+      "sha256": "619e1721862843b177f722418d190d605cb7567bc07000d2b011fa22a1595e76"
+    },
+    "p03-fifo": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/confirmatory-p03-fifo-terminal-archives/main-450642826.zip",
+        "sha256": "4c4135d2683a6eccbdaa881a52d1ae4b18b704b1308a7dc0d532440d7eaa8a9e"
+      },
+      "authentication_receipt_sha256": "7de75428d158d0f427febae6bbdca824187638d5d1ab102297931e14618e1a0d",
+      "bytes": 1368,
+      "member": "workspace/assets/basic/m4-oars-confirmatory-p03-fifo-acquisition/arm-result.json",
+      "sha256": "e244907a134d6cc709c22dd15cedf901503c6320cc7c7a74a4b672edbba432e0"
+    },
+    "p03-oars": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/confirmatory-p03-oars-terminal-archives/main-450556771.zip",
+        "sha256": "bb9b1fd33c9783668cee58da9d24492f14719b8117cd3329b9eb647718fa2bbe"
+      },
+      "authentication_receipt_sha256": "5249d8fe760dfbba3fee598a2baad7f42f99c606cf1523369704b7312f13ab36",
+      "bytes": 1363,
+      "member": "workspace/assets/basic/m4-oars-confirmatory-p03-oars-acquisition/arm-result.json",
+      "sha256": "57bf9dbb033eaa9ec083f2cf769dd84dcec629f174715ac43b3ffd3454e2d325"
+    },
+    "p04-fifo": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/confirmatory-p04-fifo-terminal-archives/main-450681030.zip",
+        "sha256": "69d7d1eb5665918c800b6837b5a39dd9c4518a4bb6395b6794f1d714758f30eb"
+      },
+      "authentication_receipt_sha256": "2caf657127cebd0727813ed30a2f5beffca1ad926195978e13729c5e06df5442",
+      "bytes": 1368,
+      "member": "workspace/assets/basic/m4-oars-confirmatory-p04-fifo-acquisition/arm-result.json",
+      "sha256": "032eec6d8b55d06cb1a4f01ab64bdc2369bc5eac1c2729ec7d50aa9689810179"
+    },
+    "p04-oars": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/confirmatory-p04-oars-terminal-archives/main-450712808.zip",
+        "sha256": "b87842aa319c36da49a28afde72cd186f00981de592a8aa609697ed9a58d337f"
+      },
+      "authentication_receipt_sha256": "e52090ba06ffdad0db567b207e199e4a488e9d4ed2a0f3e3b2934441533d318b",
+      "bytes": 1359,
+      "member": "workspace/assets/basic/m4-oars-confirmatory-p04-oars-acquisition/arm-result.json",
+      "sha256": "320ca158f6cc172828856b79aefbf95987232d374378df0bb4a200e8bca1cbe6"
+    },
+    "p05-fifo": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/confirmatory-p05-fifo-terminal-archives/main-450772427.zip",
+        "sha256": "3f530712005904a3f7050a49b7899847cb8cde5a06d3600ceb8d461c8ba248a4"
+      },
+      "authentication_receipt_sha256": "89a4c8ef36eab6351dd4245e42e2d499e27db0dddd610e60b0f497f5848aa6e8",
+      "bytes": 1383,
+      "member": "workspace/assets/basic/m4-oars-confirmatory-p05-fifo-acquisition/arm-result.json",
+      "sha256": "2ea04d61a716a02cff0fb0f0d4f3866df90c15557704065687722c90bbdfd642"
+    },
+    "p05-oars": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/confirmatory-p05-oars-terminal-archives/main-450744776.zip",
+        "sha256": "64a0ef2191287eea7409695c2d6842ed5ac5e6cd46a8e16bad5542111feefcb5"
+      },
+      "authentication_receipt_sha256": "4f573037f124650578777e3dbd648b181a630401eb97510c5492a27e7678fb88",
+      "bytes": 1382,
+      "member": "workspace/assets/basic/m4-oars-confirmatory-p05-oars-acquisition/arm-result.json",
+      "sha256": "f3adde1db5f6b3d58863c87d96511a45f68bea504ae59e1e6f31db8f0c301de3"
+    },
+    "p06-fifo": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/confirmatory-p06-fifo-terminal-archives/main-450814848.zip",
+        "sha256": "a713ae46252fd023aefa4392d32626d3e213c8c80fd6a2727d0da41d03811c4d"
+      },
+      "authentication_receipt_sha256": "d8f99c1341c693705f90603c66acc2f0fe5befa8f4f0eef5a8d141fa4cb1ab9e",
+      "bytes": 1386,
+      "member": "workspace/assets/basic/m4-oars-confirmatory-p06-fifo-acquisition/arm-result.json",
+      "sha256": "ff6642bf38bd42091e728e59fb003624eec8006be2910f7825b8c3b70775fdd3"
+    },
+    "p06-oars": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/confirmatory-p06-oars-terminal-archives/main-450848692.zip",
+        "sha256": "5487f1d7d63ca4e88185d641d827a03504f06cde663ffa46c744ad7039fc08e6"
+      },
+      "authentication_receipt_sha256": "dbe599737b81c6e796273e3402e2339c572c440fcbd98bb83aa25b27c4d3b4ae",
+      "bytes": 1376,
+      "member": "workspace/assets/basic/m4-oars-confirmatory-p06-oars-acquisition/arm-result.json",
+      "sha256": "7f77a6c595aea3955465caf18c7680a2522246dba4350f220ebf01b79445847c"
+    },
+    "p07-fifo": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/confirmatory-p07-fifo-terminal-archives/main-450881862.zip",
+        "sha256": "01aa3eb2fd347901ca654cf7ee63b40672b8310d430758ea2fdb2c25c7760d95"
+      },
+      "authentication_receipt_sha256": "4f8ab9620aa37fc9d90a451f4579d799d69a27974cc0fd9e9a7028ba75c508b2",
+      "bytes": 1366,
+      "member": "workspace/assets/basic/m4-oars-confirmatory-p07-fifo-acquisition/arm-result.json",
+      "sha256": "34f81797d44a221d7a55ddb0138c35827329f59b45826d132f2a37a163551c0e"
+    },
+    "p07-oars": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/confirmatory-p07-oars-terminal-archives/main-450915777.zip",
+        "sha256": "73eaee6bd5f4293442e8b407567f2045fb7c75883b79c5b8313bb067ed6b01eb"
+      },
+      "authentication_receipt_sha256": "c78ef8bc2c49457bbc19f52b885bf912dafa406823edfb01fc1f120b2cf85576",
+      "bytes": 1380,
+      "member": "workspace/assets/basic/m4-oars-confirmatory-p07-oars-acquisition/arm-result.json",
+      "sha256": "12223bccdb089ff2d5276f2cd227380478540d02f8b46a36b4b702674d36581b"
+    },
+    "p08-fifo": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/confirmatory-p08-fifo-terminal-archives/main-451108877.zip",
+        "sha256": "2addf4b609d5bac6562479b2e32ddac4004ecfabd4e2e32ee2466dfc1038886c"
+      },
+      "authentication_receipt_sha256": "e998e0a8dd17ca8d188c5fd788997bbafb1f2a2b99e9fbff98f12ed0eb78cfad",
+      "bytes": 1362,
+      "member": "workspace/assets/basic/m4-oars-confirmatory-p08-fifo-acquisition/arm-result.json",
+      "sha256": "3e635cebcbd20608ac1e81a944a6639bddd99757e3dd6de730b655c863320921"
+    },
+    "p08-oars": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/confirmatory-p08-oars-terminal-archives/main-450949276.zip",
+        "sha256": "9f0737170a1a0b3bdfbd5642dd1981af24b5b9ca85d0411432e70b7889a3c530"
+      },
+      "authentication_receipt_sha256": "831d4ffc5b4fcd0a4153d56059b108019c04645c677e995078d4d25dab149a40",
+      "bytes": 1381,
+      "member": "workspace/assets/basic/m4-oars-confirmatory-p08-oars-acquisition/arm-result.json",
+      "sha256": "aa221f74b2b4f4474331c5854a4f3be197426397a0501a8efd950963ddb7c629"
+    },
+    "p09-fifo": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/confirmatory-p09-fifo-terminal-archives/main-451136511.zip",
+        "sha256": "84dfa10b570aede9a0df32ea0a8266b6c2b36c901a4a4fadc3b30690e75c4a6c"
+      },
+      "authentication_receipt_sha256": "73819987d6dfc27d8f10148362f75d6d422f8f33ff53dec369468e2cd52cbb2f",
+      "bytes": 1382,
+      "member": "workspace/assets/basic/m4-oars-confirmatory-p09-fifo-acquisition/arm-result.json",
+      "sha256": "727155ab4659cc30685e5eacceb94593f4eac7827c97d741d5ba04839e845400"
+    },
+    "p09-oars": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/confirmatory-p09-oars-terminal-archives/main-451168938.zip",
+        "sha256": "0bcdb34d2548f34e640384e1f5aab561848067262c1346f8112d95f2419b40c5"
+      },
+      "authentication_receipt_sha256": "62f9d7755715ee8a5db335e729aec06bc1b1b0176293fc0272b8d8e459b5c506",
+      "bytes": 1363,
+      "member": "workspace/assets/basic/m4-oars-confirmatory-p09-oars-acquisition/arm-result.json",
+      "sha256": "6909075dc71ae3ec76d17eaf06c247c1a7f428a7026cf8b1c60a2efc3f567e77"
+    },
+    "p10-fifo": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/confirmatory-p10-fifo-terminal-archives/main-451234864.zip",
+        "sha256": "a6a632ff6abd24a8195285db05a090fb46103a64178b249f3d85d92d947ec80f"
+      },
+      "authentication_receipt_sha256": "d50797201ed46cd98c346a6b8d3a62053f003a5b40bda42f377dbb96f0d82b4a",
+      "bytes": 1365,
+      "member": "workspace/assets/basic/m4-oars-confirmatory-p10-fifo-acquisition/arm-result.json",
+      "sha256": "5e333df1f626b5571ab5cc5d3b7e9d14b747553d4eecec43f5edb35fd3bd6758"
+    },
+    "p10-oars": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/confirmatory-p10-oars-terminal-archives/main-451202214.zip",
+        "sha256": "eb773874deaa203a912f8c30408e6f40adf960782c07a926c4462fb3b21eef7e"
+      },
+      "authentication_receipt_sha256": "51441343a75dfd943390b6d09c51c9dd1a42874fa1a339a0d3ccc4dbc9e41db0",
+      "bytes": 1377,
+      "member": "workspace/assets/basic/m4-oars-confirmatory-p10-oars-acquisition/arm-result.json",
+      "sha256": "decbf676ad76fb5aa545c4eb5232dfb0b59bc1aab4bc6ce944cc108e68bf3179"
+    }
+  },
+  "schema": "m4-oars-randomized-confirmatory-result-extraction-v1",
+  "scientific_outcome_accessed": true,
+  "status": "PASS_20_RESULTS_EXTRACTED_AND_HASH_AUTHENTICATED"
+}
