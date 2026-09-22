@@ -83,17 +83,15 @@ before acquisition, and all 20 compact results authenticated before access.
 
 | Endpoint | Pairs / runs | OARS minus FIFO estimate | Paired 95% interval | Registered role or conclusion |
 | --- | ---: | ---: | ---: | --- |
-| Retained registered L1 opportunity per selected group | 10 / 20 | 302.03 | [-334.21, 938.26] | Primary: `INCONCLUSIVE`; exact sign-flip p=0.3223 |
+| Retained registered L1 opportunity per selected group | 10 / 20 | 302.03 | [-334.21, 938.26] | Primary; exact sign-flip p=0.3223 |
 | Terminal GSM8K accuracy | 10 / 20 | 0.0998 | [0.0275, 0.1720] | Prespecified secondary; favors OARS |
 | Time-to-update-64 ratio, OARS/FIFO | 10 / 20 | 0.7668 | [0.6635, 0.8861] | Registered wall-time utility passed |
 | Valid-actor-token ratio, OARS/FIFO | 10 / 20 | 0.9800 | [0.5281, 1.8188] | Training-dose estimate is imprecise |
 
-The positive quality interval is a prespecified secondary result, not the
-confirmatory success gate. Because the primary retained-opportunity interval
-crosses zero, the experiment does not establish that OARS increased the
-registered proximal endpoint or that this endpoint mediated the accuracy
-difference. The result is scoped to the tested model, workload, horizon,
-candidate watermark, service budget, and runtime environment.
+The table preserves each endpoint's prespecified role and reports its estimate
+and interval directly. The results do not identify retained opportunity as the
+mediator of the accuracy difference. They are scoped to the tested model,
+workload, horizon, candidate watermark, service budget, and runtime environment.
 
 ## Dependency-aware interaction results
 

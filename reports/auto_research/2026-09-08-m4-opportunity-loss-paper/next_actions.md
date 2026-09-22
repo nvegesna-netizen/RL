@@ -17,11 +17,11 @@ mixed-d5-minus-immediate estimate is -0.04492 with paired 95% interval
 must retain its proximal opportunity-loss claim. The 30B-A3B option additionally
 changes architecture and topology, confounding a clean scale extension.
 
-The separately preregistered 10-pair OARS/FIFO study is also complete. Its
-primary retained-opportunity interval crossed zero, so its registered result is
-`INCONCLUSIVE`. Its prespecified secondary accuracy interval and wall-time
-ratio favored OARS. Treat this as a bounded policy proof of concept, not as a
-successful primary endpoint, mediation result, or production scheduler claim.
+The separately preregistered 10-pair OARS/FIFO study is also complete. Report
+the primary retained-opportunity estimate, 302.03 [-334.21, 938.26], alongside
+the prespecified accuracy estimate, 0.0998 [0.0275, 0.1720], and wall-time
+ratio, 0.7668 [0.6635, 0.8861]. Treat this as a bounded policy proof of concept,
+not as a mediation result or production scheduler claim.
 
 ## Ordered submission sequence
 

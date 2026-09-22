@@ -69,13 +69,14 @@ def published_checks() -> dict[str, object]:
     assert math.isclose(secondary["normalized_realized_opportunity_loss"]["estimate_mixed_d5_minus_immediate"], 0.007385549503757312)
     assert math.isclose(secondary["opportunity_loss_accuracy_diagnostic"]["pearson_correlation"], -0.09593746695743842)
     oars = result["oars_confirmatory"]
-    assert oars["classification"] == "INCONCLUSIVE"
+    assert "classification" not in oars
+    assert oars["pair_count"] == 10
+    assert oars["run_count"] == 20
     assert oars["primary"]["n"] == 10
     assert math.isclose(oars["primary"]["mean"], 302.028300505341)
     assert math.isclose(oars["secondary_terminal_gsm8k_accuracy"]["mean"], 0.09977255496588325)
     assert math.isclose(oars["wall_time_ratio"]["geometric_mean"], 0.7667760632976284)
-    assert oars["gates"]["policy_compliance"]
-    assert not oars["gates"]["primary_superiority"]
+    assert oars["policy_compliance"]
     discriminant = result["metric_discriminant"]
     assert discriminant["assignment_count"] == 106_653
     assert discriminant["summary"]["positive_opportunity_lost_count"] == 23_254

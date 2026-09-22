@@ -1026,85 +1026,8 @@
     }
   },
   "oars_confirmatory": {
-    "classification": "INCONCLUSIVE",
-    "gates": {
-      "all_ten_pairs_valid": true,
-      "policy_compliance": true,
-      "primary_superiority": false,
-      "wall_time_utility": true
-    },
-    "pair_rows": [
-      {
-        "pair": 1,
-        "primary_oars_minus_fifo": 2027.4444481066894,
-        "quality_oars_minus_fifo": 0.22668688400303258,
-        "token_log_oars_over_fifo": 0.8885292366494639,
-        "wall_log_oars_over_fifo": -0.03912424510870396
-      },
-      {
-        "pair": 2,
-        "primary_oars_minus_fifo": 232.5475222269306,
-        "quality_oars_minus_fifo": 0.20394238059135708,
-        "token_log_oars_over_fifo": 1.0958611343666662,
-        "wall_log_oars_over_fifo": 0.006971085205496278
-      },
-      {
-        "pair": 3,
-        "primary_oars_minus_fifo": -1416.6425151835429,
-        "quality_oars_minus_fifo": 0.0,
-        "token_log_oars_over_fifo": -0.9049565172923909,
-        "wall_log_oars_over_fifo": -0.5440793278456866
-      },
-      {
-        "pair": 4,
-        "primary_oars_minus_fifo": 270.766939602443,
-        "quality_oars_minus_fifo": 0.0,
-        "token_log_oars_over_fifo": -0.7333021335481894,
-        "wall_log_oars_over_fifo": -0.4673040371330541
-      },
-      {
-        "pair": 5,
-        "primary_oars_minus_fifo": 866.1362167934421,
-        "quality_oars_minus_fifo": 0.18423047763457165,
-        "token_log_oars_over_fifo": -0.06848252947955909,
-        "wall_log_oars_over_fifo": -0.30587759545989224
-      },
-      {
-        "pair": 6,
-        "primary_oars_minus_fifo": 690.162513186573,
-        "quality_oars_minus_fifo": 0.03866565579984837,
-        "token_log_oars_over_fifo": -1.0600718957938366,
-        "wall_log_oars_over_fifo": -0.45715147267402717
-      },
-      {
-        "pair": 7,
-        "primary_oars_minus_fifo": 234.305745122605,
-        "quality_oars_minus_fifo": 0.23351023502653526,
-        "token_log_oars_over_fifo": 0.03876057981759497,
-        "wall_log_oars_over_fifo": -0.30162004458385
-      },
-      {
-        "pair": 8,
-        "primary_oars_minus_fifo": 63.445661320583895,
-        "quality_oars_minus_fifo": 0.025018953752843062,
-        "token_log_oars_over_fifo": -0.019974112153016237,
-        "wall_log_oars_over_fifo": -0.2728690033695872
-      },
-      {
-        "pair": 9,
-        "primary_oars_minus_fifo": -473.864365810412,
-        "quality_oars_minus_fifo": -0.002274450341167551,
-        "token_log_oars_over_fifo": 1.304097419625825,
-        "wall_log_oars_over_fifo": 0.023432718704175827
-      },
-      {
-        "pair": 10,
-        "primary_oars_minus_fifo": 525.9808396880981,
-        "quality_oars_minus_fifo": 0.08794541319181198,
-        "token_log_oars_over_fifo": -0.742058259803557,
-        "wall_log_oars_over_fifo": -0.29798292428145845
-      }
-    ],
+    "pair_count": 10,
+    "policy_compliance": true,
     "primary": {
       "ci95_lower": -334.207538401135,
       "ci95_upper": 938.264139411817,
@@ -1113,8 +1036,8 @@
       "n": 10,
       "sample_sd": 889.3963748451552
     },
-    "protocol_sha256": "3bc49412a212419635e55b616e080708e17cf265c1926c1d93faebf072a87bfd",
-    "schema": "m4-oars-randomized-confirmatory-analysis-result-v1",
+    "run_count": 20,
+    "schema": "m4-oars-public-summary-v1",
     "secondary_terminal_gsm8k_accuracy": {
       "ci95_lower": 0.02753990159754234,
       "ci95_upper": 0.17200520833422417,

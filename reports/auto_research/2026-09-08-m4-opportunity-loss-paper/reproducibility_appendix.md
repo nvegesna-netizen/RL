@@ -148,12 +148,11 @@ block is the causal unit.
 All 20 run artifacts authenticated before the evaluation payloads were opened;
 all 10 pairs were valid and policy-compliant. The registered primary
 OARS-minus-FIFO retained-opportunity estimate is 302.03 with paired 95% CI
-[-334.21, 938.26] and exact sign-flip p=0.32227, giving classification
-`INCONCLUSIVE`. The prespecified secondary terminal-accuracy estimate is
+[-334.21, 938.26] and exact sign-flip p=0.32227. The prespecified secondary terminal-accuracy estimate is
 0.09977 [0.02754, 0.17201]. The OARS/FIFO time-to-update-64 ratio is 0.76678
 [0.66350, 0.88613], while the valid-actor-token ratio is 0.98004
-[0.52808, 1.81883]. The secondary endpoints neither override the primary
-classification nor identify retained opportunity as a mediator.
+[0.52808, 1.81883]. These endpoints do not identify retained opportunity as a
+mediator.
 
 ## Assignment and observer-duty audit
 

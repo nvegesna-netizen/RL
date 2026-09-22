@@ -111,9 +111,9 @@
       "sha256": "0f361f9f9de8c21a008dd1964f2865e3204df4a269ef8c77ab4e723e5fbbe7c1"
     },
     {
-      "bytes": 9589,
+      "bytes": 9587,
       "path": "analysis/replay.py",
-      "sha256": "2453615a7c454bdaedd4e126f927ee29c64c1ffa32d8404d1dd0948cb50171ee"
+      "sha256": "3287786023b4e870fa99c284f3076faa05ab765e0b0a78fcb71be5f38b732c3b"
     },
     {
       "bytes": 3711,
@@ -126,9 +126,9 @@
       "sha256": "2f36925fdcbd9a172ea878c835b203e79abb4fcf4893c76926e4255349a7405f"
     },
     {
-      "bytes": 36599,
+      "bytes": 33781,
       "path": "data/published_results.json",
-      "sha256": "fde0298287834bd4b5944e94b9adca68abf49a8e12510b1ba611c3ee313a2275"
+      "sha256": "7f15c02a07e5a27075513e8d48d91ee7406b2c859a8ab4d0db1fde2057f5956b"
     },
     {
       "bytes": 5457,
@@ -136,14 +136,14 @@
       "sha256": "4f12bafe8cca627a48b9ee21f9fb0d05a3964d2004994a5d28568f8d7c3b168a"
     },
     {
-      "bytes": 10816,
+      "bytes": 10745,
       "path": "docs/claim_ledger.md",
-      "sha256": "ba22e25b5547ed394574ccbc7d6d68b67faa0205e1ad99afbb1d20c818de2fda"
+      "sha256": "4706b8b7b9e5cc525f682af56e6a338ad44a00e9cd4bf872b53392cd2f5f417f"
     },
     {
-      "bytes": 7067,
+      "bytes": 6933,
       "path": "docs/primary_table.md",
-      "sha256": "5d9c1f2852837d5e8a0777bbf10d8533dd3c0a6f4e076ead5fdf5284e49b9b58"
+      "sha256": "2072cb8da3698a31d9dd295e498aaf1a6b00fe15b785ebd00d6fda7b241a4b3d"
     },
     {
       "bytes": 6104,

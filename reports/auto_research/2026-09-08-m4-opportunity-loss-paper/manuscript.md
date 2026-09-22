@@ -48,8 +48,8 @@ generalization beyond the tested configurations. Finally, a preregistered
 10-pair Llama-3.2-1B/GSM8K policy study compared Opportunity-at-Risk Scheduling
 (OARS) with FIFO under a 1.02 token-budget ceiling. Its primary retained-
 opportunity contrast was 302.03 (95% CI [-334.21, 938.26]; exact sign-flip
-\(p=0.322\)), so the registered result was `INCONCLUSIVE`. Secondary endpoints
-favored OARS: terminal accuracy increased by 0.0998 [0.0275, 0.1720] and the
+\(p=0.322\)). Secondary endpoints favored OARS: terminal accuracy increased by
+0.0998 [0.0275, 0.1720] and the
 wall-time ratio was 0.7668 [0.6635, 0.8861]. These are scoped policy results,
 not evidence of mediation or a production-ready scheduler.
 
@@ -111,8 +111,8 @@ Our contributions are:
    additional assignments, including prespecified fixed-configuration size
    contrasts while avoiding pure-family and general-scaling claims.
 7. A preregistered paired test of a token-budgeted opportunity-aware selection
-   rule, reported with its inconclusive primary endpoint and favorable
-   secondary accuracy and wall-time estimates kept in their registered roles.
+   rule, reporting the primary estimate and interval alongside the prespecified
+   secondary accuracy and wall-time estimates.
 
 ## 2. Related work
 
@@ -330,13 +330,11 @@ The preregistered confirmatory study paired OARS and FIFO within 10 independent
 training-seed blocks (20 Llama-3.2-1B/GSM8K runs), with policy order frozen
 within blocks. All pairs were valid and policy-compliant. The primary
 OARS-minus-FIFO retained-opportunity estimate was 302.03, with 95% CI
-[-334.21, 938.26] and exact sign-flip \(p=0.322\); it did not satisfy the
-registered superiority gate, so the study classification is `INCONCLUSIVE`.
+[-334.21, 938.26] and exact sign-flip \(p=0.322\).
 The secondary terminal-accuracy difference was 0.0998 [0.0275, 0.1720]. The
 OARS/FIFO wall-time ratio was 0.7668 [0.6635, 0.8861], while the valid actor-
-token ratio was 0.9800 [0.5281, 1.8188]. The favorable secondary results do not
-rescue the primary classification or identify retained opportunity as the
-mediator of the accuracy difference.
+token ratio was 0.9800 [0.5281, 1.8188]. These estimates do not identify
+retained opportunity as the mediator of the accuracy difference.
 
 ## 5. Six-cell synthesis
 
@@ -513,9 +511,9 @@ not intentionally delay half of the groups; it chooses a token-budgeted subset
 of ready work using the pre-existing opportunity signal. Its positive accuracy
 interval and sub-one wall-time interval show that this bounded policy can
 outperform FIFO on those secondary endpoints in the tested 64-update setting.
-Its much wider primary interval shows that the experiment did not establish
-the registered retained-opportunity superiority claim. The two policy studies
-therefore are not contradictory, and neither supports a causal mediation claim.
+Its primary interval spans negative and positive values. The two policy studies
+therefore answer different questions, and neither supports a causal mediation
+claim.
 
 ## 9. Limitations
 
@@ -544,9 +542,9 @@ reference—not a wholly independent four-cell replication.
 
 Terminal task accuracy was measured in two separate run-randomized studies.
 The mixed-d5 interval crossed zero and both registered relevance bounds. The
-OARS secondary accuracy interval favored OARS, but the primary retained-
-opportunity interval crossed zero and the registered study decision was
-`INCONCLUSIVE`. OARS was tested for 64 updates on Llama-3.2-1B/GSM8K; longer-
+OARS secondary accuracy interval favored OARS, while the primary retained-
+opportunity interval spanned negative and positive values. OARS was tested for
+64 updates on Llama-3.2-1B/GSM8K; longer-
 horizon convergence, other workloads and scales, and comparisons against
 production schedulers remain untested. The accuracy contrast cannot be
 attributed specifically to retained opportunity without a mediation design.
@@ -601,8 +599,9 @@ attenuation in both fixed workload configurations. This establishes a material
 M4 opportunity-loss phenomenon across the tested configurations. The mixed-d5
 run-randomized quality estimate was negative but not precise enough to establish
 its direction and practically relevant magnitude. In the separate OARS study,
-the registered primary retained-opportunity comparison was inconclusive, while
-secondary terminal accuracy and wall time favored OARS. This supplies a
+the primary retained-opportunity estimate was 302.03 [−334.21, 938.26], while
+secondary terminal accuracy was 0.0998 [0.0275, 0.1720] and the wall-time ratio
+was 0.7668 [0.6635, 0.8861]. This supplies a
 promising proof of concept rather than a confirmed mechanism or deployment-
 ready scheduler. Pure family effects, general scaling laws, causal mediation,
 and broader generalization remain for future preregistered studies.

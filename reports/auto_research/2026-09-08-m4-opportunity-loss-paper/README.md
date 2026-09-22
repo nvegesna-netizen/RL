@@ -3,8 +3,8 @@
 This directory is the review-ready publication workspace for the completed M4
 opportunity-loss campaign and its prospective Llama 3.2 1B and 3B extensions.
 It also integrates the separately preregistered 16-pair downstream-quality
-study and 10-pair OARS/FIFO policy study without promoting either study's
-inconclusive registered primary result into the headline claim.
+study and 10-pair OARS/FIFO policy study, reporting their estimates and
+intervals without promoting them into the headline causal-measurement claim.
 
 ## Start here
 

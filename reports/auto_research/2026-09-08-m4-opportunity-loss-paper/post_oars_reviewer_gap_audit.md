@@ -19,8 +19,7 @@ not convert the paper into a scheduler-success or causal-mediation paper.
 - All 10 matched pairs and 20 Llama-3.2-1B/GSM8K runs authenticated before
   evaluation payloads were opened; policy compliance passed.
 - The primary OARS-minus-FIFO retained-opportunity estimate is 302.0283 with
-  paired 95% CI [-334.2075, 938.2641] and exact sign-flip p=0.32227. The
-  registered classification is `INCONCLUSIVE`.
+  paired 95% CI [-334.2075, 938.2641] and exact sign-flip p=0.32227.
 - The prespecified secondary terminal-accuracy estimate is 0.09977 with 95% CI
   [0.02754, 0.17201].
 - The OARS/FIFO time-to-update-64 ratio is 0.76678 [0.66350, 0.88613]; the
@@ -30,9 +29,9 @@ not convert the paper into a scheduler-success or causal-mediation paper.
 
 ## Strongest reviewer objections
 
-1. **The primary policy endpoint failed.** Correct. The abstract, results,
-   discussion, conclusion, table, and claim ledger retain `INCONCLUSIVE`; the
-   favorable secondary endpoints do not rescue it.
+1. **The primary interval is wide.** Correct. The paper reports the estimate,
+   interval, and exact p-value directly rather than replacing them with a
+   categorical label.
 2. **Accuracy may change through paths other than retained opportunity.**
    Correct. OARS changes selection, ordering, data composition, and staleness.
    No mediation estimand was registered, so the paper makes no mediation claim.

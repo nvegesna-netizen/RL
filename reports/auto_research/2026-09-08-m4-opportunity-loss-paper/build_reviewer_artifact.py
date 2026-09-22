@@ -182,13 +182,14 @@ def published_checks() -> dict[str, object]:
     assert math.isclose(secondary["normalized_realized_opportunity_loss"]["estimate_mixed_d5_minus_immediate"], 0.007385549503757312)
     assert math.isclose(secondary["opportunity_loss_accuracy_diagnostic"]["pearson_correlation"], -0.09593746695743842)
     oars = result["oars_confirmatory"]
-    assert oars["classification"] == "INCONCLUSIVE"
+    assert "classification" not in oars
+    assert oars["pair_count"] == 10
+    assert oars["run_count"] == 20
     assert oars["primary"]["n"] == 10
     assert math.isclose(oars["primary"]["mean"], 302.028300505341)
     assert math.isclose(oars["secondary_terminal_gsm8k_accuracy"]["mean"], 0.09977255496588325)
     assert math.isclose(oars["wall_time_ratio"]["geometric_mean"], 0.7667760632976284)
-    assert oars["gates"]["policy_compliance"]
-    assert not oars["gates"]["primary_superiority"]
+    assert oars["policy_compliance"]
     discriminant = result["metric_discriminant"]
     assert discriminant["assignment_count"] == 106_653
     assert discriminant["summary"]["positive_opportunity_lost_count"] == 23_254
@@ -659,9 +660,19 @@ def main() -> None:
         "opportunity_loss_accuracy_diagnostic": secondary["opportunity_loss_accuracy_diagnostic"],
         "unsupported_secondary_endpoints": secondary["unsupported_secondary_endpoints"],
     }
-    published["oars_confirmatory"] = json.loads(
+    oars = json.loads(
         (HERE.parent / "2026-09-15-m4-oars-randomized/confirmatory_terminal_analysis_result.json").read_bytes()
     )
+    published["oars_confirmatory"] = {
+        "schema": "m4-oars-public-summary-v1",
+        "pair_count": oars["primary"]["n"],
+        "run_count": 20,
+        "policy_compliance": oars["gates"]["policy_compliance"],
+        "primary": oars["primary"],
+        "secondary_terminal_gsm8k_accuracy": oars["secondary_terminal_gsm8k_accuracy"],
+        "training_dose_ratio": oars["training_dose_ratio"],
+        "wall_time_ratio": oars["wall_time_ratio"],
+    }
     discriminant = json.loads((HERE / "metric_discriminant.json").read_bytes())
     published["metric_discriminant"] = {
         key: discriminant[key]

@@ -1,6 +1,6 @@
 {
-  "archive_bytes": 32828,
-  "archive_sha256": "6605bf860fd583a458ad3f1198a17e1896d2e791b65c2d0ebc9fcc6bee792785",
+  "archive_bytes": 31994,
+  "archive_sha256": "8b17f25c01a45f8705219ec4046a9f71150c97f995458c408695a91066e566b4",
   "clean_room": {
     "credential_environment_keys": [
       "LANG",
@@ -15,9 +15,9 @@
   },
   "deterministic_rebuild": {
     "archive_byte_identical": true,
-    "second_archive_sha256": "6605bf860fd583a458ad3f1198a17e1896d2e791b65c2d0ebc9fcc6bee792785"
+    "second_archive_sha256": "8b17f25c01a45f8705219ec4046a9f71150c97f995458c408695a91066e566b4"
   },
-  "manifest_sha256": "add25449c3500bc3856cba86d6ab55309d2d11bd9d44e7a62e940314b386d7b0",
+  "manifest_sha256": "bdf7d66725f0f1e13d0269506a1bdccffda9f7bef9c7ad478248ddd8ab0777e3",
   "release_state": "LOCAL_COMPACT_BUNDLE_NOT_EXTERNALLY_HOSTED",
   "schema": "m4-reviewer-artifact-clean-room-result-v1"
 }
