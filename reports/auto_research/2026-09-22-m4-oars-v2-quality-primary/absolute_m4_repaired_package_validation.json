@@ -1,0 +1,31 @@
+{
+  "schema": "m4-oars-v2-absolute-m4-repaired-package-validation-v1",
+  "status": "PASS",
+  "source_commit": "50443383825adeddca9cd1417c9dd261d8413670",
+  "source_archive_sha256": "3bab95936ff2e419532f3816ea96a53c3917b4716bccd460885d2606725d5394",
+  "protocol_sha256": "e0e0b26cc1a592bf14c4b0f77d990662f6c3ff3e09bfb6a772a3efbf149b9d2d",
+  "authorization_sha256": "99521de92af8aea855e09f6c1cd0157a30f03f6d5f5a7f81bc578c5e86385a63",
+  "manifest_sha256": "9e13db7f0dadacc49514220064fba0a3eddf5a9d45ca884672cf27f9ff4d7297",
+  "analyzer_sha256": "856584b209d7ab0dd0fb4771c93e3234004e5fbe951f34f3c3c39ac446cff9c1",
+  "checks": {
+    "reward_variance_predecessor_gate": "PASS_OARS_V2_ACTUATION_QUALIFIED",
+    "deterministic_rebuild": true,
+    "shell_syntax": true,
+    "safe_archive_extraction": true,
+    "locked_image_commit": true,
+    "locked_transferqueue_commit": true,
+    "dependency_complete_repository_unit_preflight_before_training": true,
+    "repaired_gate_tests_before_training": true,
+    "runtime_intervention_unchanged": true,
+    "actuation_scorer": "absolute_m4_risk",
+    "training_seed": 20262232,
+    "outcome_excluded": true,
+    "time_limit_seconds": 14400,
+    "queue_deadline_override": null,
+    "required_launcher": "runllm.py --no_wait",
+    "automatic_retry": false,
+    "automatic_extension": false
+  },
+  "training_quality_analyzed": false,
+  "scientific_outcome_acquisition": false
+}
