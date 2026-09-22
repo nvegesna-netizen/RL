@@ -1,0 +1,49 @@
+{
+  "actuation_scorer": "reward_variance_risk",
+  "archives": {
+    "logs_after_sha256": "d02d0460a69fc01179c0885a34a79bafe170a6cabe61674c2c228bcb678fb274",
+    "main_sha256": "7835ba6e617a369ed38980d60686da53c30c2441d5ab8daa9fe784c3c3aceea9"
+  },
+  "artifact_manifest_exact_coverage": true,
+  "artifacts": {
+    "m4-oars-v2-reward-variance-actuation-qualification-lifecycle.jsonl": {
+      "bytes": 8290281,
+      "copies_byte_identical": true,
+      "sha256": "99e439673e67d150c35b4afc47a2dd93e6ce98f5dcbacb5af4424ae4b525e919"
+    },
+    "m4-oars-v2-reward-variance-actuation-qualification-oars-v2.jsonl": {
+      "bytes": 530896,
+      "copies_byte_identical": true,
+      "sha256": "413f785de8abb4d6492ec4f5b1366f00e1d003b2c34bc92accc41d5e08f7fe8f"
+    },
+    "m4-oars-v2-reward-variance-actuation-qualification-observer-duty.json": {
+      "bytes": 468,
+      "copies_byte_identical": true,
+      "sha256": "db7ae3f6aabc4b927a5ea81ed72e3cbcb47d47394d108798d72daea56b92b7a0"
+    },
+    "m4-oars-v2-reward-variance-actuation-qualification-opportunity.jsonl": {
+      "bytes": 1315761,
+      "copies_byte_identical": true,
+      "sha256": "d47d22ed9e30468a5d169c08807ada6bc9d3d8672021ec3480ca8186d2ed9eaf"
+    },
+    "m4-oars-v2-reward-variance-actuation-qualification-result.json": {
+      "bytes": 1239,
+      "copies_byte_identical": true,
+      "sha256": "1ba43fee623f9d33f0140d09f4c698a89b4530335e349c322605adf31c2f927b"
+    },
+    "m4-oars-v2-reward-variance-actuation-qualification-run.log": {
+      "bytes": 224595,
+      "copies_byte_identical": true,
+      "sha256": "d7bad8f63a3316eaca5ecbddcc7da960deab3080aa4bf69b9b5b80fa4833d44c"
+    }
+  },
+  "pipeline": {
+    "downstream_id": 69339594,
+    "logs_after_job_id": 451935035,
+    "main_job_id": 451935034,
+    "upstream_id": 69339424
+  },
+  "result_opened": false,
+  "schema": "m4-oars-v2-actuation-terminal-authentication-v1",
+  "status": "PASS_AUTHENTICATED_RESULT_UNOPENED"
+}

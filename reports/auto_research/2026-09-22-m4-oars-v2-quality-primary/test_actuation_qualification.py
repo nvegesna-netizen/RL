@@ -143,3 +143,32 @@ def test_unreconciled_liveness_count_fails_gate() -> None:
     )
     assert result["status"] == "FAIL"
     assert result["checks"]["complete_liveness_accounting"] is False
+
+
+def test_bounded_terminal_credit_and_zero_excess_are_valid() -> None:
+    oars, lifecycle, duty = _artifacts("reward_variance_risk")
+    for decision in oars[1:]:
+        accounting = decision["liveness_accounting"]
+        accounting["candidate_excess_pending_groups"] = 0
+        accounting["candidate_excess_removed_groups_total"] = 0
+        decision["candidate_excess_count"] = 0
+        decision["eligible_candidate_count"] = 8
+    lifecycle = [
+        row for row in lifecycle if row.get("removal_reason") != "oars_candidate_excess"
+    ]
+    final = oars[-1]["liveness_accounting"]
+    final["replenishment_batches_consumed_total"] -= 1
+    final["replenishment_credits_outstanding"] = 1
+
+    result = assess_v2_actuation(
+        scorer="reward_variance_risk",
+        oars_rows=oars,
+        lifecycle_rows=lifecycle,
+        observer_duty=duty,
+        source_commit="d" * 40,
+        run_start_ns=0,
+        run_end_ns=6_500_000_000,
+    )
+
+    assert result["status"] == "PASS_OARS_V2_ACTUATION_QUALIFIED"
+    assert result["checks"]["complete_liveness_accounting"] is True

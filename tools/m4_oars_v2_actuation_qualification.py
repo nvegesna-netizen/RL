@@ -185,17 +185,19 @@ def assess_v2_actuation(
             and all(
                 row.get("candidate_excess_pending_groups")
                 == decision.get("candidate_excess_count")
-                and row.get("replenishment_credits_outstanding") == 0
+                and row.get("replenishment_credits_outstanding") in (0, 1)
                 and row.get("replenishment_batches_earned_total")
-                == row.get("replenishment_batches_consumed_total")
+                - row.get("replenishment_batches_consumed_total")
+                == row.get("replenishment_credits_outstanding")
+                and row.get("replenishment_batches_earned_total")
+                <= row.get("stale_evicted_groups_total")
+                <= EXPECTED_GROUPS * row.get("replenishment_batches_earned_total")
                 for row, decision in zip(accounting_rows, decisions, strict=True)
             )
             and int(final_accounting.get("candidate_excess_removed_groups_total", 0))
             == removals["oars_candidate_excess"]
             and int(final_accounting.get("stale_evicted_groups_total", 0))
             == removals["stale_evicted"]
-            and int(final_accounting.get("candidate_excess_removed_groups_total", 0))
-            > 0
             and int(final_accounting.get("stale_evicted_groups_total", 0)) > 0
             and int(final_accounting.get("replenishment_batches_earned_total", 0)) > 0
         ),

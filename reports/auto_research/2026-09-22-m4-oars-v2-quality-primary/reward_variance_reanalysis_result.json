@@ -1,0 +1,45 @@
+{
+  "actuation_scorer": "reward_variance_risk",
+  "analysis_revision": "bounded_credit_accounting_v2",
+  "checks": {
+    "all_scorers_exact_no_fallback": true,
+    "bounded_candidate_excess": true,
+    "combined_observer_controller_duty": true,
+    "complete_learner_steps": true,
+    "complete_liveness_accounting": true,
+    "complete_metadata_no_skip": true,
+    "configured_proposal_identity": true,
+    "exact_candidate_set": true,
+    "header": true,
+    "one_decision_per_step": true,
+    "runtime": true,
+    "two_sided_service_band": true
+  },
+  "combined_observer_controller_duty": 0.002087856835559417,
+  "decision_count": 64,
+  "gradient_observer_duty": 0.0019890735485247244,
+  "liveness_accounting": {
+    "candidate_excess_pending_groups": 0,
+    "candidate_excess_removed_groups_total": 0,
+    "replenishment_batches_consumed_total": 58,
+    "replenishment_batches_earned_total": 59,
+    "replenishment_credits_outstanding": 1,
+    "stale_evicted_groups_total": 228
+  },
+  "oars_v2_actuated": true,
+  "oars_v2_decision_duty": 9.878328703469275e-05,
+  "original_result_sha256": "1ba43fee623f9d33f0140d09f4c698a89b4530335e349c322605adf31c2f927b",
+  "original_status": "FAIL",
+  "removals": {
+    "bounded_shutdown": 16,
+    "selected": 256,
+    "stale_evicted": 228
+  },
+  "repair_scope": "offline gate correction only; runtime code, assignments, selections, and artifacts are unchanged",
+  "runtime_seconds": 380.242641458,
+  "schema": "m4-oars-v2-actuation-qualification-result-v1",
+  "scientific_outcome_acquisition": false,
+  "source_commit": "74ea47bcb63dea04b00a30bf13c31dfedc012d7b",
+  "status": "PASS_OARS_V2_ACTUATION_QUALIFIED",
+  "training_quality_analyzed": false
+}

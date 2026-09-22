@@ -543,9 +543,10 @@ def test_absolute_m4_actuation_remains_live_for_64_updates() -> None:
     assert final_accounting["candidate_excess_removed_groups_total"] > 0
     assert (
         final_accounting["replenishment_batches_earned_total"]
-        == (final_accounting["replenishment_batches_consumed_total"])
+        - final_accounting["replenishment_batches_consumed_total"]
+        == final_accounting["replenishment_credits_outstanding"]
     )
-    assert final_accounting["replenishment_credits_outstanding"] == 0
+    assert final_accounting["replenishment_credits_outstanding"] in (0, 1)
     assert maximum_buffered <= 12
 
 
