@@ -1,0 +1,28 @@
+{
+  "schema": "m4-oars-v2-controlled-frontier-requalification-source-receipt-v1",
+  "status": "PASS_SOURCE_ARCHIVE_READY_LAUNCH_NOT_AUTHORIZED",
+  "source_commit": "2f017505f90d428dbc968aad7d718826cecb524c",
+  "source_archive": {
+    "path_outside_git": "session/20260914_m4_opportunity_control/m4-oars-v2-controlled-frontier-requalification-source-2f017505f.tar.gz",
+    "sha256": "2a0f960d0a8f6698f997c5990d65446a637d2425d4b0d1914a1107a438571606",
+    "member_count": 2601,
+    "symlink_count": 16,
+    "unique_paths": true,
+    "safe_paths": true,
+    "safe_symlink_parents": true
+  },
+  "pinned_inputs": {
+    "examples/configs/grpo_math_1B_megatron_single_controller_m4_oars_v2_controlled_frontier.yaml": "939218f0217fbef784b77ce5c978ff6a8c9cb1fffcabf2ecb2a468892a8a16da",
+    "nemo_rl/algorithms/async_utils/opportunity_at_risk_v2.py": "b5851deb1afbd03ccf08b2dee33ec15f599fb0db157c65ca0fdb6fe4e8aef611",
+    "reports/auto_research/2026-09-22-m4-oars-v2-controlled-contention/qualification_protocol.json": "8a900d218866347c4ce5ebd41c85b954badcaf5021a956209bd61fc8fb1fe5d5",
+    "reports/auto_research/2026-09-22-m4-oars-v2-controlled-contention/repair_verification.json": "176b9db68428f767d94a60e10e0455f65800da66cfac4914303f7570d3069c13",
+    "tests/unit/single_controller/test_opportunity_at_risk_v2.py": "48bd4a09dc73239fc4c5a6c5d78ce96112e4b3f76596666797e65058f928931c",
+    "tools/m4_oars_v2_controlled_frontier_qualification.py": "caff44951b2bcb269bba94d78a6ef5e8f5de52232b0e149590f4f16e3641634d"
+  },
+  "boundary": {
+    "replacement_manifest_built": false,
+    "replacement_launch_authorized": false,
+    "replacement_submitted": false,
+    "reason": "The prior authorization allowed one submission attempt, which is consumed."
+  }
+}
