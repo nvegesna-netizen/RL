@@ -1,0 +1,38 @@
+{
+  "schema": "m4-oars-v2-actuation-qualification-package-validation-v1",
+  "status": "PASS",
+  "source_commit": "74ea47bcb63dea04b00a30bf13c31dfedc012d7b",
+  "source_archive_sha256": "db0c1010de8fb6236131b923679476c9cbb5f44c755dc0303eff9b4ef16642a9",
+  "protocol_sha256": "e0e0b26cc1a592bf14c4b0f77d990662f6c3ff3e09bfb6a772a3efbf149b9d2d",
+  "manifests": {
+    "reward_variance_risk": {
+      "sha256": "28dd152de3777fa364ba8eba7f95197e6902478e76acc4ab42ba0393ee8b55e7",
+      "authorization_sha256": "5d54c969562486bc80bb6eee14cef5033a7a22b194fe4db264ed1592dadefa95",
+      "training_seed": 20262231
+    },
+    "absolute_m4_risk": {
+      "sha256": "ac56735609ec18ec6c8b91a83faa90032d0d9ba937566babc61f9132a3a12b1e",
+      "authorization_sha256": "693bd6cc002a5a3b513778b27336a2b0075b02adbbb62b5352fad58ff92e5044",
+      "training_seed": 20262232
+    }
+  },
+  "checks": {
+    "deterministic_rebuild": true,
+    "shell_syntax": true,
+    "safe_archive_extraction": true,
+    "locked_image_commit": true,
+    "locked_transferqueue_commit": true,
+    "dependency_complete_repository_unit_preflight_before_training": true,
+    "independent_actuation_gate_tests_before_training": true,
+    "fail_closed_actuation": true,
+    "outcome_excluded": true,
+    "time_limit_seconds": 14400,
+    "queue_deadline_override": null,
+    "required_launcher": "runllm.py --no_wait",
+    "automatic_retry": false,
+    "automatic_extension": false,
+    "sequential_submission_gate": "reward_variance_must_pass_before_absolute_m4_submission"
+  },
+  "training_quality_analyzed": false,
+  "scientific_outcome_acquisition": false
+}
