@@ -1,0 +1,52 @@
+# Prospective systems-only OARS-v2 live-shadow qualification.
+# Eager weight-FIFO is the sole acting selector. No candidate watermark is used.
+defaults: grpo_math_1B_megatron_single_controller_m4_llama3p2_1b_gsm8k_family_transport.yaml
+
+grpo:
+  max_num_steps: 64
+  max_num_epochs: 2
+  seed: 20262201
+
+async_rl:
+  sampler:
+    name: weight_fifo
+    max_staleness_versions: 1
+    selection_candidate_watermark: null
+  lifecycle_audit_path: results/m4-oars-v2-live-shadow/lifecycle.jsonl
+  controlled_release_delay:
+    enabled: true
+    seed: 20262203
+    assignment_domain: m4-oars-v2-live-shadow-v1
+    arms:
+      - label: neutral
+        delay_seconds: 0.0
+        mass: 1
+  gradient_opportunity_audit:
+    enabled: true
+    output_path: results/m4-oars-v2-live-shadow/opportunity.jsonl
+    observer_duty_path: results/m4-oars-v2-live-shadow/observer-duty.json
+  lifecycle_derived_opportunity_audit:
+    enabled: false
+  opportunity_at_risk_shadow:
+    enabled: false
+  opportunity_at_risk_v2_shadow:
+    enabled: true
+    output_path: results/m4-oars-v2-live-shadow/oars-v2.jsonl
+    minimum_service_multiplier: 0.98
+    maximum_service_multiplier: 1.02
+    max_candidate_groups: 64
+    exact_search_max_candidates: 16
+    decision_time_budget_ns: 5000000
+
+logger:
+  log_dir: results/m4-oars-v2-live-shadow/metrics
+  wandb_enabled: false
+  tensorboard_enabled: false
+  mlflow_enabled: false
+  swanlab_enabled: false
+  monitor_gpus: false
+
+data_plane:
+  # The pinned one-node EOS image already contains TransferQueue. Avoid the
+  # redundant per-actor Git clone that censored the original qualification.
+  actor_runtime_env_mode: inherit_baked_single_node

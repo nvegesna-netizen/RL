@@ -1,0 +1,52 @@
+{
+  "schema": "m4-oars-v2-live-shadow-qualification-protocol-v1",
+  "status": "FROZEN_BEFORE_EOS_PACKAGING",
+  "purpose": "Qualify behavior neutrality, natural comparison support, proposal integrity, fallback rate, and overhead for OARS-v2 while eager weight-FIFO remains the sole acting selector.",
+  "setting": {
+    "model": "meta-llama/Llama-3.2-1B-Instruct",
+    "workload": "gsm8k",
+    "trainer_steps": 64,
+    "nodes": 1,
+    "gpus": 2,
+    "scheduler_time_limit_seconds": 14400,
+    "queue_deadline_override": null,
+    "selection_candidate_watermark": null,
+    "acting_policy": "eager_weight_fifo",
+    "shadow_scorers": [
+      "age",
+      "reward_variance_risk",
+      "token_normalized_m4_risk",
+      "absolute_m4_risk"
+    ]
+  },
+  "terminal_gate": {
+    "safety_required": {
+      "complete_learner_steps": 64,
+      "one_shadow_decision_per_step": true,
+      "actual_selection_exactly_matches_fifo_every_decision": true,
+      "candidate_group_count_range": [4, 64],
+      "shadow_skip_count": 0,
+      "proposal_cardinality": 4,
+      "proposal_token_multiplier_range": [0.98, 1.02],
+      "maximum_fallback_fraction": 0.05,
+      "maximum_combined_observer_duty": 0.01,
+      "maximum_p95_latency_fraction_of_median_step_interval": 0.01,
+      "maximum_runtime_seconds": 14400
+    },
+    "natural_support_required_for_scheduler_readiness": {
+      "minimum_complete_contended_decisions": 8
+    },
+    "classifications": {
+      "safety_and_support": "PASS_SHADOW_SYSTEMS_READY",
+      "safety_without_support": "PASS_SAFE_INSUFFICIENT_NATURAL_CONTENTION",
+      "safety_failure": "FAIL_SHADOW_SYSTEMS_GATE"
+    }
+  },
+  "claim_boundary": {
+    "oars_v2_actuation_allowed": false,
+    "training_quality_analysis_allowed": false,
+    "scientific_outcome_acquisition": false,
+    "pipeline_status_is_scientific_endpoint": false,
+    "insufficient_natural_contention_triggers_retry": false
+  }
+}
