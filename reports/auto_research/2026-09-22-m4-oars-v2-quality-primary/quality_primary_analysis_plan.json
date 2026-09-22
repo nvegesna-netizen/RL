@@ -1,0 +1,33 @@
+{
+  "analysis_unit": "matched three-arm training-seed block",
+  "incomplete_block_rule": "Any missing or invalid arm makes its block incomplete; no automatic retry, replacement, or extension is allowed.",
+  "multiplicity": "One sole primary contrast. Secondary contrasts are descriptive and do not replace or modify the primary.",
+  "outcome_access_gate": "Authenticate all 54 frozen identities and both terminal artifact copies per identity before opening any arm outcome.",
+  "primary": {
+    "estimand": "mean across 18 blocks of absolute-M4 minus FIFO terminal GSM8K accuracy",
+    "evidence_criterion": "95% interval lower bound above zero",
+    "interval": {
+      "confidence": 0.95,
+      "df": 17,
+      "method": "two_sided_matched_block_t",
+      "t_critical": 2.10981557783318
+    },
+    "robustness": {
+      "enumeration_count": 262144,
+      "method": "inclusive_two_sided_exact_sign_flip"
+    }
+  },
+  "protocol_sha256": "e0e0b26cc1a592bf14c4b0f77d990662f6c3ff3e09bfb6a772a3efbf149b9d2d",
+  "qualification_gate_sha256": "7d2660bc1d1e651f83b40e037ea1890c5a3389681536f20fc8f5e389e4afc470",
+  "reporting": "Report all numeric estimates, intervals, block outcomes, policy compliance, dose, and wall time without suppressing mixed results.",
+  "run_manifest_sha256": "44fe686d444545965afd6964387ae662c2a7f640512b1262da19b90ddfabd20f",
+  "schema": "m4-oars-v2-quality-primary-analysis-plan-v1",
+  "secondary": [
+    "reward-variance minus FIFO terminal GSM8K accuracy",
+    "absolute-M4 minus reward-variance terminal GSM8K accuracy",
+    "matched wall-time log ratios",
+    "matched valid-actor-token-per-update log ratios",
+    "registered opportunity and scheduler mechanism statistics"
+  ],
+  "status": "SEALED_BEFORE_ACQUISITION_AUTHORIZATION"
+}
