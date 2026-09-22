@@ -569,25 +569,30 @@ class OpportunityAtRiskV2ShadowSampler:
         ]
         if not in_window_indices:
             return None
-        target_version = min(
-            self._buffer.start_weight_list[index] for index in in_window_indices
-        )
-        baseline_indices = [
-            index
-            for index in in_window_indices
-            if self._buffer.start_weight_list[index] == target_version
-            and self._buffer.ready_list[index]
-        ]
-        requested = min(len(baseline_indices), max_prompt_groups)
-        if requested < min_prompt_groups:
-            return None
-        baseline_indices = baseline_indices[:requested]
         eligible_indices = [
             index for index in in_window_indices if self._buffer.ready_list[index]
         ]
         eligible_indices.sort(
             key=lambda index: (self._buffer.start_weight_list[index], index)
         )
+        watermark = self._baseline.selection_candidate_watermark
+        if watermark is not None and len(eligible_indices) < watermark:
+            return None
+        candidate_indices = (
+            eligible_indices[:watermark] if watermark is not None else eligible_indices
+        )
+        target_version = min(
+            self._buffer.start_weight_list[index] for index in in_window_indices
+        )
+        baseline_indices = [
+            index
+            for index in candidate_indices
+            if self._buffer.start_weight_list[index] == target_version
+        ]
+        requested = min(len(baseline_indices), max_prompt_groups)
+        if requested < min_prompt_groups:
+            return None
+        baseline_indices = baseline_indices[:requested]
         baseline_group_ids: list[str] = []
         try:
             for index in baseline_indices:
@@ -602,7 +607,7 @@ class OpportunityAtRiskV2ShadowSampler:
             "actual_selected_group_ids": None,
             "baseline_group_ids": baseline_group_ids,
             "baseline_matches_actual": None,
-            "candidate_group_count": len(eligible_indices),
+            "candidate_group_count": len(candidate_indices),
             "current_learner_version": current_train_weight,
             "decision_latency_ns": 0,
             "proposals": {},
@@ -610,13 +615,13 @@ class OpportunityAtRiskV2ShadowSampler:
         }
         if requested != self.EXPECTED_BATCH_GROUPS:
             event["skip_reason"] = "baseline_cardinality_not_four"
-        elif len(eligible_indices) > self._max_candidate_groups:
+        elif len(candidate_indices) > self._max_candidate_groups:
             event["skip_reason"] = "candidate_safety_cap_exceeded"
         else:
             try:
                 candidates: list[OARSV2Candidate] = []
                 by_index: dict[int, OARSV2Candidate] = {}
-                for index in eligible_indices:
+                for index in candidate_indices:
                     meta = self._buffer.meta_list[index]
                     ready_timestamp = self._buffer.ready_timestamp_ns_list[index]
                     if meta is None or ready_timestamp is None:

@@ -1,0 +1,28 @@
+{
+  "schema": "m4-oars-v2-controlled-frontier-repair-verification-v1",
+  "status": "PASS_LOCAL_REPAIR_AWAITING_REQUALIFICATION",
+  "failed_source_commit": "b4f78633e987dc2c29dccb2e02af0b8e650331f6",
+  "root_cause": "OARS-v2 observed select polling calls before WeightFIFO enforced the controlled eight-candidate watermark.",
+  "repair": {
+    "below_watermark_observation": "disabled",
+    "controlled_candidate_window": "first eight ready candidates in stable WeightFIFO order",
+    "acting_selector": "unchanged WeightFIFO",
+    "natural_eager_mode": "unchanged"
+  },
+  "verification": {
+    "terminal_artifacts_authenticated_before_open": true,
+    "terminal_autopsy_replays": true,
+    "dependency_light_gate_tests": "5 passed",
+    "python_compilation": "passed",
+    "ruff_check": "passed",
+    "ruff_format_check": "passed",
+    "git_diff_check": "passed",
+    "focused_repository_unit_tests": "blocked locally before collection: ModuleNotFoundError: ray"
+  },
+  "launch_boundary": {
+    "failed_attempt_consumed": true,
+    "automatic_retry_allowed": false,
+    "replacement_launch_authorized": false,
+    "three_arm_outcome_study_authorized": false
+  }
+}

@@ -317,6 +317,94 @@ def test_controlled_frontier_observes_choice_but_executes_fifo() -> None:
     assert events[0]["baseline_matches_actual"] is True
 
 
+def test_controlled_frontier_does_not_observe_below_watermark() -> None:
+    buffer = _natural_choice_buffer()
+    baseline = WeightFifoSampler(
+        buffer,
+        max_staleness_versions=1,
+        selection_candidate_watermark=8,
+    )
+    events: list[dict[str, Any]] = []
+    sampler = OpportunityAtRiskV2ShadowSampler(
+        buffer=buffer,
+        baseline=baseline,
+        candidate_window_policy="controlled_frontier",
+        minimum_service_multiplier=0.98,
+        maximum_service_multiplier=1.02,
+        max_candidate_groups=64,
+        exact_search_max_candidates=16,
+        decision_time_budget_ns=100_000_000,
+        record=lambda event: events.append(dict(event)),
+    )
+
+    meta, count = asyncio.run(
+        sampler.select(
+            current_train_weight=2,
+            min_prompt_groups=4,
+            max_prompt_groups=4,
+        )
+    )
+
+    assert meta is None and count == 0
+    assert events == []
+
+
+def test_controlled_frontier_observes_only_the_common_watermark_window() -> None:
+    buffer = _natural_choice_buffer()
+    for index, group_id in enumerate(("y", "z", "excess"), start=6):
+        buffer.add(
+            group_id,
+            weight=1,
+            l1=20.0,
+            l2=10.0,
+            tokens=100,
+            reward_mean=0.5,
+            reward_variance=0.25,
+            ready_timestamp_ns=100 + index,
+        )
+    baseline = WeightFifoSampler(
+        buffer,
+        max_staleness_versions=1,
+        selection_candidate_watermark=8,
+    )
+    events: list[dict[str, Any]] = []
+    sampler = OpportunityAtRiskV2ShadowSampler(
+        buffer=buffer,
+        baseline=baseline,
+        candidate_window_policy="controlled_frontier",
+        minimum_service_multiplier=0.98,
+        maximum_service_multiplier=1.02,
+        max_candidate_groups=64,
+        exact_search_max_candidates=16,
+        decision_time_budget_ns=100_000_000,
+        record=lambda event: events.append(dict(event)),
+    )
+
+    meta, count = asyncio.run(
+        sampler.select(
+            current_train_weight=2,
+            min_prompt_groups=4,
+            max_prompt_groups=4,
+        )
+    )
+
+    assert meta is not None and count == 4
+    assert meta.sample_ids == ["a_g0", "b_g0", "c_g0", "d_g0"]
+    assert len(events) == 1
+    assert events[0]["candidate_group_count"] == 8
+    assert [candidate["group_id"] for candidate in events[0]["candidates"]] == [
+        "a",
+        "b",
+        "c",
+        "d",
+        "w",
+        "x",
+        "y",
+        "z",
+    ]
+    assert events[0]["baseline_matches_actual"] is True
+
+
 def test_missing_metadata_falls_back_without_extra_mutation() -> None:
     buffer = _natural_choice_buffer()
     assert buffer.meta_list[-1] is not None

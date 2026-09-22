@@ -1,0 +1,62 @@
+{
+  "actual_selection_subset": {
+    "candidate_count_distribution": {
+      "8": 64
+    },
+    "count": 64,
+    "descriptive_combined_duty": 0.0005877377133154852,
+    "descriptive_oars_duty": 6.774927816145641e-05,
+    "equals_exact_eight_candidate_subset": true,
+    "exact_proposal_contracts": true,
+    "fallback_count": 0,
+    "fifo_identity_count": 64,
+    "oars_latency_p95_ns": 1017225,
+    "oars_latency_sum_ns": 33551566,
+    "proposal_count": 256
+  },
+  "all_observations": {
+    "candidate_count_distribution": {
+      "4": 24379,
+      "5": 1089,
+      "6": 1049,
+      "7": 5019,
+      "8": 64
+    },
+    "combined_observer_duty": 0.012065930160625715,
+    "count": 31600,
+    "fallbacks": [
+      {
+        "actual_selected_group_count": 0,
+        "candidate_group_count": 7,
+        "fallback_reason": "decision_time_budget_exceeded",
+        "latency_ns": 368480466,
+        "scorer": "absolute_m4_risk"
+      },
+      {
+        "actual_selected_group_count": 0,
+        "candidate_group_count": 4,
+        "fallback_reason": "decision_time_budget_exceeded",
+        "latency_ns": 510785030,
+        "scorer": "age"
+      }
+    ],
+    "oars_observer_duty": 0.011545941725471687,
+    "polling_without_selection_count": 31536
+  },
+  "authenticated_result_sha256": "adb71f77cef652ac904945612720eb446a1e9cce5aea47b7668db4ae8ad00704",
+  "comparison_to_validated_v1": "The validated v1 observer returns before scoring when ready candidates are below the WeightFIFO watermark; v2 omitted that guard.",
+  "interpretation": {
+    "qualification_passed": false,
+    "repair": "Mirror the validated watermark guard and restrict controlled observation to the common first-eight frontier.",
+    "requalification_required": true,
+    "selected_subset_is_not_a_retroactive_pass": true,
+    "strict_gate_correctly_failed": true
+  },
+  "observed_gate_status": "FAIL_CONTROLLED_FRONTIER_SYSTEMS_GATE",
+  "root_cause": "OpportunityAtRiskV2ShadowSampler observed and recorded every select poll before WeightFIFO enforced its eight-ready-group watermark.",
+  "schema": "m4-oars-v2-controlled-frontier-terminal-failure-autopsy-v1",
+  "scientific_outcome_acquisition": false,
+  "source_commit": "b4f78633e987dc2c29dccb2e02af0b8e650331f6",
+  "status": "IMPLEMENTATION_DEFECT_IDENTIFIED_REPAIR_REQUIRED",
+  "training_quality_analyzed": false
+}
