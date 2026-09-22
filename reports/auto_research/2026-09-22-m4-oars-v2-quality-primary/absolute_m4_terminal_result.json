@@ -1,0 +1,42 @@
+{
+  "actuation_scorer": "absolute_m4_risk",
+  "checks": {
+    "all_scorers_exact_no_fallback": true,
+    "bounded_candidate_excess": true,
+    "combined_observer_controller_duty": true,
+    "complete_learner_steps": true,
+    "complete_liveness_accounting": true,
+    "complete_metadata_no_skip": true,
+    "configured_proposal_identity": true,
+    "exact_candidate_set": true,
+    "header": true,
+    "one_decision_per_step": true,
+    "runtime": true,
+    "two_sided_service_band": true
+  },
+  "combined_observer_controller_duty": 0.0020481628100543743,
+  "decision_count": 64,
+  "gradient_observer_duty": 0.001942975186043618,
+  "liveness_accounting": {
+    "candidate_excess_pending_groups": 0,
+    "candidate_excess_removed_groups_total": 1,
+    "replenishment_batches_consumed_total": 50,
+    "replenishment_batches_earned_total": 51,
+    "replenishment_credits_outstanding": 1,
+    "stale_evicted_groups_total": 195
+  },
+  "oars_v2_actuated": true,
+  "oars_v2_decision_duty": 0.0001051876240107564,
+  "removals": {
+    "bounded_shutdown": 16,
+    "oars_candidate_excess": 1,
+    "selected": 256,
+    "stale_evicted": 195
+  },
+  "runtime_seconds": 430.583204281,
+  "schema": "m4-oars-v2-actuation-qualification-result-v1",
+  "scientific_outcome_acquisition": false,
+  "source_commit": "50443383825adeddca9cd1417c9dd261d8413670",
+  "status": "PASS_OARS_V2_ACTUATION_QUALIFIED",
+  "training_quality_analyzed": false
+}

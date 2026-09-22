@@ -1,0 +1,49 @@
+{
+  "actuation_scorer": "absolute_m4_risk",
+  "archives": {
+    "logs_after_sha256": "270e18394825f43cabe93cfd21872308460c9a7c4d51817e1474a52b5aa76a3c",
+    "main_sha256": "051530df904a338c4ac436d1648021435a7988b31663d50fe1c64b43d4f7dfc3"
+  },
+  "artifact_manifest_exact_coverage": true,
+  "artifacts": {
+    "m4-oars-v2-absolute-m4-actuation-qualification-lifecycle.jsonl": {
+      "bytes": 7755605,
+      "copies_byte_identical": true,
+      "sha256": "d7c21a1ba9ee8c95c97b5d098879c8fd62d6208b0488577e49dba0c305b61570"
+    },
+    "m4-oars-v2-absolute-m4-actuation-qualification-oars-v2.jsonl": {
+      "bytes": 523420,
+      "copies_byte_identical": true,
+      "sha256": "8a4f4be4b94ff2c2ca92eac4a9ec5dabd35d45ffa1392121b319cd4e8ccb5ba3"
+    },
+    "m4-oars-v2-absolute-m4-actuation-qualification-observer-duty.json": {
+      "bytes": 466,
+      "copies_byte_identical": true,
+      "sha256": "2162ad6dddc5c441a669b81ad444598d009c114aa853ca795a8c7d65e00ab5bb"
+    },
+    "m4-oars-v2-absolute-m4-actuation-qualification-opportunity.jsonl": {
+      "bytes": 1215573,
+      "copies_byte_identical": true,
+      "sha256": "05a09a7a4e953cf73b8e7972dae6229302350dba55693d4321aa51529680572a"
+    },
+    "m4-oars-v2-absolute-m4-actuation-qualification-result.json": {
+      "bytes": 1290,
+      "copies_byte_identical": true,
+      "sha256": "8910b05320642a0d9f906f82fcc5888727fbcd92a60716d5bfb10d3d8c0608fc"
+    },
+    "m4-oars-v2-absolute-m4-actuation-qualification-run.log": {
+      "bytes": 222826,
+      "copies_byte_identical": true,
+      "sha256": "b4a9d4d5b47a47064a04ae5e6b5d936522b48cea4941c46f3cc346e6ca30cfb8"
+    }
+  },
+  "pipeline": {
+    "downstream_id": 69345476,
+    "logs_after_job_id": 451985842,
+    "main_job_id": 451985839,
+    "upstream_id": 69345286
+  },
+  "result_opened": false,
+  "schema": "m4-oars-v2-actuation-terminal-authentication-v1",
+  "status": "PASS_AUTHENTICATED_RESULT_UNOPENED"
+}

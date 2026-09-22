@@ -1,0 +1,62 @@
+{
+  "schema": "m4-oars-v2-quality-primary-actuation-gate-v1",
+  "status": "PASS_ACQUISITION_GATE_READY_NOT_LAUNCHED",
+  "protocol_sha256": "e0e0b26cc1a592bf14c4b0f77d990662f6c3ff3e09bfb6a772a3efbf149b9d2d",
+  "qualifications": {
+    "reward_variance_risk": {
+      "status": "PASS_OARS_V2_ACTUATION_QUALIFIED",
+      "pipeline": {
+        "upstream_id": 69339424,
+        "downstream_id": 69339594,
+        "main_job_id": 451935034,
+        "logs_after_job_id": 451935035
+      },
+      "result_sha256": "9a7bb1988c6ee6729daa228bf7422a524a48b2e2e4cfd7151af9aa2efbf8e1c6",
+      "authentication_sha256": "db3bd24b6d0550f9248985d76369d08526b9454ef4cb9cd8b87bf508755018de",
+      "decision_count": 64,
+      "exact_configured_selection_count": 64,
+      "combined_observer_controller_duty": 0.002087856835559417,
+      "runtime_seconds": 380.242641458,
+      "training_quality_analyzed": false
+    },
+    "absolute_m4_risk": {
+      "status": "PASS_OARS_V2_ACTUATION_QUALIFIED",
+      "pipeline": {
+        "upstream_id": 69345286,
+        "downstream_id": 69345476,
+        "main_job_id": 451985839,
+        "logs_after_job_id": 451985842
+      },
+      "terminal_result_sha256": "8910b05320642a0d9f906f82fcc5888727fbcd92a60716d5bfb10d3d8c0608fc",
+      "authentication_sha256": "fdfda0e0a57b3b85f78d6d021efde0c87370dbbbaa11bfc40ad73fa1645b478e",
+      "decision_count": 64,
+      "exact_configured_selection_count": 64,
+      "combined_observer_controller_duty": 0.0020481628100543743,
+      "runtime_seconds": 430.583204281,
+      "training_quality_analyzed": false
+    }
+  },
+  "joint_checks": {
+    "both_scorers_qualified": true,
+    "both_exact_64_of_64": true,
+    "both_zero_skips_and_fallbacks": true,
+    "both_complete_liveness_accounting": true,
+    "both_combined_duty_at_most_one_percent": true,
+    "both_runtime_at_most_14400_seconds": true,
+    "both_outcome_excluded": true,
+    "terminal_copies_authenticated": true
+  },
+  "acquisition": {
+    "frozen_run_count": 54,
+    "frozen_block_count": 18,
+    "arms": [
+      "fifo",
+      "reward_variance",
+      "absolute_m4"
+    ],
+    "completion_gate": "all 54 identities and duplicate terminal artifact copies authenticate before any outcome is opened",
+    "launch_status": "NOT_LAUNCHED"
+  },
+  "pipeline_status_is_scientific_endpoint": false,
+  "scientific_outcome_acquisition": false
+}
