@@ -1,0 +1,48 @@
+{
+  "archives": {
+    "logs_after_sha256": "269dc564856f4ea70df58703dd65a69d6dc9e522d7325346fca743be409479d7",
+    "main_sha256": "c4e8be7c84d3899ca220c1a50858c87024b2e572f8f636ed481cee279f6a4617"
+  },
+  "artifact_manifest_exact_coverage": true,
+  "artifacts": {
+    "m4-oars-v2-controlled-frontier-requalification-lifecycle.jsonl": {
+      "bytes": 4381509,
+      "copies_byte_identical": true,
+      "sha256": "9337bf397187561e32f17a3473a259546729a8acea0a882133593c6fbb9541ff"
+    },
+    "m4-oars-v2-controlled-frontier-requalification-oars-v2.jsonl": {
+      "bytes": 490343,
+      "copies_byte_identical": true,
+      "sha256": "ccd493e4077ad538ded6b510b2ce2b69affbf39a30fbe006968c1618f58b9d22"
+    },
+    "m4-oars-v2-controlled-frontier-requalification-observer-duty.json": {
+      "bytes": 468,
+      "copies_byte_identical": true,
+      "sha256": "5e7910670c9c2bb273161d0e1763d9166fab64333167d125269d453285a6a633"
+    },
+    "m4-oars-v2-controlled-frontier-requalification-opportunity.jsonl": {
+      "bytes": 716160,
+      "copies_byte_identical": true,
+      "sha256": "e402bebc4317e6d262489fc2c0ec198a1b60e9d8531ea95fce57955d9aa9494c"
+    },
+    "m4-oars-v2-controlled-frontier-requalification-result.json": {
+      "bytes": 1858,
+      "copies_byte_identical": true,
+      "sha256": "cb8db710da1e374e46f5dbb54088cb0fa950cedd0765e9e37d37604e88ace270"
+    },
+    "m4-oars-v2-controlled-frontier-requalification-run.log": {
+      "bytes": 217111,
+      "copies_byte_identical": true,
+      "sha256": "a5fca97bf9b894ba37ca5301b5b8b56d3384c5bb3100fd8e18a2adb8ec4dd07c"
+    }
+  },
+  "pipeline": {
+    "downstream_id": 69327257,
+    "logs_after_job_id": 451825433,
+    "main_job_id": 451825432,
+    "upstream_id": 69327141
+  },
+  "result_opened": false,
+  "schema": "m4-oars-v2-controlled-frontier-requalification-terminal-authentication-v1",
+  "status": "PASS_AUTHENTICATED_RESULT_UNOPENED"
+}

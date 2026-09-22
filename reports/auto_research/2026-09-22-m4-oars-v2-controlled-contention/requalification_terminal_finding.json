@@ -1,0 +1,52 @@
+{
+  "schema": "m4-oars-v2-controlled-frontier-requalification-terminal-finding-v1",
+  "status": "PASS_CONTROLLED_FRONTIER_SYSTEMS_READY",
+  "source_commit": "2f017505f90d428dbc968aad7d718826cecb524c",
+  "package_commit": "7e54f84a4ae107d1117e597ff3e3b7634e2f0841",
+  "pipeline": {
+    "upstream_id": 69327141,
+    "downstream_id": 69327257,
+    "main_job_id": 451825432,
+    "logs_after_job_id": 451825433
+  },
+  "authentication_sha256": "25e59743c5a1a7af857f5a6014f58f85f03a7131aadba0b9faba7ea0dd92eb21",
+  "authenticated_result_sha256": "cb8db710da1e374e46f5dbb54088cb0fa950cedd0765e9e37d37604e88ace270",
+  "systems_gate": {
+    "learner_steps": 64,
+    "decision_count": 64,
+    "candidate_count_minimum": 8,
+    "candidate_count_maximum": 8,
+    "complete_contended_decisions": 64,
+    "exact_choice_space_every_proposal": true,
+    "actual_selection_exactly_matches_fifo": true,
+    "skip_count": 0,
+    "fallback_count": 0,
+    "combined_observer_duty": 0.0005485391355585915,
+    "p95_decision_latency_ns": 755698,
+    "p95_latency_fraction_of_median_step_interval": 0.0000767199607560271,
+    "runtime_seconds": 651.560794988
+  },
+  "choice_signal": {
+    "proposal_disagreement_with_fifo": {
+      "age": 1,
+      "reward_variance_risk": 45,
+      "token_normalized_m4_risk": 46,
+      "absolute_m4_risk": 46
+    },
+    "mean_fifo_overlap": {
+      "age": 3.96875,
+      "reward_variance_risk": 2.859375,
+      "token_normalized_m4_risk": 2.8125,
+      "absolute_m4_risk": 2.796875
+    }
+  },
+  "claim_boundary": {
+    "acting_policy": "weight_fifo_under_common_eight_candidate_frontier",
+    "oars_v2_actuated": false,
+    "training_quality_analyzed": false,
+    "scientific_outcome_acquisition": false,
+    "natural_eager_fifo_representativeness": false,
+    "pipeline_status_is_scientific_endpoint": false
+  },
+  "decision": "The systems gate permits separately preregistering a controlled-frontier outcome study; it does not itself establish a training-quality benefit."
+}

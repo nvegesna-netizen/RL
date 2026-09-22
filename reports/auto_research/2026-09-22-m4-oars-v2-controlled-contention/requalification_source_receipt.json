@@ -22,7 +22,9 @@
   "boundary": {
     "replacement_manifest_built": true,
     "replacement_launch_authorized": true,
-    "replacement_submitted": false,
-    "authorization_record": "requalification_authorization.json"
+    "replacement_submitted": true,
+    "authorization_record": "requalification_authorization.json",
+    "upstream_pipeline_id": 69327141,
+    "terminal_status": "PASS_CONTROLLED_FRONTIER_SYSTEMS_READY"
   }
 }
