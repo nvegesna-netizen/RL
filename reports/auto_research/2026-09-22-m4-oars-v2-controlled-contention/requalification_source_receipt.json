@@ -20,9 +20,9 @@
     "tools/m4_oars_v2_controlled_frontier_qualification.py": "caff44951b2bcb269bba94d78a6ef5e8f5de52232b0e149590f4f16e3641634d"
   },
   "boundary": {
-    "replacement_manifest_built": false,
-    "replacement_launch_authorized": false,
+    "replacement_manifest_built": true,
+    "replacement_launch_authorized": true,
     "replacement_submitted": false,
-    "reason": "The prior authorization allowed one submission attempt, which is consumed."
+    "authorization_record": "requalification_authorization.json"
   }
 }

@@ -1,0 +1,36 @@
+{
+  "schema": "m4-oars-v2-controlled-frontier-requalification-package-receipt-v1",
+  "status": "PASS_AUTHORIZED_UNSUBMITTED",
+  "source_commit": "2f017505f90d428dbc968aad7d718826cecb524c",
+  "source_archive_sha256": "2a0f960d0a8f6698f997c5990d65446a637d2425d4b0d1914a1107a438571606",
+  "protocol_sha256": "8a900d218866347c4ce5ebd41c85b954badcaf5021a956209bd61fc8fb1fe5d5",
+  "authorization_sha256": "bc5357d27f4cb0530bc2282f8a4f992a5e256802d2b3e16df279f71fa4b73bd2",
+  "builder_sha256": "538512904fd982fc9cec32b7d1539ca92fac1698afa1e947e9e65b1a2fb7a922",
+  "validator_sha256": "cdfa4e81031a7272c826dbf204068ebd9115d24ff1a3ae5cb7ee814364d2b3e5",
+  "validation_sha256": "a8a276c30b7b9e38e14031218662614a357797d3a0a506e0cd27e263f45bf5ac",
+  "manifest_sha256": "b0727dd1152afccaab014bb14de80bf9f4d569f54c5dd7dc0bd162f0b9787e5a",
+  "megatron_sha256": "98d98920c0fea3d8ae1216a485dc9b5aa4fc966e469435ad61f2bae456de80d2",
+  "manifest_bytes": 16384218,
+  "clean_room_checks": {
+    "bash_syntax": true,
+    "embedded_python_syntax": true,
+    "credential_screen": true,
+    "deterministic_rebuild": true,
+    "safe_source_extraction": true,
+    "dependency_complete_unit_preflight_embedded": true
+  },
+  "launch_boundary": {
+    "required_launcher": "runllm.py --no_wait",
+    "submission_attempt_limit": 1,
+    "scheduler_time_limit_seconds": 14400,
+    "queue_deadline_override": null,
+    "automatic_retry": false,
+    "automatic_extension": false
+  },
+  "scientific_boundary": {
+    "acting_policy": "weight_fifo_under_common_eight_candidate_frontier",
+    "oars_v2_actuated": false,
+    "training_quality_analysis": false,
+    "scientific_outcome_acquisition": false
+  }
+}
