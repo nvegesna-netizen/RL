@@ -1,0 +1,23 @@
+{
+  "schema": "m4-oars-v2-live-shadow-submission-receipt-v1",
+  "status": "SUBMITTED_NO_WAIT",
+  "package_commit": "10f34d0230da7ff245ba08f5ad86148def91fd34",
+  "source_commit": "1284a3f20e7b948c5c6a1c83adf29e6da9626f6e",
+  "manifest_sha256": "3928e767a38417900f7c3e36f8301008b636b79c3693108d7f46e61dd7b97ea1",
+  "guard_sha256": "9952684e39cbbe24806d97055eba288fe7bc98ed5e07916287d5fe63892a856f",
+  "launch_log_sha256": "facd57301c2f5a22ce2bbb462a1a38e66a91e80763899ccd511ce3fa35d84d83",
+  "launch_invoked_at": "2026-09-22T11:11:25.856446-07:00",
+  "launcher": "runllm.py --no_wait",
+  "launcher_return_code": 0,
+  "upstream_pipeline_id": 69299281,
+  "upstream_pipeline_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/69299281",
+  "submission_attempt_limit": 1,
+  "submission_attempts_consumed": 1,
+  "scheduler_time_limit_seconds": 14400,
+  "queue_deadline_override": null,
+  "automatic_retry": false,
+  "automatic_extension": false,
+  "acting_policy": "eager_weight_fifo",
+  "oars_v2_actuated": false,
+  "scientific_outcome_acquisition": false
+}
