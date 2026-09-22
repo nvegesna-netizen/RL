@@ -1,14 +1,14 @@
 {
   "schema": "m4-oars-v2-reward-variance-client-interruption-amendment-v1",
-  "status": "REPLACEMENT_CLIENT_INVOCATION_ALLOWED_NO_EOS_SUBMISSION_OBSERVED",
+  "status": "SUPERSEDED_LATE_CLIENT_RECEIPT_NO_REPLACEMENT_ALLOWED",
   "original_authorization_sha256": "5d54c969562486bc80bb6eee14cef5033a7a22b194fe4db264ed1592dadefa95",
   "manifest_sha256": "28dd152de3777fa364ba8eba7f95197e6902478e76acc4ab42ba0393ee8b55e7",
   "first_client_invocation": {
     "invoked_at": "2026-09-22T15:05:33.109386-07:00",
     "launcher": "runllm.py --no_wait",
-    "client_receipt_written": false,
-    "launch_log_written": false,
-    "pipeline_id_observed": null,
+    "client_receipt_written": true,
+    "launch_log_written": true,
+    "pipeline_id_observed": 69339424,
     "launcher_process_alive_at_audit": false
   },
   "gitlab_audit": {
@@ -20,17 +20,25 @@
   },
   "accounting": {
     "client_invocations_consumed": 1,
-    "eos_submissions_consumed": 0,
-    "training_runs_started": 0,
+    "eos_submissions_consumed": 1,
+    "training_runs_started": 1,
     "scientific_outcomes_opened": 0
   },
   "repair": {
-    "replacement_client_invocations_allowed": 1,
+    "replacement_client_invocations_allowed": 0,
     "eos_submission_limit_unchanged": 1,
     "manifest_changes_allowed": false,
     "runtime_changes_allowed": false,
     "automatic_retry": false,
-    "reason": "The foreground client process ended before producing a log or GitLab pipeline. The replacement fulfills the original authorized EOS submission rather than retrying a submitted workload."
+    "reason": "The timestamp audit was accurate when taken, but the original detached client completed afterward and returned pipeline 69339424. The original one-shot submission therefore consumed the EOS authority and supersedes the provisional replacement allowance."
+  },
+  "late_client_receipt": {
+    "observed_at": "2026-09-22T15:10:03-07:00",
+    "pipeline_id": 69339424,
+    "pipeline_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/69339424",
+    "launcher_return_code": 0,
+    "launch_log_sha256": "cf5b98fe64701261d539f2dad0c6de927d7b68192ac4beb18beb4513a1324d30",
+    "one_shot_guard_sha256": "3e53e3d4258e6aea6df9cd8b63574469b9374c741370f93022f3d59b8c840db2"
   },
   "user_authorization_basis": [
     "I authorize",
