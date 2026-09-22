@@ -1,0 +1,36 @@
+{
+  "schema": "m4-oars-v2-controlled-frontier-package-receipt-v1",
+  "status": "PASS_AUTHORIZED_UNSUBMITTED",
+  "source_commit": "b4f78633e987dc2c29dccb2e02af0b8e650331f6",
+  "source_archive_sha256": "43a4142e5d209581d4a6f2aa27b83e391f63551c120bcd01a56e689b7d42e054",
+  "protocol_sha256": "8a900d218866347c4ce5ebd41c85b954badcaf5021a956209bd61fc8fb1fe5d5",
+  "authorization_sha256": "efeaba0bc4a8783fefb0f00ff37bbb38ed2b97e50fcf3f967936217a74ecb260",
+  "builder_sha256": "184bc62965de4807ed02e80c563463d6e9aabb8aae5ab10b946e9afa3980a283",
+  "validator_sha256": "d97cd80c2ab784369320d7384f013c707b0361015275267a33ddac1b7526959c",
+  "validation_sha256": "d185457f38261f53d5f4e6893137cf07c23cdd8d662503076acbd57a6b2a0bc8",
+  "manifest_sha256": "d76b54358516c058676adbeb9a84182732fc1862f43556dc5add51450c1d85a8",
+  "megatron_sha256": "98d98920c0fea3d8ae1216a485dc9b5aa4fc966e469435ad61f2bae456de80d2",
+  "manifest_bytes": 16368901,
+  "clean_room_checks": {
+    "bash_syntax": true,
+    "embedded_python_syntax": true,
+    "credential_screen": true,
+    "deterministic_rebuild": true,
+    "safe_source_extraction": true,
+    "dependency_complete_unit_preflight_embedded": true
+  },
+  "launch_boundary": {
+    "required_launcher": "runllm.py --no_wait",
+    "submission_attempt_limit": 1,
+    "scheduler_time_limit_seconds": 14400,
+    "queue_deadline_override": null,
+    "automatic_retry": false,
+    "automatic_extension": false
+  },
+  "scientific_boundary": {
+    "acting_policy": "weight_fifo_under_common_eight_candidate_frontier",
+    "oars_v2_actuated": false,
+    "training_quality_analysis": false,
+    "scientific_outcome_acquisition": false
+  }
+}

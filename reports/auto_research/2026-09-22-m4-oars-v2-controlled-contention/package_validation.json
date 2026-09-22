@@ -1,0 +1,27 @@
+{
+  "acting_policy": "weight_fifo_under_common_eight_candidate_frontier",
+  "authorization_sha256": "efeaba0bc4a8783fefb0f00ff37bbb38ed2b97e50fcf3f967936217a74ecb260",
+  "bash_syntax_passed": true,
+  "credential_free_static_gate_passed": true,
+  "dependency_complete_unit_preflight_embedded": true,
+  "deterministic_rebuild_passed": true,
+  "embedded_python_syntax_passed": true,
+  "manifest": {
+    "manifest_bytes": 16368901,
+    "manifest_sha256": "d76b54358516c058676adbeb9a84182732fc1862f43556dc5add51450c1d85a8",
+    "name": "m4-oars-v2-controlled-frontier-qualification"
+  },
+  "manifest_time_limit_seconds": 14400,
+  "megatron_sha256": "98d98920c0fea3d8ae1216a485dc9b5aa4fc966e469435ad61f2bae456de80d2",
+  "oars_v2_actuation": false,
+  "protocol_sha256": "8a900d218866347c4ce5ebd41c85b954badcaf5021a956209bd61fc8fb1fe5d5",
+  "queue_deadline_override": null,
+  "schema": "m4-oars-v2-controlled-frontier-package-validation-v1",
+  "scientific_outcome_acquisition": false,
+  "source_archive_member_count": 2590,
+  "source_archive_sha256": "43a4142e5d209581d4a6f2aa27b83e391f63551c120bcd01a56e689b7d42e054",
+  "source_archive_symlink_count": 16,
+  "source_commit": "b4f78633e987dc2c29dccb2e02af0b8e650331f6",
+  "status": "PASS_AUTHORIZED_UNSUBMITTED",
+  "submission_attempt_limit": 1
+}
