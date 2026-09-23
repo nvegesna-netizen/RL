@@ -243,6 +243,12 @@ DAPO_LOAD_ALIGNMENT_PROTOCOL_SHA256: Final[str] = (
 DAPO_LOAD_ALIGNMENT_SELECTION_SEEDS: Final[frozenset[int]] = frozenset(
     {51001, 51002, 51003}
 )
+DAPO_LOAD_ALIGNMENT_COMMON_INPUT_PROTOCOL_SHA256: Final[str] = (
+    "9891ce5626413ecad8df286bb89077bb68fdc43b2772379b64bf49af5e80376e"
+)
+DAPO_LOAD_ALIGNMENT_COMMON_INPUT_SELECTION_SEEDS: Final[frozenset[int]] = frozenset(
+    {55001, 55002, 55003}
+)
 DAPO_OPERATIONAL_SOURCE_IDS: Final[tuple[str, str]] = (
     "dapo_math_a",
     "dapo_math_b",
@@ -1595,6 +1601,20 @@ def validate_dapo_load_alignment_manifest_design(
     )
 
 
+def validate_dapo_load_alignment_common_input_manifest_design(
+    manifest: FixedPoolManifest,
+) -> None:
+    """Enforce one fresh common-input load-alignment validation pool."""
+    validate_dapo_operational_latency_discovery_manifest_design(
+        manifest,
+        expected_selection_seeds=DAPO_LOAD_ALIGNMENT_COMMON_INPUT_SELECTION_SEEDS,
+        expected_protocol_sha256=DAPO_LOAD_ALIGNMENT_COMMON_INPUT_PROTOCOL_SHA256,
+        study_label="DAPO load-alignment common-input validation",
+        expected_prompt_groups=32,
+        expected_cohorts=8,
+    )
+
+
 def _validate_structured_generation_manifest_design(
     manifest: FixedPoolManifest,
     *,
@@ -1782,6 +1802,8 @@ def validate_fixed_pool_manifest_design(
         validate_dapo_operational_mixture_manifest_design(manifest)
     elif design_id == "dapo_math_load_alignment_v1":
         validate_dapo_load_alignment_manifest_design(manifest)
+    elif design_id == "dapo_math_load_alignment_common_input_validation_v1":
+        validate_dapo_load_alignment_common_input_manifest_design(manifest)
     else:
         raise FixedPoolManifestError(f"unsupported fixed-pool design_id: {design_id!r}")
 
