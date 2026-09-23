@@ -17,9 +17,11 @@
   "next_action": "status_only_monitor_until_terminal_then_authenticate_before_any_successor",
   "package_commit": "03cf60b5ec0f75c06740437b7fd1b70bfcc06335",
   "pipeline": {
-    "child_id_at_snapshot": null,
+    "child_id_at_snapshot": 69370028,
+    "child_status_at_snapshot": "running",
+    "child_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/69370028",
     "generator_job_id": 452205445,
-    "generator_status_at_snapshot": "created",
+    "generator_status_at_snapshot": "running",
     "upstream_id": 69369950,
     "upstream_status_at_snapshot": "running",
     "upstream_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/69369950"
