@@ -104,7 +104,8 @@ def _load_design(
     )
     raw_items = value.get("items")
     fields = set(base_analyzer.DesignItem.__dataclass_fields__)
-    _require(isinstance(raw_items, list), "selection design items missing")
+    if not isinstance(raw_items, list):
+        raise DapoFreshCommonInputCalibrationError("selection design items missing")
     items: list[base_analyzer.DesignItem] = []
     for item in raw_items:
         _require(isinstance(item, dict) and set(item) == fields, "design item mismatch")
@@ -211,10 +212,8 @@ def _balanced_artifacts(
     )
     manifest_items = source_manifest.get("items")
     design_items = source_design.get("items")
-    _require(
-        isinstance(manifest_items, list) and isinstance(design_items, list),
-        "source item inventory missing",
-    )
+    if not isinstance(manifest_items, list) or not isinstance(design_items, list):
+        raise DapoFreshCommonInputCalibrationError("source item inventory missing")
     manifests_by_ordinal = {
         int(item["ordinal"]): item
         for item in manifest_items

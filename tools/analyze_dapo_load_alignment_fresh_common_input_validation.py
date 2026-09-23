@@ -23,7 +23,7 @@ import statistics
 from collections import defaultdict
 from collections.abc import Mapping, Sequence
 from pathlib import Path
-from typing import Any, Final
+from typing import Any, Final, cast
 
 from nemo_rl.algorithms.async_utils.fixed_pool import (
     FIXED_POOL_RUN_MODE,
@@ -111,15 +111,17 @@ def _load_private_calibration(
         )
     value = _load_object(path, "private calibration manifest")
     pools = value.get("pools")
-    _require(
-        value.get("schema_version") == 1
-        and value.get("analysis_status")
-        == "frozen_private_dapo_common_input_calibration"
-        and value.get("protocol_sha256") == materializer.PROTOCOL_SHA256
-        and value.get("contains_prompt_identities") is True
-        and isinstance(pools, list),
-        "private calibration manifest contract mismatch",
-    )
+    if (
+        value.get("schema_version") != 1
+        or value.get("analysis_status")
+        != "frozen_private_dapo_common_input_calibration"
+        or value.get("protocol_sha256") != materializer.PROTOCOL_SHA256
+        or value.get("contains_prompt_identities") is not True
+        or not isinstance(pools, list)
+    ):
+        raise DapoFreshCommonInputValidationError(
+            "private calibration manifest contract mismatch"
+        )
     result: dict[int, tuple[frozenset[str], str]] = {}
     for pool in pools:
         _require(isinstance(pool, dict), "private calibration pool malformed")
@@ -362,9 +364,10 @@ def analyze(
         "balanced manifest inventory mismatch",
     )
     collection_records: dict[str, list[dict[str, object]]] = defaultdict(list)
-    effects: dict[float, dict[int, list[dict[str, float | bool]]]] = defaultdict(
-        lambda: defaultdict(list)
-    )
+    effects: dict[float, dict[int, list[dict[str, float | bool]]]] = {
+        poll_interval_ms: {pool_seed: [] for pool_seed in materializer.POOL_SEEDS}
+        for poll_interval_ms in POLL_INTERVALS_MS
+    }
     for pool_seed, generation_seed in expected_runs:
         run_dir = runs[(pool_seed, generation_seed)]
         trace_path = run_dir / "scheduler_trace.v1.jsonl"
@@ -499,10 +502,14 @@ def main() -> None:
     args = parser.parse_args()
     if args.output.exists():
         raise FileExistsError(f"refusing to overwrite {args.output}")
-    parsed_runs: list[tuple[tuple[int, int], Path]] = args.run
-    parsed_manifests: list[tuple[int, Path]] = args.balanced_manifest
-    runs = dict(parsed_runs)
-    manifests = dict(parsed_manifests)
+    parsed_runs = cast(list[tuple[tuple[int, int], Path]], args.run)
+    parsed_manifests = cast(list[tuple[int, Path]], args.balanced_manifest)
+    runs: dict[tuple[int, int], Path] = {
+        identity: path for identity, path in parsed_runs
+    }
+    manifests: dict[int, Path] = {
+        pool_seed: path for pool_seed, path in parsed_manifests
+    }
     _require(len(runs) == len(parsed_runs), "duplicate validation run")
     _require(len(manifests) == len(parsed_manifests), "duplicate balanced manifest")
     result = analyze(
