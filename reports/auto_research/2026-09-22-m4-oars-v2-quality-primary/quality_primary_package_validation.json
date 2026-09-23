@@ -1,0 +1,553 @@
+{
+  "authorization_sha256": "baa75d118ea188d293f9d22b85f37f79aa76750f899cd3ce87378a7df805bb07",
+  "candidate_count": 54,
+  "candidates": [
+    {
+      "arm": "fifo",
+      "bash_syntax": true,
+      "bytes": 16468503,
+      "global_sequence": 1,
+      "identity": "b01-fifo",
+      "mode": "observe",
+      "predecessor": null,
+      "sha256": "1cabde6e254f001e00651700289fa1c505b692394ae04fce259e7d88af2107b1"
+    },
+    {
+      "arm": "reward_variance",
+      "bash_syntax": true,
+      "bytes": 16468766,
+      "global_sequence": 2,
+      "identity": "b01-reward-variance",
+      "mode": "act",
+      "predecessor": "b01-fifo",
+      "sha256": "be2bb57ac827a1eed7305d930ef858a0a3a19ddf69d434d14eae13198691e5be"
+    },
+    {
+      "arm": "absolute_m4",
+      "bash_syntax": true,
+      "bytes": 16468674,
+      "global_sequence": 3,
+      "identity": "b01-absolute-m4",
+      "mode": "act",
+      "predecessor": "b01-reward-variance",
+      "sha256": "d66bf3af78e4bbb1b063d7ac9661bd63218ab879c51df7b063b784320aa17e17"
+    },
+    {
+      "arm": "reward_variance",
+      "bash_syntax": true,
+      "bytes": 16468766,
+      "global_sequence": 4,
+      "identity": "b02-reward-variance",
+      "mode": "act",
+      "predecessor": "b01-absolute-m4",
+      "sha256": "95198eda7d1eac01ced30962f6221fd72188411888eb11e6af066471bededed7"
+    },
+    {
+      "arm": "fifo",
+      "bash_syntax": true,
+      "bytes": 16468503,
+      "global_sequence": 5,
+      "identity": "b02-fifo",
+      "mode": "observe",
+      "predecessor": "b02-reward-variance",
+      "sha256": "7f52032bea0252aec618f16cc51179ed953bc005f267b220a099a45a14b72efb"
+    },
+    {
+      "arm": "absolute_m4",
+      "bash_syntax": true,
+      "bytes": 16468674,
+      "global_sequence": 6,
+      "identity": "b02-absolute-m4",
+      "mode": "act",
+      "predecessor": "b02-fifo",
+      "sha256": "f0c7b684677b6fe850ab845ac4faef98708350523c36f847d5de20dfa5ca05ae"
+    },
+    {
+      "arm": "absolute_m4",
+      "bash_syntax": true,
+      "bytes": 16468674,
+      "global_sequence": 7,
+      "identity": "b03-absolute-m4",
+      "mode": "act",
+      "predecessor": "b02-absolute-m4",
+      "sha256": "8d68a7d16168f8aeaf9b88ac8074a45c2adbabb930f4b33683fb5736a527759d"
+    },
+    {
+      "arm": "fifo",
+      "bash_syntax": true,
+      "bytes": 16468503,
+      "global_sequence": 8,
+      "identity": "b03-fifo",
+      "mode": "observe",
+      "predecessor": "b03-absolute-m4",
+      "sha256": "1b5a4b89b213233e3656d272e37b057cd59275ca35d637d95beb2737b98476cd"
+    },
+    {
+      "arm": "reward_variance",
+      "bash_syntax": true,
+      "bytes": 16468766,
+      "global_sequence": 9,
+      "identity": "b03-reward-variance",
+      "mode": "act",
+      "predecessor": "b03-fifo",
+      "sha256": "f284009c5a96f8e62da143aced1efc4d21b46aa6436e61e75773e764338e69d3"
+    },
+    {
+      "arm": "absolute_m4",
+      "bash_syntax": true,
+      "bytes": 16468676,
+      "global_sequence": 10,
+      "identity": "b04-absolute-m4",
+      "mode": "act",
+      "predecessor": "b03-reward-variance",
+      "sha256": "bae2ac0810eb3c5981d83c81c8f49fbb0ca6e87248f6bc342f037f1793ce5262"
+    },
+    {
+      "arm": "reward_variance",
+      "bash_syntax": true,
+      "bytes": 16468768,
+      "global_sequence": 11,
+      "identity": "b04-reward-variance",
+      "mode": "act",
+      "predecessor": "b04-absolute-m4",
+      "sha256": "bb555f1c95012b608749b4ee46da6dc814e423811aa91b852c5f8e6bd199317a"
+    },
+    {
+      "arm": "fifo",
+      "bash_syntax": true,
+      "bytes": 16468505,
+      "global_sequence": 12,
+      "identity": "b04-fifo",
+      "mode": "observe",
+      "predecessor": "b04-reward-variance",
+      "sha256": "5cbd89fdb26b6cb61a7aed75c00a93b587280ff8af4ef873443eff8255f3ae2d"
+    },
+    {
+      "arm": "reward_variance",
+      "bash_syntax": true,
+      "bytes": 16468768,
+      "global_sequence": 13,
+      "identity": "b05-reward-variance",
+      "mode": "act",
+      "predecessor": "b04-fifo",
+      "sha256": "0f2e466fd40b8c39258baa9421617031444365f2bae7f319ee58d3f598c43d1e"
+    },
+    {
+      "arm": "absolute_m4",
+      "bash_syntax": true,
+      "bytes": 16468676,
+      "global_sequence": 14,
+      "identity": "b05-absolute-m4",
+      "mode": "act",
+      "predecessor": "b05-reward-variance",
+      "sha256": "cf9368bc7addb7c39a04f6f36b0363eed2b2b669769355737f6a4ad1a0bdfa11"
+    },
+    {
+      "arm": "fifo",
+      "bash_syntax": true,
+      "bytes": 16468505,
+      "global_sequence": 15,
+      "identity": "b05-fifo",
+      "mode": "observe",
+      "predecessor": "b05-absolute-m4",
+      "sha256": "3f0ae793f4b16ab54887152657a7a2a030acc914473f56d865acf2109c1c5277"
+    },
+    {
+      "arm": "absolute_m4",
+      "bash_syntax": true,
+      "bytes": 16468676,
+      "global_sequence": 16,
+      "identity": "b06-absolute-m4",
+      "mode": "act",
+      "predecessor": "b05-fifo",
+      "sha256": "441eccaf2839fff961d71778ad61c1505507cfa01964db643e67fe07a29f3f57"
+    },
+    {
+      "arm": "fifo",
+      "bash_syntax": true,
+      "bytes": 16468505,
+      "global_sequence": 17,
+      "identity": "b06-fifo",
+      "mode": "observe",
+      "predecessor": "b06-absolute-m4",
+      "sha256": "e3130b3c9ade7e8a57dda2d059bb7617c79631992b8f6eebd1da0b076fb6b259"
+    },
+    {
+      "arm": "reward_variance",
+      "bash_syntax": true,
+      "bytes": 16468768,
+      "global_sequence": 18,
+      "identity": "b06-reward-variance",
+      "mode": "act",
+      "predecessor": "b06-fifo",
+      "sha256": "fc973739c49ecef9e4c9ed989ac8d12ebeafe4e89dbe5195e299316bce9a79c7"
+    },
+    {
+      "arm": "absolute_m4",
+      "bash_syntax": true,
+      "bytes": 16468676,
+      "global_sequence": 19,
+      "identity": "b07-absolute-m4",
+      "mode": "act",
+      "predecessor": "b06-reward-variance",
+      "sha256": "384b75f339c4170e6ab0de5228f0dffe6bfeb3b7821aa49e1cee18859c3b74a4"
+    },
+    {
+      "arm": "reward_variance",
+      "bash_syntax": true,
+      "bytes": 16468768,
+      "global_sequence": 20,
+      "identity": "b07-reward-variance",
+      "mode": "act",
+      "predecessor": "b07-absolute-m4",
+      "sha256": "a93549a3c11222ce7ea2119d4c83b608d6e88cf130e843f85debe184c1ec9167"
+    },
+    {
+      "arm": "fifo",
+      "bash_syntax": true,
+      "bytes": 16468505,
+      "global_sequence": 21,
+      "identity": "b07-fifo",
+      "mode": "observe",
+      "predecessor": "b07-reward-variance",
+      "sha256": "b7122c2d67c4a6f863fa7020d861e24d8a231a4dea446fb03aa88cf4204ceb5c"
+    },
+    {
+      "arm": "fifo",
+      "bash_syntax": true,
+      "bytes": 16468505,
+      "global_sequence": 22,
+      "identity": "b08-fifo",
+      "mode": "observe",
+      "predecessor": "b07-fifo",
+      "sha256": "f9be181292c45ed87c89a66a468a1046cab64e5385e714f185989734e2e878da"
+    },
+    {
+      "arm": "absolute_m4",
+      "bash_syntax": true,
+      "bytes": 16468676,
+      "global_sequence": 23,
+      "identity": "b08-absolute-m4",
+      "mode": "act",
+      "predecessor": "b08-fifo",
+      "sha256": "596fd7c6c7121f0d96b59030b8dff8e083051127bf16354081cac111a29624d0"
+    },
+    {
+      "arm": "reward_variance",
+      "bash_syntax": true,
+      "bytes": 16468768,
+      "global_sequence": 24,
+      "identity": "b08-reward-variance",
+      "mode": "act",
+      "predecessor": "b08-absolute-m4",
+      "sha256": "80b5e6677e117d8b17ba7f7b2f79491189a1ee6e8567fc7db64365800daf5baa"
+    },
+    {
+      "arm": "fifo",
+      "bash_syntax": true,
+      "bytes": 16468505,
+      "global_sequence": 25,
+      "identity": "b09-fifo",
+      "mode": "observe",
+      "predecessor": "b08-reward-variance",
+      "sha256": "9db87814f20a6e7711a8a71f2f7d3f23b1895acda2d9bfd891de9ba88fd78522"
+    },
+    {
+      "arm": "absolute_m4",
+      "bash_syntax": true,
+      "bytes": 16468676,
+      "global_sequence": 26,
+      "identity": "b09-absolute-m4",
+      "mode": "act",
+      "predecessor": "b09-fifo",
+      "sha256": "6680beb32ca3e34130297288c098e4f9e7e1e586979540d097c5121b5ec7df1d"
+    },
+    {
+      "arm": "reward_variance",
+      "bash_syntax": true,
+      "bytes": 16468768,
+      "global_sequence": 27,
+      "identity": "b09-reward-variance",
+      "mode": "act",
+      "predecessor": "b09-absolute-m4",
+      "sha256": "ea926589ae7587645ff9c6cffe41f72b278eeb21bcdefc6572a0b1de40f3e134"
+    },
+    {
+      "arm": "reward_variance",
+      "bash_syntax": true,
+      "bytes": 16468770,
+      "global_sequence": 28,
+      "identity": "b10-reward-variance",
+      "mode": "act",
+      "predecessor": "b09-reward-variance",
+      "sha256": "b792ed06cf8be53a7724c3b563302f8d2aa0db022d88416dd67a883f0a7a48cc"
+    },
+    {
+      "arm": "absolute_m4",
+      "bash_syntax": true,
+      "bytes": 16468678,
+      "global_sequence": 29,
+      "identity": "b10-absolute-m4",
+      "mode": "act",
+      "predecessor": "b10-reward-variance",
+      "sha256": "9a72b67f0d6814a267551bdd85fc2deeae2be4201f153d07d4ade69e5c69e956"
+    },
+    {
+      "arm": "fifo",
+      "bash_syntax": true,
+      "bytes": 16468507,
+      "global_sequence": 30,
+      "identity": "b10-fifo",
+      "mode": "observe",
+      "predecessor": "b10-absolute-m4",
+      "sha256": "7b7be604fd33c4bbbf91c5bfa3eac3ab6c2d246eca9d996c24ac6b2c09a7c994"
+    },
+    {
+      "arm": "fifo",
+      "bash_syntax": true,
+      "bytes": 16468507,
+      "global_sequence": 31,
+      "identity": "b11-fifo",
+      "mode": "observe",
+      "predecessor": "b10-fifo",
+      "sha256": "2a74c4bedc0473b17e6711e9eafd0d87f97b8f6e15342d3e67ead3367b421bf0"
+    },
+    {
+      "arm": "reward_variance",
+      "bash_syntax": true,
+      "bytes": 16468770,
+      "global_sequence": 32,
+      "identity": "b11-reward-variance",
+      "mode": "act",
+      "predecessor": "b11-fifo",
+      "sha256": "c10db7cb4c9ce2982a00b8659d658c790ebfa912582d56460469f26deacd7589"
+    },
+    {
+      "arm": "absolute_m4",
+      "bash_syntax": true,
+      "bytes": 16468678,
+      "global_sequence": 33,
+      "identity": "b11-absolute-m4",
+      "mode": "act",
+      "predecessor": "b11-reward-variance",
+      "sha256": "da9a1a942b1f0e68c799f5402567e593ce6e0ff8b337b1ab06cd2a57f43e7fc1"
+    },
+    {
+      "arm": "absolute_m4",
+      "bash_syntax": true,
+      "bytes": 16468678,
+      "global_sequence": 34,
+      "identity": "b12-absolute-m4",
+      "mode": "act",
+      "predecessor": "b11-absolute-m4",
+      "sha256": "bfcdc71d30844444a70d6754c8bacf97e83a6d4ecf48bd5951c6e8a5ac362a41"
+    },
+    {
+      "arm": "fifo",
+      "bash_syntax": true,
+      "bytes": 16468507,
+      "global_sequence": 35,
+      "identity": "b12-fifo",
+      "mode": "observe",
+      "predecessor": "b12-absolute-m4",
+      "sha256": "8bfa29c6ce5dec00829d084e727ef2f9c5a9a0bf816eb36fb6098809ccd87f12"
+    },
+    {
+      "arm": "reward_variance",
+      "bash_syntax": true,
+      "bytes": 16468770,
+      "global_sequence": 36,
+      "identity": "b12-reward-variance",
+      "mode": "act",
+      "predecessor": "b12-fifo",
+      "sha256": "3ea5d6082838d310fb2ca9db32e9533cc0d23e24b039179af936c46f5370527c"
+    },
+    {
+      "arm": "reward_variance",
+      "bash_syntax": true,
+      "bytes": 16468770,
+      "global_sequence": 37,
+      "identity": "b13-reward-variance",
+      "mode": "act",
+      "predecessor": "b12-reward-variance",
+      "sha256": "97acb7990c5bc613c0918ba4c484dfe62dbdabc3b34b65473191b2ffaa82a011"
+    },
+    {
+      "arm": "fifo",
+      "bash_syntax": true,
+      "bytes": 16468507,
+      "global_sequence": 38,
+      "identity": "b13-fifo",
+      "mode": "observe",
+      "predecessor": "b13-reward-variance",
+      "sha256": "890a58b8ce9a4743e9060396e6c59be9be313f8514c8b4c4bb3bff5fb2054857"
+    },
+    {
+      "arm": "absolute_m4",
+      "bash_syntax": true,
+      "bytes": 16468678,
+      "global_sequence": 39,
+      "identity": "b13-absolute-m4",
+      "mode": "act",
+      "predecessor": "b13-fifo",
+      "sha256": "c761111d1458fbca65d19e41b13167426db0d340b6d8f45647973498d662e4d9"
+    },
+    {
+      "arm": "fifo",
+      "bash_syntax": true,
+      "bytes": 16468507,
+      "global_sequence": 40,
+      "identity": "b14-fifo",
+      "mode": "observe",
+      "predecessor": "b13-absolute-m4",
+      "sha256": "8a539489978f6542c0ae7c9c063f81eb91bd4230317623ee7b3b21ce8c25f782"
+    },
+    {
+      "arm": "absolute_m4",
+      "bash_syntax": true,
+      "bytes": 16468678,
+      "global_sequence": 41,
+      "identity": "b14-absolute-m4",
+      "mode": "act",
+      "predecessor": "b14-fifo",
+      "sha256": "de184f35b30d073f6a051d4e21066ac8f63306b9db7332491f6057528e866896"
+    },
+    {
+      "arm": "reward_variance",
+      "bash_syntax": true,
+      "bytes": 16468770,
+      "global_sequence": 42,
+      "identity": "b14-reward-variance",
+      "mode": "act",
+      "predecessor": "b14-absolute-m4",
+      "sha256": "b58182d3538dca8805ba411ae44bfd4a3dc7608415dd33b2497e63ad3c4794b4"
+    },
+    {
+      "arm": "reward_variance",
+      "bash_syntax": true,
+      "bytes": 16468770,
+      "global_sequence": 43,
+      "identity": "b15-reward-variance",
+      "mode": "act",
+      "predecessor": "b14-reward-variance",
+      "sha256": "77cd1dc6eb89dccb8738652fde1bca60e32d4515570d5703366cfc7b9447f681"
+    },
+    {
+      "arm": "fifo",
+      "bash_syntax": true,
+      "bytes": 16468507,
+      "global_sequence": 44,
+      "identity": "b15-fifo",
+      "mode": "observe",
+      "predecessor": "b15-reward-variance",
+      "sha256": "479ec82c63a63d7099080de8851ab90c01de0a53f68a3d4958dac7d157013954"
+    },
+    {
+      "arm": "absolute_m4",
+      "bash_syntax": true,
+      "bytes": 16468678,
+      "global_sequence": 45,
+      "identity": "b15-absolute-m4",
+      "mode": "act",
+      "predecessor": "b15-fifo",
+      "sha256": "6c01ce8bff08bad835a1629f10a9ba85f8bac70031f6002d9265b32a89b7a34e"
+    },
+    {
+      "arm": "fifo",
+      "bash_syntax": true,
+      "bytes": 16468507,
+      "global_sequence": 46,
+      "identity": "b16-fifo",
+      "mode": "observe",
+      "predecessor": "b15-absolute-m4",
+      "sha256": "3302b1e00649aead717b943228bf21b37dae1c4d24253231ba845f06fc0063ab"
+    },
+    {
+      "arm": "reward_variance",
+      "bash_syntax": true,
+      "bytes": 16468770,
+      "global_sequence": 47,
+      "identity": "b16-reward-variance",
+      "mode": "act",
+      "predecessor": "b16-fifo",
+      "sha256": "cfd68b727cbcecbd8629f4f472910ea32a08f621228b430f108060642ec0da42"
+    },
+    {
+      "arm": "absolute_m4",
+      "bash_syntax": true,
+      "bytes": 16468678,
+      "global_sequence": 48,
+      "identity": "b16-absolute-m4",
+      "mode": "act",
+      "predecessor": "b16-reward-variance",
+      "sha256": "c6b3d239bb9dad69b3a38b488374b1af5ba6e4f542fab05d5b61b0ee5512c7ef"
+    },
+    {
+      "arm": "reward_variance",
+      "bash_syntax": true,
+      "bytes": 16468770,
+      "global_sequence": 49,
+      "identity": "b17-reward-variance",
+      "mode": "act",
+      "predecessor": "b16-absolute-m4",
+      "sha256": "7d3108dd6092ef5cd33fa89e11780c58958de7160a54223f95e5784bdf59c079"
+    },
+    {
+      "arm": "absolute_m4",
+      "bash_syntax": true,
+      "bytes": 16468678,
+      "global_sequence": 50,
+      "identity": "b17-absolute-m4",
+      "mode": "act",
+      "predecessor": "b17-reward-variance",
+      "sha256": "3d949cbfd7676e82571ff0f2f3181fa20c63079d28855eef8a34aa750bc09b9a"
+    },
+    {
+      "arm": "fifo",
+      "bash_syntax": true,
+      "bytes": 16468507,
+      "global_sequence": 51,
+      "identity": "b17-fifo",
+      "mode": "observe",
+      "predecessor": "b17-absolute-m4",
+      "sha256": "90ac9fd001c53acabb3378921f0e9661f63b7e2568d9fab468fa33f8bd803f90"
+    },
+    {
+      "arm": "absolute_m4",
+      "bash_syntax": true,
+      "bytes": 16468678,
+      "global_sequence": 52,
+      "identity": "b18-absolute-m4",
+      "mode": "act",
+      "predecessor": "b17-fifo",
+      "sha256": "ee4e492b0630149be71e3330c3476759d5289296d339ad0d5296e879937e424d"
+    },
+    {
+      "arm": "reward_variance",
+      "bash_syntax": true,
+      "bytes": 16468770,
+      "global_sequence": 53,
+      "identity": "b18-reward-variance",
+      "mode": "act",
+      "predecessor": "b18-absolute-m4",
+      "sha256": "f075f326b4660c894ef28f2d41b7a007af1dad35266e38d27df25861c805aa51"
+    },
+    {
+      "arm": "fifo",
+      "bash_syntax": true,
+      "bytes": 16468507,
+      "global_sequence": 54,
+      "identity": "b18-fifo",
+      "mode": "observe",
+      "predecessor": "b18-reward-variance",
+      "sha256": "9e63ff94aaf6a0353d1d1276b6d122f5ac0d747a6dcfd0b24e1162836302f429"
+    }
+  ],
+  "complete_outcome_embargo": true,
+  "first_authorized_identity": "b01-fifo",
+  "first_authorized_identity_predecessor": null,
+  "runtime_source_commit": "50443383825adeddca9cd1417c9dd261d8413670",
+  "schema": "m4-oars-v2-quality-primary-package-validation-v1",
+  "sequence_policy": "strict_global_sequence_one_run_at_a_time",
+  "status": "PASS_AUTHORIZED_UNSUBMITTED"
+}
