@@ -244,6 +244,8 @@ project-includes = [
   "tools/analyze_dapo_load_alignment_references.py",
   "tools/analyze_dapo_load_alignment_replications.py",
   "tools/analyze_dapo_load_alignment_shadows.py",
+  "tools/dapo_common_input_resimulation.py",
+  "tools/resimulate_dapo_load_alignment_common_input.py",
   "tools/materialize_dapo_load_alignment.py",
   "tools/materialize_dapo_operational_latency_discovery.py",
   "nemo_rl/weight_sync/ipc_weight_synchronizer.py",
