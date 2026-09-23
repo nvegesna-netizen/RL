@@ -1,0 +1,51 @@
+{
+  "actuation_scorer": "reward_variance_risk",
+  "arm": "reward_variance",
+  "authorization": {
+    "automatic_extension": false,
+    "automatic_replacement": false,
+    "automatic_retry": false,
+    "required_launcher": "runllm.py --no_wait",
+    "sha256": "baa75d118ea188d293f9d22b85f37f79aa76750f899cd3ce87378a7df805bb07",
+    "submission_attempt_limit": 1
+  },
+  "candidate": {
+    "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-acquisition-candidates/b05-reward-variance.json",
+    "queue_deadline_override": null,
+    "sha256": "0f2e466fd40b8c39258baa9421617031444365f2bae7f319ee58d3f598c43d1e",
+    "spec_name": "m4-oars-v2-quality-primary-b05-reward-variance-acquisition",
+    "time_limit_seconds": 14400
+  },
+  "checks": {
+    "candidate_hash_matches_clean_room_package": true,
+    "candidate_identity_matches_sequence_13": true,
+    "candidate_scientific_inputs_match_frozen_records": true,
+    "complete_outcome_embargo_preserved": true,
+    "one_shot_submission_guard_required": true,
+    "predecessor_outcome_unopened": true,
+    "predecessor_terminal_and_authenticated": true,
+    "strict_serial_order_preserved": true,
+    "successor_not_previously_submitted": true
+  },
+  "frozen_assignment": {
+    "assignment_domain": "m4-oars-v2-quality-block-05-v1",
+    "assignment_seed": 20262405,
+    "training_seed": 20262305
+  },
+  "global_sequence": 13,
+  "identity": "b05-reward-variance",
+  "launch_permitted": true,
+  "mode": "act",
+  "package_commit": "03cf60b5ec0f75c06740437b7fd1b70bfcc06335",
+  "package_validation_sha256": "7b6f0af1ec4edcf8267d317063fc60660b89e73d43442e893c7635113c62dfd2",
+  "predecessor": "b04-fifo",
+  "predecessor_terminal_authentication": {
+    "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b04_fifo_terminal_authentication.json",
+    "sha256": "47ae9dd0182b2c082368d9765773aea6a91738b8a4e2c14928c299f1a1461fcf",
+    "status": "PASS_AUTHENTICATED_OUTCOME_EMBARGOED",
+    "successor_gate": "PASS_AUTHENTICATED_TERMINAL_PREDECESSOR"
+  },
+  "schema": "m4-oars-v2-quality-primary-arm-prelaunch-validation-v1",
+  "scientific_outcome_accessed": false,
+  "status": "PASS_AUTHORIZED_UNSUBMITTED"
+}
