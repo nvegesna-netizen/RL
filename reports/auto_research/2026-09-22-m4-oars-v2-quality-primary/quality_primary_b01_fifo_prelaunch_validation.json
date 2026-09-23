@@ -1,0 +1,44 @@
+{
+  "arm": "fifo",
+  "authorization": {
+    "automatic_extension": false,
+    "automatic_replacement": false,
+    "automatic_retry": false,
+    "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_acquisition_authorization.json",
+    "required_launcher": "runllm.py --no_wait",
+    "sha256": "baa75d118ea188d293f9d22b85f37f79aa76750f899cd3ce87378a7df805bb07",
+    "submission_attempt_limit": 1
+  },
+  "candidate": {
+    "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-acquisition-candidates/b01-fifo.json",
+    "queue_deadline_override": null,
+    "sha256": "1cabde6e254f001e00651700289fa1c505b692394ae04fce259e7d88af2107b1",
+    "spec_name": "m4-oars-v2-quality-primary-b01-fifo-acquisition",
+    "time_limit_seconds": 14400
+  },
+  "checks": {
+    "candidate_hash_matches_clean_room_package": true,
+    "candidate_identity_matches_sequence_1": true,
+    "candidate_scientific_inputs_match_frozen_records": true,
+    "complete_outcome_embargo_preserved": true,
+    "first_identity_has_no_predecessor": true,
+    "one_shot_submission_guard_required": true,
+    "strict_serial_order_preserved": true,
+    "successor_not_previously_submitted": true
+  },
+  "frozen_assignment": {
+    "assignment_domain": "m4-oars-v2-quality-block-01-v1",
+    "assignment_seed": 20262401,
+    "training_seed": 20262301
+  },
+  "global_sequence": 1,
+  "identity": "b01-fifo",
+  "launch_permitted": true,
+  "mode": "observe",
+  "package_commit": "03cf60b5ec0f75c06740437b7fd1b70bfcc06335",
+  "package_validation_sha256": "7b6f0af1ec4edcf8267d317063fc60660b89e73d43442e893c7635113c62dfd2",
+  "predecessor": null,
+  "schema": "m4-oars-v2-quality-primary-arm-prelaunch-validation-v1",
+  "scientific_outcome_accessed": false,
+  "status": "PASS_AUTHORIZED_UNSUBMITTED"
+}
