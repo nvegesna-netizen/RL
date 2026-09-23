@@ -598,8 +598,14 @@ def main() -> None:
     parser.add_argument("--native-root", type=Path, required=True)
     parser.add_argument("--neutral-root", type=Path, required=True)
     parser.add_argument("--private-reference-manifest", type=Path, required=True)
+    parser.add_argument("--analysis-code-commit", required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
+
+    if len(args.analysis_code_commit) != 40 or any(
+        character not in "0123456789abcdef" for character in args.analysis_code_commit
+    ):
+        raise CommonInputResimulationError("analysis code commit must be 40 hex")
 
     protocol, protocol_sha256, repair_sha256 = _validate_repair_authority(
         protocol_path=args.protocol,
@@ -675,7 +681,8 @@ def main() -> None:
         "attempt1_failure_audit_sha256": _sha256(args.attempt1_failure_audit),
         "repair_sha256": repair_sha256,
         "repair_confirmation_sha256": _sha256(args.repair_confirmation),
-        "source_nemo_rl_commit": repair["bindings"]["nemo_rl_source_commit"],
+        "source_base_nemo_rl_commit": repair["bindings"]["nemo_rl_source_commit"],
+        "analysis_code_commit": args.analysis_code_commit,
         "input_integrity": {
             "native_trace_count": 24,
             "neutral_trace_count": 6,
