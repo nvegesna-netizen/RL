@@ -121,7 +121,8 @@ class PacedExposurePlan(BaseModel, extra="forbid", frozen=True):
     top_p: Annotated[float, Field(ge=0.7, le=0.7, allow_inf_nan=False)]
     maximum_completions: Literal[8192]
     scientific_allocation_seconds: Literal[7200]
-    allocated_gpus: Literal[2]
+    allocated_exclusive_nodes: Literal[1]
+    application_gpus: Literal[2]
     plan_id: Sha256Hex
 
     @model_validator(mode="after")
@@ -220,7 +221,8 @@ class PacedExposureExecutionSpec(BaseModel, extra="forbid", frozen=True):
     completions_per_group: Literal[16]
     maximum_completions: Literal[8192]
     scientific_allocation_seconds: Literal[7200]
-    allocated_gpus: Literal[2]
+    allocated_exclusive_nodes: Literal[1]
+    application_gpus: Literal[2]
     training_authorized: Literal[False]
 
     @model_validator(mode="after")

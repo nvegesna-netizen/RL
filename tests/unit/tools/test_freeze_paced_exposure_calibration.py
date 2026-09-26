@@ -30,7 +30,8 @@ def fixture_inputs(
         "completions_per_group": 16,
         "maximum_completions": 8192,
         "scientific_allocation_seconds": 7200,
-        "allocated_gpus": 2,
+        "allocated_exclusive_nodes": 1,
+        "application_gpus": 2,
         "training_authorized": False,
     }
     (root / "execution_spec.v1.json").write_text(json.dumps(spec))

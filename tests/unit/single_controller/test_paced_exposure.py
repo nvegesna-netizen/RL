@@ -95,7 +95,8 @@ def plan_record() -> dict:
         "top_p": 0.7,
         "maximum_completions": 8192,
         "scientific_allocation_seconds": 7200,
-        "allocated_gpus": 2,
+        "allocated_exclusive_nodes": 1,
+        "application_gpus": 2,
         "plan_id": "0" * 64,
     }
 
@@ -118,7 +119,8 @@ class PacedExposureTests(unittest.TestCase):
             "completions_per_group": 16,
             "maximum_completions": 8192,
             "scientific_allocation_seconds": 7200,
-            "allocated_gpus": 2,
+            "allocated_exclusive_nodes": 1,
+            "application_gpus": 2,
             "training_authorized": False,
         }
         MODULE.PacedExposureExecutionSpec.model_validate(record)
@@ -164,7 +166,8 @@ class PacedExposureTests(unittest.TestCase):
                 "completions_per_group": 16,
                 "maximum_completions": 8192,
                 "scientific_allocation_seconds": 7200,
-                "allocated_gpus": 2,
+                "allocated_exclusive_nodes": 1,
+                "application_gpus": 2,
                 "training_authorized": False,
             }
         )
@@ -181,6 +184,8 @@ class PacedExposureTests(unittest.TestCase):
             ("prompt_groups", 32),
             ("training_authorized", True),
             ("scientific_allocation_seconds", 7201),
+            ("allocated_exclusive_nodes", 2),
+            ("application_gpus", 3),
             ("maximum_completions", 8193),
             ("selection_steps", 8),
         ):

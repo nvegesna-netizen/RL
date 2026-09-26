@@ -220,7 +220,8 @@ def freeze_calibration(
             "top_p": 0.7,
             "maximum_completions": 8192,
             "scientific_allocation_seconds": 7200,
-            "allocated_gpus": 2,
+            "allocated_exclusive_nodes": 1,
+            "application_gpus": 2,
             "plan_id": "0" * 64,
         }
     )
