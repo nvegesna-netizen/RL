@@ -233,13 +233,19 @@ class SchedulerTraceEvent:
             raise SchedulerTraceValidationError(f"unknown fields: {sorted(unknown)}")
         values = dict(record)
         try:
-            values["event_type"] = SchedulerEventType(values["event_type"])
+            event_type = values["event_type"]
+            if not isinstance(event_type, str):
+                raise TypeError("event_type must be a string")
+            values["event_type"] = SchedulerEventType(event_type)
             for name in (
                 "selected_logical_group_ids",
                 "eligible_logical_group_ids",
                 "live_logical_group_ids",
             ):
-                values[name] = tuple(values.get(name, ()))
+                identifiers = values.get(name, ())
+                if not isinstance(identifiers, (list, tuple)):
+                    raise TypeError(f"{name} must be an array")
+                values[name] = tuple(identifiers)
             return cls(**values)  # type: ignore[arg-type]
         except (KeyError, TypeError, ValueError) as error:
             raise SchedulerTraceValidationError(str(error)) from error
@@ -493,9 +499,12 @@ def validate_scheduler_trace(
             assert event.admission_id is not None
             if event.admission_id in admissions:
                 raise SchedulerTraceValidationError("duplicate admission ID")
-            admissions[event.admission_id] = int(
-                event.scalar_summaries["expected_prompt_groups"]
-            )
+            expected = event.scalar_summaries["expected_prompt_groups"]
+            if not isinstance(expected, int) or isinstance(expected, bool):
+                raise SchedulerTraceValidationError(
+                    "admission count must be an integer"
+                )
+            admissions[event.admission_id] = expected
             admission_dispatches[event.admission_id] = 0
         elif event.event_type is SchedulerEventType.ATTEMPT_DISPATCHED:
             assert event.attempt_id is not None and event.logical_group_id is not None
@@ -641,3 +650,164 @@ def validate_scheduler_trace(
         incomplete_attempt_ids=incomplete,
         administratively_censored_group_ids=administrative,
     )
+
+
+def validate_paced_consumer_trace(
+    path: str | Path, *, consumer_seconds: float, expected_groups: int = 64
+) -> SchedulerTraceValidationReport:
+    """Require complete zero-update selection and paced consumer lifecycles.
+
+    This is a successful-arm validator. A cancelled or timed-out trace must be
+    retained as partial evidence, not passed through this completeness gate.
+    General attempt validation is performed first; pacing is checked separately
+    so historical unpaced traces retain their original contract.
+    """
+    if not math.isfinite(consumer_seconds) or consumer_seconds <= 0:
+        raise ValueError("consumer duration must be finite and positive")
+    if expected_groups < 4 or expected_groups % 4:
+        raise ValueError("expected groups must be a positive multiple of four")
+    report = validate_scheduler_trace(path)
+    events = list(iter_scheduler_trace(path))
+    terminal = events[-1]
+    if (
+        terminal.terminal_reason != "scheduler_assay_complete"
+        or terminal.exception_class is not None
+        or terminal.scalar_summaries.get("completed_train_steps") != 0
+        or terminal.scalar_summaries.get("final_physical_weight_version") != 0
+        or terminal.scalar_summaries.get("final_scheduler_assay_step")
+        != expected_groups // 4
+        or terminal.scalar_summaries.get("assay_selection_steps")
+        != expected_groups // 4
+        or terminal.scalar_summaries.get("assay_selected_prompt_groups")
+        != expected_groups
+    ):
+        raise SchedulerTraceValidationError(
+            "paced run did not report zero-update success"
+        )
+    step = 0
+    admissions = 0
+    buffered = 0
+    active = 0
+    phase = "idle"
+    batch: tuple[str, ...] = ()
+    selected: set[str] = set()
+    dispatched: set[str] = set()
+    started_ns = 0
+    for event in events:
+        for version in (
+            event.trainer_version,
+            event.start_weight_version,
+            event.end_weight_version,
+        ):
+            if version is not None and version != 0:
+                raise SchedulerTraceValidationError(
+                    "paced assay changed physical version"
+                )
+        kind = event.event_type
+        summaries = event.scalar_summaries
+        if kind is SchedulerEventType.ADMISSION_GRANTED:
+            if (
+                event.sampler_dispatch_index != admissions
+                or admissions > step + 3
+                or summaries.get("expected_prompt_groups") != 4
+            ):
+                raise SchedulerTraceValidationError(
+                    "paced admission exceeded logical window"
+                )
+            admissions += 1
+        if kind in {
+            SchedulerEventType.GROUP_EVICTED,
+            SchedulerEventType.ATTEMPT_FAILED,
+            SchedulerEventType.ATTEMPT_REMOVED,
+            SchedulerEventType.GROUP_ARCHIVED,
+            SchedulerEventType.GROUP_REPLACED,
+        }:
+            raise SchedulerTraceValidationError("paced assay lost or replaced a group")
+        if kind is SchedulerEventType.ATTEMPT_DISPATCHED:
+            assert event.logical_group_id is not None
+            dispatched.add(event.logical_group_id)
+            buffered += 1
+            active += 1
+            if buffered > 16 or active > 4 or phase == "drained":
+                raise SchedulerTraceValidationError("paced rollout capacity violated")
+        elif kind is SchedulerEventType.ROLLOUT_COMPLETED:
+            active -= 1
+        if kind is SchedulerEventType.SELECT_DECISION:
+            if phase != "idle" or summaries.get("scheduler_assay_step") != step:
+                raise SchedulerTraceValidationError(
+                    "selection before consumer completion"
+                )
+            batch = event.selected_logical_group_ids
+            if batch:
+                if (
+                    len(batch) != 4
+                    or len(set(batch)) != 4
+                    or selected.intersection(batch)
+                ):
+                    raise SchedulerTraceValidationError(
+                        "paced batch is not four fresh groups"
+                    )
+                selected.update(batch)
+                phase = "selected"
+        elif kind in {
+            SchedulerEventType.CONSUMER_BUFFER_RELEASED,
+            SchedulerEventType.CONSUMER_STARTED,
+            SchedulerEventType.CONSUMER_COMPLETED,
+        }:
+            expected_phase = {
+                SchedulerEventType.CONSUMER_BUFFER_RELEASED: "selected",
+                SchedulerEventType.CONSUMER_STARTED: "released",
+                SchedulerEventType.CONSUMER_COMPLETED: "started",
+            }[kind]
+            if (
+                phase != expected_phase
+                or event.selected_logical_group_ids != batch
+                or summaries.get("scheduler_assay_step") != step
+                or summaries.get("physical_weight_version") != 0
+                or summaries.get("selected_prompt_groups") != 4
+                or summaries.get("requested_consumer_seconds") != consumer_seconds
+            ):
+                raise SchedulerTraceValidationError("paced consumer lifecycle mismatch")
+            if kind is SchedulerEventType.CONSUMER_BUFFER_RELEASED:
+                buffered -= 4
+                if buffered < 0:
+                    raise SchedulerTraceValidationError(
+                        "paced buffer released excess capacity"
+                    )
+                phase = "released"
+            elif kind is SchedulerEventType.CONSUMER_STARTED:
+                phase = "started"
+                started_ns = event.monotonic_ns
+            else:
+                elapsed = summaries.get("actual_consumer_seconds")
+                if (
+                    not isinstance(elapsed, (int, float))
+                    or isinstance(elapsed, bool)
+                    or not math.isfinite(elapsed)
+                    or elapsed < consumer_seconds
+                    or (event.monotonic_ns - started_ns) / 1e9 + 1e-9 < elapsed
+                ):
+                    raise SchedulerTraceValidationError(
+                        "paced consumer completed too early"
+                    )
+                phase = "idle"
+                step += 1
+        elif kind is SchedulerEventType.CONSUMER_DRAINED:
+            if (
+                phase != "idle"
+                or step != expected_groups // 4
+                or len(selected) != expected_groups
+                or selected != dispatched
+                or summaries.get("scheduler_assay_step") != step
+                or summaries.get("selected_prompt_groups") != expected_groups
+                or summaries.get("buffered_prompt_groups") != 0
+                or summaries.get("physical_weight_version") != 0
+                or buffered != 0
+                or active != 0
+                or admissions != expected_groups // 4
+            ):
+                raise SchedulerTraceValidationError("paced drain accounting mismatch")
+            phase = "drained"
+    if phase != "drained" or report.administratively_censored_group_ids:
+        raise SchedulerTraceValidationError("paced trace did not fully drain")
+    return report
