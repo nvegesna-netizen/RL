@@ -22,6 +22,7 @@ replace-imports-with-any = [
   "zstandard.*",
 ]
 project-includes = [
+  "tools/freeze_paced_exposure_calibration.py",
   "tools/materialize_dapo_paced_exposure.py",
   # TODO: enable these once we have 100 correctness
   #"nemo_rl/**/*.py",
