@@ -31,6 +31,7 @@ from nemo_rl.algorithms.async_utils.paced_exposure import (
 from nemo_rl.algorithms.async_utils.scheduler_trace import (
     SchedulerEventType,
     SchedulerTraceEvent,
+    SchedulerTraceValidationError,
     iter_scheduler_trace,
     validate_paced_consumer_trace,
 )
@@ -147,6 +148,7 @@ def analyze_arm(
     step = 0
     consumer_seconds: list[float] = []
     drain_ns = 0
+    buffered = active = maximum_buffered = maximum_active = 0
     for event in events:
         kind = event.event_type
         if kind is SchedulerEventType.ADMISSION_GRANTED:
@@ -159,9 +161,14 @@ def analyze_arm(
             )
             dispatches[event.logical_group_id] = event
             source_order.append(event.source_prompt_id)
+            buffered += 1
+            active += 1
+            maximum_buffered = max(maximum_buffered, buffered)
+            maximum_active = max(maximum_active, active)
         elif kind is SchedulerEventType.ROLLOUT_COMPLETED:
             assert event.logical_group_id is not None
             completions[event.logical_group_id] = event
+            active -= 1
         elif kind is SchedulerEventType.GROUP_READY:
             assert event.logical_group_id is not None
             ready_times[event.logical_group_id] = event.monotonic_ns
@@ -194,6 +201,8 @@ def analyze_arm(
                         / 1e9,
                     )
                 )
+        elif kind is SchedulerEventType.CONSUMER_BUFFER_RELEASED:
+            buffered -= len(event.selected_logical_group_ids)
         elif kind is SchedulerEventType.CONSUMER_COMPLETED:
             consumer_seconds.append(number(event, "actual_consumer_seconds"))
             step += 1
@@ -213,6 +222,8 @@ def analyze_arm(
         "actual_consumer_seconds_by_step": consumer_seconds,
         "first_dispatch_to_drain_seconds": elapsed,
         "groups_per_second_to_drain": 64 / elapsed,
+        "maximum_buffered_groups": maximum_buffered,
+        "maximum_active_generation_groups": maximum_active,
         "cumulative_prefixes": [
             summarize(selected[:count]) for count in range(4, 65, 4)
         ],
@@ -243,27 +254,111 @@ def analyze_arm(
     }
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--plan", type=Path, required=True)
-    parser.add_argument("--arms-root", type=Path, required=True)
-    parser.add_argument("--output", type=Path, required=True)
-    args = parser.parse_args()
-    plan = load_paced_exposure_plan(args.plan)
-    result = {
+def contrast_series(
+    ready: object, ordered: object, *, equal_count: bool
+) -> list[dict[str, object]]:
+    """Compute ready-first minus in-order differences on aligned windows."""
+    if (
+        not isinstance(ready, list)
+        or not isinstance(ordered, list)
+        or len(ready) != len(ordered)
+    ):
+        raise ValueError("paired summary series shape mismatch")
+    output: list[dict[str, object]] = []
+    for left, right in zip(ready, ordered, strict=True):
+        if (
+            not isinstance(left, dict)
+            or not isinstance(right, dict)
+            or left.keys() != right.keys()
+        ):
+            raise ValueError("paired summary fields mismatch")
+        if equal_count and left["selected_groups"] != right["selected_groups"]:
+            raise ValueError("equal-count comparison has different group counts")
+        record: dict[str, object] = {}
+        for key, value in left.items():
+            other = right[key]
+            if key in {"first_selected_group_index", "seconds_from_first_dispatch"}:
+                if value != other:
+                    raise ValueError("paired window positions mismatch")
+                record[key] = value
+            elif value is None or other is None:
+                record[key] = None
+            elif isinstance(value, (int, float)) and isinstance(other, (int, float)):
+                record[key] = value - other
+            else:
+                raise ValueError("paired summary has nonnumeric metric")
+        record["ready_first_selected_groups"] = left["selected_groups"]
+        record["in_order_selected_groups"] = right["selected_groups"]
+        output.append(record)
+    return output
+
+
+def analyze_pilot(
+    plan: PacedExposurePlan, *, arms_root: Path, allow_partial: bool
+) -> dict[str, object]:
+    """Retain valid completed arms without turning missing/invalid arms into zeros."""
+    results: dict[str, dict[str, object]] = {}
+    unavailable: list[dict[str, object]] = []
+    for arm in plan.arms:
+        trace = arms_root / arm.arm_id / "scheduler_trace.v1.jsonl"
+        if not trace.exists():
+            if not allow_partial:
+                raise FileNotFoundError("required paced arm trace is missing")
+            unavailable.append({"arm_id": arm.arm_id, "status": "trace_missing"})
+            continue
+        try:
+            results[arm.arm_id] = analyze_arm(plan, arm_id=arm.arm_id, trace_path=trace)
+        except (ValueError, SchedulerTraceValidationError) as error:
+            if not allow_partial:
+                raise
+            # Exception text can contain private trace identifiers. Export only type.
+            unavailable.append(
+                {
+                    "arm_id": arm.arm_id,
+                    "status": "trace_not_valid_for_complete_arm_analysis",
+                    "error_class": type(error).__name__,
+                    "trace_sha256": hashlib.sha256(trace.read_bytes()).hexdigest(),
+                }
+            )
+    pairs = []
+    for multiplier in (0.5, 1.0, 2.0):
+        arms = [arm for arm in plan.arms if arm.cadence_multiplier == multiplier]
+        ready_id = next(arm.arm_id for arm in arms if arm.sampler == "ready_first")
+        ordered_id = next(arm.arm_id for arm in arms if arm.sampler == "in_order")
+        if ready_id not in results or ordered_id not in results:
+            continue
+        pairs.append(
+            {
+                "cadence_multiplier": multiplier,
+                "direction": "ready_first_minus_in_order",
+                "series": {
+                    key: contrast_series(
+                        results[ready_id][key],
+                        results[ordered_id][key],
+                        equal_count=key != "wall_checkpoints",
+                    )
+                    for key in (
+                        "cumulative_prefixes",
+                        "rolling_16_group_windows",
+                        "disjoint_16_group_blocks",
+                        "wall_checkpoints",
+                    )
+                },
+            }
+        )
+    return {
         "schema_version": 1,
-        "analysis_status": "exploratory_paced_exposure_complete_pilot",
+        "analysis_status": (
+            "exploratory_paced_exposure_partial_pilot"
+            if unavailable
+            else "exploratory_paced_exposure_complete_pilot"
+        ),
         "plan_id": plan.plan_id,
         "confirmatory_eligible": False,
         "learner_effect_measured": False,
-        "arms": [
-            analyze_arm(
-                plan,
-                arm_id=arm.arm_id,
-                trace_path=args.arms_root / arm.arm_id / "scheduler_trace.v1.jsonl",
-            )
-            for arm in plan.arms
-        ],
+        "arms": list(results.values()),
+        "unavailable_arms": unavailable,
+        "paired_contrasts": pairs,
         "limitations": [
             "one_pool",
             "runtime_order_confounding",
@@ -271,12 +366,26 @@ def main() -> None:
             "initial_and_final_16_groups_are_boundaries",
             "no_steady_state_claim",
             "matching_seeds_do_not_imply_identical_live_completions",
+            "partial_pilot_does_not_estimate_missing_arms",
         ],
     }
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--plan", type=Path, required=True)
+    parser.add_argument("--arms-root", type=Path, required=True)
+    parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--allow-partial", action="store_true")
+    args = parser.parse_args()
+    plan = load_paced_exposure_plan(args.plan)
+    result = analyze_pilot(
+        plan, arms_root=args.arms_root, allow_partial=args.allow_partial
+    )
     with args.output.open("x") as stream:
         json.dump(result, stream, indent=2, sort_keys=True, allow_nan=False)
         stream.write("\n")
-    print("paced_exposure_analysis=PASS")
+    print(result["analysis_status"])
 
 
 if __name__ == "__main__":
