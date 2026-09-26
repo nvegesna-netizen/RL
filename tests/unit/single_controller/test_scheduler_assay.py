@@ -12,6 +12,10 @@ import json
 from pathlib import Path
 from types import SimpleNamespace
 
+import pytest
+
+from nemo_rl.algorithms.async_utils.paced_consumer import ConsumerTiming
+from nemo_rl.algorithms.async_utils.paced_exposure import PacedExposureArm
 from nemo_rl.algorithms.async_utils.scheduler_assay import (
     SchedulerAssayPlan,
     compute_scheduler_assay_plan_id,
@@ -113,7 +117,10 @@ def test_load_scheduler_assay_plan_verifies_canonical_identity(tmp_path: Path) -
     assert plan.arm("ready_first_aime_delayed").sampler == "ready_first"
 
 
-def test_scheduler_assay_pump_advances_only_logical_clock() -> None:
+@pytest.mark.parametrize("paced,cancel", [(False, False), (True, False), (True, True)])
+def test_scheduler_assay_pump_advances_only_logical_clock(
+    monkeypatch: pytest.MonkeyPatch, *, paced: bool, cancel: bool
+) -> None:
     class _Buffer:
         def __init__(self) -> None:
             self.group_ids = [f"group-{index}" for index in range(8)]
@@ -173,6 +180,17 @@ def test_scheduler_assay_pump_advances_only_logical_clock() -> None:
         ctrl._scheduler_trace = _Trace()
         ctrl._fixed_pool_manifest = SimpleNamespace(items=tuple(range(8)))
         ctrl._scheduler_assay_enabled = True
+        ctrl._scheduler_assay_arm = None
+        if paced:
+            ctrl._scheduler_assay_arm = PacedExposureArm(
+                arm_id="ready_first_one",
+                sampler="ready_first",
+                cadence_multiplier=1.0,
+                consumer_duration_seconds=2.0,
+                generation_seed=103,
+                sampler_lookahead_versions=3,
+                max_buffered_rollouts=16,
+            )
         ctrl._trace_enabled = True
         ctrl._master_config = SimpleNamespace(
             grpo=SimpleNamespace(num_prompts_per_step=4)
@@ -194,6 +212,35 @@ def test_scheduler_assay_pump_advances_only_logical_clock() -> None:
             clear_calls.append(kwargs)
 
         ctrl._call_dp = _call_dp
+        waits: list[int] = []
+
+        async def fake_consumer_wait(duration: float) -> ConsumerTiming:
+            assert duration == 2.0
+            # Capacity is reusable before the logical admission clock advances.
+            assert ctrl._buffer_capacity._value == 4 * (len(waits) + 1)
+            assert ctrl._assay_scheduler_step == len(waits)
+            assert ctrl._trainer_version == ctrl._train_steps == 0
+            assert len(clear_calls) == len(waits) + 1
+            waits.append(ctrl._assay_scheduler_step)
+            if cancel:
+                raise asyncio.CancelledError
+            return ConsumerTiming(duration, 10.0, 12.25)
+
+        monkeypatch.setattr(
+            "nemo_rl.algorithms.single_controller.wait_for_consumer", fake_consumer_wait
+        )
+        if cancel:
+            with pytest.raises(asyncio.CancelledError):
+                await ctrl._scheduler_assay_pump()
+            assert ctrl._assay_scheduler_step == 0
+            assert ctrl._assay_selected_groups == 4
+            assert ctrl._trainer_version == ctrl._train_steps == 0
+            assert [event for event, _ in ctrl._scheduler_trace.events] == [
+                SchedulerEventType.SELECT_DECISION,
+                SchedulerEventType.CONSUMER_BUFFER_RELEASED,
+                SchedulerEventType.CONSUMER_STARTED,
+            ]
+            return
         await ctrl._scheduler_assay_pump()
 
         assert ctrl._trainer_version == 0
@@ -202,9 +249,29 @@ def test_scheduler_assay_pump_advances_only_logical_clock() -> None:
         assert ctrl._assay_selection_steps == 2
         assert ctrl._assay_selected_groups == 8
         assert len(clear_calls) == 2
-        assert [event for event, _ in ctrl._scheduler_trace.events] == [
+        expected_events = [
             SchedulerEventType.SELECT_DECISION,
             SchedulerEventType.SELECT_DECISION,
         ]
+        if paced:
+            expected_events = [
+                SchedulerEventType.SELECT_DECISION,
+                SchedulerEventType.CONSUMER_BUFFER_RELEASED,
+                SchedulerEventType.CONSUMER_STARTED,
+                SchedulerEventType.CONSUMER_COMPLETED,
+            ] * 2 + [SchedulerEventType.CONSUMER_DRAINED]
+            assert waits == [0, 1]
+            completions = [
+                fields
+                for event, fields in ctrl._scheduler_trace.events
+                if event == SchedulerEventType.CONSUMER_COMPLETED
+            ]
+            assert all(
+                fields["scalar_summaries"]["actual_consumer_seconds"] == 2.25
+                for fields in completions
+            )
+        else:
+            assert not waits
+        assert [event for event, _ in ctrl._scheduler_trace.events] == expected_events
 
     asyncio.run(_main())

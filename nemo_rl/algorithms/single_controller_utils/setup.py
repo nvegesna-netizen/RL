@@ -31,6 +31,10 @@ from transformers import AutoProcessor
 from transformers.tokenization_utils_base import PreTrainedTokenizerBase
 
 from nemo_rl.algorithms.async_utils.replay_buffer import TQReplayBuffer
+from nemo_rl.algorithms.async_utils.paced_exposure import (
+    PacedExposureArm,
+    PacedExposurePlan,
+)
 from nemo_rl.algorithms.async_utils.scheduler_assay import (
     SchedulerAssayArm,
     SchedulerAssayPlan,
@@ -408,7 +412,11 @@ def setup_single_controller(
             assert assay_config.arm_id is not None
             assert assay_config.order_seed is not None
             assay_plan = load_scheduler_protocol(assay_config.plan_path)
-            if isinstance(assay_plan, DapoLoadAlignmentPlan):
+            if isinstance(assay_plan, PacedExposurePlan):
+                assay_arm = assay_plan.arm(assay_config.arm_id)
+                pool = assay_plan.pool(assay_config.order_seed)
+                expected_generation_seed = assay_arm.generation_seed
+            elif isinstance(assay_plan, DapoLoadAlignmentPlan):
                 assay_arm = assay_plan.arm(assay_config.arm_id)
                 pool = assay_plan.pool(assay_config.order_seed)
                 expected_generation_seed = pool.scheduler_generation_seed
@@ -447,6 +455,29 @@ def setup_single_controller(
                     )
             if master_config.async_rl.sampler.name != assay_arm.sampler:
                 raise ValueError("scheduler assay arm/sampler mismatch")
+            if isinstance(assay_plan, PacedExposurePlan):
+                paced_pool = assay_plan.pool(assay_config.order_seed)
+                if (
+                    fixed_pool_config.design_id != assay_plan.source_design_id
+                    or tuple(item.source_prompt_id for item in manifest.items)
+                    != paced_pool.source_prompt_ids
+                    or not isinstance(assay_arm, PacedExposureArm)
+                    or generation_config.get("max_new_tokens")
+                    != assay_plan.max_new_tokens
+                    or master_config.async_rl.max_inflight_prompts
+                    != assay_plan.max_inflight_prompts
+                    or master_config.async_rl.max_buffered_rollouts
+                    != assay_arm.max_buffered_rollouts
+                    or data_config["max_input_seq_length"]
+                    != assay_plan.data_max_input_seq_length
+                    or policy_config.get("hf_config_overrides", {}).get(
+                        "max_position_embeddings"
+                    )
+                    != assay_plan.hf_config_override_max_position_embeddings
+                ):
+                    raise ValueError(
+                        "paced-exposure source or runtime does not match plan"
+                    )
             if (
                 grpo_config.num_generations_per_prompt
                 != assay_plan.completions_per_group

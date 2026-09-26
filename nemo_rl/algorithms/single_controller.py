@@ -48,6 +48,8 @@ import torch
 from nemo_rl.algorithms.async_utils.fixed_pool import (
     FixedPoolManifest,
 )
+from nemo_rl.algorithms.async_utils.paced_consumer import wait_for_consumer
+from nemo_rl.algorithms.async_utils.paced_exposure import PacedExposureArm
 from nemo_rl.algorithms.async_utils.staleness_sampler import create_sampler
 from nemo_rl.algorithms.async_utils.scheduler_trace import (
     JsonlSchedulerTraceSink,
@@ -986,6 +988,39 @@ class SingleControllerActor:
                 self._buffer_capacity.release()
             self._assay_selected_groups += num_groups
             self._assay_selection_steps += 1
+            if isinstance(self._scheduler_assay_arm, PacedExposureArm):
+                summaries: dict[str, Scalar] = {
+                    "scheduler_assay_step": self._assay_scheduler_step,
+                    "physical_weight_version": self._trainer_version,
+                    "selected_prompt_groups": num_groups,
+                    "requested_consumer_seconds": (
+                        self._scheduler_assay_arm.consumer_duration_seconds
+                    ),
+                }
+                self._scheduler_trace.emit(
+                    SchedulerEventType.CONSUMER_BUFFER_RELEASED,
+                    selected_logical_group_ids=selected_group_ids,
+                    trainer_version=self._trainer_version,
+                    scalar_summaries=summaries,
+                )
+                self._scheduler_trace.emit(
+                    SchedulerEventType.CONSUMER_STARTED,
+                    selected_logical_group_ids=selected_group_ids,
+                    trainer_version=self._trainer_version,
+                    scalar_summaries=summaries,
+                )
+                timing = await wait_for_consumer(
+                    self._scheduler_assay_arm.consumer_duration_seconds
+                )
+                self._scheduler_trace.emit(
+                    SchedulerEventType.CONSUMER_COMPLETED,
+                    selected_logical_group_ids=selected_group_ids,
+                    trainer_version=self._trainer_version,
+                    scalar_summaries={
+                        **summaries,
+                        "actual_consumer_seconds": timing.elapsed_seconds,
+                    },
+                )
             self._assay_scheduler_step += 1
 
         if len(self._buffer) != 0:
@@ -996,6 +1031,17 @@ class SingleControllerActor:
         if self._trainer_version != 0 or self._train_steps != 0:
             raise RuntimeError(
                 "scheduler assay changed physical weights or ran a train step"
+            )
+        if isinstance(self._scheduler_assay_arm, PacedExposureArm):
+            self._scheduler_trace.emit(
+                SchedulerEventType.CONSUMER_DRAINED,
+                trainer_version=self._trainer_version,
+                scalar_summaries={
+                    "scheduler_assay_step": self._assay_scheduler_step,
+                    "selected_prompt_groups": self._assay_selected_groups,
+                    "buffered_prompt_groups": len(self._buffer),
+                    "physical_weight_version": self._trainer_version,
+                },
             )
 
     async def _train_pump(self) -> None:

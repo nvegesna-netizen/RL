@@ -11,6 +11,11 @@ from typing import Annotated, Literal, TypeAlias
 
 from pydantic import BaseModel, StringConstraints, ValidationError, model_validator
 
+from nemo_rl.algorithms.async_utils.paced_exposure import (
+    PacedExposureArm,
+    PacedExposurePlan,
+    load_paced_exposure_plan,
+)
 from nemo_rl.algorithms.async_utils.scheduler_assay import (
     SchedulerAssayArm,
     SchedulerAssayPlan,
@@ -700,6 +705,7 @@ SchedulerProtocolPlan: TypeAlias = (
     | SchedulerPressureResponsePlan
     | DapoOperationalMixturePlan
     | DapoLoadAlignmentPlan
+    | PacedExposurePlan
 )
 SchedulerProtocolArm: TypeAlias = (
     SchedulerAssayArm
@@ -707,6 +713,7 @@ SchedulerProtocolArm: TypeAlias = (
     | SchedulerPressureResponseArm
     | DapoOperationalMixtureArm
     | DapoLoadAlignmentArm
+    | PacedExposureArm
 )
 
 
@@ -839,6 +846,8 @@ def load_scheduler_protocol(path: str | Path) -> SchedulerProtocolPlan:
         )
     if value.get("analysis_status") == "controlled_zero_update_live_scheduler_assay":
         return load_scheduler_assay_plan(plan_path)
+    if value.get("analysis_status") == "exploratory_paced_zero_update_exposure":
+        return load_paced_exposure_plan(plan_path)
     if value.get("analysis_status") == "controlled_natural_latency_scheduler_crossover":
         return load_structured_scheduler_crossover_plan(plan_path)
     if (

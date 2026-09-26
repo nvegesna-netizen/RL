@@ -48,6 +48,8 @@ project-includes = [
   "nemo_rl/algorithms/advantage_estimator.py",
   "nemo_rl/algorithms/async_utils/__init__.py",
   "nemo_rl/algorithms/async_utils/interfaces.py",
+  "nemo_rl/algorithms/async_utils/paced_consumer.py",
+  "nemo_rl/algorithms/async_utils/paced_exposure.py",
   "nemo_rl/algorithms/async_utils/fixed_pool.py",
   "nemo_rl/algorithms/async_utils/dapo_operational_mixture.py",
   "nemo_rl/algorithms/async_utils/dapo_load_alignment.py",
