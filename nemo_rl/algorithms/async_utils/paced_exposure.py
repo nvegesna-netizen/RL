@@ -93,6 +93,7 @@ class PacedExposurePlan(BaseModel, extra="forbid", frozen=True):
     population_claim_authorized: Literal[False]
     training_authorized: Literal[False]
     source_design_id: Literal["dapo_math_paced_exposure_v1"]
+    execution_spec_sha256: Sha256Hex
     analysis_code_commit: GitCommitHex
     expected_base_commit: Literal["ae07eafe8035b5b2e84efa7234e70e7fd7e493c1"]
     expected_image_sha256: Literal[
@@ -195,3 +196,59 @@ def load_paced_exposure_plan(path: str | Path) -> PacedExposurePlan:
     if plan.plan_id != compute_paced_exposure_plan_id(plan):
         raise ValueError("paced-exposure plan ID mismatch")
     return plan
+
+
+class PacedExposureExecutionSpec(BaseModel, extra="forbid", frozen=True):
+    """Pre-generation bindings; unlike the final plan, contains no outcomes.
+
+    The file hash is frozen by the JET launch route before materialization.
+    A spec is not user authorization by itself and may not invent confirmation.
+    """
+
+    schema_version: Literal[1]
+    analysis_status: Literal["exploratory_paced_exposure_execution_spec"]
+    source_design_id: Literal["dapo_math_paced_exposure_v1"]
+    selection_seed: Seed
+    source_shuffle_seed: Seed
+    calibration_generation_seeds: tuple[Seed, Seed]
+    cadence_pair_generation_seeds: tuple[Seed, Seed, Seed]
+    prior_identity_ledger_sha256: Sha256Hex
+    prior_seed_ledger_sha256: Sha256Hex
+    implementation_commit: GitCommitHex
+    runtime_validation_result_sha256: Sha256Hex
+    prompt_groups: Literal[64]
+    completions_per_group: Literal[16]
+    maximum_completions: Literal[8192]
+    scientific_allocation_seconds: Literal[7200]
+    allocated_gpus: Literal[2]
+    training_authorized: Literal[False]
+
+    @model_validator(mode="after")
+    def _distinct_seeds(self) -> PacedExposureExecutionSpec:
+        seeds = (
+            self.selection_seed,
+            self.source_shuffle_seed,
+            *self.calibration_generation_seeds,
+            *self.cadence_pair_generation_seeds,
+        )
+        if len(set(seeds)) != 7:
+            raise ValueError("execution spec requires seven distinct seed bindings")
+        return self
+
+
+def validate_paced_plan_execution_spec(
+    plan: PacedExposurePlan, spec: PacedExposureExecutionSpec
+) -> None:
+    """Reject post-calibration changes to source, seeds or implementation."""
+    pool = plan.pools[0]
+    if (
+        pool.order_seed != spec.selection_seed
+        or pool.prior_identity_exclusions_sha256 != spec.prior_identity_ledger_sha256
+        or pool.prior_seed_ledger_sha256 != spec.prior_seed_ledger_sha256
+        or plan.analysis_code_commit != spec.implementation_commit
+        or tuple(draw.generation_seed for draw in plan.calibration_draws)
+        != spec.calibration_generation_seeds
+        or tuple(plan.arms[index].generation_seed for index in (0, 2, 4))
+        != spec.cadence_pair_generation_seeds
+    ):
+        raise ValueError("paced plan changed pre-generation execution bindings")

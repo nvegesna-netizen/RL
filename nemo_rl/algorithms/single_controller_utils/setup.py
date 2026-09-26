@@ -34,6 +34,8 @@ from nemo_rl.algorithms.async_utils.replay_buffer import TQReplayBuffer
 from nemo_rl.algorithms.async_utils.paced_exposure import (
     PacedExposureArm,
     PacedExposurePlan,
+    PacedExposureExecutionSpec,
+    validate_paced_plan_execution_spec,
 )
 from nemo_rl.algorithms.async_utils.scheduler_assay import (
     SchedulerAssayArm,
@@ -457,8 +459,16 @@ def setup_single_controller(
                 raise ValueError("scheduler assay arm/sampler mismatch")
             if isinstance(assay_plan, PacedExposurePlan):
                 paced_pool = assay_plan.pool(assay_config.order_seed)
+                execution_spec = PacedExposureExecutionSpec.model_validate_json(
+                    (
+                        manifest.manifest_path.parent / "execution_spec.v1.json"
+                    ).read_bytes()
+                )
+                validate_paced_plan_execution_spec(assay_plan, execution_spec)
                 if (
                     fixed_pool_config.design_id != assay_plan.source_design_id
+                    or manifest.design_protocol_sha256
+                    != assay_plan.execution_spec_sha256
                     or tuple(item.source_prompt_id for item in manifest.items)
                     != paced_pool.source_prompt_ids
                     or not isinstance(assay_arm, PacedExposureArm)

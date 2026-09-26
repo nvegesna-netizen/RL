@@ -47,6 +47,7 @@ from nemo_rl.algorithms.async_utils.scheduler_trace import (
     iter_scheduler_trace,
     validate_scheduler_trace,
 )
+from nemo_rl.algorithms.async_utils.paced_exposure import PacedExposureExecutionSpec
 
 
 FIXED_POOL_MANIFEST_SCHEMA_VERSION: Final[int] = 1
@@ -1615,6 +1616,20 @@ def validate_dapo_load_alignment_common_input_manifest_design(
     )
 
 
+def validate_dapo_paced_exposure_manifest_design(manifest: FixedPoolManifest) -> None:
+    """Validate 64-group geometry against the adjacent pre-generation spec."""
+    spec_raw = (manifest.manifest_path.parent / "execution_spec.v1.json").read_bytes()
+    spec = PacedExposureExecutionSpec.model_validate_json(spec_raw)
+    validate_dapo_operational_latency_discovery_manifest_design(
+        manifest,
+        expected_selection_seeds=frozenset({spec.selection_seed}),
+        expected_protocol_sha256=hashlib.sha256(spec_raw).hexdigest(),
+        study_label="paced exposure",
+        expected_prompt_groups=spec.prompt_groups,
+        expected_cohorts=16,
+    )
+
+
 def _validate_structured_generation_manifest_design(
     manifest: FixedPoolManifest,
     *,
@@ -1804,6 +1819,8 @@ def validate_fixed_pool_manifest_design(
         validate_dapo_load_alignment_manifest_design(manifest)
     elif design_id == "dapo_math_load_alignment_common_input_validation_v1":
         validate_dapo_load_alignment_common_input_manifest_design(manifest)
+    elif design_id == "dapo_math_paced_exposure_v1":
+        validate_dapo_paced_exposure_manifest_design(manifest)
     else:
         raise FixedPoolManifestError(f"unsupported fixed-pool design_id: {design_id!r}")
 

@@ -28,6 +28,7 @@ def plan_record() -> dict:
         "population_claim_authorized": False,
         "training_authorized": False,
         "source_design_id": "dapo_math_paced_exposure_v1",
+        "execution_spec_sha256": "9" * 64,
         "analysis_code_commit": "a" * 40,
         "expected_base_commit": "ae07eafe8035b5b2e84efa7234e70e7fd7e493c1",
         "expected_image_sha256": "3df8114a0b3e60ef95ce13f8b982c7cc45d164aca71c63a87388b1e8434ee470",
@@ -100,6 +101,36 @@ def plan_record() -> dict:
 
 
 class PacedExposureTests(unittest.TestCase):
+    def test_pre_generation_spec_has_no_calibration_outcomes(self) -> None:
+        record = {
+            "schema_version": 1,
+            "analysis_status": "exploratory_paced_exposure_execution_spec",
+            "source_design_id": "dapo_math_paced_exposure_v1",
+            "selection_seed": 100,
+            "source_shuffle_seed": 101,
+            "calibration_generation_seeds": [102, 103],
+            "cadence_pair_generation_seeds": [104, 105, 106],
+            "prior_identity_ledger_sha256": "a" * 64,
+            "prior_seed_ledger_sha256": "b" * 64,
+            "implementation_commit": "c" * 40,
+            "runtime_validation_result_sha256": "d" * 64,
+            "prompt_groups": 64,
+            "completions_per_group": 16,
+            "maximum_completions": 8192,
+            "scientific_allocation_seconds": 7200,
+            "allocated_gpus": 2,
+            "training_authorized": False,
+        }
+        MODULE.PacedExposureExecutionSpec.model_validate(record)
+        for key, value in (
+            ("source_shuffle_seed", 100),
+            ("cadence_seconds", 10),
+            ("training_authorized", True),
+            ("selection_seed", True),
+        ):
+            with self.subTest(key=key), self.assertRaises(ValueError):
+                MODULE.PacedExposureExecutionSpec.model_validate({**record, key: value})
+
     def test_round_trip_and_tamper_detection(self) -> None:
         record = plan_record()
         plan = MODULE.PacedExposurePlan.model_validate(record)
@@ -113,6 +144,37 @@ class PacedExposureTests(unittest.TestCase):
             filename.write_text(json.dumps(record))
             with self.assertRaisesRegex(ValueError, "ID mismatch"):
                 MODULE.load_paced_exposure_plan(filename)
+
+    def test_live_plan_cannot_change_frozen_execution_seeds(self) -> None:
+        plan = MODULE.PacedExposurePlan.model_validate(plan_record())
+        spec = MODULE.PacedExposureExecutionSpec.model_validate(
+            {
+                "schema_version": 1,
+                "analysis_status": "exploratory_paced_exposure_execution_spec",
+                "source_design_id": "dapo_math_paced_exposure_v1",
+                "selection_seed": 100,
+                "source_shuffle_seed": 106,
+                "calibration_generation_seeds": [101, 102],
+                "cadence_pair_generation_seeds": [103, 104, 105],
+                "prior_identity_ledger_sha256": "e" * 64,
+                "prior_seed_ledger_sha256": "f" * 64,
+                "implementation_commit": "a" * 40,
+                "runtime_validation_result_sha256": "d" * 64,
+                "prompt_groups": 64,
+                "completions_per_group": 16,
+                "maximum_completions": 8192,
+                "scientific_allocation_seconds": 7200,
+                "allocated_gpus": 2,
+                "training_authorized": False,
+            }
+        )
+        MODULE.validate_paced_plan_execution_spec(plan, spec)
+        altered = spec.model_dump()
+        altered["cadence_pair_generation_seeds"] = (107, 108, 109)
+        with self.assertRaisesRegex(ValueError, "changed"):
+            MODULE.validate_paced_plan_execution_spec(
+                plan, MODULE.PacedExposureExecutionSpec.model_validate(altered)
+            )
 
     def test_geometry_budget_and_claims_are_frozen(self) -> None:
         for key, value in (
