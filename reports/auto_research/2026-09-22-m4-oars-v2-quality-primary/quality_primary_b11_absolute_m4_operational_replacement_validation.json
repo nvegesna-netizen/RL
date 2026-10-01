@@ -1,0 +1,46 @@
+{
+  "authorization_sha256": "5855229e62413bcb4c72943cb4d7cd436ac0760252cae3edcd2316cec4037cc6",
+  "candidate": {
+    "queue_deadline_override": null,
+    "scientific_or_runtime_change": false,
+    "sha256": "da9a1a942b1f0e68c799f5402567e593ce6e0ff8b337b1ab06cd2a57f43e7fc1",
+    "time_limit_seconds": 14400
+  },
+  "checks": {
+    "candidate_unchanged": true,
+    "complete_outcome_embargo_preserved": true,
+    "failure_occurred_before_child_pipeline": true,
+    "failure_occurred_before_eos_allocation": true,
+    "failure_occurred_before_scientific_execution": true,
+    "failure_receipt_authenticated": true,
+    "original_attempt_preserved": true,
+    "predecessor_authenticated": true,
+    "replacement_is_operational_only": true,
+    "replacement_one_shot_guard_required": true,
+    "strict_serial_order_preserved": true
+  },
+  "failure_receipt_sha256": "18a4c0ea9570e5af4328dbe16a34a9a98dbabb592bbaa2d356e02a2a1a0f8295",
+  "global_sequence": 33,
+  "identity": "b11-absolute-m4",
+  "original_attempt": {
+    "generator_job_id": 464671004,
+    "guard_sha256": "8310f9edf75b8367b5230cf0917f8cef4383362abc65aaba3262df8c90cc10d1",
+    "launch_log_sha256": "d06b268ce07028afafc0aa14119e0d8f58aeecede664ee8b4b5d8fad383604e2",
+    "scientific_execution_started": false,
+    "upstream_pipeline_id": 70966220
+  },
+  "predecessor": "b11-reward-variance",
+  "predecessor_authentication_sha256": "72b879d91fe83723d474c1412ffc4aba67d68cf65f13798f18da2c6d25d32dad",
+  "prelaunch_validation_sha256": "4567e12a6878beb1581b68107a7700113440d9b98ebd504cbcdc9043848a2cc7",
+  "replacement": {
+    "attempt_limit": 1,
+    "automatic_extension": false,
+    "automatic_replacement": false,
+    "automatic_retry": false,
+    "required_launcher": "runllm.py --no_wait",
+    "submission_script_sha256": "30de859d06686ccf569dae2e26f409340fd9272a38a79294dfc95aa26389482b"
+  },
+  "schema": "m4-oars-v2-quality-primary-operational-replacement-validation-v1",
+  "scientific_outcome_accessed": false,
+  "status": "PASS_OPERATIONAL_REPLACEMENT_AUTHORIZED_UNSUBMITTED"
+}

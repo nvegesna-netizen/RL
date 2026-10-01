@@ -1,0 +1,52 @@
+{
+  "artifacts_opened": false,
+  "candidate_sha256": "da9a1a942b1f0e68c799f5402567e593ce6e0ff8b337b1ab06cd2a57f43e7fc1",
+  "child_pipeline_observed": false,
+  "classification": "PRE_EXECUTION_EXTERNAL_SWIFT_AUTHORIZATION_FAILURE",
+  "complete_outcome_embargo_preserved": true,
+  "evidence": {
+    "downstream_pipeline_count": 0,
+    "failure_reason": "script_failure",
+    "failure_signature": {
+      "http_status": 401,
+      "operation": "Object HEAD",
+      "service": "pdx.s8k.io team-jet-inputs",
+      "target_suffix": "common/wrappers/logging.sh"
+    },
+    "generator_finished_at": "2026-10-01T11:05:33.362-07:00",
+    "generator_job_id": 464671004,
+    "generator_stage": "trigger",
+    "generator_started_at": "2026-10-01T11:03:54.503-07:00",
+    "generator_status": "failed",
+    "pipeline_finished_at": "2026-10-01T11:05:36.552-07:00",
+    "pipeline_status": "failed",
+    "upstream_pipeline_id": 70966220,
+    "yaml_errors": null
+  },
+  "global_sequence": 33,
+  "identity": "b11-absolute-m4",
+  "original_submission": {
+    "guard_path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b11-absolute-m4-one-shot-guard.json",
+    "guard_sha256": "8310f9edf75b8367b5230cf0917f8cef4383362abc65aaba3262df8c90cc10d1",
+    "guard_status": "SUBMITTED_NO_WAIT",
+    "launch_log_path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b11-absolute-m4-launch.log",
+    "launch_log_sha256": "d06b268ce07028afafc0aa14119e0d8f58aeecede664ee8b4b5d8fad383604e2",
+    "submission_attempts_consumed": 1
+  },
+  "predecessor": "b11-reward-variance",
+  "repair_boundary": {
+    "automatic_extension": false,
+    "automatic_replacement": false,
+    "automatic_retry": false,
+    "candidate_change_permitted": false,
+    "exactly_one_explicit_operational_replacement_eligible": true,
+    "required_launcher": "runllm.py --no_wait",
+    "scientific_design_change_permitted": false
+  },
+  "replacement_eligibility": "PASS_PROVENANCE_PRESERVING_OPERATIONAL_REPLACEMENT_ELIGIBLE",
+  "result_opened": false,
+  "schema": "m4-oars-v2-quality-primary-preexecution-failure-receipt-v1",
+  "scientific_execution_started": false,
+  "scientific_outcome_accessed": false,
+  "status": "PRESERVED_FAILED_IDENTITY_NO_SCIENTIFIC_EXECUTION"
+}
