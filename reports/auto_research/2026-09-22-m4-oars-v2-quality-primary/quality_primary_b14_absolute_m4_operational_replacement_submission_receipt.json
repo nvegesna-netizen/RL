@@ -1,0 +1,60 @@
+{
+  "actuation_scorer": "absolute_m4_risk",
+  "arm": "absolute_m4",
+  "automatic_extension": false,
+  "automatic_replacement": false,
+  "automatic_retry": false,
+  "complete_outcome_embargo_preserved": true,
+  "global_sequence": 41,
+  "guard": {
+    "path_outside_git": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b14-absolute-m4-client-pretrigger-replacement-guard.json",
+    "replacement_attempt_limit": 1,
+    "replacement_attempts_consumed": 1,
+    "sha256_after_submission": "185ca0d9dc0c796437d97231f8b0d463a1cab161c0dac743d7de479d91fbd4ea",
+    "status": "SUBMITTED_NO_WAIT"
+  },
+  "identity": "b14-absolute-m4",
+  "launcher": {
+    "command_boundary": "runllm.py --no_wait",
+    "invoked_at": "2026-10-02T16:11:55.855085-07:00",
+    "launch_log_sha256": "606d3a53ba5c613ec96133f4f29ad609dad2acf31f21d2170e4cf7e549ef20d8",
+    "return_code": 0,
+    "submission_script_sha256": "e7d8ead3653e30f863dce970dcf0fb780100c3b70196526b1bd20250279cb6dd"
+  },
+  "logs_opened": false,
+  "manifest_sha256": "de184f35b30d073f6a051d4e21066ac8f63306b9db7332491f6057528e866896",
+  "mode": "act",
+  "next_action": "status_only_monitor_until_terminal_then_authenticate_before_any_successor",
+  "original_failed_attempt": {
+    "gitlab_pipeline_trigger_reached": false,
+    "preexecution_failure_receipt_sha256": "2b3d18b6e5f44bbeabc6189c0e6e050c4d2f962ff2a69872e408aec3c7ff28bf",
+    "scientific_execution_started": false,
+    "upstream_pipeline_id": null
+  },
+  "pipeline": {
+    "child_id_at_snapshot": 71240106,
+    "child_status_at_snapshot": "running",
+    "child_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/71240106",
+    "generator_job_id": 466881985,
+    "generator_status_at_snapshot": "success",
+    "logs_after_job_id": 466883124,
+    "logs_after_status_at_snapshot": "created",
+    "logs_before_job_id": 466883121,
+    "logs_before_status_at_snapshot": "running",
+    "main_job_id": 466883123,
+    "main_status_at_snapshot": "created",
+    "upstream_id": 71239934,
+    "upstream_status_at_snapshot": "running",
+    "upstream_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/71239934"
+  },
+  "predecessor": "b14-fifo",
+  "queue_deadline_override": null,
+  "repair_commit": "abffddeaa56e3c77042ca41002075ee90226b15f",
+  "replacement_authorization_sha256": "44a98b2a1fbe764956cd4a9ad40f42047a7404e77e1846fc447bc0b4c0327b46",
+  "replacement_validation_sha256": "a1efb23badba7bec32c684db5fe00b2b1f91a13e6a51132de7f5f3d91abd4af1",
+  "scheduler_time_limit_seconds": 14400,
+  "schema": "m4-oars-v2-quality-primary-operational-replacement-submission-receipt-v1",
+  "scientific_outcome_accessed": false,
+  "status": "SUBMITTED_NO_WAIT_CHILD_RUNNING",
+  "topology_captured_at": "2026-10-02T16:14:53-07:00"
+}
