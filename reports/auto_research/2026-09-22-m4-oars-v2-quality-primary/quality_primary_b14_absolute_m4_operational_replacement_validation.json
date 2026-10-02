@@ -1,0 +1,47 @@
+{
+  "authorization_sha256": "44a98b2a1fbe764956cd4a9ad40f42047a7404e77e1846fc447bc0b4c0327b46",
+  "candidate": {
+    "queue_deadline_override": null,
+    "scientific_or_runtime_change": false,
+    "sha256": "de184f35b30d073f6a051d4e21066ac8f63306b9db7332491f6057528e866896",
+    "time_limit_seconds": 14400
+  },
+  "checks": {
+    "candidate_unchanged": true,
+    "complete_outcome_embargo_preserved": true,
+    "failure_occurred_before_gitlab_pipeline_trigger": true,
+    "failure_occurred_before_child_pipeline": true,
+    "failure_occurred_before_eos_allocation": true,
+    "failure_occurred_before_scientific_execution": true,
+    "failure_receipt_authenticated": true,
+    "original_attempt_preserved": true,
+    "predecessor_authenticated": true,
+    "replacement_is_operational_only": true,
+    "replacement_one_shot_guard_required": true,
+    "strict_serial_order_preserved": true
+  },
+  "failure_receipt_sha256": "2b3d18b6e5f44bbeabc6189c0e6e050c4d2f962ff2a69872e408aec3c7ff28bf",
+  "global_sequence": 41,
+  "identity": "b14-absolute-m4",
+  "original_attempt": {
+    "guard_sha256": "2ce2c0d81798798d658f5a1e9514c00a7bcf8fa96a6d273320fb860ddf305fcb",
+    "launch_log_sha256": "53324040ae7de648392e84f7004bde059840fc9612b73ed1c3104f8a3cd4664d",
+    "launcher_return_code": 1,
+    "scientific_execution_started": false,
+    "upstream_pipeline_id": null
+  },
+  "predecessor": "b14-fifo",
+  "predecessor_authentication_sha256": "9f4d2e93a3a0531973eb2be52887d5e26b15137060fd5db8447ce8e2e679ee1c",
+  "prelaunch_validation_sha256": "8b022d7a9cc3e1d5550f15a095300a7b78e49b44f1ea4c50fe14bafe8c08240f",
+  "replacement": {
+    "attempt_limit": 1,
+    "automatic_extension": false,
+    "automatic_replacement": false,
+    "automatic_retry": false,
+    "required_launcher": "runllm.py --no_wait",
+    "submission_script_sha256": "e7d8ead3653e30f863dce970dcf0fb780100c3b70196526b1bd20250279cb6dd"
+  },
+  "schema": "m4-oars-v2-quality-primary-operational-replacement-validation-v1",
+  "scientific_outcome_accessed": false,
+  "status": "PASS_OPERATIONAL_REPLACEMENT_AUTHORIZED_UNSUBMITTED"
+}

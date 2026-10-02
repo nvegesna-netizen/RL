@@ -1,0 +1,49 @@
+{
+  "artifacts_opened": false,
+  "candidate_sha256": "de184f35b30d073f6a051d4e21066ac8f63306b9db7332491f6057528e866896",
+  "child_pipeline_observed": false,
+  "classification": "PRE_TRIGGER_EXTERNAL_SWIFT_DNS_FAILURE",
+  "complete_outcome_embargo_preserved": true,
+  "evidence": {
+    "client_failure_stage": "upload_workloads_yaml_before_custom_config_upload_and_gitlab_trigger",
+    "failure_signature": {
+      "error": "socket.gaierror Errno 8 NameResolutionError",
+      "host": "pdx.s8k.io",
+      "operation": "SwiftStack workload-manifest PUT"
+    },
+    "gitlab_pipeline_id_returned": false,
+    "jet_pipeline_service_sha256": "ecb3bee3fde1ceb5bba19f8a6d2df109d1d5db4d0ecbcc7d03e407f0428004e9",
+    "jet_pipeline_service_trigger_order": "workloads_upload_then_custom_config_upload_then_gitlab_trigger",
+    "jet_swiftstack_client_sha256": "c4d638b2bd215f70083b814a2c9a6e30b853b28f20cadea10699b941faf5b77f",
+    "launcher_return_code": 1,
+    "upstream_pipeline_id": null
+  },
+  "gitlab_pipeline_trigger_reached": false,
+  "global_sequence": 41,
+  "identity": "b14-absolute-m4",
+  "original_submission": {
+    "guard_path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b14-absolute-m4-one-shot-guard.json",
+    "guard_sha256": "2ce2c0d81798798d658f5a1e9514c00a7bcf8fa96a6d273320fb860ddf305fcb",
+    "guard_status": "ATTEMPT_CONSUMED_CLIENT_FAILURE",
+    "launch_invoked_at": "2026-10-02T15:24:12.007451-07:00",
+    "launch_log_path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b14-absolute-m4-launch.log",
+    "launch_log_sha256": "53324040ae7de648392e84f7004bde059840fc9612b73ed1c3104f8a3cd4664d",
+    "submission_attempts_consumed": 1
+  },
+  "predecessor": "b14-fifo",
+  "repair_boundary": {
+    "automatic_extension": false,
+    "automatic_replacement": false,
+    "automatic_retry": false,
+    "candidate_change_permitted": false,
+    "exactly_one_explicit_operational_replacement_eligible": true,
+    "required_launcher": "runllm.py --no_wait",
+    "scientific_design_change_permitted": false
+  },
+  "replacement_eligibility": "PASS_PROVENANCE_PRESERVING_OPERATIONAL_REPLACEMENT_ELIGIBLE",
+  "result_opened": false,
+  "schema": "m4-oars-v2-quality-primary-preexecution-failure-receipt-v1",
+  "scientific_execution_started": false,
+  "scientific_outcome_accessed": false,
+  "status": "PRESERVED_FAILED_IDENTITY_NO_SCIENTIFIC_EXECUTION"
+}
