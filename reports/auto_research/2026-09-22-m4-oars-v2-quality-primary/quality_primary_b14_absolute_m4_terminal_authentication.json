@@ -1,0 +1,58 @@
+{
+  "archives": {
+    "logs_after": {
+      "bytes": 142756062,
+      "job_id": 466883124,
+      "member_count": 48,
+      "sha256": "d9adb5e3846e7cd7224b089cf7b9a5f6082bef1caab7c59b848f0fb9578a3a7a",
+      "zip_integrity_passed": true
+    },
+    "main": {
+      "bytes": 64296793,
+      "job_id": 466883123,
+      "member_count": 41,
+      "sha256": "316ce4ff8764ee4ebb2aacc65e587f96d0e84437a0c4fe6acfb2a6178cf7ffec",
+      "zip_integrity_passed": true
+    }
+  },
+  "artifact_sha256": {
+    "arm-result.json": "f8be1ac7e798a66a651669f825690f0e829b6c2deeb12a19865a8a153a720a82",
+    "converted-hf-files.sha256": "80d1daf757dcc5053af23f74e718b053874201a7f22ea5a0d63974e109b40772",
+    "evaluation/config.json": "1d3279802316bb48aa1b6d57065c31fe53523d214ca0d7f809bf4edfd3106c4f",
+    "evaluation/evaluation_data.json": "262b12d9b7788cc03676df624ecac7cfcca9811bb7193f5f63dd9bca94beaa0f",
+    "gsm8k-prompt-manifest.json": "81d89a2c6a2fcf8012cf2e6520cec3a420d3ac68c66c48bb9ee2ebeee096b53e",
+    "lifecycle.jsonl": "74cc1e38fbada76463826dfbc49a89e3f98184118e3a1b743f3650f3ef323777",
+    "oars.jsonl": "9ec98269474ca68b1d5d1451f05dee22fbb7bcbccf136f6af367fb8c2f212e6f",
+    "observer-duty.json": "cc5bdec6aab2785e73b910d5da0cfdd1cc32f43101b900f67d67ad010d0994f0",
+    "opportunity.jsonl": "1f9b3b685b3c4f03ab2a76fc7e01558638936e7711a3bd26660265bc04e1cd6f",
+    "systems-result.json": "8fd7776d9bdbf149d6c09a63f19d8e7385a38eaa692b1b0edfdd85b7e7c45c23",
+    "terminal-policy-export.json": "26f487eb7a134427f780e0cf28f86f4276ece6c05350e16bce738e3556bcd0ed",
+    "terminal-policy-files.sha256": "d9df384e7cc1bc3acb3f662332b550b8a0fa1c73129a141b1ecf8aa9f3c9e9fe",
+    "terminal-resolved-config.json": "744b796b2c597c993153654f15b3df4ded1413227d43de86ec0be17ba1bee3b0",
+    "training.log": "eedc7acdbf45b531072093d62a91e7cd98b0d40d0fcf29dca945fe3fb97f11f5"
+  },
+  "checksum_manifest_sha256": "465a31201a133c8717b41ada007226e91ff0c0a573f32a304da20774edd989fe",
+  "complete_outcome_embargo_preserved": true,
+  "declared_artifact_count": 14,
+  "declared_hashes_match": true,
+  "evaluation_data_opened": false,
+  "identity": "b14-absolute-m4",
+  "jobs": {
+    "logs_after": 466883124,
+    "main": 466883123
+  },
+  "pipeline_ids": {
+    "child": 71240106,
+    "upstream": 71239934
+  },
+  "result_opened": false,
+  "schema": "m4-oars-v2-quality-primary-arm-terminal-authentication-v1",
+  "scientific_outcome_accessed": false,
+  "status": "PASS_AUTHENTICATED_OUTCOME_EMBARGOED",
+  "successor_gate": "PASS_AUTHENTICATED_TERMINAL_PREDECESSOR",
+  "terminal_copies_byte_identical": true,
+  "workload_exit_codes": {
+    "logs_after": 0,
+    "main": 0
+  }
+}
