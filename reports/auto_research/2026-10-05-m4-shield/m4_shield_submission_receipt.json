@@ -35,6 +35,15 @@
     "eos_workload": 470868940,
     "logs_after": 470868946
   },
+  "slurm_allocation": {
+    "job_id": 6171790,
+    "status_at_receipt": "PENDING",
+    "reason_at_receipt": "Priority",
+    "time_limit": "04:00:00",
+    "manifest_time_limit_seconds": 14400,
+    "queue_deadline_override": null,
+    "jet_default_deadline": "now+8hours"
+  },
   "automatic_retry": false,
   "automatic_extension": false,
   "scientific_outcome_acquisition": false,
