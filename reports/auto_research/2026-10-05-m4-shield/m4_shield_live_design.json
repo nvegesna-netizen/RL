@@ -1,0 +1,63 @@
+{
+  "schema": "m4-shield-live-design-v1",
+  "status": "FROZEN_BEFORE_RUNTIME_IMPLEMENTATION",
+  "date": "2026-10-05",
+  "parent_commit": "9ad23f5b7c11acae71d214aa4a5ecaac8cfd9776",
+  "parent_protocol_sha256": "1a4f9a5c57ee000cded9df3214930512d95f5b115f13e3a33070c55476c2a232",
+  "offline_result_sha256": "2e6a41b7acd4d0de8e7ad60dfaf56b834291c937dbf9924b9be1ed4504f5e036",
+  "offline_gate_status": "PASS_M4_SHIELD_DEVELOPMENT_QUALIFICATION",
+  "purpose": "Verify live reachability, exact actuation, exact reward-variance utility preservation, liveness, and overhead for M4-Shield without examining terminal training quality.",
+  "design": {
+    "submission_count": 1,
+    "trainer_steps": 64,
+    "nodes": 1,
+    "gpus": 2,
+    "scheduler_time_limit_seconds": 14400,
+    "queue_deadline_override": null,
+    "training_seed": 20261005,
+    "controlled_release_seed": 20261007,
+    "assignment_domain": "m4-shield-qualification-v1",
+    "model": "meta-llama/Llama-3.2-1B-Instruct",
+    "workload": "GSM8K train",
+    "sampler": "weight_fifo",
+    "max_staleness_versions": 1,
+    "selection_candidate_watermark": 8,
+    "selection_cardinality": 4,
+    "base_proposer": "reward_variance_risk",
+    "actuation_scorer": "m4_shield",
+    "minimum_base_proposal_overlap_groups": 2,
+    "minimum_service_multiplier": 0.98,
+    "maximum_service_multiplier": 1.02,
+    "numeric_comparison_tolerance": 1e-12,
+    "decision_time_budget_ns_per_scorer": 5000000
+  },
+  "pretraining_gates": [
+    "Credential-free source, Megatron, protocol, and authorization payload hashes match.",
+    "The source archive is traversal-safe and contains the frozen runtime, config, analyzers, and tests.",
+    "The frozen offline result authenticates and reports PASS_M4_SHIELD_DEVELOPMENT_QUALIFICATION.",
+    "Focused OARS-v2 controller tests, config tests, and M4-Shield analyzer tests pass in the runtime image.",
+    "The resolved configuration exactly matches this design and the pinned TransferQueue commit."
+  ],
+  "terminal_gate": [
+    "Learner versions 1 through 64 complete with exactly one decision per update.",
+    "Every decision has the exact eight-candidate controlled frontier and four selected groups.",
+    "The reward-variance base proposal and M4-Shield proposal both use exact 70-combination search with zero skips or fallbacks.",
+    "Every M4-Shield proposal retains at least two base-proposal groups, stays inside the FIFO-relative token band, and exactly preserves base imminent and total reward variance.",
+    "Every non-base intervention strictly increases imminent registered L1 relative to the reward-variance base proposal.",
+    "Every configured M4-Shield proposal is exactly enacted and at least one non-base shield intervention occurs.",
+    "Liveness accounting is complete, nondecreasing, and reconciles with lifecycle removals; no positive removal event is required.",
+    "Combined observer/controller duty is at most one percent and runtime is at most 14400 seconds."
+  ],
+  "outcome_exclusion": {
+    "terminal_benchmark": false,
+    "training_quality_analysis": false,
+    "scientific_outcome_acquisition": false,
+    "policy_export": false
+  },
+  "stop_rules": [
+    "This design authorizes one submission attempt only.",
+    "No automatic retry, replacement, extension, or quality acquisition.",
+    "Zero live shield interventions is a terminal qualification failure, not a systems pass.",
+    "A failure is terminal unless the user separately authorizes a scientifically justified repair."
+  ]
+}
