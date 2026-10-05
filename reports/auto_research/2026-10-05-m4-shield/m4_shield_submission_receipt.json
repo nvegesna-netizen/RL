@@ -1,6 +1,6 @@
 {
   "schema": "m4-shield-submission-receipt-v1",
-  "status": "SUBMITTED_NO_WAIT_GENERATOR_RUNNING",
+  "status": "SUBMITTED_NO_WAIT_GENERATOR_PASS_DOWNSTREAM_CREATED",
   "source_commit": "cdfa1c8e56394b7d8e3e299b6524a1a286243746",
   "package_commit": "def7ae688",
   "manifest_sha256": "a14ca17f4547eba2bbff6a4c87cb3bbd4484f2aed71b6be77678073eeb778f97",
@@ -18,7 +18,22 @@
   },
   "generate_job": {
     "id": 470864332,
+    "status": "success"
+  },
+  "trigger_bridge": {
+    "id": 470864333,
     "status_at_receipt": "running"
+  },
+  "downstream_pipeline": {
+    "id": 71775100,
+    "url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/71775100",
+    "created_at": "2026-10-05T15:35:27.251-07:00",
+    "status_at_receipt": "running"
+  },
+  "downstream_jobs": {
+    "logs_before": 470868938,
+    "eos_workload": 470868940,
+    "logs_after": 470868946
   },
   "automatic_retry": false,
   "automatic_extension": false,
