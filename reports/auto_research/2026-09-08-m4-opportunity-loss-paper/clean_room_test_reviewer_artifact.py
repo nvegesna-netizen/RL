@@ -64,7 +64,11 @@ def main() -> None:
                 target = (temporary_path / member.name).resolve()
                 assert target.is_relative_to(temporary_path.resolve())
                 assert not member.issym() and not member.islnk()
-            bundle.extractall(temporary_path, filter="data")
+                assert member.isfile() or member.isdir()
+            # Members are path-contained regular files/directories with links
+            # rejected above. Avoid the Python 3.12-only ``filter`` argument so
+            # the advertised Python 3.10+ clean-room path remains executable.
+            bundle.extractall(temporary_path)
         root = temporary_path / "m4-reviewer-artifact"
         assert not (root / ".git").exists()
         for path in root.rglob("*"):

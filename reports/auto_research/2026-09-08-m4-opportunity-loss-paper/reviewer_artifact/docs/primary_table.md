@@ -93,6 +93,27 @@ and interval directly. The results do not identify retained opportunity as the
 mediator of the accuracy difference. They are scoped to the tested model,
 workload, horizon, candidate watermark, service budget, and runtime environment.
 
+### Three-arm quality-primary follow-up
+
+This prospectively frozen follow-up used 18 matched
+Llama-3.2-1B-Instruct/GSM8K training-seed blocks and 54 total 64-update runs.
+Each block contained FIFO, reward-variance, and absolute-M4 policies. All 54
+compact results authenticated before access; every endpoint was retained.
+
+| Endpoint | Blocks / runs | Estimate or ratio | Paired 95% interval | Registered role |
+| --- | ---: | ---: | ---: | --- |
+| Terminal accuracy, absolute M4 minus FIFO | 18 / 54 | -0.0331 | [-0.1162, 0.0499] | Sole primary; exact sign-flip p=0.4038 |
+| Terminal accuracy, reward variance minus FIFO | 18 / 54 | -0.0109 | [-0.1062, 0.0844] | Descriptive secondary |
+| Terminal accuracy, absolute M4 minus reward variance | 18 / 54 | -0.0222 | [-0.1175, 0.0731] | Descriptive secondary |
+| Retained L1, absolute M4 minus FIFO | 18 / 54 | 215.51 | [-7.82, 438.84] | Registered mechanism statistic |
+| Retained L1, reward variance minus FIFO | 18 / 54 | 311.53 | [125.40, 497.66] | Registered mechanism statistic |
+| Time-to-update-64 ratio, absolute M4/FIFO | 18 / 54 | 0.8139 | [0.7435, 0.8910] | Registered systems statistic |
+| Time-to-update-64 ratio, reward variance/FIFO | 18 / 54 | 0.8023 | [0.7327, 0.8785] | Registered systems statistic |
+
+The primary accuracy criterion was not met. Reward variance moved the retained-
+opportunity proxy, and both active policies reduced wall time, without a
+corresponding terminal-accuracy gain in this follow-up.
+
 ## Dependency-aware interaction results
 
 Let \(S_w = \Delta_{1.7B,w} - \Delta_{0.6B,w}\) be the model-scale contrast

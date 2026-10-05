@@ -1,0 +1,50 @@
+{
+  "analysis_result_sha256": "17490153ef9521a830e5538423479c6d4af6bbd03c58bcbcf3aa5663973faa52",
+  "blind_analysis_commit": "ac0557f6f",
+  "blind_analysis_freeze_status": "PASS_BLIND_ANALYZER_FROZEN_RESULTS_UNOPENED",
+  "evaluation_data_accessed": false,
+  "extraction": {
+    "failed_partial_result_count": 48,
+    "failed_partial_status": "PRESERVED_AFTER_MISSING_LOCAL_ARCHIVE_REFUSAL",
+    "missing_identity": "b17-reward-variance",
+    "restored_archive_authentication_byte_identical": true,
+    "restored_authentication_sha256": "4b80c4bfb6f2d1136983bf344b30a43d5f227355e83f047ae7f313bbfb2caa6a",
+    "result_count": 54,
+    "receipt_sha256": "991f53830ed6f6a0544da5572e9584c05c36b46646c5bf867a7e15e4f0046397",
+    "status": "PASS_54_RESULTS_EXTRACTED_AND_HASH_AUTHENTICATED"
+  },
+  "frozen_analysis": {
+    "analysis_plan_sha256": "af09cbcc891ebf1f6eb1287defd04e2708aec8ec8c8d0ba7592975c7564e0500",
+    "analyzer_sha256": "bf3e72d090e2e88168a12267cb521280e71bc111a9743e14885e5e56aa821465",
+    "protocol_sha256": "e0e0b26cc1a592bf14c4b0f77d990662f6c3ff3e09bfb6a772a3efbf149b9d2d",
+    "run_manifest_sha256": "44fe686d444545965afd6964387ae662c2a7f640512b1262da19b90ddfabd20f"
+  },
+  "independent_reconciliation": {
+    "implementation": "ruby_standard_library_independent_recomputation",
+    "matched_absolute_m4_minus_fifo_accuracy": true,
+    "matched_absolute_m4_minus_reward_variance_accuracy": true,
+    "matched_arm_accuracy_means": true,
+    "matched_exact_sign_flip_p": true,
+    "matched_retained_l1_contrasts": true,
+    "matched_reward_variance_minus_fifo_accuracy": true,
+    "matched_token_ratios": true,
+    "matched_wall_time_ratios": true,
+    "status": "PASS"
+  },
+  "machine_result_replay": {
+    "byte_identical": true,
+    "replay_sha256": "17490153ef9521a830e5538423479c6d4af6bbd03c58bcbcf3aa5663973faa52",
+    "status": "PASS"
+  },
+  "primary": {
+    "ci95_lower": -0.11615427758371887,
+    "ci95_upper": 0.0499425009852857,
+    "evidence_criterion_lower_bound_above_zero": false,
+    "exact_two_sided_sign_flip_p": 0.40380859375,
+    "mean": -0.03310588829921658,
+    "n": 18
+  },
+  "schema": "m4-oars-v2-quality-primary-analysis-verification-v1",
+  "scientific_outcome_accessed": true,
+  "status": "PASS_FROZEN_ANALYSIS_REPRODUCED_AND_INDEPENDENTLY_RECONCILED"
+}

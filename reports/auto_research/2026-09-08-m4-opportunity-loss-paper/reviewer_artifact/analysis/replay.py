@@ -77,6 +77,14 @@ def published_checks() -> dict[str, object]:
     assert math.isclose(oars["secondary_terminal_gsm8k_accuracy"]["mean"], 0.09977255496588325)
     assert math.isclose(oars["wall_time_ratio"]["geometric_mean"], 0.7667760632976284)
     assert oars["policy_compliance"]
+    quality = result["quality_primary_followup"]
+    assert quality["block_count"] == 18
+    assert quality["run_count"] == 54
+    assert quality["policy_compliance"]
+    assert math.isclose(quality["primary_absolute_m4_minus_fifo_terminal_gsm8k_accuracy"]["mean"], -0.03310588829921658)
+    assert math.isclose(quality["secondary_terminal_gsm8k_accuracy"]["reward_variance_vs_fifo"]["mean"], -0.010908937747451775)
+    assert math.isclose(quality["mechanism_retained_l1_contrasts"]["reward_variance_vs_fifo"]["mean"], 311.5318219018324)
+    assert math.isclose(quality["matched_wall_time_ratios"]["absolute_m4_vs_fifo"]["geometric_mean_ratio"], 0.8139404004942452)
     discriminant = result["metric_discriminant"]
     assert discriminant["assignment_count"] == 106_653
     assert discriminant["summary"]["positive_opportunity_lost_count"] == 23_254
@@ -93,6 +101,8 @@ def published_checks() -> dict[str, object]:
         "downstream_quality_runs": downstream["run_count"],
         "oars_pairs": oars["primary"]["n"],
         "oars_runs": 20,
+        "quality_primary_blocks": quality["block_count"],
+        "quality_primary_runs": quality["run_count"],
         "metric_discriminant_assignments": discriminant["assignment_count"],
         "hac_correlation": synthesis["hac_correlation"],
         "bootstrap_correlation": synthesis["bootstrap_correlation"],

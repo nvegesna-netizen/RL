@@ -17,11 +17,15 @@ mixed-d5-minus-immediate estimate is -0.04492 with paired 95% interval
 must retain its proximal opportunity-loss claim. The 30B-A3B option additionally
 changes architecture and topology, confounding a clean scale extension.
 
-The separately preregistered 10-pair OARS/FIFO study is also complete. Report
-the primary retained-opportunity estimate, 302.03 [-334.21, 938.26], alongside
-the prespecified accuracy estimate, 0.0998 [0.0275, 0.1720], and wall-time
-ratio, 0.7668 [0.6635, 0.8861]. Treat this as a bounded policy proof of concept,
-not as a mediation result or production scheduler claim.
+The separately preregistered 10-pair OARS/FIFO study and the larger 18-block
+three-arm quality-primary follow-up are complete. Preserve both results. The
+initial study reported secondary accuracy of 0.0998 [0.0275, 0.1720]. The
+follow-up's primary absolute-M4-minus-FIFO estimate was -0.0331 [-0.1162,
+0.0499], and reward variance minus FIFO was -0.0109 [-0.1062, 0.0844]. Reward
+variance increased retained opportunity by 311.53 [125.40, 497.66], and both
+active policies reduced wall time. Frame this as evidence that the signal is
+actionable but proxy improvement is not sufficient for a stable terminal-
+quality benefit—not as mediation or a production scheduler claim.
 
 ## Ordered submission sequence
 
@@ -59,8 +63,8 @@ The current go/no-go is therefore:
   wording**;
 - another final-quality acquisition: **no-go unless separately preregistered
   with a stability intervention and variance-recalibrated power**;
-- another same-design OARS acquisition: **no-go; analyze and report the frozen
-  confirmatory study without outcome-guided extension**;
+- another same-design OARS acquisition: **no-go; both frozen policy studies are
+  complete, and an outcome-guided extension would not answer a new question**;
 - manuscript, reproducibility, and artifact preparation: **go now**.
 
 ## Post-manuscript novelty decision

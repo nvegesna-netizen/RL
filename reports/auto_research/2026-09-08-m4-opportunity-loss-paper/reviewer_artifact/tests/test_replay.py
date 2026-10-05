@@ -26,6 +26,8 @@ class ReviewerArtifactTest(unittest.TestCase):
         self.assertEqual(output["published"]["downstream_quality_runs"], 32)
         self.assertEqual(output["published"]["oars_pairs"], 10)
         self.assertEqual(output["published"]["oars_runs"], 20)
+        self.assertEqual(output["published"]["quality_primary_blocks"], 18)
+        self.assertEqual(output["published"]["quality_primary_runs"], 54)
         self.assertEqual(output["synthetic"]["row_count"], 192)
 
     def test_figure_reproduction(self) -> None:

@@ -128,5 +128,17 @@
     "runtime_source_archive_sha256": "1d9e17a430fc1a184d767413de829ad9ee1375091485b5e7e0b24572f61f7690",
     "runtime_source_commit": "90dbb632026591f24c966a43edd05b1e4933358b"
   },
+  "quality_primary_followup": {
+    "analysis_plan_sha256": "af09cbcc891ebf1f6eb1287defd04e2708aec8ec8c8d0ba7592975c7564e0500",
+    "analysis_sha256": "17490153ef9521a830e5538423479c6d4af6bbd03c58bcbcf3aa5663973faa52",
+    "blind_analysis_freeze_sha256": "546e43555df73fd7441b8e891afe949d5ed6734af05baf28059b9f44c6f7a947",
+    "block_count": 18,
+    "completion_audit_sha256": "d1f5dd6166408f5db1586ba0d0bec1d9c231058fcf2706d969d247dffb887268",
+    "extraction_receipt_sha256": "991f53830ed6f6a0544da5572e9584c05c36b46646c5bf867a7e15e4f0046397",
+    "protocol_sha256": "e0e0b26cc1a592bf14c4b0f77d990662f6c3ff3e09bfb6a772a3efbf149b9d2d",
+    "run_count": 54,
+    "run_manifest_sha256": "44fe686d444545965afd6964387ae662c2a7f640512b1262da19b90ddfabd20f",
+    "verification_sha256": "aa78fd4723954ceefdcd293fc2f1b1639846fb2b9241b665343420aa75e9e505"
+  },
   "schema": "m4-anonymous-provenance-v1"
 }

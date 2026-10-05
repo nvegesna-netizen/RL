@@ -19,7 +19,7 @@ success.
 | C10 | The result is robust to HAC versus circular-block bootstrap uncertainty. | Retrospective robustness description | Supported | Qwen conclusions and all four Llama size/workload syntheses agree under the conservative outer-envelope construction; both Qwen interaction interval families and both Llama size-contrast interval families agree |
 | C11 | Terminal missingness drives the findings. | Retrospective sensitivity claim | Not supported | All 14 definitive acquisitions have terminal dispositions; lower and upper sharp endpoints coincide |
 | C12 | Pre-treatment adjustment creates the positive effects. | Retrospective sensitivity claim | Not supported | Adjusted and unadjusted estimates are positive throughout; 3B combined unadjusted estimates are 0.2358 on OpenMath and 0.2635 on GSM8K |
-| C13 | The opportunity-loss measurements alone prove a final reward, accuracy, convergence, or benchmark-quality effect. | Downstream outcome claim | Unsupported and prohibited | The 16-pair mixed-d5 estimate was -0.04492 [-0.13394, 0.04410]; in the distinct 10-pair OARS/FIFO study the retained-opportunity estimate was 302.03 [-334.21, 938.26] and terminal accuracy was 0.0998 [0.0275, 0.1720]. Neither study identifies mediation through M4 alone. |
+| C13 | The opportunity-loss measurements alone prove a final reward, accuracy, convergence, or benchmark-quality effect. | Downstream outcome claim | Unsupported and prohibited | The 16-pair mixed-d5 estimate was -0.04492 [-0.13394, 0.04410]. The initial 10-pair OARS/FIFO secondary accuracy estimate was 0.0998 [0.0275, 0.1720], but the 18-block quality-primary absolute-M4/FIFO estimate was -0.0331 [-0.1162, 0.0499]. None identifies mediation through M4 alone. |
 | C14 | A material M4 opportunity-loss effect appears in the tested Llama 3.2 1B setting on OpenMath and GSM8K. | Prospective replicated cross-family extension | Supported within the tested setting | Two acquisitions per workload; OpenMath 0.3991 [0.3504, 0.4467], GSM8K 0.3461 [0.2952, 0.3898]; both `MATERIAL` |
 | C15 | The evidence identifies a pure architecture effect or generalizes across Llama models, all model families, RL algorithms, hardware, or deployment environments. | Broad external-validity claim | Unsupported and prohibited | Two Llama sizes were tested, but family and size were not randomized and all runs retain the same algorithm and one accelerator environment |
 | C16 | The Llama 3.2 3B extension jointly confirms materiality on both workloads. | Prospective co-primary size extension | Not supported | OpenMath 0.2621 [0.2215, 0.2994] is `MATERIAL`; GSM8K 0.2135 [0.1872, 0.2398] is `INCONCLUSIVE`, so joint success is false |
@@ -34,7 +34,12 @@ success.
 | C25 | The primary OARS-minus-FIFO retained registered L1 opportunity estimate was 302.03. | Prospective randomized policy primary endpoint | Supported as a numerical result | Across 10 matched Llama-3.2-1B/GSM8K run pairs, the paired 95% CI was [-334.21, 938.26] and the exact sign-flip p-value was 0.3223 |
 | C26 | The prespecified terminal GSM8K estimate favored OARS over FIFO in the tested 64-update Llama-3.2-1B setting. | Prospective randomized policy secondary endpoint | Supported within the tested setting | OARS minus FIFO accuracy was +0.0998 with paired 95% CI [0.0275, 0.1720]; seven pair differences were positive, two zero, and one negative. This endpoint was not the confirmatory success gate. |
 | C27 | OARS met its registered policy-compliance and wall-time utility requirements in the tested setting. | Prospective randomized policy systems endpoints | Supported within the tested setting | All admitted decisions complied; geometric-mean OARS/FIFO time-to-update-64 ratio was 0.7668 with 95% CI [0.6635, 0.8861]. The valid-actor-token ratio was imprecise: 0.9800 [0.5281, 1.8188]. |
-| C28 | The OARS experiment proves a general production-scheduler benefit or that retained M4 opportunity mediated the quality difference. | Policy generalization and mediation claim | Unsupported and prohibited | One model, workload, 64-update horizon, candidate watermark, service budget, and environment were tested; the primary opportunity-retention interval crossed zero and no mediation estimand was registered |
+| C28 | The OARS experiments prove a general production-scheduler benefit or that retained M4 opportunity mediated a quality difference. | Policy generalization and mediation claim | Unsupported and prohibited | Both policy studies use one model, workload, 64-update horizon, and environment. The initial primary opportunity interval crossed zero; the quality-primary follow-up did not show an accuracy gain; no mediation estimand was registered. |
+| C29 | A prospectively frozen three-arm study made absolute-M4-minus-FIFO terminal accuracy the sole primary scheduler endpoint. | Prospective randomized quality-primary endpoint | Supported as a completed design and numerical result | All 18 matched blocks and 54 authenticated runs entered the frozen analysis. The estimate was -0.0331 with 95% CI [-0.1162, 0.0499] and exact sign-flip p=0.4038. |
+| C30 | Absolute-M4 scheduling improved terminal GSM8K accuracy relative to FIFO in the quality-primary study. | Primary scheduler-benefit claim | Not supported | The estimate was -0.0331 [-0.1162, 0.0499]; the preregistered lower-bound-above-zero criterion was not met. |
+| C31 | Reward-variance scheduling increased retained registered L1 opportunity relative to FIFO in the quality-primary study. | Registered mechanism statistic | Supported in the tested setting | Reward variance minus FIFO was 311.53 [125.40, 497.66]. Absolute M4 minus FIFO was 215.51 [-7.82, 438.84]. |
+| C32 | The active policies reduced time to update 64 relative to FIFO in the quality-primary study. | Registered systems statistic | Supported in the tested setting | Geometric-mean ratios were 0.8023 [0.7327, 0.8785] for reward variance/FIFO and 0.8139 [0.7435, 0.8910] for absolute M4/FIFO. |
+| C33 | The initial positive OARS secondary accuracy result establishes a stable or replicated scheduler-quality gain. | Cross-study policy synthesis | Not supported | The larger quality-primary follow-up estimated reward variance minus FIFO at -0.0109 [-0.1062, 0.0844] and absolute M4 minus FIFO at -0.0331 [-0.1162, 0.0499]. The combined evidence supports actionability and heterogeneity, not a stable quality gain. |
 
 ## Canonical wording
 
@@ -53,11 +58,16 @@ Use:
 > accuracy difference. Finally, a 10-pair randomized Llama-3.2-1B/GSM8K policy
 > study compared baseline-budgeted OARS with FIFO. Its registered primary
 > retained-opportunity estimate was 302.03 (95% CI [-334.21, 938.26]); the
-> prespecified secondary terminal-accuracy estimate favored OARS by 9.98 percentage points
-> (95% CI [2.75, 17.20]) and its wall-time utility criterion passed.
+> prespecified secondary terminal-accuracy estimate favored OARS by 9.98
+> percentage points (95% CI [2.75, 17.20]). A larger prospectively frozen
+> three-arm follow-up then made terminal accuracy primary. Absolute M4 minus
+> FIFO was -3.31 percentage points (95% CI [-11.62, 4.99]), while reward
+> variance increased retained opportunity and both active policies reduced wall
+> time. Together the policy studies show an actionable signal but not a stable
+> terminal-quality improvement.
 
 Do not use “confirmed final-quality decrease,” “equivalent final quality,”
 “M4 mediated the OARS quality effect,”
-“production-ready scheduler,” “general across LLMs,” “pure family effect,”
+“replicated scheduler-quality gain,” “production-ready scheduler,” “general across LLMs,” “pure family effect,”
 “general scaling law,” or language that retroactively reclassifies the initial
 acquisition or calls the 3B co-primary study a joint success.

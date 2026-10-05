@@ -1,0 +1,718 @@
+{
+  "completion_audit": {
+    "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_acquisition_completion_audit.json",
+    "sha256": "d1f5dd6166408f5db1586ba0d0bec1d9c231058fcf2706d969d247dffb887268",
+    "status": "PASS_COMPLETE_OUTCOME_EMBARGOED"
+  },
+  "evaluation_data_accessed": false,
+  "extracted_at": "2026-10-05T11:14:00-07:00",
+  "result_count": 54,
+  "results": {
+    "b01-absolute-m4": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b01-absolute-m4-terminal-archives/main-452563300.zip",
+        "sha256": "953624b39500db81215fcb5e626bc51df2d511cbdace38dd774975618aed0e04"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b01_absolute_m4_terminal_authentication.json",
+        "sha256": "c27ac7c23408a3c453356967c3f9efd48567d1d6612fb9047ebf77f16d09886e"
+      },
+      "bytes": 1628,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b01-absolute-m4-acquisition/arm-result.json",
+      "sha256": "a5d5452c891dcbd206567a20128e8a1fd986e4d3b229109d6c9e1985b3520ca8"
+    },
+    "b01-fifo": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b01-fifo-terminal-archives/main-452206391.zip",
+        "sha256": "2a101c5b03be8c779304682f2bbada2d4038f6106196dd1e3ea9b7f6f53820e9"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b01_fifo_terminal_authentication.json",
+        "sha256": "ab08a3e9bd0f1980e6d33b90ac6a48a89991bac4ed9af9aa708695316733dd2b"
+      },
+      "bytes": 1697,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b01-fifo-acquisition/arm-result.json",
+      "sha256": "7e3ff9b33eb01e91349b3783b4e132b08f573cc21a2c2a927e57175f8997d449"
+    },
+    "b01-reward-variance": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b01-reward-variance-terminal-archives/main-452388226.zip",
+        "sha256": "1cfbe44acbd2ead1292d70260917f45364c3583bdd78e118b5b5c6fd43f33b98"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b01_reward_variance_terminal_authentication.json",
+        "sha256": "de1479e26a8d79f9d77cfd239ef79e3535132cb388846ff5e523dd0d030f82b6"
+      },
+      "bytes": 1639,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b01-reward-variance-acquisition/arm-result.json",
+      "sha256": "61482bb9ea9d6e4d865e7c92ddd4c961c8d80a6f393a66bf2260202b18c775ec"
+    },
+    "b02-absolute-m4": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b02-absolute-m4-terminal-archives/main-452737834.zip",
+        "sha256": "0071340bb8ad280d23a0c96544e94765fe43f60067de48991cedda6769512f86"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b02_absolute_m4_terminal_authentication.json",
+        "sha256": "f8d7a9a553efb49cb1739d6155554c2175c469177ce461aec0f1722133331db7"
+      },
+      "bytes": 1629,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b02-absolute-m4-acquisition/arm-result.json",
+      "sha256": "1edcc141d4e98ca2c1c15fa619f77b1727f3172bef717bf56ef4c7d55a728d52"
+    },
+    "b02-fifo": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b02-fifo-terminal-archives/main-452636839.zip",
+        "sha256": "7dbd68481126384d2c20cde896ce018c92246718c5e27dfeb9d43d73c5d799af"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b02_fifo_terminal_authentication.json",
+        "sha256": "8fc28121119dc5245d8fbed701d8eb9b8be8091cb703f2597ae94fa27715e9df"
+      },
+      "bytes": 1696,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b02-fifo-acquisition/arm-result.json",
+      "sha256": "da6aeddf7653878ca3f023bbbbba4151ce0bdf68205818273588169fbe47d692"
+    },
+    "b02-reward-variance": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b02-reward-variance-terminal-archives/main-452601855.zip",
+        "sha256": "8320a3376105bc58a7faadecf899ffb02908e672a0d80bafbeb659c2842c5d0d"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b02_reward_variance_terminal_authentication.json",
+        "sha256": "dd5ab48b439f4306686f9a611817ce816b1b24a92b24639253d0cb79d8a2b6d1"
+      },
+      "bytes": 1637,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b02-reward-variance-acquisition/arm-result.json",
+      "sha256": "23862c92e780aa95b81b74f575a3bb43bb924934998dbaac715639ed7981aa34"
+    },
+    "b03-absolute-m4": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b03-absolute-m4-terminal-archives/main-452772740.zip",
+        "sha256": "ee1f50b8ddaf1ab0c1bf4cce326a93baccdda8800420e04e9c39e3c05d8d465e"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b03_absolute_m4_terminal_authentication.json",
+        "sha256": "4e4a1ef266add51bb47a5fd72ce5c6d2fe7a862e8f905e22d9725bf46b7bd98e"
+      },
+      "bytes": 1642,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b03-absolute-m4-acquisition/arm-result.json",
+      "sha256": "3d71dcec9850f4a149649ebe66fefc288c756730f88b0deee61ee0d4231ca98d"
+    },
+    "b03-fifo": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b03-fifo-terminal-archives/main-452803087.zip",
+        "sha256": "7f881897f709141e138287ff902fecfeb847185550b667e4e8ebaef79cbac810"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b03_fifo_terminal_authentication.json",
+        "sha256": "c623b254d1b84e540b8945a849a82bcaadc59e0c49609c78497df426ed8553d5"
+      },
+      "bytes": 1678,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b03-fifo-acquisition/arm-result.json",
+      "sha256": "8343aa161428031482351477b491f1455d44a7efb7a813d259768f8ab52a54a0"
+    },
+    "b03-reward-variance": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b03-reward-variance-terminal-archives/main-452837912.zip",
+        "sha256": "833b94a569c514a54590a806747276f62b07cb2f9728d3a539cfb3dcca544044"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b03_reward_variance_terminal_authentication.json",
+        "sha256": "f54581bb947c77a44bc3f5a8bce3b231f22e55c9cbee40ab8310220b3635caa0"
+      },
+      "bytes": 1656,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b03-reward-variance-acquisition/arm-result.json",
+      "sha256": "79ef100c196337c439e74a69763f2187e7ee1c428c86e8693cbf33bea3d9d580"
+    },
+    "b04-absolute-m4": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b04-absolute-m4-terminal-archives/main-452868305.zip",
+        "sha256": "447093691630a2979dad1a2c9ab43d38434f082c6b2baca1e191d4b5235a2672"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b04_absolute_m4_terminal_authentication.json",
+        "sha256": "28793aff1139f3c05b12650273efe7540e94f3d87e23220139bed81bc17fa240"
+      },
+      "bytes": 1643,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b04-absolute-m4-acquisition/arm-result.json",
+      "sha256": "598cbf5859ca49f6b1c5cc8f10b089b2efbe7f90efa7fa5d1913c14edd7c8dc0"
+    },
+    "b04-fifo": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b04-fifo-terminal-archives/main-452934160.zip",
+        "sha256": "d6795cb7bcab44d720d212505d76439f3a3c33c56f5e2a1d1aa465d34fd5f2d4"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b04_fifo_terminal_authentication.json",
+        "sha256": "47ae9dd0182b2c082368d9765773aea6a91738b8a4e2c14928c299f1a1461fcf"
+      },
+      "bytes": 1700,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b04-fifo-acquisition/arm-result.json",
+      "sha256": "d827940a7ef46f41e6721e12a7c500cf857e3579a1fa3b5fa56ee69d46cf1ab2"
+    },
+    "b04-reward-variance": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b04-reward-variance-terminal-archives/main-452906476.zip",
+        "sha256": "adce3afe4dab7170c7e7057b2485827d56e74ef75c854ee0b40e06db391faca1"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b04_reward_variance_terminal_authentication.json",
+        "sha256": "ac029505f7fbdc447b611b465a9164e9c92d15c0e58ef6b02d64a08d1811f894"
+      },
+      "bytes": 1657,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b04-reward-variance-acquisition/arm-result.json",
+      "sha256": "d1804d02ed1c5d9ff548ce1327646d113d67341b0719316a2a9d8c12d9904b68"
+    },
+    "b05-absolute-m4": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b05-absolute-m4-terminal-archives/main-453014656.zip",
+        "sha256": "648a705d4834c88846c54b8e9c78402cd3d650c09679b2188b11a69ee22fa2ed"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b05_absolute_m4_terminal_authentication.json",
+        "sha256": "3d3b3ccb6e620a894b0ff1a7c496943db8de6bbfdbbb230cb14cd3da64527aae"
+      },
+      "bytes": 1631,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b05-absolute-m4-acquisition/arm-result.json",
+      "sha256": "0a5711fa91b4f212ef8ae296bb1a335dd111df2b16d3c738218d278b38d6f951"
+    },
+    "b05-fifo": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b05-fifo-terminal-archives/main-453059317.zip",
+        "sha256": "4faac776aef7d619e377b8b4ce2719b7b23e6e356d1b0725b028a1a317f1519b"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b05_fifo_terminal_authentication.json",
+        "sha256": "af139f55aa6a01e6b155886037978e1b9940e62b46e2e8198078f6a2915f0b73"
+      },
+      "bytes": 1681,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b05-fifo-acquisition/arm-result.json",
+      "sha256": "28c3f34f49b1fcf80b6953e03f81eca19b92953ecc8b09f1d96071636023688d"
+    },
+    "b05-reward-variance": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b05-reward-variance-terminal-archives/main-452969122.zip",
+        "sha256": "74492ba12bd68a49a4d1748f5ce7ab7febc714d5dd706dd3561b605b13fa3896"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b05_reward_variance_terminal_authentication.json",
+        "sha256": "9b48d3b7f0c128f7f89173232e6d480c0f3cc443570e01e39f6bc33c9b050798"
+      },
+      "bytes": 1659,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b05-reward-variance-acquisition/arm-result.json",
+      "sha256": "61adaa91b0581e50892751634dfa4cb49ebad9c6f22b1b8c30dcd41cc4803156"
+    },
+    "b06-absolute-m4": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b06-absolute-m4-terminal-archives/main-453155685.zip",
+        "sha256": "8050fa6ae042beb74693d6371a98ca935bb6f936171fa8688a074798d28909c1"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b06_absolute_m4_terminal_authentication.json",
+        "sha256": "b9f967112c064270264c445970fc41a2e2942d8e2a2e2120f9815f8e2747f8ec"
+      },
+      "bytes": 1644,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b06-absolute-m4-acquisition/arm-result.json",
+      "sha256": "6c22dea1c010caf1f8aee2a5ae41b09cb9c207058cd93c947c70bca7abfcc69c"
+    },
+    "b06-fifo": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b06-fifo-terminal-archives/main-453365413.zip",
+        "sha256": "3d5ffede176dfa23cd4dac5efc7a27c27e5bfafcfc48a5de35380bd3cc9037e4"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b06_fifo_terminal_authentication.json",
+        "sha256": "565380c7971cda3699536cc7b4344b4c08eb673c99c4298b84497f19f2756c9d"
+      },
+      "bytes": 1678,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b06-fifo-acquisition/arm-result.json",
+      "sha256": "ebdb000c150d4538b449427f3e80ef1e54789cc0525c93cf994be0aab74472b3"
+    },
+    "b06-reward-variance": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b06-reward-variance-terminal-archives/main-455406652.zip",
+        "sha256": "a3e0a1d1325f79f7adef443cdd840b20f3c8ed4c2a5d428beda144e35d98fff2"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b06_reward_variance_terminal_authentication.json",
+        "sha256": "1c8220a64de060886783fbdf15d121a07c3396a7125a2682899a6b4377bf8172"
+      },
+      "bytes": 1642,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b06-reward-variance-acquisition/arm-result.json",
+      "sha256": "09ad5a74509b4db4761bf1ac8cfcd271b8b5de8b188e55acdc451c6e6da06e3d"
+    },
+    "b07-absolute-m4": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b07-absolute-m4-terminal-archives/main-456142914.zip",
+        "sha256": "b81de8798a074327c646f0ab7ef92421bc4a596b1fea40b0ded47ebc659280a3"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b07_absolute_m4_terminal_authentication.json",
+        "sha256": "2a0207547e21ebd35d6a95a98ae04be27dc5b55136b360dfcab0e11a8e0d3771"
+      },
+      "bytes": 1629,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b07-absolute-m4-acquisition/arm-result.json",
+      "sha256": "a18f69eacf2545f7b5db4c3680d56e086673d7bd87561ba1f67b8c0c32d63949"
+    },
+    "b07-fifo": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b07-fifo-terminal-archives/main-456783726.zip",
+        "sha256": "3047a7b040f8d827e3043c2bb30f9ef9f3f0b05ecae88c8f24f612777f8799a4"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b07_fifo_terminal_authentication.json",
+        "sha256": "1dbab7615ab0b27934d0a19ece33490adfa85063b4f69bae13e8ffe3dcf34d32"
+      },
+      "bytes": 1680,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b07-fifo-acquisition/arm-result.json",
+      "sha256": "d2763e0e065f51742813a0e4c3888b56fef4d08a02991913d9a157a0bb01ceef"
+    },
+    "b07-reward-variance": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b07-reward-variance-terminal-archives/main-456225299.zip",
+        "sha256": "ee39c88aa955e6435fcf8f0949db1487c616b7ee0f4ace26c34294f0db25ff02"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b07_reward_variance_terminal_authentication.json",
+        "sha256": "4785e48929df7d516673cd9152252563574968e3c6ec9a9bbb8661f2d9f010fb"
+      },
+      "bytes": 1642,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b07-reward-variance-acquisition/arm-result.json",
+      "sha256": "c80bda0f90caa18dc52a82a8cf6cad2d6bf301df5ea6793d6d5f981da6b5c70e"
+    },
+    "b08-absolute-m4": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b08-absolute-m4-terminal-archives/main-456826773.zip",
+        "sha256": "79440f4a0f806801218df3db6b93e5c2f8cf3a0b66745b4097840b0348d4b5d5"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b08_absolute_m4_terminal_authentication.json",
+        "sha256": "e8d6d78bf8f6538ef7abcd519eccae5e8e15fe36bebe77ac86ed2985461ad593"
+      },
+      "bytes": 1630,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b08-absolute-m4-acquisition/arm-result.json",
+      "sha256": "6afe5401998840d90f2d2666b00aafc268c6ea81de348680e97394f0ebfefe4a"
+    },
+    "b08-fifo": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b08-fifo-terminal-archives/main-456803174.zip",
+        "sha256": "f6f41fbfbba3f4ed6f8005beba8aa66fdda8524d58148fc735abb9a4155c0dba"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b08_fifo_terminal_authentication.json",
+        "sha256": "a8e47653ce7ae605e4c77be3ce71ceb34fae8a501d4d3be6a25aea50323d5aa1"
+      },
+      "bytes": 1679,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b08-fifo-acquisition/arm-result.json",
+      "sha256": "a24876135ab10351647ca14e8a1b4d9b51db6f3f0c1b1daa46c759371cb243fe"
+    },
+    "b08-reward-variance": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b08-reward-variance-terminal-archives/main-456851010.zip",
+        "sha256": "2a609b74bfb0f8d311fa3cd62d84daaf4462534da8809fabab32581dbd866cb5"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b08_reward_variance_terminal_authentication.json",
+        "sha256": "534d5ad0de11c9ce119220faa0fc478001f1f53f5223509fb92079af0f4dbe99"
+      },
+      "bytes": 1657,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b08-reward-variance-acquisition/arm-result.json",
+      "sha256": "0b803f64f2cf18e9d53fdd64bc33d8386d9471d209801df044bc32f456071d8c"
+    },
+    "b09-absolute-m4": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b09-absolute-m4-terminal-archives/main-456891836.zip",
+        "sha256": "ae0fa51bc4c278860d40e3578c8d4f61e62849e0bac467c39e80cd028a805745"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b09_absolute_m4_terminal_authentication.json",
+        "sha256": "6525abc9d94309790fb8063b9cce11b694d89b11d41112622ea6024fc42f1cc6"
+      },
+      "bytes": 1623,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b09-absolute-m4-acquisition/arm-result.json",
+      "sha256": "0d4d3182d53a673bfb7ea583190cf6d8676f6fad316be17c44101e7446122765"
+    },
+    "b09-fifo": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b09-fifo-terminal-archives/main-456870697.zip",
+        "sha256": "0c02f62fc0c8335273912dbce3c92196162d686798112c4fbed8be0ebf0b2d4a"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b09_fifo_terminal_authentication.json",
+        "sha256": "33655f7096d83589ed981aac3aca811586d16d1b68f6a3eb36ec49087b146b73"
+      },
+      "bytes": 1696,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b09-fifo-acquisition/arm-result.json",
+      "sha256": "55801cd2093f6cecb019d202c97873a30dcacf5c52a43b10b743a45e8d72c3ba"
+    },
+    "b09-reward-variance": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b09-reward-variance-terminal-archives/main-456970939.zip",
+        "sha256": "567236e01c776638c44e0bafb3a99f65917998ef076f4b0549eb156f39bdb41b"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b09_reward_variance_terminal_authentication.json",
+        "sha256": "b74493501e76a4e1d84e02816b696923a04859f7d92dd7a383ad1333fef7433d"
+      },
+      "bytes": 1658,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b09-reward-variance-acquisition/arm-result.json",
+      "sha256": "6c94517c904639508cb0b5e5a6dc346182587b36d54d6affc2ab91173d6883e9"
+    },
+    "b10-absolute-m4": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b10-absolute-m4-terminal-archives/main-457011077.zip",
+        "sha256": "01cb631173f59f3ba616e4d005c6a46c7b5f7e4174816b781287f98ac3ca5fcd"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b10_absolute_m4_terminal_authentication.json",
+        "sha256": "f3b304a29b906903db84dafbe5c527b1feebbb64a19292b3d6612229be8aedb6"
+      },
+      "bytes": 1628,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b10-absolute-m4-acquisition/arm-result.json",
+      "sha256": "1f6278475553be075ea23b194e7a2865dc3622c6d615291674078dacdad5b208"
+    },
+    "b10-fifo": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b10-fifo-terminal-archives/main-457035547.zip",
+        "sha256": "08fe05db15c02f1e64146e7efa877e5bf81a98b71d6be2d55461ec51dfdde748"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b10_fifo_terminal_authentication.json",
+        "sha256": "aeee4cb087c180dd350b8e02596917e6a9db6ec77aae927c67b2dfe284cbf6a9"
+      },
+      "bytes": 1682,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b10-fifo-acquisition/arm-result.json",
+      "sha256": "eeff5e7434f0b6ea0e64629d73afc33e8e57464a6a7edd8d2c048caaa22446ba"
+    },
+    "b10-reward-variance": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b10-reward-variance-terminal-archives/main-456991371.zip",
+        "sha256": "9ea37fe8a573f3c964e3f06d912e19704e651bbc9fc6761f1c4d34708fac624c"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b10_reward_variance_terminal_authentication.json",
+        "sha256": "59b8db3c18cba6dadfaf5af848786ccfce439e9f95a5e0aba00d4c7309f47861"
+      },
+      "bytes": 1657,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b10-reward-variance-acquisition/arm-result.json",
+      "sha256": "45d9de14b69ce18d4b0535f1d6789199cae14c788e8d28ec0979074947e3f8a3"
+    },
+    "b11-absolute-m4": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b11-absolute-m4-terminal-archives/main-464707826.zip",
+        "sha256": "cb6a8049689bec8b88918e2ea4a9a0f7e279588bc798842f3175cfcb232ef4c2"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b11_absolute_m4_terminal_authentication.json",
+        "sha256": "9ad5284bf7b25ed8650ee460281cdb1fe5b40dd8c0839a47478a6e9a42f80eed"
+      },
+      "bytes": 1629,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b11-absolute-m4-acquisition/arm-result.json",
+      "sha256": "8dd4ae14229ad9644f92843b0e19585cd64c1568a4feef13d0a99846accb32b2"
+    },
+    "b11-fifo": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b11-fifo-terminal-archives/main-457060362.zip",
+        "sha256": "8a5d86a4991fcf5713cca609405be6060dfc90fc059e0f905d53344601413f9d"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b11_fifo_terminal_authentication.json",
+        "sha256": "cf62e96fb6841dfe33270e4243b17bf99bc367775415c4c213b293f7408fa650"
+      },
+      "bytes": 1677,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b11-fifo-acquisition/arm-result.json",
+      "sha256": "59f3fb6dc22c019ea31156c3cfa9dc30519c6f3740cf785004e19c4822f55c3c"
+    },
+    "b11-reward-variance": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b11-reward-variance-terminal-archives/main-463380467.zip",
+        "sha256": "79f3f54cb2aa594538fb369316e32b9e77960dbd054285bc8370ee46f69bfb65"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b11_reward_variance_terminal_authentication.json",
+        "sha256": "72b879d91fe83723d474c1412ffc4aba67d68cf65f13798f18da2c6d25d32dad"
+      },
+      "bytes": 1638,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b11-reward-variance-acquisition/arm-result.json",
+      "sha256": "1a161def6d5faf55c16e6206b10cb54a34894ed2d4a50162c6fd273570428714"
+    },
+    "b12-absolute-m4": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b12-absolute-m4-terminal-archives/main-464779518.zip",
+        "sha256": "4f4b6167776c3b7c3383fb407ffb4cd56a69fff5c8334a8f952943380166828a"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b12_absolute_m4_terminal_authentication.json",
+        "sha256": "76f34d384d1c3927ee6d52df6027d11c964f8b73e4f6585590cd5aebf4514ccd"
+      },
+      "bytes": 1649,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b12-absolute-m4-acquisition/arm-result.json",
+      "sha256": "2d550e5d7c252c5f05e46197d3f64e07e0a82b34f5feefaaa57442f36038ad20"
+    },
+    "b12-fifo": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b12-fifo-terminal-archives/main-464867722.zip",
+        "sha256": "1697d83fbb2a2a192c9124f6815e81b8661016271ddae8c244c551d78d3039d8"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b12_fifo_terminal_authentication.json",
+        "sha256": "f78f2db2e36e507879b23ee2ae9051de8f2a462844fd01183f45d93df4c5773c"
+      },
+      "bytes": 1682,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b12-fifo-acquisition/arm-result.json",
+      "sha256": "9d8105e447089eeb0c4f71708b018c2deaf01cc74ed6a010f68c1410c857acac"
+    },
+    "b12-reward-variance": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b12-reward-variance-terminal-archives/main-465057239.zip",
+        "sha256": "9810dc30763ea98697e6b11386a469ac87f8d0e0531e70448815ae7c4b679703"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b12_reward_variance_terminal_authentication.json",
+        "sha256": "1fb1e20f55bfabb198460eb779f01c29ea40d4689d8e319fd84e6174b14bb6a2"
+      },
+      "bytes": 1658,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b12-reward-variance-acquisition/arm-result.json",
+      "sha256": "d346d3129ce31c0f671a89ae140613a4c1ee0da71954c45e42664368edd42426"
+    },
+    "b13-absolute-m4": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b13-absolute-m4-terminal-archives/main-466679168.zip",
+        "sha256": "2e603956bf2edf4eb18186fef20ca430ee3f06718aba22afd2887d3d8c025fe2"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b13_absolute_m4_terminal_authentication.json",
+        "sha256": "fb2cf15f4ec0b91d33cf09b15cf37ff079b4b759e4c55f80f7accd19d28079dc"
+      },
+      "bytes": 1645,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b13-absolute-m4-acquisition/arm-result.json",
+      "sha256": "c61e08c8acb9f12027b823983d8b6ee24ba8fee12cf0545f6c79f40955d39966"
+    },
+    "b13-fifo": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b13-fifo-terminal-archives/main-466633175.zip",
+        "sha256": "da11d39f230b8aa18a7a0707157cc8fd64bad0941d23ff7fb2267c44f06cde2e"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b13_fifo_terminal_authentication.json",
+        "sha256": "1e06b0da839bd7dcfd5ad0f09c89ac8b78a84878b1400d8c16fcb6032c33301a"
+      },
+      "bytes": 1697,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b13-fifo-acquisition/arm-result.json",
+      "sha256": "d85518377ab8fac75a18045a3ce6bb3d4827bad154b085644b1173555bbbd266"
+    },
+    "b13-reward-variance": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b13-reward-variance-terminal-archives/main-466591177.zip",
+        "sha256": "4b067a3770a991d23e7896f822a1978bdda541bf559851e33ab046e64011ebe6"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b13_reward_variance_terminal_authentication.json",
+        "sha256": "f5157ca054ad5b40f700646f95f6658620391f74fb91bbf10cd0038052e2a275"
+      },
+      "bytes": 1658,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b13-reward-variance-acquisition/arm-result.json",
+      "sha256": "b3ffd99d74ee652fa1286b438474986d1621479a4407fe88131f2c2f3e49a4b5"
+    },
+    "b14-absolute-m4": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b14-absolute-m4-terminal-archives/main-466883123.zip",
+        "sha256": "316ce4ff8764ee4ebb2aacc65e587f96d0e84437a0c4fe6acfb2a6178cf7ffec"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b14_absolute_m4_terminal_authentication.json",
+        "sha256": "61d81c65aa05f5a0e646b38206af5032b0828a112306e0e8743cdcb48528fcfe"
+      },
+      "bytes": 1632,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b14-absolute-m4-acquisition/arm-result.json",
+      "sha256": "f8be1ac7e798a66a651669f825690f0e829b6c2deeb12a19865a8a153a720a82"
+    },
+    "b14-fifo": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b14-fifo-terminal-archives/main-466761113.zip",
+        "sha256": "1e699945706f7d37e6d7848b8c4f0bdfeb37754bd438f650d90b4192dca9ae8f"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b14_fifo_terminal_authentication.json",
+        "sha256": "9f4d2e93a3a0531973eb2be52887d5e26b15137060fd5db8447ce8e2e679ee1c"
+      },
+      "bytes": 1680,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b14-fifo-acquisition/arm-result.json",
+      "sha256": "e40afad5c12f5a9718ce142038ccadb074d55af04914af24131fbb16a24d93ff"
+    },
+    "b14-reward-variance": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b14-reward-variance-terminal-archives/main-466925552.zip",
+        "sha256": "f5bd985a90fd1d1db83d864b1f3b9c8efacbb1033fa868118cf3a65b0b73f816"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b14_reward_variance_terminal_authentication.json",
+        "sha256": "f6845cf86eaf64ba4b26e5c3d8a4fb82cc90856af0ee4442e8f594fd0124ba73"
+      },
+      "bytes": 1660,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b14-reward-variance-acquisition/arm-result.json",
+      "sha256": "adf7f82bdeb21655c4ef56b13127584990d122e02d6463b07bee7b6a389d504c"
+    },
+    "b15-absolute-m4": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b15-absolute-m4-terminal-archives/main-467068820.zip",
+        "sha256": "cd093e3be6d3694c7021df14686649ecabb4632d856f2074e5de452b49e38f60"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b15_absolute_m4_terminal_authentication.json",
+        "sha256": "08477ec1289def865f8c3b34db32cc878b1361ed84cb1ad98538fab15b39afd7"
+      },
+      "bytes": 1646,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b15-absolute-m4-acquisition/arm-result.json",
+      "sha256": "bb48160cf4313e1597b94e1f6de6d0b90f6c4bc824383ef2e56ce62648417a83"
+    },
+    "b15-fifo": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b15-fifo-terminal-archives/main-467040178.zip",
+        "sha256": "d024db94a98c4a6308fcb12053f64760ed0752b7aee4cc777668d8fe311a66ae"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b15_fifo_terminal_authentication.json",
+        "sha256": "6c8f34dee86c6d18f287030c53e92777ad5b23ce4ac24cbad3670ebcb6e401e2"
+      },
+      "bytes": 1699,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b15-fifo-acquisition/arm-result.json",
+      "sha256": "1422b3c383d2f4da3937d17164b578fc8ddc389c931481efc4010313e606a0f9"
+    },
+    "b15-reward-variance": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b15-reward-variance-terminal-archives/main-467003129.zip",
+        "sha256": "0eaae6bd20510b26b240972084c4900f32d655c0bbf5af7d2bc19444f98eb740"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b15_reward_variance_terminal_authentication.json",
+        "sha256": "5ec69b2631fdf5d2aee3951f60ad24bec59c8527a4ce261b22d88f3df2a98f54"
+      },
+      "bytes": 1638,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b15-reward-variance-acquisition/arm-result.json",
+      "sha256": "3ff6c75a43f5519758927917aa505b30992830de7f47734599c880ee9f161a31"
+    },
+    "b16-absolute-m4": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b16-absolute-m4-terminal-archives/main-467809215.zip",
+        "sha256": "cad2e0a6cf9878288b4396d7ce99ea2e995e5a9b176da5c6febd1ce34718eac3"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b16_absolute_m4_terminal_authentication.json",
+        "sha256": "e8e2739e353e492e56b90357334b239e4a766568fd72b868f4cc951768e2a8b6"
+      },
+      "bytes": 1643,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b16-absolute-m4-acquisition/arm-result.json",
+      "sha256": "4876a8e4583d7ed916cbf88f67a31e66a90c01b5dde53e1098ded974f4077537"
+    },
+    "b16-fifo": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b16-fifo-terminal-archives/main-467153354.zip",
+        "sha256": "9416819a9f1f25b7f505f2aa3524f673e00a0f679a114aea4e26b300ac9d58bf"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b16_fifo_terminal_authentication.json",
+        "sha256": "f38a8bb124b374590ac70f92ac7c78097c77a25bd2f145361d8215e03135c1d5"
+      },
+      "bytes": 1698,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b16-fifo-acquisition/arm-result.json",
+      "sha256": "a472e5c95d82bdb53167be8b13634ce47b9c407d5adfa7908c6f160b1cb9cb19"
+    },
+    "b16-reward-variance": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b16-reward-variance-terminal-archives/main-467190368.zip",
+        "sha256": "941002d9a1b28ad4b5f8aef60f5d4bb5f6bfdb77a3134a9945abbf6f2435b6ee"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b16_reward_variance_terminal_authentication.json",
+        "sha256": "02e9b8b68635a81cfd335692c5660d875b5b281a72b86365aee80330b756fc52"
+      },
+      "bytes": 1657,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b16-reward-variance-acquisition/arm-result.json",
+      "sha256": "9e43f9e4955e91f23c3528e7d1e314be8efe1e5c8588d45cf5a2550beb3406a8"
+    },
+    "b17-absolute-m4": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b17-absolute-m4-terminal-archives/main-469366693.zip",
+        "sha256": "75fd1ce0f32c343eabd5bac68c57351b13fb7a67a24783136068b3f44b25b15a"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b17_absolute_m4_terminal_authentication.json",
+        "sha256": "991ced259ec5e2e7b39dbeaf02dbb159e61f1c28b50d8e041cfb3dd5ce1de99b"
+      },
+      "bytes": 1626,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b17-absolute-m4-acquisition/arm-result.json",
+      "sha256": "97ab9885ddc1d148f6093c4daa978e8e5dce2d629ab3f774c4de72f40a304161"
+    },
+    "b17-fifo": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b17-fifo-terminal-archives/main-469463880.zip",
+        "sha256": "cda273a035e07ba492e75a799dd7c17fa4ea8326d1566541ccd18c9be48798ac"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b17_fifo_terminal_authentication.json",
+        "sha256": "7800a5d1d35943c0d33fd152dff596efb6605545cd0bd2d01459666c42447dc4"
+      },
+      "bytes": 1700,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b17-fifo-acquisition/arm-result.json",
+      "sha256": "94531979694209a8edbe67e5ef8abd730ca4661d98c79e4ca839937068575836"
+    },
+    "b17-reward-variance": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b17-reward-variance-terminal-archives/main-468552885.zip",
+        "sha256": "39fe87f8cd2a7dd27fc13fd9563e5284832faf3cbd7afa621b268a381f732230"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b17_reward_variance_terminal_authentication.json",
+        "sha256": "4b80c4bfb6f2d1136983bf344b30a43d5f227355e83f047ae7f313bbfb2caa6a"
+      },
+      "bytes": 1661,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b17-reward-variance-acquisition/arm-result.json",
+      "sha256": "0090e3b042b1a2910108f481c4f93aa42ae3c3b73cf5bf7379b2cfc2d89fc57b"
+    },
+    "b18-absolute-m4": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b18-absolute-m4-terminal-archives/main-469490597.zip",
+        "sha256": "5b2140e804fb839ed4b0899e2600eb19619dc6ba99a562880d37d3a74fe74941"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b18_absolute_m4_terminal_authentication.json",
+        "sha256": "a70b9a314aba867bc74ec23750ba55fdd954d2721f380f083390c2073d96982a"
+      },
+      "bytes": 1632,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b18-absolute-m4-acquisition/arm-result.json",
+      "sha256": "af5ffef096f6f40cae1c836014c302726fc961ff8ab9752bbecf49dca139b8f5"
+    },
+    "b18-fifo": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b18-fifo-terminal-archives/main-469575317.zip",
+        "sha256": "88a069cfc5a6cafb3d79aac53d7d1bb32cb1c66b672e4d4b773c9b8eda9c3d5b"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b18_fifo_terminal_authentication.json",
+        "sha256": "5e8ab788cbd7582b0c0020c0734a701e8257833c4876ccbc6e39f7a91d176996"
+      },
+      "bytes": 1696,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b18-fifo-acquisition/arm-result.json",
+      "sha256": "6fa3e6de766b7d2c7b8e08d86dbaae2e13627751aa0e13451a6b75df3694ffa4"
+    },
+    "b18-reward-variance": {
+      "archive": {
+        "path": "session/20260914_m4_opportunity_control/oars-v2-quality-primary-b18-reward-variance-terminal-archives/main-469531443.zip",
+        "sha256": "90addefb69bb1dfbe6da9127106809e3bb2cd2fcfee8a5e8b3320e7a94575028"
+      },
+      "authentication": {
+        "path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b18_reward_variance_terminal_authentication.json",
+        "sha256": "440b35e39265330e5911e72d57bf01357c1690a183a1d43ccb879b6ea9931519"
+      },
+      "bytes": 1638,
+      "member": "workspace/assets/basic/m4-oars-v2-quality-primary-b18-reward-variance-acquisition/arm-result.json",
+      "sha256": "c222232edfe8a1a15ff417a780843698cfb56042376b749ddea4b3069482b322"
+    }
+  },
+  "run_manifest_sha256": "44fe686d444545965afd6964387ae662c2a7f640512b1262da19b90ddfabd20f",
+  "schema": "m4-oars-v2-quality-primary-result-extraction-v1",
+  "scientific_outcome_accessed": true,
+  "status": "PASS_54_RESULTS_EXTRACTED_AND_HASH_AUTHENTICATED"
+}

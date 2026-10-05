@@ -33,37 +33,92 @@ CELL_IDS = {
 }
 
 EXTERNAL_ARTIFACTS = {
-    "A1": ("07cddc489ea20055161f9c435d44d0a52b91113fda9eac16472bdb531dc6ffb6", 54_950_561),
-    "A2": ("022e4d18f2eedd2339c3c7eb7decf6e21f929761de46bcd0f85a73f0a2700ac7", 131_003_667),
-    "A3": ("6c2ebeb2b2bf67df16be815f372ea87cde8eeff4d23e63291d8a98ac94659075", 137_287_850),
-    "A4": ("966dfbf60548e5fd791d59d3baa2bc3b3a1b8d6b0b1a15de1ef510fc618720ca", 134_908_947),
-    "A5": ("ad7c556f435b0f9e30a65c201680bf6dab74e077af16e38f299bfc04af969c35", 129_888_875),
-    "A6": ("6aa61968730833387a15b45a6d0f2be541c6f84b6d4f16a29e7dbf583981fc9b", 128_543_493),
-    "A7": ("7fc1d62dba8bf82777e9d86abc3e205afa5f5012ce067082fd3a2babe88139b6", 66_178_095),
-    "A8": ("37da83c526bef6cf13b36090d21dd49a9d73a768422e3fea9381521eb8e71a33", 65_947_753),
-    "A9": ("c321dcf94a138d2a289142b0991c452be848d28dedf5f5c468fba78cd85ffa59", 66_467_861),
-    "A10": ("fcb236655ed1554215e370cca6d21fe5873b385e4f4b1576cdc27ff2dbe4735b", 67_119_843),
-    "A11": ("b79b7d1bcd861bdacf3d161bbdc5fe236edc35da41f427d0adf20a1895ddcd38", 66_561_497),
-    "A12": ("034d6e57440593a48a28f705534474b1c36c8aeb0170c22e54d869f4e33a9aaa", 66_110_870),
-    "A13": ("6714f77466a5d3e3c854339f69d19ac4d8312276cc3627c25fe3d8ef79b26163", 67_019_231),
-    "A14": ("e535f0ce6c1fdb4f1863eca4142596f4543190d53dfd70cee7ddaf35d25a5920", 67_286_792),
+    "A1": (
+        "07cddc489ea20055161f9c435d44d0a52b91113fda9eac16472bdb531dc6ffb6",
+        54_950_561,
+    ),
+    "A2": (
+        "022e4d18f2eedd2339c3c7eb7decf6e21f929761de46bcd0f85a73f0a2700ac7",
+        131_003_667,
+    ),
+    "A3": (
+        "6c2ebeb2b2bf67df16be815f372ea87cde8eeff4d23e63291d8a98ac94659075",
+        137_287_850,
+    ),
+    "A4": (
+        "966dfbf60548e5fd791d59d3baa2bc3b3a1b8d6b0b1a15de1ef510fc618720ca",
+        134_908_947,
+    ),
+    "A5": (
+        "ad7c556f435b0f9e30a65c201680bf6dab74e077af16e38f299bfc04af969c35",
+        129_888_875,
+    ),
+    "A6": (
+        "6aa61968730833387a15b45a6d0f2be541c6f84b6d4f16a29e7dbf583981fc9b",
+        128_543_493,
+    ),
+    "A7": (
+        "7fc1d62dba8bf82777e9d86abc3e205afa5f5012ce067082fd3a2babe88139b6",
+        66_178_095,
+    ),
+    "A8": (
+        "37da83c526bef6cf13b36090d21dd49a9d73a768422e3fea9381521eb8e71a33",
+        65_947_753,
+    ),
+    "A9": (
+        "c321dcf94a138d2a289142b0991c452be848d28dedf5f5c468fba78cd85ffa59",
+        66_467_861,
+    ),
+    "A10": (
+        "fcb236655ed1554215e370cca6d21fe5873b385e4f4b1576cdc27ff2dbe4735b",
+        67_119_843,
+    ),
+    "A11": (
+        "b79b7d1bcd861bdacf3d161bbdc5fe236edc35da41f427d0adf20a1895ddcd38",
+        66_561_497,
+    ),
+    "A12": (
+        "034d6e57440593a48a28f705534474b1c36c8aeb0170c22e54d869f4e33a9aaa",
+        66_110_870,
+    ),
+    "A13": (
+        "6714f77466a5d3e3c854339f69d19ac4d8312276cc3627c25fe3d8ef79b26163",
+        67_019_231,
+    ),
+    "A14": (
+        "e535f0ce6c1fdb4f1863eca4142596f4543190d53dfd70cee7ddaf35d25a5920",
+        67_286_792,
+    ),
 }
 
 PROTOCOL_SOURCES = {
     "A1": HERE.parent / "2026-09-02-m4-opportunity-loss-followup/protocol_config.json",
-    "A2": HERE.parent / "2026-09-03-m4-opportunity-loss-transport/qwen3-1p7b-confirmatory-design/protocol_config.json",
-    "A3": HERE.parent / "2026-09-07-m4-opportunity-loss-grid-completion/protocol_config.json",
-    "A4": HERE.parent / "2026-09-04-m4-opportunity-loss-workload-transport/qwen3-1p7b-gsm8k-confirmatory-design/protocol_config_r2.json",
-    "A5": HERE.parent / "2026-09-07-m4-opportunity-loss-numinamath-generalization/protocol_config.json",
-    "A6": HERE.parent / "2026-09-07-m4-opportunity-loss-numinamath-generalization/protocol_config.json",
-    "A7": HERE.parent / "2026-09-09-m4-llama-lifecycle-derived-transport/v5_protocol_config.json",
-    "A8": HERE.parent / "2026-09-09-m4-llama-lifecycle-derived-transport/v5_protocol_config.json",
-    "A9": HERE.parent / "2026-09-09-m4-llama-lifecycle-derived-transport/v5_protocol_config.json",
-    "A10": HERE.parent / "2026-09-09-m4-llama-lifecycle-derived-transport/v5_protocol_config.json",
-    "A11": HERE.parent / "2026-09-10-m4-llama3p2-3b-size-extension/prospective_protocol.json",
-    "A12": HERE.parent / "2026-09-10-m4-llama3p2-3b-size-extension/prospective_protocol.json",
-    "A13": HERE.parent / "2026-09-10-m4-llama3p2-3b-size-extension/prospective_protocol.json",
-    "A14": HERE.parent / "2026-09-10-m4-llama3p2-3b-size-extension/prospective_protocol.json",
+    "A2": HERE.parent
+    / "2026-09-03-m4-opportunity-loss-transport/qwen3-1p7b-confirmatory-design/protocol_config.json",
+    "A3": HERE.parent
+    / "2026-09-07-m4-opportunity-loss-grid-completion/protocol_config.json",
+    "A4": HERE.parent
+    / "2026-09-04-m4-opportunity-loss-workload-transport/qwen3-1p7b-gsm8k-confirmatory-design/protocol_config_r2.json",
+    "A5": HERE.parent
+    / "2026-09-07-m4-opportunity-loss-numinamath-generalization/protocol_config.json",
+    "A6": HERE.parent
+    / "2026-09-07-m4-opportunity-loss-numinamath-generalization/protocol_config.json",
+    "A7": HERE.parent
+    / "2026-09-09-m4-llama-lifecycle-derived-transport/v5_protocol_config.json",
+    "A8": HERE.parent
+    / "2026-09-09-m4-llama-lifecycle-derived-transport/v5_protocol_config.json",
+    "A9": HERE.parent
+    / "2026-09-09-m4-llama-lifecycle-derived-transport/v5_protocol_config.json",
+    "A10": HERE.parent
+    / "2026-09-09-m4-llama-lifecycle-derived-transport/v5_protocol_config.json",
+    "A11": HERE.parent
+    / "2026-09-10-m4-llama3p2-3b-size-extension/prospective_protocol.json",
+    "A12": HERE.parent
+    / "2026-09-10-m4-llama3p2-3b-size-extension/prospective_protocol.json",
+    "A13": HERE.parent
+    / "2026-09-10-m4-llama3p2-3b-size-extension/prospective_protocol.json",
+    "A14": HERE.parent
+    / "2026-09-10-m4-llama3p2-3b-size-extension/prospective_protocol.json",
 }
 
 PROTOCOL_HASHES = {
@@ -100,8 +155,9 @@ python3 -m unittest discover -s tests -v
 
 `data/published_results.json` contains the six-cell Qwen common-window results,
 the four replicated Llama size/workload endpoints, the separate 16-pair
-downstream-quality result, and the 10-pair OARS/FIFO policy result after removal
-of private filesystem paths. It also includes the compact 106,653-assignment
+downstream-quality result, the 10-pair OARS/FIFO policy result, and the 18-block
+three-arm quality-primary follow-up after removal of private filesystem paths.
+It also includes the compact 106,653-assignment
 Qwen-plus-Llama metric-discriminant summary; raw empirical ledgers remain external.
 `data/provenance.json` binds opaque
 acquisition IDs A1--A14 to the frozen protocols, compact records, and external
@@ -190,6 +246,14 @@ def published_checks() -> dict[str, object]:
     assert math.isclose(oars["secondary_terminal_gsm8k_accuracy"]["mean"], 0.09977255496588325)
     assert math.isclose(oars["wall_time_ratio"]["geometric_mean"], 0.7667760632976284)
     assert oars["policy_compliance"]
+    quality = result["quality_primary_followup"]
+    assert quality["block_count"] == 18
+    assert quality["run_count"] == 54
+    assert quality["policy_compliance"]
+    assert math.isclose(quality["primary_absolute_m4_minus_fifo_terminal_gsm8k_accuracy"]["mean"], -0.03310588829921658)
+    assert math.isclose(quality["secondary_terminal_gsm8k_accuracy"]["reward_variance_vs_fifo"]["mean"], -0.010908937747451775)
+    assert math.isclose(quality["mechanism_retained_l1_contrasts"]["reward_variance_vs_fifo"]["mean"], 311.5318219018324)
+    assert math.isclose(quality["matched_wall_time_ratios"]["absolute_m4_vs_fifo"]["geometric_mean_ratio"], 0.8139404004942452)
     discriminant = result["metric_discriminant"]
     assert discriminant["assignment_count"] == 106_653
     assert discriminant["summary"]["positive_opportunity_lost_count"] == 23_254
@@ -206,6 +270,8 @@ def published_checks() -> dict[str, object]:
         "downstream_quality_runs": downstream["run_count"],
         "oars_pairs": oars["primary"]["n"],
         "oars_runs": 20,
+        "quality_primary_blocks": quality["block_count"],
+        "quality_primary_runs": quality["run_count"],
         "metric_discriminant_assignments": discriminant["assignment_count"],
         "hac_correlation": synthesis["hac_correlation"],
         "bootstrap_correlation": synthesis["bootstrap_correlation"],
@@ -439,7 +505,7 @@ if __name__ == "__main__":
     main()
 '''
 
-TEST = r'''import json
+TEST = r"""import json
 import subprocess
 import sys
 import unittest
@@ -467,6 +533,8 @@ class ReviewerArtifactTest(unittest.TestCase):
         self.assertEqual(output["published"]["downstream_quality_runs"], 32)
         self.assertEqual(output["published"]["oars_pairs"], 10)
         self.assertEqual(output["published"]["oars_runs"], 20)
+        self.assertEqual(output["published"]["quality_primary_blocks"], 18)
+        self.assertEqual(output["published"]["quality_primary_runs"], 54)
         self.assertEqual(output["synthetic"]["row_count"], 192)
 
     def test_figure_reproduction(self) -> None:
@@ -482,7 +550,7 @@ class ReviewerArtifactTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-'''
+"""
 
 
 def sha256(path: Path) -> str:
@@ -496,7 +564,12 @@ def write_json(path: Path, value: object) -> None:
 
 def public_protocol(raw: dict[str, object], artifact_id: str) -> dict[str, object]:
     if artifact_id in {"A11", "A12", "A13", "A14"}:
-        names = {"A11": "openmath_r1", "A12": "openmath_r2", "A13": "gsm8k_r1", "A14": "gsm8k_r2"}
+        names = {
+            "A11": "openmath_r1",
+            "A12": "openmath_r2",
+            "A13": "gsm8k_r1",
+            "A14": "gsm8k_r2",
+        }
         name = names[artifact_id]
         cell = raw["cells"][name]
         return {
@@ -525,7 +598,10 @@ def public_protocol(raw: dict[str, object], artifact_id: str) -> dict[str, objec
         return {
             "artifact_id": artifact_id,
             "analysis": raw["analysis"],
-            "assignment": {"domain": cell["assignment_domain"], "seed": cell["assignment_seed"]},
+            "assignment": {
+                "domain": cell["assignment_domain"],
+                "seed": cell["assignment_seed"],
+            },
             "instrument": raw["instrument"],
             "model": raw["model"],
             "protocol": raw["protocol"],
@@ -542,7 +618,9 @@ def public_protocol(raw: dict[str, object], artifact_id: str) -> dict[str, objec
         "windows": raw["windows"],
     }
     if artifact_id in {"A5", "A6"}:
-        name = "qwen3_0p6b_numinamath" if artifact_id == "A5" else "qwen3_1p7b_numinamath"
+        name = (
+            "qwen3_0p6b_numinamath" if artifact_id == "A5" else "qwen3_1p7b_numinamath"
+        )
         result["assignment"] = {
             "domain": raw["prospective_cells"][name]["assignment_domain"],
             "seed": raw["prospective_cells"][name]["assignment_seed"],
@@ -551,7 +629,14 @@ def public_protocol(raw: dict[str, object], artifact_id: str) -> dict[str, objec
         result["model"] = raw["prospective_cells"][name]["model"]
         result["workload"] = {
             key: raw["workload"][key]
-            for key in ("huggingface_path", "repository_revision", "expected_source_rows", "expected_filtered_rows", "expected_unique_filtered_problems", "filter")
+            for key in (
+                "huggingface_path",
+                "repository_revision",
+                "expected_source_rows",
+                "expected_filtered_rows",
+                "expected_unique_filtered_problems",
+                "filter",
+            )
         }
     else:
         result["assignment"] = raw["assignment"]
@@ -577,14 +662,16 @@ def synthetic_rows() -> list[dict[str, object]]:
         for version in range(4):
             for arm, lost_count in (("control", control[version]), ("d5", d5[version])):
                 for sibling in range(4):
-                    rows.append({
-                        "D": int(sibling < lost_count),
-                        "Q": 1.0,
-                        "arm": arm,
-                        "cell": cell,
-                        "start_version": version,
-                        "synthetic": True,
-                    })
+                    rows.append(
+                        {
+                            "D": int(sibling < lost_count),
+                            "Q": 1.0,
+                            "arm": arm,
+                            "cell": cell,
+                            "start_version": version,
+                            "synthetic": True,
+                        }
+                    )
     return rows
 
 
@@ -596,7 +683,10 @@ def create_archive(root: Path, archive: Path) -> None:
                 for path in sorted(root.rglob("*")):
                     if not path.is_file():
                         continue
-                    info = tar.gettarinfo(str(path), arcname=f"m4-reviewer-artifact/{path.relative_to(root)}")
+                    info = tar.gettarinfo(
+                        str(path),
+                        arcname=f"m4-reviewer-artifact/{path.relative_to(root)}",
+                    )
                     info.uid = info.gid = 0
                     info.uname = info.gname = ""
                     info.mtime = 0
@@ -632,7 +722,9 @@ def main() -> None:
     for cell in extension["cells"].values():
         cell.pop("selected_artifact_sha256", None)
     published["llama_v5_extension"] = extension
-    extension_3b = json.loads((HERE / "llama_3b_publication_extension.json").read_bytes())
+    extension_3b = json.loads(
+        (HERE / "llama_3b_publication_extension.json").read_bytes()
+    )
     for cell in extension_3b["cells"].values():
         cell.pop("selected_artifact_sha256", None)
     published["llama_3b_extension"] = extension_3b
@@ -650,18 +742,34 @@ def main() -> None:
         "practical_absolute_accuracy_margin": 0.02,
         "conclusion": "INCONCLUSIVE",
     }
-    secondary = json.loads((HERE.parent / "2026-09-11-m4-downstream-quality/trained_paired_secondary_analysis.json").read_bytes())
+    secondary = json.loads(
+        (
+            HERE.parent
+            / "2026-09-11-m4-downstream-quality/trained_paired_secondary_analysis.json"
+        ).read_bytes()
+    )
     published["downstream_quality"]["secondary"] = {
         "analysis_role": secondary["analysis_role"],
-        "normalized_realized_opportunity_loss": secondary["paired_release_policy_contrasts"]["normalized_realized_opportunity_loss"],
-        "direct_chain_rate": secondary["paired_release_policy_contrasts"]["direct_chain_rate"],
-        "mean_version_advance_during_release": secondary["paired_release_policy_contrasts"]["mean_version_advance_during_release"],
+        "normalized_realized_opportunity_loss": secondary[
+            "paired_release_policy_contrasts"
+        ]["normalized_realized_opportunity_loss"],
+        "direct_chain_rate": secondary["paired_release_policy_contrasts"][
+            "direct_chain_rate"
+        ],
+        "mean_version_advance_during_release": secondary[
+            "paired_release_policy_contrasts"
+        ]["mean_version_advance_during_release"],
         "wall_seconds": secondary["paired_release_policy_contrasts"]["wall_seconds"],
-        "opportunity_loss_accuracy_diagnostic": secondary["opportunity_loss_accuracy_diagnostic"],
+        "opportunity_loss_accuracy_diagnostic": secondary[
+            "opportunity_loss_accuracy_diagnostic"
+        ],
         "unsupported_secondary_endpoints": secondary["unsupported_secondary_endpoints"],
     }
     oars = json.loads(
-        (HERE.parent / "2026-09-15-m4-oars-randomized/confirmatory_terminal_analysis_result.json").read_bytes()
+        (
+            HERE.parent
+            / "2026-09-15-m4-oars-randomized/confirmatory_terminal_analysis_result.json"
+        ).read_bytes()
     )
     published["oars_confirmatory"] = {
         "schema": "m4-oars-public-summary-v1",
@@ -673,10 +781,43 @@ def main() -> None:
         "training_dose_ratio": oars["training_dose_ratio"],
         "wall_time_ratio": oars["wall_time_ratio"],
     }
+    quality = json.loads(
+        (
+            HERE.parent
+            / "2026-09-22-m4-oars-v2-quality-primary/quality_primary_terminal_analysis_result.json"
+        ).read_bytes()
+    )
+    published["quality_primary_followup"] = {
+        "schema": "m4-oars-v2-quality-primary-public-summary-v1",
+        "block_count": quality["block_count"],
+        "run_count": quality["run_count"],
+        "policy_compliance": quality["policy_compliance"],
+        "arm_metrics": quality["arm_metrics"],
+        "primary_absolute_m4_minus_fifo_terminal_gsm8k_accuracy": quality[
+            "primary_absolute_m4_minus_fifo_terminal_gsm8k_accuracy"
+        ],
+        "secondary_terminal_gsm8k_accuracy": quality[
+            "secondary_terminal_gsm8k_accuracy"
+        ],
+        "mechanism_retained_l1_contrasts": quality["mechanism_retained_l1_contrasts"],
+        "mechanism_fifo_overlap_contrasts": quality["mechanism_fifo_overlap_contrasts"],
+        "matched_wall_time_ratios": quality["matched_wall_time_ratios"],
+        "matched_valid_actor_token_ratios": quality["matched_valid_actor_token_ratios"],
+    }
     discriminant = json.loads((HERE / "metric_discriminant.json").read_bytes())
     published["metric_discriminant"] = {
         key: discriminant[key]
-        for key in ("schema", "status", "analysis_role", "raw_data_scope", "cell_count", "assignment_count", "summary", "subgroup_summaries", "claim_boundary")
+        for key in (
+            "schema",
+            "status",
+            "analysis_role",
+            "raw_data_scope",
+            "cell_count",
+            "assignment_count",
+            "summary",
+            "subgroup_summaries",
+            "claim_boundary",
+        )
     }
     published["evidence_commitments"] = {
         CELL_IDS[name]: {
@@ -688,7 +829,10 @@ def main() -> None:
         for name, item in evidence.items()
     }
     write_json(output / "data/published_results.json", published)
-    write_json(output / "data/robustness.json", json.loads((HERE / "robustness_results.json").read_bytes()))
+    write_json(
+        output / "data/robustness.json",
+        json.loads((HERE / "robustness_results.json").read_bytes()),
+    )
     cadence = json.loads((HERE / "cadence_results.json").read_bytes())
     for item in cadence["cells"].values():
         item.pop("lifecycle_path")
@@ -700,14 +844,39 @@ def main() -> None:
         capture_output=True,
         text=True,
     )
+    quality_report_dir = HERE.parent / "2026-09-22-m4-oars-v2-quality-primary"
+    for figure_name in (
+        "quality_primary_accuracy_forest.svg",
+        "quality_primary_block_accuracy.svg",
+    ):
+        (output / "figures" / figure_name).write_bytes(
+            (quality_report_dir / figure_name).read_bytes()
+        )
 
-    full_counts = {"A1": 7199, "A2": 8673, "A3": 9573, "A4": 9429, "A5": 7229, "A6": 7050, "A7": 6908, "A8": 6809, "A9": 7314, "A10": 7681, "A11": 7073, "A12": 6612, "A13": 7176, "A14": 7927}
+    full_counts = {
+        "A1": 7199,
+        "A2": 8673,
+        "A3": 9573,
+        "A4": 9429,
+        "A5": 7229,
+        "A6": 7050,
+        "A7": 6908,
+        "A8": 6809,
+        "A9": 7314,
+        "A10": 7681,
+        "A11": 7073,
+        "A12": 6612,
+        "A13": 7176,
+        "A14": 7927,
+    }
     provenance = {
         "schema": "m4-anonymous-provenance-v1",
         "access_scope": "compact_records_only_external_raw_archives_not_included",
         "acquisitions": {
             artifact_id: {
-                "cell": next(name for name, value in CELL_IDS.items() if value == artifact_id),
+                "cell": next(
+                    name for name, value in CELL_IDS.items() if value == artifact_id
+                ),
                 "full_window_assignments": full_counts[artifact_id],
                 "protocol_sha256": PROTOCOL_HASHES[artifact_id],
                 "terminal_artifact_sha256": EXTERNAL_ARTIFACTS[artifact_id][0],
@@ -722,7 +891,10 @@ def main() -> None:
             "terminal_authentication_sha256": "f1c00b24877ba54fc68ff267af86824aa2233f8bdf674416bfaa18c9a801a441",
             "completion_gate_sha256": "54167b9517dc37b3ae05122e035c95da5bcd50f75d2326c1d6a841c7ddc43887",
             "analysis_sha256": "b412c5bb61ae637bf8e52442df09b8fec8e21800123ed2d900b987feca6da306",
-            "secondary_analysis_sha256": sha256(HERE.parent / "2026-09-11-m4-downstream-quality/trained_paired_secondary_analysis.json"),
+            "secondary_analysis_sha256": sha256(
+                HERE.parent
+                / "2026-09-11-m4-downstream-quality/trained_paired_secondary_analysis.json"
+            ),
         },
         "oars_confirmatory": {
             "runtime_source_commit": "90dbb632026591f24c966a43edd05b1e4933358b",
@@ -738,9 +910,38 @@ def main() -> None:
             "pair_count": 10,
             "run_count": 20,
         },
+        "quality_primary_followup": {
+            "protocol_sha256": quality["protocol_sha256"],
+            "run_manifest_sha256": quality["run_manifest_sha256"],
+            "analysis_plan_sha256": quality["analysis_plan_sha256"],
+            "completion_audit_sha256": sha256(
+                HERE.parent
+                / "2026-09-22-m4-oars-v2-quality-primary/quality_primary_acquisition_completion_audit.json"
+            ),
+            "blind_analysis_freeze_sha256": sha256(
+                HERE.parent
+                / "2026-09-22-m4-oars-v2-quality-primary/quality_primary_blind_analysis_freeze.json"
+            ),
+            "extraction_receipt_sha256": sha256(
+                HERE.parent
+                / "2026-09-22-m4-oars-v2-quality-primary/quality_primary_result_extraction_receipt.json"
+            ),
+            "analysis_sha256": sha256(
+                HERE.parent
+                / "2026-09-22-m4-oars-v2-quality-primary/quality_primary_terminal_analysis_result.json"
+            ),
+            "verification_sha256": sha256(
+                HERE.parent
+                / "2026-09-22-m4-oars-v2-quality-primary/quality_primary_analysis_verification.json"
+            ),
+            "block_count": quality["block_count"],
+            "run_count": quality["run_count"],
+        },
         "metric_discriminant": {
             "analysis_sha256": sha256(HERE / "metric_discriminant.json"),
-            "qwen_recovery_receipt_sha256": sha256(HERE / "qwen_raw_recovery_receipt.json"),
+            "qwen_recovery_receipt_sha256": sha256(
+                HERE / "qwen_raw_recovery_receipt.json"
+            ),
             "registered_window_assignments": discriminant["assignment_count"],
         },
     }
@@ -749,8 +950,13 @@ def main() -> None:
     protocols = {}
     for artifact_id, source in PROTOCOL_SOURCES.items():
         assert sha256(source) == PROTOCOL_HASHES[artifact_id]
-        protocols[artifact_id] = public_protocol(json.loads(source.read_bytes()), artifact_id)
-    write_json(output / "protocols/public_protocols.json", {"schema": "m4-public-protocol-projections-v1", "protocols": protocols})
+        protocols[artifact_id] = public_protocol(
+            json.loads(source.read_bytes()), artifact_id
+        )
+    write_json(
+        output / "protocols/public_protocols.json",
+        {"schema": "m4-public-protocol-projections-v1", "protocols": protocols},
+    )
 
     claim_ledger = (HERE / "claim_ledger.md").read_text()
     claim_ledger = claim_ledger.replace(
@@ -761,7 +967,9 @@ def main() -> None:
         "all runs retain the same algorithm and one accelerator environment",
     )
     (output / "docs/claim_ledger.md").write_text(claim_ledger)
-    (output / "docs/primary_table.md").write_bytes((HERE / "primary_table.md").read_bytes())
+    (output / "docs/primary_table.md").write_bytes(
+        (HERE / "primary_table.md").read_bytes()
+    )
     robustness_text = (HERE / "robustness.md").read_text()
     robustness_text = robustness_text.replace(
         "`robustness_results.json`; its SHA-256 is\n`4f12bafe8cca627a48b9ee21f9fb0d05a3964d2004994a5d28568f8d7c3b168a`",
@@ -769,22 +977,41 @@ def main() -> None:
     )
     (output / "docs/robustness.md").write_text(robustness_text)
     rows = synthetic_rows()
-    (output / "synthetic/miniature_ledger.jsonl").write_text("".join(json.dumps(row, sort_keys=True) + "\n" for row in rows))
+    (output / "synthetic/miniature_ledger.jsonl").write_text(
+        "".join(json.dumps(row, sort_keys=True) + "\n" for row in rows)
+    )
 
     # Compute expected synthetic output by importing the just-written replay module.
-    namespace = {"__file__": str(output / "analysis/replay.py"), "__name__": "artifact_replay_build"}
+    namespace = {
+        "__file__": str(output / "analysis/replay.py"),
+        "__name__": "artifact_replay_build",
+    }
     exec(compile(REPLAY, str(output / "analysis/replay.py"), "exec"), namespace)
     original_load = namespace["load"]
-    namespace["load"] = lambda path: {} if path.name == "expected_summary.json" else original_load(path)
+    namespace["load"] = lambda path: (
+        {} if path.name == "expected_summary.json" else original_load(path)
+    )
     # Temporarily duplicate the replay calculation without its final equality check.
     estimates, effects = namespace["cell_estimates"](rows)
-    shifts = {name: namespace["circular_bootstrap"](values, 1_000, 7100 + index) for index, (name, values) in enumerate(sorted(effects.items()))}
-    scale = {workload: estimates[f"qwen3_1p7b_{workload}"] - estimates[f"qwen3_0p6b_{workload}"] for workload in ("openmath", "gsm8k", "numinamath")}
+    shifts = {
+        name: namespace["circular_bootstrap"](values, 1_000, 7100 + index)
+        for index, (name, values) in enumerate(sorted(effects.items()))
+    }
+    scale = {
+        workload: estimates[f"qwen3_1p7b_{workload}"]
+        - estimates[f"qwen3_0p6b_{workload}"]
+        for workload in ("openmath", "gsm8k", "numinamath")
+    }
     paired = []
     for index in range(1_000):
         gsm = shifts["qwen3_1p7b_gsm8k"][index] - shifts["qwen3_0p6b_gsm8k"][index]
-        openmath = shifts["qwen3_1p7b_openmath"][index] - shifts["qwen3_0p6b_openmath"][index]
-        numina = shifts["qwen3_1p7b_numinamath"][index] - shifts["qwen3_0p6b_numinamath"][index]
+        openmath = (
+            shifts["qwen3_1p7b_openmath"][index] - shifts["qwen3_0p6b_openmath"][index]
+        )
+        numina = (
+            shifts["qwen3_1p7b_numinamath"][index]
+            - shifts["qwen3_0p6b_numinamath"][index]
+        )
         paired.append((gsm - openmath, gsm - numina))
     mean_x = sum(x for x, _ in paired) / len(paired)
     mean_y = sum(y for _, y in paired) / len(paired)
@@ -794,9 +1021,14 @@ def main() -> None:
     expected = {
         "row_count": len(rows),
         "cell_estimates": estimates,
-        "cell_hac_se": {name: namespace["hac_se"](values) for name, values in effects.items()},
+        "cell_hac_se": {
+            name: namespace["hac_se"](values) for name, values in effects.items()
+        },
         "model_scale_effects": scale,
-        "reference_interactions": {"gsm8k_minus_openmath": scale["gsm8k"] - scale["openmath"], "gsm8k_minus_numinamath": scale["gsm8k"] - scale["numinamath"]},
+        "reference_interactions": {
+            "gsm8k_minus_openmath": scale["gsm8k"] - scale["openmath"],
+            "gsm8k_minus_numinamath": scale["gsm8k"] - scale["numinamath"],
+        },
         "shared_reference_bootstrap_correlation": covariance / (sd_x * sd_y),
     }
     write_json(output / "synthetic/expected_summary.json", expected)
@@ -804,8 +1036,21 @@ def main() -> None:
     files = []
     for path in sorted(output.rglob("*")):
         if path.is_file() and path.name != "MANIFEST.json":
-            files.append({"path": str(path.relative_to(output)), "bytes": path.stat().st_size, "sha256": sha256(path)})
-    write_json(output / "MANIFEST.json", {"schema": "m4-reviewer-artifact-manifest-v1", "files": files, "external_artifacts": provenance["acquisitions"]})
+            files.append(
+                {
+                    "path": str(path.relative_to(output)),
+                    "bytes": path.stat().st_size,
+                    "sha256": sha256(path),
+                }
+            )
+    write_json(
+        output / "MANIFEST.json",
+        {
+            "schema": "m4-reviewer-artifact-manifest-v1",
+            "files": files,
+            "external_artifacts": provenance["acquisitions"],
+        },
+    )
     create_archive(output, args.archive.resolve())
     receipt = {
         "archive": args.archive.name,

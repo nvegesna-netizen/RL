@@ -16,7 +16,7 @@
 \mlsyscorrespondingauthor{Anonymous Author}{anon.email@domain.com}
 \vskip 0.3in
 \begin{abstract}
-This supplement reports reproducibility, provenance, mechanism, observer-duty, and robustness details for the M4 controlled-release study, its prospective Llama 3.2 1B and 3B extensions, the separate 16-pair downstream-quality study, and the 10-pair OARS policy study. It does not replace the registered primary analyses.
+This supplement reports reproducibility, provenance, mechanism, observer-duty, and robustness details for the M4 controlled-release study, its prospective Llama 3.2 1B and 3B extensions, the separate 16-pair downstream-quality study, the 10-pair OARS policy study, and the 18-block three-arm quality-primary follow-up. It does not replace the registered primary analyses.
 \end{abstract}
 ]
 \printAffiliationsAndNotice{}
@@ -138,6 +138,32 @@ Actor-token ratio & 0.9800 & [0.5281, 1.8188] \\
 \end{table}
 
 The exact primary sign-flip test gives $p=0.32227$. The accuracy endpoint is prespecified as secondary, and no mediation estimand was registered. Protocol, manifest, completion gate, extraction, and analysis SHA-256 prefixes are \texttt{3bc49412a212}, \texttt{1f59d8cf3339}, \texttt{4f844e49aaae}, \texttt{2911b5fad4ca}, and \texttt{480180bee539}, respectively. Full hashes are in the compact evidence map.
+
+The subsequent quality-primary study froze absolute-M4-minus-FIFO terminal GSM8K accuracy as its sole primary endpoint. Eighteen matched blocks each contained FIFO, absolute-M4, and reward-variance arms, for 54 authenticated 64-update runs. No run was excluded, including zero-accuracy endpoints.
+
+\begin{table}[h]
+\caption{Three-arm quality-primary follow-up.}
+\centering\scriptsize
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lrr}
+\toprule
+Endpoint & Estimate/ratio & 95\% interval \\
+\midrule
+Absolute M4 -- FIFO accuracy & -0.0331 & [-0.1162, 0.0499] \\
+Reward variance -- FIFO accuracy & -0.0109 & [-0.1062, 0.0844] \\
+Absolute M4 -- reward variance accuracy & -0.0222 & [-0.1175, 0.0731] \\
+Absolute M4 -- FIFO retained L1 & 215.51 & [-7.82, 438.84] \\
+Reward variance -- FIFO retained L1 & 311.53 & [125.40, 497.66] \\
+Absolute M4/FIFO wall-time ratio & 0.8139 & [0.7435, 0.8910] \\
+Reward variance/FIFO wall-time ratio & 0.8023 & [0.7327, 0.8785] \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+The exact sign-flip $p$-value for the primary contrast is 0.40381; six block differences are positive, six zero, and six negative. The preregistered lower-bound-above-zero criterion was not met. The accuracy intervals are student intervals over matched blocks. Wall-time estimates are geometric-mean ratios. The common prompt-manifest SHA-256 is \texttt{81d89a2c6a2f}; the extraction receipt and frozen terminal analysis SHA-256 values are \texttt{991f53830ed6} and \texttt{17490153ef95}. Full hashes and all 54 terminal authentication records are retained in the compact evidence map.
+
+This follow-up changes the bounded interpretation of the earlier OARS result. Opportunity-aware rules can alter retained opportunity and wall time, but the positive secondary accuracy estimate from 10 pairs did not reproduce as a terminal-accuracy gain in the larger prospectively frozen comparison. The evidence supports proxy actionability and proxy--quality separation, not equivalence, mediation, or a production-ready scheduler.
 
 Across all six Qwen cells and eight authenticated Llama acquisitions, 23,254 of 28,117 positive-opportunity assignments were lost before consumption. Consumed-rollout version age excludes those observations. Its d5-minus-control contrast correlates -0.617 with the M4 estimate across the 14 acquisitions; the ready-latency contrast correlates 0.638. The Qwen-only registered-window correlation with version age is -0.889 (and -0.813 in the harmonized common window). These small-sample retrospective statistics are descriptive, but the observability mismatch is exact: consumed-only staleness cannot represent a candidate that never trains.
 

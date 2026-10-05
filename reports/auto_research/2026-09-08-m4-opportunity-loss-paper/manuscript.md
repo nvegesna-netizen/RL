@@ -44,14 +44,19 @@ as -0.0449 (paired 95% CI [-0.1339, 0.0441]). The interval crossed zero and
 both registered ±0.02 relevance bounds, leaving the direction and practically
 relevant magnitude of the accuracy difference unresolved. The evidence also does
 not establish a pure model-family effect, a general scaling law, or
-generalization beyond the tested configurations. Finally, a preregistered
-10-pair Llama-3.2-1B/GSM8K policy study compared Opportunity-at-Risk Scheduling
-(OARS) with FIFO under a 1.02 token-budget ceiling. Its primary retained-
-opportunity contrast was 302.03 (95% CI [-334.21, 938.26]; exact sign-flip
-\(p=0.322\)). Secondary endpoints favored OARS: terminal accuracy increased by
-0.0998 [0.0275, 0.1720] and the
-wall-time ratio was 0.7668 [0.6635, 0.8861]. These are scoped policy results,
-not evidence of mediation or a production-ready scheduler.
+generalization beyond the tested configurations. Finally, two preregistered
+Llama-3.2-1B/GSM8K policy studies tested opportunity-aware selection. An
+initial 10-pair OARS/FIFO study estimated retained opportunity at 302.03 (95%
+CI [-334.21, 938.26]) and secondary terminal accuracy at +0.0998 [0.0275,
+0.1720]. A larger 18-block quality-primary follow-up compared FIFO, reward
+variance, and absolute M4. Its primary absolute-M4-minus-FIFO accuracy estimate
+was -0.0331 [-0.1162, 0.0499] (exact sign-flip \(p=0.404\)); reward variance
+minus FIFO was -0.0109 [-0.1062, 0.0844]. Reward variance nevertheless
+increased retained L1 opportunity by 311.53 [125.40, 497.66], and both active
+policies reduced wall time. Opportunity-aware scheduling therefore changes the
+measured mechanism and execution time, but these changes did not produce a
+terminal-accuracy gain in the quality-primary study. This is not evidence of
+mediation or a production-ready scheduler.
 
 ## 1. Introduction
 
@@ -91,7 +96,9 @@ prospective Llama 3.2 1B study then produced intervals above 0.20 twice within e
 OpenMath and GSM8K. A preregistered 3B follow-up tested within-family size
 transport on the same workloads without outcome-guided extension. A final
 paired study tested whether the opportunity signal could inform a bounded
-selection policy rather than merely diagnose delay.
+selection policy rather than merely diagnose delay. A prospectively frozen
+three-arm follow-up then made terminal accuracy primary and compared FIFO,
+reward variance, and absolute M4 over 18 matched blocks.
 
 Our contributions are:
 
@@ -110,9 +117,10 @@ Our contributions are:
 6. Prospectively replicated Llama 3.2 1B and 3B extensions with 57,500
    additional assignments, including prespecified fixed-configuration size
    contrasts while avoiding pure-family and general-scaling claims.
-7. A preregistered paired test of a token-budgeted opportunity-aware selection
-   rule, reporting the primary estimate and interval alongside the prespecified
-   secondary accuracy and wall-time estimates.
+7. Two preregistered opportunity-aware policy studies: an initial bounded OARS
+   comparison and a larger three-arm quality-primary follow-up showing that
+   proxy movement and faster execution do not by themselves establish a
+   terminal-quality benefit.
 
 ## 2. Related work
 
@@ -336,6 +344,25 @@ OARS/FIFO wall-time ratio was 0.7668 [0.6635, 0.8861], while the valid actor-
 token ratio was 0.9800 [0.5281, 1.8188]. These estimates do not identify
 retained opportunity as the mediator of the accuracy difference.
 
+We then froze a quality-primary follow-up before opening any outcome. Eighteen
+matched training-seed blocks each contained FIFO, reward-variance, and
+absolute-M4 runs, for 54 total 64-update runs. Terminal GSM8K accuracy was the
+sole primary endpoint for absolute M4 minus FIFO. All terminal copies
+authenticated before the compact outcomes were released. The primary estimate
+was -0.0331, with 95% CI [-0.1162, 0.0499] and exact sign-flip \(p=0.404\).
+Reward variance minus FIFO was -0.0109 [-0.1062, 0.0844], and absolute M4 minus
+reward variance was -0.0222 [-0.1175, 0.0731]. Mean terminal accuracies were
+0.0973, 0.0863, and 0.0641 for FIFO, reward variance, and absolute M4,
+respectively; every endpoint, including zero-accuracy runs, was retained.
+
+The follow-up separates proxy movement from downstream quality. Reward variance
+increased retained registered L1 opportunity by 311.53 [125.40, 497.66]
+relative to FIFO; the absolute-M4 contrast was 215.51 [-7.82, 438.84].
+Geometric-mean wall-time ratios were 0.8023 [0.7327, 0.8785] and 0.8139
+[0.7435, 0.8910], respectively. Thus both active policies changed selection
+and ran faster, and reward variance clearly increased the registered proxy,
+without an accompanying terminal-accuracy improvement in this study.
+
 ## 5. Six-cell synthesis
 
 ### 5.1 Harmonized cell inputs
@@ -506,14 +533,15 @@ descriptive slope interval [-10.65, 7.58] does not resolve mediation.
 Equal-wall-clock quality and time-to-fixed-quality are unavailable because the
 design preserved only a prospectively fixed terminal evaluation.
 
-The OARS study asks a complementary policy question. Unlike mixed-d5, it does
-not intentionally delay half of the groups; it chooses a token-budgeted subset
-of ready work using the pre-existing opportunity signal. Its positive accuracy
-interval and sub-one wall-time interval show that this bounded policy can
-outperform FIFO on those secondary endpoints in the tested 64-update setting.
-Its primary interval spans negative and positive values. The two policy studies
-therefore answer different questions, and neither supports a causal mediation
-claim.
+The OARS studies ask a complementary policy question. Unlike mixed-d5, they do
+not intentionally delay half of the groups; they choose a bounded subset of
+ready work using pre-existing scheduling signals. The initial OARS study had a
+positive secondary accuracy interval and a sub-one wall-time interval, while
+its primary opportunity interval crossed zero. In the larger quality-primary
+follow-up, neither active policy improved accuracy, even though reward variance
+increased retained opportunity and both active policies reduced wall time. The
+combined evidence therefore supports actionability of the signal, not a stable
+quality benefit or a causal mediation claim.
 
 ## 9. Limitations
 
@@ -540,14 +568,15 @@ dependency-aware synthesis corrects their joint uncertainty, but NuminaMath is
 best described as a prospective same-direction extension with a shared fixed
 reference—not a wholly independent four-cell replication.
 
-Terminal task accuracy was measured in two separate run-randomized studies.
+Terminal task accuracy was measured in three separate run-randomized studies.
 The mixed-d5 interval crossed zero and both registered relevance bounds. The
-OARS secondary accuracy interval favored OARS, while the primary retained-
-opportunity interval spanned negative and positive values. OARS was tested for
-64 updates on Llama-3.2-1B/GSM8K; longer-
-horizon convergence, other workloads and scales, and comparisons against
-production schedulers remain untested. The accuracy contrast cannot be
-attributed specifically to retained opportunity without a mediation design.
+initial OARS secondary accuracy interval favored OARS, while its primary
+retained-opportunity interval crossed zero. The larger three-arm follow-up did
+not reproduce an accuracy gain for either active scheduler. All policy runs
+used 64 updates on Llama-3.2-1B/GSM8K; longer-horizon convergence, other
+workloads and scales, and comparisons against production schedulers remain
+untested. Accuracy contrasts cannot be attributed specifically to retained
+opportunity without a mediation design.
 
 ## 10. Reproducibility and provenance
 
@@ -575,6 +604,12 @@ The OARS protocol, completion gate, extracted dataset, analysis, and execution
 receipt are independently SHA-256 bound. Its analysis record has SHA-256
 `480180bee539b88c46f36274c9627ef99f8dae1185995f5ddaffbbbf248a25a2`;
 all 10 matched pairs and 20 terminal runs enter the frozen analysis.
+The quality-primary follow-up separately binds 54 terminal authentications,
+its extraction receipt, and its pre-outcome analyzer freeze. Its analysis
+record has SHA-256
+`17490153ef9521a830e5538423479c6d4af6bbd03c58bcbcf3aa5663973faa52`;
+all 18 matched three-arm blocks enter the result, and raw evaluation-data
+payloads remain unopened.
 The full evidence flow appears in `provenance_diagram.md`.
 
 ## 11. Conclusion
@@ -586,7 +621,8 @@ The evidence sequence is:
 > cross-model/workload heterogeneity → prospective same-direction workload
 > extension → prospectively replicated cross-family extension → prospective
 > within-family size extension → prospective end-to-end quality test →
-> prospective opportunity-aware policy test
+> prospective opportunity-aware policy test → prospective three-arm
+> quality-primary scheduler test
 
 Across six definitive Qwen3×math-workload cells, a controlled five-second
 release delay produces positive normalized gradient-opportunity loss; five
@@ -598,10 +634,12 @@ only the OpenMath interval lies wholly above it. The negative prespecified size 
 attenuation in both fixed workload configurations. This establishes a material
 M4 opportunity-loss phenomenon across the tested configurations. The mixed-d5
 run-randomized quality estimate was negative but not precise enough to establish
-its direction and practically relevant magnitude. In the separate OARS study,
-the primary retained-opportunity estimate was 302.03 [−334.21, 938.26], while
-secondary terminal accuracy was 0.0998 [0.0275, 0.1720] and the wall-time ratio
-was 0.7668 [0.6635, 0.8861]. This supplies a
-promising proof of concept rather than a confirmed mechanism or deployment-
-ready scheduler. Pure family effects, general scaling laws, causal mediation,
-and broader generalization remain for future preregistered studies.
+its direction and practically relevant magnitude. The initial OARS study had a
+positive secondary accuracy estimate, but the larger quality-primary follow-up
+estimated absolute M4 minus FIFO accuracy at -0.0331 [-0.1162, 0.0499] and
+reward variance minus FIFO at -0.0109 [-0.1062, 0.0844]. Reward variance still
+increased retained opportunity, and both active policies reduced wall time.
+The scheduler evidence therefore shows actionability and proxy--quality
+separation, not a deployment-ready quality improvement. Pure family effects,
+general scaling laws, causal mediation, and broader generalization remain for
+future preregistered studies.

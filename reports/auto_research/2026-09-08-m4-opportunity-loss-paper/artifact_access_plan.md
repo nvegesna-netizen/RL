@@ -32,8 +32,9 @@ the private provenance ledger retains the reversible mapping.
 
 ## Raw terminal artifacts
 
-The 14 definitive opportunity-loss archives total hundreds of megabytes, and
-the 32 downstream-quality workload archives total about 86 GiB. All remain
+The 14 definitive opportunity-loss archives total hundreds of megabytes, the
+32 downstream-quality workload archives total about 86 GiB, and the 54
+quality-primary scheduler archives are also retained externally. All remain
 outside Git.
 Preferred access is an anonymous, read-only object store with stable URLs,
 checksums, content length, and no request tracking exposed to authors during
