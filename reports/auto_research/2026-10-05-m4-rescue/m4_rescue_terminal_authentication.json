@@ -1,0 +1,64 @@
+{
+  "schema": "m4-rescue-terminal-authentication-v1",
+  "status": "AUTHENTICATED_QUALIFICATION_FAIL",
+  "upstream_pipeline": {
+    "id": 71758821,
+    "status": "failed",
+    "generate_job_id": 470726390,
+    "generate_job_status": "success"
+  },
+  "downstream_pipeline": {
+    "id": 71759662,
+    "status": "failed",
+    "logs_before_job_id": 470731332,
+    "workload_job_id": 470731333,
+    "logs_after_job_id": 470731335,
+    "logs_before_status": "success",
+    "workload_status": "failed",
+    "logs_after_status": "success"
+  },
+  "workload_artifact_archive": {
+    "bytes": 63223461,
+    "sha256": "09b9bb555fff62b19f7e415f6e89efbf6dfc90a7394dd1933cfd064ffa24927f"
+  },
+  "declared_artifacts": {
+    "manifest_sha256": "8648d09e97e100df65357ff0c4606ebcec4ab3c6b059f67d6023a9bdc2fd5711",
+    "lifecycle.jsonl": "1cf169f49ad3eb3d904c3a8888ba6f3e29b48093761b9dfcfd25fa183eae5e42",
+    "oars-v2.jsonl": "e204ac617203f4781da04920ae3f66c24be01ef0b16456d7bf8db6c8b65cba5a",
+    "observer-duty.json": "4e08f34a235e3d329e029c291e71983f35e765fbc94e97f69d25996c035aa7a3",
+    "opportunity.jsonl": "6f5cc5b2e33a02bf53659e5c223230e5d0c4dc7b919ccd56a6a652fd1461eb2c",
+    "result.json": "6469248e15e99d64b1ef5a413c150bda675044f50076610a736aa322742af3e3",
+    "run.log": "456c1dbeced7665a12816f8ef04812b06e1b02e9cf267fa26d36a9b36e8e6e64"
+  },
+  "integrity": {
+    "all_six_declared_artifacts_match_manifest": true,
+    "manifest_and_all_six_declared_artifacts_byte_identical_in_logs_after_copy": true
+  },
+  "execution": {
+    "preflight_test_counts": {
+      "opportunity_at_risk_v2": 28,
+      "single_controller_filtered": 10,
+      "qualification_analyzer": 4
+    },
+    "preflight_tests_passed": true,
+    "learner_steps_completed": 64,
+    "trainer_version": 64,
+    "training_exit_code": 0,
+    "qualification_gate_exit_code": 1,
+    "runtime_seconds": 408.767992421
+  },
+  "qualification_result": {
+    "status": "FAIL",
+    "only_failed_check": "complete_liveness_accounting",
+    "decision_count": 64,
+    "intervention_count": 0,
+    "combined_observer_controller_duty": 0.0008593145809735263,
+    "stale_evicted_groups_total": 0,
+    "candidate_excess_removed_groups_total": 0
+  },
+  "outcome_boundary": {
+    "terminal_benchmark_opened": false,
+    "training_quality_analyzed": false,
+    "scientific_outcome_acquisition": false
+  }
+}
