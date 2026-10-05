@@ -1,0 +1,38 @@
+{
+  "schema": "m4-rescue-qualification-package-receipt-v1",
+  "status": "PASS_READY_FOR_ONE_AUTHORIZED_SUBMISSION",
+  "source_commit": "ded043d092e18f236163184d9648201414c6c30a",
+  "source_archive": {
+    "path": "session/20260914_m4_opportunity_control/m4-rescue-qualification-source-ded043d09.tar.gz",
+    "sha256": "d690537324127afcd0689481c749aa585d3b3226428adde9a8cf25ddeb842e24",
+    "members": 2839,
+    "symlinks": 16
+  },
+  "megatron_archive": {
+    "path": "session/20260914_m4_opportunity_control/m4-oars-shadow-preflight-megatron.tar.gz",
+    "sha256": "98d98920c0fea3d8ae1216a485dc9b5aa4fc966e469435ad61f2bae456de80d2"
+  },
+  "protocol_sha256": "d5c66a822a0945ee09afa317977cd95c8c96be1df53fb31677f4a13d2409bff3",
+  "authorization_sha256": "f079fd5b086aa8d9e10bd3ee00a8ebfbf8a18d9347d255ebbd3fada0185138fb",
+  "builder_sha256": "af13169a85dc1e1132726d36bf0c1777edde6582bbb5f266fe98727b8058283f",
+  "validator_sha256": "0d110c1ae835751227308a99c449c8ca397eb2ec84267b5b17870932943ee736",
+  "manifest": {
+    "path": "session/20260914_m4_opportunity_control/m4-rescue-qualification.json",
+    "sha256": "f9afbe820b05888187f0bf4efa8ed17d2a3eb270d5d7fa95faae15db418b101d",
+    "byte_identical_rebuild": true
+  },
+  "validation": {
+    "path": "m4_rescue_package_validation.json",
+    "sha256": "1aa9cb82dfeb3d736d7445179e2a78e23a1045f58d04fbcb1e54beea666fd384",
+    "status": "PASS_CREDENTIAL_FREE_PACKAGE"
+  },
+  "launch_contract": {
+    "required_launcher": "runllm.py --no_wait",
+    "submission_attempt_limit": 1,
+    "time_limit_seconds": 14400,
+    "queue_deadline_override": null,
+    "scientific_outcome_acquisition": false,
+    "training_quality_analysis": false,
+    "automatic_retry": false
+  }
+}
