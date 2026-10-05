@@ -1,0 +1,73 @@
+{
+  "schema": "m4-shield-development-protocol-v1",
+  "status": "FROZEN_BEFORE_CANONICAL_OFFLINE_REPLAY",
+  "date": "2026-10-05",
+  "purpose": "Test whether registered M4 opportunity can safely refine the validated reward-variance OARS-v2 proposer without sacrificing either component of its proposal utility.",
+  "development_evidence": {
+    "historical_corpus": "The 20 authenticated OARS confirmatory arms containing 1280 eight-candidate decisions.",
+    "live_identity_corpus": "The authenticated 64-decision failed M4-Rescue qualification ledger, used only to verify exact reward-variance proposer replay and no-action behavior in its FIFO steady state.",
+    "exploratory_boundary": "The policy and thresholds below were chosen after exploratory inspection of these data. This replay is an internal development qualification, not an independent efficacy estimate or confirmatory test."
+  },
+  "policy": {
+    "name": "m4_shield",
+    "base_proposer": "The exact OARS-v2 reward_variance_risk proposal over the authenticated eight-group frontier.",
+    "candidate_set": "The authenticated eight-group controlled frontier reconstructed from controller-ordered lifecycle events.",
+    "cardinality": 4,
+    "minimum_base_proposal_overlap_groups": 2,
+    "minimum_service_multiplier": 0.98,
+    "maximum_service_multiplier": 1.02,
+    "numeric_comparison_tolerance": 1e-12,
+    "base_objective_order": [
+      "maximize summed reward variance among imminent-expiry groups",
+      "maximize total summed reward variance",
+      "minimize selected valid actor tokens",
+      "choose the lexicographically smallest ordered group-ID tuple"
+    ],
+    "shield_feasibility": [
+      "Select exactly four distinct candidates.",
+      "Retain at least two of the four base-proposal groups.",
+      "Keep selected valid actor tokens within [0.98, 1.02] times FIFO tokens using the existing ceil/floor integer boundary.",
+      "Match the base proposal's imminent reward-variance sum within the declared absolute tolerance.",
+      "Match the base proposal's total reward-variance sum within the declared absolute tolerance."
+    ],
+    "shield_objective_order": [
+      "maximize imminent-expiry registered L1 opportunity",
+      "maximize total registered L1 opportunity",
+      "minimize selected valid actor tokens",
+      "choose the lexicographically smallest ordered group-ID tuple"
+    ],
+    "actuation_rule": "Enact the best feasible shield batch only when its imminent-expiry registered L1 exceeds the base proposal by more than the declared tolerance; otherwise return the base proposal exactly.",
+    "imminent_definition": "A group is imminent when start_weight_version + max_staleness_versions <= current_learner_version. The replay uses max_staleness_versions=1."
+  },
+  "offline_qualification": {
+    "scope": {
+      "authenticated_historical_arms": 20,
+      "historical_decisions_per_arm": 64,
+      "historical_total_decisions": 1280,
+      "live_identity_decisions": 64,
+      "candidate_groups_per_decision": 8
+    },
+    "requirements": {
+      "all_sources_authenticate": true,
+      "two_pass_selection_records_byte_identical": true,
+      "live_reward_variance_base_identity_count": 64,
+      "every_decision_satisfies_policy_constraints": true,
+      "every_decision_preserves_both_reward_variance_objectives": true,
+      "historical_intervention_count_minimum": 50,
+      "oars_trajectory_arms_with_intervention_minimum": 10,
+      "fifo_trajectory_intervention_count_maximum": 0,
+      "live_identity_intervention_count_maximum": 0,
+      "aggregate_historical_imminent_l1_gain_minimum": 10000.0,
+      "base_harm_reduction_fraction_minimum": 0.3,
+      "harmful_base_decisions_improved_minimum": 15
+    },
+    "pass_status": "PASS_M4_SHIELD_DEVELOPMENT_QUALIFICATION",
+    "stop_status": "STOP_M4_SHIELD_DEVELOPMENT_QUALIFICATION"
+  },
+  "interpretation_boundary": [
+    "Because this corpus informed the policy and gates, a pass establishes deterministic feasibility and retrospective proxy behavior only.",
+    "The failed-live ledger is used for runtime proposal identity and negative-control behavior, not efficacy.",
+    "No terminal benchmark, training-quality endpoint, wall-time benefit, or causal downstream effect is tested here.",
+    "Any live systems qualification or randomized quality acquisition requires a separately frozen protocol and explicit authorization."
+  ]
+}
