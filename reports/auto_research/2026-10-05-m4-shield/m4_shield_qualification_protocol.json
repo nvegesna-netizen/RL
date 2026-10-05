@@ -1,0 +1,60 @@
+{
+  "schema": "m4-shield-live-qualification-protocol-v1",
+  "status": "FROZEN_AFTER_IMPLEMENTATION_BEFORE_SUBMISSION",
+  "date": "2026-10-05",
+  "source_commit": "cdfa1c8e56394b7d8e3e299b6524a1a286243746",
+  "source_archive_sha256": "e9a70e436852f747db1812a2af275351643473cf6f4f20d0e2a4e0573ccc1111",
+  "design_sha256": "d7b35097584b1b9d3be2f8651879b7196830766a99a4b3287f063f41ba744d84",
+  "parent_protocol_sha256": "1a4f9a5c57ee000cded9df3214930512d95f5b115f13e3a33070c55476c2a232",
+  "offline_result_sha256": "2e6a41b7acd4d0de8e7ad60dfaf56b834291c937dbf9924b9be1ed4504f5e036",
+  "offline_gate_status": "PASS_M4_SHIELD_DEVELOPMENT_QUALIFICATION",
+  "purpose": "Source-bind the frozen M4-Shield live design and verify exact live actuation without opening terminal training quality.",
+  "design": {
+    "submission_count": 1,
+    "trainer_steps": 64,
+    "nodes": 1,
+    "gpus": 2,
+    "scheduler_time_limit_seconds": 14400,
+    "queue_deadline_override": null,
+    "training_seed": 20261005,
+    "controlled_release_seed": 20261007,
+    "assignment_domain": "m4-shield-qualification-v1",
+    "selection_candidate_watermark": 8,
+    "selection_cardinality": 4,
+    "base_proposer": "reward_variance_risk",
+    "actuation_scorer": "m4_shield",
+    "minimum_base_proposal_overlap_groups": 2,
+    "minimum_service_multiplier": 0.98,
+    "maximum_service_multiplier": 1.02,
+    "numeric_comparison_tolerance": 1e-12,
+    "decision_time_budget_ns_per_scorer": 5000000
+  },
+  "terminal_gate": {
+    "complete_learner_steps": 64,
+    "exact_decisions": 64,
+    "exact_candidates_per_decision": 8,
+    "exact_selected_groups_per_decision": 4,
+    "all_scorers_exact_no_fallback": true,
+    "proposal_matches_action_every_decision": true,
+    "minimum_shield_interventions": 1,
+    "exact_imminent_reward_variance_preservation": true,
+    "exact_total_reward_variance_preservation": true,
+    "strict_imminent_l1_gain_for_every_intervention": true,
+    "complete_reconciled_liveness_accounting": true,
+    "positive_liveness_event_required": false,
+    "combined_observer_controller_duty_maximum": 0.01,
+    "runtime_seconds_maximum": 14400
+  },
+  "outcome_exclusion": {
+    "terminal_benchmark": false,
+    "training_quality_analysis": false,
+    "scientific_outcome_acquisition": false,
+    "policy_export": false
+  },
+  "stop_rules": [
+    "One submission attempt only.",
+    "No automatic retry, replacement, extension, or quality acquisition.",
+    "A zero-intervention result fails reachability.",
+    "A failure is terminal unless the user separately authorizes a scientifically justified repair."
+  ]
+}

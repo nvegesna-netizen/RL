@@ -1,0 +1,40 @@
+{
+  "schema": "m4-shield-qualification-package-receipt-v1",
+  "status": "PASS_READY_FOR_ONE_AUTHORIZED_SUBMISSION",
+  "source_commit": "cdfa1c8e56394b7d8e3e299b6524a1a286243746",
+  "source_archive": {
+    "path": "session/20260914_m4_opportunity_control/m4-shield-qualification-source-cdfa1c8e5.tar.gz",
+    "sha256": "e9a70e436852f747db1812a2af275351643473cf6f4f20d0e2a4e0573ccc1111",
+    "members": 2864,
+    "symlinks": 16
+  },
+  "megatron_archive": {
+    "path": "session/20260914_m4_opportunity_control/m4-oars-shadow-preflight-megatron.tar.gz",
+    "sha256": "98d98920c0fea3d8ae1216a485dc9b5aa4fc966e469435ad61f2bae456de80d2"
+  },
+  "design_sha256": "d7b35097584b1b9d3be2f8651879b7196830766a99a4b3287f063f41ba744d84",
+  "protocol_sha256": "a3c8f84297c2ce60c5cd5f0f0eb0a0286555ced63bbe5b169af0e3b008aca216",
+  "authorization_sha256": "9b16bebb1dac66d812f8b68bae0904a255de43ca8c7baeb64da6b77916fb526d",
+  "builder_sha256": "6872f9ce126929ad2bff84c61a27238812b9ea5196dc60bf02769c251ec26486",
+  "validator_sha256": "778940311dd255865da9e77374fd056c3bc282a2a9827f615c4e890e09a2a51a",
+  "manifest": {
+    "path": "session/20260914_m4_opportunity_control/m4-shield-qualification.json",
+    "sha256": "a14ca17f4547eba2bbff6a4c87cb3bbd4484f2aed71b6be77678073eeb778f97",
+    "byte_identical_rebuild": true
+  },
+  "validation": {
+    "path": "m4_shield_package_validation.json",
+    "sha256": "92d3ba0aa23173262948142cc3d9f61b82bf69ebf8a4a2aa165235c9115d3f1c",
+    "status": "PASS_CREDENTIAL_FREE_PACKAGE"
+  },
+  "launch_contract": {
+    "required_launcher": "runllm.py --no_wait",
+    "submission_attempt_limit": 1,
+    "time_limit_seconds": 14400,
+    "queue_deadline_override": null,
+    "minimum_shield_interventions": 1,
+    "scientific_outcome_acquisition": false,
+    "training_quality_analysis": false,
+    "automatic_retry": false
+  }
+}
