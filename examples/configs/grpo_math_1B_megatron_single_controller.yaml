@@ -54,7 +54,7 @@ async_rl:
   opportunity_at_risk_v2_shadow:
     enabled: false
     # act requires controlled_frontier and one of reward_variance_risk,
-    # absolute_m4_risk, or m4_rescue. Observe mode forbids a scorer.
+    # absolute_m4_risk, m4_rescue, or m4_shield. Observe mode forbids a scorer.
     mode: observe
     actuation_scorer: null
     # Required and distinct from lifecycle/opportunity/duty paths when enabled.

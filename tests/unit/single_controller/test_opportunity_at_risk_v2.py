@@ -37,6 +37,7 @@ from nemo_rl.algorithms.async_utils.opportunity_at_risk_v2 import (
     OpportunityAtRiskV2ShadowSampler,
     compute_reward_moments,
     select_m4_rescue,
+    select_m4_shield,
     select_two_sided_oars_v2,
 )
 from nemo_rl.algorithms.async_utils.rollout_lifecycle import RolloutRemovalReason
@@ -243,6 +244,76 @@ def test_m4_rescue_fails_closed_when_exact_search_cap_is_exceeded() -> None:
             candidates,
             baseline_group_ids=("0", "1", "2", "3"),
             current_train_weight=2,
+            max_staleness_versions=1,
+            minimum_service_multiplier=0.98,
+            maximum_service_multiplier=1.02,
+            exact_search_max_candidates=8,
+        )
+
+
+def test_m4_shield_refines_exact_reward_variance_tie() -> None:
+    candidates = [
+        candidate(letter, start=1, ready=index, l1=l1, variance=1)
+        for index, (letter, l1) in enumerate(
+            zip("abcdwxyz", (1, 2, 3, 4, 5, 6, 7, 8), strict=True)
+        )
+    ]
+
+    shield = select_m4_shield(
+        candidates,
+        baseline_group_ids=("a", "b", "c", "d"),
+        current_train_weight=2,
+        decision_timestamp_ns=100,
+        max_staleness_versions=1,
+        minimum_service_multiplier=0.98,
+        maximum_service_multiplier=1.02,
+        exact_search_max_candidates=16,
+    )
+
+    assert shield.proposed_group_ids == ("c", "d", "y", "z")
+    assert shield.proposed_imminent_l1 == 22
+    assert shield.combination_count == 70
+    assert shield.search_strategy == "exact"
+
+
+def test_m4_shield_refuses_reward_variance_loss() -> None:
+    candidates = [
+        candidate(
+            letter,
+            start=1,
+            ready=index,
+            l1=100 if letter >= "w" else 1,
+            variance=0 if letter >= "w" else 1,
+        )
+        for index, letter in enumerate("abcdwxyz")
+    ]
+
+    shield = select_m4_shield(
+        candidates,
+        baseline_group_ids=("a", "b", "c", "d"),
+        current_train_weight=2,
+        decision_timestamp_ns=100,
+        max_staleness_versions=1,
+        minimum_service_multiplier=0.98,
+        maximum_service_multiplier=1.02,
+        exact_search_max_candidates=16,
+    )
+
+    assert shield.proposed_group_ids == ("a", "b", "c", "d")
+
+
+def test_m4_shield_fails_closed_when_exact_search_cap_is_exceeded() -> None:
+    candidates = [
+        candidate(str(index), start=1, ready=index, l1=1, variance=1)
+        for index in range(9)
+    ]
+
+    with pytest.raises(OARSV2SelectionFallback, match="requires_exact_search"):
+        select_m4_shield(
+            candidates,
+            baseline_group_ids=("0", "1", "2", "3"),
+            current_train_weight=2,
+            decision_timestamp_ns=100,
             max_staleness_versions=1,
             minimum_service_multiplier=0.98,
             maximum_service_multiplier=1.02,
@@ -513,6 +584,45 @@ def test_controlled_frontier_m4_rescue_enacts_one_fifo_swap() -> None:
         >= events[0]["baseline_reward_variance_sum"]
     )
     assert proposal["proposed_imminent_l1"] > events[0]["baseline_l1"]
+    assert events[0]["proposal_matches_actual"] is True
+
+
+def test_controlled_frontier_m4_shield_enacts_exact_utility_refinement() -> None:
+    buffer = FakeBuffer()
+    for index, (group_id, l1) in enumerate(
+        zip(("a", "b", "c", "d", "w", "x", "y", "z"), range(1, 9), strict=True)
+    ):
+        buffer.add(
+            group_id,
+            weight=1,
+            l1=float(l1),
+            l2=float(l1),
+            tokens=100,
+            reward_mean=0.5,
+            reward_variance=1.0,
+            ready_timestamp_ns=100 + index,
+        )
+    sampler, events = _controlled_actuator(buffer, scorer="m4_shield")
+
+    meta, count = asyncio.run(
+        sampler.select(
+            current_train_weight=2,
+            min_prompt_groups=4,
+            max_prompt_groups=4,
+        )
+    )
+
+    assert meta is not None and count == 4
+    assert meta.sample_ids == ["c_g0", "d_g0", "y_g0", "z_g0"]
+    reward = events[0]["proposals"]["reward_variance_risk"]
+    shield = events[0]["proposals"]["m4_shield"]
+    assert (
+        len(set(reward["proposed_group_ids"]) & set(shield["proposed_group_ids"])) == 2
+    )
+    assert (
+        shield["proposed_reward_variance_sum"] == reward["proposed_reward_variance_sum"]
+    )
+    assert shield["proposed_imminent_l1"] > reward["proposed_imminent_l1"]
     assert events[0]["proposal_matches_actual"] is True
 
 
@@ -990,3 +1100,28 @@ def test_recorder_declares_frozen_m4_rescue_contract() -> None:
     assert header["m4_rescue_minimum_fifo_overlap_groups"] == 3
     assert header["m4_rescue_reward_variance_floor_multiplier"] == 1.0
     assert header["m4_rescue_actuation_rule"] == "strict_imminent_l1_gain_else_fifo"
+
+
+def test_recorder_declares_frozen_m4_shield_contract() -> None:
+    recorder = OpportunityAtRiskV2ShadowRecorder(
+        mode="act",
+        actuation_scorer="m4_shield",
+        candidate_window_policy="controlled_frontier",
+        selection_candidate_watermark=8,
+        minimum_service_multiplier=0.98,
+        maximum_service_multiplier=1.02,
+        max_candidate_groups=64,
+        exact_search_max_candidates=16,
+        decision_time_budget_ns=5_000_000,
+    )
+
+    header = recorder.events[0]
+    assert header["schema_version"] == 4
+    assert header["m4_shield_base_proposer"] == "reward_variance_risk"
+    assert header["m4_shield_minimum_base_overlap_groups"] == 2
+    assert header["m4_shield_utility_contract"] == (
+        "exact_imminent_and_total_reward_variance"
+    )
+    assert header["m4_shield_actuation_rule"] == (
+        "strict_imminent_l1_gain_else_base_proposal"
+    )

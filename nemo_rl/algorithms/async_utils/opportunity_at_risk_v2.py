@@ -46,16 +46,20 @@ OARSV2_SCORERS = (
     "token_normalized_m4_risk",
     "absolute_m4_risk",
     "m4_rescue",
+    "m4_shield",
 )
 OARSV2_ACTUATION_SCORERS = (
     "reward_variance_risk",
     "absolute_m4_risk",
     "m4_rescue",
+    "m4_shield",
 )
 
 M4_RESCUE_MINIMUM_FIFO_OVERLAP = 3
 M4_RESCUE_REWARD_VARIANCE_FLOOR_MULTIPLIER = 1.0
 M4_RESCUE_NUMERIC_TOLERANCE = 1e-12
+M4_SHIELD_MINIMUM_BASE_OVERLAP = 2
+M4_SHIELD_NUMERIC_TOLERANCE = 1e-12
 
 
 class OARSV2SelectionFallback(RuntimeError):
@@ -242,6 +246,18 @@ def select_two_sided_oars_v2(
             candidates,
             baseline_group_ids=baseline_group_ids,
             current_train_weight=current_train_weight,
+            max_staleness_versions=max_staleness_versions,
+            minimum_service_multiplier=minimum_service_multiplier,
+            maximum_service_multiplier=maximum_service_multiplier,
+            exact_search_max_candidates=exact_search_max_candidates,
+            deadline_ns=deadline_ns,
+        )
+    if scorer == "m4_shield":
+        return select_m4_shield(
+            candidates,
+            baseline_group_ids=baseline_group_ids,
+            current_train_weight=current_train_weight,
+            decision_timestamp_ns=decision_timestamp_ns,
             max_staleness_versions=max_staleness_versions,
             minimum_service_multiplier=minimum_service_multiplier,
             maximum_service_multiplier=maximum_service_multiplier,
@@ -456,6 +472,124 @@ def select_m4_rescue(
     )
 
 
+def select_m4_shield(
+    candidates: Sequence[OARSV2Candidate],
+    *,
+    baseline_group_ids: Sequence[str],
+    current_train_weight: int,
+    decision_timestamp_ns: int,
+    max_staleness_versions: int,
+    minimum_service_multiplier: float,
+    maximum_service_multiplier: float,
+    exact_search_max_candidates: int,
+    deadline_ns: Optional[int] = None,
+) -> OARSV2Selection:
+    """Refine reward-variance ties using imminent registered opportunity."""
+    cardinality = len(baseline_group_ids)
+    if cardinality < 1 or len(candidates) < cardinality:
+        raise ValueError("invalid M4-Shield cardinality")
+    if len(candidates) > exact_search_max_candidates:
+        raise OARSV2SelectionFallback("m4_shield_requires_exact_search")
+    base_selection = select_two_sided_oars_v2(
+        candidates,
+        baseline_group_ids=baseline_group_ids,
+        current_train_weight=current_train_weight,
+        decision_timestamp_ns=decision_timestamp_ns,
+        max_staleness_versions=max_staleness_versions,
+        scorer="reward_variance_risk",
+        minimum_service_multiplier=minimum_service_multiplier,
+        maximum_service_multiplier=maximum_service_multiplier,
+        exact_search_max_candidates=exact_search_max_candidates,
+        deadline_ns=deadline_ns,
+    )
+    by_id = {candidate.group_id: candidate for candidate in candidates}
+    if len(by_id) != len(candidates):
+        raise ValueError("candidate group IDs must be unique")
+    base = tuple(by_id[group_id] for group_id in base_selection.proposed_group_ids)
+    base_ids = set(base_selection.proposed_group_ids)
+
+    def imminent_sum(combination: Sequence[OARSV2Candidate], field: str) -> float:
+        return math.fsum(
+            float(getattr(candidate, field))
+            for candidate in combination
+            if candidate.start_weight_version + max_staleness_versions
+            <= current_train_weight
+        )
+
+    base_imminent_variance = imminent_sum(base, "reward_variance")
+    base_total_variance = math.fsum(candidate.reward_variance for candidate in base)
+    base_imminent_l1 = imminent_sum(base, "l1")
+    best = base
+    best_ids = tuple(sorted(base_ids))
+    best_score = (
+        base_imminent_l1,
+        math.fsum(candidate.l1 for candidate in base),
+        float(-sum(candidate.valid_actor_tokens for candidate in base)),
+    )
+    combination_count = 0
+    feasible_count = 0
+    ordered = sorted(candidates, key=lambda candidate: candidate.group_id)
+    for combination in itertools.combinations(ordered, cardinality):
+        if deadline_ns is not None and time.perf_counter_ns() > deadline_ns:
+            raise OARSV2SelectionFallback("decision_time_budget_exceeded")
+        combination_count += 1
+        ids = tuple(candidate.group_id for candidate in combination)
+        if len(set(ids) & base_ids) < M4_SHIELD_MINIMUM_BASE_OVERLAP:
+            continue
+        tokens = sum(candidate.valid_actor_tokens for candidate in combination)
+        if (
+            tokens < base_selection.minimum_tokens
+            or tokens > base_selection.maximum_tokens
+        ):
+            continue
+        if not math.isclose(
+            imminent_sum(combination, "reward_variance"),
+            base_imminent_variance,
+            rel_tol=0.0,
+            abs_tol=M4_SHIELD_NUMERIC_TOLERANCE,
+        ):
+            continue
+        if not math.isclose(
+            math.fsum(candidate.reward_variance for candidate in combination),
+            base_total_variance,
+            rel_tol=0.0,
+            abs_tol=M4_SHIELD_NUMERIC_TOLERANCE,
+        ):
+            continue
+        feasible_count += 1
+        score = (
+            imminent_sum(combination, "l1"),
+            math.fsum(candidate.l1 for candidate in combination),
+            float(-tokens),
+        )
+        if score > best_score or (score == best_score and ids < best_ids):
+            best = combination
+            best_ids = ids
+            best_score = score
+    if feasible_count < 1:
+        raise RuntimeError("reward-variance base was absent from shield search")
+    if imminent_sum(best, "l1") <= base_imminent_l1 + M4_SHIELD_NUMERIC_TOLERANCE:
+        best = base
+    return OARSV2Selection(
+        scorer="m4_shield",
+        proposed_group_ids=tuple(candidate.group_id for candidate in best),
+        proposed_l1=math.fsum(candidate.l1 for candidate in best),
+        proposed_l2=math.fsum(candidate.l2 for candidate in best),
+        proposed_valid_actor_tokens=sum(
+            candidate.valid_actor_tokens for candidate in best
+        ),
+        proposed_imminent_l1=imminent_sum(best, "l1"),
+        baseline_valid_actor_tokens=base_selection.baseline_valid_actor_tokens,
+        minimum_tokens=base_selection.minimum_tokens,
+        maximum_tokens=base_selection.maximum_tokens,
+        combination_count=combination_count,
+        feasible_combination_count=feasible_count,
+        candidate_count=len(candidates),
+        search_candidate_count=len(candidates),
+        search_strategy="exact",
+    )
+
+
 class OpportunityAtRiskV2ShadowRecorder:
     """In-memory canonical JSONL ledger for OARS-v2 decisions."""
 
@@ -483,7 +617,11 @@ class OpportunityAtRiskV2ShadowRecorder:
             "schema_version": (
                 self.SCHEMA_VERSION
                 if mode == "observe"
-                else (3 if actuation_scorer == "m4_rescue" else 2)
+                else (
+                    4
+                    if actuation_scorer == "m4_shield"
+                    else (3 if actuation_scorer == "m4_rescue" else 2)
+                )
             ),
             "mode": mode,
             "policy": (
@@ -522,6 +660,22 @@ class OpportunityAtRiskV2ShadowRecorder:
                     ),
                     "m4_rescue_numeric_tolerance": M4_RESCUE_NUMERIC_TOLERANCE,
                     "m4_rescue_actuation_rule": "strict_imminent_l1_gain_else_fifo",
+                }
+            )
+        if actuation_scorer == "m4_shield":
+            header.update(
+                {
+                    "m4_shield_base_proposer": "reward_variance_risk",
+                    "m4_shield_minimum_base_overlap_groups": (
+                        M4_SHIELD_MINIMUM_BASE_OVERLAP
+                    ),
+                    "m4_shield_numeric_tolerance": M4_SHIELD_NUMERIC_TOLERANCE,
+                    "m4_shield_utility_contract": (
+                        "exact_imminent_and_total_reward_variance"
+                    ),
+                    "m4_shield_actuation_rule": (
+                        "strict_imminent_l1_gain_else_base_proposal"
+                    ),
                 }
             )
         self._events: list[dict[str, Any]] = [header]
@@ -772,6 +926,11 @@ class OpportunityAtRiskV2ShadowSampler:
             ),
             "proposed_reward_variance_sum": math.fsum(
                 candidate.reward_variance for candidate in selected
+            ),
+            "proposed_imminent_reward_variance_sum": math.fsum(
+                candidate.reward_variance
+                for candidate in selected
+                if is_imminent(candidate)
             ),
             "fifo_overlap_count": len(selected_ids & baseline_ids),
             "retained_fifo_group_ids": sorted(selected_ids & baseline_ids),
