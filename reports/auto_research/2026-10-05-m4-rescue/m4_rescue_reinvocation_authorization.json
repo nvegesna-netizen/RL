@@ -1,0 +1,11 @@
+{
+  "schema": "m4-rescue-launch-reinvocation-authorization-v1",
+  "user_authorization": "I authorize one additional M4-Rescue qualification launcher invocation because the prior invocation created no pipeline.",
+  "reason": "The initial launcher process returned without a pipeline ID, and authenticated GitLab queries found no newly created dlalgo-ci/eos pipeline.",
+  "scope": "one_additional_launcher_invocation_of_the_unchanged_frozen_manifest",
+  "manifest_sha256": "f9afbe820b05888187f0bf4efa8ed17d2a3eb270d5d7fa95faae15db418b101d",
+  "protocol_sha256": "d5c66a822a0945ee09afa317977cd95c8c96be1df53fb31677f4a13d2409bff3",
+  "automatic_retry": false,
+  "automatic_extension": false,
+  "scientific_outcome_acquisition": false
+}
