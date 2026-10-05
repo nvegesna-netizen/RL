@@ -1,0 +1,80 @@
+{
+  "audit_commit_base": "7ec72a503c648ead99120279af0abd63f73e95cb",
+  "audited_at": "2026-10-05T10:19:20-07:00",
+  "branch": "autoresearch/2026-09-22-m4-oars-v2/quality-primary-acquisition",
+  "completion_gate": {
+    "actual_authenticated_identities": 54,
+    "all_declared_hashes_match": true,
+    "all_successor_gates_passed": true,
+    "all_terminal_copies_byte_identical": true,
+    "all_workload_exit_codes_zero": true,
+    "expected_identities": 54,
+    "missing_identities": [],
+    "status": "PASS_ALL_54_AUTHENTICATED_OUTCOME_EMBARGOED",
+    "unexpected_identities": []
+  },
+  "embargo": {
+    "complete_outcome_embargo_preserved": true,
+    "evaluation_data_opened": false,
+    "result_opened": false,
+    "scientific_outcome_accessed": false
+  },
+  "final_identity": {
+    "authentication_path": "reports/auto_research/2026-09-22-m4-oars-v2-quality-primary/quality_primary_b18_fifo_terminal_authentication.json",
+    "authentication_sha256": "5e8ab788cbd7582b0c0020c0734a701e8257833c4876ccbc6e39f7a91d176996",
+    "child_pipeline_id": 71605824,
+    "global_sequence": 54,
+    "identity": "b18-fifo",
+    "logs_after_job_id": 469575318,
+    "main_job_id": 469575317,
+    "upstream_pipeline_id": 71605646
+  },
+  "frozen_evidence_sha256": {
+    "acquisition_authorization": "baa75d118ea188d293f9d22b85f37f79aa76750f899cd3ce87378a7df805bb07",
+    "analysis_plan": "af09cbcc891ebf1f6eb1287defd04e2708aec8ec8c8d0ba7592975c7564e0500",
+    "package_validation": "7b6f0af1ec4edcf8267d317063fc60660b89e73d43442e893c7635113c62dfd2",
+    "protocol": "e0e0b26cc1a592bf14c4b0f77d990662f6c3ff3e09bfb6a772a3efbf149b9d2d",
+    "qualification_gate": "7d2660bc1d1e651f83b40e037ea1890c5a3389681536f20fc8f5e389e4afc470",
+    "run_manifest": "44fe686d444545965afd6964387ae662c2a7f640512b1262da19b90ddfabd20f"
+  },
+  "identity_and_provenance_audit": {
+    "authentication_record_count": 54,
+    "authentication_records_aggregate_sha256": "772bc01d92cdddc7e4486057f5ab173cb9774e6ab9c347c80010c9f46fd997ae",
+    "candidate_count": 54,
+    "files_beyond_frozen_manifest": 0,
+    "global_sequence_max": 54,
+    "global_sequence_min": 1,
+    "global_sequences_contiguous": true,
+    "prelaunch_validation_count": 54,
+    "receipt_authentication_pipeline_mismatches": 0,
+    "submission_receipt_count": 54,
+    "submission_receipts_aggregate_sha256": "e6997a7f538efddb468164f960490db1d108ec749e6c190eb315d9579bcae27e",
+    "unique_child_pipeline_count": 54,
+    "unique_identity_count": 54,
+    "unique_logs_after_job_count": 54,
+    "unique_main_job_count": 54,
+    "unique_upstream_pipeline_count": 54
+  },
+  "operational_exceptions": {
+    "automatic_experiment_extension": false,
+    "automatic_experiment_replacement": false,
+    "automatic_experiment_retry": false,
+    "provenance_preserving_operational_replacement_count": 2,
+    "provenance_preserving_operational_replacements": [
+      {
+        "global_sequence": 33,
+        "identity": "b11-absolute-m4",
+        "original_scientific_execution_started": false
+      },
+      {
+        "global_sequence": 41,
+        "identity": "b14-absolute-m4",
+        "original_scientific_execution_started": false
+      }
+    ]
+  },
+  "record_set_digest_method": "SHA-256 of the lexicographically ordered `shasum -a 256` output for the named record set",
+  "remote": "https://github.com/nvegesna-netizen/RL.git",
+  "schema": "m4-oars-v2-quality-primary-acquisition-completion-audit-v1",
+  "status": "PASS_COMPLETE_OUTCOME_EMBARGOED"
+}
