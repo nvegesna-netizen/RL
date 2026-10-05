@@ -1,0 +1,27 @@
+{
+  "schema": "m4-shield-submission-receipt-v1",
+  "status": "SUBMITTED_NO_WAIT_GENERATOR_RUNNING",
+  "source_commit": "cdfa1c8e56394b7d8e3e299b6524a1a286243746",
+  "package_commit": "def7ae688",
+  "manifest_sha256": "a14ca17f4547eba2bbff6a4c87cb3bbd4484f2aed71b6be77678073eeb778f97",
+  "protocol_sha256": "a3c8f84297c2ce60c5cd5f0f0eb0a0286555ced63bbe5b169af0e3b008aca216",
+  "launcher": "runllm.py --no_wait",
+  "credential_setup": "Rotated /Users/nvegesna/Documents/JET-LLM/setup_jet.sh sourced immediately before launch.",
+  "authorized_launcher_invocations_consumed": 1,
+  "upstream_pipeline": {
+    "id": 71774486,
+    "url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/71774486",
+    "ref": "dlalgo-ci/eos",
+    "created_at": "2026-10-05T15:33:35.244-07:00",
+    "ci_commit_sha": "8f5151cf00e02933a9b92772443d62e95b5150ff",
+    "status_at_receipt": "running"
+  },
+  "generate_job": {
+    "id": 470864332,
+    "status_at_receipt": "running"
+  },
+  "automatic_retry": false,
+  "automatic_extension": false,
+  "scientific_outcome_acquisition": false,
+  "training_quality_analysis": false
+}
