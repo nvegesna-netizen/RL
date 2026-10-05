@@ -1,0 +1,25 @@
+{
+  "schema": "m4-rescue-generator-failure-receipt-v1",
+  "status": "FAILED_BEFORE_DOWNSTREAM_CREATION",
+  "pipeline": {
+    "id": 71756631,
+    "url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/71756631",
+    "ci_commit_sha": "8f5151cf00e02933a9b92772443d62e95b5150ff"
+  },
+  "generate_job": {
+    "id": 470706485,
+    "status": "failed",
+    "failure_reason": "script_failure",
+    "jet_api_version": "3.127.5"
+  },
+  "downstream_pipeline_created": false,
+  "gpu_workload_created": false,
+  "scientific_run_started": false,
+  "root_cause": {
+    "exception": "jet.workloads.loading.RegistryLoadingError",
+    "message": "SyntaxError encountered during substitution: f-string: expecting '}' (<string>, line 115). If you want to use a runtime environment variable, you should escape it with the {{...}} syntax.",
+    "workload": "m4-rescue-outcome-excluded-qualification",
+    "surface": "spec.script literal braces were not escaped for JET f-string substitution"
+  },
+  "scientific_interpretation": "No scientific result was produced because failure preceded downstream workload creation."
+}

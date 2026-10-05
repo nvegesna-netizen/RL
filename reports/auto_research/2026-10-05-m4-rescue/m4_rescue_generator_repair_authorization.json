@@ -1,0 +1,11 @@
+{
+  "schema": "m4-rescue-generator-repair-authorization-v1",
+  "user_authorization": "I authorize you to launch it with the repair",
+  "scope": "one_repaired_m4_rescue_qualification_launcher_invocation",
+  "basis": "Pipeline 71756631 failed in JET script generation before downstream pipeline or GPU workload creation.",
+  "permitted_repair": "Escape literal runtime braces for JET f-string substitution while preserving the frozen source, protocol, model, configuration, seeds, assignment domain, training length, analysis, and gates.",
+  "required_launcher": "runllm.py --no_wait",
+  "automatic_retry": false,
+  "automatic_extension": false,
+  "scientific_outcome_acquisition": false
+}

@@ -17,6 +17,19 @@ def main() -> None:
     raw = args.manifest.read_bytes()
     manifest = json.loads(raw)
     script = manifest["spec"]["script"]
+    substitution_error = None
+    substituted_script = None
+    try:
+        substitution_code = compile("f" + repr(script), "<jet-substitution>", "eval")
+        substituted_script = eval(
+            substitution_code,
+            {"__builtins__": {}},
+            {"assets_dir": "/tmp/m4-rescue-assets"},
+        )
+    except (NameError, SyntaxError, ValueError) as error:
+        substitution_error = f"{type(error).__name__}: {error}"
+    expected_script = script.replace("{assets_dir}", "/tmp/m4-rescue-assets")
+    expected_script = expected_script.replace("{{", "{").replace("}}", "}")
     forbidden = re.compile(
         r"(?i)(private[-_ ]?token|access[-_ ]?token|authorization:\s*bearer|"
         r"glpat-|github_pat_|BEGIN (RSA |OPENSSH )?PRIVATE KEY)"
@@ -40,12 +53,16 @@ def main() -> None:
         and "m4_rescue_qualification.py" in script,
         "full_preflight_tests": script.count('"$PYTHON" -m pytest -q') == 3,
         "artifact_hashes": "artifacts.sha256" in script and "sha256sum" in script,
+        "jet_substitution_syntax": substitution_error is None,
+        "jet_substitution_roundtrip": substituted_script == expected_script,
+        "one_jet_placeholder": script.count("{assets_dir}") == 1,
     }
     result = {
         "schema": "m4-rescue-qualification-package-validation-v1",
         "status": "PASS_CREDENTIAL_FREE_PACKAGE" if all(checks.values()) else "FAIL",
         "manifest_sha256": hashlib.sha256(raw).hexdigest(),
         "checks": checks,
+        "jet_substitution_error": substitution_error,
     }
     args.output.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
     if result["status"] != "PASS_CREDENTIAL_FREE_PACKAGE":

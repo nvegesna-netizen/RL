@@ -1,0 +1,37 @@
+{
+  "schema": "m4-rescue-generator-repair-receipt-v1",
+  "status": "PASS_READY_FOR_ONE_AUTHORIZED_REPAIRED_SUBMISSION",
+  "failed_pipeline_id": 71756631,
+  "repair": {
+    "surface": "JET workload-script f-string escaping only",
+    "initial_manifest_sha256": "f9afbe820b05888187f0bf4efa8ed17d2a3eb270d5d7fa95faae15db418b101d",
+    "repaired_manifest_sha256": "749428fe510b3acc6063b9f3190ae4b27663608f48a713bc3064bee24abbf237",
+    "builder_sha256": "8b1092b8478d951f1bab307a615e028f51134595506d476e3f8aae11a52ec33b",
+    "validator_sha256": "948741d09cbb052b3186f31c16bf399c763fb982bef0f93be332c5dec54dc6a4",
+    "validation_sha256": "07cb41d87b27247f40389ee2d5c362022239546bef59b56f896cdb38f6ae0110",
+    "jet_substitution_syntax": true,
+    "jet_substitution_roundtrip": true,
+    "rendered_runtime_script_byte_identical_to_initial_intended_runtime_script": true
+  },
+  "frozen_scientific_inputs": {
+    "source_commit": "ded043d092e18f236163184d9648201414c6c30a",
+    "source_archive_sha256": "d690537324127afcd0689481c749aa585d3b3226428adde9a8cf25ddeb842e24",
+    "protocol_sha256": "d5c66a822a0945ee09afa317977cd95c8c96be1df53fb31677f4a13d2409bff3",
+    "qualification_authorization_sha256": "f079fd5b086aa8d9e10bd3ee00a8ebfbf8a18d9347d255ebbd3fada0185138fb",
+    "trainer_steps": 64,
+    "training_seed": 20261005,
+    "controlled_release_seed": 20261006,
+    "assignment_domain": "m4-rescue-qualification-v1",
+    "nodes": 1,
+    "gpus": 2,
+    "time_limit_seconds": 14400,
+    "queue_deadline_override": null
+  },
+  "launch_contract": {
+    "authorized_repaired_launcher_invocations": 1,
+    "required_launcher": "runllm.py --no_wait",
+    "automatic_retry": false,
+    "automatic_extension": false,
+    "scientific_outcome_acquisition": false
+  }
+}

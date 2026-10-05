@@ -245,6 +245,11 @@ fi
 find "$ASSETS" -maxdepth 1 -type f ! -name "$(basename "$HASHES")" -print0 | sort -z | xargs -0 sha256sum > "$HASHES"
 exit "$GATE_RC"
 '''
+    # JET renders workload scripts through an f-string substitution pass. Preserve
+    # its one intentional placeholder while escaping every brace that belongs to
+    # Bash, embedded Python, log matching, or JSON emitted at runtime.
+    script = script.replace("{", "{{").replace("}", "}}")
+    script = script.replace("{{assets_dir}}", "{assets_dir}")
     manifest = {
         "type": "basic",
         "format_version": 1,

@@ -4,14 +4,18 @@
     "credential_free_text": true,
     "four_hour_limit": true,
     "full_preflight_tests": true,
+    "jet_substitution_roundtrip": true,
+    "jet_substitution_syntax": true,
     "m4_rescue_bound": true,
     "manifest_shape": true,
     "no_queue_deadline": true,
+    "one_jet_placeholder": true,
     "one_node": true,
     "one_training_invocation": true,
     "outcome_excluded": true
   },
-  "manifest_sha256": "f9afbe820b05888187f0bf4efa8ed17d2a3eb270d5d7fa95faae15db418b101d",
+  "jet_substitution_error": null,
+  "manifest_sha256": "749428fe510b3acc6063b9f3190ae4b27663608f48a713bc3064bee24abbf237",
   "schema": "m4-rescue-qualification-package-validation-v1",
   "status": "PASS_CREDENTIAL_FREE_PACKAGE"
 }
