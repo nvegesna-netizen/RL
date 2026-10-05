@@ -1,0 +1,38 @@
+{
+  "analysis_contract": {
+    "analysis_unit": "matched_three_arm_training_seed_block",
+    "block_count": 18,
+    "exact_sign_flip_enumeration_count": 262144,
+    "primary_contrast": "absolute_m4_minus_fifo_terminal_gsm8k_accuracy",
+    "primary_evidence_criterion": "two_sided_95_percent_interval_lower_bound_above_zero",
+    "primary_interval": "matched_block_t_df_17",
+    "run_count": 54,
+    "secondary_reporting": "descriptive_numeric_estimates_intervals_mechanism_dose_and_wall_time"
+  },
+  "blind_implementation_sha256": {
+    "analyzer": "bf3e72d090e2e88168a12267cb521280e71bc111a9743e14885e5e56aa821465",
+    "analyzer_tests": "8cb9140ef03ec6edd704c53da77205c0a3a807349f76b0c8a2ebdd3b1922cab6",
+    "extractor": "3435542ab637aac135d7c8193f8587d160869c2c058b2118b6e5f89ef15f6e62",
+    "extractor_tests": "592d4d3d01152c2d5e39725a783e4ad8523975416488ac988605669a59aa4a0d"
+  },
+  "complete_outcome_embargo_preserved": true,
+  "completion_audit_sha256": "d1f5dd6166408f5db1586ba0d0bec1d9c231058fcf2706d969d247dffb887268",
+  "evaluation_data_accessed": false,
+  "frozen_at": "2026-10-05T10:46:21-07:00",
+  "frozen_inputs_sha256": {
+    "analysis_plan": "af09cbcc891ebf1f6eb1287defd04e2708aec8ec8c8d0ba7592975c7564e0500",
+    "protocol": "e0e0b26cc1a592bf14c4b0f77d990662f6c3ff3e09bfb6a772a3efbf149b9d2d",
+    "run_manifest": "44fe686d444545965afd6964387ae662c2a7f640512b1262da19b90ddfabd20f",
+    "source_commit": "50443383825adeddca9cd1417c9dd261d8413670"
+  },
+  "result_opened": false,
+  "schema": "m4-oars-v2-quality-primary-blind-analysis-freeze-v1",
+  "scientific_outcome_accessed": false,
+  "status": "PASS_BLIND_ANALYZER_FROZEN_RESULTS_UNOPENED",
+  "verification": {
+    "compileall": "PASS",
+    "ruff_check": "PASS",
+    "synthetic_tests_passed": 9,
+    "synthetic_tests_status": "PASS"
+  }
+}
