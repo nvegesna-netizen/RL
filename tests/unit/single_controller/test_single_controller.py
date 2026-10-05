@@ -323,7 +323,9 @@ def test_opportunity_at_risk_v2_shadow_accepts_controlled_frontier() -> None:
     validate_single_controller_config(config)
 
 
-@pytest.mark.parametrize("scorer", ["reward_variance_risk", "absolute_m4_risk"])
+@pytest.mark.parametrize(
+    "scorer", ["reward_variance_risk", "absolute_m4_risk", "m4_rescue"]
+)
 def test_opportunity_at_risk_v2_accepts_controlled_actuation(scorer: str) -> None:
     config = _controlled_release_master_config(lifecycle_audit_path="lifecycle.jsonl")
     config.policy["train_global_batch_size"] = 16

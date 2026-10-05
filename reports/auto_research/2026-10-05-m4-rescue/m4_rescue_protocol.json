@@ -1,0 +1,93 @@
+{
+  "schema": "m4-rescue-protocol-v1",
+  "status": "FROZEN_BEFORE_CANONICAL_OFFLINE_REPLAY",
+  "date": "2026-10-05",
+  "purpose": "Qualify a conservative M4 scheduler that preserves FIFO service and reward-variance composition while rescuing strictly greater imminent registered opportunity.",
+  "development_evidence": {
+    "corpus": "The 20 authenticated OARS confirmatory arms containing 1280 eight-candidate decisions.",
+    "exploratory_boundary": "The exact policy and thresholds below were chosen after exploratory inspection of this corpus. The canonical replay is a development qualification, not an independent efficacy estimate."
+  },
+  "policy": {
+    "name": "m4_rescue",
+    "baseline": "The recorded four-group FIFO batch.",
+    "candidate_set": "The authenticated eight-group controlled frontier reconstructed from controller-ordered lifecycle events.",
+    "cardinality": 4,
+    "minimum_fifo_overlap_groups": 3,
+    "minimum_service_multiplier": 0.98,
+    "maximum_service_multiplier": 1.02,
+    "reward_variance_floor_multiplier": 1.0,
+    "numeric_comparison_tolerance": 1e-12,
+    "feasibility": [
+      "Select exactly four distinct candidates.",
+      "Retain at least three of the four FIFO groups.",
+      "Keep selected valid actor tokens within [0.98, 1.02] times FIFO tokens using the existing ceil/floor integer boundary.",
+      "Keep summed group reward variance at least as large as FIFO, allowing only the declared numeric tolerance."
+    ],
+    "objective_order": [
+      "maximize imminent-expiry registered L1 opportunity",
+      "maximize total registered L1 opportunity",
+      "maximize summed group reward variance",
+      "minimize selected valid actor tokens",
+      "choose the lexicographically smallest ordered group-ID tuple"
+    ],
+    "actuation_rule": "Enact the best feasible non-FIFO batch only when its imminent-expiry registered L1 exceeds FIFO by more than the declared tolerance; otherwise return FIFO exactly.",
+    "imminent_definition": "A group is imminent when start_weight_version + max_staleness_versions <= current_learner_version. The historical replay uses max_staleness_versions=1."
+  },
+  "offline_qualification": {
+    "scope": {
+      "authenticated_arms": 20,
+      "decisions_per_arm": 64,
+      "candidate_groups_per_decision": 8,
+      "total_decisions": 1280
+    },
+    "requirements": {
+      "provenance": "All 20 archives and their lifecycle, opportunity, and OARS ledgers must authenticate against preserved SHA-256 receipts and reconstruct exactly.",
+      "determinism": "Two complete replays must produce byte-identical canonical selection records.",
+      "intervention_rate": {
+        "minimum": 0.1,
+        "maximum": 0.3
+      },
+      "mean_fifo_overlap_fraction_minimum": 0.9,
+      "aggregate_imminent_l1_gain_over_fifo_percent_minimum": 8.0,
+      "aggregate_token_ratio_to_fifo": {
+        "minimum": 0.995,
+        "maximum": 1.005
+      },
+      "aggregate_reward_variance_not_below_fifo": true,
+      "every_decision_satisfies_policy_constraints": true
+    },
+    "pass_status": "PASS_M4_RESCUE_OFFLINE_QUALIFICATION",
+    "stop_status": "STOP_M4_RESCUE_OFFLINE_QUALIFICATION"
+  },
+  "live_qualification": {
+    "authorized_only_after_offline_pass": true,
+    "scope": "Exactly one 64-update, one-node, two-GPU, controlled-eight-candidate, outcome-excluded actuation qualification.",
+    "model_and_workload": "The already qualified Llama-1B GSM8K OARS-v2 systems environment.",
+    "requirements": {
+      "complete_updates": 64,
+      "proposal_matches_actual_every_update": true,
+      "exact_candidate_count": 8,
+      "selection_cardinality": 4,
+      "minimum_fifo_overlap_groups_every_update": 3,
+      "reward_variance_not_below_fifo_every_update": true,
+      "token_band_every_update": [
+        0.98,
+        1.02
+      ],
+      "no_selector_fallback_or_skip": true,
+      "liveness_accounting_complete": true,
+      "combined_observer_controller_duty_maximum": 0.01,
+      "runtime_seconds_maximum": 14400
+    },
+    "exclusions": [
+      "No terminal benchmark or training-quality analysis.",
+      "No claim about terminal accuracy, wall-time improvement, queue-trajectory counterfactuals, or causal mediation.",
+      "No retry, extension, or quality acquisition is authorized by this protocol."
+    ]
+  },
+  "interpretation_boundary": [
+    "The offline corpus was used for policy development, so a pass establishes deterministic feasibility and proxy behavior on authenticated historical choice sets, not independent generalization.",
+    "The live qualification is a systems and exact-actuation check only.",
+    "Any terminal-quality comparison requires a separately preregistered randomized acquisition and new authorization."
+  ]
+}

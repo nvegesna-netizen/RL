@@ -45,8 +45,17 @@ OARSV2_SCORERS = (
     "reward_variance_risk",
     "token_normalized_m4_risk",
     "absolute_m4_risk",
+    "m4_rescue",
 )
-OARSV2_ACTUATION_SCORERS = ("reward_variance_risk", "absolute_m4_risk")
+OARSV2_ACTUATION_SCORERS = (
+    "reward_variance_risk",
+    "absolute_m4_risk",
+    "m4_rescue",
+)
+
+M4_RESCUE_MINIMUM_FIFO_OVERLAP = 3
+M4_RESCUE_REWARD_VARIANCE_FLOOR_MULTIPLIER = 1.0
+M4_RESCUE_NUMERIC_TOLERANCE = 1e-12
 
 
 class OARSV2SelectionFallback(RuntimeError):
@@ -228,6 +237,17 @@ def select_two_sided_oars_v2(
     """Select one deterministic fixed-cardinality batch within a FIFO token band."""
     if scorer not in OARSV2_SCORERS:
         raise ValueError(f"unknown OARS-v2 scorer: {scorer}")
+    if scorer == "m4_rescue":
+        return select_m4_rescue(
+            candidates,
+            baseline_group_ids=baseline_group_ids,
+            current_train_weight=current_train_weight,
+            max_staleness_versions=max_staleness_versions,
+            minimum_service_multiplier=minimum_service_multiplier,
+            maximum_service_multiplier=maximum_service_multiplier,
+            exact_search_max_candidates=exact_search_max_candidates,
+            deadline_ns=deadline_ns,
+        )
     cardinality = len(baseline_group_ids)
     if cardinality < 1:
         raise ValueError("baseline_group_ids must be nonempty")
@@ -314,6 +334,128 @@ def select_two_sided_oars_v2(
     )
 
 
+def select_m4_rescue(
+    candidates: Sequence[OARSV2Candidate],
+    *,
+    baseline_group_ids: Sequence[str],
+    current_train_weight: int,
+    max_staleness_versions: int,
+    minimum_service_multiplier: float,
+    maximum_service_multiplier: float,
+    exact_search_max_candidates: int,
+    deadline_ns: Optional[int] = None,
+) -> OARSV2Selection:
+    """Conservatively rescue imminent M4 with at most one FIFO substitution."""
+    cardinality = len(baseline_group_ids)
+    if cardinality != 4:
+        raise ValueError("M4-Rescue requires a four-group FIFO baseline")
+    if len(candidates) < cardinality:
+        raise ValueError("candidate set is smaller than the baseline batch")
+    if len(candidates) > exact_search_max_candidates:
+        raise OARSV2SelectionFallback("m4_rescue_requires_exact_search")
+    if (
+        not math.isfinite(minimum_service_multiplier)
+        or not math.isfinite(maximum_service_multiplier)
+        or minimum_service_multiplier <= 0
+        or minimum_service_multiplier > 1
+        or maximum_service_multiplier < 1
+        or minimum_service_multiplier > maximum_service_multiplier
+    ):
+        raise ValueError("invalid two-sided service multipliers")
+    if max_staleness_versions < 0:
+        raise ValueError("max_staleness_versions must be nonnegative")
+    by_id = {candidate.group_id: candidate for candidate in candidates}
+    if len(by_id) != len(candidates):
+        raise ValueError("candidate group IDs must be unique")
+    try:
+        baseline = tuple(by_id[group_id] for group_id in baseline_group_ids)
+    except KeyError as error:
+        raise ValueError("baseline batch must be contained in candidates") from error
+
+    def imminent_l1(combination: Sequence[OARSV2Candidate]) -> float:
+        return math.fsum(
+            candidate.l1
+            for candidate in combination
+            if candidate.start_weight_version + max_staleness_versions
+            <= current_train_weight
+        )
+
+    baseline_tokens = sum(candidate.valid_actor_tokens for candidate in baseline)
+    minimum_tokens = math.ceil(
+        baseline_tokens * minimum_service_multiplier - M4_RESCUE_NUMERIC_TOLERANCE
+    )
+    maximum_tokens = math.floor(
+        baseline_tokens * maximum_service_multiplier + M4_RESCUE_NUMERIC_TOLERANCE
+    )
+    baseline_ids = set(baseline_group_ids)
+    baseline_imminent_l1 = imminent_l1(baseline)
+    baseline_reward_variance = math.fsum(
+        candidate.reward_variance for candidate in baseline
+    )
+    best = baseline
+    best_ids = tuple(sorted(baseline_group_ids))
+    best_score = (
+        baseline_imminent_l1,
+        math.fsum(candidate.l1 for candidate in baseline),
+        baseline_reward_variance,
+        float(-baseline_tokens),
+    )
+    combination_count = 0
+    feasible_count = 0
+    ordered = sorted(candidates, key=lambda candidate: candidate.group_id)
+    for combination in itertools.combinations(ordered, cardinality):
+        if deadline_ns is not None and time.perf_counter_ns() > deadline_ns:
+            raise OARSV2SelectionFallback("decision_time_budget_exceeded")
+        combination_count += 1
+        ids = tuple(candidate.group_id for candidate in combination)
+        if len(set(ids) & baseline_ids) < M4_RESCUE_MINIMUM_FIFO_OVERLAP:
+            continue
+        tokens = sum(candidate.valid_actor_tokens for candidate in combination)
+        if tokens < minimum_tokens or tokens > maximum_tokens:
+            continue
+        reward_variance = math.fsum(
+            candidate.reward_variance for candidate in combination
+        )
+        if (
+            reward_variance + M4_RESCUE_NUMERIC_TOLERANCE
+            < baseline_reward_variance * M4_RESCUE_REWARD_VARIANCE_FLOOR_MULTIPLIER
+        ):
+            continue
+        feasible_count += 1
+        score = (
+            imminent_l1(combination),
+            math.fsum(candidate.l1 for candidate in combination),
+            reward_variance,
+            float(-tokens),
+        )
+        if score > best_score or (score == best_score and ids < best_ids):
+            best = combination
+            best_ids = ids
+            best_score = score
+    if feasible_count < 1:
+        raise RuntimeError("FIFO baseline was unexpectedly absent from feasible search")
+    if imminent_l1(best) <= baseline_imminent_l1 + M4_RESCUE_NUMERIC_TOLERANCE:
+        best = baseline
+    return OARSV2Selection(
+        scorer="m4_rescue",
+        proposed_group_ids=tuple(candidate.group_id for candidate in best),
+        proposed_l1=math.fsum(candidate.l1 for candidate in best),
+        proposed_l2=math.fsum(candidate.l2 for candidate in best),
+        proposed_valid_actor_tokens=sum(
+            candidate.valid_actor_tokens for candidate in best
+        ),
+        proposed_imminent_l1=imminent_l1(best),
+        baseline_valid_actor_tokens=baseline_tokens,
+        minimum_tokens=minimum_tokens,
+        maximum_tokens=maximum_tokens,
+        combination_count=combination_count,
+        feasible_combination_count=feasible_count,
+        candidate_count=len(candidates),
+        search_candidate_count=len(candidates),
+        search_strategy="exact",
+    )
+
+
 class OpportunityAtRiskV2ShadowRecorder:
     """In-memory canonical JSONL ledger for OARS-v2 decisions."""
 
@@ -338,7 +480,11 @@ class OpportunityAtRiskV2ShadowRecorder:
             raise ValueError("act mode requires a supported actuation scorer")
         header: dict[str, Any] = {
             "event_type": "header",
-            "schema_version": self.SCHEMA_VERSION if mode == "observe" else 2,
+            "schema_version": (
+                self.SCHEMA_VERSION
+                if mode == "observe"
+                else (3 if actuation_scorer == "m4_rescue" else 2)
+            ),
             "mode": mode,
             "policy": (
                 "multi_scorer_oars_v2_shadow"
@@ -363,6 +509,19 @@ class OpportunityAtRiskV2ShadowRecorder:
                 {
                     "actuation_scorer": actuation_scorer,
                     "stale_replenishment_policy": "one_batch_drop_newest_excess_v1",
+                }
+            )
+        if actuation_scorer == "m4_rescue":
+            header.update(
+                {
+                    "m4_rescue_minimum_fifo_overlap_groups": (
+                        M4_RESCUE_MINIMUM_FIFO_OVERLAP
+                    ),
+                    "m4_rescue_reward_variance_floor_multiplier": (
+                        M4_RESCUE_REWARD_VARIANCE_FLOOR_MULTIPLIER
+                    ),
+                    "m4_rescue_numeric_tolerance": M4_RESCUE_NUMERIC_TOLERANCE,
+                    "m4_rescue_actuation_rule": "strict_imminent_l1_gain_else_fifo",
                 }
             )
         self._events: list[dict[str, Any]] = [header]
@@ -779,6 +938,13 @@ class OpportunityAtRiskV2ShadowSampler:
                 ]
                 event["baseline_l1"] = math.fsum(candidate.l1 for candidate in baseline)
                 event["baseline_l2"] = math.fsum(candidate.l2 for candidate in baseline)
+                event["baseline_imminent_l1"] = math.fsum(
+                    candidate.l1
+                    for candidate in baseline
+                    if candidate.start_weight_version
+                    + self._baseline.max_staleness_versions
+                    <= current_train_weight
+                )
                 event["baseline_valid_actor_tokens"] = sum(
                     candidate.valid_actor_tokens for candidate in baseline
                 )

@@ -53,8 +53,8 @@ async_rl:
   # Default-off OARS-v2 observer or explicit controlled-frontier actuator.
   opportunity_at_risk_v2_shadow:
     enabled: false
-    # act requires controlled_frontier and one of reward_variance_risk or
-    # absolute_m4_risk. Observe mode forbids an actuation scorer.
+    # act requires controlled_frontier and one of reward_variance_risk,
+    # absolute_m4_risk, or m4_rescue. Observe mode forbids a scorer.
     mode: observe
     actuation_scorer: null
     # Required and distinct from lifecycle/opportunity/duty paths when enabled.

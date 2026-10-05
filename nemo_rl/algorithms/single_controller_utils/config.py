@@ -79,11 +79,11 @@ class OpportunityAtRiskV2ShadowConfig(BaseModel, frozen=True, extra="allow"):
         default="observe",
         description="Observe proposals without mutation or enact one frozen scorer.",
     )
-    actuation_scorer: Optional[Literal["reward_variance_risk", "absolute_m4_risk"]] = (
-        Field(
-            default=None,
-            description="Frozen scorer enacted in act mode; forbidden in observe mode.",
-        )
+    actuation_scorer: Optional[
+        Literal["reward_variance_risk", "absolute_m4_risk", "m4_rescue"]
+    ] = Field(
+        default=None,
+        description="Frozen scorer enacted in act mode; forbidden in observe mode.",
     )
     output_path: Optional[str] = Field(
         default=None,

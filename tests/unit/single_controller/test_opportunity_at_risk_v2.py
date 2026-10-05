@@ -36,6 +36,7 @@ from nemo_rl.algorithms.async_utils.opportunity_at_risk_v2 import (
     OpportunityAtRiskV2ShadowRecorder,
     OpportunityAtRiskV2ShadowSampler,
     compute_reward_moments,
+    select_m4_rescue,
     select_two_sided_oars_v2,
 )
 from nemo_rl.algorithms.async_utils.rollout_lifecycle import RolloutRemovalReason
@@ -176,6 +177,77 @@ def test_two_sided_selectors_are_score_specific_and_budget_feasible() -> None:
     assert absolute.minimum_tokens == 392
     assert absolute.maximum_tokens == 408
     assert absolute.proposed_valid_actor_tokens == 400
+
+
+def test_m4_rescue_enacts_at_most_one_reward_safe_fifo_swap() -> None:
+    candidates = [
+        candidate("a", start=1, ready=10, l1=1, variance=1),
+        candidate("b", start=1, ready=20, l1=1, variance=1),
+        candidate("c", start=1, ready=30, l1=1, variance=1),
+        candidate("d", start=1, ready=40, l1=1, variance=1),
+        candidate("w", start=1, ready=50, l1=10, variance=2),
+        candidate("x", start=1, ready=60, l1=9, variance=2),
+        candidate("y", start=1, ready=70, l1=8, variance=2),
+        candidate("z", start=1, ready=80, l1=7, variance=2),
+    ]
+
+    rescue = select_m4_rescue(
+        candidates,
+        baseline_group_ids=("a", "b", "c", "d"),
+        current_train_weight=2,
+        max_staleness_versions=1,
+        minimum_service_multiplier=0.98,
+        maximum_service_multiplier=1.02,
+        exact_search_max_candidates=16,
+    )
+
+    assert rescue.proposed_group_ids == ("a", "b", "c", "w")
+    assert rescue.proposed_imminent_l1 == 13
+    assert rescue.combination_count == 70
+    assert rescue.search_strategy == "exact"
+
+
+def test_m4_rescue_returns_fifo_when_only_total_nonimminent_l1_improves() -> None:
+    candidates = [
+        candidate("a", start=1, ready=10, l1=1, variance=1),
+        candidate("b", start=1, ready=20, l1=1, variance=1),
+        candidate("c", start=1, ready=30, l1=1, variance=1),
+        candidate("d", start=1, ready=40, l1=1, variance=1),
+        candidate("w", start=2, ready=50, l1=100, variance=2),
+        candidate("x", start=2, ready=60, l1=90, variance=2),
+        candidate("y", start=2, ready=70, l1=80, variance=2),
+        candidate("z", start=2, ready=80, l1=70, variance=2),
+    ]
+
+    rescue = select_m4_rescue(
+        candidates,
+        baseline_group_ids=("a", "b", "c", "d"),
+        current_train_weight=2,
+        max_staleness_versions=1,
+        minimum_service_multiplier=0.98,
+        maximum_service_multiplier=1.02,
+        exact_search_max_candidates=16,
+    )
+
+    assert rescue.proposed_group_ids == ("a", "b", "c", "d")
+
+
+def test_m4_rescue_fails_closed_when_exact_search_cap_is_exceeded() -> None:
+    candidates = [
+        candidate(str(index), start=1, ready=index, l1=1, variance=1)
+        for index in range(9)
+    ]
+
+    with pytest.raises(OARSV2SelectionFallback, match="requires_exact_search"):
+        select_m4_rescue(
+            candidates,
+            baseline_group_ids=("0", "1", "2", "3"),
+            current_train_weight=2,
+            max_staleness_versions=1,
+            minimum_service_multiplier=0.98,
+            maximum_service_multiplier=1.02,
+            exact_search_max_candidates=8,
+        )
 
 
 def _natural_choice_buffer() -> FakeBuffer:
@@ -418,6 +490,30 @@ def test_controlled_frontier_actuation_enacts_configured_proposal(scorer: str) -
     assert events[0]["baseline_matches_actual"] is False
     assert events[0]["candidate_group_count"] == 8
     assert events[0]["proposals"][scorer]["combination_count"] == 70
+
+
+def test_controlled_frontier_m4_rescue_enacts_one_fifo_swap() -> None:
+    buffer = _actuation_choice_buffer()
+    sampler, events = _controlled_actuator(buffer, scorer="m4_rescue")
+
+    meta, count = asyncio.run(
+        sampler.select(
+            current_train_weight=2,
+            min_prompt_groups=4,
+            max_prompt_groups=4,
+        )
+    )
+
+    assert meta is not None and count == 4
+    assert meta.sample_ids == ["a_g0", "b_g0", "c_g0", "w_g0"]
+    proposal = events[0]["proposals"]["m4_rescue"]
+    assert proposal["fifo_overlap_count"] == 3
+    assert (
+        proposal["proposed_reward_variance_sum"]
+        >= events[0]["baseline_reward_variance_sum"]
+    )
+    assert proposal["proposed_imminent_l1"] > events[0]["baseline_l1"]
+    assert events[0]["proposal_matches_actual"] is True
 
 
 def test_actuation_is_failure_atomic_on_missing_metadata() -> None:
@@ -874,3 +970,23 @@ def test_recorder_declares_fail_closed_actuation_policy() -> None:
     assert header["actuation_scorer"] == "absolute_m4_risk"
     assert header["candidate_mutation"] == "configured_scorer_exact_removal"
     assert header["stale_replenishment_policy"] == ("one_batch_drop_newest_excess_v1")
+
+
+def test_recorder_declares_frozen_m4_rescue_contract() -> None:
+    recorder = OpportunityAtRiskV2ShadowRecorder(
+        mode="act",
+        actuation_scorer="m4_rescue",
+        candidate_window_policy="controlled_frontier",
+        selection_candidate_watermark=8,
+        minimum_service_multiplier=0.98,
+        maximum_service_multiplier=1.02,
+        max_candidate_groups=64,
+        exact_search_max_candidates=16,
+        decision_time_budget_ns=5_000_000,
+    )
+
+    header = recorder.events[0]
+    assert header["schema_version"] == 3
+    assert header["m4_rescue_minimum_fifo_overlap_groups"] == 3
+    assert header["m4_rescue_reward_variance_floor_multiplier"] == 1.0
+    assert header["m4_rescue_actuation_rule"] == "strict_imminent_l1_gain_else_fifo"
