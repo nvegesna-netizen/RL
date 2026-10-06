@@ -1,0 +1,46 @@
+{
+  "schema": "m4-shield-allocation-repair-submission-receipt-v1",
+  "status": "SUBMITTED_GENERATOR_AUTHENTICATED_DOWNSTREAM_RUNNING",
+  "source_commit": "cdfa1c8e56394b7d8e3e299b6524a1a286243746",
+  "package_commit": "dcb65098696df048f56beb1d39e1fee1a67517c2",
+  "manifest_sha256": "38c4ffab038ce5f9a29c5d6baadb55aa736a407066e6e9844be7f81f3e5dc98e",
+  "authorization_sha256": "33d7433aaa5b113e1b978ba35093687963271b47f50d8af77e31d5db937d4164",
+  "launcher": "runllm.py --no_wait",
+  "launcher_invocations": 1,
+  "replacement_submission_attempt_consumed": true,
+  "upstream_pipeline": {
+    "id": 71841393,
+    "ref": "dlalgo-ci/eos",
+    "generate_job_id": 471437231,
+    "generate_job_status": "success",
+    "trigger_bridge_job_id": 471437232
+  },
+  "downstream_pipeline": {
+    "id": 71841796,
+    "project_id": 70847,
+    "logs_before_job_id": 471440742,
+    "workload_job_id": 471440743,
+    "logs_after_job_id": 471440745
+  },
+  "generator_artifact": {
+    "job_id": 471437231,
+    "bytes": 37645263,
+    "sha256": "4359bba7bdfc090237d49623fe8f35ca195d1fc53b74dc54215b72470ff74715",
+    "jet_workloads_yaml_sha256": "ed05ffaeb4265fd41259e770b234359ea66033aaa9afd55b218b5d7e148548a8",
+    "launch_run_sh_sha256": "b3df54a3175f39876f9fa040982d39c336b5b945bfab457fb6d9cba4f6dc783b",
+    "launch_sbatch_sh_sha256": "67ba58c9f36a648cddfc909eb3a303515e718f071d43b111224f62d6dd49378b"
+  },
+  "allocation_repair_authentication": {
+    "manifest_time_limit_is_null": true,
+    "generated_run_sh_has_slurm_time_flag": false,
+    "generated_sbatch_sh_has_slurm_time_flag": false,
+    "generated_default_deadline": "now+8hours",
+    "queue_deadline_override": null
+  },
+  "science_boundary": {
+    "scientific_outcome_acquisition": false,
+    "training_quality_analysis": false,
+    "automatic_retry": false,
+    "automatic_extension": false
+  }
+}
