@@ -1,0 +1,72 @@
+{
+  "schema": "m4-shield-allocation-failure-authentication-v1",
+  "status": "AUTHENTICATED_PRE_EXECUTION_ALLOCATION_FAILURE",
+  "upstream_pipeline": {
+    "id": 71774486,
+    "status": "failed",
+    "generate_job_id": 470864332,
+    "generate_job_status": "success"
+  },
+  "downstream_pipeline": {
+    "id": 71775100,
+    "status": "failed",
+    "logs_before_job_id": 470868938,
+    "logs_before_status": "success",
+    "workload_job_id": 470868940,
+    "workload_status": "failed",
+    "logs_after_job_id": 470868946,
+    "logs_after_status": "success"
+  },
+  "slurm": {
+    "job_id": 6171790,
+    "state": "DEADLINE",
+    "reason_before_terminal": "Priority",
+    "queue_time": "04:00:21",
+    "workload_duration": "00:00:00",
+    "exit_code": "1:0",
+    "sacct_has_no_step_data": true,
+    "configured_workload_time_limit": "04:00:00",
+    "manifest_queue_deadline_override": null,
+    "jet_default_deadline": "now+8hours"
+  },
+  "terminal_archives": {
+    "workload": {
+      "path": "session/20260914_m4_opportunity_control/m4-shield-live-terminal-archives/main-470868940.zip",
+      "bytes": 25233688,
+      "sha256": "f8613d1f42e1f6b2e1d7d8e34894704833ad783b9bf060d10bde4fc673f939c5"
+    },
+    "logs_after": {
+      "path": "session/20260914_m4_opportunity_control/m4-shield-live-terminal-archives/logs-after-470868946.zip",
+      "bytes": 37866414,
+      "sha256": "2d1a4823c9fb3ce5559a7923e23948bfd91cabcba1d731cfa8134841230218e3"
+    }
+  },
+  "integrity": {
+    "both_zip_archives_traversal_safe": true,
+    "job_id_sha256_identical_across_copies": "5d0811c491c5510d06ef1936f20bc98656c9631e5dde9b0d3bb7a4b33ffe9b2c",
+    "jet_events_sha256_identical_across_copies": "2f0cbac1ee3034d05978f401f58c558e0c3d83e2bc4370603e7c81717e6ea2a2",
+    "preexecution_jet_log_sha256_identical_across_copies": "bd1067df94eb6b70eae131728b834fed946c068758af57b988f9ffe2603d3151",
+    "slurm_job_id_sha256_identical_across_copies": "ba443ba9732613446dbf8c8aab67ee978df2a78ed98e7642d39baf7e1dca43f9",
+    "slurm_stdout_empty_sha256_identical_across_copies": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "execution_boundary": {
+    "slurm_node_allocated": false,
+    "runtime_script_started": false,
+    "preflight_tests_started": false,
+    "training_started": false,
+    "learner_steps_completed": 0,
+    "m4_shield_decisions_observed": 0,
+    "qualification_gate_executed": false,
+    "runtime_assets_present": false,
+    "qualification_result_present": false,
+    "training_quality_analyzed": false,
+    "scientific_outcome_acquisition": false
+  },
+  "disposition": {
+    "scientific_attempt_consumed": false,
+    "launcher_attempt_consumed": true,
+    "code_repair_indicated": false,
+    "protocol_change_indicated": false,
+    "defensible_next_action": "After separate explicit authorization, resubmit the byte-identical authenticated manifest once. Do not change the source, scientific design, workload time limit, or queue-deadline override."
+  }
+}
