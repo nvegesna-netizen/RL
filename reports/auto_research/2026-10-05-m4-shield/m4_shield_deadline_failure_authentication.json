@@ -1,0 +1,77 @@
+{
+  "schema": "m4-shield-deadline-failure-authentication-v1",
+  "status": "AUTHENTICATED_PRE_EXECUTION_ALLOCATION_DEADLINE_FAILURE",
+  "upstream_pipeline": {
+    "id": 71841393,
+    "status": "failed",
+    "generate_job_id": 471437231,
+    "generate_job_status": "success"
+  },
+  "downstream_pipeline": {
+    "id": 71841796,
+    "status": "failed",
+    "logs_before_job_id": 471440742,
+    "logs_before_status": "success",
+    "workload_job_id": 471440743,
+    "workload_status": "failed",
+    "logs_after_job_id": 471440745,
+    "logs_after_status": "success"
+  },
+  "slurm": {
+    "job_id": 6174426,
+    "state": "DEADLINE",
+    "reason_before_terminal": "Priority",
+    "queue_time": "06:00:18",
+    "workload_duration": "00:00:00",
+    "exit_code": "1:0",
+    "actual_sbatch_has_time_flag": false,
+    "effective_default_time_limit": "02:00:00",
+    "actual_sbatch_deadline": "now+8hours"
+  },
+  "terminal_archives": {
+    "workload": {
+      "job_id": 471440743,
+      "bytes": 25234677,
+      "sha256": "3e7d5451ea20fc0e752d1674b6da4c28a5431c698944094ce3ee02957ef4dde3"
+    },
+    "logs_after": {
+      "job_id": 471440745,
+      "bytes": 37868083,
+      "sha256": "2ccb4f7d3c1f06b885f6a39d9623365a8125e9abd1115839b15faabffe371e02"
+    }
+  },
+  "integrity": {
+    "job_id_sha256_identical_across_copies": "f015a3199f6586200cb1fb75f530d3f64d32050d3bf5243462f4e14098f548a6",
+    "jet_events_sha256_identical_across_copies": "58958a263914bee994f552052ee02a982b9b79c7f20ea03d96c445fa2305e772",
+    "preexecution_jet_log_sha256_identical_across_copies": "dbc3f5c736f3d144f03d0197349bd0b92582eed16bf8422f3bd1f6ffeb4738ff",
+    "slurm_job_id_sha256_identical_across_copies": "6cc2529966738059cd51ae99c76c3347f39ed4e2a4e0a162b2c1979221ebd509",
+    "slurm_stdout_nonempty": false
+  },
+  "execution_boundary": {
+    "slurm_node_allocated": false,
+    "runtime_script_started": false,
+    "preflight_tests_started": false,
+    "training_started": false,
+    "learner_steps_completed": 0,
+    "m4_shield_decisions_observed": 0,
+    "qualification_gate_executed": false,
+    "runtime_assets_present": false,
+    "qualification_result_present": false,
+    "training_quality_analyzed": false,
+    "scientific_outcome_acquisition": false
+  },
+  "diagnosis": {
+    "manifest_time_limit_removal_worked": true,
+    "remaining_failure_mechanism": "JET injected --deadline now+8hours; with the EOS default two-hour runtime limit, the pending job became infeasible after approximately six hours",
+    "inference_from_exact_timing": true,
+    "known_repository_repair": "use prebuilt-custom-config-deadline-suppressed.json so dgxh100_eos sbatch_additional_flags.deadline is false"
+  },
+  "disposition": {
+    "scientific_attempt_consumed": false,
+    "replacement_launcher_attempt_consumed": true,
+    "code_repair_indicated": false,
+    "scientific_protocol_change_indicated": false,
+    "allocation_transport_repair_indicated": true,
+    "automatic_retry_authorized": false
+  }
+}
