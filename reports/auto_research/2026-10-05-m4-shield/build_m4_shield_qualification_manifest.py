@@ -1,4 +1,4 @@
-"""Build the credential-free, outcome-excluded M4-Shield qualification."""
+"""Build the allocation-repaired, outcome-excluded M4-Shield qualification."""
 
 from __future__ import annotations
 
@@ -54,7 +54,8 @@ PARENT_PROTOCOL_PATH = (
 OFFLINE_RESULT_PATH = (
     "reports/auto_research/2026-10-05-m4-shield/m4_shield_offline_result.json"
 )
-NAME = "m4-shield-outcome-excluded-qualification"
+FAILURE_AUTH_SHA256 = "6dec2060f31fb05baf500ab75591b7cd5c685de2d47dd4f5c6e0bf17dacc2ed9"
+NAME = "m4-shield-outcome-excluded-qualification-allocation-repair"
 
 
 def sha256(path: Path) -> str:
@@ -85,20 +86,26 @@ def main() -> None:
             raise RuntimeError(f"frozen input moved: {path.name}")
     authorization = json.loads(args.authorization.read_bytes())
     if (
-        authorization.get("schema") != "m4-shield-live-submission-authorization-v1"
+        authorization.get("schema") != "m4-shield-allocation-repair-authorization-v1"
         or authorization.get("scope")
-        != "exactly_one_outcome_excluded_m4_shield_live_qualification"
+        != "exactly_one_replacement_for_authenticated_pre_execution_allocation_failure"
         or authorization.get("source_commit") != SOURCE_COMMIT
         or authorization.get("protocol_sha256") != PROTOCOL_SHA256
         or authorization.get("required_launcher") != "runllm.py --no_wait"
-        or authorization.get("submission_attempt_limit") != 1
+        or authorization.get("failure_authentication_sha256") != FAILURE_AUTH_SHA256
+        or authorization.get("replaces_upstream_pipeline_id") != 71774486
+        or authorization.get("replaces_downstream_pipeline_id") != 71775100
+        or authorization.get("replaces_workload_job_id") != 470868940
+        or authorization.get("replaces_slurm_job_id") != 6171790
+        or authorization.get("replacement_submission_attempt_limit") != 1
         or authorization.get("trainer_steps") != 64
         or authorization.get("training_seed") != 20261005
         or authorization.get("controlled_release_seed") != 20261007
         or authorization.get("assignment_domain") != "m4-shield-qualification-v1"
         or authorization.get("nodes") != 1
         or authorization.get("gpus") != 2
-        or authorization.get("scheduler_time_limit_seconds") != 14400
+        or authorization.get("manifest_scheduler_time_limit_seconds") is not None
+        or authorization.get("runtime_qualification_limit_seconds") != 14400
         or authorization.get("queue_deadline_override") is not None
         or authorization.get("selection_candidate_watermark") != 8
         or authorization.get("selection_cardinality") != 4
@@ -266,7 +273,10 @@ exit "$GATE_RC"
             "name": NAME,
             "workspace": "/workspace",
             "nodes": 1,
-            "time_limit": 14400,
+            # Explicit null is required here. Omitting this key lets the local
+            # JET client materialize its 3600-second model default before
+            # submission; null reaches the generator as no scheduler limit.
+            "time_limit": None,
             "image_source": {"local_path": IMAGE_PATH},
             "script": script,
         },

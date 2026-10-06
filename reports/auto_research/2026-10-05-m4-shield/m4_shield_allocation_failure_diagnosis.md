@@ -51,7 +51,17 @@ The defensible continuation is one separately authorized replacement with
 byte-identical source, protocol, configuration, and runtime payloads. Because
 the original manifest embeds its now-consumed one-shot authorization, the
 replacement manifest must embed a new authorization that cites this terminal
-allocation failure. That authorization payload must be the only permitted
-manifest-content change. No source, policy, protocol, workload time limit, or
-queue-deadline override should change. Queue conditions—not code—must provide
-the new opportunity to allocate.
+allocation failure.
+
+## Authorized allocation repair
+
+The user subsequently authorized one allocation-only repair: remove the
+manifest scheduler time limit and launch the replacement. The local JET client
+materializes a 3,600-second default when the field is simply absent, so the
+replacement represents “no manifest scheduler time limit” as explicit JSON
+`null`; this survives client validation and serialization as `null`. The
+source archive, frozen protocol, configuration, seeds, workload script,
+controller, analyzer, and the analyzer's 14,400-second runtime qualification
+gate remain unchanged. No queue-deadline override is added. This amendment
+supersedes only the earlier recommendation to retain the manifest's 14,400-
+second scheduler field.

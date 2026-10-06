@@ -39,7 +39,8 @@ def main() -> None:
         and manifest.get("format_version") == 1,
         "one_node": manifest["spec"].get("nodes") == 1
         and manifest["launchers"]["type:slurm"].get("nodes") == 1,
-        "four_hour_limit": manifest["spec"].get("time_limit") == 14400,
+        "no_manifest_scheduler_time_limit": "time_limit" in manifest["spec"]
+        and manifest["spec"]["time_limit"] is None,
         "no_queue_deadline": "queue_deadline" not in json.dumps(manifest),
         "credential_free_text": forbidden.search(raw.decode("utf-8")) is None,
         "outcome_excluded": "terminal_policy_export" not in script
