@@ -1,0 +1,63 @@
+{
+  "schema": "m4-shield-deadline-repair-submission-receipt-v1",
+  "status": "SUBMITTED_GENERATOR_AND_SLURM_TRANSPORT_AUTHENTICATED",
+  "source_commit": "cdfa1c8e56394b7d8e3e299b6524a1a286243746",
+  "package_commit": "07d2daf4513486dc739d3d1ab843f4e706662996",
+  "manifest_sha256": "3e1072222f2a48dc95caf9ebb1b75178e3028e413e91c83679b95775513175c2",
+  "authorization_sha256": "9dcfa3d21603b3c5e203d44fb4b2509aff5c1687beba1587c66659c18b0ac7d4",
+  "custom_config_sha256": "b5db8882c7baccd3bf8c0369d7264e80f7ea08c17482559f82875abc5207f42e",
+  "launcher": "runllm.py --no_wait",
+  "launcher_calls": {
+    "pretrigger_calls_without_pipeline": 1,
+    "successful_calls": 1,
+    "created_submissions": 1
+  },
+  "replacement_submission_attempt_consumed": true,
+  "upstream_pipeline": {
+    "id": 71952902,
+    "ref": "dlalgo-ci/eos",
+    "generate_job_id": 472294830,
+    "generate_job_status": "success",
+    "trigger_bridge_job_id": 472294831
+  },
+  "downstream_pipeline": {
+    "id": 71953253,
+    "project_id": 70847,
+    "logs_before_job_id": 472297082,
+    "workload_job_id": 472297084,
+    "logs_after_job_id": 472297085
+  },
+  "generator_artifact": {
+    "job_id": 472294830,
+    "bytes": 37645217,
+    "sha256": "6e840029831f30df044224a02c6a44f3417121a5a655fdd0137d63cc4a4d677f",
+    "custom_config_yaml_sha256": "e568c13afa5e6e3eaf6863ab821dbdb1249bccff5b96471efb78c15e7ab7364f",
+    "jet_workloads_yaml_sha256": "c49da1dd71ee4c972e5177c307dd59049c49739b90b69fb4c065a1f1687218ec",
+    "launch_run_sh_sha256": "f73e68d9db07618088674b0f0a5eca309d59511549a91377609c0d4d70e02bde",
+    "launch_sbatch_sh_sha256": "43f9c987de5c150cb7c128734d1d6aa2f58538c4345364c5e2f1fd5a162a2011"
+  },
+  "slurm_submission": {
+    "job_id": 6178557,
+    "state_at_authentication": "PENDING",
+    "reason_at_authentication": "Priority",
+    "effective_default_time_limit": "02:00:00",
+    "actual_sbatch_has_time_flag": false,
+    "actual_sbatch_has_deadline_flag": false
+  },
+  "transport_authentication": {
+    "manifest_time_limit_is_null": true,
+    "custom_config_deadline_is_false": true,
+    "generated_run_sh_has_slurm_time_flag": false,
+    "generated_run_sh_has_slurm_deadline_flag": false,
+    "generated_sbatch_sh_has_slurm_time_flag": false,
+    "generated_sbatch_sh_has_slurm_deadline_flag": false,
+    "actual_sbatch_has_slurm_time_flag": false,
+    "actual_sbatch_has_slurm_deadline_flag": false
+  },
+  "science_boundary": {
+    "scientific_outcome_acquisition": false,
+    "training_quality_analysis": false,
+    "automatic_retry": false,
+    "automatic_extension": false
+  }
+}
