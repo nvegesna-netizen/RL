@@ -22,6 +22,13 @@
     "workload_job_id": 471440743,
     "logs_after_job_id": 471440745
   },
+  "slurm_submission": {
+    "job_id": 6174426,
+    "state_at_authentication": "PENDING",
+    "reason_at_authentication": "Priority",
+    "actual_sbatch_has_time_flag": false,
+    "actual_sbatch_deadline": "now+8hours"
+  },
   "generator_artifact": {
     "job_id": 471437231,
     "bytes": 37645263,
@@ -34,6 +41,7 @@
     "manifest_time_limit_is_null": true,
     "generated_run_sh_has_slurm_time_flag": false,
     "generated_sbatch_sh_has_slurm_time_flag": false,
+    "actual_sbatch_has_slurm_time_flag": false,
     "generated_default_deadline": "now+8hours",
     "queue_deadline_override": null
   },
