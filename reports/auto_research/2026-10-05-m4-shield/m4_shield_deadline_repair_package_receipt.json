@@ -1,0 +1,44 @@
+{
+  "schema": "m4-shield-deadline-repair-package-receipt-v1",
+  "status": "PASS_READY_FOR_ONE_AUTHORIZED_DEADLINE_SUPPRESSED_SUBMISSION",
+  "source_commit": "cdfa1c8e56394b7d8e3e299b6524a1a286243746",
+  "source_archive": {
+    "path": "session/20260914_m4_opportunity_control/m4-shield-qualification-source-cdfa1c8e5.tar.gz",
+    "sha256": "e9a70e436852f747db1812a2af275351643473cf6f4f20d0e2a4e0573ccc1111"
+  },
+  "megatron_archive": {
+    "path": "session/20260914_m4_opportunity_control/m4-oars-shadow-preflight-megatron.tar.gz",
+    "sha256": "98d98920c0fea3d8ae1216a485dc9b5aa4fc966e469435ad61f2bae456de80d2"
+  },
+  "protocol_sha256": "a3c8f84297c2ce60c5cd5f0f0eb0a0286555ced63bbe5b169af0e3b008aca216",
+  "failure_authentication_sha256": "69088f520c15b997f23193c9bff5e3feb499b89147a7008504af67c1190bca16",
+  "authorization_sha256": "9dcfa3d21603b3c5e203d44fb4b2509aff5c1687beba1587c66659c18b0ac7d4",
+  "builder_sha256": "25495a02fe9ad2ec97423229440470bbeb37266ec1968c752ea7e4983153b818",
+  "validator_sha256": "6e7651e66e75ca56c094250bbf946f6a5dac1e17c1faccd5f92199060a2c5a29",
+  "manifest": {
+    "path": "session/20260914_m4_opportunity_control/m4-shield-qualification-deadline-repair.json",
+    "sha256": "3e1072222f2a48dc95caf9ebb1b75178e3028e413e91c83679b95775513175c2",
+    "time_limit_wire_value": null,
+    "jet_client_roundtrip_preserves_null": true
+  },
+  "custom_config": {
+    "path": "session/20260914_m4_opportunity_control/prebuilt-custom-config-deadline-suppressed.json",
+    "sha256": "b5db8882c7baccd3bf8c0369d7264e80f7ea08c17482559f82875abc5207f42e",
+    "dgxh100_eos_deadline": false
+  },
+  "validation": {
+    "path": "m4_shield_deadline_repair_package_validation.json",
+    "sha256": "96de11f08ec1a0920256ae2fef157abd90aa657048b5e3e281de744d5507a1b5",
+    "status": "PASS_CREDENTIAL_FREE_PACKAGE"
+  },
+  "launch_contract": {
+    "required_launcher": "runllm.py --no_wait",
+    "replacement_submission_attempt_limit": 1,
+    "manifest_scheduler_time_limit_seconds": null,
+    "runtime_qualification_limit_seconds": 14400,
+    "queue_deadline_suppressed": true,
+    "scientific_outcome_acquisition": false,
+    "training_quality_analysis": false,
+    "automatic_retry": false
+  }
+}

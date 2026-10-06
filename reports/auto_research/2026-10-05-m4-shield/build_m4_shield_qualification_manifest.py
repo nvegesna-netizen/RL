@@ -1,4 +1,4 @@
-"""Build the allocation-repaired, outcome-excluded M4-Shield qualification."""
+"""Build the deadline-repaired, outcome-excluded M4-Shield qualification."""
 
 from __future__ import annotations
 
@@ -54,8 +54,11 @@ PARENT_PROTOCOL_PATH = (
 OFFLINE_RESULT_PATH = (
     "reports/auto_research/2026-10-05-m4-shield/m4_shield_offline_result.json"
 )
-FAILURE_AUTH_SHA256 = "6dec2060f31fb05baf500ab75591b7cd5c685de2d47dd4f5c6e0bf17dacc2ed9"
-NAME = "m4-shield-outcome-excluded-qualification-allocation-repair"
+FAILURE_AUTH_SHA256 = "69088f520c15b997f23193c9bff5e3feb499b89147a7008504af67c1190bca16"
+CUSTOM_CONFIG_SHA256 = (
+    "b5db8882c7baccd3bf8c0369d7264e80f7ea08c17482559f82875abc5207f42e"
+)
+NAME = "m4-shield-outcome-excluded-qualification-deadline-repair"
 
 
 def sha256(path: Path) -> str:
@@ -86,17 +89,18 @@ def main() -> None:
             raise RuntimeError(f"frozen input moved: {path.name}")
     authorization = json.loads(args.authorization.read_bytes())
     if (
-        authorization.get("schema") != "m4-shield-allocation-repair-authorization-v1"
+        authorization.get("schema") != "m4-shield-deadline-repair-authorization-v1"
         or authorization.get("scope")
-        != "exactly_one_replacement_for_authenticated_pre_execution_allocation_failure"
+        != "exactly_one_replacement_for_authenticated_pre_execution_deadline_failure"
         or authorization.get("source_commit") != SOURCE_COMMIT
         or authorization.get("protocol_sha256") != PROTOCOL_SHA256
         or authorization.get("required_launcher") != "runllm.py --no_wait"
+        or authorization.get("required_custom_config_sha256") != CUSTOM_CONFIG_SHA256
         or authorization.get("failure_authentication_sha256") != FAILURE_AUTH_SHA256
-        or authorization.get("replaces_upstream_pipeline_id") != 71774486
-        or authorization.get("replaces_downstream_pipeline_id") != 71775100
-        or authorization.get("replaces_workload_job_id") != 470868940
-        or authorization.get("replaces_slurm_job_id") != 6171790
+        or authorization.get("replaces_upstream_pipeline_id") != 71841393
+        or authorization.get("replaces_downstream_pipeline_id") != 71841796
+        or authorization.get("replaces_workload_job_id") != 471440743
+        or authorization.get("replaces_slurm_job_id") != 6174426
         or authorization.get("replacement_submission_attempt_limit") != 1
         or authorization.get("trainer_steps") != 64
         or authorization.get("training_seed") != 20261005
@@ -106,7 +110,7 @@ def main() -> None:
         or authorization.get("gpus") != 2
         or authorization.get("manifest_scheduler_time_limit_seconds") is not None
         or authorization.get("runtime_qualification_limit_seconds") != 14400
-        or authorization.get("queue_deadline_override") is not None
+        or not authorization.get("queue_deadline_suppressed")
         or authorization.get("selection_candidate_watermark") != 8
         or authorization.get("selection_cardinality") != 4
         or authorization.get("base_proposer") != "reward_variance_risk"

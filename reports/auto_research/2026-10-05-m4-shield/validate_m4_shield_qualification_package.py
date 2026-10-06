@@ -12,10 +12,13 @@ from pathlib import Path
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--manifest", type=Path, required=True)
+    parser.add_argument("--custom-config", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     raw = args.manifest.read_bytes()
     manifest = json.loads(raw)
+    custom_config_raw = args.custom_config.read_bytes()
+    custom_config = json.loads(custom_config_raw)
     script = manifest["spec"]["script"]
     substitution_error = None
     substituted_script = None
@@ -41,7 +44,15 @@ def main() -> None:
         and manifest["launchers"]["type:slurm"].get("nodes") == 1,
         "no_manifest_scheduler_time_limit": "time_limit" in manifest["spec"]
         and manifest["spec"]["time_limit"] is None,
-        "no_queue_deadline": "queue_deadline" not in json.dumps(manifest),
+        "no_manifest_queue_deadline": "queue_deadline" not in json.dumps(manifest),
+        "deadline_suppressed_in_custom_config": custom_config
+        == {
+            "launchers": {
+                "dgxh100_eos": {"sbatch_additional_flags": {"deadline": False}}
+            }
+        },
+        "custom_config_sha256_bound": hashlib.sha256(custom_config_raw).hexdigest()
+        == "b5db8882c7baccd3bf8c0369d7264e80f7ea08c17482559f82875abc5207f42e",
         "credential_free_text": forbidden.search(raw.decode("utf-8")) is None,
         "outcome_excluded": "terminal_policy_export" not in script
         and "evaluation_data" not in script
@@ -66,6 +77,7 @@ def main() -> None:
         "schema": "m4-shield-qualification-package-validation-v1",
         "status": "PASS_CREDENTIAL_FREE_PACKAGE" if all(checks.values()) else "FAIL",
         "manifest_sha256": hashlib.sha256(raw).hexdigest(),
+        "custom_config_sha256": hashlib.sha256(custom_config_raw).hexdigest(),
         "checks": checks,
         "jet_substitution_error": substitution_error,
     }

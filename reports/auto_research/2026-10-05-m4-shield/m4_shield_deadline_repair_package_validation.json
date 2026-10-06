@@ -1,0 +1,25 @@
+{
+  "checks": {
+    "artifact_hashes": true,
+    "credential_free_text": true,
+    "custom_config_sha256_bound": true,
+    "deadline_suppressed_in_custom_config": true,
+    "full_preflight_tests": true,
+    "jet_substitution_roundtrip": true,
+    "jet_substitution_syntax": true,
+    "m4_shield_bound": true,
+    "manifest_shape": true,
+    "no_manifest_queue_deadline": true,
+    "no_manifest_scheduler_time_limit": true,
+    "one_jet_placeholder": true,
+    "one_node": true,
+    "one_training_invocation": true,
+    "outcome_excluded": true,
+    "qualification_analyzer_source_bound": true
+  },
+  "custom_config_sha256": "b5db8882c7baccd3bf8c0369d7264e80f7ea08c17482559f82875abc5207f42e",
+  "jet_substitution_error": null,
+  "manifest_sha256": "3e1072222f2a48dc95caf9ebb1b75178e3028e413e91c83679b95775513175c2",
+  "schema": "m4-shield-qualification-package-validation-v1",
+  "status": "PASS_CREDENTIAL_FREE_PACKAGE"
+}
