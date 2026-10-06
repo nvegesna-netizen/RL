@@ -67,6 +67,6 @@
     "launcher_attempt_consumed": true,
     "code_repair_indicated": false,
     "protocol_change_indicated": false,
-    "defensible_next_action": "After separate explicit authorization, resubmit the byte-identical authenticated manifest once. Do not change the source, scientific design, workload time limit, or queue-deadline override."
+    "defensible_next_action": "After separate explicit authorization, build and submit one replacement manifest with byte-identical source, protocol, configuration, and runtime payloads. The only permitted manifest-content change is the newly embedded replacement-authorization payload. Do not change the scientific design, workload time limit, or queue-deadline override."
   }
 }

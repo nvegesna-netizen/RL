@@ -47,9 +47,11 @@ decisions occurred, and the frozen qualification gate never ran. The launcher
 attempt was consumed, however, and the frozen protocol forbids an automatic
 retry.
 
-The defensible continuation is one separately authorized replacement
-submission of the byte-identical manifest
-`a14ca17f4547eba2bbff6a4c87cb3bbd4484f2aed71b6be77678073eeb778f97`.
-No source, policy, protocol, workload time limit, or queue-deadline override
-should change. Queue conditions—not code—must provide the new opportunity to
-allocate.
+The defensible continuation is one separately authorized replacement with
+byte-identical source, protocol, configuration, and runtime payloads. Because
+the original manifest embeds its now-consumed one-shot authorization, the
+replacement manifest must embed a new authorization that cites this terminal
+allocation failure. That authorization payload must be the only permitted
+manifest-content change. No source, policy, protocol, workload time limit, or
+queue-deadline override should change. Queue conditions—not code—must provide
+the new opportunity to allocate.
