@@ -20,6 +20,7 @@ import torch
 
 from nemo_rl.algorithms.async_utils.gradient_utility_audit import (
     GradientUtilityAuditRecorder,
+    _countsketch_hash_coordinates,
     hash_model_parameters,
     summarize_open_step_gradients,
 )
@@ -80,6 +81,41 @@ def test_summary_prefers_main_grad_and_rejects_nonfinite():
         )
 
 
+def test_countsketch_seeds_change_collision_partitions_and_signs():
+    indices = torch.arange(4096, dtype=torch.int64)
+    first_buckets, first_signs = _countsketch_hash_coordinates(
+        indices, bins=64, seed=20261019
+    )
+    repeated_buckets, repeated_signs = _countsketch_hash_coordinates(
+        indices, bins=64, seed=20261019
+    )
+    second_buckets, second_signs = _countsketch_hash_coordinates(
+        indices, bins=64, seed=20261021
+    )
+
+    assert torch.equal(first_buckets, repeated_buckets)
+    assert torch.equal(first_signs, repeated_signs)
+    assert set(first_buckets.tolist()) == set(range(64))
+    assert set(second_buckets.tolist()) == set(range(64))
+    assert not torch.equal(first_signs, second_signs)
+
+    first_partition = {}
+    second_partition = {}
+    for index, (first, second) in enumerate(
+        zip(first_buckets.tolist(), second_buckets.tolist(), strict=True)
+    ):
+        first_partition.setdefault(first, []).append((index, second))
+        second_partition.setdefault(second, []).append((index, first))
+    assert any(
+        len({other for _, other in collision_class}) > 1
+        for collision_class in first_partition.values()
+    )
+    assert any(
+        len({other for _, other in collision_class}) > 1
+        for collision_class in second_partition.values()
+    )
+
+
 def test_parameter_hash_is_byte_sensitive_and_stable():
     parameter = torch.nn.Parameter(torch.tensor([1.0, 2.0]))
     first = hash_model_parameters([("weight", parameter)], chunk_bytes=1)
@@ -122,6 +158,7 @@ def test_recorder_emits_canonical_complete_ledger(tmp_path):
     [
         ({"normalization_tokens": 0}, "normalization_tokens"),
         ({"sketch_bins": 1}, "sketch_bins"),
+        ({"sketch_bins": 3}, "sketch_bins"),
         ({"sketch_seeds": (1, 1)}, "sketch_seeds"),
     ],
 )

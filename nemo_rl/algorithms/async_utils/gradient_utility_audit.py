@@ -26,8 +26,9 @@ from typing import Any
 
 import torch
 
-_HASH_MULTIPLIER = 6364136223846793005
-_HASH_INCREMENT = 1442695040888963407
+_UINT64_MODULUS = 1 << 64
+_INT64_SIGN_BIT = 1 << 63
+_COUNT_SKETCH_HASH_DOMAIN = b"m4-gradient-utility-countsketch-v2"
 
 
 @dataclass(frozen=True)
@@ -59,6 +60,55 @@ def _parameter_gradient(parameter: torch.Tensor) -> torch.Tensor | None:
     return None
 
 
+def _signed_int64(value: int) -> int:
+    value %= _UINT64_MODULUS
+    return value - _UINT64_MODULUS if value >= _INT64_SIGN_BIT else value
+
+
+def _countsketch_hash_parameters(seed: int, lane: bytes) -> tuple[int, int]:
+    """Derive one source-bound multiply-shift hash from ``seed`` and ``lane``."""
+    payload = (
+        _COUNT_SKETCH_HASH_DOMAIN
+        + b"\0"
+        + str(seed).encode("ascii")
+        + b"\0"
+        + lane
+    )
+    digest = hashlib.sha256(payload).digest()
+    multiplier = int.from_bytes(digest[:8], "little") | 1
+    increment = int.from_bytes(digest[8:16], "little")
+    return _signed_int64(multiplier), _signed_int64(increment)
+
+
+def _countsketch_hash_coordinates(
+    indices: torch.Tensor,
+    *,
+    bins: int,
+    seed: int,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    """Return independently seeded multiply-shift buckets and Rademacher signs."""
+    if indices.dtype != torch.int64:
+        raise TypeError("CountSketch indices must use int64")
+    if bins < 2 or bins & (bins - 1):
+        raise ValueError("CountSketch bins must be a power of two")
+    bucket_multiplier, bucket_increment = _countsketch_hash_parameters(
+        seed, b"bucket"
+    )
+    sign_multiplier, sign_increment = _countsketch_hash_parameters(seed, b"sign")
+    bucket_mixed = indices * bucket_multiplier + bucket_increment
+    bucket_bits = bins.bit_length() - 1
+    buckets = torch.bitwise_and(
+        torch.bitwise_right_shift(bucket_mixed, 64 - bucket_bits), bins - 1
+    )
+    sign_mixed = indices * sign_multiplier + sign_increment
+    signs = torch.where(
+        sign_mixed < 0,
+        -torch.ones((), dtype=torch.float64, device=indices.device),
+        torch.ones((), dtype=torch.float64, device=indices.device),
+    )
+    return buckets, signs
+
+
 def _countsketch_chunk(
     values: torch.Tensor,
     *,
@@ -73,14 +123,7 @@ def _countsketch_chunk(
         dtype=torch.int64,
         device=values.device,
     )
-    seed_term = (seed * _HASH_INCREMENT) & ((1 << 63) - 1)
-    mixed = indices * _HASH_MULTIPLIER + seed_term
-    buckets = torch.remainder(mixed, bins)
-    signs = torch.where(
-        torch.bitwise_and(torch.bitwise_right_shift(mixed, 32), 1).bool(),
-        -torch.ones((), dtype=torch.float64, device=values.device),
-        torch.ones((), dtype=torch.float64, device=values.device),
-    )
+    buckets, signs = _countsketch_hash_coordinates(indices, bins=bins, seed=seed)
     result = torch.zeros(bins, dtype=torch.float64, device=values.device)
     result.scatter_add_(0, buckets, values.to(torch.float64) * signs)
     return result
@@ -103,8 +146,8 @@ def summarize_open_step_gradients(
     """
     if normalization_tokens < 1:
         raise ValueError("normalization_tokens must be positive")
-    if sketch_bins < 2:
-        raise ValueError("sketch_bins must be at least two")
+    if sketch_bins < 2 or sketch_bins & (sketch_bins - 1):
+        raise ValueError("sketch_bins must be a power of two")
     if not sketch_seeds or len(set(sketch_seeds)) != len(sketch_seeds):
         raise ValueError("sketch_seeds must be nonempty and unique")
     if chunk_elements < 1:
