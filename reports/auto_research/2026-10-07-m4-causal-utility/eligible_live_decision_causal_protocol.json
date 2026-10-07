@@ -1,0 +1,87 @@
+{
+  "schema": "m4-shield-eligible-live-causal-v1",
+  "frozen_at": "2026-10-07",
+  "parent_commit": "d13692bbfca72b7f0566184697b5a13bf9308e06",
+  "question": "Does the qualified M4-Shield action cause a better one-update held-out GRPO surrogate change than its reward-variance base action at an eligible live decision?",
+  "independence_unit": "preselected_training_seed_trajectory",
+  "maximum_capsules_per_trajectory": 1,
+  "eligibility": {
+    "candidate_groups": 8,
+    "selected_groups": 4,
+    "base_scorer": "reward_variance_risk",
+    "treatment_scorer": "m4_shield",
+    "require_distinct_actions": true,
+    "require_exact_search": true,
+    "forbid_fallback": true,
+    "minimum_base_overlap_groups": 2,
+    "minimum_fifo_token_multiplier": 0.98,
+    "maximum_fifo_token_multiplier": 1.02,
+    "reward_variance_contract": "exact_total_and_imminent_sums",
+    "numeric_tolerance": 1e-12,
+    "require_strict_imminent_m4_l1_gain": true,
+    "maximum_completed_updates_before_no_eligibility": 64,
+    "outcome_fields_forbidden": true
+  },
+  "capsule": {
+    "checkpoint": "policy_optimizer_scheduler_and_saved_rng_state_before_captured_update",
+    "frontier_tensor_groups": 8,
+    "heldout_tensor_groups": 4,
+    "heldout_rule": "first_four_ready_current_learner_version_groups_after_eligible_frontier",
+    "heldout_disjoint_from_frontier": true,
+    "tensor_fields": "DP_TRAIN_FIELDS",
+    "safe_tensor_serialization": "torch_save_pickle_protocol_2_weights_only_load",
+    "recursive_sha256_inventory": true,
+    "captured_update_executed": false
+  },
+  "paired_replay": {
+    "arms": [
+      "reward_variance_base",
+      "m4_shield"
+    ],
+    "updates_per_arm": 1,
+    "identical_pre_update_state_required": true,
+    "regeneration_forbidden": true,
+    "action_reselection_forbidden": true
+  },
+  "primary_endpoint": {
+    "metric": "token_normalized_frozen_heldout_clipped_pg_loss",
+    "arm_change": "post_minus_pre",
+    "contrast": "shield_change_minus_base_change",
+    "favorable_direction": "negative",
+    "evaluation_mutation": "none"
+  },
+  "secondary_endpoints": [
+    "parameter_update_l2_norm",
+    "train_batch_gradient_l2_norm",
+    "heldout_gradient_dot_train_gradient",
+    "gradient_clipping",
+    "policy_kl"
+  ],
+  "qualification": {
+    "trajectories": 1,
+    "outcome_excluded": true,
+    "minimum_eligible_capsules": 1,
+    "require_checkpoint_restore_qualification_before_acquisition": true
+  },
+  "acquisition": {
+    "predeclared_seed_count": 20,
+    "minimum_valid_capsules_before_outcome_opening": 16,
+    "replacement_seeds": 0,
+    "completion_gate_before_outcome_opening": true
+  },
+  "analysis": {
+    "report_all_capsule_contrasts": true,
+    "primary_summary": "paired_mean_with_95_percent_studentized_bootstrap_interval",
+    "robustness": [
+      "paired_t_interval",
+      "exact_sign_flip_test"
+    ],
+    "categorical_decision_labels": false
+  },
+  "boundaries": {
+    "qualification_opens_post_update_outcomes": false,
+    "one_update_result_claims_terminal_quality": false,
+    "long_horizon_trial_is_separate": true,
+    "outcome_guided_tuning_forbidden": true
+  }
+}
