@@ -139,6 +139,27 @@ under explicit service, liveness, and utility-preservation constraints. It is
 not a randomized comparison, a terminal-quality experiment, or evidence of a
 production-ready policy.
 
+### Frozen no-update exact-gradient construct audit
+
+The audit measured exact per-group gradients without applying optimizer updates
+or comparing scheduler policies. Its primary population contains 214 of 256
+groups; the remaining groups had zero M4 or zero exact gradient norm.
+
+| Endpoint | Estimate | Simultaneous 95% interval | Interpretation |
+| --- | ---: | ---: | --- |
+| Baseline cross-fitted R², log exact gradient norm | 0.7576 | -- | Registered baseline covariates |
+| Baseline + log M4 cross-fitted R² | 0.9364 | -- | Registered augmented model |
+| Incremental R² from M4 | +0.1788 | [0.1333, 0.2409] | Magnitude gate passed |
+| M4-only cross-fitted R² | -0.0064 | -- | Post-primary standalone check |
+| Directional MSE gain, seed 20261019 | -0.000534 | [-0.001586, 0.000544] | Directional gate did not pass |
+| Directional MSE gain, seed 20261021 | -0.000550 | [-0.001460, 0.000372] | Directional gate did not pass |
+| Signed-rank difference, seed 20261019 | -0.0950 | [-0.2520, 0.0674] | Directional gate did not pass |
+| Signed-rank difference, seed 20261021 | -0.1013 | [-0.2572, 0.0576] | Directional gate did not pass |
+
+The terminal classification is `MAGNITUDE_ONLY`. M4 is a robust complementary
+predictor of exact gradient magnitude conditional on the baseline features; it
+is not supported as a standalone magnitude ranker or directional predictor.
+
 ## Dependency-aware interaction results
 
 Let \(S_w = \Delta_{1.7B,w} - \Delta_{0.6B,w}\) be the model-scale contrast

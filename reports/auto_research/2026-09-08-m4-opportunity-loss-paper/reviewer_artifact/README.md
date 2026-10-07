@@ -17,6 +17,8 @@ the four replicated Llama size/workload endpoints, the separate 16-pair
 downstream-quality result, the 10-pair OARS/FIFO policy result, and the 18-block
 three-arm quality-primary follow-up after removal of private filesystem paths.
 It also contains the outcome-excluded 64-decision M4-Shield live qualification.
+It also contains the compact frozen no-update exact-gradient construct audit
+and its post-primary robustness summary.
 It also includes the compact 106,653-assignment
 Qwen-plus-Llama metric-discriminant summary; raw empirical ledgers remain external.
 `data/provenance.json` binds opaque

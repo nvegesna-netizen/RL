@@ -181,6 +181,37 @@ bounded-shutdown, stale-candidate-eviction, and replenishment accounts also
 satisfied their frozen gates. These are systems-qualification facts, not a
 terminal-quality estimate.
 
+## Frozen exact-gradient construct-audit provenance
+
+The gradient-utility audit used a neutral-release, no-update Llama-3.2-1B/GSM8K
+execution. It generated 320 prompt groups, measured exact gradients for 256
+groups of eight siblings, and retained 214 groups in the frozen positive-M4,
+positive-gradient primary population. Optimizer, scheduler, and learner-version
+counts remained zero and the parameter hash was unchanged.
+
+| Record | SHA-256 |
+| --- | --- |
+| Audit protocol | `daae7720287a4c6c61c70ee8c40ac1900c2a428ae608fb27b18f622c317ddf09` |
+| Acquisition protocol | `91824d23afbf435d17bde3867f051f25188e69e9a76069bebd91ed3d22da878f` |
+| Artifact manifest | `6c01be5138c2eea8db15882775b70708c32cf222584e785ba30b459fb89b146a` |
+| Main artifact archive | `fdadac808517b360d937a94cd3bd287879864172774974e391205fc3e03d49db` |
+| Gradient ledger | `a226a6de068256fca55a48a8be931cd5ae33896cdfa4e92d6c55d13b414124d6` |
+| Opportunity ledger | `72f778fc7dee62757f1f473faaaf6c6ff3076afd74237012e25a60f9e445a9a9` |
+| Observer-duty record | `c8addd372a718fe6763896aa905068287bf30a926faa5eb908f47a82f554903d` |
+| Frozen runtime analysis | `d06c02df9047df0f21eab9e62d5d099eb2de434585f6018592141b4e3e0ae3ff` |
+
+The compact terminal result is `MAGNITUDE_ONLY`. Adding log M4 to the registered
+baseline features increased cross-fitted R² for log exact gradient norm by
+0.178795 [0.133276, 0.240928]. Two independently seeded directional projections
+did not pass their gates. A detached local replay matched the classification
+and every numeric value within relative tolerance 1e-12; its largest absolute
+numeric delta was 7.77e-16. Corrected observer duty was 0.000348.
+
+Post-primary robustness is reproducible with
+`../2026-10-07-m4-causal-utility/analyze_gradient_utility_robustness.py` and is
+recorded in `gradient_utility_robustness_result.json` beside that analyzer. The
+checks are descriptive and do not change the frozen terminal classification.
+
 ## Assignment and observer-duty audit
 
 | Cell | Full-window assignments | Unscored | Corrected observer duty | Mechanism |

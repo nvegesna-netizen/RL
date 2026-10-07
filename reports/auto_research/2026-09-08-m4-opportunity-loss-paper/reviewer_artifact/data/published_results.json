@@ -313,6 +313,232 @@
       "protocol_sha256": "bbe2c07211952e3e46d4511524f68e864606a7c63f271ae8e064263044dad0c8"
     }
   },
+  "gradient_utility_audit": {
+    "claim_boundary": "In this frozen Llama-3.2-1B/GSM8K no-update setting, M4 adds substantial held-out predictive information about exact group-gradient magnitude beyond token count, reward mean, reward variance, and truncation, but it does not add held-out information about consensus-gradient direction or outperform reward variance on the preregistered directional rank comparison.",
+    "directional": [
+      {
+        "m4_minus_reward_variance_spearman": -0.09498546915388714,
+        "seed": 20261019,
+        "signed_utility_mse_gain": -0.0005339270701484322,
+        "simultaneous_95_percent_interval_rank_difference": [
+          -0.25195324249666884,
+          0.06737597396155041
+        ],
+        "simultaneous_95_percent_interval_signed_utility_mse_gain": [
+          -0.0015856473665306536,
+          0.0005437221716068493
+        ]
+      },
+      {
+        "m4_minus_reward_variance_spearman": -0.1012658984128652,
+        "seed": 20261021,
+        "signed_utility_mse_gain": -0.0005499929673064008,
+        "simultaneous_95_percent_interval_rank_difference": [
+          -0.257247499133369,
+          0.05764790568902513
+        ],
+        "simultaneous_95_percent_interval_signed_utility_mse_gain": [
+          -0.0014595662561798473,
+          0.00037162520803226914
+        ]
+      }
+    ],
+    "integrity": {
+      "all_aborts_acknowledged": true,
+      "eight_siblings_per_group": true,
+      "finish_train_step_calls_zero": true,
+      "finite_scalar_summaries": true,
+      "learner_version_zero": true,
+      "minimum_primary_population": true,
+      "optimizer_steps_zero": true,
+      "parameter_hash_unchanged": true,
+      "scheduler_steps_zero": true,
+      "sketch_fidelity": true,
+      "unique_groups": true
+    },
+    "magnitude": {
+      "baseline_cross_fitted_r2_log_exact_gradient_norm": 0.7576423221017483,
+      "cross_fitted_r2_gain": 0.1787951468457356,
+      "m4_augmented_cross_fitted_r2_log_exact_gradient_norm": 0.9364374689474837,
+      "m4_spearman_exact_gradient_norm": 0.04270780081488715,
+      "reward_variance_spearman_exact_gradient_norm": 0.4673383258001157,
+      "simultaneous_95_percent_interval": [
+        0.13327607339058842,
+        0.24092831092738334
+      ]
+    },
+    "measured_groups": 256,
+    "model": "meta-llama/Llama-3.2-1B-Instruct",
+    "neutral_release_arm_only": true,
+    "observer": {
+      "corrected_observer_duty": 0.0003481311423260531,
+      "observation_count": 320
+    },
+    "primary_population_groups": 214,
+    "schema": "m4-gradient-utility-public-summary-v1",
+    "status": "MAGNITUDE_ONLY",
+    "workload": "GSM8K train"
+  },
+  "gradient_utility_robustness": {
+    "alternative_balanced_fold_assignments": {
+      "all_positive": true,
+      "assignments": 100,
+      "maximum_gain": 0.18465296983019197,
+      "median_gain": 0.1737871730191214,
+      "minimum_gain": 0.16688534373931618,
+      "q05_gain": 0.1691751593669104,
+      "q95_gain": 0.1799296618813285,
+      "seed": 20261031
+    },
+    "claim_boundary": "These post-primary checks assess robustness of the frozen magnitude interpretation. They do not alter the MAGNITUDE_ONLY classification or establish directional utility, scheduler efficacy, terminal-quality improvement, production readiness, or cross-setting generalization.",
+    "fixed_alpha_sensitivity": [
+      {
+        "alpha": 0.0001,
+        "augmented_cross_fitted_r2": 0.9364975745737261,
+        "baseline_cross_fitted_r2": 0.7579319619796989,
+        "gain": 0.17856561259402715
+      },
+      {
+        "alpha": 0.01,
+        "augmented_cross_fitted_r2": 0.9365000061002878,
+        "baseline_cross_fitted_r2": 0.7579333637789454,
+        "gain": 0.17856664232134245
+      },
+      {
+        "alpha": 0.1,
+        "augmented_cross_fitted_r2": 0.9365055217212186,
+        "baseline_cross_fitted_r2": 0.7579458454384602,
+        "gain": 0.17855967628275837
+      },
+      {
+        "alpha": 1.0,
+        "augmented_cross_fitted_r2": 0.9352076308957232,
+        "baseline_cross_fitted_r2": 0.7580454472323089,
+        "gain": 0.1771621836634143
+      },
+      {
+        "alpha": 10.0,
+        "augmented_cross_fitted_r2": 0.8918811708197898,
+        "baseline_cross_fitted_r2": 0.7570988838474548,
+        "gain": 0.13478228697233496
+      },
+      {
+        "alpha": 100.0,
+        "augmented_cross_fitted_r2": 0.7423555318150798,
+        "baseline_cross_fitted_r2": 0.6997374162624915,
+        "gain": 0.04261811555258832
+      }
+    ],
+    "including_zero_m4_and_zero_gradient_groups": {
+      "augmented_cross_fitted_r2": 0.916882245536491,
+      "baseline_cross_fitted_r2": 0.8620578847099263,
+      "gain": 0.05482436082656472,
+      "groups": 256
+    },
+    "leave_one_frozen_fold_out": {
+      "all_positive": true,
+      "maximum_gain": 0.19436405148614788,
+      "minimum_gain": 0.16751343542947128,
+      "results": [
+        {
+          "augmented_cross_fitted_r2": 0.9312064870818041,
+          "baseline_cross_fitted_r2": 0.7374527320939501,
+          "gain": 0.19375375498785397,
+          "groups": 185,
+          "omitted_fold": 0
+        },
+        {
+          "augmented_cross_fitted_r2": 0.9406089809491538,
+          "baseline_cross_fitted_r2": 0.7664284745771072,
+          "gain": 0.17418050637204663,
+          "groups": 187,
+          "omitted_fold": 1
+        },
+        {
+          "augmented_cross_fitted_r2": 0.9364019081582705,
+          "baseline_cross_fitted_r2": 0.7420378566721226,
+          "gain": 0.19436405148614788,
+          "groups": 186,
+          "omitted_fold": 2
+        },
+        {
+          "augmented_cross_fitted_r2": 0.9364788167293576,
+          "baseline_cross_fitted_r2": 0.7554672063401593,
+          "gain": 0.18101161038919833,
+          "groups": 186,
+          "omitted_fold": 3
+        },
+        {
+          "augmented_cross_fitted_r2": 0.9333167973060988,
+          "baseline_cross_fitted_r2": 0.7658033618766276,
+          "gain": 0.16751343542947128,
+          "groups": 188,
+          "omitted_fold": 4
+        },
+        {
+          "augmented_cross_fitted_r2": 0.9344313960873167,
+          "baseline_cross_fitted_r2": 0.7554686582191878,
+          "gain": 0.17896273786812888,
+          "groups": 189,
+          "omitted_fold": 5
+        },
+        {
+          "augmented_cross_fitted_r2": 0.9368931688123239,
+          "baseline_cross_fitted_r2": 0.7611600771896255,
+          "gain": 0.17573309162269835,
+          "groups": 188,
+          "omitted_fold": 6
+        },
+        {
+          "augmented_cross_fitted_r2": 0.9392623639235278,
+          "baseline_cross_fitted_r2": 0.7583924983598831,
+          "gain": 0.1808698655636447,
+          "groups": 189,
+          "omitted_fold": 7
+        }
+      ]
+    },
+    "post_primary_descriptive": true,
+    "primary_population_groups": 214,
+    "primary_reconstruction": {
+      "augmented_cross_fitted_r2": 0.9364374689474837,
+      "baseline_cross_fitted_r2": 0.7576423221017483,
+      "gain": 0.1787951468457354,
+      "m4_only_cross_fitted_r2": -0.006449769967910024
+    },
+    "schema": "m4-gradient-utility-post-primary-robustness-v1",
+    "status": "ROBUST_CONDITIONAL_MAGNITUDE_SIGNAL",
+    "summary": {
+      "all_registered_style_robustness_gains_positive": true,
+      "conditional_incremental_m4_predictive": true,
+      "interpretation": "M4 is a strong complementary predictor of exact gradient magnitude conditional on the baseline covariates, but it is not a useful standalone magnitude predictor in this acquisition.",
+      "standalone_m4_predictive": false
+    },
+    "winsorization": [
+      {
+        "augmented_cross_fitted_r2": 0.9372463751506599,
+        "baseline_cross_fitted_r2": 0.7530068913266753,
+        "gain": 0.18423948382398458,
+        "tail_fraction": 0.01
+      },
+      {
+        "augmented_cross_fitted_r2": 0.8982866081620469,
+        "baseline_cross_fitted_r2": 0.7463496034114216,
+        "gain": 0.15193700475062522,
+        "tail_fraction": 0.05
+      }
+    ],
+    "within_fold_m4_permutation": {
+      "exceedances": 0,
+      "observed_gain": 0.1787951468457354,
+      "one_sided_p_value": 0.000999000999000999,
+      "permutations": 1000,
+      "permuted_maximum_gain": 0.008691742809838865,
+      "permuted_median_gain": -0.0016443779126975033,
+      "permuted_q95_gain": 0.002076121859687141,
+      "seed": 20261029
+    }
+  },
   "limitations": {
     "downstream_model_quality_measured": false,
     "family_wide_generalization_supported": false,

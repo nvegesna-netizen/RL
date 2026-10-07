@@ -43,6 +43,9 @@ extensions.
 | C35 | M4-Shield improved imminent M4 opportunity relative to the reward-variance base proposal while preserving the registered reward-variance utilities. | Frozen qualification endpoints | Supported within the tested setting | Aggregate imminent L1 gain was +685.08. Total and imminent reward-variance utility differences were both exactly 0.0; combined gradient-observer and decision duty was 0.3182%. |
 | C36 | The M4-Shield qualification establishes a terminal-quality improvement. | Downstream outcome claim | Unsupported and prohibited | Training quality was deliberately excluded from the qualification; no terminal-quality outcome was acquired or analyzed. |
 | C37 | M4-Shield is a production-ready or generally superior asynchronous scheduler. | Deployment and generalization claim | Unsupported and prohibited | The qualification contains one 64-decision run and five interventions in one tested model/workload/environment. It establishes constrained live feasibility, not comparative deployment performance or generalization. |
+| C38 | M4 contains information about exact per-group gradient magnitude beyond ordinary group covariates in the frozen no-update audit. | Prospective construct-validity magnitude endpoint | Supported within the tested acquisition | Across 214 primary groups, adding log M4 raised cross-fitted R² for log exact gradient norm from 0.7576 to 0.9364: gain 0.1788 with simultaneous 95% interval [0.1333, 0.2409]. |
+| C39 | M4 alone is an effective gradient-magnitude ranker or predicts gradient direction. | Strong gradient-utility interpretation | Not supported | M4-only cross-fitted R² was -0.0064. Across two frozen projection seeds, directional MSE gains were -0.000534 and -0.000550 and signed-rank differences were -0.0950 and -0.1013; every simultaneous interval included zero. |
+| C40 | The exact-gradient audit establishes scheduler efficacy, terminal-quality improvement, or cross-setting generalization. | Downstream and external-validity claim | Unsupported and prohibited | The audit is one 256-group no-update acquisition with no scheduler comparison and no training-quality endpoint. It establishes conditional magnitude information only. |
 
 ## Canonical wording
 
@@ -72,11 +75,17 @@ Use:
 > the base proposals, preserved both registered reward-variance utilities
 > exactly, and met the service, liveness, and overhead gates. Together these
 > studies show that M4 can diagnose loss and drive bounded scheduler actions,
-> but they do not establish a stable terminal-quality improvement.
+> but they do not establish a stable terminal-quality improvement. A separate
+> frozen no-update audit found that adding M4 to ordinary group covariates
+> increased held-out R² for exact gradient magnitude by 0.1788 (simultaneous
+> 95% interval [0.1333, 0.2409]). M4 alone and both frozen directional
+> endpoints did not support stronger interpretations, so this is a conditional
+> magnitude result rather than a standalone or directional gradient predictor.
 
 Do not use “confirmed final-quality decrease,” “equivalent final quality,”
 “M4 mediated the OARS quality effect,”
 “replicated scheduler-quality gain,” “M4-Shield improved terminal quality,”
 “production-ready scheduler,” “general across LLMs,” “pure family effect,”
-“general scaling law,” or language that retroactively reclassifies the initial
-acquisition or calls the 3B co-primary study a joint success.
+“general scaling law,” “M4 predicts gradient direction,” “M4 is a standalone
+gradient-utility ranker,” or language that retroactively reclassifies the
+initial acquisition or calls the 3B co-primary study a joint success.

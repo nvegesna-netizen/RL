@@ -141,6 +141,32 @@ def main() -> None:
     ] == 0.0
     assert not shield["frozen_result"]["training_quality_analyzed"]
 
+    gradient_path = (
+        ROOT
+        / "reports/auto_research/2026-10-07-m4-causal-utility/gradient_utility_acquisition_terminal_result.json"
+    )
+    gradient = load(gradient_path)
+    assert gradient["status"] == "MAGNITUDE_ONLY"
+    assert gradient["acquisition"]["measured_prompt_groups"] == 256
+    assert gradient["acquisition"]["primary_population_groups"] == 214
+    assert abs(gradient["magnitude"]["cross_fitted_r2_gain"] - 0.1787951468457356) < 1e-12
+    assert gradient["magnitude"]["simultaneous_95_percent_interval"] == [
+        0.13327607339058842,
+        0.24092831092738334,
+    ]
+    assert all(
+        item["signed_utility_mse_gain"] < 0 for item in gradient["directional"]
+    )
+    robustness_path = (
+        ROOT
+        / "reports/auto_research/2026-10-07-m4-causal-utility/gradient_utility_robustness_result.json"
+    )
+    gradient_robustness = load(robustness_path)
+    assert gradient_robustness["status"] == "ROBUST_CONDITIONAL_MAGNITUDE_SIGNAL"
+    assert gradient_robustness["summary"]["conditional_incremental_m4_predictive"]
+    assert not gradient_robustness["summary"]["standalone_m4_predictive"]
+    assert gradient_robustness["within_fold_m4_permutation"]["exceedances"] == 0
+
     cadence_path = HERE / "cadence_results.json"
     cadence = load(cadence_path)
     assert len(cadence["cells"]) == 6
@@ -173,6 +199,9 @@ def main() -> None:
             "M4-Shield",
             "685.08",
             "0.3182%",
+            "0.1788",
+            "0.9364",
+            "MAGNITUDE_ONLY",
             sha256(synthesis_path),
         ],
     )
@@ -204,6 +233,9 @@ def main() -> None:
             shield["protocol_sha256"],
             "4dfd6886238db11aecc6980f24b698c9578eb4c14a99139ca5751c080adac119",
             "df6fb97686df03b8833cd9c5358588f574058dd5f46c1773d18376ee9e35e9bf",
+            gradient["audit_protocol_sha256"],
+            gradient["artifact_authentication"]["gradient_ledger_sha256"],
+            gradient["artifact_authentication"]["analysis_sha256"],
         ],
     )
 
@@ -234,6 +266,8 @@ def main() -> None:
     print(f"oars_confirmatory_pairs={oars['primary']['n']}")
     print(f"m4_shield_decisions={shield['frozen_result']['decision_count']}")
     print(f"m4_shield_interventions={shield['frozen_result']['intervention_count']}")
+    print(f"gradient_utility_groups={gradient['acquisition']['measured_prompt_groups']}")
+    print(f"gradient_utility_primary_groups={gradient['acquisition']['primary_population_groups']}")
     print(f"six_cell_synthesis_sha256={sha256(synthesis_path)}")
 
 

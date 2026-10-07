@@ -5,8 +5,9 @@ opportunity-loss campaign and its prospective Llama 3.2 1B and 3B extensions.
 It also integrates the separately preregistered 16-pair downstream-quality
 study, 10-pair OARS/FIFO policy study, and 18-block three-arm quality-primary
 follow-up. It also reports an outcome-excluded 64-decision M4-Shield live
-qualification as bounded systems evidence. These additions are not promoted
-into the headline causal-measurement or terminal-quality claims.
+qualification and a frozen 256-group no-update exact-gradient construct audit.
+These additions are not promoted into terminal-quality or production-scheduler
+claims.
 
 ## Start here
 
@@ -16,8 +17,9 @@ into the headline causal-measurement or terminal-quality claims.
 - `claim_ledger.md` — supported, bounded, and prohibited claims.
 - `primary_table.md` — registered cell results and the dependency-aware joint
   interaction table.
-- `post_m4_shield_reviewer_gap_audit.md` — current adversarial scientific
-  review and go/no-go decision; the earlier audit files preserve prior stages.
+- `post_gradient_utility_reviewer_gap_audit.md` — current adversarial
+  scientific review and claim-boundary decision; the earlier audit files
+  preserve prior stages.
 - `next_actions.md` — ordered submission sequence and new-compute decision.
 - `reproducibility_appendix.md` — hardware/software, protocol, acquisition,
   observer-duty, and provenance details.
@@ -67,6 +69,9 @@ into the headline causal-measurement or terminal-quality claims.
 - `../2026-10-05-m4-shield/m4_shield_live_terminal_authentication.json` —
   authenticated, outcome-excluded M4-Shield qualification and compact
   provenance record.
+- `../2026-10-07-m4-causal-utility/gradient_utility_acquisition_terminal_result.json`
+  — frozen exact-gradient audit result; its post-primary robustness analysis is
+  documented in `gradient_utility_robustness_report.md` beside that record.
 - `cell_forest_plot.svg` and `interaction_plot.svg` — generated vector plots.
 - `causal_diagram.md` and `provenance_diagram.md` — Mermaid source diagrams.
 

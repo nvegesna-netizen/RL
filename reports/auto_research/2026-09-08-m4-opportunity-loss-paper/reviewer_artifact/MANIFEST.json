@@ -101,9 +101,9 @@
   },
   "files": [
     {
-      "bytes": 1356,
+      "bytes": 1474,
       "path": "README.md",
-      "sha256": "999866b2c96aaea387860751ba83cfc1cdc3b788b82d53ba8c3b609a934376a9"
+      "sha256": "e46de9801f2f518ab66809032414e29bf2f659b7ce29e720428b565d38c1caf9"
     },
     {
       "bytes": 5889,
@@ -111,9 +111,9 @@
       "sha256": "0f361f9f9de8c21a008dd1964f2865e3204df4a269ef8c77ab4e723e5fbbe7c1"
     },
     {
-      "bytes": 11132,
+      "bytes": 12201,
       "path": "analysis/replay.py",
-      "sha256": "50ea01c9da79045c04a0fcf6a747cafded7511d6260ab65ef6872227e7b620d0"
+      "sha256": "f970a074314c07975e350130d6c41925321896342979672b5674dab1d7a212f0"
     },
     {
       "bytes": 3711,
@@ -121,14 +121,14 @@
       "sha256": "0f4b42f2e8ad2568c584fe93f64b46f5096d0702b50412f00b128c7defe17e0b"
     },
     {
-      "bytes": 8396,
+      "bytes": 9221,
       "path": "data/provenance.json",
-      "sha256": "b19db392cf9a57b7bbe0804b00b4a3491220a1f62e826baf8cccb3fbb3afe576"
+      "sha256": "c2baddff3ae65796bbd9cafec6ce4c721040f03bf5faef7d1552b9ddd6e44959"
     },
     {
-      "bytes": 46612,
+      "bytes": 54957,
       "path": "data/published_results.json",
-      "sha256": "928102d7e3f2f71434ae09a546f301f7b0492b20b53d5acb7849a7526828bd0f"
+      "sha256": "a684f5d6c1b3099a2959cca7ac2496023488efebfbf7d69abf85a6d455ffff7d"
     },
     {
       "bytes": 5457,
@@ -136,14 +136,19 @@
       "sha256": "4f12bafe8cca627a48b9ee21f9fb0d05a3964d2004994a5d28568f8d7c3b168a"
     },
     {
-      "bytes": 14692,
+      "bytes": 16328,
       "path": "docs/claim_ledger.md",
-      "sha256": "4888d904bbe712c888ccfaad6d208ca6c1c68ad259f76e4b6ba0dcac041906fc"
+      "sha256": "6516096fe7ca9110d88e8ad3d87b485e2bf0591bf268648c2d18705062e5a55e"
     },
     {
-      "bytes": 9513,
+      "bytes": 3516,
+      "path": "docs/gradient_utility_robustness.md",
+      "sha256": "af7efcef7a9cfcb3df9a0e3883eed6e4f83d37bb0a99fb2ee8836b8cf1b665a0"
+    },
+    {
+      "bytes": 10890,
       "path": "docs/primary_table.md",
-      "sha256": "569022319f3e2f33af6c5b1c1eeca5ad3c750d4214a13c6ce7613400377da070"
+      "sha256": "9f15fd1d0b3d53cf2ece495cef0ac7aa01e85b09edb0aa1be48456b0b165ff7f"
     },
     {
       "bytes": 6104,
@@ -178,7 +183,7 @@
     {
       "bytes": 752,
       "path": "synthetic/expected_summary.json",
-      "sha256": "f440f2b666adc2eb0e8db5abe35fd56e7ed36d7ffb9c139ce930e9ead098af61"
+      "sha256": "b5c8aa7be2f72b0f00bfde5c859ed8dbcea570f303912b9443c46726b39ef7fb"
     },
     {
       "bytes": 20000,
@@ -186,9 +191,9 @@
       "sha256": "65c2aad6e8eacab0f53a7e6fed6f0edfe30be8cd28d7ee8cd23d508cfbf37089"
     },
     {
-      "bytes": 1807,
+      "bytes": 1971,
       "path": "tests/test_replay.py",
-      "sha256": "b5ac61bdbf5767f3986fb983407505c0b511765e147486be159d53cac9b0d2f1"
+      "sha256": "88cf96b6b4dd7c6edd2b023b1bfa3bf27dc39e328249f136de846f545131934d"
     }
   ],
   "schema": "m4-reviewer-artifact-manifest-v1"

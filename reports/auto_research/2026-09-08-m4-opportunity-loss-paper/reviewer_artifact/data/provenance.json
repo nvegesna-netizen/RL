@@ -109,6 +109,16 @@
     "terminal_authentication_sha256": "f1c00b24877ba54fc68ff267af86824aa2233f8bdf674416bfaa18c9a801a441",
     "terminal_topology_sha256": "b644466687e59f89d4ddb33d75f3b1c096db9e10f7090b122d263a4b2068d72c"
   },
+  "gradient_utility_audit": {
+    "acquisition_protocol_sha256": "91824d23afbf435d17bde3867f051f25188e69e9a76069bebd91ed3d22da878f",
+    "artifact_manifest_sha256": "6c01be5138c2eea8db15882775b70708c32cf222584e785ba30b459fb89b146a",
+    "audit_protocol_sha256": "daae7720287a4c6c61c70ee8c40ac1900c2a428ae608fb27b18f622c317ddf09",
+    "gradient_ledger_sha256": "a226a6de068256fca55a48a8be931cd5ae33896cdfa4e92d6c55d13b414124d6",
+    "main_artifact_sha256": "fdadac808517b360d937a94cd3bd287879864172774974e391205fc3e03d49db",
+    "robustness_result_sha256": "9450ccd7f2e4d6a4f02029133dce4053c14cbd03fd668cd7f621fb8e7ea2be9c",
+    "runtime_analysis_sha256": "d06c02df9047df0f21eab9e62d5d099eb2de434585f6018592141b4e3e0ae3ff",
+    "terminal_result_sha256": "734fcf11edb1e7e96c1d6cb29871be88681a928ee5f9899da1e05dda8abf90eb"
+  },
   "m4_shield_qualification": {
     "artifact_manifest_sha256": "dab59eb868659c4486c83a0c951dcf7727986cbf8ce5b906f96efb8a5bf0a429",
     "decision_ledger_sha256": "4dfd6886238db11aecc6980f24b698c9578eb4c14a99139ca5751c080adac119",

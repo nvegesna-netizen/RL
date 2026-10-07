@@ -18,6 +18,13 @@ M4_SHIELD_AUTH = (
     HERE.parent
     / "2026-10-05-m4-shield/m4_shield_live_terminal_authentication.json"
 )
+GRADIENT_UTILITY_DIR = HERE.parent / "2026-10-07-m4-causal-utility"
+GRADIENT_UTILITY_RESULT = (
+    GRADIENT_UTILITY_DIR / "gradient_utility_acquisition_terminal_result.json"
+)
+GRADIENT_UTILITY_ROBUSTNESS = (
+    GRADIENT_UTILITY_DIR / "gradient_utility_robustness_result.json"
+)
 
 CELL_IDS = {
     "qwen3_0p6b_openmath": "A1",
@@ -162,6 +169,8 @@ the four replicated Llama size/workload endpoints, the separate 16-pair
 downstream-quality result, the 10-pair OARS/FIFO policy result, and the 18-block
 three-arm quality-primary follow-up after removal of private filesystem paths.
 It also contains the outcome-excluded 64-decision M4-Shield live qualification.
+It also contains the compact frozen no-update exact-gradient construct audit
+and its post-primary robustness summary.
 It also includes the compact 106,653-assignment
 Qwen-plus-Llama metric-discriminant summary; raw empirical ledgers remain external.
 `data/provenance.json` binds opaque
@@ -270,6 +279,19 @@ def published_checks() -> dict[str, object]:
     assert shield["exact_search_without_fallback"] == 64
     assert shield["service_band_rows"] == 64
     assert not shield["training_quality_analyzed"]
+    gradient = result["gradient_utility_audit"]
+    assert gradient["status"] == "MAGNITUDE_ONLY"
+    assert gradient["measured_groups"] == 256
+    assert gradient["primary_population_groups"] == 214
+    assert math.isclose(gradient["magnitude"]["cross_fitted_r2_gain"], 0.1787951468457356)
+    assert gradient["magnitude"]["simultaneous_95_percent_interval"] == [0.13327607339058842, 0.24092831092738334]
+    assert len(gradient["directional"]) == 2
+    assert all(item["signed_utility_mse_gain"] < 0 for item in gradient["directional"])
+    gradient_robustness = result["gradient_utility_robustness"]
+    assert gradient_robustness["status"] == "ROBUST_CONDITIONAL_MAGNITUDE_SIGNAL"
+    assert gradient_robustness["summary"]["conditional_incremental_m4_predictive"]
+    assert not gradient_robustness["summary"]["standalone_m4_predictive"]
+    assert gradient_robustness["within_fold_m4_permutation"]["exceedances"] == 0
     discriminant = result["metric_discriminant"]
     assert discriminant["assignment_count"] == 106_653
     assert discriminant["summary"]["positive_opportunity_lost_count"] == 23_254
@@ -290,6 +312,8 @@ def published_checks() -> dict[str, object]:
         "quality_primary_runs": quality["run_count"],
         "m4_shield_decisions": shield["decision_count"],
         "m4_shield_interventions": shield["intervention_count"],
+        "gradient_utility_groups": gradient["measured_groups"],
+        "gradient_utility_primary_groups": gradient["primary_population_groups"],
         "metric_discriminant_assignments": discriminant["assignment_count"],
         "hac_correlation": synthesis["hac_correlation"],
         "bootstrap_correlation": synthesis["bootstrap_correlation"],
@@ -555,6 +579,8 @@ class ReviewerArtifactTest(unittest.TestCase):
         self.assertEqual(output["published"]["quality_primary_runs"], 54)
         self.assertEqual(output["published"]["m4_shield_decisions"], 64)
         self.assertEqual(output["published"]["m4_shield_interventions"], 5)
+        self.assertEqual(output["published"]["gradient_utility_groups"], 256)
+        self.assertEqual(output["published"]["gradient_utility_primary_groups"], 214)
         self.assertEqual(output["synthetic"]["row_count"], 192)
 
     def test_figure_reproduction(self) -> None:
@@ -856,6 +882,27 @@ def main() -> None:
         "liveness_accounting": shield["liveness_accounting"],
         "claim_boundary": shield["scientific_interpretation"],
     }
+    gradient = json.loads(GRADIENT_UTILITY_RESULT.read_bytes())
+    published["gradient_utility_audit"] = {
+        "schema": "m4-gradient-utility-public-summary-v1",
+        "status": gradient["status"],
+        "model": gradient["acquisition"]["model"],
+        "workload": gradient["acquisition"]["workload"],
+        "measured_groups": gradient["acquisition"]["measured_prompt_groups"],
+        "primary_population_groups": gradient["acquisition"][
+            "primary_population_groups"
+        ],
+        "neutral_release_arm_only": gradient["acquisition"][
+            "neutral_release_arm_only"
+        ],
+        "integrity": gradient["integrity"],
+        "magnitude": gradient["magnitude"],
+        "directional": gradient["directional"],
+        "observer": gradient["observer"],
+        "claim_boundary": gradient["decision"]["supported_claim"],
+    }
+    gradient_robustness = json.loads(GRADIENT_UTILITY_ROBUSTNESS.read_bytes())
+    published["gradient_utility_robustness"] = gradient_robustness
     discriminant = json.loads((HERE / "metric_discriminant.json").read_bytes())
     published["metric_discriminant"] = {
         key: discriminant[key]
@@ -998,6 +1045,24 @@ def main() -> None:
             "observer_duty_sha256": "611b251dbbd292495a1af7b04f3d7e928fa0b9fb147525558da2252700eec7e7",
             "qualification_result_sha256": "df6fb97686df03b8833cd9c5358588f574058dd5f46c1773d18376ee9e35e9bf",
         },
+        "gradient_utility_audit": {
+            "audit_protocol_sha256": gradient["audit_protocol_sha256"],
+            "acquisition_protocol_sha256": gradient[
+                "acquisition_execution_protocol_sha256"
+            ],
+            "artifact_manifest_sha256": gradient["manifest_sha256"],
+            "main_artifact_sha256": gradient["artifact_authentication"][
+                "main_artifact_zip_sha256"
+            ],
+            "gradient_ledger_sha256": gradient["artifact_authentication"][
+                "gradient_ledger_sha256"
+            ],
+            "runtime_analysis_sha256": gradient["artifact_authentication"][
+                "analysis_sha256"
+            ],
+            "terminal_result_sha256": sha256(GRADIENT_UTILITY_RESULT),
+            "robustness_result_sha256": sha256(GRADIENT_UTILITY_ROBUSTNESS),
+        },
         "metric_discriminant": {
             "analysis_sha256": sha256(HERE / "metric_discriminant.json"),
             "qwen_recovery_receipt_sha256": sha256(
@@ -1030,6 +1095,9 @@ def main() -> None:
     (output / "docs/claim_ledger.md").write_text(claim_ledger)
     (output / "docs/primary_table.md").write_bytes(
         (HERE / "primary_table.md").read_bytes()
+    )
+    (output / "docs/gradient_utility_robustness.md").write_bytes(
+        (GRADIENT_UTILITY_DIR / "gradient_utility_robustness_report.md").read_bytes()
     )
     robustness_text = (HERE / "robustness.md").read_text()
     robustness_text = robustness_text.replace(

@@ -9,7 +9,9 @@ The exact paper, supplement, and deterministic compact reviewer archive agree
 on the six-cell Qwen evidence, the eight-acquisition Llama 3.2 1B/3B
 extensions, and the separate 16-pair downstream-quality result.
 They also agree on both randomized scheduler studies and the outcome-excluded
-64-decision M4-Shield live qualification.
+64-decision M4-Shield live qualification. They further agree on the frozen
+256-group exact-gradient audit, its conditional magnitude result, and its
+standalone and directional boundaries.
 They contain no discovered internal execution IDs, paths, credentials, or
 author identity. No additional M4 GPU acquisition is needed
 for the scoped opportunity-loss, bounded cross-family, and fixed-configuration
@@ -24,10 +26,10 @@ public URL or empirical raw-ledger access is claimed.
 
 | Object | SHA-256 | Structure |
 | --- | --- | --- |
-| Main review PDF | `9d97a0d6d5a323af50d01fb743b176b6fd35f3f334f447b217754cb91da26696` | PDF 1.5, letter, 7 pages; references begin on page 7 |
-| Supplement PDF | `c04f45e3397c48775e87ac3debd141ea569c9997b478cd1cc84247b4d8ff06c9` | PDF 1.5, letter, 4 pages |
-| Reviewer archive | `e22d92769e5bfe32dbadd2bdf1ec207590dd395a5d543d8e7e8506999baf3d34` | 41,255 bytes; 19 extracted files including manifest |
-| Archive manifest | `dd0df76b473c981a1d8d57bea903448a1f11e93571c8837a00e5378b1251b1cd` | 18 hashed members, A1--A14 external commitments, policy-study summaries, M4-Shield commitments, and 106,653-assignment metric-discriminant summary |
+| Main review PDF | `aff91efefb7927e50cede5f0c8862d060cd4ace1b777545eed6b85b2317c178c` | PDF 1.5, letter, 7 pages; references begin on page 7 |
+| Supplement PDF | `dede65740e2f6a38482b47fc2539ece970e0b2e143709d1c1c8987207d7e2433` | PDF 1.5, letter, 4 pages |
+| Reviewer archive | `77ebfb46f3f5713508aefcb73c21de5a350cd819e9858de324373746929252b0` | 46,821 bytes; 20 extracted files including manifest |
+| Archive manifest | `0217b22d6c54ca9a8e8ac1b7707c700e813f97e81c337aa8fa84d80a3d0b4ff0` | 19 hashed members, A1--A14 external commitments, policy-study and M4-Shield summaries, exact-gradient commitments and robustness, and the 106,653-assignment metric-discriminant summary |
 
 ## Adversarial checks
 
@@ -48,6 +50,8 @@ public URL or empirical raw-ledger access is claimed.
 | M4-Shield objective circularity | Pass | The +685.08 imminent-L1 gain is labeled successful constrained actuation on the objective the shield optimizes, not independent validation or a quality effect. |
 | M4-Shield quality promotion | Pass | The manuscript and artifact state that terminal training quality was excluded and prohibit a terminal-quality or production-readiness interpretation. |
 | M4-Shield systems constraints | Pass | The public-safe record verifies 64 decisions, five interventions, exact preservation of both reward-variance utilities, 64/64 enacted proposals, 64/64 exact searches without fallback, service-band compliance, liveness, and 0.3182% combined duty. |
+| Gradient-construct overclaim | Pass | The manuscript reports baseline and augmented held-out R², their incremental interval, M4-only R², and both directional seeds together. It calls the result conditional magnitude information and prohibits standalone, directional, scheduler, and quality interpretations. |
+| Gradient robustness artifact | Pass | Every reported stress-test gain is positive; no within-fold permutation matches the observed gain. The compact result, report, and anonymous replay agree, while the robustness checks remain explicitly post-primary. |
 | Missing planned secondary analysis | Pass after repair | All 32 authenticated mechanism ledgers were reconstructed. The release policy moved opportunity loss, direct-chain rate, and version advance, while the block-level M4/accuracy slope remained unresolved. Unsupported equal-wall-clock and time-to-quality endpoints are explicitly marked unavailable. |
 | Renamed-staleness objection | Pass after repair | The paper supplies a constructive non-identifiability argument. The authenticated discriminant now covers all six Qwen cells and eight Llama acquisitions (106,653 registered-window assignments) and records 23,254 positive-opportunity losses that consumed-only staleness cannot represent. |
 | Shared-system interference | Pass for bounded claim | The manuscript now interprets the contrast at the tested equal-mass saturation and explicitly prohibits prevalence-invariant or deployment-policy claims. Spillovers remain a prospective research question. |
@@ -100,8 +104,20 @@ public URL or empirical raw-ledger access is claimed.
     claim.
 17. Rebuilt the anonymous reviewer artifact twice with byte-identical archives;
     credential-stripped scan, replay, figure rendering, and unit tests pass.
-18. Rebuilt and visually inspected every page of the 7-page paper and 4-page
-    supplement; the new table is contained and no overfull box remains.
+18. At the preceding M4-Shield stage, rebuilt and visually inspected the then
+    7-page paper and 4-page supplement.
+19. Added the frozen 256-group exact-gradient audit, reconciled the +0.1788
+    held-out R² gain and both directional seeds, and restricted the claim to
+    conditional magnitude information.
+20. Added leave-fold-out, alternative-fold, winsorization, include-zero,
+    regularization, and within-fold permutation checks without changing the
+    frozen `MAGNITUDE_ONLY` classification.
+21. Rebuilt the anonymous reviewer artifact with compact gradient-audit
+    provenance and robustness; the credential-stripped replay, unit tests, and
+    byte-identical second build pass.
+22. Rebuilt and visually inspected the paper and supplement. They remain 7 and
+    4 pages; the abstract is complete, the added table is contained, and no
+    overfull box remains.
 
 ## Remaining release gates
 

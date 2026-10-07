@@ -16,7 +16,7 @@
 \mlsyscorrespondingauthor{Anonymous Author}{anon.email@domain.com}
 \vskip 0.3in
 \begin{abstract}
-This supplement reports reproducibility, provenance, mechanism, observer-duty, and robustness details for the M4 controlled-release study, its prospective Llama 3.2 1B and 3B extensions, the separate 16-pair downstream-quality study, the 10-pair OARS policy study, the 18-block three-arm quality-primary follow-up, and the outcome-excluded M4-Shield live qualification. It does not replace the registered primary analyses.
+This supplement reports reproducibility, provenance, mechanism, observer-duty, and robustness details for the M4 controlled-release study, its prospective Llama 3.2 1B and 3B extensions, the separate 16-pair downstream-quality study, the 10-pair OARS policy study, the 18-block three-arm quality-primary follow-up, the outcome-excluded M4-Shield live qualification, and the frozen no-update exact-gradient construct audit. It does not replace the registered primary analyses.
 \end{abstract}
 ]
 \printAffiliationsAndNotice{}
@@ -199,6 +199,54 @@ ledger, observer-duty record, and qualification-result SHA-256 prefixes are
 \texttt{611b251dbbd2}, and \texttt{df6fb97686df}, respectively. This
 qualification demonstrates constrained live actuation; it is not a randomized
 policy comparison, terminal-quality estimate, or production-readiness claim.
+
+\subsection{Exact-gradient construct audit}
+
+The frozen audit used neutral release and prohibited optimizer, scheduler, or
+learner-version updates. It measured exact gradients for 256 groups of eight
+siblings; 214 positive-M4, positive-gradient groups formed the registered
+magnitude population. Eight frozen folds compared ridge models using valid
+actor tokens, reward mean, reward variance, and truncation with and without log
+M4.
+
+\begin{table}[h]
+\caption{Exact-gradient construct audit.}
+\centering
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lrr}
+\toprule
+Endpoint & Estimate & Simultaneous 95\% interval \\
+\midrule
+Baseline cross-fitted $R^2$ & 0.7576 & -- \\
+Baseline + M4 cross-fitted $R^2$ & 0.9364 & -- \\
+Incremental $R^2$ & 0.1788 & [0.1333, 0.2409] \\
+M4-only cross-fitted $R^2$ & -0.0064 & -- \\
+Directional MSE gain, seed 20261019 & -0.000534 & [-0.001586, 0.000544] \\
+Directional MSE gain, seed 20261021 & -0.000550 & [-0.001460, 0.000372] \\
+Directional rank difference, seed 20261019 & -0.0950 & [-0.2520, 0.0674] \\
+Directional rank difference, seed 20261021 & -0.1013 & [-0.2572, 0.0576] \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+
+The terminal classification is \texttt{MAGNITUDE\_ONLY}. Both sketch seeds had
+median relative norm error approximately 0.00355 and 95th-percentile error
+approximately 0.010; observer duty was 0.0348\%. A detached replay matched all
+values within relative tolerance $10^{-12}$.
+
+All post-primary incremental $R^2$ checks were positive: frozen-fold omissions
+0.168--0.194, 100 alternative folds 0.167--0.185, winsorization 0.152--0.184,
+fixed penalties 0.043--0.179, and all 256 groups including zeros 0.055. None of
+1,000 within-fold M4 permutations matched 0.1788 observed (maximum 0.0087;
+one-sided $p=0.000999$). These are descriptive checks, not an independent
+replication or rescue of direction.
+
+Protocol, acquisition-protocol, gradient-ledger, and analysis SHA-256 prefixes
+are \texttt{daae7720287a}, \texttt{91824d23afbf},
+\texttt{a226a6de0682}, and \texttt{d06c02df9047}. The result supports a
+conditional magnitude feature, not standalone ranking, gradient direction,
+scheduler efficacy, terminal quality, or transport.
 
 Across all six Qwen cells and eight authenticated Llama acquisitions, 23,254 of 28,117 positive-opportunity assignments were lost before consumption. Consumed-rollout version age excludes those observations. Its d5-minus-control contrast correlates -0.617 with the M4 estimate across the 14 acquisitions; the ready-latency contrast correlates 0.638. The Qwen-only registered-window correlation with version age is -0.889 (and -0.813 in the harmonized common window). These small-sample retrospective statistics are descriptive, but the observability mismatch is exact: consumed-only staleness cannot represent a candidate that never trains.
 

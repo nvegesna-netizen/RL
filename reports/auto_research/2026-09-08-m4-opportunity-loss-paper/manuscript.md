@@ -60,9 +60,15 @@ outcome-excluded live qualification then tested M4-Shield as a constrained
 repair layer over reward-variance proposals. It changed 5 of 64 decisions and
 added 685.08 imminent L1 opportunity relative to the base proposals while
 preserving both registered reward-variance utilities exactly; enacted actions,
-service, liveness, and overhead all met their frozen gates. This establishes
-bounded live actuation, not mediation, terminal-quality improvement, or a
-production-ready scheduler.
+service, liveness, and overhead all met their frozen gates. A separate frozen
+256-group, no-update audit then asked whether M4 carries information about
+exact per-group gradients. Adding log M4 to ordinary pre-gradient covariates
+increased held-out R² for log exact gradient norm from 0.758 to 0.936 (gain
+0.179; simultaneous 95% interval [0.133, 0.241]). M4 alone had held-out R²
+-0.006, and neither frozen directional endpoint improved. Thus M4 supplies
+robust conditional-magnitude information, not a standalone or directional
+gradient predictor. Neither this audit nor the live qualification establishes
+mediation, terminal-quality improvement, or a production-ready scheduler.
 
 ## 1. Introduction
 
@@ -108,6 +114,9 @@ reward variance, and absolute M4 over 18 matched blocks. Finally, an
 outcome-excluded live qualification tested whether M4 could repair individual
 reward-variance proposals without degrading their registered utilities or
 violating service, liveness, and overhead constraints.
+A separate frozen, no-update construct audit then compared M4 with exact
+per-group gradients, without training or scheduler intervention, to test what
+optimization information the signal actually contains.
 
 Our contributions are:
 
@@ -133,6 +142,10 @@ Our contributions are:
    that the signal can change live scheduling actions while exactly preserving
    registered reward-variance utilities and satisfying explicit service,
    liveness, and observer-overhead gates.
+9. A frozen exact-gradient construct audit showing that M4 adds substantial
+   out-of-fold information about gradient magnitude beyond ordinary covariates,
+   while ruling out stronger standalone and directional interpretations in the
+   tested acquisition.
 
 ## 2. Related work
 
@@ -401,6 +414,34 @@ constrained scheduler correction rather than serving only as an offline
 diagnostic. It does not estimate a terminal-quality effect, compare long-run
 policies, or establish production readiness.
 
+### 4.9 Exact-gradient construct audit
+
+We finally tested whether the opportunity signal contains information about an
+independent optimization quantity rather than only predicting its own ledger
+definition. The protocol froze a 256-group, no-update acquisition: model
+parameters could not change, no scheduler policy was compared, and exact
+per-group gradients were measured alongside low-duty norm sketches. The
+primary magnitude population contained the 214 groups with positive M4 and
+positive exact gradient norm. Eight frozen folds compared ridge models using
+valid actor tokens, reward mean, reward variance, and truncation against the
+same model augmented with log M4.
+
+The baseline cross-fitted R² for log exact gradient norm was 0.7576; adding M4
+raised it to 0.9364, an increment of 0.1788 with simultaneous 95% interval
+[0.1333, 0.2409]. The registered magnitude gate passed. Importantly, M4 alone
+had cross-fitted R² -0.0064: the result is conditional incremental information,
+not standalone prediction. Directional utility did not pass. Across the two
+frozen projection seeds, MSE-gain estimates were -0.000534 and -0.000550, and
+signed-rank differences were -0.0950 and -0.1013; all simultaneous intervals
+included zero.
+
+All integrity gates passed. Sketch-relative error had median 0.00355 and 95th
+percentile approximately 0.010, no optimizer update occurred, and observer duty
+was 0.0348%. The terminal classification was therefore `MAGNITUDE_ONLY`: M4
+contains information about how much gradient signal is present, conditional on
+the registered covariates, but this acquisition does not support claims about
+gradient direction, scheduling performance, or training quality.
+
 ## 5. Six-cell synthesis
 
 ### 5.1 Harmonized cell inputs
@@ -529,6 +570,17 @@ inconclusive; at 0.35 only OpenMath remains above threshold. Leaving out either
 replicate preserves a positive estimate above 0.20, and every single-replicate
 95% envelope also remains above 0.20.
 
+Post-primary stress tests of the exact-gradient result preserve its narrower
+interpretation. The incremental R² was positive after omitting each frozen fold
+(0.168--0.194), across 100 alternative balanced fold assignments
+(0.167--0.185), under 1% and 5% winsorization (0.184 and 0.152), across fixed
+ridge penalties from 1e-4 through 100 (0.043--0.179), and when all 256 groups,
+including zeros, were retained (0.055). In 1,000 within-fold M4 permutations,
+the largest gain was 0.0087 versus 0.1788 observed; none equaled the observed
+gain (finite-sample one-sided (p=0.000999)). These checks make a fold artifact
+or arbitrary-extra-regressor explanation implausible, but they remain
+descriptive post-primary analyses and do not rescue directional utility.
+
 ## 8. Discussion
 
 The study supports three distinct conclusions. First, controlled release delay
@@ -589,6 +641,14 @@ show constrained live feasibility. Because there is one 64-decision
 qualification and no terminal outcome, this evidence belongs to solution
 feasibility rather than deployment-level effectiveness.
 
+The exact-gradient audit sharpens what the signal means. Its magnitude result
+links opportunity accounting to an independently computed optimization
+quantity, but only after conditioning on ordinary group covariates. The
+standalone and directional results prevent the stronger claim that M4 directly
+ranks gradient usefulness. Future schedulers should therefore combine M4 with
+cheap group features rather than optimize M4 alone, and the resulting policy
+would still require a prospective end-to-end evaluation.
+
 ## 9. Limitations
 
 The model range contains Qwen3-0.6B, Qwen3-1.7B, Llama 3.2 1B, and Llama 3.2
@@ -630,6 +690,13 @@ optimizes, so it demonstrates successful constrained actuation rather than an
 independent quality benefit. Reward-variance preservation does not guarantee
 that every quality-relevant property of the selected data is preserved.
 
+The exact-gradient audit is one 256-group, no-update acquisition in one tested
+model/workload/environment. It validates conditional magnitude information,
+not gradient direction, standalone ranking, scheduler efficacy, terminal
+quality, or cross-setting transport. Its robustness analyses reuse the same
+groups and therefore assess specification stability rather than independent
+replication.
+
 ## 10. Reproducibility and provenance
 
 The campaign separates source freezes, no-training preflights, neutral resource
@@ -667,6 +734,10 @@ result. It records 64 decisions, five interventions, +685.08 imminent L1 gain,
 zero change in both registered reward-variance utilities, and 0.3182% combined
 observer and decision duty. No terminal training-quality payload exists for
 this qualification.
+The gradient-utility terminal record likewise binds the frozen no-update
+protocol, source, exact-gradient ledger, and analysis. The authenticated ledger
+contains 256 groups; compact terminal and post-primary robustness records are
+versioned with the analysis code while the raw ledger remains external.
 The full evidence flow appears in `provenance_diagram.md`.
 
 ## 11. Conclusion
@@ -680,6 +751,7 @@ The evidence sequence is:
 > within-family size extension → prospective end-to-end quality test →
 > prospective opportunity-aware policy test → prospective three-arm
 > quality-primary scheduler test → constrained live M4-Shield qualification
+> → frozen exact-gradient construct audit
 
 Across six definitive Qwen3×math-workload cells, a controlled five-second
 release delay produces positive normalized gradient-opportunity loss; five
@@ -699,8 +771,12 @@ increased retained opportunity, and both active policies reduced wall time.
 M4-Shield subsequently changed 5 of 64 live decisions and added 685.08 imminent
 L1 opportunity over reward-variance base proposals while exactly preserving
 their registered utilities and meeting service, liveness, and overhead gates.
-The scheduler evidence therefore shows both proxy actionability and constrained
-live feasibility, alongside proxy--quality separation; it does not show a
+The no-update gradient audit then showed that adding M4 to ordinary covariates
+increased held-out R² for exact gradient magnitude by 0.1788 [0.1333, 0.2409],
+whereas M4 alone and both directional endpoints did not support stronger
+interpretations. The combined evidence therefore supports a causal diagnostic,
+a conditionally informative optimization signal, and constrained live
+feasibility, alongside proxy--quality separation. It does not show a
 deployment-ready quality improvement. Pure family effects, general scaling
-laws, causal mediation, and broader generalization remain for future
-preregistered studies.
+laws, causal mediation, directional gradient utility, and broader
+generalization remain for future preregistered studies.

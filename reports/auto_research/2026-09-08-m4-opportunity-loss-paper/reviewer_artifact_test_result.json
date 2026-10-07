@@ -1,6 +1,6 @@
 {
-  "archive_bytes": 41255,
-  "archive_sha256": "e22d92769e5bfe32dbadd2bdf1ec207590dd395a5d543d8e7e8506999baf3d34",
+  "archive_bytes": 46821,
+  "archive_sha256": "77ebfb46f3f5713508aefcb73c21de5a350cd819e9858de324373746929252b0",
   "clean_room": {
     "credential_environment_keys": [
       "LANG",
@@ -8,16 +8,16 @@
       "PATH",
       "PYTHONDONTWRITEBYTECODE"
     ],
-    "extracted_file_count": 19,
+    "extracted_file_count": 20,
     "forbidden_content_scan": "PASS",
     "manifest_and_replay": "PASS",
     "stdlib_unit_tests": "PASS"
   },
   "deterministic_rebuild": {
     "archive_byte_identical": true,
-    "second_archive_sha256": "e22d92769e5bfe32dbadd2bdf1ec207590dd395a5d543d8e7e8506999baf3d34"
+    "second_archive_sha256": "77ebfb46f3f5713508aefcb73c21de5a350cd819e9858de324373746929252b0"
   },
-  "manifest_sha256": "dd0df76b473c981a1d8d57bea903448a1f11e93571c8837a00e5378b1251b1cd",
+  "manifest_sha256": "0217b22d6c54ca9a8e8ac1b7707c700e813f97e81c337aa8fa84d80a3d0b4ff0",
   "release_state": "LOCAL_COMPACT_BUNDLE_NOT_EXTERNALLY_HOSTED",
   "schema": "m4-reviewer-artifact-clean-room-result-v1"
 }
