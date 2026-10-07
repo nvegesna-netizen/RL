@@ -78,9 +78,17 @@ extension of this qualification—for example, an observational shadow study of
 broader candidate windows or multi-step opportunity accumulation, followed by
 a new causal design only if its own prospective gate passes.
 
-One audit limitation must be carried forward: rejected-frontier membership was
-not persisted. Exact post hoc frontier-level sensitivity cannot be reconstructed
-from the terminal artifact. A chronological regrouping of ledger rows was
-checked and rejected because it did not reproduce the runtime's frontier-3
-gain; it must not be used as substitute evidence. Any future observational
-instrument should persist every frontier proposal and its group membership.
+### Subsequent provenance correction (2026-10-07)
+
+Rejected-frontier membership was not written directly into the capsule result,
+but it is recoverable from the same authenticated terminal artifact. The
+lifecycle ledger contains 128 `removed` / `selected` events in runtime order:
+exactly 16 consecutive eight-group frontiers. Joining those group IDs to the
+opportunity ledger and rerunning the frozen selector reproduces all 16 emitted
+gains exactly. Fourteen frontiers had zero gain; the two positive gains were
+1.1847% and 3.6869%.
+
+The earlier statement that exact frontier reconstruction was unavailable is
+therefore superseded. The scientific classification remains
+`FAIL_NO_CONTRAST`: reconstruction strengthens the diagnosis that the strict
+version-zero selector usually returned the reward-variance comparator itself.

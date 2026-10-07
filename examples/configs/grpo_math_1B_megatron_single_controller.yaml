@@ -66,6 +66,12 @@ async_rl:
     deployment_coefficients:
       [-2.045869089750717, -0.09493612228166926, -2.7775998529071018, 1.3430663585484355]
     deployment_intercept: 7.83323211834921
+  # Default-off outcome-excluded capture of the first eligible live
+  # M4-Shield divergence. The checkpoint and tensors remain outside Git.
+  eligible_live_decision_capture:
+    enabled: false
+    output_dir: null
+    heldout_groups: 4
   # Default-off behavior-neutral OARS proposal observer. This requires the
   # weight_fifo sampler, four prompts per train step, and the opportunity audit.
   opportunity_at_risk_shadow:

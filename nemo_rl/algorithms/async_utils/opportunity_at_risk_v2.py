@@ -100,6 +100,17 @@ class OARSV2Selection:
     search_strategy: Literal["exact", "mandatory_safe_prune"]
 
 
+@dataclass(frozen=True)
+class EligibleM4ShieldDecision:
+    """Exact live frontier retained before its eligible Shield update."""
+
+    learner_version: int
+    decision: Mapping[str, Any]
+    frontier_metas: tuple[KVBatchMeta, ...]
+    base_group_ids: tuple[str, ...]
+    shield_group_ids: tuple[str, ...]
+
+
 def _finite_nonnegative(value: Any, *, name: str) -> float:
     if isinstance(value, bool) or not isinstance(value, (int, float)):
         raise ValueError(f"{name} must be numeric")
@@ -725,6 +736,7 @@ class OpportunityAtRiskV2ShadowSampler:
         max_candidate_groups: int,
         exact_search_max_candidates: int,
         decision_time_budget_ns: int,
+        capture_eligible_m4_shield_decision: bool,
         record: Callable[[Mapping[str, Any]], None],
     ) -> None:
         if (
@@ -746,6 +758,10 @@ class OpportunityAtRiskV2ShadowSampler:
             raise ValueError("observe mode forbids an actuation scorer")
         if mode == "act" and actuation_scorer not in OARSV2_ACTUATION_SCORERS:
             raise ValueError("act mode requires a supported actuation scorer")
+        if capture_eligible_m4_shield_decision and (
+            mode != "act" or actuation_scorer != "m4_shield"
+        ):
+            raise ValueError("eligible capture requires M4-Shield actuation mode")
         if mode == "act" and candidate_window_policy != "controlled_frontier":
             raise ValueError("act mode requires a controlled candidate frontier")
         if max_candidate_groups < self.EXPECTED_BATCH_GROUPS:
@@ -777,12 +793,22 @@ class OpportunityAtRiskV2ShadowSampler:
         self._record = record
         self._mode = mode
         self._actuation_scorer = actuation_scorer
+        self._capture_eligible_m4_shield_decision = capture_eligible_m4_shield_decision
         self._replenishment_credits = 0
         self._pending_excess_sample_ids: set[tuple[str, ...]] = set()
         self._candidate_excess_removed_groups_total = 0
         self._stale_evicted_groups_total = 0
         self._replenishment_batches_earned_total = 0
         self._replenishment_batches_consumed_total = 0
+        self._eligible_m4_shield_decision: Optional[EligibleM4ShieldDecision] = None
+
+    def take_eligible_m4_shield_decision(
+        self,
+    ) -> Optional[EligibleM4ShieldDecision]:
+        """Consume the first pending live Shield divergence, if one exists."""
+        decision = self._eligible_m4_shield_decision
+        self._eligible_m4_shield_decision = None
+        return decision
 
     def _consume_replenishment_credit(self) -> bool:
         if self._replenishment_credits == 0:
@@ -1205,6 +1231,9 @@ class OpportunityAtRiskV2ShadowSampler:
             min_prompt_groups=min_prompt_groups,
             max_prompt_groups=max_prompt_groups,
         )
+        eligible_frontier_metas: Optional[tuple[KVBatchMeta, ...]] = None
+        eligible_base_group_ids: tuple[str, ...] = ()
+        eligible_shield_group_ids: tuple[str, ...] = ()
         if self._mode == "act" and event is not None:
             if event["skip_reason"] is not None:
                 raise RuntimeError(f"OARS-v2 actuation refused: {event['skip_reason']}")
@@ -1237,6 +1266,39 @@ class OpportunityAtRiskV2ShadowSampler:
                             "OARS-v2 actuation refused: duplicate ready group ID"
                         )
                     candidate_indices_by_id[group_id] = index
+            if (
+                self._actuation_scorer == "m4_shield"
+                and self._capture_eligible_m4_shield_decision
+            ):
+                base_proposal = event["proposals"]["reward_variance_risk"]
+                base_group_ids = tuple(base_proposal["proposed_group_ids"])
+                if proposed_group_ids != base_group_ids:
+                    if self._eligible_m4_shield_decision is not None:
+                        raise RuntimeError(
+                            "eligible M4-Shield decision was not consumed before "
+                            "another eligible decision"
+                        )
+                    frontier_group_ids = tuple(
+                        candidate["group_id"] for candidate in event["candidates"]
+                    )
+                    try:
+                        frontier_metas = tuple(
+                            self._buffer.meta_list[candidate_indices_by_id[group_id]]
+                            for group_id in frontier_group_ids
+                        )
+                    except KeyError as error:
+                        raise RuntimeError(
+                            "eligible M4-Shield frontier is no longer complete"
+                        ) from error
+                    if any(meta is None for meta in frontier_metas):
+                        raise RuntimeError(
+                            "eligible M4-Shield frontier metadata disappeared"
+                        )
+                    eligible_frontier_metas = tuple(
+                        meta for meta in frontier_metas if meta is not None
+                    )
+                    eligible_base_group_ids = base_group_ids
+                    eligible_shield_group_ids = proposed_group_ids
             try:
                 selected_indices = [
                     candidate_indices_by_id[group_id] for group_id in proposed_group_ids
@@ -1285,4 +1347,12 @@ class OpportunityAtRiskV2ShadowSampler:
                     event["proposals"][self._actuation_scorer]["proposed_group_ids"]
                 )
             self._record(event)
+            if eligible_frontier_metas is not None:
+                self._eligible_m4_shield_decision = EligibleM4ShieldDecision(
+                    learner_version=current_train_weight,
+                    decision=dict(event),
+                    frontier_metas=eligible_frontier_metas,
+                    base_group_ids=eligible_base_group_ids,
+                    shield_group_ids=eligible_shield_group_ids,
+                )
         return selected_meta, selected_group_count

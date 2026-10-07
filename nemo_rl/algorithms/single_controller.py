@@ -56,6 +56,9 @@ from nemo_rl.algorithms.async_utils.conditional_m4_capsule import (
     select_conditional_m4_contrast,
     write_capsule,
 )
+from nemo_rl.algorithms.async_utils.eligible_live_decision_capsule import (
+    write_eligible_live_decision_capsule,
+)
 from nemo_rl.algorithms.async_utils.gradient_utility_audit import (
     GradientUtilityAuditRecorder,
 )
@@ -74,6 +77,7 @@ from nemo_rl.algorithms.async_utils.opportunity_at_risk import (
     OpportunityAtRiskShadowSampler,
 )
 from nemo_rl.algorithms.async_utils.opportunity_at_risk_v2 import (
+    EligibleM4ShieldDecision,
     OPPORTUNITY_REWARD_MEAN_KEY,
     OPPORTUNITY_REWARD_VARIANCE_KEY,
     OpportunityAtRiskV2ShadowRecorder,
@@ -195,6 +199,7 @@ class SingleControllerActor:
         self._conditional_capsule_selection: ConditionalM4Selection | None = None
         self._conditional_capsule_frontiers_examined = 0
         self._conditional_capsule_result: dict[str, Any] | None = None
+        self._eligible_live_capture_result: dict[str, Any] | None = None
         utility_config = self._async_cfg.gradient_utility_audit
         if utility_config.enabled:
             self._gradient_utility_recorder = GradientUtilityAuditRecorder(
@@ -423,6 +428,9 @@ class SingleControllerActor:
                     shadow_v2_config.exact_search_max_candidates
                 ),
                 decision_time_budget_ns=shadow_v2_config.decision_time_budget_ns,
+                capture_eligible_m4_shield_decision=(
+                    self._async_cfg.eligible_live_decision_capture.enabled
+                ),
                 record=self._oars_v2_shadow_recorder.append,
             )
         required_capacity = self._sampler.required_buffer_capacity(num_prompts_per_step)
@@ -483,6 +491,7 @@ class SingleControllerActor:
         await self._sync_weights()
         utility_enabled = self._async_cfg.gradient_utility_audit.enabled
         capsule_enabled = self._async_cfg.conditional_m4_capsule.enabled
+        live_capture_enabled = self._async_cfg.eligible_live_decision_capture.enabled
         if utility_enabled:
             self._gradient_utility_parameter_sha256_before = await asyncio.to_thread(
                 self._trainer.model_parameter_sha256
@@ -494,6 +503,14 @@ class SingleControllerActor:
             self._conditional_capsule_parameter_sha256_before = await asyncio.to_thread(
                 self._trainer.model_parameter_sha256
             )
+        if live_capture_enabled:
+            live_capture_dir = Path(
+                self._async_cfg.eligible_live_decision_capture.output_dir or ""
+            )
+            if live_capture_dir.exists():
+                raise FileExistsError(
+                    f"eligible live capture output already exists: {live_capture_dir}"
+                )
         if self._observer_duty_meter is not None:
             self._observer_duty_meter.begin_active_window()
 
@@ -518,6 +535,7 @@ class SingleControllerActor:
             await train_task
             utility_config = self._async_cfg.gradient_utility_audit
             capsule_config = self._async_cfg.conditional_m4_capsule
+            live_capture_config = self._async_cfg.eligible_live_decision_capture
             if utility_config.enabled:
                 self._gradient_utility_parameter_sha256_after = await asyncio.to_thread(
                     self._trainer.model_parameter_sha256
@@ -582,6 +600,19 @@ class SingleControllerActor:
                 expected_description = (
                     "qualified shared capsule, steps=0, version=0, "
                     f"gain>={capsule_config.minimum_relative_predicted_gain}"
+                )
+            elif live_capture_config.enabled:
+                if self._eligible_live_capture_result is None:
+                    raise RuntimeError(
+                        "eligible live decision capture ended without a capsule"
+                    )
+                completed_bounded_run = (
+                    self._eligible_live_capture_result["status"]
+                    == "QUALIFIED_OUTCOME_EXCLUDED_ELIGIBLE_CAPTURE"
+                    and self._trainer_version == self._train_steps
+                )
+                expected_description = (
+                    "one outcome-excluded first-eligible live M4-Shield capsule"
                 )
             else:
                 expected_steps = self._master_config.grpo.max_num_steps
@@ -737,6 +768,18 @@ class SingleControllerActor:
                     self._conditional_capsule_parameter_sha256_before
                     == self._conditional_capsule_parameter_sha256_after
                 ),
+            }
+        if live_capture_enabled:
+            assert self._eligible_live_capture_result is not None
+            result["eligible_live_decision_capture"] = {
+                "status": self._eligible_live_capture_result["status"],
+                "learner_version": self._eligible_live_capture_result[
+                    "learner_version"
+                ],
+                "manifest_sha256": self._eligible_live_capture_result[
+                    "manifest_sha256"
+                ],
+                "post_update_outcomes_opened": False,
             }
         if export_result is not None:
             result["terminal_policy_export"] = export_result
@@ -1049,6 +1092,22 @@ class SingleControllerActor:
                             await asyncio.sleep(0.005)
                             continue
 
+                        if live_capture_enabled := (
+                            self._async_cfg.eligible_live_decision_capture.enabled
+                        ):
+                            if not isinstance(
+                                self._sampler, OpportunityAtRiskV2ShadowSampler
+                            ):
+                                raise RuntimeError(
+                                    "eligible live capture requires the OARS-v2 sampler"
+                                )
+                            eligible = self._sampler.take_eligible_m4_shield_decision()
+                            if eligible is not None:
+                                for _ in range(num_groups):
+                                    self._buffer_capacity.release()
+                                await self._capture_eligible_live_decision(eligible)
+                                return
+
                         # Release buffer capacity
                         for _ in range(num_groups):
                             self._buffer_capacity.release()
@@ -1330,6 +1389,162 @@ class SingleControllerActor:
                     "rollout exhausted before the no-update capsule completed"
                 )
             await asyncio.sleep(0.005)
+
+    async def _remove_captured_frontier_remainder(
+        self, decision: EligibleM4ShieldDecision
+    ) -> None:
+        """Remove the four frontier groups not already enacted by M4-Shield."""
+        frontier_sample_ids = {
+            tuple(meta.sample_ids) for meta in decision.frontier_metas
+        }
+        remaining_indices = [
+            index
+            for index, meta in enumerate(self._buffer.meta_list)
+            if meta is not None
+            and self._buffer.ready_list[index]
+            and tuple(meta.sample_ids) in frontier_sample_ids
+        ]
+        expected_remaining = len(decision.frontier_metas) - len(
+            decision.shield_group_ids
+        )
+        if len(remaining_indices) != expected_remaining:
+            raise RuntimeError(
+                "eligible frontier remainder disagrees with the enacted Shield action"
+            )
+        removed = await self._buffer.remove(
+            remaining_indices,
+            remove_in_dp=False,
+            reason=RolloutRemovalReason.CAUSAL_CAPSULE_CAPTURE,
+            learner_weight_version=decision.learner_version,
+        )
+        if removed != expected_remaining:
+            raise RuntimeError("eligible frontier remainder removal count disagrees")
+        for _ in range(removed):
+            self._buffer_capacity.release()
+
+    async def _take_current_version_heldout_groups(
+        self,
+        *,
+        count: int,
+        learner_version: int,
+        excluded_group_ids: set[str],
+    ) -> list[KVBatchMeta]:
+        """Take the first ready, disjoint groups generated at the capture version."""
+        while True:
+            heldout_indices: list[int] = []
+            for index, ready in enumerate(self._buffer.ready_list):
+                if (
+                    not ready
+                    or self._buffer.start_weight_list[index] != learner_version
+                ):
+                    continue
+                meta = self._buffer.meta_list[index]
+                if meta is None:
+                    continue
+                group_id = meta.extra_info.get(OPPORTUNITY_GROUP_ID_KEY)
+                if not isinstance(group_id, str) or not group_id:
+                    raise RuntimeError(
+                        "heldout candidate lacks an opportunity group ID"
+                    )
+                if group_id in excluded_group_ids:
+                    continue
+                heldout_indices.append(index)
+                if len(heldout_indices) == count:
+                    break
+            if len(heldout_indices) == count:
+                metas = [self._buffer.meta_list[index] for index in heldout_indices]
+                if any(meta is None for meta in metas):
+                    raise RuntimeError("heldout metadata disappeared")
+                removed = await self._buffer.remove(
+                    heldout_indices,
+                    remove_in_dp=False,
+                    reason=RolloutRemovalReason.CAUSAL_CAPSULE_CAPTURE,
+                    learner_weight_version=learner_version,
+                )
+                if removed != count:
+                    raise RuntimeError("heldout removal count disagrees")
+                for _ in range(removed):
+                    self._buffer_capacity.release()
+                return [meta for meta in metas if meta is not None]
+            if self._rollout_exhausted.is_set():
+                raise RuntimeError(
+                    "rollout exhausted before four current-version heldout groups "
+                    "were available"
+                )
+            await asyncio.sleep(0.005)
+
+    async def _capture_eligible_live_decision(
+        self, decision: EligibleM4ShieldDecision
+    ) -> None:
+        """Capture one live Shield divergence without executing its update."""
+        config = self._async_cfg.eligible_live_decision_capture
+        assert config.enabled and config.output_dir is not None
+        if decision.learner_version != self._trainer_version:
+            raise RuntimeError(
+                "eligible decision learner version changed before capture"
+            )
+
+        await self._remove_captured_frontier_remainder(decision)
+        frontier_group_ids = {
+            str(meta.extra_info[OPPORTUNITY_GROUP_ID_KEY])
+            for meta in decision.frontier_metas
+        }
+        heldout_metas = await self._take_current_version_heldout_groups(
+            count=config.heldout_groups,
+            learner_version=decision.learner_version,
+            excluded_group_ids=frontier_group_ids,
+        )
+        self._rollout_permitted.clear()
+
+        all_metas = list(decision.frontier_metas) + heldout_metas
+        parameter_before = await asyncio.to_thread(self._trainer.model_parameter_sha256)
+        try:
+            frontier = [
+                await self._prepare_capsule_group(meta)
+                for meta in decision.frontier_metas
+            ]
+            heldout = [
+                await self._prepare_capsule_group(meta) for meta in heldout_metas
+            ]
+
+            output_dir = Path(config.output_dir)
+            checkpoint_dir = output_dir / "checkpoint"
+            weights_path = checkpoint_dir / "policy" / "weights"
+            optimizer_path = checkpoint_dir / "policy" / "optimizer"
+            checkpoint_dir.mkdir(parents=True)
+            await asyncio.to_thread(self._trainer.prepare_for_training)
+            await asyncio.to_thread(
+                self._trainer.save_checkpoint,
+                weights_path=str(weights_path),
+                optimizer_path=str(optimizer_path),
+                checkpointing_cfg=self._master_config.checkpointing,
+            )
+            await asyncio.to_thread(self._trainer.finalize_async_save)
+            parameter_after = await asyncio.to_thread(
+                self._trainer.model_parameter_sha256
+            )
+            self._eligible_live_capture_result = await asyncio.to_thread(
+                write_eligible_live_decision_capsule,
+                output_dir,
+                frontier=frontier,
+                heldout=heldout,
+                decision=decision.decision,
+                base_group_ids=decision.base_group_ids,
+                shield_group_ids=decision.shield_group_ids,
+                learner_version=decision.learner_version,
+                train_steps_before_capture=self._train_steps,
+                parameter_sha256_before=parameter_before,
+                parameter_sha256_after=parameter_after,
+                checkpoint_dir=checkpoint_dir,
+            )
+        finally:
+            await self._clear_capsule_metas(all_metas)
+
+        print(
+            "eligible live M4-Shield decision captured without update: "
+            f"version={decision.learner_version}",
+            flush=True,
+        )
 
     async def _prepare_capsule_group(self, meta: KVBatchMeta) -> CapsuleGroup:
         """Materialize all future training fields without a forward/backward step."""

@@ -63,6 +63,7 @@ class RolloutRemovalReason(str, Enum):
     SELECTED = "selected"
     STALE_EVICTED = "stale_evicted"
     OARS_CANDIDATE_EXCESS = "oars_candidate_excess"
+    CAUSAL_CAPSULE_CAPTURE = "causal_capsule_capture"
     FAILED = "failed"
     CANCELLED = "cancelled"
     BOUNDED_SHUTDOWN = "bounded_shutdown"

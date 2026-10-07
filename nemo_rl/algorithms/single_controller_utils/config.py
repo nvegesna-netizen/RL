@@ -81,6 +81,14 @@ class ConditionalM4CapsuleConfig(BaseModel, frozen=True):
     deployment_intercept: float = 7.83323211834921
 
 
+class EligibleLiveDecisionCaptureConfig(BaseModel, frozen=True):
+    """Default-off, outcome-excluded first eligible M4-Shield capture."""
+
+    enabled: bool = False
+    output_dir: Optional[str] = None
+    heldout_groups: int = 4
+
+
 class LifecycleDerivedOpportunityAuditConfig(BaseModel, frozen=True):
     """Default-off post-run opportunity reconstruction from lifecycle facts."""
 
@@ -195,6 +203,9 @@ class AsyncRLConfig(BaseModel, extra="allow"):
     conditional_m4_capsule: ConditionalM4CapsuleConfig = Field(
         default_factory=ConditionalM4CapsuleConfig
     )
+    eligible_live_decision_capture: EligibleLiveDecisionCaptureConfig = Field(
+        default_factory=EligibleLiveDecisionCaptureConfig
+    )
     lifecycle_derived_opportunity_audit: LifecycleDerivedOpportunityAuditConfig = Field(
         default_factory=LifecycleDerivedOpportunityAuditConfig
     )
@@ -248,6 +259,7 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
     opportunity_config = async_config.gradient_opportunity_audit
     utility_config = async_config.gradient_utility_audit
     capsule_config = async_config.conditional_m4_capsule
+    live_capture_config = async_config.eligible_live_decision_capture
     derived_config = async_config.lifecycle_derived_opportunity_audit
     shadow_config = async_config.opportunity_at_risk_shadow
     shadow_v2_config = async_config.opportunity_at_risk_v2_shadow
@@ -455,6 +467,69 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
         ):
             raise ValueError(
                 "max_buffered_rollouts cannot hold one frontier plus heldout groups"
+            )
+    if live_capture_config.enabled:
+        if capsule_config.enabled or utility_config.enabled:
+            raise ValueError(
+                "eligible_live_decision_capture is mutually exclusive with "
+                "conditional and gradient-utility capsule modes"
+            )
+        if export_config.enabled:
+            raise ValueError(
+                "eligible_live_decision_capture forbids terminal policy export"
+            )
+        if not live_capture_config.output_dir:
+            raise ValueError("eligible_live_decision_capture requires output_dir")
+        if live_capture_config.heldout_groups != 4:
+            raise ValueError(
+                "eligible_live_decision_capture freezes exactly four heldout groups"
+            )
+        if not shadow_v2_config.enabled or (
+            shadow_v2_config.mode != "act"
+            or shadow_v2_config.actuation_scorer != "m4_shield"
+            or shadow_v2_config.candidate_window_policy != "controlled_frontier"
+        ):
+            raise ValueError(
+                "eligible_live_decision_capture requires controlled-frontier "
+                "M4-Shield actuation"
+            )
+        if not isinstance(async_config.sampler, WeightFifoSamplerConfig) or (
+            async_config.sampler.selection_candidate_watermark != 8
+        ):
+            raise ValueError(
+                "eligible_live_decision_capture requires an eight-group "
+                "weight-FIFO watermark"
+            )
+        if master_config.grpo.num_prompts_per_step != 4:
+            raise ValueError(
+                "eligible_live_decision_capture requires four prompt groups per update"
+            )
+        if master_config.grpo.num_generations_per_prompt != 8:
+            raise ValueError(
+                "eligible_live_decision_capture requires eight siblings per group"
+            )
+        if master_config.grpo.max_num_steps != 64:
+            raise ValueError(
+                "eligible_live_decision_capture freezes a 64-update eligibility window"
+            )
+        if (
+            shadow_v2_config.minimum_service_multiplier != 0.98
+            or shadow_v2_config.maximum_service_multiplier != 1.02
+            or shadow_v2_config.exact_search_max_candidates != 16
+        ):
+            raise ValueError(
+                "eligible_live_decision_capture requires the qualified Shield "
+                "service band and exact-search cap"
+            )
+        release_arms = async_config.controlled_release_delay.arms
+        if len(release_arms) != 1 or release_arms[0].delay_seconds != 0:
+            raise ValueError(
+                "eligible_live_decision_capture requires one neutral release arm"
+            )
+        if async_config.max_buffered_rollouts < 12:
+            raise ValueError(
+                "eligible_live_decision_capture requires capacity for the eight-group "
+                "frontier plus four heldout groups"
             )
     if shadow_config.enabled:
         if not opportunity_config.enabled:

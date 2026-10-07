@@ -38,6 +38,7 @@ from nemo_rl.algorithms.single_controller_utils.config import (
     AdvantageConfig,
     AsyncRLConfig,
     ConditionalM4CapsuleConfig,
+    EligibleLiveDecisionCaptureConfig,
     GradientOpportunityAuditConfig,
     GradientUtilityAuditConfig,
     MasterConfig,
@@ -337,6 +338,57 @@ def test_conditional_capsule_refuses_gradient_utility_mode() -> None:
         sketch_seeds=(3, 5),
     )
     with pytest.raises(ValueError, match="mutually exclusive"):
+        validate_single_controller_config(config)
+
+
+def _eligible_live_capture_config() -> MasterConfig:
+    config = _controlled_release_master_config(lifecycle_audit_path="lifecycle.jsonl")
+    config.policy["train_global_batch_size"] = 32
+    config.grpo.num_prompts_per_step = 4
+    config.grpo.num_generations_per_prompt = 8
+    config.grpo.max_num_steps = 64
+    config.async_rl.max_buffered_rollouts = 64
+    config.async_rl.controlled_release_delay = ControlledReleaseDelayConfig(
+        enabled=True,
+        arms=(ControlledReleaseArmConfig(label="neutral", delay_seconds=0.0, mass=1),),
+    )
+    config.async_rl.sampler = WeightFifoSamplerConfig(
+        max_staleness_versions=1,
+        selection_candidate_watermark=8,
+    )
+    config.async_rl.gradient_opportunity_audit = GradientOpportunityAuditConfig(
+        enabled=True,
+        output_path="opportunity.jsonl",
+        observer_duty_path="duty.json",
+    )
+    config.async_rl.opportunity_at_risk_v2_shadow = OpportunityAtRiskV2ShadowConfig(
+        enabled=True,
+        mode="act",
+        actuation_scorer="m4_shield",
+        output_path="oars-v2.jsonl",
+        candidate_window_policy="controlled_frontier",
+    )
+    config.async_rl.eligible_live_decision_capture = EligibleLiveDecisionCaptureConfig(
+        enabled=True,
+        output_dir="eligible-capsule",
+    )
+    return config
+
+
+def test_eligible_live_capture_accepts_exact_shield_configuration() -> None:
+    validate_single_controller_config(_eligible_live_capture_config())
+
+
+def test_eligible_live_capture_rejects_nonshield_actuation() -> None:
+    config = _eligible_live_capture_config()
+    config.async_rl.opportunity_at_risk_v2_shadow = OpportunityAtRiskV2ShadowConfig(
+        enabled=True,
+        mode="act",
+        actuation_scorer="reward_variance_risk",
+        output_path="oars-v2.jsonl",
+        candidate_window_policy="controlled_frontier",
+    )
+    with pytest.raises(ValueError, match="requires controlled-frontier M4-Shield"):
         validate_single_controller_config(config)
 
 

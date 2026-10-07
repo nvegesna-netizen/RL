@@ -353,13 +353,18 @@ def _shadow(buffer: FakeBuffer, *, max_candidates: int = 64):
         max_candidate_groups=max_candidates,
         exact_search_max_candidates=min(25, max_candidates),
         decision_time_budget_ns=100_000_000,
+        capture_eligible_m4_shield_decision=False,
         record=lambda event: events.append(dict(event)),
     )
     return sampler, events
 
 
 def _controlled_actuator(
-    buffer: FakeBuffer, *, scorer: str, decision_time_budget_ns: int = 100_000_000
+    buffer: FakeBuffer,
+    *,
+    scorer: str,
+    decision_time_budget_ns: int = 100_000_000,
+    capture_eligible: bool = False,
 ):
     baseline = WeightFifoSampler(
         buffer,
@@ -378,6 +383,7 @@ def _controlled_actuator(
         max_candidate_groups=64,
         exact_search_max_candidates=16,
         decision_time_budget_ns=decision_time_budget_ns,
+        capture_eligible_m4_shield_decision=capture_eligible,
         record=lambda event: events.append(dict(event)),
     )
     return sampler, events
@@ -485,6 +491,7 @@ def test_controlled_frontier_observes_choice_but_executes_fifo() -> None:
         max_candidate_groups=64,
         exact_search_max_candidates=16,
         decision_time_budget_ns=100_000_000,
+        capture_eligible_m4_shield_decision=False,
         record=lambda event: events.append(dict(event)),
     )
 
@@ -519,6 +526,7 @@ def test_controlled_frontier_does_not_observe_below_watermark() -> None:
         max_candidate_groups=64,
         exact_search_max_candidates=16,
         decision_time_budget_ns=100_000_000,
+        capture_eligible_m4_shield_decision=False,
         record=lambda event: events.append(dict(event)),
     )
 
@@ -624,6 +632,41 @@ def test_controlled_frontier_m4_shield_enacts_exact_utility_refinement() -> None
     )
     assert shield["proposed_imminent_l1"] > reward["proposed_imminent_l1"]
     assert events[0]["proposal_matches_actual"] is True
+
+
+def test_m4_shield_exposes_first_eligible_live_frontier_once() -> None:
+    buffer = FakeBuffer()
+    for index, (group_id, l1) in enumerate(
+        zip(("a", "b", "c", "d", "w", "x", "y", "z"), range(1, 9), strict=True)
+    ):
+        buffer.add(
+            group_id,
+            weight=1,
+            l1=float(l1),
+            l2=float(l1),
+            tokens=100,
+            reward_mean=0.5,
+            reward_variance=1.0,
+            ready_timestamp_ns=100 + index,
+        )
+    sampler, _ = _controlled_actuator(buffer, scorer="m4_shield", capture_eligible=True)
+
+    asyncio.run(
+        sampler.select(
+            current_train_weight=2,
+            min_prompt_groups=4,
+            max_prompt_groups=4,
+        )
+    )
+
+    decision = sampler.take_eligible_m4_shield_decision()
+    assert decision is not None
+    assert decision.learner_version == 2
+    assert len(decision.frontier_metas) == 8
+    assert decision.base_group_ids == ("a", "b", "c", "d")
+    assert decision.shield_group_ids == ("c", "d", "y", "z")
+    assert decision.decision["proposal_matches_actual"] is True
+    assert sampler.take_eligible_m4_shield_decision() is None
 
 
 def test_actuation_is_failure_atomic_on_missing_metadata() -> None:
@@ -784,6 +827,7 @@ def test_controlled_frontier_observes_only_the_common_watermark_window() -> None
         max_candidate_groups=64,
         exact_search_max_candidates=16,
         decision_time_budget_ns=100_000_000,
+        capture_eligible_m4_shield_decision=False,
         record=lambda event: events.append(dict(event)),
     )
 

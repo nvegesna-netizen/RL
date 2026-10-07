@@ -1,0 +1,49 @@
+# Outcome-excluded causal capsule at the first eligible live M4-Shield decision.
+defaults: grpo_math_1B_megatron_single_controller_m4_shield_qualification.yaml
+
+grpo:
+  max_num_steps: 64
+  max_num_epochs: 2
+  seed: 20261031
+
+async_rl:
+  lifecycle_audit_path: results/m4-eligible-live-capture/lifecycle.jsonl
+  controlled_release_delay:
+    enabled: true
+    seed: 20261031
+    assignment_domain: m4-eligible-live-causal-qualification-v1
+    arms:
+      - label: neutral
+        delay_seconds: 0.0
+        mass: 1
+  gradient_opportunity_audit:
+    enabled: true
+    output_path: results/m4-eligible-live-capture/opportunity.jsonl
+    observer_duty_path: results/m4-eligible-live-capture/observer-duty.json
+  opportunity_at_risk_v2_shadow:
+    enabled: true
+    mode: act
+    actuation_scorer: m4_shield
+    output_path: results/m4-eligible-live-capture/oars-v2.jsonl
+    candidate_window_policy: controlled_frontier
+    minimum_service_multiplier: 0.98
+    maximum_service_multiplier: 1.02
+    max_candidate_groups: 64
+    exact_search_max_candidates: 16
+    decision_time_budget_ns: 5000000
+  conditional_m4_capsule:
+    enabled: false
+  eligible_live_decision_capture:
+    enabled: true
+    output_dir: results/m4-eligible-live-capture/capsule
+    heldout_groups: 4
+  terminal_policy_export:
+    enabled: false
+
+logger:
+  log_dir: results/m4-eligible-live-capture/metrics
+  wandb_enabled: false
+  tensorboard_enabled: false
+  mlflow_enabled: false
+  swanlab_enabled: false
+  monitor_gpus: false
