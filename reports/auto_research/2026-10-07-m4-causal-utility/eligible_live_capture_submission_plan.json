@@ -1,0 +1,39 @@
+{
+  "schema": "m4-shield-eligible-live-capture-eos-submission-plan-v1",
+  "status": "READY_FOR_SINGLE_SUBMISSION",
+  "scientific_manifest": {
+    "path": "session/20260914_m4_opportunity_control/m4-eligible-live-capture-manifest.json",
+    "sha256": "c8ce2aae1c6cc8a6004bca63688210f946fbc909b8826138c42b851f7f749dc7",
+    "time_limit_seconds": 14400,
+    "post_update_outcomes_opened": false
+  },
+  "launcher": {
+    "path": "/Users/nvegesna/Documents/JET-LLM/runllm.py",
+    "sha256": "7e5ca7cb2b9807404123b19009d8d975f390f38690bf0a691f65f291b49c3cbb",
+    "config_id": "dlalgo-ci/eos",
+    "mode": "--no_wait",
+    "submission_attempt_limit": 1,
+    "automatic_retry": false
+  },
+  "eos_custom_config": {
+    "path": "reports/auto_research/2026-10-07-m4-causal-utility/eligible_live_capture_eos_custom_config.yaml",
+    "sha256": "526129dd6a5a60e2e9ab0e8e63f0abd28acf7d444e37b0905b7e74459bc4e167",
+    "client_queue_deadline": null,
+    "account": "coreai_dlalgo_ci",
+    "partition": "batch",
+    "exclusive": true,
+    "signal": "CONT@1860"
+  },
+  "additional_variables": {
+    "path": "reports/auto_research/2026-10-07-m4-causal-utility/eligible_live_capture_variables.yaml",
+    "sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+    "credential_free": true,
+    "value": {}
+  },
+  "credential_setup": {
+    "path": "/Users/nvegesna/Documents/JET-LLM/setup_jet.sh",
+    "source_immediately_before_submission": true,
+    "content_or_hash_recorded": false
+  },
+  "ambiguity_policy": "Do not make a second submission if the launcher response is ambiguous; inspect external pipeline state first."
+}
