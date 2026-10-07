@@ -1,0 +1,53 @@
+{
+  "schema": "m4-gradient-utility-runtime-qualification-test-selection-repair-v1",
+  "status": "FROZEN_AFTER_PRE_ACQUISITION_EMPTY_SELECTION_BEFORE_REPLACEMENT",
+  "date": "2026-10-07",
+  "user_authorization": "standing authorization for EOS launches",
+  "qualification_protocol_sha256": "ce70a012c7aaa82cca7b944a6ebc8692a3188890d990f4b71e28b1b1229ccad1",
+  "py_dependency_repair_protocol_sha256": "d6e1093077af13644f0203cc40aa4a1634bac5cd72f3376385fd726eb75a358b",
+  "failed_upstream_pipeline_id": 72200749,
+  "failed_child_pipeline_id": 72200849,
+  "failed_eos_job_id": 474287121,
+  "failed_slurm_job_id": 6189905,
+  "failed_main_artifact_sha256": "80e284dab3e4508ea8b635b735aa9eb4bd747eaf728debf5fc70e94641ac4126",
+  "failed_logs_after_artifact_sha256": "f1d00c472099dfb81de2f7257eaf5b985f866cafb93ffc926fb0ce6e0569561d",
+  "failed_workload_output_sha256": "17b17068149a74d80d297d43f70ef57fc8abccfcc49b3f52c4d721cb71ed6288",
+  "failed_slurm_output_sha256": "c2f132d63e3aac5dacbd3a5413a66bdc9126fe2e33183ac84b714c8b2f64a082",
+  "exit_code": 5,
+  "training_command_started": false,
+  "optimizer_steps": 0,
+  "scheduler_steps": 0,
+  "learner_version_advances": 0,
+  "gradient_records": 0,
+  "scientific_data_created": false,
+  "mcore_import_gate_passed": true,
+  "isolated_pytest_startup_passed": true,
+  "collected_tests": 37,
+  "selected_tests": 0,
+  "authenticated_error": "37 deselected, 18 warnings in 13.15s",
+  "root_cause": "The -k expression named begin_train_step and abort_train_step implementation operations, but pytest matching uses collected node names and parents; the relevant frozen nodes are under TestBegin, TestAbort, and TestGradSyncFuncLifecycle.",
+  "repair": {
+    "operation": "Replace the empty -k expression with explicit frozen node IDs for the complete TestBegin and TestAbort classes and the begin-abort lifecycle round-trip test.",
+    "selected_nodes": [
+      "tests/unit/models/policy/test_megatron_split_state.py::TestBegin",
+      "tests/unit/models/policy/test_megatron_split_state.py::TestAbort",
+      "tests/unit/models/policy/test_megatron_split_state.py::TestGradSyncFuncLifecycle::test_begin_abort_round_trip"
+    ],
+    "source_commit": "702a40535",
+    "source_archive_sha256": "66667fb2192673a38a6c9e409ea104988356e75e617d78fb0c0ef99bbb8a0bdd",
+    "megatron_lm_archive_sha256": "98d98920c0fea3d8ae1216a485dc9b5aa4fc966e469435ad61f2bae456de80d2",
+    "source_or_audit_protocol_change": false,
+    "scientific_design_change": false
+  },
+  "replacement_boundary": {
+    "submission_attempt_limit": 1,
+    "required_launcher": "runllm.py --no_wait",
+    "nodes": 1,
+    "gpus": 2,
+    "runtime_limit_seconds": 14400,
+    "queue_deadline_override": null,
+    "automatic_retry": false,
+    "automatic_extension": false,
+    "scientific_acquisition": false
+  }
+}
