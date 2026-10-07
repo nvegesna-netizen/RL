@@ -1,0 +1,80 @@
+{
+  "schema": "m4-conditional-one-update-bridge-offline-protocol-v1",
+  "status": "FROZEN_BEFORE_CANONICAL_REPLAY_OR_IMPLEMENTATION",
+  "date": "2026-10-07",
+  "parent_commit": "849037409",
+  "purpose": "Freeze a deployable token-conditioned M4 magnitude score and test whether it creates a service-safe, reward-variance-noninferior treatment contrast before retaining raw training capsules or updating a model.",
+  "development_inputs": {
+    "gradient_utility_ledger": {
+      "sha256": "a226a6de068256fca55a48a8be931cd5ae33896cdfa4e92d6c55d13b414124d6",
+      "expected_groups": 256,
+      "role": "fit_and_cross_validate_the_deployment_score"
+    },
+    "controlled_frontier_archive": {
+      "sha256": "c4e8be7c84d3899ca220c1a50858c87024b2e572f8f636ed481cee279f6a4617",
+      "ledger_member_suffix": "m4-oars-v2-controlled-frontier-requalification-oars-v2.jsonl",
+      "ledger_sha256": "ccd493e4077ad538ded6b510b2ce2b69affbf39a30fbe006968c1618f58b9d22",
+      "expected_decisions": 64,
+      "expected_candidates_per_decision": 8,
+      "role": "outcome_excluded_reachability_and_service_replay"
+    }
+  },
+  "deployment_model": {
+    "population": "finite groups with positive M4 and nonzero exact gradient",
+    "outcome": "log_exact_token_normalized_gradient_l2_norm",
+    "features_in_order": [
+      "log1p_valid_actor_tokens",
+      "reward_mean",
+      "reward_variance",
+      "log1p_m4_l1"
+    ],
+    "zero_m4_prediction": 0.0,
+    "estimator": "standardized_ridge_with_intercept",
+    "folds": 8,
+    "alpha_grid": [0.0001, 0.01, 0.1, 1.0, 10.0, 100.0],
+    "alpha_selection": "minimum_eight_fold_out_of_fold_mean_squared_error_then_smallest_alpha",
+    "final_fit": "selected_alpha_refit_on_all_primary_groups",
+    "reason_truncation_is_omitted": "The live OARS frontier does not expose truncation. This omission is frozen before canonical replay; the prior robustness audit found essentially unchanged incremental magnitude information without truncation."
+  },
+  "frontier_policy": {
+    "base_proposer": "reward_variance_risk",
+    "batch_groups": 4,
+    "candidate_groups": 8,
+    "minimum_token_multiplier_to_fifo": 0.98,
+    "maximum_token_multiplier_to_fifo": 1.02,
+    "reward_variance_floor_multiplier_to_base_proposer": 1.0,
+    "objective": "maximize_sum_of_predicted_exact_gradient_norm",
+    "strict_actuation_rule": "act_only_if_predicted_norm_sum_exceeds_base_by_more_than_1e-12",
+    "tie_breaks": [
+      "higher_total_reward_variance",
+      "lower_valid_actor_tokens",
+      "lexicographically_smaller_group_identity_tuple"
+    ],
+    "numeric_tolerance": 1e-12
+  },
+  "offline_gate": {
+    "primary_population_groups_minimum": 192,
+    "augmented_cross_fitted_r2_minimum": 0.9,
+    "incremental_cross_fitted_r2_minimum": 0.1,
+    "strict_interventions_minimum": 8,
+    "strict_intervention_rate_minimum": 0.15,
+    "median_relative_predicted_norm_gain_minimum": 0.1,
+    "minimum_reward_variance_retention": 1.0,
+    "minimum_token_ratio": 0.98,
+    "maximum_token_ratio": 1.02,
+    "all_replays_deterministic": true
+  },
+  "decision_ladder": {
+    "pass": "Authorize implementation and outcome-excluded qualification of a frozen version-zero capsule collector. No model update or learning outcome is authorized by this gate.",
+    "fail": "Do not implement or launch a causal bridge from this score.",
+    "future_training_boundary": "A paired one-update acquisition requires a separately frozen capsule identity, identical initialization and training tensors across arms, a qualified held-out surrogate-loss reader, and explicit treatment-contrast authentication before outcomes are opened."
+  },
+  "claim_boundary": {
+    "development_replay": true,
+    "training_updates": false,
+    "terminal_quality": false,
+    "causal_learning_effect": false,
+    "production_readiness": false,
+    "pipeline_status_is_scientific_endpoint": false
+  }
+}
