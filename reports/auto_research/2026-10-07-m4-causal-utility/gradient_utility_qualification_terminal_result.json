@@ -1,0 +1,60 @@
+{
+  "schema": "m4-gradient-utility-runtime-qualification-terminal-result-v1",
+  "status": "PASS_RUNTIME_QUALIFICATION",
+  "date": "2026-10-07",
+  "source_commit": "702a40535",
+  "source_archive_sha256": "66667fb2192673a38a6c9e409ea104988356e75e617d78fb0c0ef99bbb8a0bdd",
+  "qualification_protocol_sha256": "ce70a012c7aaa82cca7b944a6ebc8692a3188890d990f4b71e28b1b1229ccad1",
+  "result_writer_repair_protocol_sha256": "f2041a7fcefce2203e60c3e43b8f48179a147dd8f14581e6696836dd0c413279",
+  "submission_manifest_sha256": "fb4f0e2496338f883bef96ff8883ce415daafb7844d525b2b80f60a40cc01cc8",
+  "upstream_pipeline_id": 72206571,
+  "child_pipeline_id": 72207068,
+  "logs_before_job_id": 474336600,
+  "main_job_id": 474336607,
+  "logs_after_job_id": 474336613,
+  "slurm_job_id": 6190180,
+  "main_artifact_sha256": "93dcc1362b9d951ea57ed0d5f09008e52a2717acc861994515c75bebaba487ee",
+  "logs_after_artifact_sha256": "f926319df461cc92a026561f010788ce8c11633c94c652d72145deb3f3b1e2c6",
+  "workload_output_sha256": "3f27c84dcbd640b3a71d86b6a2ae058f9b285f2be9946f207b99994308a9eeeb",
+  "slurm_output_sha256": "9a617aa9aad96e10a439c82556e648724c390b6aaaed78b0eb92b0c3f74eb0b0",
+  "artifact_inventory_sha256": "276e71377990991c8e984fa4acbb156d0d25bafd5520c9c42c86468ac26ec0c5",
+  "formal_result_sha256": "4ee893d47f4f4eef37f63538866b3f5504225a144877593afc9ba94c100207c8",
+  "gradient_ledger_sha256": "a372babaa515f7bb4bbc6773ea85a3ad3f83ccc3e458bf1cb57b7d4f1e29b348",
+  "lifecycle_ledger_sha256": "d9dddcc202799684ebf0b3ff6b5720195d0ef85acc774505bfe0f457033648b6",
+  "observer_duty_sha256": "57aa0919bb6e9dbda9104e50822f418093458ef8c1cc996ba7554b96ca324606",
+  "opportunity_ledger_sha256": "2cbf1eb593a9a2ff0f22ab54c7ce351ae0138148064413ea11ed233f83024d55",
+  "runtime_log_sha256": "dc474718324b0167097ef42343ca1fed5338c7e304ea218edd2891a05984c94d",
+  "preflight": {
+    "gradient_summary_tests_passed": 7,
+    "controller_configuration_tests_passed": 3,
+    "mcore_begin_abort_tests_passed": 12,
+    "offline_analyzer_tests_passed": 2
+  },
+  "qualification": {
+    "groups": 2,
+    "siblings_per_group": 8,
+    "group_ids": [
+      "4c391d9c-58ad-4040-9adf-f6ee5a55ac6f",
+      "ec664346-382b-493d-ae21-5fe1655a5592"
+    ],
+    "exact_l2_norms": [
+      8.783870995975551,
+      6.499511124023895
+    ],
+    "sketches_per_group": 2,
+    "sketch_bins": 16384,
+    "abort_acknowledged_every_group": true,
+    "finish_train_step_calls": 0,
+    "optimizer_steps": 0,
+    "scheduler_steps": 0,
+    "learner_version": 0,
+    "parameter_hash_unchanged": true,
+    "corrected_observer_duty": 0.0031876195848652687
+  },
+  "artifact_inventory_entries": 6,
+  "artifact_inventory_authenticated": true,
+  "scientific_construct_classification": false,
+  "scheduler_quality_acquisition": false,
+  "terminal_benchmark": false,
+  "scientific_acquisition_started": false
+}

@@ -2,6 +2,11 @@
 
 Status: **FROZEN BEFORE IMPLEMENTATION OR OUTCOME ACQUISITION**
 
+Execution status (2026-10-07): the implementation passed the frozen two-group
+runtime qualification in child pipeline `72207068`. The 256-group scientific
+acquisition has not started, and no construct classification follows from the
+qualification result.
+
 ## Why this audit is the next scientific step
 
 The authenticated 14-acquisition transport analysis found that an M4-risk
@@ -133,4 +138,3 @@ M4-Shield versus reward-variance outcome acquisition. `MAGNITUDE_ONLY` can
 strengthen the paper's measurement interpretation but cannot justify a claim
 that M4 prioritization improves learning. No result from this audit establishes
 terminal quality, production readiness, or broad generalization.
-
