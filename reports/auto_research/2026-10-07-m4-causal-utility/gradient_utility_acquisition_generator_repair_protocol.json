@@ -1,0 +1,49 @@
+{
+  "schema": "m4-gradient-utility-acquisition-generator-repair-protocol-v1",
+  "status": "FROZEN_AFTER_GENERATOR_FAILURE_BEFORE_REPLACEMENT",
+  "date": "2026-10-07",
+  "failed_submission": {
+    "parent_pipeline_id": 72218112,
+    "generator_job_id": 474420732,
+    "generator_trace_sha256": "30c8a632e018dc9c2e35a6402ddf1fbe3bf01ddc05ba2d2790178a9f953ffc82",
+    "manifest_sha256": "cde1915e9a1b1b7a33c008cf97956a689ef79a9d038cf04eb5ee86f6559cbb90",
+    "downstream_pipeline_created": false,
+    "eos_job_created": false,
+    "scientific_acquisition_started": false,
+    "outcomes_opened": false
+  },
+  "root_cause": {
+    "stage": "JET generator template substitution",
+    "error": "NameError encountered during substitution: name 'PIPESTATUS' is not defined",
+    "scope": "The acquisition-only runtime tail contained shell and Python braces that were not escaped for the outer JET substitution pass.",
+    "scientific_code_executed": false
+  },
+  "repair": {
+    "change": "Escape the two shell PIPESTATUS expressions and the acquisition-tail Python set/dict braces for one JET substitution pass.",
+    "scientific_design_changed": false,
+    "source_archive_changed": false,
+    "model_changed": false,
+    "workload_changed": false,
+    "seeds_changed": false,
+    "sample_size_changed": false,
+    "endpoints_or_decision_rule_changed": false,
+    "resource_limit_changed": false,
+    "queue_deadline_changed": false,
+    "repaired_manifest_sha256": "6c01be5138c2eea8db15882775b70708c32cf222584e785ba30b459fb89b146a"
+  },
+  "validation": {
+    "json_parse": true,
+    "outer_jet_substitution_replayed_locally": true,
+    "post_substitution_bash_syntax": true,
+    "post_substitution_embedded_python_compile": true,
+    "frozen_input_hashes": true,
+    "runtime_tests_remain_mandatory_before_acquisition": true
+  },
+  "replacement_boundary": {
+    "replacement_invocations": 1,
+    "automatic_retry": false,
+    "automatic_extension": false,
+    "scientific_acquisition_count_before_replacement": 0,
+    "reason": "Operational replacement for a generator-only failure that created no downstream workload."
+  }
+}

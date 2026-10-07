@@ -1,6 +1,6 @@
 {
   "schema": "m4-gradient-utility-scientific-acquisition-launch-record-v1",
-  "status": "READY_TO_SUBMIT",
+  "status": "GENERATOR_FAILED_NO_DOWNSTREAM_NO_SCIENTIFIC_ACQUISITION",
   "date": "2026-10-07",
   "submission_count_before_launch": 0,
   "authorized_submission_count": 1,
@@ -32,6 +32,16 @@
     "scientific_negative_exit_is_success": true,
     "measurement_failure_exit_is_nonzero": true,
     "runtime_tests_required_before_acquisition": true
+  },
+  "submission": {
+    "parent_pipeline_id": 72218112,
+    "generator_job_id": 474420732,
+    "generator_status": "failed",
+    "downstream_pipeline_created": false,
+    "eos_job_created": false,
+    "scientific_acquisition_started": false,
+    "outcomes_opened": false,
+    "failure": "JET template substitution interpreted unescaped PIPESTATUS and Python set/dict braces in the generated workload script."
   },
   "claim_boundary": "This acquisition tests the preregistered no-update gradient-utility construct. It does not test terminal-quality improvement, scheduler efficacy, or production readiness."
 }
