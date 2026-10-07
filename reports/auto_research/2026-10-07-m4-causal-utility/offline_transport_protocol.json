@@ -1,0 +1,91 @@
+{
+  "schema": "m4-causal-utility-offline-transport-protocol-v1",
+  "status": "FROZEN_BEFORE_ANALYZER_IMPLEMENTATION_AND_RESULT",
+  "date": "2026-10-07",
+  "purpose": "Test whether a causal delay-risk model multiplied by pre-release M4 opportunity transports across held-out model families, workloads, and acquisitions better than conventional pre-release alternatives. This is a deployment bridge, not validation of downstream learning utility.",
+  "authenticated_scope": {
+    "acquisition_count": 14,
+    "assignment_count": 106653,
+    "qwen_cells": 6,
+    "llama_acquisitions": 8,
+    "required_zero_terminal_missingness": true,
+    "input_commit": "81ca98252",
+    "compact_input_bindings": {
+      "metric_discriminant_sha256": "9281f64bd3daf7e75b1c755075e564073b662cea2abc136d3adb26004436bfaf",
+      "qwen_raw_recovery_receipt_sha256": "b1877255bf1eba58406d9326c440244859ab5b425d59c08a1a4306a3fe690ae0",
+      "qwen_synthesis_sha256": "fd4c74c245b5294be175e2117c136e5cc7a3dcd5ce302713ba8041768c6902be",
+      "qwen_robustness_sha256": "4f12bafe8cca627a48b9ee21f9fb0d05a3964d2004994a5d28568f8d7c3b168a",
+      "llama_1b_authentication_sha256": "4addd34e82351af582053fca8815905998718d4a0d251ef5f2e9e14eabe8baf6",
+      "llama_3b_authentication_sha256": "5e6ebc34974ccd9c9b8902bee511180c5826547f131b8c9d04291a75b5676355"
+    }
+  },
+  "analysis_population": {
+    "window": "Each acquisition's registered primary window; Llama versions 8 through 407 and each Qwen cell's frozen full window.",
+    "unit": "epoch-specific rollout-group assignment",
+    "treatment": "registered five-second release hold versus immediate release",
+    "outcome": "terminal failure to deliver the registered opportunity",
+    "opportunity": "pre-hold group L1 sum of absolute scalar GRPO advantage times valid actor tokens"
+  },
+  "feature_timing": "Only facts recorded no later than release_delay_started may enter a predictor. Treatment arm may enter because assignment was randomized before the hold; terminal selection, removal, ready latency, consumption version, and later learner state are prohibited.",
+  "conventional_features": [
+    "start learner version scaled within the registered window",
+    "learner-version lag at hold start",
+    "log1p valid actor tokens",
+    "group reward mean",
+    "group reward variance",
+    "truncated sibling fraction",
+    "log1p maximum sibling generation duration",
+    "ready-buffer depth at hold start",
+    "reserved-buffer occupancy at hold start",
+    "active release holds at hold start",
+    "generation inflight at hold start",
+    "buffer-admission stalls at hold start"
+  ],
+  "candidate_scores": {
+    "version_age": "pre-hold learner-version lag",
+    "reward_variance": "group reward variance",
+    "conventional_delay_risk": "arm-specific terminal non-delivery probability contrast from the conventional predictor",
+    "reward_variance_at_risk": "nonnegative conventional delay-risk contrast times reward variance",
+    "m4_at_risk": "nonnegative conventional delay-risk contrast times registered M4 L1",
+    "m4_augmented_at_risk": "nonnegative probability contrast from the conventional predictor augmented with log1p M4 and zero-opportunity indicator, times M4 L1"
+  },
+  "predictor": {
+    "form": "Separate fixed-form L2-regularized logistic models for immediate and delayed arms",
+    "standardization": "Training partition means and population standard deviations only",
+    "missing_values": "Training-partition median imputation plus one missingness indicator per feature",
+    "optimization": "Deterministic implementation with fixed learning schedule, convergence tolerance, and iteration cap recorded by the analyzer",
+    "outcome_blinding": "Each held-out partition is excluded from all fitting and standardization"
+  },
+  "transport_splits": [
+    "Qwen train to Llama test",
+    "Llama train to Qwen test",
+    "leave-one-workload-out for OpenMath, GSM8K, and NuminaMath",
+    "leave-one-acquisition-out across all 14 acquisitions"
+  ],
+  "metrics": {
+    "non_delivery_prediction": [
+      "log loss",
+      "Brier score",
+      "AUROC"
+    ],
+    "opportunity_ranking": [
+      "fraction of observed lost M4 captured in the top 10 percent of assignments",
+      "fraction captured in the top 20 percent",
+      "mean inverse-probability weighted causal lost-opportunity pseudo-outcome in the top 10 percent"
+    ],
+    "aggregation": "Report every held-out partition, assignment-weighted pooled values, and equal-acquisition macro values. The leave-one-acquisition-out macro top-10 capture difference between m4_at_risk and reward_variance_at_risk is primary."
+  },
+  "primary_hypothesis": "M4 at risk has greater equal-acquisition mean top-10 observed-lost-opportunity capture than reward variance at risk under leave-one-acquisition-out prediction.",
+  "decision_rule": {
+    "pass": "The primary difference is positive, both family-direction differences are nonnegative, all authentication and no-leakage gates pass, and the result reproduces byte-for-byte.",
+    "fail": "Any authentication/no-leakage/reproduction gate fails, or the primary difference is nonpositive, or either family-direction difference is negative.",
+    "interpretation": "Pass authorizes design of an independent gradient-utility audit. It does not authorize a quality acquisition or establish that M4 is learning utility. Fail blocks promotion of causal-risk scheduling and redirects the paper to measurement only."
+  },
+  "prohibited": [
+    "tuning thresholds or model form on held-out outcomes",
+    "calling this analysis a new randomized acquisition",
+    "calling prediction of Q times non-delivery independent validation of Q",
+    "claiming terminal-quality improvement, mediation, or production readiness",
+    "launching EOS from this protocol"
+  ]
+}
