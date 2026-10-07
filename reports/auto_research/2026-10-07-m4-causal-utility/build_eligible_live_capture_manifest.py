@@ -126,7 +126,7 @@ readonly CAPSULE=$ASSETS/m4-eligible-live-capsule
 readonly RESULT=$ASSETS/m4-eligible-live-capture-result.json
 readonly HASHES=$ASSETS/m4-eligible-live-artifacts.sha256
 readonly METRICS=$ASSETS/m4-eligible-live-metrics
-test "${NEMO_RL_COMMIT:-unknown}" = "@IMAGE_COMMIT@"
+test "${{NEMO_RL_COMMIT:-unknown}}" = "@IMAGE_COMMIT@"
 test ! -e "$RUN_REPO"
 printf %s '@SOURCE_PAYLOAD@' | base64 -d > "$SOURCE"
 printf %s '@MEGATRON_PAYLOAD@' | base64 -d > "$MEGATRON"
@@ -236,7 +236,7 @@ set +e
   "async_rl.gradient_opportunity_audit.observer_duty_path=$DUTY" \
   "async_rl.opportunity_at_risk_v2_shadow.output_path=$OARS" \
   "async_rl.eligible_live_decision_capture.output_dir=$CAPSULE" 2>&1 | tee "$RUN_LOG"
-readonly RUN_RC=${PIPESTATUS[0]}
+readonly RUN_RC=${{PIPESTATUS[0]}}
 set -e
 if test "$RUN_RC" -eq 0; then
   set +e

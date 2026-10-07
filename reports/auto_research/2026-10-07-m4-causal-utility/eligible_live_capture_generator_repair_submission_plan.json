@@ -1,0 +1,28 @@
+{
+  "schema": "m4-shield-eligible-live-capture-generator-repair-submission-plan-v1",
+  "status": "READY_FOR_SINGLE_SUBMISSION",
+  "failed_upstream_pipeline_id": 72275138,
+  "failed_generate_job_id": 474881315,
+  "manifest_sha256": "24780138d81492507567bb082f025c17b79615ac18ff1a842c430df246612b0a",
+  "package_receipt_sha256": "9ba5446b9962d6008c5dab6e97b270c5321c513c82182932cde360588d75b971",
+  "repair_authorization_sha256": "502015a86af62997e5736772043cd24b5acc7178e1d8ca0604aa0bd0f28b61e4",
+  "launcher": {
+    "path": "/Users/nvegesna/Documents/JET-LLM/runllm.py",
+    "sha256": "7e5ca7cb2b9807404123b19009d8d975f390f38690bf0a691f65f291b49c3cbb",
+    "config_id": "dlalgo-ci/eos",
+    "mode": "--no_wait",
+    "submission_attempt_limit": 1,
+    "automatic_retry": false
+  },
+  "execution": {
+    "workload_time_limit_seconds": 14400,
+    "client_queue_deadline": null,
+    "post_update_outcomes_opened": false
+  },
+  "repair_scope": {
+    "jet_runtime_expansions_escaped": true,
+    "scientific_source_changed": false,
+    "scientific_protocol_changed": false,
+    "runtime_configuration_changed": false
+  }
+}

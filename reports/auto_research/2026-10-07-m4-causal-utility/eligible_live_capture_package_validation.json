@@ -1,6 +1,6 @@
 {
   "authorization_sha256": "eae191a02f5c66123b9a6409d7c84f3e2eac45c2145ec4abc4e18ec75e85fcaf",
-  "builder_sha256": "ec91582aad9319adf14d93a171aa47df7d654e94ccb2021e45e35d39a8a5a1a7",
+  "builder_sha256": "37d132f021e8383d280d7e90e7e254b77453150068501d205251e946d815268b",
   "checks": {
     "authorization_hash": true,
     "bash_syntax": true,
@@ -8,6 +8,7 @@
     "deterministic_rebuild": true,
     "embedded_python_syntax": true,
     "execution_lock_hash": true,
+    "jet_runtime_expansions_escaped": true,
     "manifest_time_limit": true,
     "megatron_hash": true,
     "no_client_queue_deadline": true,
@@ -20,7 +21,7 @@
     "source_hash": true
   },
   "execution_lock_sha256": "9a44b56183158ae390b519c7f45aed3d3dddc300c636348565191233d3f72392",
-  "manifest_sha256": "c8ce2aae1c6cc8a6004bca63688210f946fbc909b8826138c42b851f7f749dc7",
+  "manifest_sha256": "24780138d81492507567bb082f025c17b79615ac18ff1a842c430df246612b0a",
   "post_update_outcomes_opened": false,
   "protocol_sha256": "716ba0eb8f980ca5af0ef3d57e2415befc1fb1a315afeb01b9bc326a60341b48",
   "schema": "m4-shield-eligible-live-capture-package-validation-v1",

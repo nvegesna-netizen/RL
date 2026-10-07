@@ -147,6 +147,13 @@ def main() -> None:
         and "queue_deadline" not in manifest["spec"]
         and "deadline" not in manifest["spec"]
     )
+    jet_runtime_expansions_escaped = (
+        "${{NEMO_RL_COMMIT:-unknown}}" in script
+        and "${{PIPESTATUS[0]}}" in script
+        and "${NEMO_RL_COMMIT:-unknown}"
+        not in script.replace("${{NEMO_RL_COMMIT:-unknown}}", "")
+        and "${PIPESTATUS[0]}" not in script.replace("${{PIPESTATUS[0]}}", "")
+    )
     runtime_tests_before_run = script.index('"$PYTHON" -m pytest') < script.index(
         '"$PYTHON" examples/run_grpo_single_controller.py'
     )
@@ -172,6 +179,7 @@ def main() -> None:
         "deterministic_rebuild": deterministic,
         "manifest_time_limit": manifest["spec"].get("time_limit") == 14400,
         "no_client_queue_deadline": no_queue_deadline,
+        "jet_runtime_expansions_escaped": jet_runtime_expansions_escaped,
         "runtime_tests_before_collection": runtime_tests_before_run,
         "outcome_exclusion": outcome_exclusion,
         "protocol_2_safe_serialization": protocol_2,

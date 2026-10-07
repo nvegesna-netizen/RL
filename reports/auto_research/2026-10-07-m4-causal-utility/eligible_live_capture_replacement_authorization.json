@@ -1,10 +1,12 @@
 {
   "schema": "m4-shield-eligible-live-capture-replacement-authorization-v1",
   "recorded_at": "2026-10-07",
-  "status": "AUTHORIZED_AFTER_NO_PIPELINE_CREATED",
+  "status": "SUPERSEDED_BY_LATE_PIPELINE_RECONCILIATION",
   "user_authorization": "I always authorize",
   "prior_attempt_receipt": "eligible_live_capture_submission_attempt_receipt.json",
-  "prior_attempt_status": "ATTEMPT_CONSUMED_NO_PIPELINE_CREATED",
+  "prior_attempt_status_at_authorization": "ATTEMPT_CONSUMED_NO_PIPELINE_CREATED",
+  "corrected_prior_attempt_status": "LATE_RECONCILED_PIPELINE_CREATED_GENERATOR_FAILED",
+  "replacement_client_canceled_before_pipeline_id": true,
   "authorized": {
     "replacement_launcher_invocations": 1,
     "unchanged_manifest_sha256": "c8ce2aae1c6cc8a6004bca63688210f946fbc909b8826138c42b851f7f749dc7",

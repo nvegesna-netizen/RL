@@ -1,0 +1,30 @@
+{
+  "schema": "m4-shield-eligible-live-capture-generator-repair-authorization-v1",
+  "recorded_at": "2026-10-07",
+  "status": "AUTHORIZED_AFTER_PRE_RUNTIME_GENERATOR_FAILURE",
+  "user_authorization": "I always authorize",
+  "failed_upstream_pipeline_id": 72275138,
+  "failed_generate_job_id": 474881315,
+  "failed_generate_trace_sha256": "4580e0f2aeffb9cbd0ffbb4915bd87d297982ac8cd65e4d1cf5b9a319fa6ea3e",
+  "authenticated_error": "NameError encountered during substitution: name 'NEMO_RL_COMMIT' is not defined",
+  "failure_boundary": {
+    "child_pipeline_created": false,
+    "eos_job_created": false,
+    "training_started": false,
+    "eligible_live_capsule_created": false,
+    "post_update_outcomes_opened": false
+  },
+  "repair": {
+    "operation": "Escape the two intended shell runtime expansions for JET substitution using doubled braces.",
+    "builder_replacements": {
+      "${NEMO_RL_COMMIT:-unknown}": "${{NEMO_RL_COMMIT:-unknown}}",
+      "${PIPESTATUS[0]}": "${{PIPESTATUS[0]}}"
+    },
+    "scientific_source_changed": false,
+    "scientific_protocol_changed": false,
+    "runtime_configuration_changed": false,
+    "eos_submission_attempts": 1,
+    "automatic_retry": false,
+    "automatic_extension": false
+  }
+}

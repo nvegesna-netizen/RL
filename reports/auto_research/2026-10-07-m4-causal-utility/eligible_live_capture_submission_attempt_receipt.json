@@ -1,7 +1,8 @@
 {
   "schema": "m4-shield-eligible-live-capture-submission-attempt-receipt-v1",
   "recorded_at": "2026-10-07T15:05:51-07:00",
-  "status": "ATTEMPT_CONSUMED_NO_PIPELINE_CREATED",
+  "status": "LATE_RECONCILED_PIPELINE_CREATED_GENERATOR_FAILED",
+  "corrected_at": "2026-10-07T15:24:00-07:00",
   "submission_plan_commit": "37599811726820ae2eaa99322b18a73f5b5dee6f",
   "submission_plan_sha256": "7468e043617366fae40f048dadaf5d3a63f6070bd915471b66f676ee070f5538",
   "manifest_sha256": "c8ce2aae1c6cc8a6004bca63688210f946fbc909b8826138c42b851f7f749dc7",
@@ -11,16 +12,19 @@
     "stdout": "",
     "stderr": "",
     "positive_pipeline_id_returned": false,
-    "client_completion": "AMBIGUOUS_EMPTY_SURFACE"
+    "client_completion": "PARENT_SURFACE_ENDED_WHILE_RUNLLM_REMAINED_ALIVE"
   },
   "external_reconciliation": {
     "checked_at": "2026-10-07T15:05:51-07:00",
     "gitlab_project_id": 70847,
     "expected_ref": "dlalgo-ci/eos",
-    "latest_pipeline_id": 72271718,
-    "latest_pipeline_created_at": "2026-10-07T14:47:56.290-07:00",
-    "latest_pipeline_predates_submission_plan_commit": true,
-    "new_pipeline_created": false
+    "initial_check_was_premature": true,
+    "late_reconciled_pipeline_id": 72275138,
+    "late_reconciled_pipeline_created_at": "2026-10-07T15:05:00.184-07:00",
+    "generate_job_id": 474881315,
+    "generate_job_status": "failed",
+    "child_pipeline_created": false,
+    "new_pipeline_created": true
   },
   "local_diagnostics": {
     "rotated_setup_return_code": 0,
@@ -31,10 +35,12 @@
     "frozen_input_hashes": "PASS"
   },
   "scientific_state": {
+    "upstream_pipeline_created": true,
     "eos_job_created": false,
     "eligible_live_capsule_created": false,
     "post_update_outcomes_opened": false,
-    "scientific_result": null
+    "scientific_result": null,
+    "failure_class": "JET_GENERATOR_SUBSTITUTION_FAILURE"
   },
   "policy": {
     "automatic_retry": false,
