@@ -1,0 +1,46 @@
+{
+  "schema": "m4-gradient-utility-scientific-acquisition-submission-receipt-v1",
+  "status": "SUBMITTED_NO_WAIT_GENERATOR_PASS_DOWNSTREAM_CREATED",
+  "date": "2026-10-07",
+  "source_commit": "b74ce7583",
+  "provenance_commit_before_submission": "4f8c7e39b",
+  "manifest_sha256": "6c01be5138c2eea8db15882775b70708c32cf222584e785ba30b459fb89b146a",
+  "audit_protocol_sha256": "daae7720287a4c6c61c70ee8c40ac1900c2a428ae608fb27b18f622c317ddf09",
+  "acquisition_execution_protocol_sha256": "91824d23afbf435d17bde3867f051f25188e69e9a76069bebd91ed3d22da878f",
+  "hash_v2_qualification_terminal_result_sha256": "a0db53be9e6ba3e1a1ddb388bde5d87d23d8683d5a06a4df4865a17e0ed81811",
+  "generator_repair_protocol_commit": "4f8c7e39b",
+  "launcher": "runllm.py --no_wait",
+  "credential_setup": "Rotated /Users/nvegesna/Documents/JET-LLM/setup_jet.sh sourced immediately before launch.",
+  "queue_deadline_override": null,
+  "runtime_limit_seconds": 14400,
+  "failed_generator_predecessor": {
+    "parent_pipeline_id": 72218112,
+    "generator_job_id": 474420732,
+    "downstream_pipeline_created": false,
+    "scientific_acquisition_started": false
+  },
+  "replacement_submission": {
+    "parent_pipeline_id": 72218730,
+    "parent_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/72218730",
+    "parent_created_at": "2026-10-07T10:28:06.612-07:00",
+    "generator_job_id": 474424908,
+    "generator_status": "success",
+    "generator_finished_at": "2026-10-07T10:28:50.639-07:00",
+    "downstream_pipeline_id": 72218841,
+    "downstream_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/72218841",
+    "downstream_created_at": "2026-10-07T10:28:51.629-07:00",
+    "logs_before_job_id": 474425609,
+    "eos_workload_job_id": 474425611,
+    "logs_after_job_id": 474425612,
+    "workload_name": "m4-gradient-utility-scientific-acquisition-hash-v2"
+  },
+  "submission_boundary": {
+    "scientific_acquisition_workloads_created": 1,
+    "automatic_retry": false,
+    "automatic_extension": false,
+    "outcomes_opened_at_receipt": false,
+    "scheduler_quality_acquisition": false,
+    "terminal_quality_claim": false,
+    "production_readiness_claim": false
+  }
+}
