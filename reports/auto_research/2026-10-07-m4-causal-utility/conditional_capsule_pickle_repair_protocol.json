@@ -1,0 +1,29 @@
+{
+  "schema": "conditional-m4-capsule-pickle-repair-protocol-v1",
+  "status": "FROZEN_AFTER_FAILURE_BEFORE_REPLACEMENT",
+  "date": "2026-10-07",
+  "failed_upstream_pipeline_id": 72250996,
+  "failed_downstream_pipeline_id": 72251274,
+  "scientific_attempt_started": false,
+  "root_cause": "Protocol-4 torch.save output is not accepted by the PyTorch 2.6 restricted weights-only unpickler in the qualified image.",
+  "repair": {
+    "allowed_source_change": "Change only the capsule torch.save pickle protocol from 4 to 2 and update source/package bindings.",
+    "safe_loader_required": "torch.load(weights_only=True)",
+    "weights_only_false_forbidden": true,
+    "scientific_threshold_changes_allowed": false,
+    "model_or_workload_changes_allowed": false,
+    "seed_changes_allowed": false,
+    "test_removal_allowed": false,
+    "runtime_test_order_changes_allowed": false
+  },
+  "replacement_boundary": {
+    "required_launcher": "runllm.py --no_wait",
+    "submission_attempt_limit": 1,
+    "automatic_retry": false,
+    "automatic_extension": false,
+    "training_updates_authorized": false,
+    "learning_outcomes_authorized": false,
+    "terminal_evaluation_authorized": false
+  },
+  "replacement_authorized": false
+}

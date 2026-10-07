@@ -339,7 +339,10 @@ def write_capsule(
         if not all(value.shape[0] == sample_count for value in fields.values()):
             raise ValueError("capsule tensor batch dimensions disagree")
         raw_path = groups_dir / f"group-{index:02d}.pt"
-        torch.save(fields, raw_path, pickle_protocol=4)
+        # PyTorch's restricted ``weights_only`` loader intentionally supports
+        # the conservative protocol-2 instruction set used by torch.save's
+        # default.  Keep capsule files readable without relaxing safe loading.
+        torch.save(fields, raw_path, pickle_protocol=2)
         group_id = str(group_ids[index])
         roles: list[str] = []
         if group_id in selection.comparator_group_ids:

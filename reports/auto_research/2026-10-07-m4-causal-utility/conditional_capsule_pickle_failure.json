@@ -1,0 +1,50 @@
+{
+  "schema": "conditional-m4-capsule-pickle-failure-v1",
+  "status": "AUTHENTICATED_PREFLIGHT_FAILURE_NO_COLLECTION",
+  "date": "2026-10-07",
+  "source_commit": "1213653b5707f85419f9f25d638255a049ad03a5",
+  "package_commit": "6ffbfdd767092db684a235055594ef2e4553a605",
+  "manifest_sha256": "a575c9cf8d34b201c5edeee54b3f9c91610ec2667ff54e5e39405371d45a317e",
+  "upstream_pipeline_id": 72250996,
+  "downstream_pipeline_id": 72251274,
+  "workload_job_id": 474687052,
+  "logs_after_job_id": 474687122,
+  "slurm_job_id": 6193405,
+  "terminal_artifacts": {
+    "workload_sha256": "d88ba012b9c82e0688643bba66e0c43a19faa72b80d7711682eb51b4c1e3237b",
+    "logs_after_sha256": "1b992c7ea253923ad91ca73b166d5083aeba0741f6e402556914dddb400982db"
+  },
+  "execution": {
+    "slurm_state": "FAILED",
+    "slurm_queue_time": "00:03:17",
+    "slurm_duration": "00:03:14",
+    "workload_step_duration": "00:02:53",
+    "workload_exit_code": 1
+  },
+  "passed_before_failure": [
+    "source archive extraction and hash checks",
+    "Megatron archive extraction",
+    "runtime authority, config, TransferQueue, and no-update AST checks",
+    "conditional selector unit test"
+  ],
+  "failure": {
+    "stage": "mandatory focused pytest before collection",
+    "test": "test_capsule_writer_authenticates_raw_tensors_and_roles",
+    "operation": "torch.load(weights_only=True)",
+    "saved_pickle_protocol": 4,
+    "exception": "_pickle.UnpicklingError",
+    "diagnostic": "WeightsUnpickler unsupported operand 149"
+  },
+  "artifact_inventory": {
+    "capsule_manifest_present": false,
+    "capsule_group_files_present": 0,
+    "qualification_result_present": false,
+    "lifecycle_ledger_present": false,
+    "opportunity_ledger_present": false,
+    "observer_duty_present": false
+  },
+  "scientific_attempt_started": false,
+  "training_updates": 0,
+  "learning_outcomes_opened": false,
+  "classification": "implementation compatibility failure before scientific collection"
+}
