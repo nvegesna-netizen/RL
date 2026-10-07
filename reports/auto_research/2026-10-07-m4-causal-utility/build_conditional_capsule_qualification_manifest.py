@@ -10,28 +10,28 @@ import json
 import tarfile
 from pathlib import Path
 
-NAME = "m4-conditional-capsule-pickle-repair"
-SOURCE_COMMIT = "afeaed31dad8e7e25bb585f84c5c3c2d7134b9d3"
-SOURCE_SHA256 = "9f2ca089b86b92ee36fb9552064fbd1673e26c3ef7da088057b28e7da4ae3bb1"
+NAME = "m4-conditional-capsule-metadata-repair"
+SOURCE_COMMIT = "883cc01e33a6534d31c8614a0c8e60b5a18c4a23"
+SOURCE_SHA256 = "986c8aeeff31721cf037fbc98a0aff36899229cc98c4ac79cc6dfe3f917c8a05"
 MEGATRON_SHA256 = "98d98920c0fea3d8ae1216a485dc9b5aa4fc966e469435ad61f2bae456de80d2"
 PROTOCOL_SHA256 = "373c2764ef964022da2a0cc934b3dcf6210f194428cbb3cee653a807be5a1373"
-REPAIR_SHA256 = "1278e6ea3c34fdee719c934d9807b741da9a37d93e2afbfd8968415ee338ee92"
+REPAIR_SHA256 = "eba90562d2c22aa8ef0a428cf5c2d4f8be71a02482398785433512ad1fc75aa7"
 AUTHORIZATION_SHA256 = (
-    "67327f2b0caa58e5fcd62781e4b0d24bccbe27857af6ec38109442dad6210df6"
+    "015f51d7509ab9b37c0d37e7703722ba469d2f3b509899d1e17889ca060b258a"
 )
-LOCK_SHA256 = "fadd0c487cb943269c803d98ea36a7856e48f804a77fcac3912b301dc99676a1"
+LOCK_SHA256 = "f15b25717ad9113c6d01ce708af105b3063f0eb5e7c18ba773260958323a04f2"
 CONFIG_SHA256 = "f6413fb211b08bab48a169ff8f272b86993d99c6d95773ede7ac956987c2cb07"
 ANALYZER_SHA256 = "de990789f817acb0b2c53e2ac27c0cdf99199fa3be210f8eec037435d9b26fde"
 CAPSULE_MODULE_SHA256 = (
     "01f9f96511ebaa87f5529f7e88eebd9f6a2e53206de5d37932389b54e8b4dd78"
 )
-CONTROLLER_SHA256 = "e81529e3729430f4f33c376d25a3f6f056f2f87f4dba0aa52f82819b6cdec32c"
+CONTROLLER_SHA256 = "1ee43bc7513e523880c7e09816463e55b395a82ca7a4be131597ca4c8791586b"
 CONFIG_MODULE_SHA256 = (
     "4b251b1987518eab80f5ac1fac6dc97fbcfeac0146ebbc16e2ab3804b8520e82"
 )
 CAPSULE_TEST_SHA256 = "6746dae0bc14232492f9238d9982a217b6fe3147c3a72e28f568c3c4fa178617"
 CONTROLLER_TEST_SHA256 = (
-    "2335665ad428aac81fef094230531bd847126723451887c67f0a9a6032b96646"
+    "300d76d278a48ec808f6101a49807aec021f77597f4b0b65f0c24916bbfb47db"
 )
 UV_LOCK_SHA256 = "bc69ceddc9f35d2c120235c96afac2e6c7b76827e044efda3e61f908be72c4cc"
 TRANSFERQUEUE_COMMIT = "b266d39a15aae114730de36cf8317b6285436f7f"
@@ -82,16 +82,16 @@ def main() -> None:
     execution = lock["execution"]
     qualification = lock["qualification"]
     if (
-        repair["schema"] != "conditional-m4-capsule-pickle-repair-protocol-v1"
+        repair["schema"] != "conditional-m4-capsule-metadata-repair-protocol-v1"
         or repair["status"] != "FROZEN_AFTER_FAILURE_BEFORE_REPLACEMENT"
-        or repair["scientific_attempt_started"]
+        or repair["scientific_attempt_completed"]
         or authorization["schema"]
-        != "conditional-m4-capsule-pickle-replacement-authorization-v1"
+        != "conditional-m4-capsule-metadata-replacement-authorization-v1"
         or authorization["repair_source_commit"] != SOURCE_COMMIT
         or not authorization["replacement"]["eos_submission_authorized"]
         or authorization["replacement"]["submission_attempt_limit"] != 1
         or authorization["replacement"]["automatic_duplicate_submission"]
-        or lock["schema"] != "conditional-m4-capsule-pickle-replacement-lock-v1"
+        or lock["schema"] != "conditional-m4-capsule-metadata-replacement-lock-v1"
         or lock["source_commit"] != SOURCE_COMMIT
         or lock["source_archive_sha256"] != SOURCE_SHA256
         or lock["original_protocol_sha256"] != PROTOCOL_SHA256
@@ -132,8 +132,8 @@ readonly RUN_REPO=/workspace/m4-conditional-capsule-repo
 readonly SOURCE=/workspace/m4-conditional-capsule-source.tar.gz
 readonly MEGATRON=/workspace/m4-conditional-capsule-megatron.tar.gz
 readonly PROTOCOL=/workspace/m4-conditional-capsule-protocol.json
-readonly REPAIR=/workspace/m4-conditional-capsule-pickle-repair-protocol.json
-readonly AUTHORIZATION=/workspace/m4-conditional-capsule-pickle-replacement-authorization.json
+readonly REPAIR=/workspace/m4-conditional-capsule-metadata-repair-protocol.json
+readonly AUTHORIZATION=/workspace/m4-conditional-capsule-metadata-replacement-authorization.json
 readonly EXECUTION_LOCK=/workspace/m4-conditional-capsule-execution-lock.json
 readonly ASSETS={assets_dir}
 readonly RUN_LOG=$ASSETS/m4-conditional-capsule-run.log
@@ -204,8 +204,8 @@ assert hashlib.sha256(r_path.read_bytes()).hexdigest()=="@REPAIR_SHA256@"
 assert hashlib.sha256(a_path.read_bytes()).hexdigest()=="@AUTHORIZATION_SHA256@"
 assert hashlib.sha256(l_path.read_bytes()).hexdigest()=="@LOCK_SHA256@"
 assert p["status"]=="FROZEN_BEFORE_LIVE_QUALIFICATION"
-assert repair["status"]=="FROZEN_AFTER_FAILURE_BEFORE_REPLACEMENT" and not repair["scientific_attempt_started"]
-assert auth["status"]=="AUTHORIZED_AFTER_AUTHENTICATED_PREFLIGHT_FAILURE"
+assert repair["status"]=="FROZEN_AFTER_FAILURE_BEFORE_REPLACEMENT" and not repair["scientific_attempt_completed"]
+assert auth["status"]=="AUTHORIZED_AFTER_AUTHENTICATED_RUNTIME_FAILURE"
 assert auth["replacement"]["eos_submission_authorized"] and auth["replacement"]["submission_attempt_limit"]==1
 assert lock["status"]=="FROZEN_AFTER_REPAIR_BEFORE_REPLACEMENT"
 assert lock["source_commit"]=="@SOURCE_COMMIT@"
@@ -223,6 +223,11 @@ for name,expected in file_hashes.items():
     actual=hashlib.sha256(Path(name).read_bytes()).hexdigest(); assert actual==expected,(name,actual,expected)
 capsule_source=Path("nemo_rl/algorithms/async_utils/conditional_m4_capsule.py").read_text()
 assert "pickle_protocol=2" in capsule_source and "pickle_protocol=4" not in capsule_source
+controller_source=Path("nemo_rl/algorithms/single_controller.py").read_text()
+controller_test_source=Path("tests/unit/single_controller/test_single_controller.py").read_text()
+assert "or async_config.conditional_m4_capsule.enabled" in controller_source
+assert "if _requires_opportunity_reward_moments(self._async_cfg):" in controller_source
+assert "test_conditional_capsule_requests_reward_moment_metadata" in controller_test_source
 analyzer_source=Path("@ANALYZER_PATH@").read_text()
 assert "weights_only=True" in analyzer_source and "weights_only=False" not in analyzer_source
 locked=Path("uv.lock").read_text()

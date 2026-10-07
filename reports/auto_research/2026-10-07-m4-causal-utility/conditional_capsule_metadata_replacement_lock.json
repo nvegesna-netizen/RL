@@ -1,0 +1,47 @@
+{
+  "schema": "conditional-m4-capsule-metadata-replacement-lock-v1",
+  "status": "FROZEN_AFTER_REPAIR_BEFORE_REPLACEMENT",
+  "date": "2026-10-07",
+  "source_commit": "883cc01e33a6534d31c8614a0c8e60b5a18c4a23",
+  "source_archive_sha256": "986c8aeeff31721cf037fbc98a0aff36899229cc98c4ac79cc6dfe3f917c8a05",
+  "original_protocol_sha256": "373c2764ef964022da2a0cc934b3dcf6210f194428cbb3cee653a807be5a1373",
+  "repair_protocol_sha256": "eba90562d2c22aa8ef0a428cf5c2d4f8be71a02482398785433512ad1fc75aa7",
+  "authorization_sha256": "015f51d7509ab9b37c0d37e7703722ba469d2f3b509899d1e17889ca060b258a",
+  "analyzer_sha256": "de990789f817acb0b2c53e2ac27c0cdf99199fa3be210f8eec037435d9b26fde",
+  "qualification_config_sha256": "f6413fb211b08bab48a169ff8f272b86993d99c6d95773ede7ac956987c2cb07",
+  "capsule_module_sha256": "01f9f96511ebaa87f5529f7e88eebd9f6a2e53206de5d37932389b54e8b4dd78",
+  "controller_sha256": "1ee43bc7513e523880c7e09816463e55b395a82ca7a4be131597ca4c8791586b",
+  "controller_test_sha256": "300d76d278a48ec808f6101a49807aec021f77597f4b0b65f0c24916bbfb47db",
+  "megatron_archive_sha256": "98d98920c0fea3d8ae1216a485dc9b5aa4fc966e469435ad61f2bae456de80d2",
+  "image": {
+    "path": "/lustre/fsw/coreai_dlalgo_ci/nvegesna/nemo_rl_images/nemo-rl-nightly-5802754.sqsh",
+    "nemo_rl_commit": "ae07eafe8035b5b2e84efa7234e70e7fd7e493c1"
+  },
+  "execution": {
+    "required_launcher": "runllm.py --no_wait",
+    "submission_attempt_limit": 1,
+    "automatic_duplicate_submission": false,
+    "automatic_extension": false,
+    "nodes": 1,
+    "gpus": 2,
+    "scheduler_time_limit_seconds": 14400,
+    "queue_deadline_override": null
+  },
+  "frozen_scientific_design_unchanged": true,
+  "allowed_runtime_delta": "include conditional_m4_capsule.enabled in the existing reward-moment metadata gate",
+  "metadata_function_unchanged": "compute_reward_moments",
+  "qualification": {
+    "maximum_frontiers": 16,
+    "candidate_groups": 8,
+    "batch_groups": 4,
+    "heldout_groups": 4,
+    "minimum_relative_predicted_norm_gain": 0.1,
+    "learner_version": 0,
+    "finish_train_step_calls": 0,
+    "optimizer_steps": 0,
+    "scheduler_steps": 0,
+    "training_updates_authorized": false,
+    "learning_outcomes_authorized": false,
+    "terminal_evaluation_authorized": false
+  }
+}

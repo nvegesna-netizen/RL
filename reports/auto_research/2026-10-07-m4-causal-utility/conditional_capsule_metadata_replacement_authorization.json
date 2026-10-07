@@ -1,0 +1,22 @@
+{
+  "schema": "conditional-m4-capsule-metadata-replacement-authorization-v1",
+  "status": "AUTHORIZED_AFTER_AUTHENTICATED_RUNTIME_FAILURE",
+  "date": "2026-10-07",
+  "authorization_basis": "User granted standing authorization for required EOS launches and pushes; this replacement is limited to the authenticated reward-metadata wiring repair.",
+  "failed_upstream_pipeline_id": 72257570,
+  "failed_downstream_pipeline_id": 72258264,
+  "repair_source_commit": "883cc01e33a6534d31c8614a0c8e60b5a18c4a23",
+  "repair_source_archive_sha256": "986c8aeeff31721cf037fbc98a0aff36899229cc98c4ac79cc6dfe3f917c8a05",
+  "repair_protocol_sha256": "eba90562d2c22aa8ef0a428cf5c2d4f8be71a02482398785433512ad1fc75aa7",
+  "replacement": {
+    "eos_submission_authorized": true,
+    "push_authorized": true,
+    "required_launcher": "runllm.py --no_wait",
+    "submission_attempt_limit": 1,
+    "automatic_duplicate_submission": false,
+    "automatic_extension": false,
+    "training_updates_authorized": false,
+    "learning_outcomes_authorized": false,
+    "terminal_evaluation_authorized": false
+  }
+}

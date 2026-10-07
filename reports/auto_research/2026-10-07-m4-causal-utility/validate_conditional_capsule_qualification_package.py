@@ -23,6 +23,7 @@ from build_conditional_capsule_qualification_manifest import (
     CONFIG_PATH,
     CONFIG_SHA256,
     CONTROLLER_SHA256,
+    CONTROLLER_TEST_SHA256,
     IMAGE_PATH,
     LOCK_SHA256,
     MEGATRON_SHA256,
@@ -176,6 +177,7 @@ def main() -> None:
             ANALYZER_PATH: ANALYZER_SHA256,
             "nemo_rl/algorithms/async_utils/conditional_m4_capsule.py": CAPSULE_MODULE_SHA256,
             "nemo_rl/algorithms/single_controller.py": CONTROLLER_SHA256,
+            "tests/unit/single_controller/test_single_controller.py": CONTROLLER_TEST_SHA256,
         }
         for name, expected in expected_files.items():
             if sha256(source_root / name) != expected:
@@ -184,6 +186,12 @@ def main() -> None:
             source_root / "nemo_rl/algorithms/async_utils/conditional_m4_capsule.py"
         ).read_text()
         analyzer_source = (source_root / ANALYZER_PATH).read_text()
+        controller_source = (
+            source_root / "nemo_rl/algorithms/single_controller.py"
+        ).read_text()
+        controller_test_source = (
+            source_root / "tests/unit/single_controller/test_single_controller.py"
+        ).read_text()
         if (
             "pickle_protocol=2" not in capsule_source
             or "pickle_protocol=4" in capsule_source
@@ -194,6 +202,14 @@ def main() -> None:
             or "weights_only=False" in analyzer_source
         ):
             raise RuntimeError("safe capsule loader was weakened")
+        if (
+            "or async_config.conditional_m4_capsule.enabled" not in controller_source
+            or "if _requires_opportunity_reward_moments(self._async_cfg):"
+            not in controller_source
+            or "test_conditional_capsule_requests_reward_moment_metadata"
+            not in controller_test_source
+        ):
+            raise RuntimeError("reward-moment metadata repair is absent")
         validate_no_update_ast(source_root / "nemo_rl/algorithms/single_controller.py")
         rebuilt = root / "manifest.json"
         subprocess.run(
@@ -222,7 +238,7 @@ def main() -> None:
         if rebuilt.read_bytes() != args.manifest.read_bytes():
             raise RuntimeError("deterministic manifest rebuild differs")
     result = {
-        "schema": "conditional-m4-capsule-pickle-repair-package-validation-v1",
+        "schema": "conditional-m4-capsule-metadata-repair-package-validation-v1",
         "status": "PASS_AUTHORIZED_UNSUBMITTED",
         "source_commit": SOURCE_COMMIT,
         "source_archive_sha256": SOURCE_SHA256,
@@ -242,6 +258,7 @@ def main() -> None:
         "deterministic_rebuild_passed": True,
         "no_update_ast_gate_passed": True,
         "protocol_2_safe_serialization_gate_passed": True,
+        "reward_moment_metadata_gate_passed": True,
         "full_runtime_tests_required_before_collection": True,
         "scientific_outcome_acquisition": False,
         "learning_outcomes_opened": False,
