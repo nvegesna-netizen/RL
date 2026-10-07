@@ -1,0 +1,111 @@
+{
+  "schema": "m4-shield-live-terminal-authentication-v1",
+  "status": "AUTHENTICATED_PASS_M4_SHIELD_QUALIFIED",
+  "source_commit": "cdfa1c8e56394b7d8e3e299b6524a1a286243746",
+  "protocol_sha256": "a3c8f84297c2ce60c5cd5f0f0eb0a0286555ced63bbe5b169af0e3b008aca216",
+  "upstream_pipeline": {
+    "id": 71952902,
+    "status": "success",
+    "generate_job_id": 472294830,
+    "generate_job_status": "success"
+  },
+  "downstream_pipeline": {
+    "id": 71953253,
+    "status": "success",
+    "logs_before_job_id": 472297082,
+    "logs_before_status": "success",
+    "workload_job_id": 472297084,
+    "workload_status": "success",
+    "logs_after_job_id": 472297085,
+    "logs_after_status": "success"
+  },
+  "slurm": {
+    "job_id": 6178557,
+    "state": "COMPLETED",
+    "queue_time": "12:04:10",
+    "job_duration": "00:10:24",
+    "workload_step_duration": "00:09:54",
+    "exit_code": "0:0",
+    "actual_sbatch_has_time_flag": false,
+    "actual_sbatch_has_deadline_flag": false,
+    "effective_default_time_limit": "02:00:00"
+  },
+  "terminal_archives": {
+    "workload": {
+      "job_id": 472297084,
+      "bytes": 63619979,
+      "sha256": "477e0676971abfa9dcce0e24f52344a0ea7e02dfa15f9ad52f6694e5c6cc0d70"
+    },
+    "logs_after": {
+      "job_id": 472297085,
+      "bytes": 140629919,
+      "sha256": "48f6d1a379fb87e7e16b80cff24cef97b463d169fba41ebf396b7d8c4a71a116"
+    }
+  },
+  "authenticated_terminal_files": {
+    "copies_byte_identical": true,
+    "artifact_manifest_sha256": "dab59eb868659c4486c83a0c951dcf7727986cbf8ce5b906f96efb8a5bf0a429",
+    "lifecycle_sha256": "7c43cea13f7e9a7bccf11cd38e08165af191007aee724489b255fca59f2137c1",
+    "oars_v2_sha256": "4dfd6886238db11aecc6980f24b698c9578eb4c14a99139ca5751c080adac119",
+    "observer_duty_sha256": "611b251dbbd292495a1af7b04f3d7e928fa0b9fb147525558da2252700eec7e7",
+    "result_sha256": "df6fb97686df03b8833cd9c5358588f574058dd5f46c1773d18376ee9e35e9bf",
+    "run_log_sha256": "c32aeaa6572cc35718da69d620ebd6c7d7225463b80540a577701058c0d54ca1"
+  },
+  "frozen_result": {
+    "status": "PASS_M4_SHIELD_QUALIFIED",
+    "decision_count": 64,
+    "base_action_count": 50,
+    "intervention_count": 5,
+    "intervention_rate": 0.078125,
+    "aggregate_imminent_l1_gain_over_base": 685.0771417617798,
+    "gradient_observer_duty": 0.0030258626278724136,
+    "m4_shield_decision_duty": 0.00015588540458935513,
+    "combined_observer_controller_duty": 0.003181748032461769,
+    "runtime_seconds": 411.928961368,
+    "all_frozen_checks_passed": true,
+    "training_quality_analyzed": false,
+    "scientific_outcome_acquisition": false
+  },
+  "independent_recomputation": {
+    "decision_rows": 64,
+    "rows_without_skip": 64,
+    "actual_action_matches_shield": 64,
+    "exact_search_without_fallback": 64,
+    "service_band_rows": 64,
+    "shield_equals_reward_variance_base": 59,
+    "shield_differs_from_reward_variance_base": 5,
+    "positive_gain_values": [
+      383.6079132556915,
+      11.252448916435242,
+      139.50570511817932,
+      119.92759037017822,
+      30.78348410129547
+    ],
+    "aggregate_imminent_l1_gain": 685.0771417617798,
+    "maximum_absolute_reward_variance_difference": 0.0,
+    "maximum_absolute_imminent_reward_variance_difference": 0.0,
+    "intervention_base_overlap_range": [
+      2,
+      3
+    ],
+    "intervention_token_ratio_range": [
+      0.9937356441845897,
+      1.0195227765726682
+    ],
+    "shield_latency_ns_sum": 11724763
+  },
+  "liveness_accounting": {
+    "candidate_excess_pending_groups": 0,
+    "candidate_excess_removed_groups_total": 0,
+    "replenishment_batches_consumed_total": 56,
+    "replenishment_batches_earned_total": 57,
+    "replenishment_credits_outstanding": 1,
+    "stale_evicted_groups_total": 220,
+    "selected_groups": 256,
+    "bounded_shutdown_groups": 16
+  },
+  "scientific_interpretation": {
+    "supported": "M4-Shield is live-actionable in the frozen 64-step qualification: it can change scheduler actions and increase imminent M4 L1 relative to the reward-variance proposer while exactly preserving the two registered reward-variance utilities and satisfying service, liveness, and overhead gates.",
+    "not_supported": "This outcome-excluded systems qualification does not establish improved terminal training quality, broader model or workload generalization, or an independent causal quality effect."
+  }
+}
