@@ -1,0 +1,126 @@
+{
+  "schema": "conditional-m4-capsule-qualification-terminal-result-v1",
+  "status": "FAIL_NO_CONTRAST",
+  "date": "2026-10-07",
+  "scientific_endpoint": "No shared version-zero frontier reached the frozen 10% minimum relative predicted-norm-gain gate within 16 frontiers.",
+  "tested_setting": {
+    "model": "meta-llama/Llama-3.2-1B-Instruct",
+    "workload": "GSM8K train",
+    "seed": 20261027,
+    "learner_version": 0,
+    "maximum_frontiers": 16,
+    "candidate_groups_per_frontier": 8,
+    "batch_groups_per_arm": 4,
+    "planned_heldout_groups": 4,
+    "minimum_relative_predicted_norm_gain": 0.1,
+    "minimum_token_service_ratio": 0.98,
+    "maximum_token_service_ratio": 1.02,
+    "minimum_reward_variance_retention": 1.0
+  },
+  "qualification": {
+    "frontiers_evaluated": 16,
+    "frontier_relative_predicted_norm_gains_as_logged": [
+      0.011847,
+      0.0,
+      0.036869,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "logged_gain_precision_decimal_places": 6,
+    "best_frontier_index_one_based": 3,
+    "best_relative_predicted_norm_gain_as_logged": 0.036869,
+    "threshold_shortfall_as_logged": 0.063131,
+    "qualifying_frontiers": 0,
+    "capsule_written": false,
+    "heldout_groups_collected": 0,
+    "learning_outcomes_opened": false,
+    "finish_train_step_calls": 0,
+    "optimizer_steps": 0,
+    "scheduler_steps": 0
+  },
+  "opportunity_ledger": {
+    "header_rows": 1,
+    "group_rows": 192,
+    "unique_group_ids": 192,
+    "start_weight_versions": [
+      0
+    ],
+    "positive_opportunity_groups": 158,
+    "zero_opportunity_groups": 34,
+    "total_valid_actor_tokens": 421037,
+    "truncated_siblings": 29,
+    "reward_values": [
+      0.0,
+      1.0
+    ],
+    "minimum_group_opportunity": 0.0,
+    "maximum_group_opportunity": 5054.875743806362,
+    "minimum_l2_coefficient_mass": 0.0,
+    "maximum_l2_coefficient_mass": 88.54031310134981
+  },
+  "observer": {
+    "assignment_domain": "m4-conditional-capsule-v1",
+    "release_arm_labels": [
+      "neutral"
+    ],
+    "arm_dependent_branch_forbidden": true,
+    "observations": 192,
+    "active_window_ns": 319184673053,
+    "corrected_observer_ns": 165315475,
+    "corrected_observer_duty": 0.0005179304927732219
+  },
+  "integrity": {
+    "safe_source_archive_members": 2956,
+    "safe_source_archive_symlinks": 16,
+    "megatron_archive_check_passed": true,
+    "runtime_authority_check_passed": true,
+    "capsule_tests_passed": 3,
+    "controller_tests_passed": 4,
+    "controller_tests_deselected": 73,
+    "artifact_inventory_authenticated": true,
+    "metadata_repair_verified": true
+  },
+  "runtime_wrapper": {
+    "emitted_status": "RUNTIME_FAILURE",
+    "exit_code": 1,
+    "interpretation": "The generic wrapper records the deliberate nonzero no-contrast exit; it is not the scientific endpoint. The authenticated log establishes FAIL_NO_CONTRAST after all frozen frontiers were evaluated."
+  },
+  "provenance": {
+    "source_commit": "883cc01e33a6534d31c8614a0c8e60b5a18c4a23",
+    "package_commit": "93ef5e458ca774ebe05b249d450128055d715cc1",
+    "source_archive_sha256": "986c8aeeff31721cf037fbc98a0aff36899229cc98c4ac79cc6dfe3f917c8a05",
+    "qualification_protocol_sha256": "373c2764ef964022da2a0cc934b3dcf6210f194428cbb3cee653a807be5a1373",
+    "metadata_repair_protocol_sha256": "eba90562d2c22aa8ef0a428cf5c2d4f8be71a02482398785433512ad1fc75aa7",
+    "metadata_replacement_authorization_sha256": "015f51d7509ab9b37c0d37e7703722ba469d2f3b509899d1e17889ca060b258a",
+    "metadata_replacement_lock_sha256": "f15b25717ad9113c6d01ce708af105b3063f0eb5e7c18ba773260958323a04f2",
+    "submission_manifest_sha256": "92101e66acceff450655ce029fff169bb4d61bf6768afdf26b254736a425d03e",
+    "package_validation_sha256": "3437994c35d0df890341658d197bc6277636a8c7c8779c46df619f897a6f029e",
+    "upstream_pipeline_id": 72262862,
+    "child_pipeline_id": 72263073,
+    "logs_before_job_id": 474783527,
+    "main_job_id": 474783528,
+    "logs_after_job_id": 474783529,
+    "slurm_job_id": 6193740,
+    "main_artifact_sha256": "455f39ca54e176edf80801a21cf5369e4332f60d07ba8416c6ecaf4167ea8eeb",
+    "logs_after_artifact_sha256": "433510e2e3f23b8c8e53fdb11b725e041326026604b053111a7e06b2a8c19387",
+    "output_script_sha256": "e56a5b634a32b3855757d71a6be8b05fafd3433ceac00ab7a4bd8a20e5135d52",
+    "lifecycle_ledger_sha256": "6e85b7833a086220458edd6128cef24995d502c37cb314560e05c6c55345068a",
+    "observer_duty_sha256": "5b0f45a29fcda9a0ea984e9c234e5f0a7738cfb4d995da19e8a96f5ecf5b3fa0",
+    "opportunity_ledger_sha256": "f90d4bc1057ed3665f5dc2e9ec278d2b00e114b13f9e730ca8a62b87e9ef2cbb",
+    "runtime_result_sha256": "ccc1a95911662c364712ae1edf29e8aa43fc5ecec273fe31a67b7ce6057019b3",
+    "runtime_log_sha256": "0993b3006023d2060f7c7f9c14c90068c6e6b97d0bc4bf7ee3b3091575836d9b"
+  },
+  "audit_limitation": "Rejected frontier membership was not persisted. Exact post hoc frontier-level threshold or constraint sensitivity cannot be reconstructed from the terminal artifact, and no chronological regrouping may substitute for the runtime frontier order.",
+  "protocol_consequence": "Stop the conditional bridge in this tested setting. Do not retry the seed, weaken the 10% threshold, or open the planned paired one-update outcome from this qualification."
+}
