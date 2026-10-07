@@ -43,6 +43,14 @@ async_rl:
     enabled: false
     output_path: null
     observer_duty_path: null
+  # Default-off, bounded construct audit. It performs backward passes at one
+  # frozen checkpoint, records compact gradients, and aborts without updates.
+  gradient_utility_audit:
+    enabled: false
+    output_path: null
+    max_groups: 256
+    sketch_bins: 16384
+    sketch_seeds: [20261019, 20261021]
   # Default-off behavior-neutral OARS proposal observer. This requires the
   # weight_fifo sampler, four prompts per train step, and the opportunity audit.
   opportunity_at_risk_shadow:

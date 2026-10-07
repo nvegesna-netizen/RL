@@ -48,6 +48,10 @@ from megatron.core.utils import get_model_config
 from transformers import PreTrainedTokenizerBase
 
 from nemo_rl.algorithms.logits_sampling_utils import TrainingSamplingParams
+from nemo_rl.algorithms.async_utils.gradient_utility_audit import (
+    hash_model_parameters,
+    summarize_open_step_gradients,
+)
 from nemo_rl.algorithms.loss.interfaces import LossFunction
 from nemo_rl.data_plane.worker_mixin import TQWorkerMixin
 from nemo_rl.distributed.batched_data_dict import BatchedDataDict
@@ -1582,6 +1586,39 @@ class MegatronPolicyWorkerImpl(
         self.model.zero_grad_buffer()
         self.optimizer.zero_grad()
         self._train_step_state = None
+
+    @wrap_with_nvtx_name("megatron_policy_worker/inspect_gradient_utility")
+    def inspect_gradient_utility(
+        self,
+        *,
+        sketch_bins: int,
+        sketch_seeds: tuple[int, ...],
+    ) -> dict[str, Any]:
+        """Read an open step's gradient without synchronizing or updating it."""
+        state = self._assert_step_open()
+        if torch.distributed.get_world_size() != 1:
+            raise RuntimeError(
+                "gradient utility audit is frozen for exactly one policy worker"
+            )
+        normalization_tokens_float = float(state["local_valid_toks"].item())
+        normalization_tokens = int(normalization_tokens_float)
+        if normalization_tokens_float != normalization_tokens:
+            raise RuntimeError("valid-token count must be integral")
+        return summarize_open_step_gradients(
+            self.model.named_parameters(),
+            normalization_tokens=normalization_tokens,
+            sketch_bins=sketch_bins,
+            sketch_seeds=sketch_seeds,
+        ).to_dict()
+
+    @wrap_with_nvtx_name("megatron_policy_worker/model_parameter_sha256")
+    def model_parameter_sha256(self) -> str:
+        """Hash model parameters for the no-update audit's mutation gate."""
+        if torch.distributed.get_world_size() != 1:
+            raise RuntimeError(
+                "gradient utility audit is frozen for exactly one policy worker"
+            )
+        return hash_model_parameters(self.model.named_parameters())
 
     @wrap_with_nvtx_name("megatron_policy_worker/get_logprobs")
     def get_logprobs(

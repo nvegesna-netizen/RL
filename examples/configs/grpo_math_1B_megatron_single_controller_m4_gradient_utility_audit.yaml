@@ -1,0 +1,59 @@
+# Frozen-checkpoint, no-update M4 gradient-utility construct audit.
+defaults: grpo_math_1B_megatron_single_controller_m4_llama3p2_1b_gsm8k_family_transport.yaml
+
+grpo:
+  max_num_steps: 1
+  max_num_epochs: 1
+  num_prompts_per_step: 1
+  num_generations_per_prompt: 8
+  seed: 20261017
+
+policy:
+  train_global_batch_size: 8
+
+async_rl:
+  sampler:
+    name: windowed
+    max_staleness_versions: 0
+    sample_freshest_first: false
+  min_groups_for_streaming_train: 1
+  max_inflight_prompts: 8
+  max_buffered_rollouts: 64
+  lifecycle_audit_path: results/m4-gradient-utility-audit/lifecycle.jsonl
+  controlled_release_delay:
+    enabled: true
+    seed: 20261017
+    assignment_domain: m4-gradient-utility-audit-v1
+    arms:
+      - label: neutral
+        delay_seconds: 0.0
+        mass: 1
+  gradient_opportunity_audit:
+    enabled: true
+    output_path: results/m4-gradient-utility-audit/opportunity.jsonl
+    observer_duty_path: results/m4-gradient-utility-audit/observer-duty.json
+  lifecycle_derived_opportunity_audit:
+    enabled: false
+  opportunity_at_risk_shadow:
+    enabled: false
+  opportunity_at_risk_v2_shadow:
+    enabled: false
+  gradient_utility_audit:
+    enabled: true
+    output_path: results/m4-gradient-utility-audit/gradient-utility.jsonl
+    max_groups: 256
+    sketch_bins: 16384
+    sketch_seeds: [20261019, 20261021]
+  terminal_policy_export:
+    enabled: false
+
+logger:
+  log_dir: results/m4-gradient-utility-audit/metrics
+  wandb_enabled: false
+  tensorboard_enabled: false
+  mlflow_enabled: false
+  swanlab_enabled: false
+  monitor_gpus: false
+
+data_plane:
+  actor_runtime_env_mode: inherit_baked_single_node

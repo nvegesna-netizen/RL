@@ -605,3 +605,21 @@ class TQWorkerMixin:
         zeros gradients.
         """
         self.abort_train_step()  # type: ignore[attr-defined]
+
+    @wrap_with_nvtx_name("policy_worker/inspect_gradient_utility_presharded")
+    def inspect_gradient_utility_presharded(
+        self,
+        *,
+        sketch_bins: int,
+        sketch_seeds: tuple[int, ...],
+    ) -> dict[str, Any]:
+        """Return a compact gradient summary from the currently open step."""
+        return self.inspect_gradient_utility(  # type: ignore[attr-defined]
+            sketch_bins=sketch_bins,
+            sketch_seeds=sketch_seeds,
+        )
+
+    @wrap_with_nvtx_name("policy_worker/model_parameter_sha256_presharded")
+    def model_parameter_sha256_presharded(self) -> str:
+        """Return a canonical parameter hash from the policy worker."""
+        return self.model_parameter_sha256()  # type: ignore[attr-defined]

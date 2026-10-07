@@ -26,7 +26,10 @@ import nemo_rl.algorithms.single_controller as single_controller
 from nemo_rl.algorithms.async_utils.controlled_release import (
     ControlledReleaseDelayConfig,
 )
-from nemo_rl.algorithms.async_utils.staleness_sampler import WeightFifoSamplerConfig
+from nemo_rl.algorithms.async_utils.staleness_sampler import (
+    WeightFifoSamplerConfig,
+    WindowedSamplerConfig,
+)
 from nemo_rl.algorithms.grpo import GRPOConfig
 from nemo_rl.algorithms.loss import ClippedPGLossConfig
 from nemo_rl.algorithms.single_controller import SingleControllerActor
@@ -34,6 +37,7 @@ from nemo_rl.algorithms.single_controller_utils.config import (
     AdvantageConfig,
     AsyncRLConfig,
     GradientOpportunityAuditConfig,
+    GradientUtilityAuditConfig,
     MasterConfig,
     OpportunityAtRiskShadowConfig,
     OpportunityAtRiskV2ShadowConfig,
@@ -245,6 +249,44 @@ def test_gradient_opportunity_audit_accepts_supported_configuration() -> None:
     )
 
     validate_single_controller_config(config)
+
+
+def _gradient_utility_config() -> MasterConfig:
+    config = _controlled_release_master_config(
+        lifecycle_audit_path="lifecycle.jsonl"
+    )
+    config.async_rl.sampler = WindowedSamplerConfig(max_staleness_versions=0)
+    config.async_rl.gradient_opportunity_audit = GradientOpportunityAuditConfig(
+        enabled=True,
+        output_path="opportunity.jsonl",
+        observer_duty_path="duty.json",
+    )
+    config.async_rl.gradient_utility_audit = GradientUtilityAuditConfig(
+        enabled=True,
+        output_path="gradient-utility.jsonl",
+        max_groups=8,
+        sketch_bins=16,
+        sketch_seeds=(3, 5),
+    )
+    return config
+
+
+def test_gradient_utility_audit_accepts_frozen_no_update_configuration() -> None:
+    validate_single_controller_config(_gradient_utility_config())
+
+
+def test_gradient_utility_audit_requires_opportunity_audit() -> None:
+    config = _gradient_utility_config()
+    config.async_rl.gradient_opportunity_audit = GradientOpportunityAuditConfig()
+    with pytest.raises(ValueError, match="requires gradient_opportunity_audit"):
+        validate_single_controller_config(config)
+
+
+def test_gradient_utility_audit_requires_ungated_frozen_checkpoint_sampler() -> None:
+    config = _gradient_utility_config()
+    config.async_rl.sampler = WeightFifoSamplerConfig(max_staleness_versions=1)
+    with pytest.raises(ValueError, match="requires windowed sampling"):
+        validate_single_controller_config(config)
 
 
 def test_opportunity_at_risk_shadow_is_default_off() -> None:

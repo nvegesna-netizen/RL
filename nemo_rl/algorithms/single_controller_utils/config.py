@@ -27,6 +27,7 @@ from nemo_rl.algorithms.async_utils.controlled_release import (
 from nemo_rl.algorithms.async_utils.staleness_sampler import (
     InOrderSamplerConfig,
     SamplerConfig,
+    WindowedSamplerConfig,
     WeightFifoSamplerConfig,
     required_buffer_capacity_for_config,
 )
@@ -47,6 +48,16 @@ class GradientOpportunityAuditConfig(BaseModel, frozen=True):
     enabled: bool = False
     output_path: Optional[str] = None
     observer_duty_path: Optional[str] = None
+
+
+class GradientUtilityAuditConfig(BaseModel, frozen=True):
+    """Default-off, bounded, no-update per-group gradient audit."""
+
+    enabled: bool = False
+    output_path: Optional[str] = None
+    max_groups: int = 256
+    sketch_bins: int = 16384
+    sketch_seeds: tuple[int, ...] = (20261019, 20261021)
 
 
 class LifecycleDerivedOpportunityAuditConfig(BaseModel, frozen=True):
@@ -157,6 +168,9 @@ class AsyncRLConfig(BaseModel, extra="allow"):
     gradient_opportunity_audit: GradientOpportunityAuditConfig = Field(
         default_factory=GradientOpportunityAuditConfig
     )
+    gradient_utility_audit: GradientUtilityAuditConfig = Field(
+        default_factory=GradientUtilityAuditConfig
+    )
     lifecycle_derived_opportunity_audit: LifecycleDerivedOpportunityAuditConfig = Field(
         default_factory=LifecycleDerivedOpportunityAuditConfig
     )
@@ -208,6 +222,7 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
     async_config = master_config.async_rl
     release_config = async_config.controlled_release_delay
     opportunity_config = async_config.gradient_opportunity_audit
+    utility_config = async_config.gradient_utility_audit
     derived_config = async_config.lifecycle_derived_opportunity_audit
     shadow_config = async_config.opportunity_at_risk_shadow
     shadow_v2_config = async_config.opportunity_at_risk_v2_shadow
@@ -288,6 +303,65 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
                 "gradient opportunity audit requires ordinary token-level clipped "
                 "PG (PPO ratio enabled, no sequence-level ratio, CISPO, or "
                 "positive-example NLL)"
+            )
+    if utility_config.enabled:
+        if not opportunity_config.enabled:
+            raise ValueError(
+                "async_rl.gradient_utility_audit.enabled=true requires "
+                "gradient_opportunity_audit.enabled=true"
+            )
+        if not utility_config.output_path:
+            raise ValueError(
+                "async_rl.gradient_utility_audit.enabled=true requires output_path"
+            )
+        if utility_config.max_groups < 1:
+            raise ValueError("gradient_utility_audit.max_groups must be positive")
+        if utility_config.sketch_bins < 2:
+            raise ValueError("gradient_utility_audit.sketch_bins must be at least two")
+        if (
+            not utility_config.sketch_seeds
+            or len(set(utility_config.sketch_seeds))
+            != len(utility_config.sketch_seeds)
+        ):
+            raise ValueError(
+                "gradient_utility_audit.sketch_seeds must be nonempty and unique"
+            )
+        if master_config.grpo.num_prompts_per_step != 1:
+            raise ValueError(
+                "gradient_utility_audit requires grpo.num_prompts_per_step=1"
+            )
+        if not isinstance(async_config.sampler, WindowedSamplerConfig) or (
+            async_config.sampler.max_staleness_versions != 0
+        ):
+            raise ValueError(
+                "gradient_utility_audit requires windowed sampling with "
+                "max_staleness_versions=0 so collection can progress at a frozen "
+                "checkpoint"
+            )
+        if master_config.policy["train_global_batch_size"] != (
+            master_config.grpo.num_generations_per_prompt
+        ):
+            raise ValueError(
+                "gradient_utility_audit requires one complete prompt group per "
+                "training batch"
+            )
+        if shadow_config.enabled or shadow_v2_config.enabled:
+            raise ValueError(
+                "gradient_utility_audit is mutually exclusive with OARS observers"
+            )
+        if export_config.enabled:
+            raise ValueError(
+                "gradient_utility_audit forbids terminal policy export"
+            )
+        audit_paths = (
+            Path(async_config.lifecycle_audit_path).resolve(),
+            Path(opportunity_config.output_path).resolve(),
+            Path(opportunity_config.observer_duty_path).resolve(),
+            Path(utility_config.output_path).resolve(),
+        )
+        if len(set(audit_paths)) != len(audit_paths):
+            raise ValueError(
+                "gradient utility, lifecycle, opportunity, and duty paths must differ"
             )
     if shadow_config.enabled:
         if not opportunity_config.enabled:

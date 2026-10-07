@@ -48,6 +48,9 @@ from nemo_rl.algorithms.async_utils.gradient_opportunity import (
     GradientOpportunityRecorder,
     compute_grpo_gradient_opportunity,
 )
+from nemo_rl.algorithms.async_utils.gradient_utility_audit import (
+    GradientUtilityAuditRecorder,
+)
 from nemo_rl.algorithms.async_utils.lifecycle_opportunity import (
     derive_lifecycle_opportunity_rows,
     flush_lifecycle_derivation_summary,
@@ -164,6 +167,18 @@ class SingleControllerActor:
             None
         )
         self._observer_duty_meter: Optional[CommonObserverDutyMeter] = None
+        self._gradient_utility_recorder: Optional[
+            GradientUtilityAuditRecorder
+        ] = None
+        self._gradient_utility_groups = 0
+        self._gradient_utility_parameter_sha256_before: str | None = None
+        self._gradient_utility_parameter_sha256_after: str | None = None
+        utility_config = self._async_cfg.gradient_utility_audit
+        if utility_config.enabled:
+            self._gradient_utility_recorder = GradientUtilityAuditRecorder(
+                sketch_bins=utility_config.sketch_bins,
+                sketch_seeds=utility_config.sketch_seeds,
+            )
         if self._async_cfg.lifecycle_audit_path is not None:
             opportunity_enabled = self._async_cfg.gradient_opportunity_audit.enabled
             derived_enabled = (
@@ -284,8 +299,17 @@ class SingleControllerActor:
                             OPPORTUNITY_L1_KEY: summary.opportunity,
                             OPPORTUNITY_L2_KEY: summary.l2_coefficient_mass,
                             OPPORTUNITY_VALID_TOKENS_KEY: summary.valid_actor_tokens,
+                            "gradient_opportunity_nonzero_advantage_siblings": (
+                                summary.nonzero_advantage_siblings
+                            ),
+                            "gradient_opportunity_truncation_count": sum(
+                                sibling.truncated for sibling in summary.siblings
+                            ),
                         }
-                        if self._async_cfg.opportunity_at_risk_v2_shadow.enabled:
+                        if (
+                            self._async_cfg.opportunity_at_risk_v2_shadow.enabled
+                            or self._async_cfg.gradient_utility_audit.enabled
+                        ):
                             reward_mean, reward_variance = compute_reward_moments(
                                 [sibling.reward for sibling in summary.siblings]
                             )
@@ -438,12 +462,20 @@ class SingleControllerActor:
         """Main entry point. Runs until max_train_steps is reached."""
         # Synchronize weights before starting the pumps
         await self._sync_weights()
+        if self._async_cfg.gradient_utility_audit.enabled:
+            self._gradient_utility_parameter_sha256_before = await asyncio.to_thread(
+                self._trainer.model_parameter_sha256
+            )
         if self._observer_duty_meter is not None:
             self._observer_duty_meter.begin_active_window()
 
         # Start the rollout and train pumps
         rollout_task = asyncio.create_task(self._rollout_pump())
-        train_task = asyncio.create_task(self._train_pump())
+        train_task = asyncio.create_task(
+            self._gradient_utility_audit_pump()
+            if self._async_cfg.gradient_utility_audit.enabled
+            else self._train_pump()
+        )
         cleanup_reason = RolloutRemovalReason.CANCELLED
         try:
             done, _ = await asyncio.wait(
@@ -454,11 +486,40 @@ class SingleControllerActor:
                 # rollout pump leaves the train pump to drain committed groups.
                 await rollout_task
             await train_task
-            expected_steps = self._master_config.grpo.max_num_steps
-            completed_bounded_run = (
-                self._train_steps == expected_steps
-                and self._trainer_version == expected_steps
-            )
+            utility_config = self._async_cfg.gradient_utility_audit
+            if utility_config.enabled:
+                self._gradient_utility_parameter_sha256_after = (
+                    await asyncio.to_thread(self._trainer.model_parameter_sha256)
+                )
+                assert self._gradient_utility_recorder is not None
+                assert self._gradient_utility_parameter_sha256_before is not None
+                self._gradient_utility_recorder.append_terminal(
+                    parameter_sha256_before=(
+                        self._gradient_utility_parameter_sha256_before
+                    ),
+                    parameter_sha256_after=(
+                        self._gradient_utility_parameter_sha256_after
+                    ),
+                    groups=self._gradient_utility_groups,
+                    finish_train_step_calls=0,
+                )
+                completed_bounded_run = (
+                    self._gradient_utility_groups == utility_config.max_groups
+                    and self._train_steps == 0
+                    and self._trainer_version == 0
+                    and self._gradient_utility_parameter_sha256_before
+                    == self._gradient_utility_parameter_sha256_after
+                )
+                expected_description = (
+                    f"audit_groups={utility_config.max_groups}, steps=0, version=0"
+                )
+            else:
+                expected_steps = self._master_config.grpo.max_num_steps
+                completed_bounded_run = (
+                    self._train_steps == expected_steps
+                    and self._trainer_version == expected_steps
+                )
+                expected_description = f"steps={expected_steps}, version={expected_steps}"
             if (
                 self._async_cfg.controlled_release_delay.enabled
                 and not completed_bounded_run
@@ -468,7 +529,8 @@ class SingleControllerActor:
                     "train-step/version boundary: "
                     f"steps={self._train_steps} "
                     f"version={self._trainer_version} "
-                    f"expected={expected_steps}"
+                    f"audit_groups={self._gradient_utility_groups} "
+                    f"expected={expected_description}"
                 )
             if (
                 self._async_cfg.controlled_release_delay.enabled
@@ -547,29 +609,47 @@ class SingleControllerActor:
                                 self._oars_shadow_recorder.flush_jsonl(shadow_path)
                     finally:
                         try:
-                            if self._opportunity_recorder is not None:
-                                opportunity_path = self._async_cfg.gradient_opportunity_audit.output_path
-                                assert opportunity_path is not None
-                                self._opportunity_recorder.flush_jsonl(opportunity_path)
+                            if self._gradient_utility_recorder is not None:
+                                utility_path = (
+                                    self._async_cfg.gradient_utility_audit.output_path
+                                )
+                                assert utility_path is not None
+                                self._gradient_utility_recorder.flush_jsonl(
+                                    utility_path
+                                )
                         finally:
                             try:
-                                if self._observer_duty_meter is not None:
-                                    derived_config = self._async_cfg.lifecycle_derived_opportunity_audit
-                                    duty_path = (
-                                        derived_config.lifecycle_duty_path
-                                        if derived_config.enabled
-                                        else self._async_cfg.gradient_opportunity_audit.observer_duty_path
+                                if self._opportunity_recorder is not None:
+                                    opportunity_path = self._async_cfg.gradient_opportunity_audit.output_path
+                                    assert opportunity_path is not None
+                                    self._opportunity_recorder.flush_jsonl(
+                                        opportunity_path
                                     )
-                                    assert duty_path is not None
-                                    self._observer_duty_meter.flush_json(duty_path)
                             finally:
-                                self._logger.finish()
+                                try:
+                                    if self._observer_duty_meter is not None:
+                                        derived_config = self._async_cfg.lifecycle_derived_opportunity_audit
+                                        duty_path = (
+                                            derived_config.lifecycle_duty_path
+                                            if derived_config.enabled
+                                            else self._async_cfg.gradient_opportunity_audit.observer_duty_path
+                                        )
+                                        assert duty_path is not None
+                                        self._observer_duty_meter.flush_json(duty_path)
+                                finally:
+                                    self._logger.finish()
 
         export_result = await self._export_terminal_policy()
         result: dict[str, Any] = {
             "train_steps": self._train_steps,
             "trainer_version": self._trainer_version,
         }
+        if self._async_cfg.gradient_utility_audit.enabled:
+            result["gradient_utility_groups"] = self._gradient_utility_groups
+            result["parameter_hash_unchanged"] = (
+                self._gradient_utility_parameter_sha256_before
+                == self._gradient_utility_parameter_sha256_after
+            )
         if export_result is not None:
             result["terminal_policy_export"] = export_result
         return result
@@ -1037,6 +1117,91 @@ class SingleControllerActor:
                 f"train step {self._train_steps}/{grpo_cfg.max_num_steps}  "
                 f"trainer_v={self._trainer_version}  "
                 f"lag={lag}  ",
+                flush=True,
+            )
+
+    async def _gradient_utility_audit_pump(self) -> None:
+        """Collect one gradient summary per group and abort every open step."""
+        config = self._async_cfg.gradient_utility_audit
+        assert config.enabled
+        assert self._gradient_utility_recorder is not None
+
+        while self._gradient_utility_groups < config.max_groups:
+            evicted = await self._sampler.evict(
+                current_train_weight=self._trainer_version,
+            )
+            if evicted:
+                raise RuntimeError(
+                    "gradient utility audit unexpectedly evicted a prompt group"
+                )
+            train_meta, num_groups = await self._sampler.select(
+                current_train_weight=self._trainer_version,
+                min_prompt_groups=1,
+                max_prompt_groups=1,
+            )
+            if train_meta is None:
+                if self._rollout_exhausted.is_set():
+                    raise RuntimeError(
+                        "rollout exhausted before the frozen gradient audit completed"
+                    )
+                await asyncio.sleep(0.005)
+                continue
+            if num_groups != 1:
+                raise RuntimeError("gradient utility audit requires one group per batch")
+            self._buffer_capacity.release()
+
+            if self._policy_logprobs_required or self._reference_logprobs_required:
+                await asyncio.to_thread(self._trainer.prepare_for_lp_inference)
+                if self._policy_logprobs_required:
+                    await asyncio.to_thread(
+                        self._trainer.get_logprobs_from_meta, train_meta
+                    )
+                if self._reference_logprobs_required:
+                    await asyncio.to_thread(
+                        self._trainer.get_reference_policy_logprobs_from_meta,
+                        train_meta,
+                    )
+
+            train_meta = await self._advantage_stage(train_meta)
+            step_open = False
+            try:
+                await asyncio.to_thread(self._trainer.prepare_for_training)
+                await asyncio.to_thread(self._trainer.begin_train_step, self._loss_fn)
+                step_open = True
+                await asyncio.to_thread(
+                    self._trainer.train_microbatches_from_meta,
+                    train_meta,
+                )
+                summary = await asyncio.to_thread(
+                    self._trainer.inspect_gradient_utility,
+                    sketch_bins=config.sketch_bins,
+                    sketch_seeds=config.sketch_seeds,
+                )
+                await asyncio.to_thread(self._trainer.abort_train_step)
+                step_open = False
+            finally:
+                if step_open:
+                    await asyncio.to_thread(self._trainer.abort_train_step)
+
+            await self._call_dp(
+                "clear_samples",
+                sample_ids=list(train_meta.sample_ids),
+                partition_id=self._partition_id,
+            )
+            group_id = train_meta.extra_info.get(OPPORTUNITY_GROUP_ID_KEY)
+            if not isinstance(group_id, str) or not group_id:
+                raise RuntimeError("gradient audit batch lacks an opportunity group ID")
+            self._gradient_utility_recorder.append_group(
+                audit_index=self._gradient_utility_groups,
+                group_id=group_id,
+                sample_ids=tuple(train_meta.sample_ids),
+                metadata=train_meta.extra_info,
+                summary=summary,
+            )
+            self._gradient_utility_groups += 1
+            print(
+                "gradient utility audit "
+                f"{self._gradient_utility_groups}/{config.max_groups}",
                 flush=True,
             )
 

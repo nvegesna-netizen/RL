@@ -601,3 +601,34 @@ class TQPolicy(Policy):
 
         if self.flops_tracker is not None:
             self.flops_tracker.reset()
+
+    def inspect_gradient_utility(
+        self,
+        *,
+        sketch_bins: int,
+        sketch_seeds: tuple[int, ...],
+    ) -> dict[str, Any]:
+        """Read the single-worker open-step gradient without updating it."""
+        futures = self.worker_group.run_all_workers_single_data(
+            "inspect_gradient_utility_presharded",
+            sketch_bins=sketch_bins,
+            sketch_seeds=sketch_seeds,
+        )
+        results = ray.get(futures)
+        if len(results) != 1:
+            raise RuntimeError(
+                "gradient utility audit requires exactly one policy worker"
+            )
+        return results[0]
+
+    def model_parameter_sha256(self) -> str:
+        """Return the single policy worker's canonical parameter hash."""
+        futures = self.worker_group.run_all_workers_single_data(
+            "model_parameter_sha256_presharded",
+        )
+        results = ray.get(futures)
+        if len(results) != 1 or not isinstance(results[0], str):
+            raise RuntimeError(
+                "gradient utility audit requires exactly one policy worker hash"
+            )
+        return results[0]
