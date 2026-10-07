@@ -9,14 +9,21 @@
   "protocol_sha256": "716ba0eb8f980ca5af0ef3d57e2415befc1fb1a315afeb01b9bc326a60341b48",
   "authorization_sha256": "eae191a02f5c66123b9a6409d7c84f3e2eac45c2145ec4abc4e18ec75e85fcaf",
   "execution_lock_sha256": "9a44b56183158ae390b519c7f45aed3d3dddc300c636348565191233d3f72392",
-  "builder_sha256": "37d132f021e8383d280d7e90e7e254b77453150068501d205251e946d815268b",
-  "validator_sha256": "c5a3c1eb40311720df3952630fcc9ae3a9f4ed978eba45a7734d05db146745b2",
-  "package_validation_sha256": "7ec0afbf4cfd84a35dfc92b1c97e981e79f0d3f3f54d5ccab95c984483f9a960",
-  "manifest_sha256": "24780138d81492507567bb082f025c17b79615ac18ff1a842c430df246612b0a",
+  "builder_sha256": "cf55b7625039715a6f1e8d6923c529c29ae04b6e2f715a792b92693594e0fa62",
+  "validator_sha256": "09702f95336ec85d2e4e0b1bd0ad2e997f90061b22201900e7b9b91e1a48fb5b",
+  "package_validation_sha256": "b93428422ec28f2b02872e0ce9df4dfd20c60678384ae4a871d5f34b1910086e",
+  "manifest_sha256": "f4fcf0ea9561787ac2316b906ff427d23e8f0f792f853c5408a0086196a73a15",
   "generator_repair": {
-    "failed_upstream_pipeline_id": 72275138,
-    "failed_generate_job_id": 474881315,
+    "failed_upstream_pipeline_ids": [
+      72275138,
+      72282039
+    ],
+    "failed_generate_job_ids": [
+      474881315,
+      474935261
+    ],
     "jet_runtime_expansions_escaped": true,
+    "all_literal_braces_escaped": true,
     "scientific_source_changed": false,
     "scientific_protocol_changed": false
   },

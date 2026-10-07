@@ -1,0 +1,28 @@
+{
+  "schema": "m4-shield-eligible-live-capture-full-brace-repair-authorization-v1",
+  "recorded_at": "2026-10-07",
+  "status": "AUTHORIZED_AFTER_SECOND_PRE_RUNTIME_GENERATOR_FAILURE",
+  "user_authorization": "I always authorize",
+  "failed_upstream_pipeline_id": 72282039,
+  "failed_generate_job_id": 474935261,
+  "failed_generate_trace_sha256": "d0b0fc3341121849104680c13ba80e2b70f0d802cf6805ce8028f0d38e042587",
+  "authenticated_error": "NameError encountered during substitution: name 'names' is not defined",
+  "failure_boundary": {
+    "child_pipeline_created": false,
+    "eos_job_created": false,
+    "training_started": false,
+    "eligible_live_capsule_created": false,
+    "post_update_outcomes_opened": false
+  },
+  "repair": {
+    "operation": "Escape every literal brace in the generated script and restore only the intentional JET assets_dir placeholder.",
+    "validator_requires_no_unescaped_literal_braces": true,
+    "validator_parses_deescaped_runtime_shell_and_python": true,
+    "scientific_source_changed": false,
+    "scientific_protocol_changed": false,
+    "runtime_configuration_changed": false,
+    "eos_submission_attempts": 1,
+    "automatic_retry": false,
+    "automatic_extension": false
+  }
+}

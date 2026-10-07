@@ -1,7 +1,8 @@
 {
   "authorization_sha256": "eae191a02f5c66123b9a6409d7c84f3e2eac45c2145ec4abc4e18ec75e85fcaf",
-  "builder_sha256": "37d132f021e8383d280d7e90e7e254b77453150068501d205251e946d815268b",
+  "builder_sha256": "cf55b7625039715a6f1e8d6923c529c29ae04b6e2f715a792b92693594e0fa62",
   "checks": {
+    "all_literal_braces_escaped": true,
     "authorization_hash": true,
     "bash_syntax": true,
     "credential_free": true,
@@ -21,7 +22,7 @@
     "source_hash": true
   },
   "execution_lock_sha256": "9a44b56183158ae390b519c7f45aed3d3dddc300c636348565191233d3f72392",
-  "manifest_sha256": "24780138d81492507567bb082f025c17b79615ac18ff1a842c430df246612b0a",
+  "manifest_sha256": "f4fcf0ea9561787ac2316b906ff427d23e8f0f792f853c5408a0086196a73a15",
   "post_update_outcomes_opened": false,
   "protocol_sha256": "716ba0eb8f980ca5af0ef3d57e2415befc1fb1a315afeb01b9bc326a60341b48",
   "schema": "m4-shield-eligible-live-capture-package-validation-v1",

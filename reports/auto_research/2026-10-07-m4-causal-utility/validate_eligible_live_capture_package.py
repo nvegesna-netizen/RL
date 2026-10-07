@@ -52,6 +52,16 @@ def embedded_python_blocks(script: str) -> list[str]:
     return re.findall(r"<<'PY'\n(.*?)\nPY(?:\n|$)", script, flags=re.DOTALL)
 
 
+def has_only_paired_literal_braces(script: str) -> bool:
+    """Return whether every brace except the JET assets placeholder is escaped."""
+    candidate = script.replace("{assets_dir}", "")
+    for brace in ("{", "}"):
+        runs = re.findall(re.escape(brace) + "+", candidate)
+        if any(len(run) % 2 for run in runs):
+            return False
+    return "{assets_dir}" in script
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--builder", type=Path, required=True)
@@ -77,6 +87,11 @@ def main() -> None:
 
     manifest = json.loads(args.manifest.read_bytes())
     script = manifest["spec"]["script"]
+    runtime_script = (
+        script.replace("{assets_dir}", "/tmp/m4-assets")
+        .replace("{{", "{")
+        .replace("}}", "}")
+    )
     source_members, source_symlinks = safe_archive_facts(args.source)
     megatron_members, _ = safe_archive_facts(args.megatron)
     if megatron_members != 726:
@@ -97,9 +112,9 @@ def main() -> None:
         ).read_text()
 
         script_path = temp / "run.sh"
-        script_path.write_text(script)
+        script_path.write_text(runtime_script)
         subprocess.run(["bash", "-n", str(script_path)], check=True)
-        blocks = embedded_python_blocks(script)
+        blocks = embedded_python_blocks(runtime_script)
         if len(blocks) != 3:
             raise RuntimeError(
                 f"expected three embedded Python blocks, got {len(blocks)}"
@@ -154,6 +169,7 @@ def main() -> None:
         not in script.replace("${{NEMO_RL_COMMIT:-unknown}}", "")
         and "${PIPESTATUS[0]}" not in script.replace("${{PIPESTATUS[0]}}", "")
     )
+    all_literal_braces_escaped = has_only_paired_literal_braces(script)
     runtime_tests_before_run = script.index('"$PYTHON" -m pytest') < script.index(
         '"$PYTHON" examples/run_grpo_single_controller.py'
     )
@@ -180,6 +196,7 @@ def main() -> None:
         "manifest_time_limit": manifest["spec"].get("time_limit") == 14400,
         "no_client_queue_deadline": no_queue_deadline,
         "jet_runtime_expansions_escaped": jet_runtime_expansions_escaped,
+        "all_literal_braces_escaped": all_literal_braces_escaped,
         "runtime_tests_before_collection": runtime_tests_before_run,
         "outcome_exclusion": outcome_exclusion,
         "protocol_2_safe_serialization": protocol_2,

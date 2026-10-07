@@ -1,0 +1,37 @@
+{
+  "schema": "m4-shield-eligible-live-capture-full-brace-submission-plan-v1",
+  "status": "READY_FOR_SINGLE_SUBMISSION",
+  "failed_upstream_pipeline_ids": [
+    72275138,
+    72282039
+  ],
+  "failed_generate_job_ids": [
+    474881315,
+    474935261
+  ],
+  "manifest_sha256": "f4fcf0ea9561787ac2316b906ff427d23e8f0f792f853c5408a0086196a73a15",
+  "package_receipt_sha256": "3ff654887e2d5df32e09487631402bd6065987d3271dab8d15ae2b880a2af589",
+  "repair_authorization_sha256": "7564290fa7c7ba9ab07cf80984669f424f971be95d8012aa76510a69f9deeeb8",
+  "launcher": {
+    "path": "/Users/nvegesna/Documents/JET-LLM/runllm.py",
+    "sha256": "7e5ca7cb2b9807404123b19009d8d975f390f38690bf0a691f65f291b49c3cbb",
+    "config_id": "dlalgo-ci/eos",
+    "mode": "--no_wait",
+    "submission_attempt_limit": 1,
+    "automatic_retry": false
+  },
+  "execution": {
+    "workload_time_limit_seconds": 14400,
+    "client_queue_deadline": null,
+    "post_update_outcomes_opened": false
+  },
+  "repair_scope": {
+    "all_literal_braces_escaped": true,
+    "only_jet_assets_dir_placeholder_restored": true,
+    "deescaped_runtime_shell_parsed": true,
+    "deescaped_embedded_python_parsed": true,
+    "scientific_source_changed": false,
+    "scientific_protocol_changed": false,
+    "runtime_configuration_changed": false
+  }
+}
