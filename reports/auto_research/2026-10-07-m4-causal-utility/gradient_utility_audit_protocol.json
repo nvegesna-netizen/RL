@@ -1,0 +1,80 @@
+{
+  "schema": "m4-gradient-utility-audit-protocol-v1",
+  "status": "FROZEN_BEFORE_IMPLEMENTATION_OR_OUTCOME_ACQUISITION",
+  "date": "2026-10-07",
+  "parent_commit": "8f7b71452",
+  "parent_offline_result_sha256": "049cf55a57f6992c47186183293f678295bd28e08eb5309cfbfd2289228e8bda",
+  "purpose": "Test whether M4 adds held-out information about actual group-gradient magnitude and cross-fitted task-consensus alignment without updating the model.",
+  "acquisition": {
+    "model": "meta-llama/Llama-3.2-1B-Instruct",
+    "workload": "GSM8K train",
+    "prompt_groups": 256,
+    "siblings_per_group": 8,
+    "checkpoint_learner_version": 0,
+    "optimizer_steps": 0,
+    "scheduler_steps": 0,
+    "nodes": 1,
+    "gpus": 2,
+    "runtime_limit_seconds": 14400,
+    "queue_deadline_override": null,
+    "rollout_seed": 20261017,
+    "assignment_domain": "m4-gradient-utility-audit-v1"
+  },
+  "gradient_measurement": {
+    "exact_norm_reduction_dtype": "float64",
+    "sketch_type": "countsketch",
+    "sketch_bins": 16384,
+    "sketch_seeds": [20261019, 20261021],
+    "raw_gradient_retention": false,
+    "raw_training_data_retention": false,
+    "parameter_hash_before_after": true,
+    "required_step_path": "begin_train_step -> train_microbatches_from_meta -> inspect_gradient -> abort_train_step",
+    "forbidden_method": "finish_train_step"
+  },
+  "analysis": {
+    "folds": 8,
+    "fold_assignment": "audit_index_modulo_8",
+    "bootstrap_resamples": 10000,
+    "bootstrap_seed": 20261023,
+    "baseline_features": [
+      "log_valid_actor_tokens",
+      "reward_mean",
+      "reward_variance",
+      "truncation_fraction"
+    ],
+    "augmented_feature": "log1p_m4_l1",
+    "primary_population": "finite_positive_m4_nonzero_exact_gradient",
+    "primary_endpoints": [
+      "cross_fitted_r2_gain_log_exact_gradient_norm",
+      "cross_fitted_mse_gain_signed_consensus_utility",
+      "spearman_m4_minus_reward_variance_for_positive_consensus_utility"
+    ]
+  },
+  "integrity_gate": {
+    "unique_groups": 256,
+    "siblings_per_group": 8,
+    "learner_version_final": 0,
+    "optimizer_steps_final": 0,
+    "scheduler_steps_final": 0,
+    "finish_train_step_calls": 0,
+    "abort_acknowledged_every_group": true,
+    "parameter_hash_unchanged": true,
+    "finite_summaries": true,
+    "two_sketch_decisions_agree": true,
+    "median_sketch_norm_relative_error_max": 0.10,
+    "p95_sketch_norm_relative_error_max": 0.25
+  },
+  "decision_rule": {
+    "directional_construct_pass": "Simultaneous 95% lower bounds exceed zero for norm R2 gain, signed-utility MSE gain, and M4-minus-reward-variance rank discriminant under both sketch seeds.",
+    "magnitude_only": "The simultaneous 95% lower bound for norm R2 gain exceeds zero, but one or more directional conditions fail.",
+    "no_construct_support": "The simultaneous 95% lower bound for norm R2 gain does not exceed zero.",
+    "measurement_failure": "Any integrity, no-update, or sketch-fidelity gate fails."
+  },
+  "authorization_boundary": {
+    "current_stage": "implementation_and_local_qualification_only",
+    "eos_submission_count": 0,
+    "scheduler_quality_acquisition": false,
+    "terminal_quality_claim": false,
+    "production_readiness_claim": false
+  }
+}
