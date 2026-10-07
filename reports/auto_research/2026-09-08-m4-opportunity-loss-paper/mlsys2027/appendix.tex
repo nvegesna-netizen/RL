@@ -16,7 +16,7 @@
 \mlsyscorrespondingauthor{Anonymous Author}{anon.email@domain.com}
 \vskip 0.3in
 \begin{abstract}
-This supplement reports reproducibility, provenance, mechanism, observer-duty, and robustness details for the M4 controlled-release study, its prospective Llama 3.2 1B and 3B extensions, the separate 16-pair downstream-quality study, the 10-pair OARS policy study, and the 18-block three-arm quality-primary follow-up. It does not replace the registered primary analyses.
+This supplement reports reproducibility, provenance, mechanism, observer-duty, and robustness details for the M4 controlled-release study, its prospective Llama 3.2 1B and 3B extensions, the separate 16-pair downstream-quality study, the 10-pair OARS policy study, the 18-block three-arm quality-primary follow-up, and the outcome-excluded M4-Shield live qualification. It does not replace the registered primary analyses.
 \end{abstract}
 ]
 \printAffiliationsAndNotice{}
@@ -30,36 +30,36 @@ Groups contain eight siblings. The definitive arms are control and an added five
 \begin{figure*}[t]
 \centering
 \includegraphics[width=0.9\textwidth]{provenance_diagram.pdf}
-\caption{Evidence path. Qualification observations and failed attempts are retained but excluded from causal estimators.}
+\caption{Evidence path. Qualification observations are excluded from causal estimators.}
 \end{figure*}
 
 \begin{table*}[t]
 \caption{Definitive acquisition provenance. Hashes authenticate terminal archives.}
 \label{tab:prov}
 \centering\scriptsize
-\begin{tabular}{lllcl}
+\begin{tabular}{llll}
 \toprule
-ID & Model & Workload & State & Protocol / artifact hash prefix \\
+ID & Model & Workload & Protocol / artifact hash prefix \\
 \midrule
-A1 & 0.6B & OpenMath & success & 6631a4ca8c / 07cddc489e \\
-A2 & 1.7B & OpenMath & success & eef87a5e26 / 022e4d18f2 \\
-A3 & 0.6B & GSM8K & post-run fail & b668279507 / 6c2ebeb2b2 \\
-A4 & 1.7B & GSM8K & success & 3413bde371 / 966dfbf605 \\
-A5 & 0.6B & NuminaMath & success & bbe2c07211 / ad7c556f43 \\
-A6 & 1.7B & NuminaMath & success & bbe2c07211 / 6aa6196873 \\
-A7 & Llama 1B r1 & OpenMath & success & 56a331 / 7fc1d62dba \\
-A8 & Llama 1B r2 & OpenMath & success & 56a331 / 37da83c526 \\
-A9 & Llama 1B r1 & GSM8K & success & 56a331 / c321dcf94a \\
-A10 & Llama 1B r2 & GSM8K & success & 56a331 / fcb236655e \\
-A11 & Llama 3B r1 & OpenMath & success & 4f2a5e / b79b7d1bcd \\
-A12 & Llama 3B r2 & OpenMath & success & 4f2a5e / 034d6e5744 \\
-A13 & Llama 3B r1 & GSM8K & success & 4f2a5e / 6714f77466 \\
-A14 & Llama 3B r2 & GSM8K & success & 4f2a5e / e535f0ce6c \\
+A1 & 0.6B & OpenMath & 6631a4ca8c / 07cddc489e \\
+A2 & 1.7B & OpenMath & eef87a5e26 / 022e4d18f2 \\
+A3 & 0.6B & GSM8K & b668279507 / 6c2ebeb2b2 \\
+A4 & 1.7B & GSM8K & 3413bde371 / 966dfbf605 \\
+A5 & 0.6B & NuminaMath & bbe2c07211 / ad7c556f43 \\
+A6 & 1.7B & NuminaMath & bbe2c07211 / 6aa6196873 \\
+A7 & Llama 1B r1 & OpenMath & 56a331 / 7fc1d62dba \\
+A8 & Llama 1B r2 & OpenMath & 56a331 / 37da83c526 \\
+A9 & Llama 1B r1 & GSM8K & 56a331 / c321dcf94a \\
+A10 & Llama 1B r2 & GSM8K & 56a331 / fcb236655e \\
+A11 & Llama 3B r1 & OpenMath & 4f2a5e / b79b7d1bcd \\
+A12 & Llama 3B r2 & OpenMath & 4f2a5e / 034d6e5744 \\
+A13 & Llama 3B r1 & GSM8K & 4f2a5e / 6714f77466 \\
+A14 & Llama 3B r2 & GSM8K & 4f2a5e / e535f0ce6c \\
 \bottomrule
 \end{tabular}
 \end{table*}
 
-Acquisition A3 completed 558 registered steps and preserved 9,573 scored assignments before invoking an analyzer that rejected the grid protocol identity. The preregistered correct analyzer was applied to those immutable ledgers without new acquisition or protocol change. A7--A10 are the 1B family-extension acquisitions; A11--A14 are the prospective 3B size extension. Full 64-character hashes are supplied in the authenticated reviewer manifest; the private record retains the internal-to-anonymous ID mapping.
+A3 contains 9,573 scored assignments analyzed with the preregistered grid analyzer. A7--A10 are the 1B family-extension acquisitions; A11--A14 are the prospective 3B size extension. Full 64-character hashes are supplied in the authenticated reviewer manifest; the private record retains the internal-to-anonymous ID mapping.
 
 \section{Mechanism and Observer Duty}
 \begin{table}[h]
@@ -164,6 +164,41 @@ Reward variance/FIFO wall-time ratio & 0.8023 & [0.7327, 0.8785] \\
 The exact sign-flip $p$-value for the primary contrast is 0.40381; six block differences are positive, six zero, and six negative. The preregistered lower-bound-above-zero criterion was not met. The accuracy intervals are student intervals over matched blocks. Wall-time estimates are geometric-mean ratios. The common prompt-manifest SHA-256 is \texttt{81d89a2c6a2f}; the extraction receipt and frozen terminal analysis SHA-256 values are \texttt{991f53830ed6} and \texttt{17490153ef95}. Full hashes and all 54 terminal authentication records are retained in the compact evidence map.
 
 This follow-up changes the bounded interpretation of the earlier OARS result. Opportunity-aware rules can alter retained opportunity and wall time, but the positive secondary accuracy estimate from 10 pairs did not reproduce as a terminal-accuracy gain in the larger prospectively frozen comparison. The evidence supports proxy actionability and proxy--quality separation, not equivalence, mediation, or a production-ready scheduler.
+
+\subsection{Outcome-excluded M4-Shield qualification}
+
+M4-Shield was prospectively frozen as a constrained repair layer over reward-variance base proposals. Exact search could intervene only when an admissible action increased imminent M4 L1 opportunity while preserving both registered reward-variance utilities. Terminal training quality was outside the qualification.
+
+\begin{center}
+\begin{minipage}{\columnwidth}
+\centering
+\refstepcounter{table}\textbf{Table \thetable. M4-Shield live qualification.}\\[2pt]
+\small
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lr}
+\toprule
+Endpoint & Result \\
+\midrule
+Decisions & 64 \\
+Interventions & 5 (7.8125\%) \\
+Imminent L1 gain over base proposals & +685.08 \\
+Total reward-variance utility difference & 0.0 \\
+Imminent reward-variance utility difference & 0.0 \\
+Proposal enacted / exact search / service band & 64/64 \\
+Combined observer and decision duty & 0.3182\% \\
+\bottomrule
+\end{tabular}
+}
+\end{minipage}
+\end{center}
+
+The liveness account also satisfied its frozen bounded-shutdown,
+stale-candidate-eviction, and replenishment gates. The protocol, decision
+ledger, observer-duty record, and qualification-result SHA-256 prefixes are
+\texttt{a3c8f84297c2}, \texttt{4dfd6886238d},
+\texttt{611b251dbbd2}, and \texttt{df6fb97686df}, respectively. This
+qualification demonstrates constrained live actuation; it is not a randomized
+policy comparison, terminal-quality estimate, or production-readiness claim.
 
 Across all six Qwen cells and eight authenticated Llama acquisitions, 23,254 of 28,117 positive-opportunity assignments were lost before consumption. Consumed-rollout version age excludes those observations. Its d5-minus-control contrast correlates -0.617 with the M4 estimate across the 14 acquisitions; the ready-latency contrast correlates 0.638. The Qwen-only registered-window correlation with version age is -0.889 (and -0.813 in the harmonized common window). These small-sample retrospective statistics are descriptive, but the observability mismatch is exact: consumed-only staleness cannot represent a candidate that never trains.
 

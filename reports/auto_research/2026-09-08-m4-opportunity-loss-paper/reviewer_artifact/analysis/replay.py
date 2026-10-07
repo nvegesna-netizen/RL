@@ -85,6 +85,17 @@ def published_checks() -> dict[str, object]:
     assert math.isclose(quality["secondary_terminal_gsm8k_accuracy"]["reward_variance_vs_fifo"]["mean"], -0.010908937747451775)
     assert math.isclose(quality["mechanism_retained_l1_contrasts"]["reward_variance_vs_fifo"]["mean"], 311.5318219018324)
     assert math.isclose(quality["matched_wall_time_ratios"]["absolute_m4_vs_fifo"]["geometric_mean_ratio"], 0.8139404004942452)
+    shield = result["m4_shield_qualification"]
+    assert shield["status"] == "PASS_M4_SHIELD_QUALIFIED"
+    assert shield["decision_count"] == 64
+    assert shield["intervention_count"] == 5
+    assert math.isclose(shield["aggregate_imminent_l1_gain_over_base"], 685.0771417617798)
+    assert shield["maximum_absolute_reward_variance_difference"] == 0.0
+    assert shield["maximum_absolute_imminent_reward_variance_difference"] == 0.0
+    assert shield["actual_action_matches_shield"] == 64
+    assert shield["exact_search_without_fallback"] == 64
+    assert shield["service_band_rows"] == 64
+    assert not shield["training_quality_analyzed"]
     discriminant = result["metric_discriminant"]
     assert discriminant["assignment_count"] == 106_653
     assert discriminant["summary"]["positive_opportunity_lost_count"] == 23_254
@@ -103,6 +114,8 @@ def published_checks() -> dict[str, object]:
         "oars_runs": 20,
         "quality_primary_blocks": quality["block_count"],
         "quality_primary_runs": quality["run_count"],
+        "m4_shield_decisions": shield["decision_count"],
+        "m4_shield_interventions": shield["intervention_count"],
         "metric_discriminant_assignments": discriminant["assignment_count"],
         "hac_correlation": synthesis["hac_correlation"],
         "bootstrap_correlation": synthesis["bootstrap_correlation"],

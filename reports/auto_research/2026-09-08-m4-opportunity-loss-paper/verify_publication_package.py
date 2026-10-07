@@ -118,6 +118,29 @@ def main() -> None:
         "wall_time_utility": True,
     }
 
+    shield_path = (
+        ROOT
+        / "reports/auto_research/2026-10-05-m4-shield/m4_shield_live_terminal_authentication.json"
+    )
+    shield = load(shield_path)
+    assert sha256(shield_path) == (
+        "42f48e0f78d8a95064dc8b85126dbada7625a3161a58cba0e52b6ab8d7c4e909"
+    )
+    assert shield["frozen_result"]["status"] == "PASS_M4_SHIELD_QUALIFIED"
+    assert shield["frozen_result"]["decision_count"] == 64
+    assert shield["frozen_result"]["intervention_count"] == 5
+    assert abs(
+        shield["frozen_result"]["aggregate_imminent_l1_gain_over_base"]
+        - 685.0771417617798
+    ) < 1e-9
+    assert shield["independent_recomputation"][
+        "maximum_absolute_reward_variance_difference"
+    ] == 0.0
+    assert shield["independent_recomputation"][
+        "maximum_absolute_imminent_reward_variance_difference"
+    ] == 0.0
+    assert not shield["frozen_result"]["training_quality_analyzed"]
+
     cadence_path = HERE / "cadence_results.json"
     cadence = load(cadence_path)
     assert len(cadence["cells"]) == 6
@@ -147,6 +170,9 @@ def main() -> None:
             "302.03",
             "0.0998",
             "0.7668",
+            "M4-Shield",
+            "685.08",
+            "0.3182%",
             sha256(synthesis_path),
         ],
     )
@@ -175,6 +201,9 @@ def main() -> None:
             "1d9e17a430fc1a184d767413de829ad9ee1375091485b5e7e0b24572f61f7690",
             "3bc49412a212419635e55b616e080708e17cf265c1926c1d93faebf072a87bfd",
             "480180bee539b88c46f36274c9627ef99f8dae1185995f5ddaffbbbf248a25a2",
+            shield["protocol_sha256"],
+            "4dfd6886238db11aecc6980f24b698c9578eb4c14a99139ca5751c080adac119",
+            "df6fb97686df03b8833cd9c5358588f574058dd5f46c1773d18376ee9e35e9bf",
         ],
     )
 
@@ -203,6 +232,8 @@ def main() -> None:
     print(f"campaign_full_window_assignments={campaign_total}")
     print(f"common_window_assignments={sum(c['assignment_count'] for c in cells.values())}")
     print(f"oars_confirmatory_pairs={oars['primary']['n']}")
+    print(f"m4_shield_decisions={shield['frozen_result']['decision_count']}")
+    print(f"m4_shield_interventions={shield['frozen_result']['intervention_count']}")
     print(f"six_cell_synthesis_sha256={sha256(synthesis_path)}")
 
 

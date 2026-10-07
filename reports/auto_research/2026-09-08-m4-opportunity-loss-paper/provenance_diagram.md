@@ -12,13 +12,14 @@ flowchart TD
     G --> S[Retrospective dependency-aware Qwen 2×3 synthesis]
     G --> L[Prospective replicated Llama size/workload synthesis]
     G --> D[Prospective mixed-d5 quality study]
-    G --> O[Prospective OARS policy study]
+    G --> O[Prospective randomized scheduler studies]
+    G --> K[Outcome-excluded M4-Shield live qualification]
     S --> M[Claim ledger, robustness tables, figures, manuscript]
     L --> M
     D --> M
     O --> M
+    K --> M
 
-    X[Failed packaging or preflight attempts] -. documented, excluded from estimator .-> H
     N[No outcome-guided retry or extension] -. constraint .-> A
     Z[Large raw artifacts outside Git] -. referenced by SHA-256 .-> R
 
@@ -31,8 +32,11 @@ flowchart TD
 ```
 
 The publication synthesis authenticates the raw ledgers against the preserved
-four-cell grid, NuminaMath, eight Llama controlled-delay records, 32 mixed-d5
-quality runs, and 20 OARS/FIFO policy runs before reconstructing any estimate.
+six-cell Qwen grid, eight Llama controlled-delay records, 32 mixed-d5
+quality runs, 20 OARS/FIFO runs, 54 quality-primary scheduler runs, and the
+64-decision M4-Shield qualification before reconstructing any estimate.
 It does not consume qualification observations, add acquisitions, or change
 registered conclusions. The controlled-delay, mixed-d5, and OARS studies retain
 their distinct randomization units, endpoints, and registered claim roles.
+M4-Shield remains an outcome-excluded systems qualification rather than a
+causal estimator.

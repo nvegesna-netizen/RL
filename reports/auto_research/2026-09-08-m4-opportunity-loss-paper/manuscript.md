@@ -55,8 +55,14 @@ minus FIFO was -0.0109 [-0.1062, 0.0844]. Reward variance nevertheless
 increased retained L1 opportunity by 311.53 [125.40, 497.66], and both active
 policies reduced wall time. Opportunity-aware scheduling therefore changes the
 measured mechanism and execution time, but these changes did not produce a
-terminal-accuracy gain in the quality-primary study. This is not evidence of
-mediation or a production-ready scheduler.
+terminal-accuracy gain in the quality-primary study. A prospectively frozen,
+outcome-excluded live qualification then tested M4-Shield as a constrained
+repair layer over reward-variance proposals. It changed 5 of 64 decisions and
+added 685.08 imminent L1 opportunity relative to the base proposals while
+preserving both registered reward-variance utilities exactly; enacted actions,
+service, liveness, and overhead all met their frozen gates. This establishes
+bounded live actuation, not mediation, terminal-quality improvement, or a
+production-ready scheduler.
 
 ## 1. Introduction
 
@@ -98,15 +104,17 @@ transport on the same workloads without outcome-guided extension. A final
 paired study tested whether the opportunity signal could inform a bounded
 selection policy rather than merely diagnose delay. A prospectively frozen
 three-arm follow-up then made terminal accuracy primary and compared FIFO,
-reward variance, and absolute M4 over 18 matched blocks.
+reward variance, and absolute M4 over 18 matched blocks. Finally, an
+outcome-excluded live qualification tested whether M4 could repair individual
+reward-variance proposals without degrading their registered utilities or
+violating service, liveness, and overhead constraints.
 
 Our contributions are:
 
 1. A protocol-bound instrument for causal measurement of gradient-opportunity
    loss under controlled rollout-release delay.
 2. A prospective sequence that distinguishes instrument validation, mechanism
-   replication, and materiality rather than treating execution completion as a
-   scientific result.
+   replication, and causal materiality.
 3. Six definitive Qwen3×workload cells with complete terminal scoring and
    49,153 primary assignments.
 4. Evidence that the opportunity-loss magnitude is heterogeneous across the
@@ -121,6 +129,10 @@ Our contributions are:
    comparison and a larger three-arm quality-primary follow-up showing that
    proxy movement and faster execution do not by themselves establish a
    terminal-quality benefit.
+8. A prospectively frozen, outcome-excluded M4-Shield qualification showing
+   that the signal can change live scheduling actions while exactly preserving
+   registered reward-variance utilities and satisfying explicit service,
+   liveness, and observer-overhead gates.
 
 ## 2. Related work
 
@@ -146,9 +158,11 @@ gradient opportunities are destroyed by that perturbation. The randomized
 instrument separates the causal effect of controlled delay from the natural
 association between difficult examples and long completion times. Mechanism
 ledgers, terminal bounds, and observer-duty audits connect that estimate to an
-auditable systems path. OARS is a downstream proof-of-concept policy that uses
-the measured opportunity signal; it is evaluated separately from the M4
-instrument and is not presented as a production scheduler.
+auditable systems path. OARS is a downstream proof-of-concept selection rule.
+M4-Shield is a separate constrained repair layer that can replace a
+reward-variance proposal only when exact search preserves its registered
+utilities. Both are evaluated separately from the M4 instrument and neither is
+presented as a production scheduler.
 
 ## 3. Setting and estimand
 
@@ -363,6 +377,30 @@ Geometric-mean wall-time ratios were 0.8023 [0.7327, 0.8785] and 0.8139
 and ran faster, and reward variance clearly increased the registered proxy,
 without an accompanying terminal-accuracy improvement in this study.
 
+### 4.8 Constrained live qualification
+
+We next froze M4-Shield as a repair layer over reward-variance proposals. For
+each decision, exact search could replace the base action only with an
+admissible action that preserved its registered total and imminent
+reward-variance utilities while increasing imminent M4 L1 opportunity. The
+qualification deliberately excluded terminal training quality: its question
+was whether the signal could safely alter live actions under registered
+systems constraints.
+
+Across 64 decisions, M4-Shield intervened five times (7.8125%). The five
+imminent-L1 gains summed to 685.08 relative to the reward-variance base
+proposals, while both total and imminent reward-variance utility differences
+were exactly 0.0. Enacted actions matched the shield proposals on all 64
+decisions; exact search used no fallback, and every action remained inside the
+service band. The combined gradient-observer and shield-decision duty was
+0.3182%. Bounded shutdown, stale-candidate eviction, and replenishment
+accounting also met the frozen liveness gates.
+
+This result strengthens the actionability claim: M4 can drive a live,
+constrained scheduler correction rather than serving only as an offline
+diagnostic. It does not estimate a terminal-quality effect, compare long-run
+policies, or establish production readiness.
+
 ## 5. Six-cell synthesis
 
 ### 5.1 Harmonized cell inputs
@@ -543,6 +581,14 @@ increased retained opportunity and both active policies reduced wall time. The
 combined evidence therefore supports actionability of the signal, not a stable
 quality benefit or a causal mediation claim.
 
+M4-Shield tests a still narrower systems question. It does not rerun the
+quality comparison; it asks whether M4 can improve a proposal on its own
+imminent-opportunity objective while leaving the base scheduler's registered
+utilities unchanged. Its five interventions and exact utility preservation
+show constrained live feasibility. Because there is one 64-decision
+qualification and no terminal outcome, this evidence belongs to solution
+feasibility rather than deployment-level effectiveness.
+
 ## 9. Limitations
 
 The model range contains Qwen3-0.6B, Qwen3-1.7B, Llama 3.2 1B, and Llama 3.2
@@ -578,13 +624,18 @@ workloads and scales, and comparisons against production schedulers remain
 untested. Accuracy contrasts cannot be attributed specifically to retained
 opportunity without a mediation design.
 
+The M4-Shield qualification is one outcome-excluded 64-decision execution with
+five interventions. The +685.08 gain is on the objective the shield explicitly
+optimizes, so it demonstrates successful constrained actuation rather than an
+independent quality benefit. Reward-variance preservation does not guarantee
+that every quality-relevant property of the selected data is preserved.
+
 ## 10. Reproducibility and provenance
 
 The campaign separates source freezes, no-training preflights, neutral resource
 qualifications, scientific acquisitions, and detached analysis. Qualification
 observations never enter a causal estimator. One-use guards prevent automatic
-retry or outcome-guided extension. Failed preflights and packaging attempts are
-preserved as engineering evidence but excluded from scientific estimators.
+retry or outcome-guided extension.
 
 Large terminal artifacts remain outside Git and are referenced by SHA-256.
 Compact result records retain source commits, protocol hashes, execution
@@ -610,6 +661,12 @@ record has SHA-256
 `17490153ef9521a830e5538423479c6d4af6bbd03c58bcbcf3aa5663973faa52`;
 all 18 matched three-arm blocks enter the result, and raw evaluation-data
 payloads remain unopened.
+The outcome-excluded M4-Shield terminal record binds its frozen protocol,
+decision ledger, liveness accounting, observer-duty record, and exact-search
+result. It records 64 decisions, five interventions, +685.08 imminent L1 gain,
+zero change in both registered reward-variance utilities, and 0.3182% combined
+observer and decision duty. No terminal training-quality payload exists for
+this qualification.
 The full evidence flow appears in `provenance_diagram.md`.
 
 ## 11. Conclusion
@@ -622,7 +679,7 @@ The evidence sequence is:
 > extension → prospectively replicated cross-family extension → prospective
 > within-family size extension → prospective end-to-end quality test →
 > prospective opportunity-aware policy test → prospective three-arm
-> quality-primary scheduler test
+> quality-primary scheduler test → constrained live M4-Shield qualification
 
 Across six definitive Qwen3×math-workload cells, a controlled five-second
 release delay produces positive normalized gradient-opportunity loss; five
@@ -639,7 +696,11 @@ positive secondary accuracy estimate, but the larger quality-primary follow-up
 estimated absolute M4 minus FIFO accuracy at -0.0331 [-0.1162, 0.0499] and
 reward variance minus FIFO at -0.0109 [-0.1062, 0.0844]. Reward variance still
 increased retained opportunity, and both active policies reduced wall time.
-The scheduler evidence therefore shows actionability and proxy--quality
-separation, not a deployment-ready quality improvement. Pure family effects,
-general scaling laws, causal mediation, and broader generalization remain for
-future preregistered studies.
+M4-Shield subsequently changed 5 of 64 live decisions and added 685.08 imminent
+L1 opportunity over reward-variance base proposals while exactly preserving
+their registered utilities and meeting service, liveness, and overhead gates.
+The scheduler evidence therefore shows both proxy actionability and constrained
+live feasibility, alongside proxy--quality separation; it does not show a
+deployment-ready quality improvement. Pure family effects, general scaling
+laws, causal mediation, and broader generalization remain for future
+preregistered studies.

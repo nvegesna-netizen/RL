@@ -114,6 +114,31 @@ The primary accuracy criterion was not met. Reward variance moved the retained-
 opportunity proxy, and both active policies reduced wall time, without a
 corresponding terminal-accuracy gain in this follow-up.
 
+### Outcome-excluded M4-Shield live qualification
+
+M4-Shield was prospectively frozen as a constrained repair layer over the
+reward-variance base proposal. It could change an action only when exact search
+found an admissible alternative that preserved the registered total and
+imminent reward-variance utilities. Terminal training quality was intentionally
+outside this qualification.
+
+| Qualification endpoint | Result |
+| --- | ---: |
+| Decisions | 64 |
+| Interventions | 5 (7.8125%) |
+| Aggregate imminent L1 gain over base proposals | +685.08 |
+| Total reward-variance utility difference | 0.0 |
+| Imminent reward-variance utility difference | 0.0 |
+| Enacted action matched shield proposal | 64 / 64 |
+| Exact search without fallback | 64 / 64 |
+| Decisions inside service band | 64 / 64 |
+| Combined observer and decision duty | 0.3182% |
+
+The qualification establishes that M4 can alter live scheduling decisions
+under explicit service, liveness, and utility-preservation constraints. It is
+not a randomized comparison, a terminal-quality experiment, or evidence of a
+production-ready policy.
+
 ## Dependency-aware interaction results
 
 Let \(S_w = \Delta_{1.7B,w} - \Delta_{0.6B,w}\) be the model-scale contrast

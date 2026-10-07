@@ -27,6 +27,13 @@ active policies reduced wall time. Frame this as evidence that the signal is
 actionable but proxy improvement is not sufficient for a stable terminal-
 quality benefit—not as mediation or a production scheduler claim.
 
+The prospectively frozen, outcome-excluded M4-Shield live qualification is
+also complete. It changed 5 of 64 decisions and added 685.08 imminent L1
+opportunity relative to reward-variance base proposals while preserving both
+registered reward-variance utilities exactly and satisfying service, liveness,
+and overhead gates. Include it as constrained actuation evidence, not as a
+terminal-quality result or a production-scheduler evaluation.
+
 ## Ordered submission sequence
 
 1. **Human scientific review.** Approve the claim ledger, title, abstract,
@@ -65,6 +72,9 @@ The current go/no-go is therefore:
   with a stability intervention and variance-recalibrated power**;
 - another same-design OARS acquisition: **no-go; both frozen policy studies are
   complete, and an outcome-guided extension would not answer a new question**;
+- another same-design M4-Shield qualification: **no-go; the frozen live
+  qualification answered its systems-feasibility question, while a repeat
+  without a new endpoint would not establish terminal-quality benefit**;
 - manuscript, reproducibility, and artifact preparation: **go now**.
 
 ## Post-manuscript novelty decision

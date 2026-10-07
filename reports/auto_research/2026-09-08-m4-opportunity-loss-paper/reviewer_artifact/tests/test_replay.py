@@ -28,6 +28,8 @@ class ReviewerArtifactTest(unittest.TestCase):
         self.assertEqual(output["published"]["oars_runs"], 20)
         self.assertEqual(output["published"]["quality_primary_blocks"], 18)
         self.assertEqual(output["published"]["quality_primary_runs"], 54)
+        self.assertEqual(output["published"]["m4_shield_decisions"], 64)
+        self.assertEqual(output["published"]["m4_shield_interventions"], 5)
         self.assertEqual(output["synthetic"]["row_count"], 192)
 
     def test_figure_reproduction(self) -> None:

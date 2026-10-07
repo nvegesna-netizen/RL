@@ -2,8 +2,7 @@
 
 This ledger separates validated measurement claims, registered causal results,
 secondary synthesis, retrospective publication analyses, and unsupported
-extensions. “Pipeline success” is never used as a synonym for scientific
-success.
+extensions.
 
 | ID | Proposed claim | Evidentiary role | Decision | Canonical evidence |
 | --- | --- | --- | --- | --- |
@@ -40,6 +39,10 @@ success.
 | C31 | Reward-variance scheduling increased retained registered L1 opportunity relative to FIFO in the quality-primary study. | Registered mechanism statistic | Supported in the tested setting | Reward variance minus FIFO was 311.53 [125.40, 497.66]. Absolute M4 minus FIFO was 215.51 [-7.82, 438.84]. |
 | C32 | The active policies reduced time to update 64 relative to FIFO in the quality-primary study. | Registered systems statistic | Supported in the tested setting | Geometric-mean ratios were 0.8023 [0.7327, 0.8785] for reward variance/FIFO and 0.8139 [0.7435, 0.8910] for absolute M4/FIFO. |
 | C33 | The initial positive OARS secondary accuracy result establishes a stable or replicated scheduler-quality gain. | Cross-study policy synthesis | Not supported | The larger quality-primary follow-up estimated reward variance minus FIFO at -0.0109 [-0.1062, 0.0844] and absolute M4 minus FIFO at -0.0331 [-0.1162, 0.0499]. The combined evidence supports actionability and heterogeneity, not a stable quality gain. |
+| C34 | A prospectively frozen M4-Shield qualification demonstrated constrained live actuation of the M4 signal. | Outcome-excluded live systems qualification | Supported within the tested 64-decision setting | M4-Shield intervened on 5 of 64 decisions; enacted actions matched the shield proposal 64/64 times, exact search used no fallback 64/64 times, and every decision remained inside the registered service band. |
+| C35 | M4-Shield improved imminent M4 opportunity relative to the reward-variance base proposal while preserving the registered reward-variance utilities. | Frozen qualification endpoints | Supported within the tested setting | Aggregate imminent L1 gain was +685.08. Total and imminent reward-variance utility differences were both exactly 0.0; combined gradient-observer and decision duty was 0.3182%. |
+| C36 | The M4-Shield qualification establishes a terminal-quality improvement. | Downstream outcome claim | Unsupported and prohibited | Training quality was deliberately excluded from the qualification; no terminal-quality outcome was acquired or analyzed. |
+| C37 | M4-Shield is a production-ready or generally superior asynchronous scheduler. | Deployment and generalization claim | Unsupported and prohibited | The qualification contains one 64-decision run and five interventions in one tested model/workload/environment. It establishes constrained live feasibility, not comparative deployment performance or generalization. |
 
 ## Canonical wording
 
@@ -63,11 +66,17 @@ Use:
 > three-arm follow-up then made terminal accuracy primary. Absolute M4 minus
 > FIFO was -3.31 percentage points (95% CI [-11.62, 4.99]), while reward
 > variance increased retained opportunity and both active policies reduced wall
-> time. Together the policy studies show an actionable signal but not a stable
-> terminal-quality improvement.
+> time. A separate outcome-excluded live qualification then evaluated
+> M4-Shield, a constrained repair layer over reward-variance scheduling. It
+> changed 5 of 64 decisions, added 685.08 imminent L1 opportunity relative to
+> the base proposals, preserved both registered reward-variance utilities
+> exactly, and met the service, liveness, and overhead gates. Together these
+> studies show that M4 can diagnose loss and drive bounded scheduler actions,
+> but they do not establish a stable terminal-quality improvement.
 
 Do not use “confirmed final-quality decrease,” “equivalent final quality,”
 “M4 mediated the OARS quality effect,”
-“replicated scheduler-quality gain,” “production-ready scheduler,” “general across LLMs,” “pure family effect,”
+“replicated scheduler-quality gain,” “M4-Shield improved terminal quality,”
+“production-ready scheduler,” “general across LLMs,” “pure family effect,”
 “general scaling law,” or language that retroactively reclassifies the initial
 acquisition or calls the 3B co-primary study a joint success.

@@ -154,6 +154,33 @@ OARS-minus-FIFO retained-opportunity estimate is 302.03 with paired 95% CI
 [0.52808, 1.81883]. These endpoints do not identify retained opportunity as a
 mediator.
 
+## Outcome-excluded M4-Shield qualification provenance
+
+M4-Shield was frozen as a constrained repair layer over reward-variance base
+proposals. Exact search could intervene only when an admissible action
+increased imminent M4 L1 opportunity while preserving both registered
+reward-variance utilities. The qualification contained no terminal training-
+quality endpoint.
+
+| Record | SHA-256 |
+| --- | --- |
+| Protocol | `a3c8f84297c2ce60c5cd5f0f0eb0a0286555ced63bbe5b169af0e3b008aca216` |
+| Artifact manifest | `dab59eb868659c4486c83a0c951dcf7727986cbf8ce5b906f96efb8a5bf0a429` |
+| Lifecycle record | `7c43cea13f7e9a7bccf11cd38e08165af191007aee724489b255fca59f2137c1` |
+| Decision ledger | `4dfd6886238db11aecc6980f24b698c9578eb4c14a99139ca5751c080adac119` |
+| Observer-duty record | `611b251dbbd292495a1af7b04f3d7e928fa0b9fb147525558da2252700eec7e7` |
+| Qualification result | `df6fb97686df03b8833cd9c5358588f574058dd5f46c1773d18376ee9e35e9bf` |
+
+The authenticated record contains 64 decisions and five interventions. Their
+imminent-L1 gains sum to 685.0771 relative to the reward-variance base
+proposals. Total and imminent reward-variance utility differences are both
+exactly zero. Enacted actions matched shield proposals 64/64 times, exact
+search used no fallback 64/64 times, every decision remained inside the
+service band, and combined observer and decision duty was 0.00318175. The
+bounded-shutdown, stale-candidate-eviction, and replenishment accounts also
+satisfied their frozen gates. These are systems-qualification facts, not a
+terminal-quality estimate.
+
 ## Assignment and observer-duty audit
 
 | Cell | Full-window assignments | Unscored | Corrected observer duty | Mechanism |

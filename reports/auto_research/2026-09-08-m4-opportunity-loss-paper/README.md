@@ -4,8 +4,9 @@ This directory is the review-ready publication workspace for the completed M4
 opportunity-loss campaign and its prospective Llama 3.2 1B and 3B extensions.
 It also integrates the separately preregistered 16-pair downstream-quality
 study, 10-pair OARS/FIFO policy study, and 18-block three-arm quality-primary
-follow-up, reporting their estimates and intervals without promoting them into
-the headline causal-measurement claim.
+follow-up. It also reports an outcome-excluded 64-decision M4-Shield live
+qualification as bounded systems evidence. These additions are not promoted
+into the headline causal-measurement or terminal-quality claims.
 
 ## Start here
 
@@ -15,7 +16,7 @@ the headline causal-measurement claim.
 - `claim_ledger.md` — supported, bounded, and prohibited claims.
 - `primary_table.md` — registered cell results and the dependency-aware joint
   interaction table.
-- `post_quality_primary_reviewer_gap_audit.md` — current adversarial scientific
+- `post_m4_shield_reviewer_gap_audit.md` — current adversarial scientific
   review and go/no-go decision; the earlier audit files preserve prior stages.
 - `next_actions.md` — ordered submission sequence and new-compute decision.
 - `reproducibility_appendix.md` — hardware/software, protocol, acquisition,
@@ -63,6 +64,9 @@ the headline causal-measurement claim.
   results from 54 authenticated runs.
 - `../2026-09-22-m4-oars-v2-quality-primary/quality_primary_terminal_result.md`
   — complete numerical report and bounded cross-study scheduler interpretation.
+- `../2026-10-05-m4-shield/m4_shield_live_terminal_authentication.json` —
+  authenticated, outcome-excluded M4-Shield qualification and compact
+  provenance record.
 - `cell_forest_plot.svg` and `interaction_plot.svg` — generated vector plots.
 - `causal_diagram.md` and `provenance_diagram.md` — Mermaid source diagrams.
 

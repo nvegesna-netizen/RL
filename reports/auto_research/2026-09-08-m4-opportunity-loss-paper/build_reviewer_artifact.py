@@ -14,6 +14,10 @@ from pathlib import Path
 
 
 HERE = Path(__file__).resolve().parent
+M4_SHIELD_AUTH = (
+    HERE.parent
+    / "2026-10-05-m4-shield/m4_shield_live_terminal_authentication.json"
+)
 
 CELL_IDS = {
     "qwen3_0p6b_openmath": "A1",
@@ -157,6 +161,7 @@ python3 -m unittest discover -s tests -v
 the four replicated Llama size/workload endpoints, the separate 16-pair
 downstream-quality result, the 10-pair OARS/FIFO policy result, and the 18-block
 three-arm quality-primary follow-up after removal of private filesystem paths.
+It also contains the outcome-excluded 64-decision M4-Shield live qualification.
 It also includes the compact 106,653-assignment
 Qwen-plus-Llama metric-discriminant summary; raw empirical ledgers remain external.
 `data/provenance.json` binds opaque
@@ -254,6 +259,17 @@ def published_checks() -> dict[str, object]:
     assert math.isclose(quality["secondary_terminal_gsm8k_accuracy"]["reward_variance_vs_fifo"]["mean"], -0.010908937747451775)
     assert math.isclose(quality["mechanism_retained_l1_contrasts"]["reward_variance_vs_fifo"]["mean"], 311.5318219018324)
     assert math.isclose(quality["matched_wall_time_ratios"]["absolute_m4_vs_fifo"]["geometric_mean_ratio"], 0.8139404004942452)
+    shield = result["m4_shield_qualification"]
+    assert shield["status"] == "PASS_M4_SHIELD_QUALIFIED"
+    assert shield["decision_count"] == 64
+    assert shield["intervention_count"] == 5
+    assert math.isclose(shield["aggregate_imminent_l1_gain_over_base"], 685.0771417617798)
+    assert shield["maximum_absolute_reward_variance_difference"] == 0.0
+    assert shield["maximum_absolute_imminent_reward_variance_difference"] == 0.0
+    assert shield["actual_action_matches_shield"] == 64
+    assert shield["exact_search_without_fallback"] == 64
+    assert shield["service_band_rows"] == 64
+    assert not shield["training_quality_analyzed"]
     discriminant = result["metric_discriminant"]
     assert discriminant["assignment_count"] == 106_653
     assert discriminant["summary"]["positive_opportunity_lost_count"] == 23_254
@@ -272,6 +288,8 @@ def published_checks() -> dict[str, object]:
         "oars_runs": 20,
         "quality_primary_blocks": quality["block_count"],
         "quality_primary_runs": quality["run_count"],
+        "m4_shield_decisions": shield["decision_count"],
+        "m4_shield_interventions": shield["intervention_count"],
         "metric_discriminant_assignments": discriminant["assignment_count"],
         "hac_correlation": synthesis["hac_correlation"],
         "bootstrap_correlation": synthesis["bootstrap_correlation"],
@@ -535,6 +553,8 @@ class ReviewerArtifactTest(unittest.TestCase):
         self.assertEqual(output["published"]["oars_runs"], 20)
         self.assertEqual(output["published"]["quality_primary_blocks"], 18)
         self.assertEqual(output["published"]["quality_primary_runs"], 54)
+        self.assertEqual(output["published"]["m4_shield_decisions"], 64)
+        self.assertEqual(output["published"]["m4_shield_interventions"], 5)
         self.assertEqual(output["synthetic"]["row_count"], 192)
 
     def test_figure_reproduction(self) -> None:
@@ -804,6 +824,38 @@ def main() -> None:
         "matched_wall_time_ratios": quality["matched_wall_time_ratios"],
         "matched_valid_actor_token_ratios": quality["matched_valid_actor_token_ratios"],
     }
+    shield = json.loads(M4_SHIELD_AUTH.read_bytes())
+    frozen_shield = shield["frozen_result"]
+    recomputed_shield = shield["independent_recomputation"]
+    published["m4_shield_qualification"] = {
+        "schema": "m4-shield-public-qualification-summary-v1",
+        "status": frozen_shield["status"],
+        "decision_count": frozen_shield["decision_count"],
+        "intervention_count": frozen_shield["intervention_count"],
+        "intervention_rate": frozen_shield["intervention_rate"],
+        "aggregate_imminent_l1_gain_over_base": frozen_shield[
+            "aggregate_imminent_l1_gain_over_base"
+        ],
+        "maximum_absolute_reward_variance_difference": recomputed_shield[
+            "maximum_absolute_reward_variance_difference"
+        ],
+        "maximum_absolute_imminent_reward_variance_difference": recomputed_shield[
+            "maximum_absolute_imminent_reward_variance_difference"
+        ],
+        "actual_action_matches_shield": recomputed_shield[
+            "actual_action_matches_shield"
+        ],
+        "exact_search_without_fallback": recomputed_shield[
+            "exact_search_without_fallback"
+        ],
+        "service_band_rows": recomputed_shield["service_band_rows"],
+        "combined_observer_controller_duty": frozen_shield[
+            "combined_observer_controller_duty"
+        ],
+        "training_quality_analyzed": frozen_shield["training_quality_analyzed"],
+        "liveness_accounting": shield["liveness_accounting"],
+        "claim_boundary": shield["scientific_interpretation"],
+    }
     discriminant = json.loads((HERE / "metric_discriminant.json").read_bytes())
     published["metric_discriminant"] = {
         key: discriminant[key]
@@ -936,6 +988,15 @@ def main() -> None:
             ),
             "block_count": quality["block_count"],
             "run_count": quality["run_count"],
+        },
+        "m4_shield_qualification": {
+            "protocol_sha256": shield["protocol_sha256"],
+            "terminal_authentication_sha256": sha256(M4_SHIELD_AUTH),
+            "artifact_manifest_sha256": "dab59eb868659c4486c83a0c951dcf7727986cbf8ce5b906f96efb8a5bf0a429",
+            "lifecycle_sha256": "7c43cea13f7e9a7bccf11cd38e08165af191007aee724489b255fca59f2137c1",
+            "decision_ledger_sha256": "4dfd6886238db11aecc6980f24b698c9578eb4c14a99139ca5751c080adac119",
+            "observer_duty_sha256": "611b251dbbd292495a1af7b04f3d7e928fa0b9fb147525558da2252700eec7e7",
+            "qualification_result_sha256": "df6fb97686df03b8833cd9c5358588f574058dd5f46c1773d18376ee9e35e9bf",
         },
         "metric_discriminant": {
             "analysis_sha256": sha256(HERE / "metric_discriminant.json"),

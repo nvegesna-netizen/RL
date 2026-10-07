@@ -988,6 +988,35 @@
     },
     "source_terminal_analysis_sha256": "47b14b0caddae4ad055986eeb4d08a3dbaf5be6d4ab156f615503befe49e46b7"
   },
+  "m4_shield_qualification": {
+    "actual_action_matches_shield": 64,
+    "aggregate_imminent_l1_gain_over_base": 685.0771417617798,
+    "claim_boundary": {
+      "not_supported": "This outcome-excluded systems qualification does not establish improved terminal training quality, broader model or workload generalization, or an independent causal quality effect.",
+      "supported": "M4-Shield is live-actionable in the frozen 64-step qualification: it can change scheduler actions and increase imminent M4 L1 relative to the reward-variance proposer while exactly preserving the two registered reward-variance utilities and satisfying service, liveness, and overhead gates."
+    },
+    "combined_observer_controller_duty": 0.003181748032461769,
+    "decision_count": 64,
+    "exact_search_without_fallback": 64,
+    "intervention_count": 5,
+    "intervention_rate": 0.078125,
+    "liveness_accounting": {
+      "bounded_shutdown_groups": 16,
+      "candidate_excess_pending_groups": 0,
+      "candidate_excess_removed_groups_total": 0,
+      "replenishment_batches_consumed_total": 56,
+      "replenishment_batches_earned_total": 57,
+      "replenishment_credits_outstanding": 1,
+      "selected_groups": 256,
+      "stale_evicted_groups_total": 220
+    },
+    "maximum_absolute_imminent_reward_variance_difference": 0.0,
+    "maximum_absolute_reward_variance_difference": 0.0,
+    "schema": "m4-shield-public-qualification-summary-v1",
+    "service_band_rows": 64,
+    "status": "PASS_M4_SHIELD_QUALIFIED",
+    "training_quality_analyzed": false
+  },
   "metric_discriminant": {
     "analysis_role": "metric_discriminant_not_new_causal_estimator",
     "assignment_count": 106653,
