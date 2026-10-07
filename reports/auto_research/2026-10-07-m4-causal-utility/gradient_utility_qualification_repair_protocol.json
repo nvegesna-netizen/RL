@@ -1,0 +1,43 @@
+{
+  "schema": "m4-gradient-utility-runtime-qualification-generate-repair-v1",
+  "status": "FROZEN_AFTER_GENERATOR_FAILURE_BEFORE_REPLACEMENT",
+  "date": "2026-10-07",
+  "user_authorization": "do the sequence",
+  "original_qualification_protocol_sha256": "ce70a012c7aaa82cca7b944a6ebc8692a3188890d990f4b71e28b1b1229ccad1",
+  "failed_upstream_pipeline_id": 72126754,
+  "failed_generate_job_id": 473737737,
+  "failed_manifest_sha256": "afe765b6a2074c0176d2a06f27b3a3aa6ead2651a134545a6ba81ffdc6c2bb5a",
+  "failed_generated_workload_yaml_sha256": "b6bd40f3a4da45571e34679b5493621bb7e10ef9354d2f4c3a56bde0b896e25c",
+  "failed_generated_workload_yaml_bytes": 16750190,
+  "downstream_pipeline_created": false,
+  "eos_workload_created": false,
+  "scientific_data_created": false,
+  "diagnosis": "The embedded full-repository archive left insufficient downstream CI configuration headroom; the generator failed before creating a child pipeline.",
+  "repair": {
+    "source_commit": "702a40535",
+    "replacement_source_archive_scope": [
+      "nemo_rl",
+      "examples",
+      "tests/unit",
+      "pyproject.toml",
+      "uv.lock",
+      "reports/auto_research/2026-10-07-m4-causal-utility"
+    ],
+    "replacement_source_archive_bytes": 2372524,
+    "replacement_source_archive_sha256": "66667fb2192673a38a6c9e409ea104988356e75e617d78fb0c0ef99bbb8a0bdd",
+    "source_or_protocol_change": false,
+    "runtime_behavior_change": false,
+    "scientific_design_change": false
+  },
+  "replacement_boundary": {
+    "submission_attempt_limit": 1,
+    "required_launcher": "runllm.py --no_wait",
+    "nodes": 1,
+    "gpus": 2,
+    "runtime_limit_seconds": 14400,
+    "queue_deadline_override": null,
+    "automatic_retry": false,
+    "automatic_extension": false,
+    "scientific_acquisition": false
+  }
+}
