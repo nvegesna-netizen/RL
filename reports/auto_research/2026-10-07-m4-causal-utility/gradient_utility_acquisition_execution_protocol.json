@@ -1,0 +1,73 @@
+{
+  "schema": "m4-gradient-utility-scientific-acquisition-execution-protocol-v1",
+  "status": "FROZEN_AFTER_HASH_V2_QUALIFICATION_BEFORE_ACQUISITION",
+  "date": "2026-10-07",
+  "user_authorization": "do it",
+  "parent_audit_protocol_sha256": "daae7720287a4c6c61c70ee8c40ac1900c2a428ae608fb27b18f622c317ddf09",
+  "hash_repair_protocol_sha256": "ce53bba5f0e5dab3091a188b4f079add8601fdbd81f333377d2a8fae979f5c35",
+  "hash_v2_qualification_terminal_result_sha256": "a0db53be9e6ba3e1a1ddb388bde5d87d23d8683d5a06a4df4865a17e0ed81811",
+  "hash_v2_qualification_child_pipeline_id": 72213641,
+  "hash_v2_qualification_main_job_id": 474384649,
+  "source_commit": "b74ce7583",
+  "source_archive_sha256": "e89532fdbdaf69f935c07b746efc445b143a16c191bccb519993cacd3d7e12f4",
+  "analyzer_sha256": "3ed1cb18c552661228387ca1a354f487dc4459178a52b68e3033fbf6ad17082c",
+  "acquisition": {
+    "model": "meta-llama/Llama-3.2-1B-Instruct",
+    "workload": "GSM8K train",
+    "prompt_groups": 256,
+    "siblings_per_group": 8,
+    "rollout_seed": 20261017,
+    "assignment_domain": "m4-gradient-utility-audit-v1",
+    "sketch_hash_version": "m4-gradient-utility-countsketch-v2",
+    "sketch_bins": 16384,
+    "sketch_seeds": [
+      20261019,
+      20261021
+    ],
+    "nodes": 1,
+    "gpus": 2,
+    "runtime_limit_seconds": 14400,
+    "queue_deadline_override": null,
+    "launcher": "runllm.py --no_wait"
+  },
+  "no_update_gate": {
+    "optimizer_steps": 0,
+    "scheduler_steps": 0,
+    "learner_version": 0,
+    "finish_train_step_calls": 0,
+    "abort_acknowledged_every_group": true,
+    "parameter_hash_unchanged": true
+  },
+  "analysis": {
+    "folds": 8,
+    "bootstrap_resamples": 10000,
+    "bootstrap_seed": 20261023,
+    "execute_only_after_complete_authenticated_ledger": true,
+    "scientific_statuses": [
+      "DIRECTIONAL_CONSTRUCT_PASS",
+      "MAGNITUDE_ONLY",
+      "NO_CONSTRUCT_SUPPORT"
+    ],
+    "integrity_status": "MEASUREMENT_FAILURE",
+    "pipeline_success_is_not_a_scientific_endpoint": true,
+    "scientific_negative_exits_successfully": true,
+    "measurement_failure_is_preserved_and_exits_nonzero": true
+  },
+  "artifacts": {
+    "retain_raw_gradients": false,
+    "retain_prompts_or_completions": false,
+    "retain_checkpoint": false,
+    "compact_gradient_ledger": true,
+    "analysis_result": true,
+    "observer_duty": true,
+    "sha256_inventory": true
+  },
+  "submission_boundary": {
+    "scientific_acquisition_submissions": 1,
+    "automatic_retry": false,
+    "automatic_extension": false,
+    "follow_on_scheduler_experiment": false,
+    "terminal_quality_claim": false,
+    "production_readiness_claim": false
+  }
+}

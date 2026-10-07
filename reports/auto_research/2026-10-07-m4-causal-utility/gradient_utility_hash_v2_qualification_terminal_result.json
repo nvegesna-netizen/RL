@@ -1,0 +1,60 @@
+{
+  "schema": "m4-gradient-utility-hash-v2-qualification-terminal-result-v1",
+  "status": "PASS_RUNTIME_QUALIFICATION_HASH_V2",
+  "date": "2026-10-07",
+  "source_commit": "b74ce7583",
+  "source_archive_sha256": "e89532fdbdaf69f935c07b746efc445b143a16c191bccb519993cacd3d7e12f4",
+  "hash_repair_protocol_sha256": "ce53bba5f0e5dab3091a188b4f079add8601fdbd81f333377d2a8fae979f5c35",
+  "submission_manifest_sha256": "e068b32aa778eb458e263ef623b61cb36ef6618a82f3cf3afa30eee8f29a2e24",
+  "upstream_pipeline_id": 72213451,
+  "child_pipeline_id": 72213641,
+  "logs_before_job_id": 474384648,
+  "main_job_id": 474384649,
+  "logs_after_job_id": 474384650,
+  "slurm_job_id": 6190430,
+  "main_artifact_sha256": "ad781960959239a6dbc2cf0f96443ab1aac02c194fbb9f604a07768215e62820",
+  "logs_after_artifact_sha256": "ff940df7dd0016f0e720c12c4164880874da35980767b3ec6bd13d70db5b2893",
+  "workload_output_sha256": "e6388619c2c8c6b013987933d164e8f1384e68213b4dfdc999ea8c11337ed9b2",
+  "slurm_output_sha256": "dede0aad2ccdb1430dbf5b2fcb83c94e5450d1125eb168b1d4c95ab647e6ee43",
+  "artifact_inventory_sha256": "cf874fa8811e374f7cb4d896150c5f1850160c7c89a078fe93cc259d13ebf2e1",
+  "formal_result_sha256": "83680b74e4a1eb253d53d9ca5155d469a030e71c5973b87f31c698c72ae0237f",
+  "gradient_ledger_sha256": "5aab0d8328e541e565896d7f40324d2e04c8c976d04b4bc1d7e28dd7994e16d4",
+  "lifecycle_ledger_sha256": "4fecb31e98b619e0a16535cddda2a5095efb3e144abdd10a113186c38c18f983",
+  "observer_duty_sha256": "b7010fe28d6c01f3de737058963102594d8394af26607587da70206d74b20a22",
+  "opportunity_ledger_sha256": "31c8b07d73d1ece5d97b561eb5b5874ef656b8f618b1cf9dbe856c17398a4031",
+  "runtime_log_sha256": "16f855a0c655976066b7181d8f1c493c398937ebaea919f78371c07385e4b28a",
+  "qualification": {
+    "groups": 2,
+    "siblings_per_group": 8,
+    "exact_l2_norms": [
+      8.783870995975551,
+      6.499511124023895
+    ],
+    "hash_version": "m4-gradient-utility-countsketch-v2",
+    "sketch_fidelity": [
+      {
+        "seed": 20261019,
+        "median_norm_relative_error": 0.0014630842763611357,
+        "p95_norm_relative_error": 0.0016765896041371709,
+        "pass": true
+      },
+      {
+        "seed": 20261021,
+        "median_norm_relative_error": 0.001760137527448905,
+        "p95_norm_relative_error": 0.0021480588623158697,
+        "pass": true
+      }
+    ],
+    "abort_acknowledged_every_group": true,
+    "finish_train_step_calls": 0,
+    "optimizer_steps": 0,
+    "scheduler_steps": 0,
+    "learner_version": 0,
+    "parameter_hash_unchanged": true,
+    "corrected_observer_duty": 0.003233411983690856
+  },
+  "artifact_inventory_entries": 6,
+  "artifact_inventory_authenticated": true,
+  "scientific_construct_classification": false,
+  "scientific_acquisition_started": false
+}
