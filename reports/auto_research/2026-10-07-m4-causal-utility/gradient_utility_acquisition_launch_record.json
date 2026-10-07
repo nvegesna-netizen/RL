@@ -1,0 +1,37 @@
+{
+  "schema": "m4-gradient-utility-scientific-acquisition-launch-record-v1",
+  "status": "READY_TO_SUBMIT",
+  "date": "2026-10-07",
+  "submission_count_before_launch": 0,
+  "authorized_submission_count": 1,
+  "automatic_retry": false,
+  "manifest": {
+    "name": "m4-gradient-utility-scientific-acquisition-hash-v2",
+    "sha256": "cde1915e9a1b1b7a33c008cf97956a689ef79a9d038cf04eb5ee86f6559cbb90",
+    "nodes": 1,
+    "gpus": 2,
+    "time_limit_seconds": 14400,
+    "queue_deadline_override": null,
+    "launcher": "runllm.py --no_wait"
+  },
+  "frozen_inputs": {
+    "audit_protocol_sha256": "daae7720287a4c6c61c70ee8c40ac1900c2a428ae608fb27b18f622c317ddf09",
+    "hash_repair_protocol_sha256": "ce53bba5f0e5dab3091a188b4f079add8601fdbd81f333377d2a8fae979f5c35",
+    "hash_v2_qualification_terminal_result_sha256": "a0db53be9e6ba3e1a1ddb388bde5d87d23d8683d5a06a4df4865a17e0ed81811",
+    "acquisition_execution_protocol_sha256": "91824d23afbf435d17bde3867f051f25188e69e9a76069bebd91ed3d22da878f",
+    "source_archive_sha256": "e89532fdbdaf69f935c07b746efc445b143a16c191bccb519993cacd3d7e12f4",
+    "analyzer_sha256": "3ed1cb18c552661228387ca1a354f487dc4459178a52b68e3033fbf6ad17082c"
+  },
+  "pre_submission_validation": {
+    "json_parse": true,
+    "bash_syntax": true,
+    "embedded_python_compile": true,
+    "frozen_input_hashes": true,
+    "prompt_groups": 256,
+    "no_update_path": true,
+    "scientific_negative_exit_is_success": true,
+    "measurement_failure_exit_is_nonzero": true,
+    "runtime_tests_required_before_acquisition": true
+  },
+  "claim_boundary": "This acquisition tests the preregistered no-update gradient-utility construct. It does not test terminal-quality improvement, scheduler efficacy, or production readiness."
+}
