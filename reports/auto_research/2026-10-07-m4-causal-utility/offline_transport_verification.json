@@ -1,0 +1,18 @@
+{
+  "schema": "m4-causal-utility-offline-transport-verification-v1",
+  "status": "PASS_BYTE_IDENTICAL_REPLAY",
+  "analysis_commit": "35bd4f1c3",
+  "protocol_sha256": "6202cf87a10eac4f585793224db0a0df28da3b4c42fe988ddfdcaac4615f93e9",
+  "implementation_sha256": "4b701d1d3a75c51d19614668acc51c2bea4fe1c2ed66ce13cb0f892541d90bc6",
+  "result_sha256": "049cf55a57f6992c47186183293f678295bd28e08eb5309cfbfd2289228e8bda",
+  "replay_sha256": "049cf55a57f6992c47186183293f678295bd28e08eb5309cfbfd2289228e8bda",
+  "checks": {
+    "all_14_acquisitions_authenticated": true,
+    "all_106653_assignments_joined": true,
+    "pre_hold_feature_ordering_verified": true,
+    "held_out_rows_excluded_from_fit_and_standardization": true,
+    "raw_ledgers_committed": false,
+    "result_replayed_byte_identically": true,
+    "quality_acquisition_authorized": false
+  }
+}

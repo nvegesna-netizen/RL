@@ -1,0 +1,1012 @@
+{
+  "acquisition_count": 14,
+  "assignment_count": 106653,
+  "claim_boundary": "This held-out analysis evaluates risk transport and ranking of the registered Q-times-non-delivery endpoint. It is not independent validation of Q as learning utility and does not establish terminal-quality benefit.",
+  "implementation_sha256": "4b701d1d3a75c51d19614668acc51c2bea4fe1c2ed66ce13cb0f892541d90bc6",
+  "numpy_version": "2.5.3",
+  "protocol_sha256": "6202cf87a10eac4f585793224db0a0df28da3b4c42fe988ddfdcaac4615f93e9",
+  "raw_ledgers_committed": false,
+  "results": [
+    {
+      "conventional_prediction": {
+        "auroc": 0.9053593329534363,
+        "brier": 0.102719286639181,
+        "log_loss": 0.3157806238474442
+      },
+      "m4_augmented_prediction": {
+        "auroc": 0.9054457637471724,
+        "brier": 0.10260942044064625,
+        "log_loss": 0.31547902942370953
+      },
+      "name": "family-qwen-to-llama",
+      "ranking": {
+        "conventional_delay_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 607.4288526477088,
+          "observed_lost_m4_capture_top_10pct": 0.05950979224863368,
+          "observed_lost_m4_capture_top_20pct": 0.11488626316616621
+        },
+        "m4_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 2175.9625549125776,
+          "observed_lost_m4_capture_top_10pct": 0.5751045496300883,
+          "observed_lost_m4_capture_top_20pct": 0.9923021363620707
+        },
+        "m4_augmented_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 2185.684718812984,
+          "observed_lost_m4_capture_top_10pct": 0.5729123498226628,
+          "observed_lost_m4_capture_top_20pct": 0.9932298786169548
+        },
+        "reward_variance": {
+          "ipw_causal_lost_m4_mean_top_10pct": 1412.2977962013742,
+          "observed_lost_m4_capture_top_10pct": 0.6392351480718494,
+          "observed_lost_m4_capture_top_20pct": 1.0
+        },
+        "reward_variance_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 2300.464421580211,
+          "observed_lost_m4_capture_top_10pct": 0.5169479819989568,
+          "observed_lost_m4_capture_top_20pct": 0.9923021363620707
+        },
+        "version_age": {
+          "ipw_causal_lost_m4_mean_top_10pct": 163.91541103449075,
+          "observed_lost_m4_capture_top_10pct": 0.17562372069019755,
+          "observed_lost_m4_capture_top_20pct": 0.27205116358536546
+        }
+      },
+      "testing_acquisitions": [
+        "llama-1b-gsm8k-r1",
+        "llama-1b-gsm8k-r2",
+        "llama-1b-openmath-r1",
+        "llama-1b-openmath-r2",
+        "llama-3b-gsm8k-r1",
+        "llama-3b-gsm8k-r2",
+        "llama-3b-openmath-r1",
+        "llama-3b-openmath-r2"
+      ],
+      "testing_assignments": 57500,
+      "training_assignments": 49153
+    },
+    {
+      "conventional_prediction": {
+        "auroc": 0.9106343137430962,
+        "brier": 0.09832895502685962,
+        "log_loss": 0.31245974869537546
+      },
+      "m4_augmented_prediction": {
+        "auroc": 0.9126033910955788,
+        "brier": 0.09722462401296657,
+        "log_loss": 0.3107169960961371
+      },
+      "name": "family-llama-to-qwen",
+      "ranking": {
+        "conventional_delay_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 2368.900049088955,
+          "observed_lost_m4_capture_top_10pct": 0.06138170062616425,
+          "observed_lost_m4_capture_top_20pct": 0.15242985321454547
+        },
+        "m4_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 8798.81430333289,
+          "observed_lost_m4_capture_top_10pct": 0.3472493498672851,
+          "observed_lost_m4_capture_top_20pct": 0.6152906703697563
+        },
+        "m4_augmented_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 9012.275610949204,
+          "observed_lost_m4_capture_top_10pct": 0.3368890206314998,
+          "observed_lost_m4_capture_top_20pct": 0.6046033062014002
+        },
+        "reward_variance": {
+          "ipw_causal_lost_m4_mean_top_10pct": 3757.4898677251754,
+          "observed_lost_m4_capture_top_10pct": 0.3992881660807809,
+          "observed_lost_m4_capture_top_20pct": 0.767093692224718
+        },
+        "reward_variance_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 9312.82357633297,
+          "observed_lost_m4_capture_top_10pct": 0.3154726212970886,
+          "observed_lost_m4_capture_top_20pct": 0.5787575753320707
+        },
+        "version_age": {
+          "ipw_causal_lost_m4_mean_top_10pct": 392.7188864194275,
+          "observed_lost_m4_capture_top_10pct": 0.15175818483656006,
+          "observed_lost_m4_capture_top_20pct": 0.2748294221958885
+        }
+      },
+      "testing_acquisitions": [
+        "qwen-qwen3_0p6b_gsm8k",
+        "qwen-qwen3_0p6b_numinamath",
+        "qwen-qwen3_0p6b_openmath",
+        "qwen-qwen3_1p7b_gsm8k",
+        "qwen-qwen3_1p7b_numinamath",
+        "qwen-qwen3_1p7b_openmath"
+      ],
+      "testing_assignments": 49153,
+      "training_assignments": 57500
+    },
+    {
+      "conventional_prediction": {
+        "auroc": 0.9124194055418645,
+        "brier": 0.10163257918070996,
+        "log_loss": 0.3129343862490036
+      },
+      "m4_augmented_prediction": {
+        "auroc": 0.9124634549498106,
+        "brier": 0.10133962170144382,
+        "log_loss": 0.312324544479662
+      },
+      "name": "workload-holdout-openmath",
+      "ranking": {
+        "conventional_delay_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 1774.1728153132356,
+          "observed_lost_m4_capture_top_10pct": 0.07751023187435363,
+          "observed_lost_m4_capture_top_20pct": 0.13834117248796537
+        },
+        "m4_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 6706.575165316366,
+          "observed_lost_m4_capture_top_10pct": 0.5219861859795416,
+          "observed_lost_m4_capture_top_20pct": 0.8742794372359233
+        },
+        "m4_augmented_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 6786.801060816057,
+          "observed_lost_m4_capture_top_10pct": 0.5138756086462887,
+          "observed_lost_m4_capture_top_20pct": 0.8705291737692525
+        },
+        "reward_variance": {
+          "ipw_causal_lost_m4_mean_top_10pct": 3791.501539536798,
+          "observed_lost_m4_capture_top_10pct": 0.5757180721688965,
+          "observed_lost_m4_capture_top_20pct": 0.9125083496483077
+        },
+        "reward_variance_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 6669.630342691503,
+          "observed_lost_m4_capture_top_10pct": 0.4210754099852892,
+          "observed_lost_m4_capture_top_20pct": 0.8556365697734916
+        },
+        "version_age": {
+          "ipw_causal_lost_m4_mean_top_10pct": 619.8417368048523,
+          "observed_lost_m4_capture_top_10pct": 0.21087457842068472,
+          "observed_lost_m4_capture_top_20pct": 0.3772839412426415
+        }
+      },
+      "testing_acquisitions": [
+        "llama-1b-openmath-r1",
+        "llama-1b-openmath-r2",
+        "llama-3b-openmath-r1",
+        "llama-3b-openmath-r2",
+        "qwen-qwen3_0p6b_openmath",
+        "qwen-qwen3_1p7b_openmath"
+      ],
+      "testing_assignments": 43274,
+      "training_assignments": 63379
+    },
+    {
+      "conventional_prediction": {
+        "auroc": 0.9079954233750746,
+        "brier": 0.10502280846521837,
+        "log_loss": 0.33133471586826496
+      },
+      "m4_augmented_prediction": {
+        "auroc": 0.9080097768833234,
+        "brier": 0.10432015834036465,
+        "log_loss": 0.3292361683271948
+      },
+      "name": "workload-holdout-gsm8k",
+      "ranking": {
+        "conventional_delay_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 1385.0853484162003,
+          "observed_lost_m4_capture_top_10pct": 0.056322232689616766,
+          "observed_lost_m4_capture_top_20pct": 0.09917321855485081
+        },
+        "m4_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 4289.5552103881555,
+          "observed_lost_m4_capture_top_10pct": 0.4646045040551729,
+          "observed_lost_m4_capture_top_20pct": 0.8014783222173347
+        },
+        "m4_augmented_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 4343.071102913674,
+          "observed_lost_m4_capture_top_10pct": 0.46170558803952955,
+          "observed_lost_m4_capture_top_20pct": 0.7976904474233212
+        },
+        "reward_variance": {
+          "ipw_causal_lost_m4_mean_top_10pct": 1802.8498771453342,
+          "observed_lost_m4_capture_top_10pct": 0.5162976266898545,
+          "observed_lost_m4_capture_top_20pct": 0.8580871360692763
+        },
+        "reward_variance_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 4459.830924865658,
+          "observed_lost_m4_capture_top_10pct": 0.36751693665877583,
+          "observed_lost_m4_capture_top_20pct": 0.7416380248030339
+        },
+        "version_age": {
+          "ipw_causal_lost_m4_mean_top_10pct": 680.4052903398598,
+          "observed_lost_m4_capture_top_10pct": 0.23459386652347392,
+          "observed_lost_m4_capture_top_20pct": 0.37625992473397435
+        }
+      },
+      "testing_acquisitions": [
+        "llama-1b-gsm8k-r1",
+        "llama-1b-gsm8k-r2",
+        "llama-3b-gsm8k-r1",
+        "llama-3b-gsm8k-r2",
+        "qwen-qwen3_0p6b_gsm8k",
+        "qwen-qwen3_1p7b_gsm8k"
+      ],
+      "testing_assignments": 49100,
+      "training_assignments": 57553
+    },
+    {
+      "conventional_prediction": {
+        "auroc": 0.9095289229623613,
+        "brier": 0.09865690834318837,
+        "log_loss": 0.3103429856143388
+      },
+      "m4_augmented_prediction": {
+        "auroc": 0.9097278071125553,
+        "brier": 0.09867430575226209,
+        "log_loss": 0.31016424642463375
+      },
+      "name": "workload-holdout-numinamath",
+      "ranking": {
+        "conventional_delay_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 2792.974953681147,
+          "observed_lost_m4_capture_top_10pct": 0.07337211599022848,
+          "observed_lost_m4_capture_top_20pct": 0.15548099574221097
+        },
+        "m4_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 9888.971507258484,
+          "observed_lost_m4_capture_top_10pct": 0.3540582717715634,
+          "observed_lost_m4_capture_top_20pct": 0.6262692382351491
+        },
+        "m4_augmented_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 9931.004078310536,
+          "observed_lost_m4_capture_top_10pct": 0.3507792939273156,
+          "observed_lost_m4_capture_top_20pct": 0.6226794337770325
+        },
+        "reward_variance": {
+          "ipw_causal_lost_m4_mean_top_10pct": 4702.055508172813,
+          "observed_lost_m4_capture_top_10pct": 0.4240565862903989,
+          "observed_lost_m4_capture_top_20pct": 0.7853364433482254
+        },
+        "reward_variance_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 10157.951544197751,
+          "observed_lost_m4_capture_top_10pct": 0.3417219707275997,
+          "observed_lost_m4_capture_top_20pct": 0.5979562979549979
+        },
+        "version_age": {
+          "ipw_causal_lost_m4_mean_top_10pct": 844.5436388841864,
+          "observed_lost_m4_capture_top_10pct": 0.12036242824410137,
+          "observed_lost_m4_capture_top_20pct": 0.21311727944779454
+        }
+      },
+      "testing_acquisitions": [
+        "qwen-qwen3_0p6b_numinamath",
+        "qwen-qwen3_1p7b_numinamath"
+      ],
+      "testing_assignments": 14279,
+      "training_assignments": 92374
+    },
+    {
+      "conventional_prediction": {
+        "auroc": 0.9172419714735736,
+        "brier": 0.09464310568069732,
+        "log_loss": 0.2957925707137265
+      },
+      "m4_augmented_prediction": {
+        "auroc": 0.9171519513475673,
+        "brier": 0.09462163649252217,
+        "log_loss": 0.29561433496923734
+      },
+      "name": "acquisition-holdout-llama-1b-gsm8k-r1",
+      "ranking": {
+        "conventional_delay_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 396.2416496293141,
+          "observed_lost_m4_capture_top_10pct": 0.04946107721188101,
+          "observed_lost_m4_capture_top_20pct": 0.11502193944851162
+        },
+        "m4_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 2399.9282062760467,
+          "observed_lost_m4_capture_top_10pct": 0.6458740537285008,
+          "observed_lost_m4_capture_top_20pct": 0.9504635123305015
+        },
+        "m4_augmented_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 2424.611618842909,
+          "observed_lost_m4_capture_top_10pct": 0.6429202826165413,
+          "observed_lost_m4_capture_top_20pct": 0.9496900215860358
+        },
+        "reward_variance": {
+          "ipw_causal_lost_m4_mean_top_10pct": 705.3798259060239,
+          "observed_lost_m4_capture_top_10pct": 0.5480661271320554,
+          "observed_lost_m4_capture_top_20pct": 0.9839099463456641
+        },
+        "reward_variance_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 2733.033949582222,
+          "observed_lost_m4_capture_top_10pct": 0.53084468686449,
+          "observed_lost_m4_capture_top_20pct": 0.9394447662507057
+        },
+        "version_age": {
+          "ipw_causal_lost_m4_mean_top_10pct": 308.05278933667097,
+          "observed_lost_m4_capture_top_10pct": 0.12237667959796096,
+          "observed_lost_m4_capture_top_20pct": 0.2177944099853715
+        }
+      },
+      "testing_acquisitions": [
+        "llama-1b-gsm8k-r1"
+      ],
+      "testing_assignments": 7314,
+      "training_assignments": 99339
+    },
+    {
+      "conventional_prediction": {
+        "auroc": 0.9214178383489557,
+        "brier": 0.09008459418072062,
+        "log_loss": 0.2821252281008134
+      },
+      "m4_augmented_prediction": {
+        "auroc": 0.9216666666666666,
+        "brier": 0.09007965607978907,
+        "log_loss": 0.2816381380960326
+      },
+      "name": "acquisition-holdout-llama-1b-gsm8k-r2",
+      "ranking": {
+        "conventional_delay_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 799.3203487180764,
+          "observed_lost_m4_capture_top_10pct": 0.05414121758856002,
+          "observed_lost_m4_capture_top_20pct": 0.15108630853293928
+        },
+        "m4_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 4157.741483888948,
+          "observed_lost_m4_capture_top_10pct": 0.6116831508051094,
+          "observed_lost_m4_capture_top_20pct": 0.8278949706664518
+        },
+        "m4_augmented_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 4130.861825845332,
+          "observed_lost_m4_capture_top_10pct": 0.6068095467226677,
+          "observed_lost_m4_capture_top_20pct": 0.8232086010415773
+        },
+        "reward_variance": {
+          "ipw_causal_lost_m4_mean_top_10pct": 1185.9699505598555,
+          "observed_lost_m4_capture_top_10pct": 0.39152096834734895,
+          "observed_lost_m4_capture_top_20pct": 0.7588138544983436
+        },
+        "reward_variance_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 4195.495448013354,
+          "observed_lost_m4_capture_top_10pct": 0.46393578458426527,
+          "observed_lost_m4_capture_top_20pct": 0.8027179337673461
+        },
+        "version_age": {
+          "ipw_causal_lost_m4_mean_top_10pct": 430.29140365759326,
+          "observed_lost_m4_capture_top_10pct": 0.21481367410214713,
+          "observed_lost_m4_capture_top_20pct": 0.3291568283025982
+        }
+      },
+      "testing_acquisitions": [
+        "llama-1b-gsm8k-r2"
+      ],
+      "testing_assignments": 7681,
+      "training_assignments": 98972
+    },
+    {
+      "conventional_prediction": {
+        "auroc": 0.9209007629992465,
+        "brier": 0.09695558073816628,
+        "log_loss": 0.2977606441320464
+      },
+      "m4_augmented_prediction": {
+        "auroc": 0.9210368782969103,
+        "brier": 0.09679863747751492,
+        "log_loss": 0.29731970753630294
+      },
+      "name": "acquisition-holdout-llama-1b-openmath-r1",
+      "ranking": {
+        "conventional_delay_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 804.2956383783807,
+          "observed_lost_m4_capture_top_10pct": 0.10380710820162693,
+          "observed_lost_m4_capture_top_20pct": 0.17889094135227693
+        },
+        "m4_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 2269.2195611228644,
+          "observed_lost_m4_capture_top_10pct": 0.9374316049577023,
+          "observed_lost_m4_capture_top_20pct": 1.0
+        },
+        "m4_augmented_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 2286.867805924067,
+          "observed_lost_m4_capture_top_10pct": 0.9378296133370041,
+          "observed_lost_m4_capture_top_20pct": 1.0
+        },
+        "reward_variance": {
+          "ipw_causal_lost_m4_mean_top_10pct": 2174.9664185422375,
+          "observed_lost_m4_capture_top_10pct": 0.9474782383850152,
+          "observed_lost_m4_capture_top_20pct": 1.0
+        },
+        "reward_variance_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 2254.2793656572935,
+          "observed_lost_m4_capture_top_10pct": 0.9329678970415538,
+          "observed_lost_m4_capture_top_20pct": 1.0
+        },
+        "version_age": {
+          "ipw_causal_lost_m4_mean_top_10pct": 119.5459768758324,
+          "observed_lost_m4_capture_top_10pct": 0.10481902322914483,
+          "observed_lost_m4_capture_top_20pct": 0.3330043267429484
+        }
+      },
+      "testing_acquisitions": [
+        "llama-1b-openmath-r1"
+      ],
+      "testing_assignments": 6908,
+      "training_assignments": 99745
+    },
+    {
+      "conventional_prediction": {
+        "auroc": 0.9328855106546363,
+        "brier": 0.08957442731345008,
+        "log_loss": 0.27587628655543533
+      },
+      "m4_augmented_prediction": {
+        "auroc": 0.9327444087156845,
+        "brier": 0.08950168261809709,
+        "log_loss": 0.2756511740907868
+      },
+      "name": "acquisition-holdout-llama-1b-openmath-r2",
+      "ranking": {
+        "conventional_delay_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 898.1182062116488,
+          "observed_lost_m4_capture_top_10pct": 0.09978274434799345,
+          "observed_lost_m4_capture_top_20pct": 0.1615474981496464
+        },
+        "m4_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 2257.779286811093,
+          "observed_lost_m4_capture_top_10pct": 0.9121142118097093,
+          "observed_lost_m4_capture_top_20pct": 1.0
+        },
+        "m4_augmented_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 2211.974585635634,
+          "observed_lost_m4_capture_top_10pct": 0.9101564470260933,
+          "observed_lost_m4_capture_top_20pct": 1.0
+        },
+        "reward_variance": {
+          "ipw_causal_lost_m4_mean_top_10pct": 2002.1916615026462,
+          "observed_lost_m4_capture_top_10pct": 0.9443762386905036,
+          "observed_lost_m4_capture_top_20pct": 1.0
+        },
+        "reward_variance_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 2237.013249310978,
+          "observed_lost_m4_capture_top_10pct": 0.906316691105613,
+          "observed_lost_m4_capture_top_20pct": 1.0
+        },
+        "version_age": {
+          "ipw_causal_lost_m4_mean_top_10pct": 215.91949754261935,
+          "observed_lost_m4_capture_top_10pct": 0.28505176103338614,
+          "observed_lost_m4_capture_top_20pct": 0.4253562890425044
+        }
+      },
+      "testing_acquisitions": [
+        "llama-1b-openmath-r2"
+      ],
+      "testing_assignments": 6809,
+      "training_assignments": 99844
+    },
+    {
+      "conventional_prediction": {
+        "auroc": 0.9261462069583932,
+        "brier": 0.09060178062299537,
+        "log_loss": 0.28502617999596097
+      },
+      "m4_augmented_prediction": {
+        "auroc": 0.9263942566355811,
+        "brier": 0.09042115810527948,
+        "log_loss": 0.28392396066782455
+      },
+      "name": "acquisition-holdout-llama-3b-gsm8k-r1",
+      "ranking": {
+        "conventional_delay_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 378.8392184142615,
+          "observed_lost_m4_capture_top_10pct": 0.018599358120109204,
+          "observed_lost_m4_capture_top_20pct": 0.05420198689363098
+        },
+        "m4_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 4421.700920048115,
+          "observed_lost_m4_capture_top_10pct": 0.37210941830520655,
+          "observed_lost_m4_capture_top_20pct": 0.5687010484938033
+        },
+        "m4_augmented_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 4462.596867576034,
+          "observed_lost_m4_capture_top_10pct": 0.36957007773581974,
+          "observed_lost_m4_capture_top_20pct": 0.5589070889065486
+        },
+        "reward_variance": {
+          "ipw_causal_lost_m4_mean_top_10pct": 791.7725170228142,
+          "observed_lost_m4_capture_top_10pct": 0.4104684121901604,
+          "observed_lost_m4_capture_top_20pct": 0.7724639184136817
+        },
+        "reward_variance_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 4652.760105559504,
+          "observed_lost_m4_capture_top_10pct": 0.277363566090554,
+          "observed_lost_m4_capture_top_20pct": 0.531771847936854
+        },
+        "version_age": {
+          "ipw_causal_lost_m4_mean_top_10pct": 20.072652772442545,
+          "observed_lost_m4_capture_top_10pct": 0.33174147242651997,
+          "observed_lost_m4_capture_top_20pct": 0.4809252448300379
+        }
+      },
+      "testing_acquisitions": [
+        "llama-3b-gsm8k-r1"
+      ],
+      "testing_assignments": 7176,
+      "training_assignments": 99477
+    },
+    {
+      "conventional_prediction": {
+        "auroc": 0.9025831752805438,
+        "brier": 0.10039756308756015,
+        "log_loss": 0.3141187611132455
+      },
+      "m4_augmented_prediction": {
+        "auroc": 0.903471234392287,
+        "brier": 0.09991350558523578,
+        "log_loss": 0.3124433457625363
+      },
+      "name": "acquisition-holdout-llama-3b-gsm8k-r2",
+      "ranking": {
+        "conventional_delay_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 240.05040581026415,
+          "observed_lost_m4_capture_top_10pct": 0.05091082123542693,
+          "observed_lost_m4_capture_top_20pct": 0.07788553697599827
+        },
+        "m4_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 1345.0243894995235,
+          "observed_lost_m4_capture_top_10pct": 0.4653281732338043,
+          "observed_lost_m4_capture_top_20pct": 1.0
+        },
+        "m4_augmented_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 1331.7170124261406,
+          "observed_lost_m4_capture_top_10pct": 0.4662420456554261,
+          "observed_lost_m4_capture_top_20pct": 1.0
+        },
+        "reward_variance": {
+          "ipw_causal_lost_m4_mean_top_10pct": 813.5791200940575,
+          "observed_lost_m4_capture_top_10pct": 0.6870107736263212,
+          "observed_lost_m4_capture_top_20pct": 1.0
+        },
+        "reward_variance_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 1186.9421585697544,
+          "observed_lost_m4_capture_top_10pct": 0.4292903120110685,
+          "observed_lost_m4_capture_top_20pct": 1.0
+        },
+        "version_age": {
+          "ipw_causal_lost_m4_mean_top_10pct": 157.50279243160767,
+          "observed_lost_m4_capture_top_10pct": 0.38651363467981015,
+          "observed_lost_m4_capture_top_20pct": 0.39195979778456597
+        }
+      },
+      "testing_acquisitions": [
+        "llama-3b-gsm8k-r2"
+      ],
+      "testing_assignments": 7927,
+      "training_assignments": 98726
+    },
+    {
+      "conventional_prediction": {
+        "auroc": 0.9067282738127852,
+        "brier": 0.10143504247284986,
+        "log_loss": 0.31601058226974355
+      },
+      "m4_augmented_prediction": {
+        "auroc": 0.9063280762023735,
+        "brier": 0.10138158156642399,
+        "log_loss": 0.3158623754258331
+      },
+      "name": "acquisition-holdout-llama-3b-openmath-r1",
+      "ranking": {
+        "conventional_delay_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 737.6933705108819,
+          "observed_lost_m4_capture_top_10pct": 0.09354868805176068,
+          "observed_lost_m4_capture_top_20pct": 0.13303310135823848
+        },
+        "m4_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 1467.2563624420745,
+          "observed_lost_m4_capture_top_10pct": 0.5226747584578144,
+          "observed_lost_m4_capture_top_20pct": 1.0
+        },
+        "m4_augmented_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 1496.2221200572233,
+          "observed_lost_m4_capture_top_10pct": 0.5174872648174054,
+          "observed_lost_m4_capture_top_20pct": 1.0
+        },
+        "reward_variance": {
+          "ipw_causal_lost_m4_mean_top_10pct": 1053.3791514446507,
+          "observed_lost_m4_capture_top_10pct": 0.6741641866974598,
+          "observed_lost_m4_capture_top_20pct": 1.0
+        },
+        "reward_variance_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 1650.2211416484945,
+          "observed_lost_m4_capture_top_10pct": 0.43833352035724416,
+          "observed_lost_m4_capture_top_20pct": 1.0
+        },
+        "version_age": {
+          "ipw_causal_lost_m4_mean_top_10pct": 124.01388564949993,
+          "observed_lost_m4_capture_top_10pct": 0.30083068671779634,
+          "observed_lost_m4_capture_top_20pct": 0.48395893886412245
+        }
+      },
+      "testing_acquisitions": [
+        "llama-3b-openmath-r1"
+      ],
+      "testing_assignments": 7073,
+      "training_assignments": 99580
+    },
+    {
+      "conventional_prediction": {
+        "auroc": 0.9031018056664006,
+        "brier": 0.1087061567213307,
+        "log_loss": 0.33376067429977185
+      },
+      "m4_augmented_prediction": {
+        "auroc": 0.9029600209497207,
+        "brier": 0.10847665178505919,
+        "log_loss": 0.33346177074351113
+      },
+      "name": "acquisition-holdout-llama-3b-openmath-r2",
+      "ranking": {
+        "conventional_delay_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 636.7411038847669,
+          "observed_lost_m4_capture_top_10pct": 0.10928641328806428,
+          "observed_lost_m4_capture_top_20pct": 0.1507770982214919
+        },
+        "m4_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 1069.6583486943086,
+          "observed_lost_m4_capture_top_10pct": 0.8076634317500484,
+          "observed_lost_m4_capture_top_20pct": 1.0
+        },
+        "m4_augmented_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 1114.451210615678,
+          "observed_lost_m4_capture_top_10pct": 0.8057707519432551,
+          "observed_lost_m4_capture_top_20pct": 1.0
+        },
+        "reward_variance": {
+          "ipw_causal_lost_m4_mean_top_10pct": 692.0951224158538,
+          "observed_lost_m4_capture_top_10pct": 0.9205518265968372,
+          "observed_lost_m4_capture_top_20pct": 1.0
+        },
+        "reward_variance_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 1059.7115161087577,
+          "observed_lost_m4_capture_top_10pct": 0.7936537847157584,
+          "observed_lost_m4_capture_top_20pct": 1.0
+        },
+        "version_age": {
+          "ipw_causal_lost_m4_mean_top_10pct": -98.40625404555271,
+          "observed_lost_m4_capture_top_10pct": 0.4545425358022664,
+          "observed_lost_m4_capture_top_20pct": 0.542261244554174
+        }
+      },
+      "testing_acquisitions": [
+        "llama-3b-openmath-r2"
+      ],
+      "testing_assignments": 6612,
+      "training_assignments": 100041
+    },
+    {
+      "conventional_prediction": {
+        "auroc": 0.93292143140103,
+        "brier": 0.08501399631985776,
+        "log_loss": 0.270122200916767
+      },
+      "m4_augmented_prediction": {
+        "auroc": 0.9329202429684404,
+        "brier": 0.08505498001314614,
+        "log_loss": 0.2698674529106518
+      },
+      "name": "acquisition-holdout-qwen-qwen3_0p6b_gsm8k",
+      "ranking": {
+        "conventional_delay_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 2750.1841925362082,
+          "observed_lost_m4_capture_top_10pct": 0.052336398447502916,
+          "observed_lost_m4_capture_top_20pct": 0.08773926965719532
+        },
+        "m4_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 8356.053152673552,
+          "observed_lost_m4_capture_top_10pct": 0.278533745891273,
+          "observed_lost_m4_capture_top_20pct": 0.4630393160374057
+        },
+        "m4_augmented_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 8200.60046202187,
+          "observed_lost_m4_capture_top_10pct": 0.2757432300419471,
+          "observed_lost_m4_capture_top_20pct": 0.45980976932148193
+        },
+        "reward_variance": {
+          "ipw_causal_lost_m4_mean_top_10pct": 3257.973827250442,
+          "observed_lost_m4_capture_top_10pct": 0.32715525790114314,
+          "observed_lost_m4_capture_top_20pct": 0.6242458196525377
+        },
+        "reward_variance_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 8073.735413473807,
+          "observed_lost_m4_capture_top_10pct": 0.229866359816045,
+          "observed_lost_m4_capture_top_20pct": 0.41127092134372895
+        },
+        "version_age": {
+          "ipw_causal_lost_m4_mean_top_10pct": 1182.7735409731033,
+          "observed_lost_m4_capture_top_10pct": 0.17024321968472583,
+          "observed_lost_m4_capture_top_20pct": 0.28459667128166444
+        }
+      },
+      "testing_acquisitions": [
+        "qwen-qwen3_0p6b_gsm8k"
+      ],
+      "testing_assignments": 9573,
+      "training_assignments": 97080
+    },
+    {
+      "conventional_prediction": {
+        "auroc": 0.9183125333096465,
+        "brier": 0.09375891516262667,
+        "log_loss": 0.29268403041780566
+      },
+      "m4_augmented_prediction": {
+        "auroc": 0.9186607301474508,
+        "brier": 0.09385358516086185,
+        "log_loss": 0.29258924075487747
+      },
+      "name": "acquisition-holdout-qwen-qwen3_0p6b_numinamath",
+      "ranking": {
+        "conventional_delay_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 3391.7620752048197,
+          "observed_lost_m4_capture_top_10pct": 0.07016561351081224,
+          "observed_lost_m4_capture_top_20pct": 0.1459710497264062
+        },
+        "m4_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 10796.068804725159,
+          "observed_lost_m4_capture_top_10pct": 0.310885095862151,
+          "observed_lost_m4_capture_top_20pct": 0.5508181346665054
+        },
+        "m4_augmented_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 10752.16246109261,
+          "observed_lost_m4_capture_top_10pct": 0.3088562103499509,
+          "observed_lost_m4_capture_top_20pct": 0.5472192462327193
+        },
+        "reward_variance": {
+          "ipw_causal_lost_m4_mean_top_10pct": 4583.000218415326,
+          "observed_lost_m4_capture_top_10pct": 0.36068471589814277,
+          "observed_lost_m4_capture_top_20pct": 0.7122107081357867
+        },
+        "reward_variance_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 11360.204375724905,
+          "observed_lost_m4_capture_top_10pct": 0.29797904379735135,
+          "observed_lost_m4_capture_top_20pct": 0.5252860398939867
+        },
+        "version_age": {
+          "ipw_causal_lost_m4_mean_top_10pct": 482.1207169249015,
+          "observed_lost_m4_capture_top_10pct": 0.13300613639143494,
+          "observed_lost_m4_capture_top_20pct": 0.23931325168907958
+        }
+      },
+      "testing_acquisitions": [
+        "qwen-qwen3_0p6b_numinamath"
+      ],
+      "testing_assignments": 7229,
+      "training_assignments": 99424
+    },
+    {
+      "conventional_prediction": {
+        "auroc": 0.9072598945769679,
+        "brier": 0.10060059252742817,
+        "log_loss": 0.3161706812000199
+      },
+      "m4_augmented_prediction": {
+        "auroc": 0.9070051594746718,
+        "brier": 0.10082933174195592,
+        "log_loss": 0.31634583040394965
+      },
+      "name": "acquisition-holdout-qwen-qwen3_0p6b_openmath",
+      "ranking": {
+        "conventional_delay_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 4554.106714890483,
+          "observed_lost_m4_capture_top_10pct": 0.07744657895013017,
+          "observed_lost_m4_capture_top_20pct": 0.1537502477055315
+        },
+        "m4_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 14113.014477069179,
+          "observed_lost_m4_capture_top_10pct": 0.2758217330092563,
+          "observed_lost_m4_capture_top_20pct": 0.4717893426389391
+        },
+        "m4_augmented_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 14021.779672209423,
+          "observed_lost_m4_capture_top_10pct": 0.2735679902008525,
+          "observed_lost_m4_capture_top_20pct": 0.4656450000699382
+        },
+        "reward_variance": {
+          "ipw_causal_lost_m4_mean_top_10pct": 3456.4297632040248,
+          "observed_lost_m4_capture_top_10pct": 0.28239591571529826,
+          "observed_lost_m4_capture_top_20pct": 0.5541978305662608
+        },
+        "reward_variance_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 12895.779641898638,
+          "observed_lost_m4_capture_top_10pct": 0.24927806972007246,
+          "observed_lost_m4_capture_top_20pct": 0.43778344631455135
+        },
+        "version_age": {
+          "ipw_causal_lost_m4_mean_top_10pct": 813.55655280095,
+          "observed_lost_m4_capture_top_10pct": 0.1176862755878182,
+          "observed_lost_m4_capture_top_20pct": 0.21989842635200696
+        }
+      },
+      "testing_acquisitions": [
+        "qwen-qwen3_0p6b_openmath"
+      ],
+      "testing_assignments": 7199,
+      "training_assignments": 99454
+    },
+    {
+      "conventional_prediction": {
+        "auroc": 0.9289269080629964,
+        "brier": 0.08738126524786122,
+        "log_loss": 0.27618043904602696
+      },
+      "m4_augmented_prediction": {
+        "auroc": 0.9292626194642616,
+        "brier": 0.08718557540722953,
+        "log_loss": 0.27575807661255214
+      },
+      "name": "acquisition-holdout-qwen-qwen3_1p7b_gsm8k",
+      "ranking": {
+        "conventional_delay_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 646.3825348298977,
+          "observed_lost_m4_capture_top_10pct": 0.027532805306790666,
+          "observed_lost_m4_capture_top_20pct": 0.06638133115937025
+        },
+        "m4_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 3661.9265897227874,
+          "observed_lost_m4_capture_top_10pct": 0.5657057254036939,
+          "observed_lost_m4_capture_top_20pct": 1.0
+        },
+        "m4_augmented_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 3714.0158015949096,
+          "observed_lost_m4_capture_top_10pct": 0.5614389376586176,
+          "observed_lost_m4_capture_top_20pct": 1.0
+        },
+        "reward_variance": {
+          "ipw_causal_lost_m4_mean_top_10pct": 2141.470803986109,
+          "observed_lost_m4_capture_top_10pct": 0.7585498650411041,
+          "observed_lost_m4_capture_top_20pct": 1.0
+        },
+        "reward_variance_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 3698.6788160227643,
+          "observed_lost_m4_capture_top_10pct": 0.5430208575320263,
+          "observed_lost_m4_capture_top_20pct": 1.0
+        },
+        "version_age": {
+          "ipw_causal_lost_m4_mean_top_10pct": 511.6676596652159,
+          "observed_lost_m4_capture_top_10pct": 0.2393808533660759,
+          "observed_lost_m4_capture_top_20pct": 0.33106875626695853
+        }
+      },
+      "testing_acquisitions": [
+        "qwen-qwen3_1p7b_gsm8k"
+      ],
+      "testing_assignments": 9429,
+      "training_assignments": 97224
+    },
+    {
+      "conventional_prediction": {
+        "auroc": 0.9017197247706422,
+        "brier": 0.10283272977948138,
+        "log_loss": 0.32562941050536603
+      },
+      "m4_augmented_prediction": {
+        "auroc": 0.9018660550458716,
+        "brier": 0.1027687816439739,
+        "log_loss": 0.32537038627814563
+      },
+      "name": "acquisition-holdout-qwen-qwen3_1p7b_numinamath",
+      "ranking": {
+        "conventional_delay_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 2810.3315641880035,
+          "observed_lost_m4_capture_top_10pct": 0.08553008740622126,
+          "observed_lost_m4_capture_top_20pct": 0.17943597599472247
+        },
+        "m4_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 8848.353229798155,
+          "observed_lost_m4_capture_top_10pct": 0.41091010651206006,
+          "observed_lost_m4_capture_top_20pct": 0.7353224642529488
+        },
+        "m4_augmented_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 8831.019115976407,
+          "observed_lost_m4_capture_top_10pct": 0.410781957999646,
+          "observed_lost_m4_capture_top_20pct": 0.7339626711363363
+        },
+        "reward_variance": {
+          "ipw_causal_lost_m4_mean_top_10pct": 4706.098361024451,
+          "observed_lost_m4_capture_top_10pct": 0.5031309070068654,
+          "observed_lost_m4_capture_top_20pct": 0.8574861651001077
+        },
+        "reward_variance_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 9318.985133329266,
+          "observed_lost_m4_capture_top_10pct": 0.4037063067495707,
+          "observed_lost_m4_capture_top_20pct": 0.7247857825039007
+        },
+        "version_age": {
+          "ipw_causal_lost_m4_mean_top_10pct": 1321.376631758399,
+          "observed_lost_m4_capture_top_10pct": 0.13647794846078165,
+          "observed_lost_m4_capture_top_20pct": 0.23736419387408694
+        }
+      },
+      "testing_acquisitions": [
+        "qwen-qwen3_1p7b_numinamath"
+      ],
+      "testing_assignments": 7050,
+      "training_assignments": 99603
+    },
+    {
+      "conventional_prediction": {
+        "auroc": 0.9051506818522403,
+        "brier": 0.10351655385605323,
+        "log_loss": 0.3217611758104733
+      },
+      "m4_augmented_prediction": {
+        "auroc": 0.9055871422148958,
+        "brier": 0.10347216306739956,
+        "log_loss": 0.3214646566780344
+      },
+      "name": "acquisition-holdout-qwen-qwen3_1p7b_openmath",
+      "ranking": {
+        "conventional_delay_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 4091.049955551594,
+          "observed_lost_m4_capture_top_10pct": 0.08309867637074962,
+          "observed_lost_m4_capture_top_20pct": 0.16892494863664267
+        },
+        "m4_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 12066.285188528662,
+          "observed_lost_m4_capture_top_10pct": 0.3266094872832043,
+          "observed_lost_m4_capture_top_20pct": 0.5614946799475479
+        },
+        "m4_augmented_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 12281.329625711875,
+          "observed_lost_m4_capture_top_10pct": 0.32306666525761674,
+          "observed_lost_m4_capture_top_20pct": 0.5570071225787596
+        },
+        "reward_variance": {
+          "ipw_causal_lost_m4_mean_top_10pct": 4154.254455163868,
+          "observed_lost_m4_capture_top_10pct": 0.38037780636924046,
+          "observed_lost_m4_capture_top_20pct": 0.7382627888850133
+        },
+        "reward_variance_at_risk": {
+          "ipw_causal_lost_m4_mean_top_10pct": 12208.582602155511,
+          "observed_lost_m4_capture_top_10pct": 0.3151599659705572,
+          "observed_lost_m4_capture_top_20pct": 0.541817480370409
+        },
+        "version_age": {
+          "ipw_causal_lost_m4_mean_top_10pct": -1013.125789785028,
+          "observed_lost_m4_capture_top_10pct": 0.13558426454590639,
+          "observed_lost_m4_capture_top_20pct": 0.24130545146491375
+        }
+      },
+      "testing_acquisitions": [
+        "qwen-qwen3_1p7b_openmath"
+      ],
+      "testing_assignments": 8673,
+      "training_assignments": 97980
+    }
+  ],
+  "schema": "m4-causal-utility-offline-transport-result-v1",
+  "sklearn_version": "1.9.1",
+  "status": "COMPLETE_FROZEN_OFFLINE_TRANSPORT_ANALYSIS",
+  "summary": {
+    "authorizes_quality_acquisition": false,
+    "decision": "PASS_AUTHORIZE_GRADIENT_UTILITY_AUDIT",
+    "family_direction_differences": {
+      "family-llama-to-qwen": 0.03177672857019653,
+      "family-qwen-to-llama": 0.05815656763113153
+    },
+    "leave_one_acquisition_out_differences": {
+      "llama-1b-gsm8k-r1": 0.11502936686401077,
+      "llama-1b-gsm8k-r2": 0.1477473662208441,
+      "llama-1b-openmath-r1": 0.004463707916148474,
+      "llama-1b-openmath-r2": 0.005797520704096337,
+      "llama-3b-gsm8k-r1": 0.09474585221465254,
+      "llama-3b-gsm8k-r2": 0.036037861222735834,
+      "llama-3b-openmath-r1": 0.08434123810057026,
+      "llama-3b-openmath-r2": 0.014009647034289974,
+      "qwen-qwen3_0p6b_gsm8k": 0.048667386075228,
+      "qwen-qwen3_0p6b_numinamath": 0.012906052064799667,
+      "qwen-qwen3_0p6b_openmath": 0.02654366328918381,
+      "qwen-qwen3_1p7b_gsm8k": 0.02268486787166757,
+      "qwen-qwen3_1p7b_numinamath": 0.00720379976248936,
+      "qwen-qwen3_1p7b_openmath": 0.011449521312647148
+    },
+    "primary_macro_top_10_capture_difference_m4_minus_reward_variance": 0.045116275046668854
+  }
+}
