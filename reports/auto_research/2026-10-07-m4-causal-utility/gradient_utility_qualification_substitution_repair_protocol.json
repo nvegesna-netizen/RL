@@ -1,0 +1,41 @@
+{
+  "schema": "m4-gradient-utility-runtime-qualification-substitution-repair-v1",
+  "status": "FROZEN_AFTER_SECOND_GENERATOR_FAILURE_BEFORE_CORRECTED_SUBMISSION",
+  "date": "2026-10-07",
+  "user_authorization": "do the sequence",
+  "qualification_protocol_sha256": "ce70a012c7aaa82cca7b944a6ebc8692a3188890d990f4b71e28b1b1229ccad1",
+  "first_repair_protocol_sha256": "099001b9c0ec7dcf26b5d6d8da07d46fdee2cba568fe55984197e673f728086d",
+  "second_failed_upstream_pipeline_id": 72128434,
+  "second_failed_generate_job_id": 473749648,
+  "second_failed_submission_manifest_sha256": "fdf02a650c3e948fb511b05d4a60f0c3ae14b0ff54e5567677c45c7dc2d356a1",
+  "second_failed_generated_workload_yaml_sha256": "5454af809129c3fb7c7c94837af669e34273fb21f968dbca7383e44382dd46e1",
+  "second_failed_generated_workload_yaml_bytes": 5958188,
+  "second_failed_trace_sha256": "40562185e20c8c6b8ea7e97f8185094dc1e814ea2733202f7bfe61bd45f94728",
+  "jet_api_version": "3.129.1",
+  "downstream_pipeline_created": false,
+  "eos_workload_created": false,
+  "scientific_data_created": false,
+  "size_hypothesis_falsified": true,
+  "authenticated_error": "RegistryLoadingError: NameError encountered during substitution: name 'names' is not defined",
+  "root_cause": "The builder emitted runtime Python, shell, and JSON braces as single braces in the final workload, allowing the JET substitution pass to interpret them as placeholders.",
+  "repair": {
+    "operation": "Preserve intended JET placeholders as single braces and preserve all runtime-language braces as doubled braces in the final workload manifest.",
+    "known_successful_comparator_generate_job_id": 451824738,
+    "source_commit": "702a40535",
+    "source_archive_sha256": "66667fb2192673a38a6c9e409ea104988356e75e617d78fb0c0ef99bbb8a0bdd",
+    "source_or_protocol_change": false,
+    "runtime_behavior_change": false,
+    "scientific_design_change": false
+  },
+  "corrected_submission_boundary": {
+    "submission_attempt_limit": 1,
+    "required_launcher": "runllm.py --no_wait",
+    "nodes": 1,
+    "gpus": 2,
+    "runtime_limit_seconds": 14400,
+    "queue_deadline_override": null,
+    "automatic_retry": false,
+    "automatic_extension": false,
+    "scientific_acquisition": false
+  }
+}

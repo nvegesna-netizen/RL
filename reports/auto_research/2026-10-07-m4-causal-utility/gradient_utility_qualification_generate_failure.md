@@ -8,12 +8,10 @@ outcome.
 
 The generator did successfully materialize its diagnostic archive. That archive
 contains only `custom_config.yaml` and `manifests/jet_workloads.yaml`. The
-generated workload YAML is 16,750,190 bytes. This leaves only 27,026 bytes below
-16 MiB before JET/GitLab adds the downstream CI wrapper. The trace then reaches
-GitLab's 4 MiB log limit while printing the embedded payload and exposes no
-runtime command: the failure is consistent with a downstream configuration
-transport limit, not with source extraction, configuration resolution, tests,
-model loading, or the audit path.
+generated workload YAML is 16,750,190 bytes. Its proximity to 16 MiB motivated
+an initial configuration-size hypothesis. That hypothesis is now falsified,
+not retained as the diagnosis: a 5,958,188-byte replacement workload failed at
+the same stage in pipeline `72128434`, generator job `473749648`.
 
 The repair changes only the credential-free source transport. The failed
 package embedded a 10,468,973-byte full-repository archive of source commit
@@ -25,6 +23,17 @@ The Megatron archive, container, custom EOS config, two-group qualification,
 seeds, model, workload, no-update gates, runtime limit, and queue-deadline
 suppression are unchanged.
 
-This repair cannot alter a scientific result because no workload ran. A single
-replacement submission is the narrowest test of the diagnosed packaging cause.
+The second trace authenticates the common cause. JET API `3.129.1` raised
+`RegistryLoadingError` while substituting the embedded script:
+`NameError ... name 'names' is not defined`. The manifest builder escaped
+Python, shell, and JSON braces through its own Python f-string, but emitted
+single braces into the final workload. JET consequently interpreted expressions
+such as the Python set comprehension as JET placeholders. A known-successful
+generator artifact preserves those runtime braces as doubled braces in the
+final manifest.
 
+Neither attempt created a downstream pipeline, EOS workload, Slurm allocation,
+GPU execution, gradient data, or scientific outcome. The correct repair is
+therefore limited to JET-layer brace escaping. Source archive, source commit,
+protocol, model, workload, seeds, no-update gates, runtime limit, and queue
+behavior remain unchanged.
