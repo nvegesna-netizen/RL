@@ -1,0 +1,43 @@
+{
+  "schema": "m4-shield-eligible-live-capture-submission-attempt-receipt-v1",
+  "recorded_at": "2026-10-07T15:05:51-07:00",
+  "status": "ATTEMPT_CONSUMED_NO_PIPELINE_CREATED",
+  "submission_plan_commit": "37599811726820ae2eaa99322b18a73f5b5dee6f",
+  "submission_plan_sha256": "7468e043617366fae40f048dadaf5d3a63f6070bd915471b66f676ee070f5538",
+  "manifest_sha256": "c8ce2aae1c6cc8a6004bca63688210f946fbc909b8826138c42b851f7f749dc7",
+  "launcher": {
+    "command_boundary": "runllm.py --no_wait",
+    "invocations": 1,
+    "stdout": "",
+    "stderr": "",
+    "positive_pipeline_id_returned": false,
+    "client_completion": "AMBIGUOUS_EMPTY_SURFACE"
+  },
+  "external_reconciliation": {
+    "checked_at": "2026-10-07T15:05:51-07:00",
+    "gitlab_project_id": 70847,
+    "expected_ref": "dlalgo-ci/eos",
+    "latest_pipeline_id": 72271718,
+    "latest_pipeline_created_at": "2026-10-07T14:47:56.290-07:00",
+    "latest_pipeline_predates_submission_plan_commit": true,
+    "new_pipeline_created": false
+  },
+  "local_diagnostics": {
+    "rotated_setup_return_code": 0,
+    "credential_present": true,
+    "jet_client_initialized": true,
+    "manifest_model_validation": "PASS",
+    "dry_submit_argument_path": "PASS",
+    "frozen_input_hashes": "PASS"
+  },
+  "scientific_state": {
+    "eos_job_created": false,
+    "eligible_live_capsule_created": false,
+    "post_update_outcomes_opened": false,
+    "scientific_result": null
+  },
+  "policy": {
+    "automatic_retry": false,
+    "replacement_requires_new_evidence_and_authority": true
+  }
+}
