@@ -1,0 +1,31 @@
+{
+  "schema": "m4-shield-eligible-live-capture-transport-replacement-authorization-v1",
+  "recorded_at": "2026-10-07",
+  "status": "AUTHORIZED_AFTER_LOCAL_CLIENT_INTERRUPTION_NO_TARGET_PIPELINE",
+  "user_authorization": "I always authorize",
+  "manifest_sha256": "24780138d81492507567bb082f025c17b79615ac18ff1a842c430df246612b0a",
+  "interrupted_attempt": {
+    "invoked_at": "2026-10-07T15:24:48.333649-07:00",
+    "local_client_interrupted": true,
+    "positive_pipeline_id_returned": false,
+    "authenticated_target_pipeline_created": false,
+    "nearby_pipeline_ids_rejected_as_unrelated": [
+      72278222,
+      72279012,
+      72279952
+    ]
+  },
+  "authorized": {
+    "transport_replacement_launcher_invocations": 1,
+    "run_detached_until_client_terminal": true,
+    "runllm_no_wait": true,
+    "eos_submission": true,
+    "source_push": true
+  },
+  "boundaries": {
+    "automatic_retry": false,
+    "automatic_extension": false,
+    "client_queue_deadline": null,
+    "post_update_outcomes_opened": false
+  }
+}
