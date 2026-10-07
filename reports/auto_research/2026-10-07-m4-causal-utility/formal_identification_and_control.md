@@ -111,6 +111,12 @@ R_i(\delta\mid X_t)=
 \]
 
 The existing randomized ledgers can test transport of the risk component.
-They cannot establish that $Q_i$, or any replacement $\widehat U_i$, is
-true marginal learning utility. That construct requires an independently
-frozen gradient-utility audit before a terminal-quality scheduler acquisition.
+The completed independently frozen gradient-utility audit now establishes a
+narrower property of $Q_i$: in the tested Llama-3.2-1B/GSM8K setting, adding
+M4 to token count, reward mean, reward variance, and truncation raised
+cross-fitted $R^2$ for log exact gradient norm from 0.758 to 0.936 (gain 0.179,
+simultaneous 95% interval 0.133--0.241). It did not improve prediction of
+signed consensus-gradient utility or outperform reward variance on the frozen
+directional rank comparison. M4 therefore carries information about update
+magnitude, not demonstrated marginal learning utility. Under the frozen rule,
+this result does not authorize a terminal-quality scheduler acquisition.

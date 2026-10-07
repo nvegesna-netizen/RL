@@ -1,0 +1,130 @@
+{
+  "schema": "m4-gradient-utility-scientific-acquisition-terminal-result-v1",
+  "status": "MAGNITUDE_ONLY",
+  "date": "2026-10-07",
+  "source_commit": "b74ce7583",
+  "provenance_commit_before_result_opening": "5d5a4983bb4690996ecfc52192665df9b32e8c16",
+  "manifest_sha256": "6c01be5138c2eea8db15882775b70708c32cf222584e785ba30b459fb89b146a",
+  "audit_protocol_sha256": "daae7720287a4c6c61c70ee8c40ac1900c2a428ae608fb27b18f622c317ddf09",
+  "acquisition_execution_protocol_sha256": "91824d23afbf435d17bde3867f051f25188e69e9a76069bebd91ed3d22da878f",
+  "hash_v2_qualification_terminal_result_sha256": "a0db53be9e6ba3e1a1ddb388bde5d87d23d8683d5a06a4df4865a17e0ed81811",
+  "submission_receipt_sha256": "642c197501bead9079207a3f9f88c860f47c97a2401d1a1f927c5796127f6242",
+  "execution_provenance_not_scientific_evidence": {
+    "parent_pipeline_id": 72218730,
+    "child_pipeline_id": 72218841,
+    "logs_before_job_id": 474425609,
+    "main_job_id": 474425611,
+    "logs_after_job_id": 474425612,
+    "slurm_job_id": 6191220
+  },
+  "artifact_authentication": {
+    "main_artifact_zip_sha256": "fdadac808517b360d937a94cd3bd287879864172774974e391205fc3e03d49db",
+    "logs_after_artifact_zip_sha256": "488128812f2cfc6c7672305c2d16fff9ca65151e2b3b2bbbf57c660166d15263",
+    "artifact_inventory_sha256": "2a930051218b808bdb1583636304e81b3362810c6de362990ec7bf209922ac96",
+    "artifact_inventory_entries": 8,
+    "artifact_inventory_authenticated": true,
+    "workload_output_sha256": "8e9c4e71a1e9f34a37b955dec28961be10456f38e91a1a9ae4aa9739188726d0",
+    "slurm_output_sha256": "672014bc8a8afbd7dd1798ced76f4032ba7081cb91566964dd55a01c42987125",
+    "analysis_sha256": "d06c02df9047df0f21eab9e62d5d099eb2de434585f6018592141b4e3e0ae3ff",
+    "execution_status_sha256": "2e120153f33501c91c03cb0bd82cce53ed3b6ecb431ccda38fb235e22ebd4f78",
+    "gradient_ledger_sha256": "a226a6de068256fca55a48a8be931cd5ae33896cdfa4e92d6c55d13b414124d6",
+    "lifecycle_ledger_sha256": "d6f4a136ff46d0bba2bef3b294556f2ca5fe7e765757c146df52603cf74db2bf",
+    "observer_duty_sha256": "c8addd372a718fe6763896aa905068287bf30a926faa5eb908f47a82f554903d",
+    "opportunity_ledger_sha256": "72f778fc7dee62757f1f473faaaf6c6ff3076afd74237012e25a60f9e445a9a9",
+    "runtime_log_sha256": "c67b91f5a8b05148301007699c4088413dc2161adcbd0a150f403a5d0f7dc21b"
+  },
+  "acquisition": {
+    "model": "meta-llama/Llama-3.2-1B-Instruct",
+    "workload": "GSM8K train",
+    "generated_prompt_groups": 320,
+    "measured_prompt_groups": 256,
+    "siblings_per_group": 8,
+    "primary_population_groups": 214,
+    "zero_m4_groups": 42,
+    "zero_gradient_groups": 42,
+    "neutral_release_arm_only": true,
+    "learner_version": 0
+  },
+  "integrity": {
+    "unique_groups": true,
+    "eight_siblings_per_group": true,
+    "all_aborts_acknowledged": true,
+    "finish_train_step_calls_zero": true,
+    "optimizer_steps_zero": true,
+    "scheduler_steps_zero": true,
+    "learner_version_zero": true,
+    "parameter_hash_unchanged": true,
+    "finite_scalar_summaries": true,
+    "minimum_primary_population": true,
+    "sketch_fidelity": true
+  },
+  "sketch_fidelity": [
+    {
+      "seed": 20261019,
+      "median_norm_relative_error": 0.0035484802151100935,
+      "p95_norm_relative_error": 0.009984088071572037
+    },
+    {
+      "seed": 20261021,
+      "median_norm_relative_error": 0.0035607031107883656,
+      "p95_norm_relative_error": 0.010093364692852986
+    }
+  ],
+  "magnitude": {
+    "baseline_cross_fitted_r2_log_exact_gradient_norm": 0.7576423221017483,
+    "m4_augmented_cross_fitted_r2_log_exact_gradient_norm": 0.9364374689474837,
+    "cross_fitted_r2_gain": 0.1787951468457356,
+    "simultaneous_95_percent_interval": [
+      0.13327607339058842,
+      0.24092831092738334
+    ],
+    "m4_spearman_exact_gradient_norm": 0.04270780081488715,
+    "reward_variance_spearman_exact_gradient_norm": 0.4673383258001157
+  },
+  "directional": [
+    {
+      "seed": 20261019,
+      "signed_utility_mse_gain": -0.0005339270701484322,
+      "simultaneous_95_percent_interval_signed_utility_mse_gain": [
+        -0.0015856473665306536,
+        0.0005437221716068493
+      ],
+      "m4_minus_reward_variance_spearman": -0.09498546915388714,
+      "simultaneous_95_percent_interval_rank_difference": [
+        -0.25195324249666884,
+        0.06737597396155041
+      ]
+    },
+    {
+      "seed": 20261021,
+      "signed_utility_mse_gain": -0.0005499929673064008,
+      "simultaneous_95_percent_interval_signed_utility_mse_gain": [
+        -0.0014595662561798473,
+        0.00037162520803226914
+      ],
+      "m4_minus_reward_variance_spearman": -0.1012658984128652,
+      "simultaneous_95_percent_interval_rank_difference": [
+        -0.257247499133369,
+        0.05764790568902513
+      ]
+    }
+  ],
+  "observer": {
+    "observation_count": 320,
+    "corrected_observer_duty": 0.0003481311423260531
+  },
+  "independent_replay": {
+    "status": "MAGNITUDE_ONLY",
+    "local_analysis_sha256": "bd16c8b9b69f5ccef6b360fb6340e155aba8b207f2abf4e6170a1ec3b2c4739a",
+    "maximum_absolute_numeric_delta": 7.771561172376096e-16,
+    "classification_and_all_values_match_within_1e-12_relative_tolerance": true
+  },
+  "decision": {
+    "magnitude_condition_met": true,
+    "directional_conditions_met": false,
+    "authorizes_scheduler_outcome_acquisition": false,
+    "supports_terminal_quality_claim": false,
+    "supports_production_readiness_claim": false,
+    "supported_claim": "In this frozen Llama-3.2-1B/GSM8K no-update setting, M4 adds substantial held-out predictive information about exact group-gradient magnitude beyond token count, reward mean, reward variance, and truncation, but it does not add held-out information about consensus-gradient direction or outperform reward variance on the preregistered directional rank comparison."
+  }
+}

@@ -1,13 +1,15 @@
 # M4 gradient-utility construct audit
 
-Status: **FROZEN BEFORE IMPLEMENTATION OR OUTCOME ACQUISITION**
+Status: **TERMINAL — MAGNITUDE_ONLY**
 
-Execution status (2026-10-07): the no-update runtime path passed the frozen
-two-group qualification in child pipeline `72207068`. A post-qualification
-integrity audit then found that the v1 affine sketch hash gave both seeds the
-same bucket-collision partition. The 256-group scientific acquisition remains
-unopened while the source-bound v2 multiply-shift hash is requalified. No
-construct classification follows from either qualification result.
+Execution status (2026-10-07): the v1 affine sketch defect was repaired with a
+source-bound v2 multiply-shift hash and independently requalified. The frozen
+256-group no-update acquisition then completed with every integrity gate
+passing. The terminal classification is `MAGNITUDE_ONLY`: adding M4 raised
+held-out \(R^2\) for log exact gradient norm from `0.758` to `0.936`, a gain of
+`0.179` with simultaneous 95% interval `[0.133, 0.241]`; neither directional
+condition passed. See `gradient_utility_acquisition_terminal_report.md` and
+the machine-readable terminal result for the complete evidence.
 
 ## Why this audit is the next scientific step
 

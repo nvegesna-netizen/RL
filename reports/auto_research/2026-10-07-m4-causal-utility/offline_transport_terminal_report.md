@@ -60,18 +60,19 @@ premature.
 
 ## Decision and next gate
 
-The frozen primary rule authorizes an independent gradient-utility audit. It
-does not authorize an EOS quality acquisition. The audit must test whether
-registered M4 predicts a direction-aware or update-relevant quantity beyond
-reward variance and token count. Only a prospectively frozen signal that
-survives held-out construct validation should be allowed into another
-scheduler policy.
+The authorized independent gradient-utility audit is now terminal. Registered
+M4 added substantial held-out information about exact gradient magnitude
+beyond reward variance, token count, reward mean, and truncation: cross-fitted
+$R^2$ rose from 0.758 to 0.936, a gain of 0.179 with simultaneous 95% interval
+0.133--0.241. The preregistered directional endpoints did not pass under
+either sketch seed. The terminal classification is therefore
+`MAGNITUDE_ONLY`, which strengthens M4's measurement interpretation but does
+not authorize an EOS quality acquisition under the frozen rule.
 
-The existing terminal archives contain lifecycle and opportunity ledgers but
-not replayable token sequences, per-group gradients, or versioned model
-checkpoints. The gradient-utility audit therefore requires a new, bounded,
-no-training collector; it cannot be recovered honestly from the present
-ledgers.
+The audit used a new bounded no-training collector because the prior terminal
+archives did not contain replayable token sequences, per-group gradients, or
+versioned model checkpoints. It retained exact gradient norms and compact
+sketches, not raw gradients, prompts, completions, or a checkpoint.
 
 ## Claim boundary
 
@@ -80,4 +81,3 @@ M4 value in both the score and target. It demonstrates transport of an
 operational ranking objective, not independent construct validity. This result
 must not be described as terminal-quality improvement, causal mediation,
 production readiness, or proof that M4 is marginal learning utility.
-
