@@ -230,6 +230,19 @@ def _number(row: Mapping[str, Any], key: str) -> float:
     return converted if math.isfinite(converted) else math.nan
 
 
+def opportunity_precedes_hold(
+    opportunity: Mapping[str, Any], hold: Mapping[str, Any]
+) -> bool:
+    """Verify the schema-specific pre-hold opportunity ordering contract."""
+    if opportunity.get("schema_version") == 2:
+        source_sequence = _number(opportunity, "source_controller_sequence_max")
+        hold_sequence = _number(hold, "controller_sequence")
+        return source_sequence < hold_sequence
+    opportunity_time = _number(opportunity, "timestamp_ns")
+    hold_time = _number(hold, "timestamp_ns")
+    return opportunity_time < hold_time
+
+
 def _extract_cell(cell: SourceCell) -> list[Assignment]:
     if sha256(cell.lifecycle) != cell.lifecycle_sha256:
         raise RuntimeError(f"{cell.acquisition}: lifecycle digest differs")
@@ -272,9 +285,7 @@ def _extract_cell(cell: SourceCell) -> list[Assignment]:
             raise RuntimeError(
                 f"{cell.acquisition}: primary assignment lacks hold start"
             )
-        group_time = _number(group, "timestamp_ns")
-        hold_time = _number(hold, "timestamp_ns")
-        if not group_time <= hold_time:
+        if not opportunity_precedes_hold(group, hold):
             raise RuntimeError(f"{cell.acquisition}: opportunity is not pre-hold")
         if hold.get("release_arm") != item.arm:
             raise RuntimeError(f"{cell.acquisition}: treatment identity differs")

@@ -59,6 +59,21 @@ def test_capture_prefers_high_value_score() -> None:
     assert MODULE._capture(target, bad, 0.25) == 0.0
 
 
+def test_schema_specific_pre_hold_ordering() -> None:
+    assert MODULE.opportunity_precedes_hold(
+        {"schema_version": 1, "timestamp_ns": 9},
+        {"timestamp_ns": 10, "controller_sequence": 1},
+    )
+    assert MODULE.opportunity_precedes_hold(
+        {"schema_version": 2, "source_controller_sequence_max": 9},
+        {"timestamp_ns": 1, "controller_sequence": 10},
+    )
+    assert not MODULE.opportunity_precedes_hold(
+        {"schema_version": 2, "source_controller_sequence_max": 10},
+        {"timestamp_ns": 20, "controller_sequence": 10},
+    )
+
+
 def test_arm_models_and_evaluation_are_finite() -> None:
     training = [
         assignment(
