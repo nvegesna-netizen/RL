@@ -1,0 +1,53 @@
+{
+  "schema": "m4-gradient-utility-runtime-qualification-protocol-v1",
+  "status": "FROZEN_AFTER_IMPLEMENTATION_BEFORE_SUBMISSION",
+  "date": "2026-10-07",
+  "source_commit": "702a40535",
+  "source_archive_sha256": "2909e46acf9b82712a232d7d16712692aba574886f57aa1038cf78643dd132d2",
+  "parent_audit_protocol_sha256": "daae7720287a4c6c61c70ee8c40ac1900c2a428ae608fb27b18f622c317ddf09",
+  "runtime_files": {
+    "nemo_rl/algorithms/async_utils/gradient_utility_audit.py": "34431ad7b989873b3d9e7661e19501018f9877e0db0bc825ed174baadf94d297",
+    "nemo_rl/algorithms/single_controller.py": "23eebca170df1ec750f5c0a2e84155fe0b36b0e176082803bd873745f015c8d1",
+    "nemo_rl/models/policy/workers/megatron_policy_worker.py": "160362a38ebe73eec5cfbc76d84355ea4c32f5c8c7aac8be8f4a7c13b461b7e9",
+    "examples/configs/grpo_math_1B_megatron_single_controller_m4_gradient_utility_audit.yaml": "3820a03ca67796101f800242c7c73d8b18f3aa3075e0595471a735d674966f58",
+    "reports/auto_research/2026-10-07-m4-causal-utility/analyze_gradient_utility_audit.py": "3ed1cb18c552661228387ca1a354f487dc4459178a52b68e3033fbf6ad17082c"
+  },
+  "purpose": "Qualify configuration resolution, real Megatron gradient extraction, unconditional abort, and the before/after parameter-hash invariant without opening the 256-group scientific acquisition.",
+  "qualification": {
+    "prompt_groups": 2,
+    "siblings_per_group": 8,
+    "learner_version_final": 0,
+    "optimizer_steps": 0,
+    "scheduler_steps": 0,
+    "finish_train_step_calls": 0,
+    "nodes": 1,
+    "gpus": 2,
+    "runtime_limit_seconds": 14400,
+    "queue_deadline_override": null,
+    "launcher": "runllm.py --no_wait"
+  },
+  "preflight_gate": [
+    "The source archive, Megatron archive, protocol, and frozen runtime files authenticate.",
+    "The archive is traversal-safe.",
+    "The resolved configuration uses Llama-3.2-1B, one policy GPU, one generation GPU, windowed staleness zero, one group per backward pass, and no terminal export.",
+    "Focused gradient-summary, configuration, split-step, and analyzer tests pass in the runtime image."
+  ],
+  "terminal_gate": [
+    "Exactly two unique eight-sibling groups produce finite exact norms and two 16,384-bin sketches.",
+    "Every opened step is acknowledged as aborted.",
+    "No finish_train_step, optimizer step, scheduler step, learner-version advance, checkpoint, or policy export occurs.",
+    "The canonical model parameter SHA-256 is identical before and after collection.",
+    "The runtime exits successfully and all compact artifacts are SHA-256 inventoried."
+  ],
+  "outcome_exclusion": {
+    "scientific_construct_classification": false,
+    "scheduler_quality_acquisition": false,
+    "terminal_benchmark": false,
+    "production_readiness": false
+  },
+  "stop_rules": [
+    "Exactly one submission attempt is authorized by the current sequence.",
+    "No automatic retry, repair, extension, or 256-group acquisition.",
+    "A failed integrity or no-update gate is terminal until separately diagnosed."
+  ]
+}
