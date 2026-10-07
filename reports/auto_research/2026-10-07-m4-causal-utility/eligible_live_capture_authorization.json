@@ -1,0 +1,18 @@
+{
+  "schema": "m4-shield-eligible-live-capture-authorization-v1",
+  "recorded_at": "2026-10-07",
+  "status": "AUTHORIZED_BEFORE_OUTCOME_EXCLUDED_QUALIFICATION",
+  "user_direction": "Test causal utility at eligible live decisions; plan this properly and do it.",
+  "standing_launch_authorization_recalled": true,
+  "authorized": {
+    "eos_submission_attempts": 1,
+    "outcome_excluded_live_capture_qualification": true,
+    "source_push": true
+  },
+  "not_authorized_by_this_record": {
+    "paired_post_update_outcome_opening": true,
+    "20_seed_acquisition": true,
+    "long_horizon_quality_trial": true,
+    "automatic_retry_or_replacement": true
+  }
+}

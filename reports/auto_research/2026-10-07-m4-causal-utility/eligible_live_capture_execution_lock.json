@@ -1,0 +1,33 @@
+{
+  "schema": "m4-shield-eligible-live-capture-execution-lock-v1",
+  "status": "FROZEN_AFTER_IMPLEMENTATION_BEFORE_QUALIFICATION",
+  "source_commit": "61e283868d8d4588f4de24ee315b1c7f0e7ce0a8",
+  "source_archive_sha256": "f1d59b5553c66d6633da8a9aeccf9e3a634b611ce09d062dc2997fa0ef393334",
+  "protocol_sha256": "716ba0eb8f980ca5af0ef3d57e2415befc1fb1a315afeb01b9bc326a60341b48",
+  "configuration": "examples/configs/grpo_math_1B_megatron_single_controller_m4_eligible_live_capture.yaml",
+  "execution": {
+    "launcher": "runllm.py --no_wait",
+    "submission_attempt_limit": 1,
+    "nodes": 1,
+    "gpus": 2,
+    "workload_time_limit_seconds": 14400,
+    "client_queue_deadline": null,
+    "automatic_retry": false,
+    "automatic_extension": false
+  },
+  "qualification": {
+    "maximum_completed_updates_before_no_eligibility": 64,
+    "required_capsules": 1,
+    "focused_torch_ray_tests_required_before_runtime": true,
+    "independent_capsule_authentication_required": true,
+    "checkpoint_restore_test_deferred_to_next_gate": true,
+    "captured_decision_training_update_authorized": false,
+    "post_update_learning_outcomes_authorized": false,
+    "terminal_evaluation_authorized": false
+  },
+  "failure_policy": {
+    "no_eligible_decision_is_scientific_qualification_failure": true,
+    "integrity_or_runtime_failure_fails_closed": true,
+    "replacement_requires_new_evidence_and_authority": true
+  }
+}
