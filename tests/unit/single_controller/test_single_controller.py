@@ -24,6 +24,7 @@ import torch
 
 import nemo_rl.algorithms.single_controller as single_controller
 from nemo_rl.algorithms.async_utils.controlled_release import (
+    ControlledReleaseArmConfig,
     ControlledReleaseDelayConfig,
 )
 from nemo_rl.algorithms.async_utils.staleness_sampler import (
@@ -36,6 +37,7 @@ from nemo_rl.algorithms.single_controller import SingleControllerActor
 from nemo_rl.algorithms.single_controller_utils.config import (
     AdvantageConfig,
     AsyncRLConfig,
+    ConditionalM4CapsuleConfig,
     GradientOpportunityAuditConfig,
     GradientUtilityAuditConfig,
     MasterConfig,
@@ -252,9 +254,7 @@ def test_gradient_opportunity_audit_accepts_supported_configuration() -> None:
 
 
 def _gradient_utility_config() -> MasterConfig:
-    config = _controlled_release_master_config(
-        lifecycle_audit_path="lifecycle.jsonl"
-    )
+    config = _controlled_release_master_config(lifecycle_audit_path="lifecycle.jsonl")
     config.async_rl.sampler = WindowedSamplerConfig(max_staleness_versions=0)
     config.async_rl.gradient_opportunity_audit = GradientOpportunityAuditConfig(
         enabled=True,
@@ -286,6 +286,51 @@ def test_gradient_utility_audit_requires_ungated_frozen_checkpoint_sampler() -> 
     config = _gradient_utility_config()
     config.async_rl.sampler = WeightFifoSamplerConfig(max_staleness_versions=1)
     with pytest.raises(ValueError, match="requires windowed sampling"):
+        validate_single_controller_config(config)
+
+
+def _conditional_capsule_config() -> MasterConfig:
+    config = _controlled_release_master_config(lifecycle_audit_path="lifecycle.jsonl")
+    config.async_rl.sampler = WindowedSamplerConfig(max_staleness_versions=0)
+    config.grpo.num_generations_per_prompt = 8
+    config.policy["train_global_batch_size"] = 8
+    config.async_rl.controlled_release_delay = ControlledReleaseDelayConfig(
+        enabled=True,
+        arms=(ControlledReleaseArmConfig(label="neutral", delay_seconds=0.0, mass=1),),
+    )
+    config.async_rl.gradient_opportunity_audit = GradientOpportunityAuditConfig(
+        enabled=True,
+        output_path="opportunity.jsonl",
+        observer_duty_path="duty.json",
+    )
+    config.async_rl.conditional_m4_capsule = ConditionalM4CapsuleConfig(
+        enabled=True,
+        output_dir="capsule",
+    )
+    return config
+
+
+def test_conditional_capsule_accepts_frozen_no_update_configuration() -> None:
+    validate_single_controller_config(_conditional_capsule_config())
+
+
+def test_conditional_capsule_requires_opportunity_instrument() -> None:
+    config = _conditional_capsule_config()
+    config.async_rl.gradient_opportunity_audit = GradientOpportunityAuditConfig()
+    with pytest.raises(ValueError, match="requires gradient_opportunity_audit"):
+        validate_single_controller_config(config)
+
+
+def test_conditional_capsule_refuses_gradient_utility_mode() -> None:
+    config = _conditional_capsule_config()
+    config.async_rl.gradient_utility_audit = GradientUtilityAuditConfig(
+        enabled=True,
+        output_path="gradient.jsonl",
+        max_groups=8,
+        sketch_bins=16,
+        sketch_seeds=(3, 5),
+    )
+    with pytest.raises(ValueError, match="mutually exclusive"):
         validate_single_controller_config(config)
 
 

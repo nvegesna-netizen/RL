@@ -51,6 +51,21 @@ async_rl:
     max_groups: 256
     sketch_bins: 16384
     sketch_seeds: [20261019, 20261021]
+  # Default-off, no-update shared-frontier capsule collector. It preserves
+  # future training tensors outside Git but never runs forward/backward.
+  conditional_m4_capsule:
+    enabled: false
+    output_dir: null
+    candidate_groups: 8
+    batch_groups: 4
+    heldout_groups: 4
+    max_frontiers: 16
+    minimum_relative_predicted_gain: 0.1
+    minimum_service_multiplier: 0.98
+    maximum_service_multiplier: 1.02
+    deployment_coefficients:
+      [-2.045869089750717, -0.09493612228166926, -2.7775998529071018, 1.3430663585484355]
+    deployment_intercept: 7.83323211834921
   # Default-off behavior-neutral OARS proposal observer. This requires the
   # weight_fifo sampler, four prompts per train step, and the opportunity audit.
   opportunity_at_risk_shadow:

@@ -60,6 +60,27 @@ class GradientUtilityAuditConfig(BaseModel, frozen=True):
     sketch_seeds: tuple[int, ...] = (20261019, 20261021)
 
 
+class ConditionalM4CapsuleConfig(BaseModel, frozen=True):
+    """Default-off, version-zero shared-frontier capsule qualification."""
+
+    enabled: bool = False
+    output_dir: Optional[str] = None
+    candidate_groups: int = 8
+    batch_groups: int = 4
+    heldout_groups: int = 4
+    max_frontiers: int = 16
+    minimum_relative_predicted_gain: float = 0.1
+    minimum_service_multiplier: float = 0.98
+    maximum_service_multiplier: float = 1.02
+    deployment_coefficients: tuple[float, ...] = (
+        -2.045869089750717,
+        -0.09493612228166926,
+        -2.7775998529071018,
+        1.3430663585484355,
+    )
+    deployment_intercept: float = 7.83323211834921
+
+
 class LifecycleDerivedOpportunityAuditConfig(BaseModel, frozen=True):
     """Default-off post-run opportunity reconstruction from lifecycle facts."""
 
@@ -171,6 +192,9 @@ class AsyncRLConfig(BaseModel, extra="allow"):
     gradient_utility_audit: GradientUtilityAuditConfig = Field(
         default_factory=GradientUtilityAuditConfig
     )
+    conditional_m4_capsule: ConditionalM4CapsuleConfig = Field(
+        default_factory=ConditionalM4CapsuleConfig
+    )
     lifecycle_derived_opportunity_audit: LifecycleDerivedOpportunityAuditConfig = Field(
         default_factory=LifecycleDerivedOpportunityAuditConfig
     )
@@ -223,6 +247,7 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
     release_config = async_config.controlled_release_delay
     opportunity_config = async_config.gradient_opportunity_audit
     utility_config = async_config.gradient_utility_audit
+    capsule_config = async_config.conditional_m4_capsule
     derived_config = async_config.lifecycle_derived_opportunity_audit
     shadow_config = async_config.opportunity_at_risk_shadow
     shadow_v2_config = async_config.opportunity_at_risk_v2_shadow
@@ -318,11 +343,9 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
             raise ValueError("gradient_utility_audit.max_groups must be positive")
         if utility_config.sketch_bins < 2:
             raise ValueError("gradient_utility_audit.sketch_bins must be at least two")
-        if (
-            not utility_config.sketch_seeds
-            or len(set(utility_config.sketch_seeds))
-            != len(utility_config.sketch_seeds)
-        ):
+        if not utility_config.sketch_seeds or len(
+            set(utility_config.sketch_seeds)
+        ) != len(utility_config.sketch_seeds):
             raise ValueError(
                 "gradient_utility_audit.sketch_seeds must be nonempty and unique"
             )
@@ -350,9 +373,7 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
                 "gradient_utility_audit is mutually exclusive with OARS observers"
             )
         if export_config.enabled:
-            raise ValueError(
-                "gradient_utility_audit forbids terminal policy export"
-            )
+            raise ValueError("gradient_utility_audit forbids terminal policy export")
         audit_paths = (
             Path(async_config.lifecycle_audit_path).resolve(),
             Path(opportunity_config.output_path).resolve(),
@@ -362,6 +383,78 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
         if len(set(audit_paths)) != len(audit_paths):
             raise ValueError(
                 "gradient utility, lifecycle, opportunity, and duty paths must differ"
+            )
+    if capsule_config.enabled:
+        if not opportunity_config.enabled:
+            raise ValueError(
+                "async_rl.conditional_m4_capsule.enabled=true requires "
+                "gradient_opportunity_audit.enabled=true"
+            )
+        if utility_config.enabled:
+            raise ValueError(
+                "conditional_m4_capsule is mutually exclusive with gradient_utility_audit"
+            )
+        if shadow_config.enabled or shadow_v2_config.enabled:
+            raise ValueError(
+                "conditional_m4_capsule is mutually exclusive with OARS observers"
+            )
+        if export_config.enabled:
+            raise ValueError("conditional_m4_capsule forbids terminal policy export")
+        if not capsule_config.output_dir:
+            raise ValueError("conditional_m4_capsule requires output_dir")
+        if not isinstance(async_config.sampler, WindowedSamplerConfig) or (
+            async_config.sampler.max_staleness_versions != 0
+        ):
+            raise ValueError(
+                "conditional_m4_capsule requires windowed sampling with "
+                "max_staleness_versions=0"
+            )
+        if master_config.grpo.num_prompts_per_step != 1:
+            raise ValueError("conditional_m4_capsule requires one prompt per step")
+        if master_config.grpo.num_generations_per_prompt != 8:
+            raise ValueError("conditional_m4_capsule requires eight siblings per group")
+        if master_config.policy["train_global_batch_size"] != 8:
+            raise ValueError(
+                "conditional_m4_capsule requires train_global_batch_size=8"
+            )
+        release_arms = async_config.controlled_release_delay.arms
+        if len(release_arms) != 1 or release_arms[0].delay_seconds != 0:
+            raise ValueError(
+                "conditional_m4_capsule requires one neutral zero-delay release arm"
+            )
+        if capsule_config.candidate_groups != 8 or capsule_config.batch_groups != 4:
+            raise ValueError("conditional_m4_capsule freezes an eight-by-four frontier")
+        if capsule_config.heldout_groups < 1 or capsule_config.max_frontiers < 1:
+            raise ValueError(
+                "capsule heldout_groups and max_frontiers must be positive"
+            )
+        if len(capsule_config.deployment_coefficients) != 4 or not all(
+            math.isfinite(value) for value in capsule_config.deployment_coefficients
+        ):
+            raise ValueError(
+                "capsule deployment coefficients must be four finite values"
+            )
+        if not math.isfinite(capsule_config.deployment_intercept):
+            raise ValueError("capsule deployment intercept must be finite")
+        if not (
+            math.isfinite(capsule_config.minimum_relative_predicted_gain)
+            and capsule_config.minimum_relative_predicted_gain > 0
+        ):
+            raise ValueError(
+                "capsule minimum predicted gain must be positive and finite"
+            )
+        if not (
+            0
+            < capsule_config.minimum_service_multiplier
+            <= 1
+            <= capsule_config.maximum_service_multiplier
+        ):
+            raise ValueError("capsule service multipliers are invalid")
+        if async_config.max_buffered_rollouts < (
+            capsule_config.candidate_groups + capsule_config.heldout_groups
+        ):
+            raise ValueError(
+                "max_buffered_rollouts cannot hold one frontier plus heldout groups"
             )
     if shadow_config.enabled:
         if not opportunity_config.enabled:

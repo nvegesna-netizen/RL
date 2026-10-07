@@ -1,0 +1,68 @@
+# Frozen-checkpoint, no-update shared-frontier qualification for conditional M4.
+defaults: grpo_math_1B_megatron_single_controller_m4_llama3p2_1b_gsm8k_family_transport.yaml
+
+grpo:
+  max_num_steps: 1
+  max_num_epochs: 1
+  num_prompts_per_step: 1
+  num_generations_per_prompt: 8
+  seed: 20261027
+
+policy:
+  train_global_batch_size: 8
+
+async_rl:
+  sampler:
+    name: windowed
+    max_staleness_versions: 0
+    sample_freshest_first: false
+  min_groups_for_streaming_train: 1
+  max_inflight_prompts: 16
+  max_buffered_rollouts: 64
+  lifecycle_audit_path: results/m4-conditional-capsule/lifecycle.jsonl
+  controlled_release_delay:
+    enabled: true
+    seed: 20261027
+    assignment_domain: m4-conditional-capsule-v1
+    arms:
+      - label: neutral
+        delay_seconds: 0.0
+        mass: 1
+  gradient_opportunity_audit:
+    enabled: true
+    output_path: results/m4-conditional-capsule/opportunity.jsonl
+    observer_duty_path: results/m4-conditional-capsule/observer-duty.json
+  gradient_utility_audit:
+    enabled: false
+  lifecycle_derived_opportunity_audit:
+    enabled: false
+  opportunity_at_risk_shadow:
+    enabled: false
+  opportunity_at_risk_v2_shadow:
+    enabled: false
+  conditional_m4_capsule:
+    enabled: true
+    output_dir: results/m4-conditional-capsule/capsule
+    candidate_groups: 8
+    batch_groups: 4
+    heldout_groups: 4
+    max_frontiers: 16
+    minimum_relative_predicted_gain: 0.1
+    minimum_service_multiplier: 0.98
+    maximum_service_multiplier: 1.02
+    deployment_coefficients:
+      [-2.045869089750717, -0.09493612228166926, -2.7775998529071018, 1.3430663585484355]
+    deployment_intercept: 7.83323211834921
+  terminal_policy_export:
+    enabled: false
+
+logger:
+  log_dir: results/m4-conditional-capsule/metrics
+  wandb_enabled: false
+  tensorboard_enabled: false
+  mlflow_enabled: false
+  swanlab_enabled: false
+  monitor_gpus: false
+
+data_plane:
+  actor_runtime_env_mode: inherit_baked_single_node

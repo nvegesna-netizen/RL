@@ -37,6 +37,7 @@ from __future__ import annotations
 import asyncio
 import time
 from functools import partial
+from pathlib import Path
 from typing import Any, Optional, Union
 
 import ray
@@ -47,6 +48,13 @@ from nemo_rl.algorithms.async_utils.gradient_opportunity import (
     GRPOOpportunityInputs,
     GradientOpportunityRecorder,
     compute_grpo_gradient_opportunity,
+)
+from nemo_rl.algorithms.async_utils.conditional_m4_capsule import (
+    CapsuleGroup,
+    ConditionalM4Selection,
+    candidate_from_meta,
+    select_conditional_m4_contrast,
+    write_capsule,
 )
 from nemo_rl.algorithms.async_utils.gradient_utility_audit import (
     GradientUtilityAuditRecorder,
@@ -98,7 +106,7 @@ from nemo_rl.algorithms.single_controller_utils.utils import (
 )
 from nemo_rl.data.interfaces import DatumSpec
 from nemo_rl.data_plane import KVBatchMeta
-from nemo_rl.data_plane.schema import DP_CALIB_INPUT_FIELDS
+from nemo_rl.data_plane.schema import DP_CALIB_INPUT_FIELDS, DP_TRAIN_FIELDS
 from nemo_rl.distributed.batched_data_dict import BatchedDataDict
 from nemo_rl.models.generation.sglang.sglang_generation import SGLangGeneration
 from nemo_rl.models.generation.vllm import VllmGeneration
@@ -167,12 +175,17 @@ class SingleControllerActor:
             None
         )
         self._observer_duty_meter: Optional[CommonObserverDutyMeter] = None
-        self._gradient_utility_recorder: Optional[
-            GradientUtilityAuditRecorder
-        ] = None
+        self._gradient_utility_recorder: Optional[GradientUtilityAuditRecorder] = None
         self._gradient_utility_groups = 0
         self._gradient_utility_parameter_sha256_before: str | None = None
         self._gradient_utility_parameter_sha256_after: str | None = None
+        self._conditional_capsule_parameter_sha256_before: str | None = None
+        self._conditional_capsule_parameter_sha256_after: str | None = None
+        self._conditional_capsule_frontier: tuple[CapsuleGroup, ...] = ()
+        self._conditional_capsule_heldout: tuple[CapsuleGroup, ...] = ()
+        self._conditional_capsule_selection: ConditionalM4Selection | None = None
+        self._conditional_capsule_frontiers_examined = 0
+        self._conditional_capsule_result: dict[str, Any] | None = None
         utility_config = self._async_cfg.gradient_utility_audit
         if utility_config.enabled:
             self._gradient_utility_recorder = GradientUtilityAuditRecorder(
@@ -462,8 +475,17 @@ class SingleControllerActor:
         """Main entry point. Runs until max_train_steps is reached."""
         # Synchronize weights before starting the pumps
         await self._sync_weights()
-        if self._async_cfg.gradient_utility_audit.enabled:
+        utility_enabled = self._async_cfg.gradient_utility_audit.enabled
+        capsule_enabled = self._async_cfg.conditional_m4_capsule.enabled
+        if utility_enabled:
             self._gradient_utility_parameter_sha256_before = await asyncio.to_thread(
+                self._trainer.model_parameter_sha256
+            )
+        if capsule_enabled:
+            capsule_dir = Path(self._async_cfg.conditional_m4_capsule.output_dir or "")
+            if capsule_dir.exists():
+                raise FileExistsError(f"capsule output already exists: {capsule_dir}")
+            self._conditional_capsule_parameter_sha256_before = await asyncio.to_thread(
                 self._trainer.model_parameter_sha256
             )
         if self._observer_duty_meter is not None:
@@ -471,11 +493,13 @@ class SingleControllerActor:
 
         # Start the rollout and train pumps
         rollout_task = asyncio.create_task(self._rollout_pump())
-        train_task = asyncio.create_task(
-            self._gradient_utility_audit_pump()
-            if self._async_cfg.gradient_utility_audit.enabled
-            else self._train_pump()
-        )
+        if utility_enabled:
+            train_coroutine = self._gradient_utility_audit_pump()
+        elif capsule_enabled:
+            train_coroutine = self._conditional_m4_capsule_pump()
+        else:
+            train_coroutine = self._train_pump()
+        train_task = asyncio.create_task(train_coroutine)
         cleanup_reason = RolloutRemovalReason.CANCELLED
         try:
             done, _ = await asyncio.wait(
@@ -487,9 +511,10 @@ class SingleControllerActor:
                 await rollout_task
             await train_task
             utility_config = self._async_cfg.gradient_utility_audit
+            capsule_config = self._async_cfg.conditional_m4_capsule
             if utility_config.enabled:
-                self._gradient_utility_parameter_sha256_after = (
-                    await asyncio.to_thread(self._trainer.model_parameter_sha256)
+                self._gradient_utility_parameter_sha256_after = await asyncio.to_thread(
+                    self._trainer.model_parameter_sha256
                 )
                 assert self._gradient_utility_recorder is not None
                 assert self._gradient_utility_parameter_sha256_before is not None
@@ -513,13 +538,54 @@ class SingleControllerActor:
                 expected_description = (
                     f"audit_groups={utility_config.max_groups}, steps=0, version=0"
                 )
+            elif capsule_config.enabled:
+                self._conditional_capsule_parameter_sha256_after = (
+                    await asyncio.to_thread(self._trainer.model_parameter_sha256)
+                )
+                if (
+                    self._conditional_capsule_selection is None
+                    or not self._conditional_capsule_frontier
+                    or not self._conditional_capsule_heldout
+                    or self._conditional_capsule_parameter_sha256_before is None
+                ):
+                    raise RuntimeError(
+                        "conditional M4 capsule collection is incomplete"
+                    )
+                self._conditional_capsule_result = await asyncio.to_thread(
+                    write_capsule,
+                    Path(capsule_config.output_dir or ""),
+                    frontier=self._conditional_capsule_frontier,
+                    heldout=self._conditional_capsule_heldout,
+                    selection=self._conditional_capsule_selection,
+                    parameter_sha256_before=(
+                        self._conditional_capsule_parameter_sha256_before
+                    ),
+                    parameter_sha256_after=(
+                        self._conditional_capsule_parameter_sha256_after
+                    ),
+                    frontiers_examined=self._conditional_capsule_frontiers_examined,
+                )
+                completed_bounded_run = (
+                    self._train_steps == 0
+                    and self._trainer_version == 0
+                    and self._conditional_capsule_parameter_sha256_before
+                    == self._conditional_capsule_parameter_sha256_after
+                    and self._conditional_capsule_selection.relative_predicted_norm_gain
+                    >= capsule_config.minimum_relative_predicted_gain
+                )
+                expected_description = (
+                    "qualified shared capsule, steps=0, version=0, "
+                    f"gain>={capsule_config.minimum_relative_predicted_gain}"
+                )
             else:
                 expected_steps = self._master_config.grpo.max_num_steps
                 completed_bounded_run = (
                     self._train_steps == expected_steps
                     and self._trainer_version == expected_steps
                 )
-                expected_description = f"steps={expected_steps}, version={expected_steps}"
+                expected_description = (
+                    f"steps={expected_steps}, version={expected_steps}"
+                )
             if (
                 self._async_cfg.controlled_release_delay.enabled
                 and not completed_bounded_run
@@ -644,12 +710,28 @@ class SingleControllerActor:
             "train_steps": self._train_steps,
             "trainer_version": self._trainer_version,
         }
-        if self._async_cfg.gradient_utility_audit.enabled:
+        if utility_enabled:
             result["gradient_utility_groups"] = self._gradient_utility_groups
             result["parameter_hash_unchanged"] = (
                 self._gradient_utility_parameter_sha256_before
                 == self._gradient_utility_parameter_sha256_after
             )
+        if capsule_enabled:
+            assert self._conditional_capsule_result is not None
+            result["conditional_m4_capsule"] = {
+                "status": self._conditional_capsule_result["status"],
+                "frontiers_examined": self._conditional_capsule_frontiers_examined,
+                "relative_predicted_norm_gain": (
+                    self._conditional_capsule_selection.relative_predicted_norm_gain
+                    if self._conditional_capsule_selection is not None
+                    else None
+                ),
+                "manifest_sha256": self._conditional_capsule_result["manifest_sha256"],
+                "parameter_hash_unchanged": (
+                    self._conditional_capsule_parameter_sha256_before
+                    == self._conditional_capsule_parameter_sha256_after
+                ),
+            }
         if export_result is not None:
             result["terminal_policy_export"] = export_result
         return result
@@ -1147,7 +1229,9 @@ class SingleControllerActor:
                 await asyncio.sleep(0.005)
                 continue
             if num_groups != 1:
-                raise RuntimeError("gradient utility audit requires one group per batch")
+                raise RuntimeError(
+                    "gradient utility audit requires one group per batch"
+                )
             self._buffer_capacity.release()
 
             if self._policy_logprobs_required or self._reference_logprobs_required:
@@ -1204,6 +1288,152 @@ class SingleControllerActor:
                 f"{self._gradient_utility_groups}/{config.max_groups}",
                 flush=True,
             )
+
+    async def _take_version_zero_groups(
+        self, count: int
+    ) -> list[tuple[KVBatchMeta, int]]:
+        """Atomically remove the first ``count`` ready version-zero groups."""
+        while True:
+            ready_indices = [
+                index
+                for index, ready in enumerate(self._buffer.ready_list)
+                if ready and self._buffer.start_weight_list[index] == 0
+            ]
+            if len(ready_indices) >= count:
+                selected_indices = ready_indices[:count]
+                selected: list[tuple[KVBatchMeta, int]] = []
+                for index in selected_indices:
+                    meta = self._buffer.meta_list[index]
+                    ready_timestamp_ns = self._buffer.ready_timestamp_ns_list[index]
+                    if meta is None or ready_timestamp_ns is None:
+                        raise RuntimeError("ready capsule metadata disappeared")
+                    selected.append((meta, ready_timestamp_ns))
+                removed = await self._buffer.remove(
+                    selected_indices,
+                    remove_in_dp=False,
+                    reason=RolloutRemovalReason.SELECTED,
+                    learner_weight_version=0,
+                )
+                if removed != count:
+                    raise RuntimeError("capsule group removal count disagrees")
+                for _ in range(count):
+                    self._buffer_capacity.release()
+                return selected
+            if self._rollout_exhausted.is_set():
+                raise RuntimeError(
+                    "rollout exhausted before the no-update capsule completed"
+                )
+            await asyncio.sleep(0.005)
+
+    async def _prepare_capsule_group(self, meta: KVBatchMeta) -> CapsuleGroup:
+        """Materialize all future training fields without a forward/backward step."""
+        if self._policy_logprobs_required or self._reference_logprobs_required:
+            await asyncio.to_thread(self._trainer.prepare_for_lp_inference)
+            if self._policy_logprobs_required:
+                await asyncio.to_thread(self._trainer.get_logprobs_from_meta, meta)
+            if self._reference_logprobs_required:
+                await asyncio.to_thread(
+                    self._trainer.get_reference_policy_logprobs_from_meta, meta
+                )
+        prepared_meta = await self._advantage_stage(meta)
+        prepared = await asyncio.to_thread(
+            self._trainer.read_from_dataplane,
+            prepared_meta,
+            select_fields=list(DP_TRAIN_FIELDS),
+        )
+        copied = BatchedDataDict(
+            {
+                field: prepared[field].detach().cpu().contiguous().clone()
+                for field in DP_TRAIN_FIELDS
+            }
+        )
+        return CapsuleGroup(meta=prepared_meta, fields=copied)
+
+    async def _clear_capsule_metas(self, metas: list[KVBatchMeta]) -> None:
+        sample_ids = [sample_id for meta in metas for sample_id in meta.sample_ids]
+        await self._call_dp(
+            "clear_samples",
+            sample_ids=sample_ids,
+            partition_id=self._partition_id,
+        )
+
+    async def _conditional_m4_capsule_pump(self) -> None:
+        """Find and preserve one pre-outcome shared-frontier treatment contrast."""
+        config = self._async_cfg.conditional_m4_capsule
+        assert config.enabled
+        for frontier_index in range(config.max_frontiers):
+            raw_frontier = await self._take_version_zero_groups(config.candidate_groups)
+            frontier_metas = [meta for meta, _ in raw_frontier]
+            try:
+                frontier = [
+                    await self._prepare_capsule_group(meta) for meta in frontier_metas
+                ]
+            except BaseException:
+                await self._clear_capsule_metas(frontier_metas)
+                raise
+            try:
+                candidates = [
+                    candidate_from_meta(
+                        group.meta, ready_timestamp_ns=ready_timestamp_ns
+                    )
+                    for group, (_, ready_timestamp_ns) in zip(
+                        frontier, raw_frontier, strict=True
+                    )
+                ]
+                selection = select_conditional_m4_contrast(
+                    candidates,
+                    coefficients=config.deployment_coefficients,
+                    intercept=config.deployment_intercept,
+                    minimum_service_multiplier=config.minimum_service_multiplier,
+                    maximum_service_multiplier=config.maximum_service_multiplier,
+                    batch_groups=config.batch_groups,
+                )
+            except BaseException:
+                await self._clear_capsule_metas(frontier_metas)
+                raise
+            self._conditional_capsule_frontiers_examined = frontier_index + 1
+            if (
+                selection.relative_predicted_norm_gain + 1e-12
+                < config.minimum_relative_predicted_gain
+            ):
+                await self._clear_capsule_metas(frontier_metas)
+                print(
+                    "conditional M4 capsule rejected frontier "
+                    f"{frontier_index + 1}/{config.max_frontiers}: "
+                    f"gain={selection.relative_predicted_norm_gain:.6f}",
+                    flush=True,
+                )
+                continue
+
+            try:
+                raw_heldout = await self._take_version_zero_groups(
+                    config.heldout_groups
+                )
+            except BaseException:
+                await self._clear_capsule_metas(frontier_metas)
+                raise
+            heldout_metas = [meta for meta, _ in raw_heldout]
+            try:
+                heldout = [
+                    await self._prepare_capsule_group(meta) for meta in heldout_metas
+                ]
+            except BaseException:
+                await self._clear_capsule_metas(frontier_metas + heldout_metas)
+                raise
+            await self._clear_capsule_metas(frontier_metas + heldout_metas)
+            self._conditional_capsule_frontier = tuple(frontier)
+            self._conditional_capsule_heldout = tuple(heldout)
+            self._conditional_capsule_selection = selection
+            print(
+                "conditional M4 capsule qualified: "
+                f"frontier={frontier_index + 1} "
+                f"gain={selection.relative_predicted_norm_gain:.6f}",
+                flush=True,
+            )
+            return
+        raise RuntimeError(
+            "no shared frontier reached the frozen conditional M4 contrast gate"
+        )
 
     async def _sync_weights(
         self,

@@ -1,0 +1,57 @@
+{
+  "schema": "conditional-m4-capsule-qualification-protocol-v1",
+  "status": "FROZEN_BEFORE_LIVE_QUALIFICATION",
+  "date": "2026-10-07",
+  "parent_offline_gate_commit": "46bb5ef3e",
+  "purpose": "Qualify collection and authentication of one shared version-zero candidate frontier, both pre-outcome scheduler arms, and disjoint held-out groups without a model update.",
+  "frozen_design": {
+    "model": "meta-llama/Llama-3.2-1B-Instruct",
+    "workload": "GSM8K train",
+    "seed": 20261027,
+    "candidate_groups": 8,
+    "batch_groups": 4,
+    "heldout_groups": 4,
+    "maximum_frontiers": 16,
+    "minimum_relative_predicted_norm_gain": 0.1,
+    "minimum_token_ratio": 0.98,
+    "maximum_token_ratio": 1.02,
+    "minimum_reward_variance_retention": 1.0,
+    "learner_version": 0,
+    "training_updates_authorized": false
+  },
+  "capsule_contract": {
+    "required_fields": [
+      "input_ids",
+      "input_lengths",
+      "generation_logprobs",
+      "prev_logprobs",
+      "reference_policy_logprobs",
+      "advantages",
+      "token_mask",
+      "sample_mask"
+    ],
+    "sample_ids_unique": true,
+    "group_ids_unique": true,
+    "heldout_disjoint_from_frontier": true,
+    "comparator_and_treatment_from_same_frontier": true,
+    "raw_file_sha256_required": true,
+    "canonical_tensor_content_sha256_required": true,
+    "parameter_hash_unchanged": true,
+    "finish_train_step_calls": 0,
+    "optimizer_steps": 0,
+    "scheduler_steps": 0,
+    "learning_outcomes_opened": false
+  },
+  "decision_ladder": {
+    "pass": "Authorize offline construction and qualification of a separately frozen paired one-update acquisition package using this exact capsule contract. Do not open a learning outcome under this qualification.",
+    "fail_no_contrast": "Stop the conditional bridge in this tested setting if no frontier reaches the frozen ten-percent treatment contrast within sixteen frontiers.",
+    "fail_integrity": "Repair the capsule implementation only; do not reinterpret or weaken any scientific threshold."
+  },
+  "claim_boundary": {
+    "shared_treatment_contrast_reachable": true,
+    "capsule_integrity": true,
+    "causal_learning_effect": false,
+    "terminal_quality": false,
+    "production_readiness": false
+  }
+}
