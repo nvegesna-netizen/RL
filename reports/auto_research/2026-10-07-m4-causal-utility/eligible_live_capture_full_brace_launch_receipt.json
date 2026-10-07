@@ -1,0 +1,41 @@
+{
+  "schema": "m4-shield-eligible-live-capture-full-brace-launch-receipt-v1",
+  "status": "SUBMITTED_GENERATOR_SUCCESS_CHILD_CREATED",
+  "recorded_at": "2026-10-07",
+  "source_commit": "61e283868d8d4588f4de24ee315b1c7f0e7ce0a8",
+  "package_commit": "ffcd128e8442f63981d85d995281f17d7be13d60",
+  "manifest_sha256": "f4fcf0ea9561787ac2316b906ff427d23e8f0f792f853c5408a0086196a73a15",
+  "launch_log_sha256": "b3877f75b7cc56ab48c53647c54ccfc612aab91289c092a2383b79dae7307264",
+  "launcher": {
+    "command_boundary": "runllm.py --no_wait",
+    "launch_invoked_at": "2026-10-07T15:42:26.645691-07:00",
+    "return_code": 0,
+    "submission_attempts_consumed": 1,
+    "submission_attempt_limit": 1,
+    "automatic_retry": false,
+    "automatic_extension": false
+  },
+  "pipeline": {
+    "upstream_pipeline_id": 72283608,
+    "generate_job_id": 474949031,
+    "generate_status": "success",
+    "generate_trace_sha256": "a76914fe01d81ca5e834da013204959e9f9812c8e709c221cde87139cff317a6",
+    "child_pipeline_id": 72283915,
+    "logs_before_job_id": 474952004,
+    "eos_job_id": 474952005,
+    "logs_after_job_id": 474952006
+  },
+  "authentication": {
+    "authoritative_pipeline_id_returned_by_launcher": true,
+    "child_discovered_from_parent_triggered_pipelines": true,
+    "exact_workload_name_present_in_all_child_job_names": true,
+    "workload_name": "m4-eligible-live-capture-qualification"
+  },
+  "scientific_boundary": {
+    "qualification_terminal": false,
+    "capsule_authenticated": false,
+    "post_update_outcomes_opened": false,
+    "paired_acquisition_started": false,
+    "scientific_status": "NOT_YET_EVALUATED"
+  }
+}
