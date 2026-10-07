@@ -2,10 +2,12 @@
 
 Status: **FROZEN BEFORE IMPLEMENTATION OR OUTCOME ACQUISITION**
 
-Execution status (2026-10-07): the implementation passed the frozen two-group
-runtime qualification in child pipeline `72207068`. The 256-group scientific
-acquisition has not started, and no construct classification follows from the
-qualification result.
+Execution status (2026-10-07): the no-update runtime path passed the frozen
+two-group qualification in child pipeline `72207068`. A post-qualification
+integrity audit then found that the v1 affine sketch hash gave both seeds the
+same bucket-collision partition. The 256-group scientific acquisition remains
+unopened while the source-bound v2 multiply-shift hash is requalified. No
+construct classification follows from either qualification result.
 
 ## Why this audit is the next scientific step
 

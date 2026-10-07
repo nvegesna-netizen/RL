@@ -1,0 +1,63 @@
+{
+  "schema": "m4-gradient-utility-countsketch-hash-repair-protocol-v1",
+  "status": "FROZEN_AFTER_QUALIFICATION_BEFORE_SCIENTIFIC_ACQUISITION",
+  "date": "2026-10-07",
+  "user_authorization": "do it",
+  "parent_audit_protocol_sha256": "daae7720287a4c6c61c70ee8c40ac1900c2a428ae608fb27b18f622c317ddf09",
+  "qualification_terminal_result_sha256": "5c9a5829e53a2474287301a27babf7a1fc01b7eca8ba78759d8d2a7827180b62",
+  "qualification_child_pipeline_id": 72207068,
+  "qualification_main_job_id": 474336607,
+  "qualification_gradient_ledger_sha256": "a372babaa515f7bb4bbc6773ea85a3ad3f83ccc3e458bf1cb57b7d4f1e29b348",
+  "scientific_acquisition_started": false,
+  "scientific_outcomes_opened": false,
+  "discovery": {
+    "v1_bucket_formula": "(index * 6364136223846793005 + seed * 1442695040888963407) mod 16384",
+    "bins": 16384,
+    "bins_are_power_of_two": true,
+    "seed_changes_collision_partition": false,
+    "seed_20261019_two_group_median_norm_relative_error": 0.12476669261573373,
+    "seed_20261021_two_group_median_norm_relative_error": 0.14283273051380174,
+    "frozen_median_norm_relative_error_max": 0.1,
+    "diagnosis": "With a power-of-two modulus and odd affine multiplier, changing only the additive seed term rotates buckets but preserves every collision class. The nominally independent sketches did not have independent bucket maps."
+  },
+  "repair": {
+    "source_commit": "b74ce7583",
+    "source_archive_sha256": "e89532fdbdaf69f935c07b746efc445b143a16c191bccb519993cacd3d7e12f4",
+    "hash_domain": "m4-gradient-utility-countsketch-v2",
+    "bucket_family": "source-bound 64-bit multiply-shift using high log2(bins) bits",
+    "sign_family": "separate source-bound 64-bit multiply-shift lane using the high bit",
+    "parameter_derivation": "SHA-256 over domain, decimal seed, and bucket/sign lane; multipliers forced odd",
+    "power_of_two_bins_required": true,
+    "sketch_bins": 16384,
+    "sketch_seeds": [
+      20261019,
+      20261021
+    ],
+    "seed_collision_partition_test_required": true,
+    "model_or_workload_change": false,
+    "hypothesis_or_endpoint_change": false,
+    "analysis_or_decision_rule_change": false
+  },
+  "fresh_qualification_gate": {
+    "groups": 2,
+    "siblings_per_group": 8,
+    "optimizer_steps": 0,
+    "scheduler_steps": 0,
+    "learner_version": 0,
+    "finish_train_step_calls": 0,
+    "parameter_hash_unchanged": true,
+    "abort_acknowledged_every_group": true,
+    "seed_collision_partitions_differ": true,
+    "median_sketch_norm_relative_error_max": 0.1,
+    "p95_sketch_norm_relative_error_max": 0.25
+  },
+  "contingent_sequence": {
+    "repair_qualification_submissions": 1,
+    "scientific_acquisition_submissions_after_qualification_pass": 1,
+    "required_launcher": "runllm.py --no_wait",
+    "runtime_limit_seconds": 14400,
+    "queue_deadline_override": null,
+    "automatic_retry": false,
+    "automatic_extension": false
+  }
+}
