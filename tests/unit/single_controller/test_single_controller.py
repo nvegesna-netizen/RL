@@ -314,6 +314,12 @@ def test_conditional_capsule_accepts_frozen_no_update_configuration() -> None:
     validate_single_controller_config(_conditional_capsule_config())
 
 
+def test_conditional_capsule_requests_reward_moment_metadata() -> None:
+    config = _conditional_capsule_config()
+
+    assert single_controller._requires_opportunity_reward_moments(config.async_rl)
+
+
 def test_conditional_capsule_requires_opportunity_instrument() -> None:
     config = _conditional_capsule_config()
     config.async_rl.gradient_opportunity_audit = GradientOpportunityAuditConfig()

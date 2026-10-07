@@ -1,0 +1,31 @@
+{
+  "schema": "conditional-m4-capsule-metadata-repair-protocol-v1",
+  "status": "FROZEN_AFTER_FAILURE_BEFORE_REPLACEMENT",
+  "date": "2026-10-07",
+  "failed_upstream_pipeline_id": 72257570,
+  "failed_downstream_pipeline_id": 72258264,
+  "scientific_attempt_completed": false,
+  "root_cause": "Conditional capsule mode consumes reward moments but was absent from the controller condition that emits existing reward_mean and reward_variance metadata.",
+  "repair": {
+    "allowed_source_change": "Add conditional_m4_capsule.enabled to the existing reward-moment metadata gate and add a focused regression test.",
+    "reward_moment_function": "compute_reward_moments",
+    "imputation_allowed": false,
+    "candidate_skipping_allowed": false,
+    "nonfinite_acceptance_allowed": false,
+    "scientific_threshold_changes_allowed": false,
+    "model_or_workload_changes_allowed": false,
+    "seed_changes_allowed": false,
+    "test_removal_allowed": false,
+    "runtime_test_order_changes_allowed": false
+  },
+  "replacement_boundary": {
+    "required_launcher": "runllm.py --no_wait",
+    "submission_attempt_limit": 1,
+    "automatic_retry": false,
+    "automatic_extension": false,
+    "training_updates_authorized": false,
+    "learning_outcomes_authorized": false,
+    "terminal_evaluation_authorized": false
+  },
+  "standing_user_authorization_applies": true
+}

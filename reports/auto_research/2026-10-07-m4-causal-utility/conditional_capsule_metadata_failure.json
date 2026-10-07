@@ -1,0 +1,62 @@
+{
+  "schema": "conditional-m4-capsule-metadata-failure-v1",
+  "status": "AUTHENTICATED_RUNTIME_FAILURE_NO_CAPSULE",
+  "date": "2026-10-07",
+  "source_commit": "afeaed31dad8e7e25bb585f84c5c3c2d7134b9d3",
+  "package_commit": "3fd46277f46bac9df3e2156556afcf61e35264dc",
+  "manifest_sha256": "a5c3b25874d84e1cd841edfcc7a769a6f2d87da7380fb4e7c032d4d381fd472d",
+  "upstream_pipeline_id": 72257570,
+  "downstream_pipeline_id": 72258264,
+  "workload_job_id": 474741548,
+  "logs_before_job_id": 474741547,
+  "logs_after_job_id": 474741549,
+  "slurm_job_id": 6193616,
+  "terminal_artifacts": {
+    "workload_sha256": "a830167fd61063d7c9b96a3e1475ef12a5e32a7ba7c7a688d488bdad12142d68",
+    "logs_after_sha256": "a6f5c799b8fbdf74386815d387d199b1d839c747420cd19339ccb64cca19a3af",
+    "lifecycle_ledger_sha256": "a134b48f05059accb4c30f05d817ec12000046041631c73c5493fa80fc3787e7",
+    "opportunity_ledger_sha256": "55da75f39643d55c18860855f0d9fe1d5d1931ec76e96b6acbf31fd6ae493c7",
+    "observer_duty_sha256": "99706842a30b842ccbb243d6497960cfb20f25acb137060835bf378dcecad22",
+    "run_log_sha256": "5e4e0b536df35a6b686d1cb48176ee41be173ce8210b4afab75b5bd8b301243"
+  },
+  "execution": {
+    "slurm_state": "FAILED",
+    "slurm_queue_time": "00:00:05",
+    "slurm_duration": "00:05:52",
+    "workload_step_duration": "00:05:30",
+    "workload_exit_code": 1
+  },
+  "passed_before_failure": [
+    "source archive extraction and hash checks",
+    "Megatron archive extraction",
+    "runtime authority, config, TransferQueue, and no-update AST checks",
+    "conditional selector and capsule writer unit tests",
+    "live controller startup",
+    "model, reference policy, and VLLM initialization"
+  ],
+  "failure": {
+    "stage": "live conditional capsule collection",
+    "exception": "ValueError: capsule candidate has nonfinite opportunity metadata",
+    "missing_metadata": [
+      "reward_mean",
+      "reward_variance"
+    ],
+    "root_cause": "The controller computed reward moments only for opportunity_at_risk_v2_shadow or gradient_utility_audit. Conditional capsule mode was omitted from the existing metadata-production gate.",
+    "observed_opportunity_groups": 72,
+    "opportunity_rewards_finite": true
+  },
+  "runtime_result": {
+    "status": "RUNTIME_FAILURE",
+    "learning_outcomes_opened": false,
+    "optimizer_steps": 0,
+    "scheduler_steps": 0
+  },
+  "artifact_inventory": {
+    "capsule_manifest_present": false,
+    "capsule_group_files_present": 0,
+    "lifecycle_ledger_lines": 1080,
+    "opportunity_ledger_group_rows": 72,
+    "observer_duty_present": true
+  },
+  "scientific_classification": "implementation wiring failure before capsule selection; no scientific result"
+}

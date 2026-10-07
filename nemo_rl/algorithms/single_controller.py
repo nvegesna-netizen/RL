@@ -118,6 +118,15 @@ from nemo_rl.utils.timer import Timer
 Generation = Union[VllmGeneration, SGLangGeneration]
 
 
+def _requires_opportunity_reward_moments(async_config: Any) -> bool:
+    """Return whether a configured observer consumes reward moments."""
+    return (
+        async_config.opportunity_at_risk_v2_shadow.enabled
+        or async_config.gradient_utility_audit.enabled
+        or async_config.conditional_m4_capsule.enabled
+    )
+
+
 @ray.remote(num_cpus=1, num_gpus=0)  # pragma: no cover
 class SingleControllerActor:
     """CPU-only Ray actor that orchestrates the RL training loop.
@@ -319,10 +328,7 @@ class SingleControllerActor:
                                 sibling.truncated for sibling in summary.siblings
                             ),
                         }
-                        if (
-                            self._async_cfg.opportunity_at_risk_v2_shadow.enabled
-                            or self._async_cfg.gradient_utility_audit.enabled
-                        ):
+                        if _requires_opportunity_reward_moments(self._async_cfg):
                             reward_mean, reward_variance = compute_reward_moments(
                                 [sibling.reward for sibling in summary.siblings]
                             )
