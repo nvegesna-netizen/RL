@@ -10,16 +10,20 @@ import json
 import tarfile
 from pathlib import Path
 
-NAME = "m4-conditional-capsule-qualification"
-SOURCE_COMMIT = "1213653b5707f85419f9f25d638255a049ad03a5"
-SOURCE_SHA256 = "a2b7cca2ac9b75d14682b6887228cbe94098bb5fa56f5dc7dee7211c720d60fc"
+NAME = "m4-conditional-capsule-pickle-repair"
+SOURCE_COMMIT = "afeaed31dad8e7e25bb585f84c5c3c2d7134b9d3"
+SOURCE_SHA256 = "9f2ca089b86b92ee36fb9552064fbd1673e26c3ef7da088057b28e7da4ae3bb1"
 MEGATRON_SHA256 = "98d98920c0fea3d8ae1216a485dc9b5aa4fc966e469435ad61f2bae456de80d2"
 PROTOCOL_SHA256 = "373c2764ef964022da2a0cc934b3dcf6210f194428cbb3cee653a807be5a1373"
-LOCK_SHA256 = "66b8f8e79fa20c4ecd9b8b4d6eb80ec94ec8cc867c0722038a70adc15766d1ef"
+REPAIR_SHA256 = "1278e6ea3c34fdee719c934d9807b741da9a37d93e2afbfd8968415ee338ee92"
+AUTHORIZATION_SHA256 = (
+    "67327f2b0caa58e5fcd62781e4b0d24bccbe27857af6ec38109442dad6210df6"
+)
+LOCK_SHA256 = "fadd0c487cb943269c803d98ea36a7856e48f804a77fcac3912b301dc99676a1"
 CONFIG_SHA256 = "f6413fb211b08bab48a169ff8f272b86993d99c6d95773ede7ac956987c2cb07"
 ANALYZER_SHA256 = "de990789f817acb0b2c53e2ac27c0cdf99199fa3be210f8eec037435d9b26fde"
 CAPSULE_MODULE_SHA256 = (
-    "635c31e461f45b5834483fd3cf3f39fb1183a5525eb0f8ffc8ba0ee8bd2643a4"
+    "01f9f96511ebaa87f5529f7e88eebd9f6a2e53206de5d37932389b54e8b4dd78"
 )
 CONTROLLER_SHA256 = "e81529e3729430f4f33c376d25a3f6f056f2f87f4dba0aa52f82819b6cdec32c"
 CONFIG_MODULE_SHA256 = (
@@ -57,6 +61,8 @@ def main() -> None:
     parser.add_argument("--source", type=Path, required=True)
     parser.add_argument("--megatron", type=Path, required=True)
     parser.add_argument("--protocol", type=Path, required=True)
+    parser.add_argument("--repair-protocol", type=Path, required=True)
+    parser.add_argument("--authorization", type=Path, required=True)
     parser.add_argument("--execution-lock", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
@@ -64,21 +70,36 @@ def main() -> None:
         (args.source, SOURCE_SHA256),
         (args.megatron, MEGATRON_SHA256),
         (args.protocol, PROTOCOL_SHA256),
+        (args.repair_protocol, REPAIR_SHA256),
+        (args.authorization, AUTHORIZATION_SHA256),
         (args.execution_lock, LOCK_SHA256),
     ):
         if sha256(path) != expected:
             raise RuntimeError(f"frozen input moved: {path}")
+    repair = json.loads(args.repair_protocol.read_bytes())
+    authorization = json.loads(args.authorization.read_bytes())
     lock = json.loads(args.execution_lock.read_bytes())
     execution = lock["execution"]
     qualification = lock["qualification"]
     if (
-        lock["schema"] != "conditional-m4-capsule-execution-lock-v1"
+        repair["schema"] != "conditional-m4-capsule-pickle-repair-protocol-v1"
+        or repair["status"] != "FROZEN_AFTER_FAILURE_BEFORE_REPLACEMENT"
+        or repair["scientific_attempt_started"]
+        or authorization["schema"]
+        != "conditional-m4-capsule-pickle-replacement-authorization-v1"
+        or authorization["repair_source_commit"] != SOURCE_COMMIT
+        or not authorization["replacement"]["eos_submission_authorized"]
+        or authorization["replacement"]["submission_attempt_limit"] != 1
+        or authorization["replacement"]["automatic_duplicate_submission"]
+        or lock["schema"] != "conditional-m4-capsule-pickle-replacement-lock-v1"
         or lock["source_commit"] != SOURCE_COMMIT
         or lock["source_archive_sha256"] != SOURCE_SHA256
-        or lock["protocol_sha256"] != PROTOCOL_SHA256
+        or lock["original_protocol_sha256"] != PROTOCOL_SHA256
+        or lock["repair_protocol_sha256"] != REPAIR_SHA256
+        or lock["authorization_sha256"] != AUTHORIZATION_SHA256
         or execution["required_launcher"] != "runllm.py --no_wait"
         or execution["submission_attempt_limit"] != 1
-        or execution["automatic_retry"]
+        or execution["automatic_duplicate_submission"]
         or execution["automatic_extension"]
         or execution["nodes"] != 1
         or execution["gpus"] != 2
@@ -111,6 +132,8 @@ readonly RUN_REPO=/workspace/m4-conditional-capsule-repo
 readonly SOURCE=/workspace/m4-conditional-capsule-source.tar.gz
 readonly MEGATRON=/workspace/m4-conditional-capsule-megatron.tar.gz
 readonly PROTOCOL=/workspace/m4-conditional-capsule-protocol.json
+readonly REPAIR=/workspace/m4-conditional-capsule-pickle-repair-protocol.json
+readonly AUTHORIZATION=/workspace/m4-conditional-capsule-pickle-replacement-authorization.json
 readonly EXECUTION_LOCK=/workspace/m4-conditional-capsule-execution-lock.json
 readonly ASSETS={assets_dir}
 readonly RUN_LOG=$ASSETS/m4-conditional-capsule-run.log
@@ -126,10 +149,14 @@ test ! -e "$RUN_REPO"
 printf %s '@SOURCE_PAYLOAD@' | base64 -d > "$SOURCE"
 printf %s '@MEGATRON_PAYLOAD@' | base64 -d > "$MEGATRON"
 printf %s '@PROTOCOL_PAYLOAD@' | base64 -d > "$PROTOCOL"
+printf %s '@REPAIR_PAYLOAD@' | base64 -d > "$REPAIR"
+printf %s '@AUTHORIZATION_PAYLOAD@' | base64 -d > "$AUTHORIZATION"
 printf %s '@LOCK_PAYLOAD@' | base64 -d > "$EXECUTION_LOCK"
 test "$(sha256sum "$SOURCE" | cut -d' ' -f1)" = "@SOURCE_SHA256@"
 test "$(sha256sum "$MEGATRON" | cut -d' ' -f1)" = "@MEGATRON_SHA256@"
 test "$(sha256sum "$PROTOCOL" | cut -d' ' -f1)" = "@PROTOCOL_SHA256@"
+test "$(sha256sum "$REPAIR" | cut -d' ' -f1)" = "@REPAIR_SHA256@"
+test "$(sha256sum "$AUTHORIZATION" | cut -d' ' -f1)" = "@AUTHORIZATION_SHA256@"
 test "$(sha256sum "$EXECUTION_LOCK" | cut -d' ' -f1)" = "@LOCK_SHA256@"
 "$PYTHON" - "$SOURCE" "$RUN_REPO" <<'PY'
 import sys,tarfile
@@ -164,18 +191,23 @@ cd "$RUN_REPO"
 export PYTHONPATH="$RUN_REPO"
 export CUDA_VISIBLE_DEVICES=0,1
 mkdir -p "$METRICS"
-"$PYTHON" - "$PROTOCOL" "$EXECUTION_LOCK" <<'PY'
+"$PYTHON" - "$PROTOCOL" "$REPAIR" "$AUTHORIZATION" "$EXECUTION_LOCK" <<'PY'
 import ast,hashlib,json,sys
 from importlib.metadata import distribution
 from pathlib import Path
 from omegaconf import OmegaConf
 from nemo_rl.algorithms.single_controller_utils.config import MasterConfig,validate_single_controller_config
 from nemo_rl.utils.config import load_config,register_omegaconf_resolvers
-p_path,l_path=map(Path,sys.argv[1:]); p=json.loads(p_path.read_bytes()); lock=json.loads(l_path.read_bytes())
+p_path,r_path,a_path,l_path=map(Path,sys.argv[1:]); p=json.loads(p_path.read_bytes()); repair=json.loads(r_path.read_bytes()); auth=json.loads(a_path.read_bytes()); lock=json.loads(l_path.read_bytes())
 assert hashlib.sha256(p_path.read_bytes()).hexdigest()=="@PROTOCOL_SHA256@"
+assert hashlib.sha256(r_path.read_bytes()).hexdigest()=="@REPAIR_SHA256@"
+assert hashlib.sha256(a_path.read_bytes()).hexdigest()=="@AUTHORIZATION_SHA256@"
 assert hashlib.sha256(l_path.read_bytes()).hexdigest()=="@LOCK_SHA256@"
 assert p["status"]=="FROZEN_BEFORE_LIVE_QUALIFICATION"
-assert lock["status"]=="FROZEN_AFTER_IMPLEMENTATION_BEFORE_LIVE_QUALIFICATION"
+assert repair["status"]=="FROZEN_AFTER_FAILURE_BEFORE_REPLACEMENT" and not repair["scientific_attempt_started"]
+assert auth["status"]=="AUTHORIZED_AFTER_AUTHENTICATED_PREFLIGHT_FAILURE"
+assert auth["replacement"]["eos_submission_authorized"] and auth["replacement"]["submission_attempt_limit"]==1
+assert lock["status"]=="FROZEN_AFTER_REPAIR_BEFORE_REPLACEMENT"
 assert lock["source_commit"]=="@SOURCE_COMMIT@"
 file_hashes={
  "@CONFIG_PATH@":"@CONFIG_SHA256@",
@@ -189,6 +221,10 @@ file_hashes={
 }
 for name,expected in file_hashes.items():
     actual=hashlib.sha256(Path(name).read_bytes()).hexdigest(); assert actual==expected,(name,actual,expected)
+capsule_source=Path("nemo_rl/algorithms/async_utils/conditional_m4_capsule.py").read_text()
+assert "pickle_protocol=2" in capsule_source and "pickle_protocol=4" not in capsule_source
+analyzer_source=Path("@ANALYZER_PATH@").read_text()
+assert "weights_only=True" in analyzer_source and "weights_only=False" not in analyzer_source
 locked=Path("uv.lock").read_text()
 assert "@TRANSFERQUEUE_COMMIT@" in locked
 direct=json.loads(distribution("TransferQueue").read_text("direct_url.json"))
@@ -243,12 +279,16 @@ exit "$GATE_RC"
         "@SOURCE_PAYLOAD@": encoded(args.source),
         "@MEGATRON_PAYLOAD@": encoded(args.megatron),
         "@PROTOCOL_PAYLOAD@": encoded(args.protocol),
+        "@REPAIR_PAYLOAD@": encoded(args.repair_protocol),
+        "@AUTHORIZATION_PAYLOAD@": encoded(args.authorization),
         "@LOCK_PAYLOAD@": encoded(args.execution_lock),
         "@IMAGE_COMMIT@": IMAGE_COMMIT,
         "@SOURCE_COMMIT@": SOURCE_COMMIT,
         "@SOURCE_SHA256@": SOURCE_SHA256,
         "@MEGATRON_SHA256@": MEGATRON_SHA256,
         "@PROTOCOL_SHA256@": PROTOCOL_SHA256,
+        "@REPAIR_SHA256@": REPAIR_SHA256,
+        "@AUTHORIZATION_SHA256@": AUTHORIZATION_SHA256,
         "@LOCK_SHA256@": LOCK_SHA256,
         "@CONFIG_PATH@": CONFIG_PATH,
         "@CONFIG_SHA256@": CONFIG_SHA256,

@@ -18,6 +18,7 @@ from pathlib import Path, PurePosixPath
 from build_conditional_capsule_qualification_manifest import (
     ANALYZER_PATH,
     ANALYZER_SHA256,
+    AUTHORIZATION_SHA256,
     CAPSULE_MODULE_SHA256,
     CONFIG_PATH,
     CONFIG_SHA256,
@@ -27,6 +28,7 @@ from build_conditional_capsule_qualification_manifest import (
     MEGATRON_SHA256,
     NAME,
     PROTOCOL_SHA256,
+    REPAIR_SHA256,
     SOURCE_COMMIT,
     SOURCE_SHA256,
 )
@@ -85,6 +87,8 @@ def main() -> None:
     parser.add_argument("--source", type=Path, required=True)
     parser.add_argument("--megatron", type=Path, required=True)
     parser.add_argument("--protocol", type=Path, required=True)
+    parser.add_argument("--repair-protocol", type=Path, required=True)
+    parser.add_argument("--authorization", type=Path, required=True)
     parser.add_argument("--execution-lock", type=Path, required=True)
     parser.add_argument("--builder", type=Path, required=True)
     parser.add_argument("--manifest", type=Path, required=True)
@@ -94,6 +98,8 @@ def main() -> None:
         (args.source, SOURCE_SHA256),
         (args.megatron, MEGATRON_SHA256),
         (args.protocol, PROTOCOL_SHA256),
+        (args.repair_protocol, REPAIR_SHA256),
+        (args.authorization, AUTHORIZATION_SHA256),
         (args.execution_lock, LOCK_SHA256),
     )
     for path, expected in expected_inputs:
@@ -131,6 +137,8 @@ def main() -> None:
         SOURCE_SHA256,
         MEGATRON_SHA256,
         PROTOCOL_SHA256,
+        REPAIR_SHA256,
+        AUTHORIZATION_SHA256,
         LOCK_SHA256,
     ]:
         raise RuntimeError("embedded payload order or content differs")
@@ -172,6 +180,20 @@ def main() -> None:
         for name, expected in expected_files.items():
             if sha256(source_root / name) != expected:
                 raise RuntimeError(f"clean-room source differs: {name}")
+        capsule_source = (
+            source_root / "nemo_rl/algorithms/async_utils/conditional_m4_capsule.py"
+        ).read_text()
+        analyzer_source = (source_root / ANALYZER_PATH).read_text()
+        if (
+            "pickle_protocol=2" not in capsule_source
+            or "pickle_protocol=4" in capsule_source
+        ):
+            raise RuntimeError("safe serialization repair is absent")
+        if (
+            "weights_only=True" not in analyzer_source
+            or "weights_only=False" in analyzer_source
+        ):
+            raise RuntimeError("safe capsule loader was weakened")
         validate_no_update_ast(source_root / "nemo_rl/algorithms/single_controller.py")
         rebuilt = root / "manifest.json"
         subprocess.run(
@@ -184,6 +206,10 @@ def main() -> None:
                 str(args.megatron),
                 "--protocol",
                 str(args.protocol),
+                "--repair-protocol",
+                str(args.repair_protocol),
+                "--authorization",
+                str(args.authorization),
                 "--execution-lock",
                 str(args.execution_lock),
                 "--output",
@@ -196,13 +222,15 @@ def main() -> None:
         if rebuilt.read_bytes() != args.manifest.read_bytes():
             raise RuntimeError("deterministic manifest rebuild differs")
     result = {
-        "schema": "conditional-m4-capsule-package-validation-v1",
+        "schema": "conditional-m4-capsule-pickle-repair-package-validation-v1",
         "status": "PASS_AUTHORIZED_UNSUBMITTED",
         "source_commit": SOURCE_COMMIT,
         "source_archive_sha256": SOURCE_SHA256,
         "source_archive_members": members,
         "source_archive_symlinks": symlinks,
         "protocol_sha256": PROTOCOL_SHA256,
+        "repair_protocol_sha256": REPAIR_SHA256,
+        "authorization_sha256": AUTHORIZATION_SHA256,
         "execution_lock_sha256": LOCK_SHA256,
         "manifest_sha256": sha256(args.manifest),
         "manifest_time_limit_seconds": 14400,
@@ -213,6 +241,7 @@ def main() -> None:
         "embedded_python_syntax_passed": True,
         "deterministic_rebuild_passed": True,
         "no_update_ast_gate_passed": True,
+        "protocol_2_safe_serialization_gate_passed": True,
         "full_runtime_tests_required_before_collection": True,
         "scientific_outcome_acquisition": False,
         "learning_outcomes_opened": False,
