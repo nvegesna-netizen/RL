@@ -1,0 +1,22 @@
+{
+  "bash_syntax_passed": true,
+  "credential_free_static_gate_passed": true,
+  "deterministic_rebuild_passed": true,
+  "embedded_python_syntax_passed": true,
+  "execution_lock_sha256": "66b8f8e79fa20c4ecd9b8b4d6eb80ec94ec8cc867c0722038a70adc15766d1ef",
+  "full_runtime_tests_required_before_collection": true,
+  "learning_outcomes_opened": false,
+  "manifest_sha256": "a575c9cf8d34b201c5edeee54b3f9c91610ec2667ff54e5e39405371d45a317e",
+  "manifest_time_limit_seconds": 14400,
+  "no_update_ast_gate_passed": true,
+  "protocol_sha256": "373c2764ef964022da2a0cc934b3dcf6210f194428cbb3cee653a807be5a1373",
+  "queue_deadline_override": null,
+  "schema": "conditional-m4-capsule-package-validation-v1",
+  "scientific_outcome_acquisition": false,
+  "source_archive_members": 2945,
+  "source_archive_sha256": "a2b7cca2ac9b75d14682b6887228cbe94098bb5fa56f5dc7dee7211c720d60fc",
+  "source_archive_symlinks": 16,
+  "source_commit": "1213653b5707f85419f9f25d638255a049ad03a5",
+  "status": "PASS_AUTHORIZED_UNSUBMITTED",
+  "submission_attempt_limit": 1
+}

@@ -1,0 +1,46 @@
+{
+  "schema": "conditional-m4-capsule-execution-lock-v1",
+  "status": "FROZEN_AFTER_IMPLEMENTATION_BEFORE_LIVE_QUALIFICATION",
+  "date": "2026-10-07",
+  "source_commit": "1213653b5707f85419f9f25d638255a049ad03a5",
+  "source_archive_sha256": "a2b7cca2ac9b75d14682b6887228cbe94098bb5fa56f5dc7dee7211c720d60fc",
+  "protocol_sha256": "373c2764ef964022da2a0cc934b3dcf6210f194428cbb3cee653a807be5a1373",
+  "analyzer_sha256": "de990789f817acb0b2c53e2ac27c0cdf99199fa3be210f8eec037435d9b26fde",
+  "qualification_config_sha256": "f6413fb211b08bab48a169ff8f272b86993d99c6d95773ede7ac956987c2cb07",
+  "megatron_archive_sha256": "98d98920c0fea3d8ae1216a485dc9b5aa4fc966e469435ad61f2bae456de80d2",
+  "image": {
+    "path": "/lustre/fsw/coreai_dlalgo_ci/nvegesna/nemo_rl_images/nemo-rl-nightly-5802754.sqsh",
+    "nemo_rl_commit": "ae07eafe8035b5b2e84efa7234e70e7fd7e493c1"
+  },
+  "execution": {
+    "required_launcher": "runllm.py --no_wait",
+    "submission_attempt_limit": 1,
+    "automatic_retry": false,
+    "automatic_extension": false,
+    "nodes": 1,
+    "gpus": 2,
+    "scheduler_time_limit_seconds": 14400,
+    "queue_deadline_override": null
+  },
+  "qualification": {
+    "maximum_frontiers": 16,
+    "candidate_groups": 8,
+    "batch_groups": 4,
+    "heldout_groups": 4,
+    "minimum_relative_predicted_norm_gain": 0.1,
+    "learner_version": 0,
+    "finish_train_step_calls": 0,
+    "optimizer_steps": 0,
+    "scheduler_steps": 0,
+    "training_updates_authorized": false,
+    "learning_outcomes_authorized": false,
+    "terminal_evaluation_authorized": false
+  },
+  "claim_boundary": {
+    "shared_treatment_contrast_reachable": true,
+    "capsule_integrity": true,
+    "causal_learning_effect": false,
+    "terminal_quality": false,
+    "production_readiness": false
+  }
+}
