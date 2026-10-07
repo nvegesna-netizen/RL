@@ -1,0 +1,20 @@
+{
+  "schema": "m4-shield-eligible-live-capture-package-receipt-v1",
+  "status": "PASS_AUTHORIZED_UNSUBMITTED",
+  "source_commit": "61e283868d8d4588f4de24ee315b1c7f0e7ce0a8",
+  "source_archive_sha256": "f1d59b5553c66d6633da8a9aeccf9e3a634b611ce09d062dc2997fa0ef393334",
+  "source_archive_members": 2967,
+  "source_archive_symlinks": 16,
+  "megatron_archive_sha256": "98d98920c0fea3d8ae1216a485dc9b5aa4fc966e469435ad61f2bae456de80d2",
+  "protocol_sha256": "716ba0eb8f980ca5af0ef3d57e2415befc1fb1a315afeb01b9bc326a60341b48",
+  "authorization_sha256": "eae191a02f5c66123b9a6409d7c84f3e2eac45c2145ec4abc4e18ec75e85fcaf",
+  "execution_lock_sha256": "9a44b56183158ae390b519c7f45aed3d3dddc300c636348565191233d3f72392",
+  "builder_sha256": "ec91582aad9319adf14d93a171aa47df7d654e94ccb2021e45e35d39a8a5a1a7",
+  "validator_sha256": "a3b0a05e0c4d75afca7ca821424b94314e9d08873bfb68d5539ad2fbf8837140",
+  "package_validation_sha256": "36973187c679a907b4c2b3232d64a41cb9f7a43bc5aadd9f483f15e11b39b64e",
+  "manifest_sha256": "c8ce2aae1c6cc8a6004bca63688210f946fbc909b8826138c42b851f7f749dc7",
+  "manifest_time_limit_seconds": 14400,
+  "client_queue_deadline": null,
+  "submission_attempt_limit": 1,
+  "post_update_outcomes_opened": false
+}
