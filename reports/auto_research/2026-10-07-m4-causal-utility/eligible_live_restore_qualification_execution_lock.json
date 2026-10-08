@@ -1,0 +1,30 @@
+{
+  "schema": "m4-shield-eligible-live-restore-qualification-execution-lock-v1",
+  "frozen_at": "2026-10-07",
+  "status": "FROZEN_AFTER_IMPLEMENTATION_BEFORE_QUALIFICATION",
+  "source_commit": "ad7de4ed7df0d049c54374cd99815323eb2fbe6f",
+  "source_archive_sha256": "277565d81685121fdecc6f3b79dbc0f544a941a88fb4415e1dbfe60a049fd0ff",
+  "protocol_sha256": "5377529e30ffe6a27732e5ab9aaf87c09e70a6f8d2228a9ba7afc06617137129",
+  "authorization_sha256": "d16340f130c4d4d816b5d87d7f20c77a5ff372b020f30d4bd06f6940691c3cf7",
+  "source_capsule": {
+    "eos_job_id": 474952005,
+    "manifest_sha256": "184004bfd24a47e7bd4f80ceee9f11f2891fdbae70ee60cbce5b8ca5ec4284c7",
+    "checkpoint_authentication_sha256": "df9fd2aa0f2b7f35edef1d5601cc8baff599504f4ff09b67fb9c20f3f4407ded"
+  },
+  "qualification": {
+    "fresh_restore_processes": 2,
+    "heldout_group_indices": [8, 9, 10, 11],
+    "frontier_or_arm_group_downloads": 0,
+    "training_updates": 0,
+    "causal_arm_outcomes_opened": false,
+    "paired_acquisition_started": false
+  },
+  "execution": {
+    "launcher": "runllm.py --no_wait",
+    "submission_attempt_limit": 1,
+    "workload_time_limit_seconds": 14400,
+    "client_queue_deadline": null,
+    "automatic_retry": false,
+    "automatic_extension": false
+  }
+}

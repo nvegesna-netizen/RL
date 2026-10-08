@@ -1,0 +1,39 @@
+{
+  "schema": "m4-shield-eligible-live-restore-package-receipt-v1",
+  "status": "PASS_AUTHORIZED_UNSUBMITTED",
+  "recorded_at": "2026-10-07",
+  "source_commit": "ad7de4ed7df0d049c54374cd99815323eb2fbe6f",
+  "source_archive_sha256": "277565d81685121fdecc6f3b79dbc0f544a941a88fb4415e1dbfe60a049fd0ff",
+  "megatron_archive_sha256": "98d98920c0fea3d8ae1216a485dc9b5aa4fc966e469435ad61f2bae456de80d2",
+  "protocol_sha256": "5377529e30ffe6a27732e5ab9aaf87c09e70a6f8d2228a9ba7afc06617137129",
+  "authorization_sha256": "d16340f130c4d4d816b5d87d7f20c77a5ff372b020f30d4bd06f6940691c3cf7",
+  "execution_lock_sha256": "00e2e63c9b6c89258581631a7f23b4eefbfc03674c397c0b3e7e2862d4f5f249",
+  "builder_sha256": "16117cf68052a6fb46c9b02b23270e5301c0584e42bdba1c4b293745bf604156",
+  "validator_sha256": "ae885cf044a3342530f362f6336a01e44ce24274bf7fffebde00c82e9861d436",
+  "package_validation_sha256": "9d3109cb1ec36d396a66818cbdbc1002ace7a94aad6ff9a6cc0f097f7fa5029b",
+  "manifest_sha256": "0d91bc0e113ff9f358837577c6b5f4a3094299bcd58b72c3b51086e82667df1c",
+  "source_capsule": {
+    "eos_job_id": 474952005,
+    "manifest_sha256": "184004bfd24a47e7bd4f80ceee9f11f2891fdbae70ee60cbce5b8ca5ec4284c7",
+    "checkpoint_files": 7,
+    "heldout_group_files": 4,
+    "frontier_or_arm_group_files": 0
+  },
+  "qualification": {
+    "fresh_restore_processes": 2,
+    "optimizer_restore_requested": true,
+    "forward_only_evaluations": 2,
+    "training_updates": 0,
+    "causal_arm_outcomes_opened": false,
+    "paired_acquisition_started": false
+  },
+  "transport": {
+    "embedded_static_credentials": false,
+    "artifact_access": "same-project ephemeral CI_JOB_TOKEN",
+    "automatic_download_retry": false,
+    "large_private_capsule_uploaded": false
+  },
+  "manifest_time_limit_seconds": 14400,
+  "client_queue_deadline": null,
+  "submission_attempt_limit": 1
+}
