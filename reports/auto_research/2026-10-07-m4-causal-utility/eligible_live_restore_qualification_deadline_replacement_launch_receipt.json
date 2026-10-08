@@ -1,0 +1,56 @@
+{
+  "schema": "m4-shield-eligible-live-restore-deadline-replacement-launch-receipt-v1",
+  "status": "SUBMITTED_NO_WAIT_RENDERED_REPAIR_VERIFIED",
+  "recorded_at": "2026-10-08",
+  "upstream_pipeline_id": 72379365,
+  "upstream_pipeline_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/72379365",
+  "generated_child": {
+    "child_pipeline_id": 72379874,
+    "child_pipeline_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/72379874",
+    "generate_job_id": 475726124,
+    "generate_status": "success",
+    "logs_before_job_id": 475731786,
+    "logs_before_status": "success",
+    "eos_job_id": 475731787,
+    "eos_status_at_receipt": "running",
+    "logs_after_job_id": 475731789,
+    "logs_after_status_at_receipt": "created",
+    "target_name": "m4-eligible-live-restore-qualification"
+  },
+  "slurm": {
+    "job_id": 6202261,
+    "state_at_receipt": "PENDING",
+    "reason_at_receipt": "Priority",
+    "rendered_time_flag": "--time 0:14400",
+    "rendered_deadline_flag_present": false,
+    "reported_time_limit": "04:00:00",
+    "reported_deadline": "N/A"
+  },
+  "launcher": {
+    "entrypoint": "runllm.py --no_wait",
+    "return_code": 0,
+    "replacement_submission_attempts_consumed": 1,
+    "replacement_submission_attempt_limit": 1,
+    "automatic_retry": false,
+    "automatic_extension": false
+  },
+  "inputs": {
+    "manifest_sha256": "0d91bc0e113ff9f358837577c6b5f4a3094299bcd58b72c3b51086e82667df1c",
+    "custom_config_sha256": "0b72764d2ff41c690bab0f6a28408917f3f04faa311b581c94c56cef9ab35168",
+    "authorization_sha256": "9274e657453d603962ffc2a3dc2ad6ad4ec8208bbbe92c10c05cdec743b27f50",
+    "validation_sha256": "fa9a7f5da27fe03177b9da606548a4b4e9ac4c4337a8ab09f6d43ca434fc3168",
+    "repair_package_commit": "2766d98e5"
+  },
+  "local_provenance": {
+    "launch_log_sha256": "ea6c580ebee7719caddc34f74a5d531da909054e2a9491320b8a5c79cf5c9032",
+    "one_shot_guard_sha256": "98dc674ca02f6db9eb8f94e226bb3c0ea3bef7482dc5e59d074fb108f0c1f837"
+  },
+  "scientific_boundary": {
+    "workload_process_started_at_receipt": false,
+    "training_updates": 0,
+    "causal_arm_outcomes_opened": false,
+    "causal_effect_estimated": false,
+    "paired_acquisition_started": false
+  },
+  "next_action": "Status-only monitoring to terminal, then authenticate compact qualification artifacts before evaluating the frozen restore gate."
+}
