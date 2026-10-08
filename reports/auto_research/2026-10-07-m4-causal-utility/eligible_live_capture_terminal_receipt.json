@@ -1,0 +1,36 @@
+{
+  "schema": "m4-shield-eligible-live-capture-terminal-receipt-v1",
+  "status": "PASS_SCIENTIFIC_WORKLOAD_WITH_LOG_COLLECTION_FAILURE",
+  "recorded_at": "2026-10-07",
+  "upstream_pipeline_id": 72283608,
+  "child_pipeline_id": 72283915,
+  "generate_job_id": 474949031,
+  "logs_before_job_id": 474952004,
+  "eos_job_id": 474952005,
+  "logs_after_job_id": 475028482,
+  "slurm_job_id": 6195702,
+  "scientific_workload": {
+    "status": "success",
+    "slurm_state": "COMPLETED",
+    "slurm_exit_code": "0:0",
+    "slurm_step_exit_code": "0:0",
+    "trace_sha256": "8c008d7209554f6683432b6593dc21b89b1ea928a289551766669fa5a5d1ef25",
+    "artifact_archive_bytes": 13462544207
+  },
+  "compact_artifacts": {
+    "qualification_result_sha256": "7e7da93c1b217a3df21f06d9b80867fbaca764d511acfc2cdc75409194e8c923",
+    "recursive_artifact_inventory_sha256": "019b9d5cceee5ed9d73fced0d1ed20ff8466308b3e46dcfde4525c1146c7a2f2",
+    "observer_duty_sha256": "cbe5ec221d11e43dd6fa241c116ae38c90e6eb41a2707319f2d5d949bf039ad3",
+    "capsule_manifest_sha256": "184004bfd24a47e7bd4f80ceee9f11f2891fdbae70ee60cbce5b8ca5ec4284c7"
+  },
+  "logs_after_failure": {
+    "status": "failed",
+    "failure_reason": "runner_system_failure",
+    "trace_sha256": "c8c2f23b46808a14adbf785a22f90de05e6d8b77e875f37041c9f19b8aa05687",
+    "root_cause": "The 13.46 GB successful-workload artifact exceeded the logs-after Kubernetes pod's 10 GiB ephemeral-storage limit while downloading.",
+    "scientific_workload_affected": false,
+    "compact_direct_file_retrieval_succeeded": true
+  },
+  "post_update_outcomes_opened": false,
+  "paired_acquisition_started": false
+}
