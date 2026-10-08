@@ -4,6 +4,16 @@
   "recorded_at": "2026-10-07",
   "upstream_pipeline_id": 72333181,
   "upstream_pipeline_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/72333181",
+  "generated_child": {
+    "child_pipeline_id": 72333321,
+    "child_pipeline_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/72333321",
+    "generate_job_id": 475366808,
+    "generate_status": "success",
+    "logs_before_job_id": 475367919,
+    "eos_job_id": 475367921,
+    "logs_after_job_id": 475367925,
+    "target_name": "m4-eligible-live-restore-qualification"
+  },
   "launcher": {
     "entrypoint": "runllm.py --no_wait",
     "return_code": 0,
