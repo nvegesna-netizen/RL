@@ -1,0 +1,31 @@
+{
+  "schema": "m4-shield-eligible-live-restore-deadline-replacement-authorization-v1",
+  "recorded_at": "2026-10-08",
+  "status": "AUTHORIZED_BEFORE_OPERATIONAL_REPLACEMENT",
+  "authority": {
+    "user_instruction": "do it properly",
+    "standing_eos_launch_authorization": true,
+    "standing_push_authorization": true
+  },
+  "failure_receipt_sha256": "c5982623775b63c4a6e4c3b3ca4e20cd87f4c2ddcd976b6146e23360c2bff5f9",
+  "repair_protocol_sha256": "1f483ebe08be4b735e76e2b5a2a5c0249b228109f4592ac3023ac435582f0d18",
+  "manifest_sha256": "0d91bc0e113ff9f358837577c6b5f4a3094299bcd58b72c3b51086e82667df1c",
+  "custom_config_sha256": "0b72764d2ff41c690bab0f6a28408917f3f04faa311b581c94c56cef9ab35168",
+  "authorized": {
+    "replacement_eos_submission_attempts": 1,
+    "deadline_suppression": true,
+    "checkpoint_restore_qualification": true,
+    "heldout_forward_only_loss_evaluation": true
+  },
+  "not_authorized_by_this_record": {
+    "manifest_change": true,
+    "source_change": true,
+    "runtime_limit_change": true,
+    "paired_causal_acquisition": true,
+    "training_update": true,
+    "base_or_shield_outcome_opening": true,
+    "automatic_retry": true,
+    "automatic_extension": true
+  },
+  "required_launcher": "runllm.py --no_wait"
+}

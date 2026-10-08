@@ -1,0 +1,54 @@
+{
+  "schema": "m4-shield-eligible-live-restore-deadline-failure-v1",
+  "recorded_at": "2026-10-08",
+  "status": "TERMINAL_INFRASTRUCTURE_FAILURE_ZERO_RUNTIME",
+  "pipelines": {
+    "upstream_pipeline_id": 72333181,
+    "child_pipeline_id": 72333321,
+    "generate_job_id": 475366808,
+    "logs_before_job_id": 475367919,
+    "eos_job_id": 475367921,
+    "logs_after_job_id": 475367925
+  },
+  "terminal": {
+    "upstream_status": "failed",
+    "child_status": "failed",
+    "generate_status": "success",
+    "logs_before_status": "success",
+    "eos_status": "failed",
+    "eos_failure_reason": "script_failure",
+    "logs_after_status": "success",
+    "eos_job_duration_seconds": 14457.549631,
+    "slurm_job_id": 6199903,
+    "slurm_state": "DEADLINE",
+    "slurm_queue_time": "04:00:09",
+    "slurm_runtime": "00:00:00",
+    "slurm_step_record_present": false,
+    "slurm_sacct_has_no_data": true
+  },
+  "rendered_scheduler_surface": {
+    "time_flag": "--time 0:14400",
+    "deadline_flag": "--deadline now+8hours",
+    "runtime_limit_seconds": 14400,
+    "effective_latest_start_offset_seconds": 14400,
+    "explanation": "The eight-hour completion deadline combined with a four-hour runtime reservation made the latest start four hours after submission. The pending job reached that boundary without allocation."
+  },
+  "classification": {
+    "failure_class": "queue_deadline_before_allocation",
+    "workload_process_started": false,
+    "checkpoint_download_started": false,
+    "checkpoint_restore_started": false,
+    "heldout_evaluation_started": false,
+    "training_updates": 0,
+    "causal_arm_outcomes_opened": false,
+    "causal_effect_estimated": false,
+    "scientific_gate_evaluated": false
+  },
+  "frozen_inputs": {
+    "manifest_sha256": "0d91bc0e113ff9f358837577c6b5f4a3094299bcd58b72c3b51086e82667df1c",
+    "source_commit": "ad7de4ed7df0d049c54374cd99815323eb2fbe6f",
+    "protocol_sha256": "5377529e30ffe6a27732e5ab9aaf87c09e70a6f8d2228a9ba7afc06617137129",
+    "original_custom_config_sha256": "526129dd6a5a60e2e9ab0e8e63f0abd28acf7d444e37b0905b7e74459bc4e167"
+  },
+  "repair_implication": "Suppress the generated Slurm deadline while retaining the four-hour workload time limit and every scientific input."
+}

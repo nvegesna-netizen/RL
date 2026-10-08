@@ -1,0 +1,41 @@
+{
+  "schema": "m4-shield-eligible-live-restore-deadline-repair-v1",
+  "recorded_at": "2026-10-08",
+  "status": "FROZEN_OPERATIONAL_REPLACEMENT",
+  "failed_execution": {
+    "upstream_pipeline_id": 72333181,
+    "child_pipeline_id": 72333321,
+    "eos_job_id": 475367921,
+    "slurm_job_id": 6199903,
+    "failure_class": "queue_deadline_before_allocation",
+    "workload_runtime_seconds": 0
+  },
+  "only_change": {
+    "surface": "custom_config.launchers.dgxh100_eos.sbatch_additional_flags.deadline",
+    "old_effective_value": "now+8hours",
+    "new_value": false,
+    "meaning": "Suppress the default Slurm deadline; do not cap queue residence from the client."
+  },
+  "preserved": {
+    "manifest_sha256": "0d91bc0e113ff9f358837577c6b5f4a3094299bcd58b72c3b51086e82667df1c",
+    "source_commit": "ad7de4ed7df0d049c54374cd99815323eb2fbe6f",
+    "protocol_sha256": "5377529e30ffe6a27732e5ab9aaf87c09e70a6f8d2228a9ba7afc06617137129",
+    "workload_time_limit_seconds": 14400,
+    "gpu_count": 1,
+    "fresh_restore_processes": 2,
+    "heldout_group_indices": [8, 9, 10, 11],
+    "loss_reproducibility_tolerance": 1e-06,
+    "no_training_update": true,
+    "no_causal_arm_outcome_opening": true
+  },
+  "boundaries": {
+    "scientific_design_changed": false,
+    "manifest_changed": false,
+    "source_changed": false,
+    "runtime_limit_changed": false,
+    "queue_deadline_removed": true,
+    "replacement_submission_attempt_limit": 1,
+    "automatic_retry": false,
+    "automatic_extension": false
+  }
+}

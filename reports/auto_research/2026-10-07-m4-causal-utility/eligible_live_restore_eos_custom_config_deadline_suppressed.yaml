@@ -1,0 +1,8 @@
+launchers:
+  dgxh100_eos:
+    account: coreai_dlalgo_ci
+    partition: batch
+    exclusive: true
+    sbatch_additional_flags:
+      deadline: false
+      signal: CONT@1860
