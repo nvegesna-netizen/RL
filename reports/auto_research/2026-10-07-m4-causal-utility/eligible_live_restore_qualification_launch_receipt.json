@@ -1,0 +1,31 @@
+{
+  "schema": "m4-shield-eligible-live-restore-launch-receipt-v1",
+  "status": "SUBMITTED_NO_WAIT",
+  "recorded_at": "2026-10-07",
+  "upstream_pipeline_id": 72333181,
+  "upstream_pipeline_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/72333181",
+  "launcher": {
+    "entrypoint": "runllm.py --no_wait",
+    "return_code": 0,
+    "submission_attempts_consumed": 1,
+    "submission_attempt_limit": 1,
+    "automatic_retry": false,
+    "automatic_extension": false
+  },
+  "inputs": {
+    "source_commit": "ad7de4ed7df0d049c54374cd99815323eb2fbe6f",
+    "manifest_sha256": "0d91bc0e113ff9f358837577c6b5f4a3094299bcd58b72c3b51086e82667df1c",
+    "protocol_sha256": "5377529e30ffe6a27732e5ab9aaf87c09e70a6f8d2228a9ba7afc06617137129",
+    "package_receipt_sha256": "a53204410f7269ae33a9e2102fd62f2130341088fe60f0c1cb781b899da0e66c"
+  },
+  "local_provenance": {
+    "launch_log_sha256": "c5b1b10565d0b2ac6ad8a3658b879df4bfb796ef906544905415e0dff8c9a8bf",
+    "one_shot_guard_sha256": "29e9f0891a6a93592c691f5a27eea31e4a19faf1b4ab5833201b825dcf93225a"
+  },
+  "scientific_boundary": {
+    "training_updates_at_submission": 0,
+    "causal_arm_outcomes_opened": false,
+    "causal_effect_estimated": false,
+    "paired_acquisition_started": false
+  }
+}
