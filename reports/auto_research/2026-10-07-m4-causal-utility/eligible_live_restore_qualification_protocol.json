@@ -1,0 +1,77 @@
+{
+  "schema": "m4-shield-eligible-live-restore-qualification-v1",
+  "frozen_at": "2026-10-07",
+  "parent_protocol_sha256": "716ba0eb8f980ca5af0ef3d57e2415befc1fb1a315afeb01b9bc326a60341b48",
+  "question": "Can the authenticated eligible-live checkpoint be restored reproducibly and can the frozen held-out clipped-PG loss be evaluated without a training update or opening either causal arm?",
+  "source_capsule": {
+    "project_id": 70847,
+    "eos_job_id": 474952005,
+    "artifact_prefix": "workspace/assets/basic/m4-eligible-live-capture-qualification/m4-eligible-live-capsule",
+    "manifest_sha256": "184004bfd24a47e7bd4f80ceee9f11f2891fdbae70ee60cbce5b8ca5ec4284c7",
+    "checkpoint_authentication_sha256": "df9fd2aa0f2b7f35edef1d5601cc8baff599504f4ff09b67fb9c20f3f4407ded",
+    "group_authentication_sha256": "4152bc3d031f6e19bb1341673afa544ae8de6eaeed53940a6e0f37093cb7f30d",
+    "captured_parameter_sha256": "e0765eb28e40eb7308c7c9b2e936179dc12f5da7deb38bdb467dc0e0de075e9e",
+    "learner_version": 7,
+    "captured_update_executed": false,
+    "post_update_outcomes_opened": false
+  },
+  "download_allowlist": {
+    "checkpoint_from_manifest": true,
+    "heldout_group_indices": [8, 9, 10, 11],
+    "frontier_group_indices_forbidden": [0, 1, 2, 3, 4, 5, 6, 7],
+    "base_or_shield_role_files_downloaded": false
+  },
+  "restore": {
+    "fresh_processes": 2,
+    "gpu_count_per_process": 1,
+    "processes_run_sequentially": true,
+    "weights_path": "checkpoint/policy/weights",
+    "optimizer_path": "checkpoint/policy/weights",
+    "optimizer_restore_requested": true,
+    "reference_model_initialized": false,
+    "expected_parameter_sha256": "e0765eb28e40eb7308c7c9b2e936179dc12f5da7deb38bdb467dc0e0de075e9e"
+  },
+  "evaluation": {
+    "groups": 4,
+    "samples": 32,
+    "role": "heldout",
+    "loss": "token_normalized_frozen_heldout_clipped_pg_loss",
+    "eval_mode": true,
+    "torch_no_grad": true,
+    "optimizer_steps": 0,
+    "scheduler_steps": 0,
+    "parameter_mutation_allowed": false,
+    "absolute_loss_reproducibility_tolerance": 1e-06,
+    "relative_loss_reproducibility_tolerance": 1e-06
+  },
+  "pass_gate": {
+    "source_manifest_and_every_downloaded_file_authenticated": true,
+    "only_heldout_groups_loaded": true,
+    "both_fresh_restores_complete": true,
+    "both_parameter_hashes_before_and_after_evaluation_equal_captured_hash": true,
+    "both_losses_finite": true,
+    "losses_reproducible_within_frozen_tolerance": true,
+    "optimizer_restore_requested_in_both_processes": true,
+    "no_training_update": true,
+    "no_arm_contrast": true
+  },
+  "execution": {
+    "launcher": "runllm.py --no_wait",
+    "workload_time_limit_seconds": 14400,
+    "client_queue_deadline": null,
+    "submission_attempt_limit": 1,
+    "automatic_retry": false,
+    "automatic_extension": false
+  },
+  "decision_ladder": {
+    "pass": "Checkpoint restoration and held-out loss evaluation are qualified; the frozen paired acquisition may be packaged next but is not launched by this qualification.",
+    "fail_scientific": "Stop before paired acquisition and diagnose the restoration or evaluation mismatch without opening arm outcomes.",
+    "fail_transport": "Repair only the evidenced transport or infrastructure defect; do not weaken the scientific gate."
+  },
+  "claim_boundary": {
+    "causal_arm_outcomes_opened": false,
+    "causal_effect_estimated": false,
+    "terminal_quality_claimed": false,
+    "paired_acquisition_started": false
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "schema": "m4-shield-eligible-live-restore-qualification-authorization-v1",
+  "recorded_at": "2026-10-07",
+  "status": "AUTHORIZED_BEFORE_RESTORE_QUALIFICATION",
+  "authority": {
+    "user_instruction": "do it properly",
+    "standing_eos_launch_authorization": true,
+    "standing_push_authorization": true
+  },
+  "authorized": {
+    "eos_submission_attempts": 1,
+    "checkpoint_restore_qualification": true,
+    "heldout_forward_only_loss_evaluation": true
+  },
+  "not_authorized_by_this_record": {
+    "paired_causal_acquisition": true,
+    "training_update": true,
+    "base_or_shield_outcome_opening": true,
+    "automatic_retry": true,
+    "automatic_extension": true
+  }
+}
