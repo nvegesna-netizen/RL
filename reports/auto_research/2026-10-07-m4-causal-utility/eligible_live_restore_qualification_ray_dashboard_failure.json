@@ -1,0 +1,61 @@
+{
+  "schema": "m4-shield-eligible-live-restore-ray-dashboard-failure-v1",
+  "recorded_at": "2026-10-09",
+  "status": "TERMINAL_PRE_RESTORE_RUNTIME_INFRASTRUCTURE_FAILURE",
+  "pipelines": {
+    "upstream_pipeline_id": 72611180,
+    "child_pipeline_id": 72611633,
+    "generate_job_id": 477606736,
+    "logs_before_job_id": 477609382,
+    "eos_job_id": 477609383,
+    "logs_after_job_id": 477609384
+  },
+  "slurm": {
+    "job_id": 6215440,
+    "queue_end_utc": "2026-10-09T12:36:10.526637762+00:00",
+    "workload_start_utc": "2026-10-09T12:38:22.274960154+00:00",
+    "workload_end_utc": "2026-10-09T12:41:47.438426492+00:00",
+    "workload_runtime_seconds": 205.163466338,
+    "workload_exit_code": 1
+  },
+  "completed_before_failure": {
+    "queue_deadline_suppression_verified": true,
+    "queue_wait_exceeded_four_hours": true,
+    "safe_source_extraction": true,
+    "megatron_extraction": true,
+    "runtime_authority_check": true,
+    "focused_tests_passed": 3,
+    "checkpoint_files_downloaded": 7,
+    "heldout_group_files_downloaded": 4,
+    "source_manifest_and_downloaded_subset_authenticated": true
+  },
+  "failure": {
+    "phase": "first fresh restore before checkpoint loading",
+    "operation": "Ray local-cluster initialization",
+    "exception": "RuntimeError: Module MetricsHead failed to start. Received EOF from pipe.",
+    "ray_dashboard_required_by_qualification": false,
+    "rank_exit_code": 1
+  },
+  "classification": {
+    "failure_class": "optional_ray_dashboard_startup",
+    "checkpoint_prefix_repair_verified": true,
+    "checkpoint_restore_started": false,
+    "heldout_evaluation_started": false,
+    "training_updates": 0,
+    "causal_arm_outcomes_opened": false,
+    "causal_effect_estimated": false,
+    "scientific_gate_evaluated": false
+  },
+  "authenticated_custody": {
+    "logs_after_archive_reported_bytes": 140633359,
+    "slurm_output_bytes": 17001994,
+    "slurm_output_sha256": "d66935c8d41208a544c31edb693ddb4df05c6b570de7d7fec18dbdd475579d37",
+    "restore_a_log_bytes": 6234,
+    "restore_a_log_sha256": "a1fac46ce5b7dbf4f42431a27187780018d7a54327015208fe0d862c38e9e954",
+    "rank_exit_code_bytes": 2,
+    "rank_exit_code_sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+    "output_script_log_bytes": 4009984,
+    "output_script_log_sha256": "2933937a57820a80a8882797f95d4b33012ff08334beb19a337689b8c896c2ac"
+  },
+  "repair_implication": "Disable the optional Ray dashboard only for local-cluster initialization, then rerun the unchanged restore-and-heldout-evaluation qualification."
+}

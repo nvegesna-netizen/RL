@@ -1,0 +1,28 @@
+{
+  "schema": "m4-shield-eligible-live-restore-ray-dashboard-replacement-authorization-v1",
+  "recorded_at": "2026-10-09",
+  "status": "AUTHORIZED_BEFORE_OPERATIONAL_RUNTIME_REPLACEMENT",
+  "authority": {
+    "user_instruction": "it finished",
+    "standing_eos_launch_authorization": true,
+    "standing_push_authorization": true
+  },
+  "failure_receipt_sha256": "a8e6292eb0285a6b74d3cc49da7667cc26a26bd11f25e8c1be0ed7a094cd1671",
+  "repair_protocol_sha256": "b5525eb18f34011c2208b2fb5416ddfbcb61f46955fed24d73d3d7463e85b5fe",
+  "authorized": {
+    "replacement_eos_submission_attempts": 1,
+    "disable_optional_ray_dashboard": true,
+    "checkpoint_restore_qualification": true,
+    "heldout_forward_only_loss_evaluation": true
+  },
+  "not_authorized_by_this_record": {
+    "scientific_design_change": true,
+    "runtime_limit_change": true,
+    "paired_causal_acquisition": true,
+    "training_update": true,
+    "base_or_shield_outcome_opening": true,
+    "automatic_retry": true,
+    "automatic_extension": true
+  },
+  "required_launcher": "runllm.py --no_wait"
+}

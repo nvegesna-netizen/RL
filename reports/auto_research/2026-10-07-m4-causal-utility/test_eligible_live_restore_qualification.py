@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import ast
 import json
 from pathlib import Path
 
@@ -37,6 +38,34 @@ def _row(protocol_sha: str, label: str, loss: float) -> dict:
         "causal_effect_estimated": False,
         "paired_acquisition_started": False,
     }
+
+
+def test_restore_runtime_disables_optional_ray_dashboard() -> None:
+    source = (
+        Path(__file__).resolve().parents[3]
+        / "nemo_rl/distributed/virtual_cluster.py"
+    ).read_text()
+    tree = ast.parse(source)
+    init_ray = next(
+        node
+        for node in tree.body
+        if isinstance(node, ast.FunctionDef) and node.name == "init_ray"
+    )
+    local_initializers = [
+        node
+        for node in ast.walk(init_ray)
+        if isinstance(node, ast.Call)
+        and isinstance(node.func, ast.Attribute)
+        and node.func.attr == "init"
+        and any(keyword.arg == "resources" for keyword in node.keywords)
+    ]
+    assert len(local_initializers) == 1
+    dashboard = next(
+        keyword.value
+        for keyword in local_initializers[0].keywords
+        if keyword.arg == "include_dashboard"
+    )
+    assert isinstance(dashboard, ast.Constant) and dashboard.value is False
 
 
 def test_gate_passes_reproducible_fresh_restores(tmp_path: Path) -> None:

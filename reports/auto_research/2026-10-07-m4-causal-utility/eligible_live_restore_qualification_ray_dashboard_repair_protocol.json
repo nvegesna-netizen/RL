@@ -1,0 +1,44 @@
+{
+  "schema": "m4-shield-eligible-live-restore-ray-dashboard-repair-v1",
+  "recorded_at": "2026-10-09",
+  "status": "FROZEN_OPERATIONAL_RUNTIME_REPLACEMENT",
+  "failed_execution": {
+    "upstream_pipeline_id": 72611180,
+    "child_pipeline_id": 72611633,
+    "eos_job_id": 477609383,
+    "slurm_job_id": 6215440,
+    "failure_class": "optional_ray_dashboard_startup"
+  },
+  "only_change": {
+    "surface": "Ray local-cluster observability process",
+    "file": "nemo_rl/distributed/virtual_cluster.py",
+    "old_value": "include_dashboard=True",
+    "new_value": "include_dashboard=False",
+    "basis": "The dashboard MetricsHead failed before checkpoint restoration; the qualification does not read dashboard state, the existing attach path already disables it, and the pre-dashboard upstream implementation used false."
+  },
+  "preserved": {
+    "checkpoint_artifact_urls": true,
+    "checkpoint_contents": true,
+    "heldout_group_urls": true,
+    "heldout_group_contents": true,
+    "restore_implementation": true,
+    "loss_definition": true,
+    "pass_gate": true,
+    "workload_time_limit_seconds": 14400,
+    "queue_deadline_suppressed": true,
+    "gpu_count": 1,
+    "fresh_restore_processes": 2,
+    "loss_reproducibility_tolerance": 1e-06,
+    "no_training_update": true,
+    "no_causal_arm_outcome_opening": true
+  },
+  "boundaries": {
+    "scientific_design_changed": false,
+    "runtime_observability_changed": true,
+    "model_or_optimizer_logic_changed": false,
+    "runtime_limit_changed": false,
+    "replacement_submission_attempt_limit": 1,
+    "automatic_retry": false,
+    "automatic_extension": false
+  }
+}
