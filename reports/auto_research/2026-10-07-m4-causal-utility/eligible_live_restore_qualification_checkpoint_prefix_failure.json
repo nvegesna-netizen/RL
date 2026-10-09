@@ -1,0 +1,54 @@
+{
+  "schema": "m4-shield-eligible-live-restore-checkpoint-prefix-failure-v1",
+  "recorded_at": "2026-10-08",
+  "status": "TERMINAL_PRE_RESTORE_TRANSPORT_FAILURE",
+  "pipelines": {
+    "upstream_pipeline_id": 72379365,
+    "child_pipeline_id": 72379874,
+    "generate_job_id": 475726124,
+    "logs_before_job_id": 475731786,
+    "eos_job_id": 475731787,
+    "logs_after_job_id": 475731789
+  },
+  "slurm": {
+    "job_id": 6202261,
+    "node": "eos0391",
+    "queue_time": "18:59:50",
+    "job_duration": "00:02:46",
+    "workload_step_duration": "00:02:23",
+    "state": "FAILED",
+    "exit_code": "22:0"
+  },
+  "runtime_evidence": {
+    "authority_check": "PASS",
+    "focused_tests_passed": 3,
+    "source_manifest_downloaded": true,
+    "source_manifest_sha256": "184004bfd24a47e7bd4f80ceee9f11f2891fdbae70ee60cbce5b8ca5ec4284c7",
+    "failed_remote_path": "m4-eligible-live-capsule/policy/weights/iter_0000000/.metadata",
+    "http_status": 404,
+    "curl_exit_code": 22,
+    "source_manifest_checkpoint_root": "checkpoint",
+    "corrected_remote_path": "m4-eligible-live-capsule/checkpoint/policy/weights/iter_0000000/.metadata",
+    "corrected_path_probe_bytes": 82311,
+    "corrected_path_probe_sha256": "036056c54716cb2587b8d09206a65341fff1c0ff55896aaea24e0d06ee742baf",
+    "expected_metadata_sha256": "036056c54716cb2587b8d09206a65341fff1c0ff55896aaea24e0d06ee742baf"
+  },
+  "classification": {
+    "failure_class": "checkpoint_remote_prefix_omitted",
+    "queue_deadline_repair_verified": true,
+    "checkpoint_download_completed": false,
+    "checkpoint_restore_started": false,
+    "heldout_evaluation_started": false,
+    "training_updates": 0,
+    "causal_arm_outcomes_opened": false,
+    "causal_effect_estimated": false,
+    "scientific_gate_evaluated": false
+  },
+  "authenticated_custody": {
+    "logs_after_archive_sha256": "0a8511b746fde6025fa31c593f8407709cf1efaff023f3e822f7b80e0efc2e1c",
+    "output_script_log_sha256": "9c21ce71a84a9ceb3809a6edce2f46366cfb900642b5a44eaad44ecf8aebe3ad",
+    "slurm_output_sha256": "0fc530ff3292e8dfbcf0f1734da408832b403edf5c8a009826af418ab31ef7de",
+    "rank_exit_code": 22
+  },
+  "repair_implication": "Insert the manifest-declared checkpoint/ directory into checkpoint artifact URLs while preserving local paths and every scientific input."
+}

@@ -1,0 +1,45 @@
+{
+  "schema": "m4-shield-eligible-live-restore-checkpoint-prefix-repair-v1",
+  "recorded_at": "2026-10-08",
+  "status": "FROZEN_TRANSPORT_REPLACEMENT",
+  "failed_execution": {
+    "upstream_pipeline_id": 72379365,
+    "child_pipeline_id": 72379874,
+    "eos_job_id": 475731787,
+    "slurm_job_id": 6202261,
+    "failure_class": "checkpoint_remote_prefix_omitted",
+    "curl_exit_code": 22
+  },
+  "only_change": {
+    "surface": "checkpoint artifact remote URL construction",
+    "old_template": "$API/policy/weights/...",
+    "new_template": "$API/checkpoint/policy/weights/...",
+    "basis": "Authenticated source manifest declares checkpoint_root=checkpoint; corrected .metadata URL matches the frozen byte count and SHA-256."
+  },
+  "preserved": {
+    "source_commit": "ad7de4ed7df0d049c54374cd99815323eb2fbe6f",
+    "source_archive_sha256": "277565d81685121fdecc6f3b79dbc0f544a941a88fb4415e1dbfe60a049fd0ff",
+    "protocol_sha256": "5377529e30ffe6a27732e5ab9aaf87c09e70a6f8d2228a9ba7afc06617137129",
+    "capsule_manifest_sha256": "184004bfd24a47e7bd4f80ceee9f11f2891fdbae70ee60cbce5b8ca5ec4284c7",
+    "heldout_group_urls": true,
+    "local_checkpoint_layout": true,
+    "file_hash_allowlist": true,
+    "workload_time_limit_seconds": 14400,
+    "queue_deadline_suppressed": true,
+    "gpu_count": 1,
+    "fresh_restore_processes": 2,
+    "loss_reproducibility_tolerance": 1e-06,
+    "no_training_update": true,
+    "no_causal_arm_outcome_opening": true
+  },
+  "boundaries": {
+    "scientific_design_changed": false,
+    "runtime_source_changed": false,
+    "runtime_limit_changed": false,
+    "checkpoint_contents_changed": false,
+    "heldout_data_changed": false,
+    "replacement_submission_attempt_limit": 1,
+    "automatic_retry": false,
+    "automatic_extension": false
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "schema": "m4-shield-eligible-live-restore-checkpoint-prefix-replacement-submission-plan-v1",
+  "status": "READY_FOR_SINGLE_REPLACEMENT_SUBMISSION",
+  "recorded_at": "2026-10-08",
+  "failure_receipt_sha256": "8d28f46d905c712e9f1eb327f5009de03f1642d380644010d2801ebc65eb85c3",
+  "repair_protocol_sha256": "9a635f2f3eb20d9abde91f6cfaf6055ae0fc3783648dae3a6b0df2d21035d148",
+  "authorization_sha256": "eb5ea9a86639d2522193d445f8bd3755e35efdc47bd911d4ddafdb6c9cb394c2",
+  "package_validation_sha256": "f0ce22ef06efb9100df1b59b7bb378adad33a2079a92c10301a3c2b623ebcb7c",
+  "replacement_validation_sha256": "d4ebd0a29884d1ebadcd9837b18c1edd8c7d200b50bb091197fc0950d12421ed",
+  "manifest_sha256": "c4be912b90151660bc4e93a171d002aa5b1be03215bf125a555f50f6b47682ac",
+  "custom_config_sha256": "0b72764d2ff41c690bab0f6a28408917f3f04faa311b581c94c56cef9ab35168",
+  "launcher": {
+    "entrypoint": "runllm.py --no_wait",
+    "replacement_submission_attempt_limit": 1,
+    "automatic_retry": false,
+    "automatic_extension": false
+  },
+  "execution": {
+    "config_id": "dlalgo-ci/eos",
+    "workload_time_limit_seconds": 14400,
+    "client_queue_deadline": null,
+    "default_deadline_suppressed": true,
+    "gpus": 1
+  },
+  "preservation": {
+    "source_commit": "ad7de4ed7df0d049c54374cd99815323eb2fbe6f",
+    "source_archive_sha256": "277565d81685121fdecc6f3b79dbc0f544a941a88fb4415e1dbfe60a049fd0ff",
+    "protocol_sha256": "5377529e30ffe6a27732e5ab9aaf87c09e70a6f8d2228a9ba7afc06617137129",
+    "heldout_paths_unchanged": true,
+    "local_checkpoint_layout_unchanged": true,
+    "scientific_design_changed": false,
+    "training_update": false,
+    "causal_arm_outcomes_opened": false,
+    "paired_acquisition_started": false
+  }
+}

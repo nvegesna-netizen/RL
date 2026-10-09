@@ -176,7 +176,12 @@ def main() -> None:
         token in shell_without_embedded_payloads for token in forbidden_credentials
     )
     expected_downloads = {'download "$API/manifest.json"'} | {
-        f'download "$API/{path}"' for path in CHECKPOINT_PATHS + HELDOUT_GROUP_PATHS
+        (
+            f'download "$API/checkpoint/{path}"'
+            if path.startswith("policy/")
+            else f'download "$API/{path}"'
+        )
+        for path in CHECKPOINT_PATHS + HELDOUT_GROUP_PATHS
     }
     actual_downloads = set(re.findall(r'download "\$API/[^\"]+"', runtime_script))
     forbidden_groups = {f"groups/group-{index:02d}.pt" for index in range(8)}

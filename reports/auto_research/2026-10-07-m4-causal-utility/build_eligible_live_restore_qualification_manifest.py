@@ -128,7 +128,11 @@ def main() -> None:
 
     download_lines = []
     for relative in CHECKPOINT_PATHS + HELDOUT_GROUP_PATHS:
-        remote = f"$API/{relative}"
+        remote = (
+            f"$API/checkpoint/{relative}"
+            if relative.startswith("policy/")
+            else f"$API/{relative}"
+        )
         local = (
             f"$CAPSULE/checkpoint/{relative}"
             if relative.startswith("policy/")
