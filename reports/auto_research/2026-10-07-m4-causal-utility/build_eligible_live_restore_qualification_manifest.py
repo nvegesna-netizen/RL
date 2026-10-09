@@ -11,14 +11,14 @@ import tarfile
 from pathlib import Path
 
 NAME = "m4-eligible-live-restore-qualification"
-SOURCE_COMMIT = "ad7de4ed7df0d049c54374cd99815323eb2fbe6f"
-SOURCE_SHA256 = "277565d81685121fdecc6f3b79dbc0f544a941a88fb4415e1dbfe60a049fd0ff"
+SOURCE_COMMIT = "1a07dfd7ec9fdeffc86195c54e30b4aa600d41ab"
+SOURCE_SHA256 = "9885b5e448e71d0c4946a55e2a8d4afe533af6a2926f5fbbbf97e22dc4435246"
 MEGATRON_SHA256 = "98d98920c0fea3d8ae1216a485dc9b5aa4fc966e469435ad61f2bae456de80d2"
 PROTOCOL_SHA256 = "5377529e30ffe6a27732e5ab9aaf87c09e70a6f8d2228a9ba7afc06617137129"
 AUTHORIZATION_SHA256 = (
     "d16340f130c4d4d816b5d87d7f20c77a5ff372b020f30d4bd06f6940691c3cf7"
 )
-LOCK_SHA256 = "00e2e63c9b6c89258581631a7f23b4eefbfc03674c397c0b3e7e2862d4f5f249"
+LOCK_SHA256 = "0222de8f1280139b7a20b190cb4ac5ab03b4a5d94b51d7456b2e364a89e513f3"
 CAPSULE_MANIFEST_SHA256 = (
     "184004bfd24a47e7bd4f80ceee9f11f2891fdbae70ee60cbce5b8ca5ec4284c7"
 )
@@ -39,7 +39,8 @@ FILE_HASHES = {
     CONFIG_PATH: "acc329781a8b4b0ff49df76ee5f7188879ebf436b2de687e91c7973da67efed0",
     RUNNER_PATH: "86f0439db996968886226bde8cbba9e650419de0434a4904168a1885772e1dec",
     ANALYZER_PATH: "dda234566fb68e71a5c14560db14de9374f3ad7018204c3fab66cfbe53db0dc1",
-    TEST_PATH: "8e9c812b21c6fa8db7533e13e9ebb1603314cfa6196e1190d9337f38e287e2c6",
+    TEST_PATH: "1d40530b469c738a3adbe092b7ed2befe6e0202ffde66233f99c1c970cbd9d27",
+    "nemo_rl/distributed/virtual_cluster.py": "ed491307e7f457db3733875a26d35153f3c943a0bf8430b81e3b13e54b81b829",
     "nemo_rl/algorithms/async_utils/conditional_m4_capsule.py": "01f9f96511ebaa87f5529f7e88eebd9f6a2e53206de5d37932389b54e8b4dd78",
     "nemo_rl/models/policy/tq_policy.py": "6b2a5d2aa600d6e8defefc9a0044ebb0ffcaa6d5a31668597cec4d60ebb5eb4c",
     "nemo_rl/models/policy/workers/megatron_policy_worker.py": "160362a38ebe73eec5cfbc76d84355ea4c32f5c8c7aac8be8f4a7c13b461b7e9",
@@ -106,11 +107,14 @@ def main() -> None:
     ):
         raise RuntimeError("restore qualification protocol or authority differs")
     if (
-        lock["status"] != "FROZEN_AFTER_IMPLEMENTATION_BEFORE_QUALIFICATION"
+        lock["status"]
+        != "FROZEN_AFTER_OPERATIONAL_REPAIR_BEFORE_REPLACEMENT"
         or lock["source_commit"] != SOURCE_COMMIT
         or lock["source_archive_sha256"] != SOURCE_SHA256
         or lock["protocol_sha256"] != PROTOCOL_SHA256
-        or lock["authorization_sha256"] != AUTHORIZATION_SHA256
+        or lock["scientific_authorization_sha256"] != AUTHORIZATION_SHA256
+        or lock["operational_repair"]["include_dashboard"] is not False
+        or lock["operational_repair"]["model_or_optimizer_logic_changed"]
         or lock["execution"]["launcher"] != "runllm.py --no_wait"
         or lock["execution"]["submission_attempt_limit"] != 1
         or lock["execution"]["workload_time_limit_seconds"] != 14400

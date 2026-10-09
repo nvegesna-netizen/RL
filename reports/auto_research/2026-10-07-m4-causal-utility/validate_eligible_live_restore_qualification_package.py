@@ -116,6 +116,9 @@ def main() -> None:
                 / "reports/auto_research/2026-10-07-m4-causal-utility/run_eligible_live_restore_qualification.py"
             ).read_bytes()
         )
+        virtual_cluster_tree = ast.parse(
+            (extracted / "nemo_rl/distributed/virtual_cluster.py").read_bytes()
+        )
         eval_mode_values = [
             keyword.value.value
             for node in ast.walk(runner_tree)
@@ -124,6 +127,18 @@ def main() -> None:
             and node.func.attr == "train_from_meta"
             for keyword in node.keywords
             if keyword.arg == "eval_mode"
+            and isinstance(keyword.value, ast.Constant)
+            and isinstance(keyword.value.value, bool)
+        ]
+        local_dashboard_values = [
+            keyword.value.value
+            for node in ast.walk(virtual_cluster_tree)
+            if isinstance(node, ast.Call)
+            and isinstance(node.func, ast.Attribute)
+            and node.func.attr == "init"
+            and any(keyword.arg == "resources" for keyword in node.keywords)
+            for keyword in node.keywords
+            if keyword.arg == "include_dashboard"
             and isinstance(keyword.value, ast.Constant)
             and isinstance(keyword.value.value, bool)
         ]
@@ -214,6 +229,7 @@ def main() -> None:
         "two_fresh_processes": runtime_script.count("--restore-label a") == 1
         and runtime_script.count("--restore-label b") == 1,
         "forward_only_gate": eval_mode_values == [True],
+        "optional_ray_dashboard_disabled": local_dashboard_values == [False],
         "runtime_tests_before_download": runtime_script.index('"$PYTHON" -m pytest')
         < runtime_script.index('download "$API/manifest.json"'),
         "private_capsule_removed": 'rm -rf -- "$CAPSULE"' in runtime_script,

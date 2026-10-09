@@ -1,0 +1,39 @@
+{
+  "schema": "m4-shield-eligible-live-restore-qualification-execution-lock-v2",
+  "frozen_at": "2026-10-09",
+  "status": "FROZEN_AFTER_OPERATIONAL_REPAIR_BEFORE_REPLACEMENT",
+  "source_commit": "1a07dfd7ec9fdeffc86195c54e30b4aa600d41ab",
+  "source_archive_sha256": "9885b5e448e71d0c4946a55e2a8d4afe533af6a2926f5fbbbf97e22dc4435246",
+  "protocol_sha256": "5377529e30ffe6a27732e5ab9aaf87c09e70a6f8d2228a9ba7afc06617137129",
+  "scientific_authorization_sha256": "d16340f130c4d4d816b5d87d7f20c77a5ff372b020f30d4bd06f6940691c3cf7",
+  "replacement_authorization_sha256": "22f104aca3098b4a87ef43e09e7cc9ee5ac9e486f91034aa72e23e7a35c790a2",
+  "failure_receipt_sha256": "a8e6292eb0285a6b74d3cc49da7667cc26a26bd11f25e8c1be0ed7a094cd1671",
+  "repair_protocol_sha256": "b5525eb18f34011c2208b2fb5416ddfbcb61f46955fed24d73d3d7463e85b5fe",
+  "source_capsule": {
+    "eos_job_id": 474952005,
+    "manifest_sha256": "184004bfd24a47e7bd4f80ceee9f11f2891fdbae70ee60cbce5b8ca5ec4284c7",
+    "checkpoint_authentication_sha256": "df9fd2aa0f2b7f35edef1d5601cc8baff599504f4ff09b67fb9c20f3f4407ded"
+  },
+  "operational_repair": {
+    "file": "nemo_rl/distributed/virtual_cluster.py",
+    "include_dashboard": false,
+    "runtime_file_sha256": "ed491307e7f457db3733875a26d35153f3c943a0bf8430b81e3b13e54b81b829",
+    "model_or_optimizer_logic_changed": false
+  },
+  "qualification": {
+    "fresh_restore_processes": 2,
+    "heldout_group_indices": [8, 9, 10, 11],
+    "frontier_or_arm_group_downloads": 0,
+    "training_updates": 0,
+    "causal_arm_outcomes_opened": false,
+    "paired_acquisition_started": false
+  },
+  "execution": {
+    "launcher": "runllm.py --no_wait",
+    "submission_attempt_limit": 1,
+    "workload_time_limit_seconds": 14400,
+    "client_queue_deadline": null,
+    "automatic_retry": false,
+    "automatic_extension": false
+  }
+}
