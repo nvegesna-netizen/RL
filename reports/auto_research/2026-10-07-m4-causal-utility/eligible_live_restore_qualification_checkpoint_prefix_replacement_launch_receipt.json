@@ -1,0 +1,58 @@
+{
+  "schema": "m4-shield-eligible-live-restore-checkpoint-prefix-replacement-launch-receipt-v1",
+  "status": "SUBMITTED_NO_WAIT_RENDERED_TRANSPORT_REPAIR_VERIFIED",
+  "recorded_at": "2026-10-08",
+  "upstream_pipeline_id": 72611180,
+  "upstream_pipeline_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/72611180",
+  "generated_child": {
+    "child_pipeline_id": 72611633,
+    "child_pipeline_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/72611633",
+    "generate_job_id": 477606736,
+    "generate_status": "success",
+    "logs_before_job_id": 477609382,
+    "logs_before_status": "success",
+    "eos_job_id": 477609383,
+    "eos_status_at_receipt": "running",
+    "logs_after_job_id": 477609384,
+    "logs_after_status_at_receipt": "created",
+    "target_name": "m4-eligible-live-restore-qualification"
+  },
+  "slurm": {
+    "job_id": 6215440,
+    "state_at_receipt": "PENDING",
+    "reason_at_receipt": "Priority",
+    "rendered_time_flag": "--time 0:14400",
+    "rendered_deadline_flag_present": false,
+    "reported_time_limit": "04:00:00",
+    "reported_deadline": "N/A"
+  },
+  "launcher": {
+    "entrypoint": "runllm.py --no_wait",
+    "return_code": 0,
+    "replacement_submission_attempts_consumed": 1,
+    "replacement_submission_attempt_limit": 1,
+    "automatic_retry": false,
+    "automatic_extension": false
+  },
+  "inputs": {
+    "manifest_sha256": "c4be912b90151660bc4e93a171d002aa5b1be03215bf125a555f50f6b47682ac",
+    "custom_config_sha256": "0b72764d2ff41c690bab0f6a28408917f3f04faa311b581c94c56cef9ab35168",
+    "authorization_sha256": "eb5ea9a86639d2522193d445f8bd3755e35efdc47bd911d4ddafdb6c9cb394c2",
+    "package_validation_sha256": "f0ce22ef06efb9100df1b59b7bb378adad33a2079a92c10301a3c2b623ebcb7c",
+    "replacement_validation_sha256": "d4ebd0a29884d1ebadcd9837b18c1edd8c7d200b50bb091197fc0950d12421ed",
+    "repair_package_commit": "5e2b4e477"
+  },
+  "local_provenance": {
+    "launch_log_sha256": "c463e15579d9411f75ad7489bd913e06105472e2f26263af5b2fc36c306f10db",
+    "one_shot_guard_sha256": "3d46e6a3b875526eda5348693620f8c1b6ae18b8932fca206c049746c261426a"
+  },
+  "scientific_boundary": {
+    "checkpoint_restore_started_at_receipt": false,
+    "heldout_evaluation_started_at_receipt": false,
+    "training_updates": 0,
+    "causal_arm_outcomes_opened": false,
+    "causal_effect_estimated": false,
+    "paired_acquisition_started": false
+  },
+  "next_action": "Status-only monitoring to terminal, then authenticate compact qualification artifacts and evaluate the frozen restore gate before any paired causal acquisition."
+}
