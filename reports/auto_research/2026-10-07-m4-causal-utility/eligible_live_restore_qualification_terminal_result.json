@@ -1,0 +1,65 @@
+{
+  "schema": "m4-shield-eligible-live-restore-qualification-terminal-result-v1",
+  "status": "PASS_RESTORE_AND_EVALUATION_GATE",
+  "recorded_at": "2026-10-11",
+  "source": {
+    "commit": "1a07dfd7ec9fdeffc86195c54e30b4aa600d41ab",
+    "archive_sha256": "9885b5e448e71d0c4946a55e2a8d4afe533af6a2926f5fbbbf97e22dc4435246",
+    "submission_manifest_sha256": "53330111d90f6ae984d7e442f21ed2914af0c9abb0c76b76ba8cb63c8b9df9a2",
+    "protocol_sha256": "5377529e30ffe6a27732e5ab9aaf87c09e70a6f8d2228a9ba7afc06617137129",
+    "capsule_manifest_sha256": "184004bfd24a47e7bd4f80ceee9f11f2891fdbae70ee60cbce5b8ca5ec4284c7",
+    "checkpoint_authentication_sha256": "df9fd2aa0f2b7f35edef1d5601cc8baff599504f4ff09b67fb9c20f3f4407ded"
+  },
+  "execution": {
+    "upstream_pipeline_id": 72726278,
+    "child_pipeline_id": 72726883,
+    "generate_job_id": 478515980,
+    "logs_before_job_id": 478520111,
+    "eos_job_id": 478520112,
+    "logs_after_job_id": 478520113,
+    "slurm_job_id": 6221758,
+    "terminal_exit_code": 0,
+    "upstream_finished_at": "2026-10-10T01:02:16.444-07:00",
+    "eos_finished_at": "2026-10-10T00:57:31.444-07:00"
+  },
+  "authenticated_artifacts": {
+    "logs_after_archive_bytes": 140908811,
+    "logs_after_archive_sha256": "5e8e899d69362f3ee551061575678a3de9f7ff3c92c2e44e8d8c6ac6a718f7d9",
+    "artifact_inventory_sha256": "ddbfc2d6fb28cfec56bbe6ae9b08bbf943b50f7a31da154a373575352c0c2dee",
+    "restore_a_sha256": "95b336f378f8ad70130f31e5c649bdebcd6d72853b4402719acf2da2cbcf10ac",
+    "restore_b_sha256": "bc496ccba92f5b723cee2106066aaf5f3c1bc9ab61e5d9565f119ad367da480c",
+    "qualification_result_sha256": "3fe624a369faa740ad4cb1d5017397c2d112aa5809205d65bd892e9121c6e335",
+    "inventory_matches_compact_artifacts": true
+  },
+  "qualification": {
+    "restore_a_heldout_loss": 0.14215132594108582,
+    "restore_b_heldout_loss": 0.14215132594108582,
+    "restore_loss_difference_b_minus_a": 0.0,
+    "absolute_loss_reproducibility_tolerance": 1e-06,
+    "relative_loss_reproducibility_tolerance": 1e-06,
+    "heldout_groups": 4,
+    "heldout_samples": 32,
+    "parameter_sha256_expected": "e0765eb28e40eb7308c7c9b2e936179dc12f5da7deb38bdb467dc0e0de075e9e",
+    "parameter_hash_unchanged_in_both_restores": true,
+    "optimizer_restore_requested_in_both_restores": true,
+    "optimizer_path_equals_weights_path_in_both_restores": true,
+    "eval_mode_in_both_restores": true,
+    "torch_no_grad_in_both_restores": true,
+    "optimizer_steps": 0,
+    "scheduler_steps": 0,
+    "all_frozen_checks_passed": true
+  },
+  "independent_recomputation": {
+    "analyzer": "analyze_eligible_live_restore_qualification.py",
+    "recomputed_result_sha256": "3fe624a369faa740ad4cb1d5017397c2d112aa5809205d65bd892e9121c6e335",
+    "byte_identical_to_archived_result": true
+  },
+  "scientific_boundary": {
+    "pipeline_status_is_scientific_endpoint": false,
+    "causal_arm_outcomes_opened": false,
+    "causal_effect_estimated": false,
+    "paired_acquisition_started": false,
+    "terminal_quality_claimed": false
+  },
+  "decision": "Checkpoint restoration and held-out loss evaluation are qualified. The already-frozen 20-seed paired acquisition may be packaged next as a separate scientific stage."
+}
