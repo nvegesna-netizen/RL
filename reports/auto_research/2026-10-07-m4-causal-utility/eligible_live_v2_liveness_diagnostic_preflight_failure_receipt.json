@@ -1,0 +1,40 @@
+{
+  "schema": "m4-shield-eligible-live-v2-liveness-diagnostic-preflight-failure-receipt-v1",
+  "recorded_at": "2026-10-11",
+  "status": "AUTHENTICATED_PREFLIGHT_FIXTURE_FAILURE",
+  "source_commit": "f70361f2cc3568a2f43fd56bacbf440b08a6b977",
+  "parent_pipeline_id": 73126844,
+  "child_pipeline_id": 73126939,
+  "eos_job_id": 481659509,
+  "logs_after_job_id": 481659510,
+  "slurm_job_id": 6233394,
+  "failure_reason": "The EOS-focused preflight reached the watchdog cleanup path, then the synthetic controller fixture lacked the _gradient_utility_recorder field initialized by the real constructor.",
+  "first_causal_error": "AttributeError: 'SingleControllerActor' object has no attribute '_gradient_utility_recorder'",
+  "failed_test": "tests/unit/single_controller/test_single_controller.py::test_eligible_live_watchdog_fails_fast_and_flushes_ledgers",
+  "focused_test_summary": {
+    "passed": 11,
+    "failed": 1,
+    "deselected": 77
+  },
+  "authenticated_artifacts": {
+    "archive_sha256": "798cc8ffdefd5e1809dcfb79f813560614136b1ab9652a4f7e537132dbd80f6d",
+    "focused_test_log_sha256": "efffd0912af8e5621deb97ff5e68cb9458915169a34439e06c65b55bdacbbc62",
+    "job_trace_sha256": "39a5628867f259ec5ce5c49b7fd79b8a5f03bb734ee208f8b5d3315d67a243aa"
+  },
+  "scientific_boundary": {
+    "training_workload_invocations": 0,
+    "assignments_created": 0,
+    "diagnostic_terminal_result_opened": false,
+    "v2_acquisition_started": false,
+    "paired_replay_started": false,
+    "post_update_outcomes_opened": false,
+    "causal_effect_estimated": false
+  },
+  "repair_scope": {
+    "file": "tests/unit/single_controller/test_single_controller.py",
+    "change": "Initialize _gradient_utility_recorder to None in _run_lifecycle_controller, matching SingleControllerActor.__init__.",
+    "runtime_implementation_changed": false,
+    "scientific_design_changed": false,
+    "seed_or_identity_changed": false
+  }
+}

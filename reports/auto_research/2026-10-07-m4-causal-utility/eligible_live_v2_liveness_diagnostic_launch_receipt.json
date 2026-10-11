@@ -1,7 +1,7 @@
 {
   "schema": "m4-shield-eligible-live-v2-liveness-diagnostic-launch-receipt-v1",
   "recorded_at": "2026-10-11",
-  "status": "RUNNING_ALLOCATED",
+  "status": "TERMINAL_PREFLIGHT_TEST_FAILURE",
   "source_commit": "f70361f2cc3568a2f43fd56bacbf440b08a6b977",
   "package_commit": "36a4dd535",
   "identity": "d01",
@@ -29,7 +29,7 @@
   "slurm": {
     "job_id": 6233394,
     "node": "eos0246",
-    "state_at_receipt_update": "RUNNING",
+    "state_at_receipt_update": "FAILED",
     "time_limit": "04:00:00",
     "deadline": null,
     "rendered_srun_time_flag": "--time 0:14400",
@@ -47,10 +47,28 @@
   },
   "outcome_boundary": {
     "diagnostic_terminal_result_opened": false,
+    "scientific_workload_invocations": 0,
+    "assignments_created": 0,
     "v2_acquisition_started": false,
     "paired_replay_started": false,
     "post_update_outcomes_opened": false,
     "causal_effect_estimated": false
   },
-  "next_action": "Status-only monitoring until the chain is terminal, followed by artifact authentication and diagnostic classification. Do not relaunch."
+  "terminal_evidence": {
+    "parent_pipeline_status": "failed",
+    "child_pipeline_status": "failed",
+    "eos_job_status": "failed",
+    "eos_job_failure_reason": "script_failure",
+    "logs_after_job_status": "success",
+    "artifact_archive_sha256": "798cc8ffdefd5e1809dcfb79f813560614136b1ab9652a4f7e537132dbd80f6d",
+    "focused_test_log_sha256": "efffd0912af8e5621deb97ff5e68cb9458915169a34439e06c65b55bdacbbc62",
+    "job_trace_sha256": "39a5628867f259ec5ce5c49b7fd79b8a5f03bb734ee208f8b5d3315d67a243aa",
+    "focused_test_summary": "11 passed, 1 failed, 77 deselected",
+    "first_causal_error": "AttributeError: 'SingleControllerActor' object has no attribute '_gradient_utility_recorder'",
+    "failed_test": "tests/unit/single_controller/test_single_controller.py::test_eligible_live_watchdog_fails_fast_and_flushes_ledgers",
+    "training_run_log_present": false,
+    "liveness_record_present": false,
+    "diagnostic_result_present": false
+  },
+  "next_action": "Preserve this consumed attempt. Validate the test-fixture-only repair and use a separately frozen one-shot preflight replacement; do not reuse this guard."
 }

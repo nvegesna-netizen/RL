@@ -1,0 +1,43 @@
+{
+  "schema": "m4-shield-eligible-live-v2-liveness-diagnostic-preflight-repair-protocol-v1",
+  "frozen_at": "2026-10-11",
+  "status": "FROZEN_AFTER_EVIDENCE_BEFORE_REPLACEMENT",
+  "prior_attempt": {
+    "parent_pipeline_id": 73126844,
+    "child_pipeline_id": 73126939,
+    "eos_job_id": 481659509,
+    "scientific_workload_invocations": 0,
+    "assignments_created": 0
+  },
+  "diagnosis": "A focused watchdog test used an object.__new__ fixture that did not mirror the constructor's _gradient_utility_recorder initialization. Cleanup therefore masked the expected watchdog RuntimeError with AttributeError.",
+  "repair": {
+    "allowed_files": [
+      "tests/unit/single_controller/test_single_controller.py"
+    ],
+    "required_change": "Set ctrl._gradient_utility_recorder = None in _run_lifecycle_controller.",
+    "runtime_implementation_change": false,
+    "configuration_change": false,
+    "scientific_design_change": false
+  },
+  "replacement": {
+    "submission_attempt_limit": 1,
+    "launcher": "runllm.py --no_wait",
+    "identity": "d01",
+    "seed": 20261102,
+    "assignment_domain": "m4-eligible-live-v2-liveness-diagnostic-v1",
+    "progress_timeout_seconds": 1200,
+    "workload_time_limit_seconds": 14400,
+    "client_queue_deadline": null,
+    "automatic_retry": false,
+    "automatic_extension": false
+  },
+  "replacement_eligibility": "The same identity and seed remain valid because the prior attempt terminated in focused preflight before the scientific workload command, assignment, or outcome access.",
+  "claim_boundary": {
+    "pipeline_status_is_scientific_endpoint": false,
+    "preflight_success_is_scientific_evidence": false,
+    "v2_acquisition_started": false,
+    "paired_replay_started": false,
+    "post_update_outcomes_opened": false,
+    "causal_effect_estimated": false
+  }
+}

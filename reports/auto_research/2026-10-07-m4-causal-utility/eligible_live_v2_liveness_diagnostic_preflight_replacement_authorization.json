@@ -1,0 +1,30 @@
+{
+  "schema": "m4-shield-eligible-live-v2-liveness-diagnostic-preflight-replacement-authorization-v1",
+  "recorded_at": "2026-10-11",
+  "status": "AUTHORIZED_BEFORE_PREFLIGHT_REPLACEMENT",
+  "authority": {
+    "user_instruction": "ok, do that process",
+    "standing_eos_launch_authorization": true,
+    "standing_push_authorization": true
+  },
+  "authorized": {
+    "preflight_replacement_eos_submission_attempts": 1,
+    "test_fixture_only_repair": true,
+    "diagnostic_identity": "d01",
+    "diagnostic_seed": 20261102,
+    "required_launcher": "runllm.py --no_wait",
+    "workload_time_limit_seconds": 14400,
+    "client_queue_deadline": null,
+    "outcome_excluded": true
+  },
+  "not_authorized_by_this_record": {
+    "scientific_design_change": true,
+    "seed_or_identity_change": true,
+    "runtime_implementation_change": true,
+    "automatic_retry": true,
+    "automatic_extension": true,
+    "v2_scientific_acquisition": true,
+    "paired_replay": true,
+    "post_update_outcome_opening": true
+  }
+}

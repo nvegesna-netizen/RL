@@ -1156,6 +1156,7 @@ def _run_lifecycle_controller(
     ctrl._oars_shadow_recorder = None
     ctrl._oars_v2_shadow_recorder = None
     ctrl._observer_duty_meter = None
+    ctrl._gradient_utility_recorder = None
     ctrl._rollout_manager = MagicMock()
     ctrl._master_config = SimpleNamespace(grpo=SimpleNamespace(max_num_steps=128))
     ctrl._async_cfg = SimpleNamespace(
