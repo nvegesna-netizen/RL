@@ -1,0 +1,96 @@
+{
+  "schema": "m4-shield-eligible-live-v2-liveness-diagnostic-terminal-authentication-v1",
+  "recorded_at": "2026-10-11",
+  "status": "TERMINAL_PASS_NO_STALL_REPRODUCED_CAPTURE_EXCLUDED",
+  "source_commit": "5b68a8e4fba6061d1b46e9484835e50d02a2f1d2",
+  "package_commit": "ed6b34746845947eda34c5801d1fae37819684c5",
+  "launch_receipt_commit": "3dc778bad8c30ed85ee29514262001e58dc6d275",
+  "identity": "d01",
+  "seed": 20261102,
+  "assignment_domain": "m4-eligible-live-v2-liveness-diagnostic-v1",
+  "pipeline_topology": {
+    "parent_pipeline_id": 73128856,
+    "child_pipeline_id": 73129526,
+    "generate_job_id": 481675576,
+    "trigger_job_id": 481675577,
+    "logs_before_job_id": 481678505,
+    "eos_job_id": 481678515,
+    "logs_after_job_id": 481678563
+  },
+  "execution": {
+    "eos_job_status": "success",
+    "slurm_job_id": 6233410,
+    "slurm_node": "eos0040",
+    "slurm_state": "COMPLETED",
+    "slurm_exit_code": "0:0",
+    "workload_exit_code": 0,
+    "workload_duration": "00:07:20",
+    "time_limit_seconds": 14400,
+    "client_queue_deadline": null,
+    "focused_tests": {
+      "eligible_capsule": 2,
+      "oars_v2": 7,
+      "single_controller": 13,
+      "failed": 0
+    }
+  },
+  "diagnostic_result": {
+    "status": "PASS_NO_STALL_REPRODUCED_CAPTURE_EXCLUDED",
+    "learner_version": 5,
+    "run_exit_code": 0,
+    "liveness_timeout_record_present": false,
+    "capsule_status": "QUALIFIED_OUTCOME_EXCLUDED_ELIGIBLE_CAPTURE",
+    "captured_update_executed": false,
+    "optimizer_steps_at_captured_decision": 0,
+    "scheduler_steps_at_captured_decision": 0,
+    "parameter_hash_unchanged": true,
+    "post_update_outcomes_opened": false,
+    "causal_effect_estimated": false
+  },
+  "capture": {
+    "manifest_sha256": "42a8eb2beff33cad060d8a10f1d2cbb0acaa6c9f0da0c62686013a70d73af5bd",
+    "checkpoint_authentication_sha256": "70829e7e9dded3f174fdd5337711a3542c1f8a6712d349104c31c9efa77f8529",
+    "group_authentication_sha256": "3877a44735efc1b4963f94224fad56eac2d3fcf772315f63a8e1de9115e4b2e8",
+    "frontier_groups": 8,
+    "heldout_groups": 4,
+    "eligible_candidate_count": 8,
+    "baseline_imminent_l1": 6418.704961359501,
+    "shield_imminent_l1": 6539.156526565552,
+    "baseline_valid_actor_tokens": 6024,
+    "shield_valid_actor_tokens": 6051,
+    "decision_latency_ns": 664352,
+    "observer_duty": 0.00032388390174876086
+  },
+  "authenticated_compact_artifacts": {
+    "diagnostic_result_sha256": "49cbaaba0bdfdbadd5bd3f09efabe57727c4db80b1f559be87d98e70037cc971",
+    "capture_result_sha256": "f1e69658005e1b1259e3a5a2e340ec8df9d7bd3f45b48ae5e9899d72b5d41341",
+    "capsule_manifest_sha256": "42a8eb2beff33cad060d8a10f1d2cbb0acaa6c9f0da0c62686013a70d73af5bd",
+    "lifecycle_sha256": "bf321bd60909dd807b0ac952f85a55c3b2a130f9e74cd2d66fec6423ccdeeee4",
+    "oars_v2_sha256": "6a1b9ce27844cac8a1998edbe99a8f1a8e7ad8a735f544886a4d1f0808f59b95",
+    "observer_duty_sha256": "443679478e819554625bda0ae595babc3757edffe3a0d139b2796af6699f6067",
+    "opportunity_sha256": "663438744d7dd4d0701a184337aec581ed54ae244e07d22526c561259e9bb829",
+    "focused_tests_sha256": "15445d8c8d8a4f2aaa0d5f0e06ac7c5374986b6c1e3b76bd7e4501a7be3bb9fa",
+    "workload_trace_sha256": "e9219912654cc899996a81234324c7f10409789520e3a93755515905610fd302",
+    "logs_after_trace_sha256": "c3f1a03777f0cc35b06f066db69e0328fd6a92a29cf3ebff5d135005ac6ea2d9",
+    "workload_checksum_ledger_sha256": "44cfb7eef5d051e92e6fb11889af20a5097297335701b1bcff2bb54ebec18f35"
+  },
+  "postcollector": {
+    "status": "FAILED_OVERSIZED_DEPENDENCY_DOWNLOAD",
+    "artifact_archive_bytes": 13434558535,
+    "pod_ephemeral_storage_limit_bytes": 10737418240,
+    "failure_phase": "download_artifacts",
+    "scientific_artifacts_preserved_in_eos_job": true,
+    "compact_artifacts_recovered_by_per_file_api": true,
+    "large_checkpoint_downloaded_locally": false,
+    "scientific_rerun_required": false
+  },
+  "claim_boundary": {
+    "pipeline_status_is_scientific_endpoint": false,
+    "diagnostic_pass_proves_global_absence_of_stalls": false,
+    "v2_acquisition_started": false,
+    "paired_replay_started": false,
+    "post_update_outcomes_opened": false,
+    "terminal_quality_claimed": false
+  },
+  "next_action": "Use this authenticated outcome-excluded capsule as qualification evidence. Any paired causal replay or v2 scientific acquisition requires its own frozen protocol and authority; do not rerun this diagnostic."
+}

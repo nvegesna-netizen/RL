@@ -1,7 +1,7 @@
 {
   "schema": "m4-shield-eligible-live-v2-liveness-diagnostic-preflight-replacement-launch-receipt-v1",
   "recorded_at": "2026-10-11",
-  "status": "SUBMITTED_CHILD_CREATED",
+  "status": "TERMINAL_DIAGNOSTIC_PASS_POSTCOLLECTOR_FAILED",
   "repair_source_commit": "5b68a8e4fba6061d1b46e9484835e50d02a2f1d2",
   "package_commit": "ed6b34746845947eda34c5801d1fae37819684c5",
   "identity": "d01",
@@ -37,11 +37,32 @@
     "automatic_extension": false
   },
   "outcome_boundary": {
-    "diagnostic_terminal_result_opened": false,
+    "diagnostic_terminal_result_opened": true,
     "v2_acquisition_started": false,
     "paired_replay_started": false,
     "post_update_outcomes_opened": false,
     "causal_effect_estimated": false
   },
-  "next_action": "Status-only monitoring until terminal, then authenticate artifacts and classify the prospective diagnostic result. Do not relaunch."
+  "terminal_execution": {
+    "eos_job_status": "success",
+    "slurm_job_id": 6233410,
+    "slurm_node": "eos0040",
+    "slurm_state": "COMPLETED",
+    "workload_exit_code": 0,
+    "workload_duration": "00:07:20",
+    "focused_tests_passed": 22,
+    "diagnostic_status": "PASS_NO_STALL_REPRODUCED_CAPTURE_EXCLUDED",
+    "learner_version": 5,
+    "capsule_captured": true,
+    "post_update_outcomes_opened": false
+  },
+  "postcollector_failure": {
+    "logs_after_job_status": "failed",
+    "logs_after_failure_reason": "runner_system_failure",
+    "cause": "The logs-after pod exceeded its 10 GiB ephemeral-storage limit while downloading the 13.4 GB successful EOS artifact archive.",
+    "scientific_workload_affected": false,
+    "compact_terminal_artifacts_recovered_directly": true,
+    "replacement_run_required": false
+  },
+  "next_action": "Do not relaunch. Treat the diagnostic as terminal PASS and use direct per-file artifact retrieval for compact authentication; preserve the large checkpoint in the successful EOS job archive."
 }
