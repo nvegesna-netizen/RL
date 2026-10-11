@@ -1,0 +1,48 @@
+{
+  "schema": "m4-shield-eligible-live-v2-liveness-diagnostic-package-receipt-v1",
+  "recorded_at": "2026-10-11",
+  "status": "PASS_AUTHORIZED_UNSUBMITTED",
+  "source_commit": "f70361f2cc3568a2f43fd56bacbf440b08a6b977",
+  "source_archive": {
+    "path": "session/20260914_m4_opportunity_control/m4-eligible-live-v2-diagnostic-source-f70361f2c.tar.gz",
+    "sha256": "649c5e28de8cbba98ba83e50259f3376f64039cf003cec43c5ce2bd19026d304",
+    "tracked_in_git": false
+  },
+  "megatron_archive": {
+    "path": "session/20260914_m4_opportunity_control/m4-oars-shadow-preflight-megatron.tar.gz",
+    "sha256": "98d98920c0fea3d8ae1216a485dc9b5aa4fc966e469435ad61f2bae456de80d2",
+    "tracked_in_git": false
+  },
+  "manifest": {
+    "path": "session/20260914_m4_opportunity_control/m4-eligible-live-v2-liveness-diagnostic-manifest.json",
+    "sha256": "c84ea2a229c5e9eef4f0ef3b1b206513333cc34f5177a10703f93a4ef1ab5942",
+    "bytes": 16968479,
+    "tracked_in_git": false
+  },
+  "tracked_inputs": {
+    "protocol_sha256": "59f99259d56d8bc993c59e3291e4ccf3f2ecf9832729e72e81222ee01f4dbc9c",
+    "authorization_sha256": "796a60d0ab52ef782b91a1390e5ae2502c12db0490ae41ee2c40b9793b2f6de0",
+    "execution_lock_sha256": "113758c56418359bb50ec367369d385a78206651ed7a6d37d9fab7fe40c0d6ce",
+    "builder_sha256": "216a5ec3e315d4308af575b679d44621012fc8150d5f511ea1691093b8910623",
+    "validator_sha256": "a56c05202340a8136e4f7c57b0f5150b893d22e73ec19623dc52eff37f74c736",
+    "package_validation_sha256": "6d308bae14d224a4f7e4236d828066351c50430f462782a1698ed73487423650",
+    "eos_custom_config_sha256": "0b72764d2ff41c690bab0f6a28408917f3f04faa311b581c94c56cef9ab35168",
+    "variables_sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+  },
+  "execution_boundary": {
+    "launcher": "runllm.py --no_wait",
+    "submission_attempt_limit": 1,
+    "runtime_time_limit_seconds": 14400,
+    "progress_timeout_seconds": 1200,
+    "client_queue_deadline": null,
+    "automatic_retry": false,
+    "automatic_replacement": false,
+    "automatic_extension": false
+  },
+  "outcome_boundary": {
+    "v2_acquisition_started": false,
+    "paired_replay_started": false,
+    "post_update_outcomes_opened": false,
+    "causal_effect_estimated": false
+  }
+}

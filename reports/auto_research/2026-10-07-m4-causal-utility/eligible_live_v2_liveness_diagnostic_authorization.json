@@ -1,0 +1,29 @@
+{
+  "schema": "m4-shield-eligible-live-v2-liveness-diagnostic-authorization-v1",
+  "recorded_at": "2026-10-11",
+  "status": "AUTHORIZED_BEFORE_DIAGNOSTIC_EXECUTION",
+  "authority": {
+    "user_instruction": "ok, do that process",
+    "standing_eos_launch_authorization": true,
+    "standing_push_authorization": true
+  },
+  "authorized": {
+    "diagnostic_eos_submission_attempts": 1,
+    "diagnostic_identity": "d01",
+    "diagnostic_seed": 20261102,
+    "required_launcher": "runllm.py --no_wait",
+    "progress_timeout_seconds": 1200,
+    "workload_time_limit_seconds": 14400,
+    "client_queue_deadline": null,
+    "outcome_excluded": true
+  },
+  "not_authorized_by_this_record": {
+    "automatic_retry": true,
+    "automatic_replacement": true,
+    "automatic_extension": true,
+    "v2_scientific_acquisition": true,
+    "paired_replay": true,
+    "post_update_outcome_opening": true,
+    "terminal_quality_claim": true
+  }
+}
