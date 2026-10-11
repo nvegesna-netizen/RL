@@ -89,6 +89,8 @@ class EligibleLiveDecisionCaptureConfig(BaseModel, frozen=True):
     heldout_groups: int = 4
     trajectory_identity: Optional[str] = None
     trajectory_seed: Optional[int] = None
+    progress_timeout_seconds: Optional[float] = None
+    liveness_diagnostic_path: Optional[str] = None
 
 
 class LifecycleDerivedOpportunityAuditConfig(BaseModel, frozen=True):
@@ -470,6 +472,23 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
             raise ValueError(
                 "max_buffered_rollouts cannot hold one frontier plus heldout groups"
             )
+    timeout = live_capture_config.progress_timeout_seconds
+    diagnostic_path = live_capture_config.liveness_diagnostic_path
+    if (timeout is None) != (diagnostic_path is None):
+        raise ValueError(
+            "eligible_live_decision_capture progress watchdog requires both "
+            "progress_timeout_seconds and liveness_diagnostic_path"
+        )
+    if not live_capture_config.enabled and timeout is not None:
+        raise ValueError(
+            "eligible_live_decision_capture progress watchdog requires capture "
+            "to be enabled"
+        )
+    if timeout is not None and (not math.isfinite(timeout) or timeout <= 0):
+        raise ValueError(
+            "eligible_live_decision_capture progress_timeout_seconds must be "
+            "positive and finite"
+        )
     if live_capture_config.enabled:
         if capsule_config.enabled or utility_config.enabled:
             raise ValueError(
@@ -486,6 +505,23 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
             raise ValueError(
                 "eligible_live_decision_capture requires trajectory_identity"
             )
+        if diagnostic_path is not None:
+            watchdog_path = Path(diagnostic_path).resolve()
+            occupied_paths = tuple(
+                Path(path).resolve()
+                for path in (
+                    async_config.lifecycle_audit_path,
+                    opportunity_config.output_path,
+                    opportunity_config.observer_duty_path,
+                    shadow_v2_config.output_path,
+                )
+                if path is not None
+            )
+            if watchdog_path in occupied_paths:
+                raise ValueError(
+                    "eligible_live_decision_capture liveness diagnostic path must "
+                    "differ from audit-ledger paths"
+                )
         if live_capture_config.trajectory_seed != master_config.grpo.seed:
             raise ValueError(
                 "eligible_live_decision_capture trajectory_seed must equal grpo.seed"

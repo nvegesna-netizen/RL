@@ -35,7 +35,10 @@ Data flow:
 from __future__ import annotations
 
 import asyncio
+import json
+import os
 import time
+import traceback
 from functools import partial
 from pathlib import Path
 from typing import Any, Optional, Union
@@ -200,6 +203,8 @@ class SingleControllerActor:
         self._conditional_capsule_frontiers_examined = 0
         self._conditional_capsule_result: dict[str, Any] | None = None
         self._eligible_live_capture_result: dict[str, Any] | None = None
+        self._eligible_live_progress_sequence = 0
+        self._eligible_live_progress_phase = "initialized"
         utility_config = self._async_cfg.gradient_utility_audit
         if utility_config.enabled:
             self._gradient_utility_recorder = GradientUtilityAuditRecorder(
@@ -515,23 +520,50 @@ class SingleControllerActor:
             self._observer_duty_meter.begin_active_window()
 
         # Start the rollout and train pumps
-        rollout_task = asyncio.create_task(self._rollout_pump())
+        rollout_task = asyncio.create_task(
+            self._rollout_pump(), name="single-controller-rollout-pump"
+        )
         if utility_enabled:
             train_coroutine = self._gradient_utility_audit_pump()
         elif capsule_enabled:
             train_coroutine = self._conditional_m4_capsule_pump()
         else:
             train_coroutine = self._train_pump()
-        train_task = asyncio.create_task(train_coroutine)
+        train_task = asyncio.create_task(
+            train_coroutine, name="single-controller-train-pump"
+        )
+        watchdog_task: Optional[asyncio.Task[None]] = None
+        if (
+            live_capture_enabled
+            and self._async_cfg.eligible_live_decision_capture.progress_timeout_seconds
+            is not None
+        ):
+            self._mark_eligible_live_progress("pumps_started")
+            watchdog_task = asyncio.create_task(
+                self._eligible_live_progress_watchdog(
+                    rollout_task=rollout_task,
+                    train_task=train_task,
+                ),
+                name="eligible-live-progress-watchdog",
+            )
         cleanup_reason = RolloutRemovalReason.CANCELLED
         try:
+            active_tasks = {rollout_task, train_task}
+            if watchdog_task is not None:
+                active_tasks.add(watchdog_task)
             done, _ = await asyncio.wait(
-                {rollout_task, train_task}, return_when=asyncio.FIRST_COMPLETED
+                active_tasks, return_when=asyncio.FIRST_COMPLETED
             )
             if rollout_task in done:
                 # Propagate rollout failures immediately. A normally exhausted
                 # rollout pump leaves the train pump to drain committed groups.
                 await rollout_task
+            if train_task in done:
+                # Preserve a real train-pump completion or exception if it
+                # races the diagnostic timeout.
+                await train_task
+            if watchdog_task is not None and watchdog_task in done:
+                await watchdog_task
             await train_task
             utility_config = self._async_cfg.gradient_utility_audit
             capsule_config = self._async_cfg.conditional_m4_capsule
@@ -648,7 +680,11 @@ class SingleControllerActor:
                 set_cancellation_reason(cleanup_reason)
             rollout_task.cancel()
             train_task.cancel()
-            await asyncio.gather(rollout_task, train_task, return_exceptions=True)
+            cleanup_tasks = [rollout_task, train_task]
+            if watchdog_task is not None:
+                watchdog_task.cancel()
+                cleanup_tasks.append(watchdog_task)
+            await asyncio.gather(*cleanup_tasks, return_exceptions=True)
             try:
                 await self._cancel_residual_buffer_groups(reason=cleanup_reason)
             finally:
@@ -784,6 +820,117 @@ class SingleControllerActor:
         if export_result is not None:
             result["terminal_policy_export"] = export_result
         return result
+
+    def _eligible_live_liveness_state(self) -> dict[str, Any]:
+        """Return bounded controller-local state for a progress-timeout record."""
+        weights = list(self._buffer.weight_version_list)
+        ready_list = list(self._buffer.ready_list)
+        if not isinstance(self._sampler, OpportunityAtRiskV2ShadowSampler):
+            raise TypeError(
+                "eligible-live liveness diagnostics require the OARS-v2 sampler"
+            )
+        state = {
+            "train_steps": self._train_steps,
+            "trainer_version": self._trainer_version,
+            "eligible_live_progress_sequence": (self._eligible_live_progress_sequence),
+            "eligible_live_progress_phase": self._eligible_live_progress_phase,
+            "current_epoch": self._current_epoch,
+            "inflight_rollouts": self._inflight_rollouts,
+            "dispatched_rollouts": len(self._dispatched_rollouts),
+            "rollout_permitted": self._rollout_permitted.is_set(),
+            "rollout_exhausted": self._rollout_exhausted.is_set(),
+            "buffer_admission_stalls": self._buffer_admission_stalls,
+            "buffer_size": len(self._buffer),
+            "buffer_ready_size": sum(ready_list),
+            "buffer_unready_size": len(ready_list) - sum(ready_list),
+            "buffer_weight_version_counts": {
+                str(version): weights.count(version) for version in sorted(set(weights))
+            },
+            "sampler_type": type(self._sampler).__name__,
+        }
+        state.update(self._sampler.liveness_diagnostic_state())
+        return state
+
+    def _mark_eligible_live_progress(self, phase: str) -> None:
+        """Advance the diagnostic-only heartbeat at a durable capture phase."""
+        self._eligible_live_progress_sequence += 1
+        self._eligible_live_progress_phase = phase
+
+    @staticmethod
+    def _task_liveness_state(task: asyncio.Task[Any]) -> dict[str, Any]:
+        frames = task.get_stack(limit=32)
+        return {
+            "name": task.get_name(),
+            "coroutine": task.get_coro().__qualname__,
+            "done": task.done(),
+            "cancelled": task.cancelled(),
+            "stack": [
+                line.rstrip()
+                for frame in frames
+                for line in traceback.format_stack(frame, limit=1)
+            ],
+        }
+
+    async def _eligible_live_progress_watchdog(
+        self,
+        *,
+        rollout_task: asyncio.Task[Any],
+        train_task: asyncio.Task[Any],
+    ) -> None:
+        """Fail fast and preserve state when eligible-live learner progress stops."""
+        config = self._async_cfg.eligible_live_decision_capture
+        assert config.progress_timeout_seconds is not None
+        assert config.liveness_diagnostic_path is not None
+        timeout_seconds = config.progress_timeout_seconds
+        poll_seconds = min(5.0, timeout_seconds / 4.0)
+        last_progress = (
+            self._train_steps,
+            self._trainer_version,
+            self._eligible_live_progress_sequence,
+        )
+        last_progress_ns = time.monotonic_ns()
+        while True:
+            await asyncio.sleep(poll_seconds)
+            progress = (
+                self._train_steps,
+                self._trainer_version,
+                self._eligible_live_progress_sequence,
+            )
+            now_ns = time.monotonic_ns()
+            if progress != last_progress:
+                last_progress = progress
+                last_progress_ns = now_ns
+                continue
+            elapsed_seconds = (now_ns - last_progress_ns) / 1_000_000_000
+            if elapsed_seconds < timeout_seconds:
+                continue
+            diagnostic = {
+                "schema": "eligible-live-progress-timeout-v1",
+                "trajectory_identity": config.trajectory_identity,
+                "trajectory_seed": config.trajectory_seed,
+                "timeout_seconds": timeout_seconds,
+                "seconds_without_learner_progress": elapsed_seconds,
+                "progress_definition": (
+                    "change in (train_steps, trainer_version, "
+                    "eligible_live_progress_sequence)"
+                ),
+                "controller_state": self._eligible_live_liveness_state(),
+                "tasks": {
+                    "rollout_pump": self._task_liveness_state(rollout_task),
+                    "train_pump": self._task_liveness_state(train_task),
+                },
+            }
+            output_path = Path(config.liveness_diagnostic_path)
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+            temporary_path = output_path.with_name(f".{output_path.name}.tmp")
+            with temporary_path.open("w", encoding="utf-8") as stream:
+                json.dump(diagnostic, stream, indent=2, sort_keys=True)
+                stream.write("\n")
+            os.replace(temporary_path, output_path)
+            raise RuntimeError(
+                "eligible live capture made no learner progress for "
+                f"{elapsed_seconds:.1f}s; diagnostic written to {output_path}"
+            )
 
     async def ping(self) -> dict[str, Any]:
         """Liveness check — returns immediately if event loop is running."""
@@ -1103,6 +1250,9 @@ class SingleControllerActor:
                                 )
                             eligible = self._sampler.take_eligible_m4_shield_decision()
                             if eligible is not None:
+                                self._mark_eligible_live_progress(
+                                    "eligible_decision_detected"
+                                )
                                 for _ in range(num_groups):
                                     self._buffer_capacity.release()
                                 await self._capture_eligible_live_decision(eligible)
@@ -1490,6 +1640,7 @@ class SingleControllerActor:
             )
 
         await self._remove_captured_frontier_remainder(decision)
+        self._mark_eligible_live_progress("frontier_remainder_removed")
         frontier_group_ids = {
             str(meta.extra_info[OPPORTUNITY_GROUP_ID_KEY])
             for meta in decision.frontier_metas
@@ -1499,10 +1650,12 @@ class SingleControllerActor:
             learner_version=decision.learner_version,
             excluded_group_ids=frontier_group_ids,
         )
+        self._mark_eligible_live_progress("heldout_groups_captured")
         self._rollout_permitted.clear()
 
         all_metas = list(decision.frontier_metas) + heldout_metas
         parameter_before = await asyncio.to_thread(self._trainer.model_parameter_sha256)
+        self._mark_eligible_live_progress("parameter_hash_captured")
         try:
             frontier = [
                 await self._prepare_capsule_group(meta)
@@ -1511,12 +1664,14 @@ class SingleControllerActor:
             heldout = [
                 await self._prepare_capsule_group(meta) for meta in heldout_metas
             ]
+            self._mark_eligible_live_progress("capsule_groups_prepared")
 
             output_dir = Path(config.output_dir)
             checkpoint_dir = output_dir / "checkpoint"
             weights_path = checkpoint_dir / "policy" / "weights"
             optimizer_path = checkpoint_dir / "policy" / "optimizer"
             checkpoint_dir.mkdir(parents=True)
+            self._mark_eligible_live_progress("checkpoint_save_started")
             await asyncio.to_thread(self._trainer.prepare_for_training)
             await asyncio.to_thread(
                 self._trainer.save_checkpoint,
@@ -1525,6 +1680,7 @@ class SingleControllerActor:
                 checkpointing_cfg=self._master_config.checkpointing,
             )
             await asyncio.to_thread(self._trainer.finalize_async_save)
+            self._mark_eligible_live_progress("checkpoint_save_completed")
             parameter_after = await asyncio.to_thread(
                 self._trainer.model_parameter_sha256
             )
@@ -1547,8 +1703,10 @@ class SingleControllerActor:
                 parameter_sha256_after=parameter_after,
                 checkpoint_dir=checkpoint_dir,
             )
+            self._mark_eligible_live_progress("capsule_manifest_written")
         finally:
             await self._clear_capsule_metas(all_metas)
+            self._mark_eligible_live_progress("capsule_dataplane_cleared")
 
         print(
             "eligible live M4-Shield decision captured without update: "

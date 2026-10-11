@@ -15,6 +15,7 @@
 """Tests for SingleController initialization and pump lifecycle."""
 
 import asyncio
+import json
 from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock
@@ -415,6 +416,61 @@ def test_eligible_live_capture_requires_identity_binding() -> None:
         trajectory_seed=20261101,
     )
     with pytest.raises(ValueError, match="requires trajectory_identity"):
+        validate_single_controller_config(config)
+
+
+@pytest.mark.parametrize(
+    ("timeout", "diagnostic_path"),
+    [(30.0, None), (None, "liveness.json")],
+)
+def test_eligible_live_capture_watchdog_requires_both_fields(
+    timeout: float | None, diagnostic_path: str | None
+) -> None:
+    config = _eligible_live_capture_config()
+    config.async_rl.eligible_live_decision_capture = (
+        config.async_rl.eligible_live_decision_capture.model_copy(
+            update={
+                "progress_timeout_seconds": timeout,
+                "liveness_diagnostic_path": diagnostic_path,
+            }
+        )
+    )
+
+    with pytest.raises(ValueError, match="progress watchdog requires both"):
+        validate_single_controller_config(config)
+
+
+@pytest.mark.parametrize("timeout", [0.0, -1.0, float("inf"), float("nan")])
+def test_eligible_live_capture_watchdog_requires_positive_finite_timeout(
+    timeout: float,
+) -> None:
+    config = _eligible_live_capture_config()
+    config.async_rl.eligible_live_decision_capture = (
+        config.async_rl.eligible_live_decision_capture.model_copy(
+            update={
+                "progress_timeout_seconds": timeout,
+                "liveness_diagnostic_path": "liveness.json",
+            }
+        )
+    )
+
+    with pytest.raises(ValueError, match="must be positive and finite"):
+        validate_single_controller_config(config)
+
+
+def test_eligible_live_capture_watchdog_rejects_disabled_capture() -> None:
+    config = _eligible_live_capture_config()
+    config.async_rl.eligible_live_decision_capture = (
+        config.async_rl.eligible_live_decision_capture.model_copy(
+            update={
+                "enabled": False,
+                "progress_timeout_seconds": 30.0,
+                "liveness_diagnostic_path": "liveness.json",
+            }
+        )
+    )
+
+    with pytest.raises(ValueError, match="requires capture to be enabled"):
         validate_single_controller_config(config)
 
 
@@ -1106,6 +1162,16 @@ def _run_lifecycle_controller(
         lifecycle_audit_path="audit.jsonl",
         controlled_release_delay=SimpleNamespace(enabled=True),
         terminal_policy_export=TerminalPolicyExportConfig(),
+        gradient_utility_audit=SimpleNamespace(enabled=False),
+        conditional_m4_capsule=SimpleNamespace(enabled=False),
+        eligible_live_decision_capture=SimpleNamespace(
+            enabled=False,
+            output_dir=None,
+            trajectory_identity=None,
+            trajectory_seed=None,
+            progress_timeout_seconds=None,
+            liveness_diagnostic_path=None,
+        ),
         gradient_opportunity_audit=SimpleNamespace(
             output_path=None, observer_duty_path=None
         ),
@@ -1117,6 +1183,111 @@ def _run_lifecycle_controller(
     ctrl._train_steps = train_steps
     ctrl._trainer_version = trainer_version
     return ctrl
+
+
+def test_eligible_live_watchdog_fails_fast_and_flushes_ledgers(
+    tmp_path: Path,
+) -> None:
+    ctrl = _run_lifecycle_controller(train_steps=2, trainer_version=2)
+    diagnostic_path = tmp_path / "liveness.json"
+    ctrl._async_cfg.eligible_live_decision_capture = SimpleNamespace(
+        enabled=True,
+        output_dir=str(tmp_path / "capsule"),
+        trajectory_identity="diagnostic-seed-20261102",
+        trajectory_seed=20261102,
+        progress_timeout_seconds=0.02,
+        liveness_diagnostic_path=str(diagnostic_path),
+    )
+    pump_block = asyncio.Event()
+
+    async def blocked_pump() -> None:
+        await pump_block.wait()
+
+    ctrl._rollout_pump = blocked_pump
+    ctrl._train_pump = blocked_pump
+    ctrl._current_epoch = 1
+    ctrl._inflight_rollouts = 16
+    ctrl._dispatched_rollouts = set()
+    ctrl._rollout_permitted = asyncio.Event()
+    ctrl._rollout_exhausted = asyncio.Event()
+    ctrl._buffer_admission_stalls = 7
+    ctrl._eligible_live_progress_sequence = 0
+    ctrl._eligible_live_progress_phase = "initialized"
+    ctrl._buffer = MagicMock()
+    ctrl._buffer.__len__.return_value = 12
+    ctrl._buffer.weight_version_list = [1] * 4 + [2] * 8
+    ctrl._buffer.ready_list = [True] * 8 + [False] * 4
+    ctrl._sampler = MagicMock(spec=single_controller.OpportunityAtRiskV2ShadowSampler)
+    ctrl._sampler.liveness_diagnostic_state.return_value = {
+        "baseline_sampler_type": "WeightFifoSampler",
+        "selection_candidate_watermark": 8,
+        "max_staleness_versions": 1,
+        "replenishment_credits": 1,
+    }
+
+    with pytest.raises(RuntimeError, match="made no learner progress"):
+        asyncio.run(ctrl.run())
+
+    diagnostic = json.loads(diagnostic_path.read_text())
+    assert diagnostic["schema"] == "eligible-live-progress-timeout-v1"
+    assert diagnostic["trajectory_identity"] == "diagnostic-seed-20261102"
+    assert diagnostic["controller_state"]["train_steps"] == 2
+    assert diagnostic["controller_state"]["eligible_live_progress_phase"] == (
+        "pumps_started"
+    )
+    assert diagnostic["controller_state"]["buffer_ready_size"] == 8
+    assert diagnostic["controller_state"]["replenishment_credits"] == 1
+    assert diagnostic["tasks"]["rollout_pump"]["stack"]
+    assert diagnostic["tasks"]["train_pump"]["stack"]
+    ctrl._cancel_residual_buffer_groups.assert_awaited_once_with(
+        reason=single_controller.RolloutRemovalReason.CANCELLED
+    )
+    ctrl._lifecycle_recorder.flush_jsonl.assert_called_once_with("audit.jsonl")
+    ctrl._logger.finish.assert_called_once_with()
+
+
+def test_eligible_live_watchdog_accepts_capture_phase_progress(
+    tmp_path: Path,
+) -> None:
+    ctrl = _run_lifecycle_controller(train_steps=2, trainer_version=2)
+    ctrl._async_cfg.eligible_live_decision_capture = SimpleNamespace(
+        enabled=True,
+        output_dir=str(tmp_path / "capsule"),
+        trajectory_identity="diagnostic-seed-20261102",
+        trajectory_seed=20261102,
+        progress_timeout_seconds=0.1,
+        liveness_diagnostic_path=str(tmp_path / "liveness.json"),
+    )
+    ctrl._eligible_live_progress_sequence = 0
+    ctrl._eligible_live_progress_phase = "initialized"
+
+    async def exercise_watchdog() -> None:
+        blocked = asyncio.Event()
+
+        async def blocked_pump() -> None:
+            await blocked.wait()
+
+        rollout_task = asyncio.create_task(blocked_pump())
+        train_task = asyncio.create_task(blocked_pump())
+        watchdog_task = asyncio.create_task(
+            ctrl._eligible_live_progress_watchdog(
+                rollout_task=rollout_task,
+                train_task=train_task,
+            )
+        )
+        for index in range(6):
+            await asyncio.sleep(0.02)
+            ctrl._mark_eligible_live_progress(f"phase_{index}")
+        assert not watchdog_task.done()
+        for task in (rollout_task, train_task, watchdog_task):
+            task.cancel()
+        await asyncio.gather(
+            rollout_task, train_task, watchdog_task, return_exceptions=True
+        )
+
+    asyncio.run(exercise_watchdog())
+
+    assert not (tmp_path / "liveness.json").exists()
 
 
 def test_run_uses_bounded_shutdown_only_at_configured_boundary() -> None:

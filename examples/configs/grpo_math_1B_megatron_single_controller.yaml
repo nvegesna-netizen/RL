@@ -72,6 +72,12 @@ async_rl:
     enabled: false
     output_dir: null
     heldout_groups: 4
+    trajectory_identity: null
+    trajectory_seed: null
+    # Optional fail-fast diagnostic. Both fields must be set together; the
+    # timeout measures absence of learner-step progress, not queue duration.
+    progress_timeout_seconds: null
+    liveness_diagnostic_path: null
   # Default-off behavior-neutral OARS proposal observer. This requires the
   # weight_fifo sampler, four prompts per train step, and the opportunity audit.
   opportunity_at_risk_shadow:

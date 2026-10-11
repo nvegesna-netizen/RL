@@ -810,6 +810,27 @@ class OpportunityAtRiskV2ShadowSampler:
         self._eligible_m4_shield_decision = None
         return decision
 
+    def liveness_diagnostic_state(self) -> dict[str, Any]:
+        """Return bounded scheduler state without candidate or outcome content."""
+        return {
+            "baseline_sampler_type": type(self._baseline).__name__,
+            "selection_candidate_watermark": (
+                self._baseline.selection_candidate_watermark
+            ),
+            "max_staleness_versions": self._baseline.max_staleness_versions,
+            "replenishment_credits": self._replenishment_credits,
+            "replenishment_batches_earned_total": (
+                self._replenishment_batches_earned_total
+            ),
+            "replenishment_batches_consumed_total": (
+                self._replenishment_batches_consumed_total
+            ),
+            "candidate_excess_removed_groups_total": (
+                self._candidate_excess_removed_groups_total
+            ),
+            "stale_evicted_groups_total": self._stale_evicted_groups_total,
+        }
+
     def _consume_replenishment_credit(self) -> bool:
         if self._replenishment_credits == 0:
             return False

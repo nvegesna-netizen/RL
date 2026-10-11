@@ -406,6 +406,23 @@ def _actuation_choice_buffer() -> FakeBuffer:
     return buffer
 
 
+def test_liveness_diagnostic_state_is_bounded_and_outcome_free() -> None:
+    sampler, _ = _controlled_actuator(
+        _actuation_choice_buffer(), scorer="m4_shield", capture_eligible=True
+    )
+
+    assert sampler.liveness_diagnostic_state() == {
+        "baseline_sampler_type": "WeightFifoSampler",
+        "selection_candidate_watermark": 8,
+        "max_staleness_versions": 1,
+        "replenishment_credits": 0,
+        "replenishment_batches_earned_total": 0,
+        "replenishment_batches_consumed_total": 0,
+        "candidate_excess_removed_groups_total": 0,
+        "stale_evicted_groups_total": 0,
+    }
+
+
 def test_adaptive_shadow_observes_natural_choice_and_executes_fifo() -> None:
     buffer = _natural_choice_buffer()
     sampler, events = _shadow(buffer)

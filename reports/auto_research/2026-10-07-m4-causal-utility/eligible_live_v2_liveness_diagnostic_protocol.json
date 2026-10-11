@@ -1,0 +1,68 @@
+{
+  "schema": "m4-shield-eligible-live-v2-liveness-diagnostic-v1",
+  "frozen_at": "2026-10-11",
+  "status": "FROZEN_BEFORE_DIAGNOSTIC_EXECUTION",
+  "question": "Where does a previously observed eligible-live controller stall after learner progress stops?",
+  "predecessor": {
+    "terminal_commit": "f49d184e4",
+    "terminal_status": "TERMINAL_GATE_FAILED_CLOSED",
+    "authenticated_capsules": 13,
+    "allocated_runtime_timeouts": 6,
+    "paired_replay_opened": false,
+    "post_update_outcomes_opened": false
+  },
+  "diagnostic_identity": {
+    "label": "d01",
+    "seed": 20261102,
+    "predecessor_identity": "a02",
+    "predecessor_last_completed_update": 2,
+    "assignment_domain": "m4-eligible-live-v2-liveness-diagnostic-v1"
+  },
+  "instrument": {
+    "progress_timeout_seconds": 1200,
+    "progress_definition": "change in learner step, learner version, or explicit capture-phase sequence",
+    "record": [
+      "controller counters and phase",
+      "bounded replay-buffer counts and version histogram",
+      "bounded OARS-v2 liveness counters",
+      "rollout-pump and train-pump asyncio stacks"
+    ],
+    "forbidden_record_content": [
+      "held-out loss",
+      "post-update loss",
+      "base-arm outcome",
+      "shield-arm outcome",
+      "causal effect"
+    ],
+    "normal_cleanup_required": [
+      "lifecycle ledger flush",
+      "opportunity ledger flush",
+      "OARS-v2 ledger flush",
+      "observer-duty record flush"
+    ]
+  },
+  "terminal_classification": {
+    "PASS_DIAGNOSTIC_TIMEOUT_CAPTURED": "The watchdog records bounded state and stacks, the controller raises through cleanup, and required ledgers flush.",
+    "PASS_NO_STALL_REPRODUCED_CAPTURE_EXCLUDED": "The outcome-excluded eligible capsule completes before the watchdog fires.",
+    "PASS_NO_STALL_REPRODUCED_NO_ELIGIBILITY": "All 64 learner updates complete without an eligible decision.",
+    "FAIL_DIAGNOSTIC_INSTRUMENT": "The workload fails without any prospectively permitted diagnostic terminal state."
+  },
+  "execution": {
+    "eos_submission_attempts": 1,
+    "launcher": "runllm.py --no_wait",
+    "workload_time_limit_seconds": 14400,
+    "client_queue_deadline": null,
+    "automatic_retry": false,
+    "automatic_replacement": false,
+    "automatic_extension": false
+  },
+  "decision_rule": "Use a captured timeout record only to identify and regression-test the liveness defect. Do not declare the watchdog itself a repair. If no stall reproduces, do not infer that the defect is absent; proceed only with a separately frozen multi-seed forced-no-eligibility qualification after an evidence-backed repair.",
+  "claim_boundary": {
+    "v2_acquisition_started": false,
+    "v1_capsules_pooled_into_v2": false,
+    "paired_replay_started": false,
+    "post_update_outcomes_opened": false,
+    "causal_effect_estimated": false,
+    "pipeline_status_is_scientific_endpoint": false
+  }
+}
