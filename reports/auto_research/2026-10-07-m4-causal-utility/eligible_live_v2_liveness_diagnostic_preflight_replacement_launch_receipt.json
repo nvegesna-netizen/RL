@@ -1,0 +1,47 @@
+{
+  "schema": "m4-shield-eligible-live-v2-liveness-diagnostic-preflight-replacement-launch-receipt-v1",
+  "recorded_at": "2026-10-11",
+  "status": "SUBMITTED_CHILD_CREATED",
+  "repair_source_commit": "5b68a8e4fba6061d1b46e9484835e50d02a2f1d2",
+  "package_commit": "ed6b34746845947eda34c5801d1fae37819684c5",
+  "identity": "d01",
+  "seed": 20261102,
+  "assignment_domain": "m4-eligible-live-v2-liveness-diagnostic-v1",
+  "manifest_sha256": "a997d440ac871df67141f7d932b635d43db4b800fe5f81bd32e110e2d7c6979e",
+  "package_validation_sha256": "6b80a1d0d41888d857153ecab3429a7fcc053577be89e9de754ad993c57dc081",
+  "launcher": "runllm.py --no_wait",
+  "launcher_return_code": 0,
+  "launch_invoked_at": "2026-10-11T14:02:56.540500-07:00",
+  "parent_pipeline": {
+    "project_id": 70847,
+    "pipeline_id": 73128856,
+    "generate_job_id": 481675576,
+    "trigger_job_id": 481675577
+  },
+  "child_pipeline": {
+    "project_id": 70847,
+    "pipeline_id": 73129526,
+    "logs_before_job_id": 481678505,
+    "eos_job_id": 481678515,
+    "logs_after_job_id": 481678563
+  },
+  "authenticated_workload_name": "basic/m4-eligible-live-v2-liveness-diagnostic-d01-preflight-replacement dgxh100_eos 00",
+  "execution_boundary": {
+    "submission_attempt_limit": 1,
+    "submission_attempts_consumed": 1,
+    "runtime_time_limit_seconds": 14400,
+    "progress_timeout_seconds": 1200,
+    "client_queue_deadline": null,
+    "automatic_retry": false,
+    "automatic_replacement": false,
+    "automatic_extension": false
+  },
+  "outcome_boundary": {
+    "diagnostic_terminal_result_opened": false,
+    "v2_acquisition_started": false,
+    "paired_replay_started": false,
+    "post_update_outcomes_opened": false,
+    "causal_effect_estimated": false
+  },
+  "next_action": "Status-only monitoring until terminal, then authenticate artifacts and classify the prospective diagnostic result. Do not relaunch."
+}
