@@ -147,6 +147,9 @@ def validate_eligible_decision(
 def write_eligible_live_decision_capsule(
     output_dir: Path,
     *,
+    trajectory_identity: str,
+    trajectory_seed: int,
+    assignment_domain: str,
     frontier: Sequence[CapsuleGroup],
     heldout: Sequence[CapsuleGroup],
     decision: Mapping[str, Any],
@@ -159,6 +162,12 @@ def write_eligible_live_decision_capsule(
     checkpoint_dir: Path,
 ) -> dict[str, Any]:
     """Persist exact tensors and an authenticated pre-update checkpoint manifest."""
+    if not trajectory_identity:
+        raise ValueError("eligible live capsule requires a trajectory identity")
+    if trajectory_seed < 0:
+        raise ValueError("eligible live capsule requires a nonnegative trajectory seed")
+    if not assignment_domain:
+        raise ValueError("eligible live capsule requires an assignment domain")
     if (output_dir / "manifest.json").exists() or (output_dir / "groups").exists():
         raise FileExistsError(f"eligible live capsule already exists: {output_dir}")
     if learner_version != train_steps_before_capture or learner_version < 0:
@@ -231,6 +240,9 @@ def write_eligible_live_decision_capsule(
     manifest: dict[str, Any] = {
         "schema": "m4-shield-eligible-live-capsule-v1",
         "status": "QUALIFIED_OUTCOME_EXCLUDED_ELIGIBLE_CAPTURE",
+        "trajectory_identity": trajectory_identity,
+        "trajectory_seed": trajectory_seed,
+        "assignment_domain": assignment_domain,
         "learner_version": learner_version,
         "train_steps_before_capture": train_steps_before_capture,
         "frontier_groups": 8,

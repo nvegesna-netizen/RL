@@ -80,6 +80,9 @@ def test_eligible_capsule_authenticates_checkpoint_tensors_and_embargo(
 
     result = write_eligible_live_decision_capsule(
         output_dir,
+        trajectory_identity="a01",
+        trajectory_seed=20261101,
+        assignment_domain="m4-eligible-live-causal-acquisition-v1",
         frontier=groups[:8],
         heldout=groups[8:],
         decision=_decision(),
@@ -96,6 +99,9 @@ def test_eligible_capsule_authenticates_checkpoint_tensors_and_embargo(
     assert result["status"] == "QUALIFIED_OUTCOME_EXCLUDED_ELIGIBLE_CAPTURE"
     assert manifest["captured_update_executed"] is False
     assert manifest["post_update_outcomes_opened"] is False
+    assert manifest["trajectory_identity"] == "a01"
+    assert manifest["trajectory_seed"] == 20261101
+    assert manifest["assignment_domain"] == "m4-eligible-live-causal-acquisition-v1"
     assert manifest["checkpoint_files"][0]["path"] == "state.bin"
     assert manifest["groups"][2]["roles"] == ["base", "shield"]
     assert manifest["groups"][8]["roles"] == ["heldout"]
@@ -117,6 +123,9 @@ def test_eligible_capsule_rejects_noneligible_action(tmp_path) -> None:
     with pytest.raises(ValueError, match="changed proposed_reward_variance_sum"):
         write_eligible_live_decision_capsule(
             output_dir,
+            trajectory_identity="a01",
+            trajectory_seed=20261101,
+            assignment_domain="m4-eligible-live-causal-acquisition-v1",
             frontier=groups[:8],
             heldout=groups[8:],
             decision=decision,

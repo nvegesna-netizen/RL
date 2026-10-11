@@ -37,6 +37,8 @@ async_rl:
     enabled: true
     output_dir: results/m4-eligible-live-capture/capsule
     heldout_groups: 4
+    trajectory_identity: qualification-seed-20261031
+    trajectory_seed: 20261031
   terminal_policy_export:
     enabled: false
 

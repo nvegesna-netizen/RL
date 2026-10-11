@@ -87,6 +87,8 @@ class EligibleLiveDecisionCaptureConfig(BaseModel, frozen=True):
     enabled: bool = False
     output_dir: Optional[str] = None
     heldout_groups: int = 4
+    trajectory_identity: Optional[str] = None
+    trajectory_seed: Optional[int] = None
 
 
 class LifecycleDerivedOpportunityAuditConfig(BaseModel, frozen=True):
@@ -480,6 +482,14 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
             )
         if not live_capture_config.output_dir:
             raise ValueError("eligible_live_decision_capture requires output_dir")
+        if not live_capture_config.trajectory_identity:
+            raise ValueError(
+                "eligible_live_decision_capture requires trajectory_identity"
+            )
+        if live_capture_config.trajectory_seed != master_config.grpo.seed:
+            raise ValueError(
+                "eligible_live_decision_capture trajectory_seed must equal grpo.seed"
+            )
         if live_capture_config.heldout_groups != 4:
             raise ValueError(
                 "eligible_live_decision_capture freezes exactly four heldout groups"

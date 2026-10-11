@@ -347,6 +347,7 @@ def _eligible_live_capture_config() -> MasterConfig:
     config.grpo.num_prompts_per_step = 4
     config.grpo.num_generations_per_prompt = 8
     config.grpo.max_num_steps = 64
+    config.grpo.seed = 20261101
     config.async_rl.max_buffered_rollouts = 64
     config.async_rl.controlled_release_delay = ControlledReleaseDelayConfig(
         enabled=True,
@@ -371,6 +372,8 @@ def _eligible_live_capture_config() -> MasterConfig:
     config.async_rl.eligible_live_decision_capture = EligibleLiveDecisionCaptureConfig(
         enabled=True,
         output_dir="eligible-capsule",
+        trajectory_identity="a01",
+        trajectory_seed=20261101,
     )
     return config
 
@@ -389,6 +392,29 @@ def test_eligible_live_capture_rejects_nonshield_actuation() -> None:
         candidate_window_policy="controlled_frontier",
     )
     with pytest.raises(ValueError, match="requires controlled-frontier M4-Shield"):
+        validate_single_controller_config(config)
+
+
+def test_eligible_live_capture_requires_seed_binding() -> None:
+    config = _eligible_live_capture_config()
+    config.async_rl.eligible_live_decision_capture = EligibleLiveDecisionCaptureConfig(
+        enabled=True,
+        output_dir="eligible-capsule",
+        trajectory_identity="a01",
+        trajectory_seed=20261102,
+    )
+    with pytest.raises(ValueError, match="trajectory_seed must equal grpo.seed"):
+        validate_single_controller_config(config)
+
+
+def test_eligible_live_capture_requires_identity_binding() -> None:
+    config = _eligible_live_capture_config()
+    config.async_rl.eligible_live_decision_capture = EligibleLiveDecisionCaptureConfig(
+        enabled=True,
+        output_dir="eligible-capsule",
+        trajectory_seed=20261101,
+    )
+    with pytest.raises(ValueError, match="requires trajectory_identity"):
         validate_single_controller_config(config)
 
 

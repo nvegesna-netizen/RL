@@ -76,6 +76,12 @@ def analyze(capsule_dir: Path, protocol_path: Path) -> dict[str, Any]:
         == "m4-shield-eligible-live-capsule-v1",
         "status": manifest.get("status")
         == "QUALIFIED_OUTCOME_EXCLUDED_ELIGIBLE_CAPTURE",
+        "trajectory_identity": isinstance(manifest.get("trajectory_identity"), str)
+        and bool(manifest.get("trajectory_identity")),
+        "trajectory_seed": isinstance(manifest.get("trajectory_seed"), int)
+        and manifest.get("trajectory_seed") >= 0,
+        "assignment_domain": isinstance(manifest.get("assignment_domain"), str)
+        and bool(manifest.get("assignment_domain")),
         "learner_version_matches_updates": manifest.get("learner_version")
         == manifest.get("train_steps_before_capture"),
         "parameter_hash_unchanged": manifest.get("parameter_hash_unchanged") is True
@@ -238,6 +244,9 @@ def analyze(capsule_dir: Path, protocol_path: Path) -> dict[str, Any]:
         ),
         "protocol_sha256": _sha256(protocol_bytes),
         "manifest_sha256": _sha256(manifest_bytes),
+        "trajectory_identity": manifest.get("trajectory_identity"),
+        "trajectory_seed": manifest.get("trajectory_seed"),
+        "assignment_domain": manifest.get("assignment_domain"),
         "learner_version": manifest.get("learner_version"),
         "checks": checks,
         "base_group_ids": sorted(base_ids),

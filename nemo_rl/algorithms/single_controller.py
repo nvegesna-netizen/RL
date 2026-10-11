@@ -1478,7 +1478,12 @@ class SingleControllerActor:
     ) -> None:
         """Capture one live Shield divergence without executing its update."""
         config = self._async_cfg.eligible_live_decision_capture
-        assert config.enabled and config.output_dir is not None
+        assert (
+            config.enabled
+            and config.output_dir is not None
+            and config.trajectory_identity is not None
+            and config.trajectory_seed is not None
+        )
         if decision.learner_version != self._trainer_version:
             raise RuntimeError(
                 "eligible decision learner version changed before capture"
@@ -1526,6 +1531,11 @@ class SingleControllerActor:
             self._eligible_live_capture_result = await asyncio.to_thread(
                 write_eligible_live_decision_capsule,
                 output_dir,
+                trajectory_identity=config.trajectory_identity,
+                trajectory_seed=config.trajectory_seed,
+                assignment_domain=(
+                    self._async_cfg.controlled_release_delay.assignment_domain
+                ),
                 frontier=frontier,
                 heldout=heldout,
                 decision=decision.decision,
