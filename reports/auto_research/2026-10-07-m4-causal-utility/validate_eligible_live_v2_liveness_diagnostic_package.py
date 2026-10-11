@@ -118,7 +118,8 @@ def main() -> None:
     manifest = json.loads(args.manifest.read_bytes())
     spec = manifest["spec"]
     require(
-        spec["name"] == "m4-eligible-live-v2-liveness-diagnostic-d01",
+        spec["name"]
+        == "m4-eligible-live-v2-liveness-diagnostic-d01-preflight-replacement",
         "workload identity moved",
     )
     require(spec["time_limit"] == 14400, "four-hour allocated runtime moved")
@@ -177,7 +178,10 @@ def main() -> None:
         "source_commit_bound": lock["source_commit"] == SOURCE_COMMIT,
         "source_archive_bound": lock["source_archive_sha256"] == SOURCE_SHA256,
         "single_authorized_submission": (
-            authorization["authorized"]["diagnostic_eos_submission_attempts"] == 1
+            authorization["authorized"][
+                "preflight_replacement_eos_submission_attempts"
+            ]
+            == 1
         ),
         "focused_tests_precede_workload": True,
         "timeout_is_1200_seconds": (
@@ -195,8 +199,8 @@ def main() -> None:
     }
     require(all(checks.values()), "diagnostic package gate failed")
     result: dict[str, Any] = {
-        "schema": "m4-shield-eligible-live-v2-liveness-diagnostic-package-validation-v1",
-        "status": "PASS_AUTHORIZED_UNSUBMITTED",
+        "schema": "m4-shield-eligible-live-v2-liveness-diagnostic-preflight-replacement-package-validation-v1",
+        "status": "PASS_AUTHORIZED_PREFLIGHT_REPLACEMENT_UNSUBMITTED",
         "checks": checks,
         "source_commit": SOURCE_COMMIT,
         "source_archive_sha256": SOURCE_SHA256,

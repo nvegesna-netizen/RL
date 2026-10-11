@@ -1,0 +1,45 @@
+{
+  "schema": "m4-shield-eligible-live-v2-liveness-diagnostic-preflight-replacement-execution-lock-v1",
+  "frozen_at": "2026-10-11",
+  "status": "FROZEN_AFTER_PREFLIGHT_REPAIR_BEFORE_REPLACEMENT",
+  "source_commit": "5b68a8e4fba6061d1b46e9484835e50d02a2f1d2",
+  "source_archive_sha256": "49a96f60d66c7a29cf82bd76e06f02dcd13146fc9cdfcaef2fbaa16451a5b7f9",
+  "megatron_archive_sha256": "98d98920c0fea3d8ae1216a485dc9b5aa4fc966e469435ad61f2bae456de80d2",
+  "diagnostic_protocol_sha256": "59f99259d56d8bc993c59e3291e4ccf3f2ecf9832729e72e81222ee01f4dbc9c",
+  "prior_failure_receipt_sha256": "8ea5e3e8563e830932cb363a8f8824dd1ce323942dbd03570d302da0611e7510",
+  "repair_protocol_sha256": "4df538d8f79fb6aef8d9b6a516e75f406651603d5b5029c225ac33f92c12816c",
+  "replacement_authorization_sha256": "c1da23a5daa196050ea8aebb100dbebe89e05a3282bf8c3d9f6b15dc6bbae285",
+  "repair": {
+    "file": "tests/unit/single_controller/test_single_controller.py",
+    "repaired_file_sha256": "ec51e22609280ce323a597a24c48cd0ddd336a57925fb48cbfb1921b9cb2fc9f",
+    "test_fixture_only": true,
+    "runtime_implementation_changed": false,
+    "scientific_design_changed": false
+  },
+  "diagnostic": {
+    "identity": "d01",
+    "seed": 20261102,
+    "assignment_domain": "m4-eligible-live-v2-liveness-diagnostic-v1",
+    "progress_timeout_seconds": 1200,
+    "focused_tests_must_pass_before_workload": true,
+    "scientific_outcomes_recorded": false
+  },
+  "execution": {
+    "submission_attempt_limit": 1,
+    "launcher": "runllm.py --no_wait",
+    "workload_time_limit_seconds": 14400,
+    "client_queue_deadline": null,
+    "automatic_retry": false,
+    "automatic_replacement": false,
+    "automatic_extension": false
+  },
+  "outcome_boundary": {
+    "prior_scientific_workload_invocations": 0,
+    "prior_assignments_created": 0,
+    "v2_acquisition_started": false,
+    "v1_capsules_pooled_into_v2": false,
+    "paired_replay_started": false,
+    "post_update_loss_computed": false,
+    "causal_effect_estimated": false
+  }
+}

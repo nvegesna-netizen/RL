@@ -1,0 +1,47 @@
+{
+  "schema": "m4-shield-eligible-live-v2-liveness-diagnostic-preflight-replacement-package-receipt-v1",
+  "recorded_at": "2026-10-11",
+  "status": "PASS_AUTHORIZED_PREFLIGHT_REPLACEMENT_UNSUBMITTED",
+  "source_commit": "5b68a8e4fba6061d1b46e9484835e50d02a2f1d2",
+  "source_archive": {
+    "path": "session/20260914_m4_opportunity_control/m4-eligible-live-v2-diagnostic-source-5b68a8e4f.tar.gz",
+    "sha256": "49a96f60d66c7a29cf82bd76e06f02dcd13146fc9cdfcaef2fbaa16451a5b7f9",
+    "tracked_in_git": false
+  },
+  "manifest": {
+    "path": "session/20260914_m4_opportunity_control/m4-eligible-live-v2-liveness-diagnostic-preflight-replacement-manifest.json",
+    "sha256": "a997d440ac871df67141f7d932b635d43db4b800fe5f81bd32e110e2d7c6979e",
+    "bytes": 16981810,
+    "tracked_in_git": false
+  },
+  "repair_binding": {
+    "prior_failure_receipt_sha256": "8ea5e3e8563e830932cb363a8f8824dd1ce323942dbd03570d302da0611e7510",
+    "repair_protocol_sha256": "4df538d8f79fb6aef8d9b6a516e75f406651603d5b5029c225ac33f92c12816c",
+    "replacement_authorization_sha256": "c1da23a5daa196050ea8aebb100dbebe89e05a3282bf8c3d9f6b15dc6bbae285",
+    "replacement_execution_lock_sha256": "d83c9f792db15c632b00707e74582575ffacc23be996e69c60275b8c5954a9bd"
+  },
+  "tracked_inputs": {
+    "builder_sha256": "0e04189f326dd73cb5b4276707d8ab3100d0e2e19c2afe5d66dd052c92900273",
+    "validator_sha256": "ce55a2353bce445434ae058873ebcc10a351c5546b7d97529ca6e2003ef58058",
+    "package_validation_sha256": "6b80a1d0d41888d857153ecab3429a7fcc053577be89e9de754ad993c57dc081",
+    "eos_custom_config_sha256": "0b72764d2ff41c690bab0f6a28408917f3f04faa311b581c94c56cef9ab35168",
+    "variables_sha256": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356"
+  },
+  "execution_boundary": {
+    "launcher": "runllm.py --no_wait",
+    "submission_attempt_limit": 1,
+    "runtime_time_limit_seconds": 14400,
+    "progress_timeout_seconds": 1200,
+    "client_queue_deadline": null,
+    "automatic_retry": false,
+    "automatic_extension": false
+  },
+  "outcome_boundary": {
+    "prior_scientific_workload_invocations": 0,
+    "prior_assignments_created": 0,
+    "v2_acquisition_started": false,
+    "paired_replay_started": false,
+    "post_update_outcomes_opened": false,
+    "causal_effect_estimated": false
+  }
+}

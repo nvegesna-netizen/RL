@@ -11,14 +11,14 @@ import tarfile
 from pathlib import Path
 
 
-SOURCE_COMMIT = "f70361f2cc3568a2f43fd56bacbf440b08a6b977"
-SOURCE_SHA256 = "649c5e28de8cbba98ba83e50259f3376f64039cf003cec43c5ce2bd19026d304"
+SOURCE_COMMIT = "5b68a8e4fba6061d1b46e9484835e50d02a2f1d2"
+SOURCE_SHA256 = "49a96f60d66c7a29cf82bd76e06f02dcd13146fc9cdfcaef2fbaa16451a5b7f9"
 MEGATRON_SHA256 = "98d98920c0fea3d8ae1216a485dc9b5aa4fc966e469435ad61f2bae456de80d2"
 PROTOCOL_SHA256 = "59f99259d56d8bc993c59e3291e4ccf3f2ecf9832729e72e81222ee01f4dbc9c"
 AUTHORIZATION_SHA256 = (
-    "796a60d0ab52ef782b91a1390e5ae2502c12db0490ae41ee2c40b9793b2f6de0"
+    "c1da23a5daa196050ea8aebb100dbebe89e05a3282bf8c3d9f6b15dc6bbae285"
 )
-LOCK_SHA256 = "113758c56418359bb50ec367369d385a78206651ed7a6d37d9fab7fe40c0d6ce"
+LOCK_SHA256 = "d83c9f792db15c632b00707e74582575ffacc23be996e69c60275b8c5954a9bd"
 V1_TERMINAL_SHA256 = "cebc287b0edd71c313bf1b70a21e70ff9f8c7f844880c4ab0cf459d19f02b456"
 CAUSAL_PROTOCOL_SHA256 = (
     "716ba0eb8f980ca5af0ef3d57e2415befc1fb1a315afeb01b9bc326a60341b48"
@@ -40,6 +40,9 @@ FILE_HASHES = {
     CAUSAL_PROTOCOL_PATH: CAUSAL_PROTOCOL_SHA256,
     ANALYZER_PATH: "bd6734b03f9be962377373ce2f019e5243e07796ae5297af0fe233b3e16bd6ee",
     f"{REPORT_DIR}/eligible_live_v2_liveness_diagnostic_protocol.json": PROTOCOL_SHA256,
+    f"{REPORT_DIR}/eligible_live_v2_liveness_diagnostic_preflight_failure_receipt.json": "8ea5e3e8563e830932cb363a8f8824dd1ce323942dbd03570d302da0611e7510",
+    f"{REPORT_DIR}/eligible_live_v2_liveness_diagnostic_preflight_repair_protocol.json": "4df538d8f79fb6aef8d9b6a516e75f406651603d5b5029c225ac33f92c12816c",
+    f"{REPORT_DIR}/eligible_live_v2_liveness_diagnostic_preflight_replacement_authorization.json": AUTHORIZATION_SHA256,
     "nemo_rl/algorithms/async_utils/eligible_live_decision_capsule.py": "d647cf0113cc4caefa244e61f26622f1453ee569b60a30105b17ac486c0d8913",
     "nemo_rl/algorithms/async_utils/opportunity_at_risk_v2.py": "d6221b7f9766d07f9e1a4f1a0886af9c5625f3e4a6eaf0ddc283078c6d982c3b",
     "nemo_rl/algorithms/async_utils/rollout_lifecycle.py": "4d62574c1695dbad310e5fd80c2ee65d7f1efeab22fb283b1e99fd11a0ef22ac",
@@ -47,7 +50,7 @@ FILE_HASHES = {
     "nemo_rl/algorithms/single_controller_utils/config.py": "bec32196c6208f5dbeb4729b9ade070519be6fa85fc4417463aad87949dc9501",
     "tests/unit/single_controller/test_eligible_live_decision_capsule.py": "39d44b35ab5ad1a23bd85bfdd8830bdfa72cc5ae605d219cd579f793ebe7ffc0",
     "tests/unit/single_controller/test_opportunity_at_risk_v2.py": "e5de5f257460c04de4d157ab755c2407d6ab93e04f91f9caf34407b7ef541515",
-    "tests/unit/single_controller/test_single_controller.py": "da13cce6a9c61c7c23406209409eb58f3995346e8ffe67dd4b5894c3ef7df294",
+    "tests/unit/single_controller/test_single_controller.py": "ec51e22609280ce323a597a24c48cd0ddd336a57925fb48cbfb1921b9cb2fc9f",
     "uv.lock": "bc69ceddc9f35d2c120235c96afac2e6c7b76827e044efda3e61f908be72c4cc",
 }
 
@@ -91,8 +94,11 @@ def main() -> None:
         or protocol["instrument"]["progress_timeout_seconds"] != 1200
         or protocol["execution"]["workload_time_limit_seconds"] != 14400
         or protocol["execution"]["client_queue_deadline"] is not None
-        or authorization["status"] != "AUTHORIZED_BEFORE_DIAGNOSTIC_EXECUTION"
-        or authorization["authorized"]["diagnostic_eos_submission_attempts"] != 1
+        or authorization["status"] != "AUTHORIZED_BEFORE_PREFLIGHT_REPLACEMENT"
+        or authorization["authorized"][
+            "preflight_replacement_eos_submission_attempts"
+        ]
+        != 1
         or lock["source_commit"] != SOURCE_COMMIT
         or lock["source_archive_sha256"] != SOURCE_SHA256
         or lock["execution"]["submission_attempt_limit"] != 1
@@ -200,8 +206,12 @@ assert hashlib.sha256(l_path.read_bytes()).hexdigest()=="@LOCK_SHA256@"
 assert hashlib.sha256(v1_path.read_bytes()).hexdigest()=="@V1_TERMINAL_SHA256@"
 assert p["diagnostic_identity"]["seed"]==20261102
 assert p["instrument"]["progress_timeout_seconds"]==1200
-assert auth["authorized"]["diagnostic_eos_submission_attempts"]==1
+assert auth["status"]=="AUTHORIZED_BEFORE_PREFLIGHT_REPLACEMENT"
+assert auth["authorized"]["preflight_replacement_eos_submission_attempts"]==1
 assert lock["source_commit"]=="@SOURCE_COMMIT@"
+assert lock["status"]=="FROZEN_AFTER_PREFLIGHT_REPAIR_BEFORE_REPLACEMENT"
+assert lock["repair"]["test_fixture_only"]
+assert not lock["repair"]["runtime_implementation_changed"]
 assert v1["status"]=="TERMINAL_GATE_FAILED_CLOSED"
 assert not v1["paired_replay_opened"] and not v1["post_update_outcomes_opened"]
 file_hashes=@FILE_HASHES_JSON@
@@ -365,7 +375,7 @@ exit "$GATE_RC"
         "labels": {"target": "silicon"},
         "launchers": {"type:slurm": {"nodes": 1, "ntasks_per_node": 1}},
         "spec": {
-            "name": "m4-eligible-live-v2-liveness-diagnostic-d01",
+            "name": "m4-eligible-live-v2-liveness-diagnostic-d01-preflight-replacement",
             "workspace": "/workspace",
             "nodes": 1,
             "time_limit": 14400,
