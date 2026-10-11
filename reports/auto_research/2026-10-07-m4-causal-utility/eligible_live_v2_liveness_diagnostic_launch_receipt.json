@@ -1,7 +1,7 @@
 {
   "schema": "m4-shield-eligible-live-v2-liveness-diagnostic-launch-receipt-v1",
   "recorded_at": "2026-10-11",
-  "status": "SUBMITTED_NO_WAIT",
+  "status": "RUNNING_ALLOCATED",
   "source_commit": "f70361f2cc3568a2f43fd56bacbf440b08a6b977",
   "package_commit": "36a4dd535",
   "identity": "d01",
@@ -26,6 +26,15 @@
     "logs_after_job_id": 481659510
   },
   "authenticated_workload_name": "basic/m4-eligible-live-v2-liveness-diagnostic-d01 dgxh100_eos 00",
+  "slurm": {
+    "job_id": 6233394,
+    "node": "eos0246",
+    "state_at_receipt_update": "RUNNING",
+    "time_limit": "04:00:00",
+    "deadline": null,
+    "rendered_srun_time_flag": "--time 0:14400",
+    "queue_deadline_present": false
+  },
   "execution_boundary": {
     "submission_attempt_limit": 1,
     "submission_attempts_consumed": 1,
