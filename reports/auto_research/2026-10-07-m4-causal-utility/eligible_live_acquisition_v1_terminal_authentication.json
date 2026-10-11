@@ -1,0 +1,57 @@
+{
+  "schema": "m4-shield-eligible-live-acquisition-v1-terminal-authentication-v1",
+  "status": "TERMINAL_GATE_FAILED_CLOSED",
+  "authenticated_at": "2026-10-11",
+  "source_commit": "545860ed572d5018c106a6438156d7046cf9027d",
+  "launch_receipt_commit": "1d8a1e6d5",
+  "assignment_domain": "m4-eligible-live-causal-acquisition-v1",
+  "frozen_trajectory_count": 20,
+  "authenticated_capsule_count": 13,
+  "minimum_authenticated_capsules_to_open_replay": 16,
+  "completion_gate_passed": false,
+  "paired_replay_opened": false,
+  "post_update_outcomes_opened": false,
+  "terminal_counts": {
+    "authenticated_outcome_excluded_capsules": 13,
+    "runtime_failures": 6,
+    "preallocation_deadline_failures": 1
+  },
+  "authenticated_capsules": [
+    {"identity":"a01","seed":20261101,"parent_pipeline_id":73050894,"child_pipeline_id":73051182,"eos_job_id":481100379,"learner_version":11,"result_sha256":"15a8e6e8a32b6f9fab778996f495c6a90db8838f1fdc0d0e0f784eddd9c6748c","hash_manifest_sha256":"703e3461d562fcf13892fb89890667ea2eb413601022b733ae44f62fb58fe9c9"},
+    {"identity":"a04","seed":20261104,"parent_pipeline_id":73051567,"child_pipeline_id":73051720,"eos_job_id":481103455,"learner_version":20,"result_sha256":"f9bf355e3cb9aff03c7ddb45b6c2e96027ccbe64cd323a794a31cbb02af5d3cf","hash_manifest_sha256":"5ad993953d543c4e118470ba9aa1c6209ac3df72cd25cf6332e066951bf4a565"},
+    {"identity":"a06","seed":20261106,"parent_pipeline_id":73052478,"child_pipeline_id":73052574,"eos_job_id":481109648,"learner_version":8,"result_sha256":"8eb58a36f8ba01c71459cbde52dcccccbbe24bf4ccd571c1b232407d2e441292","hash_manifest_sha256":"540ed139cef9576f64fca9a9cc3d94ebbf1cf5489922d7c22bb160e2bcec21fb"},
+    {"identity":"a07","seed":20261107,"parent_pipeline_id":73052491,"child_pipeline_id":73052583,"eos_job_id":481109670,"learner_version":23,"result_sha256":"27791697659350722d846cda2fe41ea31b3d781aee82910d9d7872af3f0ce8d0","hash_manifest_sha256":"5a1f3098e6d06a9dc62c0c405357a9d5c695117f1adef95a45390f0955d1368a"},
+    {"identity":"a08","seed":20261108,"parent_pipeline_id":73052563,"child_pipeline_id":73052921,"eos_job_id":481112033,"learner_version":8,"result_sha256":"79d1eff1008035e07280066b44f827c74fd9b964ea28bbda1e393766f1f72eaf","hash_manifest_sha256":"7cadd79812b68bb55897c151194afc03f9d47f9364ca2238405e241e30d38f46"},
+    {"identity":"a12","seed":20261112,"parent_pipeline_id":73053598,"child_pipeline_id":73053942,"eos_job_id":481118387,"learner_version":11,"result_sha256":"b00aa647d8240eb615a1a2c93ae77e8aa4daf82baed73e2025b92b4a8d1e8756","hash_manifest_sha256":"61142eb46c1cb8136ac6d42dbe2dde4540f92c8fef81ce86a5b07c0c884cacd1"},
+    {"identity":"a13","seed":20261113,"parent_pipeline_id":73053611,"child_pipeline_id":73053959,"eos_job_id":481118636,"learner_version":16,"result_sha256":"7b332ae513ac83f9c3b3d3822f01b2229bfb5b513718c68e284263ecb6e66bb1","hash_manifest_sha256":"0b8a65a0a229d35698a15249f87d60d11baa995a83843d0fb0086ec1af7d6d9f"},
+    {"identity":"a14","seed":20261114,"parent_pipeline_id":73053977,"child_pipeline_id":73054102,"eos_job_id":481119364,"learner_version":15,"result_sha256":"f766668b1b6698c6868f0a0584f4723df86a6c17e7b19cfbaf2edf5ae7e75993","hash_manifest_sha256":"d7f3a742f81f16283ff3af53f6f30a8646d18888dabf20fc7c48d440cc9695a7"},
+    {"identity":"a15","seed":20261115,"parent_pipeline_id":73054011,"child_pipeline_id":73054118,"eos_job_id":481119488,"learner_version":8,"result_sha256":"880da0c5b7a0fb547b0ab3c892899a683a2f74d4b4af82c0180f17e89c201649","hash_manifest_sha256":"6284ff75025e269f166fba45924c4bccb69cbceec51e0226b2d0470f3da17be8"},
+    {"identity":"a16","seed":20261116,"parent_pipeline_id":73054423,"child_pipeline_id":73054581,"eos_job_id":481124372,"learner_version":7,"result_sha256":"6bd19419b24fffc58741e878bc180254b8143e846dfc19271186c1d1df3be525","hash_manifest_sha256":"e30839f1735580000332372e305a25b94da40483b41f84de49e2260b1f161273"},
+    {"identity":"a17","seed":20261117,"parent_pipeline_id":73054637,"child_pipeline_id":73054850,"eos_job_id":481125179,"learner_version":13,"result_sha256":"7f27e38ac56b42e81464b00a68fe1e0d7b92c370b8fce6b7d72c5e1ec2b6ecca","hash_manifest_sha256":"1a745e5e44906382c330ea924cef00244e948fefc86ec8479d9dfde7432b3967"},
+    {"identity":"a18","seed":20261118,"parent_pipeline_id":73055129,"child_pipeline_id":73055265,"eos_job_id":481130131,"learner_version":9,"result_sha256":"6129c087bf481300e3039418b36fc68117f78641ba9b649d1d817390bcee6d69","hash_manifest_sha256":"d8cf453d01ae8f175a5bdf074bf1293ae2daadc1fdc74699d01c1d676c583a4a"},
+    {"identity":"a20","seed":20261120,"parent_pipeline_id":73055226,"child_pipeline_id":73055946,"eos_job_id":481133140,"learner_version":7,"result_sha256":"88bf156b44210c25fe40eefe5b2b1815aa1df1e9831e83059302ce83799afb21","hash_manifest_sha256":"9ee17592645a95a16738e16731c0c7012181f38bc646774a2da24aa811ded252"}
+  ],
+  "failed_closed_trajectories": [
+    {"identity":"a02","seed":20261102,"parent_pipeline_id":73051217,"child_pipeline_id":73051312,"eos_job_id":481101219,"slurm_state":"TIMEOUT","allocated_runtime":"04:00:14","last_completed_update":2,"host":"eos0567.eos.clusters.nvidia.com"},
+    {"identity":"a03","seed":20261103,"parent_pipeline_id":73051233,"child_pipeline_id":73051321,"eos_job_id":481101259,"slurm_state":"TIMEOUT","allocated_runtime":"04:00:12","last_completed_update":6,"host":"eos0426.eos.clusters.nvidia.com"},
+    {"identity":"a05","seed":20261105,"parent_pipeline_id":73051744,"child_pipeline_id":73051841,"eos_job_id":481104219,"slurm_state":"DEADLINE","allocated_runtime":"00:00:00","last_completed_update":0,"host":null},
+    {"identity":"a09","seed":20261109,"parent_pipeline_id":73052573,"child_pipeline_id":73052932,"eos_job_id":481112070,"slurm_state":"TIMEOUT","allocated_runtime":"04:00:03","last_completed_update":6,"host":"eos0402.eos.clusters.nvidia.com"},
+    {"identity":"a10","seed":20261110,"parent_pipeline_id":73052907,"child_pipeline_id":73053092,"eos_job_id":481113947,"slurm_state":"TIMEOUT","allocated_runtime":"04:00:03","last_completed_update":2,"host":"eos0406.eos.clusters.nvidia.com"},
+    {"identity":"a11","seed":20261111,"parent_pipeline_id":73053442,"child_pipeline_id":73053539,"eos_job_id":481116492,"slurm_state":"TIMEOUT","allocated_runtime":"04:00:03","last_completed_update":2,"host":"eos0407.eos.clusters.nvidia.com"},
+    {"identity":"a19","seed":20261119,"parent_pipeline_id":73055141,"child_pipeline_id":73055277,"eos_job_id":481130202,"slurm_state":"TIMEOUT","allocated_runtime":"04:00:03","last_completed_update":10,"host":"eos0439.eos.clusters.nvidia.com"}
+  ],
+  "authentication_checks": {
+    "all_result_hashes_match_job_manifests": true,
+    "all_internal_capture_checks_pass": true,
+    "all_identity_seed_domain_bindings_match": true,
+    "all_authenticated_records_are_outcome_excluded": true,
+    "no_paired_arm_outcome_was_opened": true
+  },
+  "frozen_rule_application": {
+    "runtime_failure": "failed_closed",
+    "automatic_retry": false,
+    "automatic_replacement": false,
+    "fewer_than_16_authenticated_capsules": "stop_without_paired_replay"
+  },
+  "claim_boundary": "This receipt closes acquisition v1 only. It makes no causal utility claim and cannot authorize replay or selective retry."
+}
