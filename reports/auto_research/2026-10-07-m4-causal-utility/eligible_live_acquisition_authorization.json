@@ -1,0 +1,26 @@
+{
+  "schema": "m4-shield-eligible-live-acquisition-authorization-v1",
+  "status": "AUTHORIZED_BEFORE_FIRST_ACQUISITION_TRAJECTORY",
+  "recorded_at": "2026-10-11",
+  "authority": {
+    "user_instruction": "do it",
+    "standing_eos_launch_authorization": true,
+    "standing_push_authorization": true
+  },
+  "authorized": {
+    "fixed_outcome_excluded_capture_trajectories": 20,
+    "parallel_capture_submission": true,
+    "training_before_first_eligible_decision": true,
+    "paired_one_update_replay_after_capture_gate": true,
+    "registered_offline_analysis_after_replay_gate": true,
+    "required_launcher": "runllm.py --no_wait"
+  },
+  "constraints": {
+    "capture_seed_replacement": false,
+    "automatic_retry": false,
+    "automatic_extension": false,
+    "post_update_outcomes_during_capture": false,
+    "paired_replay_before_16_authenticated_capsules": false,
+    "partial_replay_outcome_access": false
+  }
+}

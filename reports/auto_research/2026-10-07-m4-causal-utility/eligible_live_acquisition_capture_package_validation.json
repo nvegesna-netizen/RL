@@ -1,0 +1,183 @@
+{
+  "authorization_sha256": "3e82b9f069877006738cadaa88516df000c47b5880278b7349372d76645774f5",
+  "automatic_extension": false,
+  "automatic_replacement": false,
+  "automatic_retry": false,
+  "candidate_count": 20,
+  "candidates": [
+    {
+      "bytes": 16937773,
+      "identity": "a01",
+      "manifest": "session/20260914_m4_opportunity_control/m4-eligible-live-acquisition-capture-manifests/a01.json",
+      "seed": 20261101,
+      "sha256": "10661f5ff68b44b5d3d91e16e1015cc018d0b8dea5236a29e8bd025eca978777",
+      "shell_syntax": "PASS"
+    },
+    {
+      "bytes": 16937773,
+      "identity": "a02",
+      "manifest": "session/20260914_m4_opportunity_control/m4-eligible-live-acquisition-capture-manifests/a02.json",
+      "seed": 20261102,
+      "sha256": "699c46972d8ef26f623604572cd5a6c300f93b3cc3296aa5fdd0816e189e47ec",
+      "shell_syntax": "PASS"
+    },
+    {
+      "bytes": 16937773,
+      "identity": "a03",
+      "manifest": "session/20260914_m4_opportunity_control/m4-eligible-live-acquisition-capture-manifests/a03.json",
+      "seed": 20261103,
+      "sha256": "8f66e1fedd63a56b22d5f4e0c0fcf518d3a621399f06eac984be1ed95bc2fae0",
+      "shell_syntax": "PASS"
+    },
+    {
+      "bytes": 16937773,
+      "identity": "a04",
+      "manifest": "session/20260914_m4_opportunity_control/m4-eligible-live-acquisition-capture-manifests/a04.json",
+      "seed": 20261104,
+      "sha256": "de154f24c7a728aa1a4385c5224cff6ff702333f604937e04271d23b746589e5",
+      "shell_syntax": "PASS"
+    },
+    {
+      "bytes": 16937773,
+      "identity": "a05",
+      "manifest": "session/20260914_m4_opportunity_control/m4-eligible-live-acquisition-capture-manifests/a05.json",
+      "seed": 20261105,
+      "sha256": "6aff9d404d83dd59c74773424d50562f2fad176b1dc76e0a3f6b1e6527d8e7db",
+      "shell_syntax": "PASS"
+    },
+    {
+      "bytes": 16937773,
+      "identity": "a06",
+      "manifest": "session/20260914_m4_opportunity_control/m4-eligible-live-acquisition-capture-manifests/a06.json",
+      "seed": 20261106,
+      "sha256": "81f672b574a3a347cbe9e9ed88aa7a4bae34c6e0d6d2ec9c877e7dd86145c069",
+      "shell_syntax": "PASS"
+    },
+    {
+      "bytes": 16937773,
+      "identity": "a07",
+      "manifest": "session/20260914_m4_opportunity_control/m4-eligible-live-acquisition-capture-manifests/a07.json",
+      "seed": 20261107,
+      "sha256": "6e43e7f1c376e3d2fc41b9083247b7e127aae4af4dc3d6d13706da3dbd91ca02",
+      "shell_syntax": "PASS"
+    },
+    {
+      "bytes": 16937773,
+      "identity": "a08",
+      "manifest": "session/20260914_m4_opportunity_control/m4-eligible-live-acquisition-capture-manifests/a08.json",
+      "seed": 20261108,
+      "sha256": "8c929ac07ce746a41ef90b130ce044294dd164a680bb0e7597c7eb9b07576715",
+      "shell_syntax": "PASS"
+    },
+    {
+      "bytes": 16937773,
+      "identity": "a09",
+      "manifest": "session/20260914_m4_opportunity_control/m4-eligible-live-acquisition-capture-manifests/a09.json",
+      "seed": 20261109,
+      "sha256": "11d9ad5cb6ff93e763e82b00c7e309b4222d62ffc5190c6181d885d43387fd6a",
+      "shell_syntax": "PASS"
+    },
+    {
+      "bytes": 16937773,
+      "identity": "a10",
+      "manifest": "session/20260914_m4_opportunity_control/m4-eligible-live-acquisition-capture-manifests/a10.json",
+      "seed": 20261110,
+      "sha256": "5029fdd48abb1621c198f3d6a5d41e84089cc7e8d2d1c3ae1d1d7baa14c0c305",
+      "shell_syntax": "PASS"
+    },
+    {
+      "bytes": 16937773,
+      "identity": "a11",
+      "manifest": "session/20260914_m4_opportunity_control/m4-eligible-live-acquisition-capture-manifests/a11.json",
+      "seed": 20261111,
+      "sha256": "56fbb5aa741b8f3689dd7eb8d9b114dbd514ff51e5c8af36c471edf65ebde4ac",
+      "shell_syntax": "PASS"
+    },
+    {
+      "bytes": 16937773,
+      "identity": "a12",
+      "manifest": "session/20260914_m4_opportunity_control/m4-eligible-live-acquisition-capture-manifests/a12.json",
+      "seed": 20261112,
+      "sha256": "0103aabb46ea758f06c3ce425a56cf5fcb2b2133f5fe2db7253b61090e344bd1",
+      "shell_syntax": "PASS"
+    },
+    {
+      "bytes": 16937773,
+      "identity": "a13",
+      "manifest": "session/20260914_m4_opportunity_control/m4-eligible-live-acquisition-capture-manifests/a13.json",
+      "seed": 20261113,
+      "sha256": "55acb417ab479540d89be46225726ebbae4cb40972a0dde88ca95b1a191dcc43",
+      "shell_syntax": "PASS"
+    },
+    {
+      "bytes": 16937773,
+      "identity": "a14",
+      "manifest": "session/20260914_m4_opportunity_control/m4-eligible-live-acquisition-capture-manifests/a14.json",
+      "seed": 20261114,
+      "sha256": "d79b3b877d6bba7ae336c2c9fc0ca8ab702b0d6b6129aa5137918911839a149a",
+      "shell_syntax": "PASS"
+    },
+    {
+      "bytes": 16937773,
+      "identity": "a15",
+      "manifest": "session/20260914_m4_opportunity_control/m4-eligible-live-acquisition-capture-manifests/a15.json",
+      "seed": 20261115,
+      "sha256": "65cabc22e8b4a371d1917fd6ef40d0c971c84a736c142c22f08326a6ae37679b",
+      "shell_syntax": "PASS"
+    },
+    {
+      "bytes": 16937773,
+      "identity": "a16",
+      "manifest": "session/20260914_m4_opportunity_control/m4-eligible-live-acquisition-capture-manifests/a16.json",
+      "seed": 20261116,
+      "sha256": "b6ad24a678db4fbd232ced88c5a79ae2a428e01214385b8828bd28617b2f1c34",
+      "shell_syntax": "PASS"
+    },
+    {
+      "bytes": 16937773,
+      "identity": "a17",
+      "manifest": "session/20260914_m4_opportunity_control/m4-eligible-live-acquisition-capture-manifests/a17.json",
+      "seed": 20261117,
+      "sha256": "f408357c9c4c6f6d070aae06bcdcc788b4ff80d35cc78b43831fee3eca5e868f",
+      "shell_syntax": "PASS"
+    },
+    {
+      "bytes": 16937773,
+      "identity": "a18",
+      "manifest": "session/20260914_m4_opportunity_control/m4-eligible-live-acquisition-capture-manifests/a18.json",
+      "seed": 20261118,
+      "sha256": "672be5864668575d964a28a484071e52845b6e6722ef76e3c815ce548d4d777e",
+      "shell_syntax": "PASS"
+    },
+    {
+      "bytes": 16937773,
+      "identity": "a19",
+      "manifest": "session/20260914_m4_opportunity_control/m4-eligible-live-acquisition-capture-manifests/a19.json",
+      "seed": 20261119,
+      "sha256": "ae5755319f5140419fb51ba5d8104b683ebbfb6e71099bf924eb1e9340dac6da",
+      "shell_syntax": "PASS"
+    },
+    {
+      "bytes": 16937773,
+      "identity": "a20",
+      "manifest": "session/20260914_m4_opportunity_control/m4-eligible-live-acquisition-capture-manifests/a20.json",
+      "seed": 20261120,
+      "sha256": "d87493d2761452714aa9995c1c544b382f266cfb64cb9800da41cd2f9f020920",
+      "shell_syntax": "PASS"
+    }
+  ],
+  "client_queue_deadline": null,
+  "execution_lock_sha256": "9aebf27d7ab61a25b823525824b101e2a8cf9540e6529ae82bedbe876c24c94b",
+  "minimum_authenticated_capsules_before_replay": 16,
+  "outcome_embargo": {
+    "capture_post_update_outcomes": false,
+    "paired_replay_started": false,
+    "partial_outcome_access": false
+  },
+  "parallel_capture_submission": true,
+  "plan_sha256": "49f51e2e1447febcf7777887911a72c60a34050ad170ab70a35e961cfedf3bae",
+  "runtime_time_limit_seconds": 14400,
+  "schema": "m4-shield-eligible-live-acquisition-capture-package-validation-v1",
+  "source_archive_sha256": "4cafd18a9dc16b6921e3e39995633d3a32de46f935e4818e8a177104a3a89548",
+  "status": "PASS_AUTHORIZED_UNSUBMITTED"
+}

@@ -1,0 +1,60 @@
+{
+  "schema": "m4-shield-eligible-live-acquisition-plan-v1",
+  "status": "FROZEN_BEFORE_FIRST_ACQUISITION_TRAJECTORY",
+  "frozen_at": "2026-10-11",
+  "causal_protocol_sha256": "716ba0eb8f980ca5af0ef3d57e2415befc1fb1a315afeb01b9bc326a60341b48",
+  "restore_qualification_terminal_result_sha256": "dbe064e4c294694daccc9be6c86622bf033d81ac915724b4034acff5385103aa",
+  "assignment_domain": "m4-eligible-live-causal-acquisition-v1",
+  "independence_unit": "preselected_training_seed_trajectory",
+  "capture_phase": {
+    "trajectory_count": 20,
+    "maximum_completed_updates_per_trajectory": 64,
+    "maximum_capsules_per_trajectory": 1,
+    "parallel_execution_permitted": true,
+    "post_update_outcomes_opened": false,
+    "minimum_authenticated_capsules_to_open_replay": 16,
+    "replacement_seeds": 0
+  },
+  "replay_phase": {
+    "locked_until_capture_completion_gate": true,
+    "arms": [
+      "reward_variance_base",
+      "m4_shield"
+    ],
+    "updates_per_arm": 1,
+    "identical_pre_update_state_required": true,
+    "regeneration_forbidden": true,
+    "action_reselection_forbidden": true,
+    "outcome_access_before_all_valid_replays_authenticate": false
+  },
+  "trajectories": [
+    {"identity": "a01", "seed": 20261101},
+    {"identity": "a02", "seed": 20261102},
+    {"identity": "a03", "seed": 20261103},
+    {"identity": "a04", "seed": 20261104},
+    {"identity": "a05", "seed": 20261105},
+    {"identity": "a06", "seed": 20261106},
+    {"identity": "a07", "seed": 20261107},
+    {"identity": "a08", "seed": 20261108},
+    {"identity": "a09", "seed": 20261109},
+    {"identity": "a10", "seed": 20261110},
+    {"identity": "a11", "seed": 20261111},
+    {"identity": "a12", "seed": 20261112},
+    {"identity": "a13", "seed": 20261113},
+    {"identity": "a14", "seed": 20261114},
+    {"identity": "a15", "seed": 20261115},
+    {"identity": "a16", "seed": 20261116},
+    {"identity": "a17", "seed": 20261117},
+    {"identity": "a18", "seed": 20261118},
+    {"identity": "a19", "seed": 20261119},
+    {"identity": "a20", "seed": 20261120}
+  ],
+  "stopping_rules": {
+    "no_eligible_decision_by_update_64": "valid_no_capsule",
+    "integrity_or_runtime_failure": "failed_closed",
+    "fewer_than_16_authenticated_capsules": "stop_without_paired_replay",
+    "automatic_retry": false,
+    "automatic_replacement": false,
+    "automatic_extension": false
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "schema": "m4-shield-eligible-live-acquisition-execution-lock-v1",
+  "status": "FROZEN_BEFORE_FIRST_ACQUISITION_TRAJECTORY",
+  "source_commit": "545860ed572d5018c106a6438156d7046cf9027d",
+  "source_archive_sha256": "4cafd18a9dc16b6921e3e39995633d3a32de46f935e4818e8a177104a3a89548",
+  "megatron_archive_sha256": "98d98920c0fea3d8ae1216a485dc9b5aa4fc966e469435ad61f2bae456de80d2",
+  "causal_protocol_sha256": "716ba0eb8f980ca5af0ef3d57e2415befc1fb1a315afeb01b9bc326a60341b48",
+  "restore_qualification_terminal_result_sha256": "dbe064e4c294694daccc9be6c86622bf033d81ac915724b4034acff5385103aa",
+  "configuration": "examples/configs/grpo_math_1B_megatron_single_controller_m4_eligible_live_capture.yaml",
+  "capture_execution": {
+    "launcher": "runllm.py --no_wait",
+    "submission_attempt_limit_per_identity": 1,
+    "nodes_per_identity": 1,
+    "gpus_per_identity": 2,
+    "workload_time_limit_seconds": 14400,
+    "client_queue_deadline": null,
+    "parallel_execution_permitted": true,
+    "automatic_retry": false,
+    "automatic_replacement": false,
+    "automatic_extension": false
+  },
+  "outcome_boundary": {
+    "capture_updates_may_precede_eligibility": true,
+    "captured_decision_update_executed": false,
+    "base_or_shield_replay_started": false,
+    "post_update_loss_computed": false,
+    "causal_effect_estimated": false,
+    "completion_gate_required_before_replay": true
+  }
+}
