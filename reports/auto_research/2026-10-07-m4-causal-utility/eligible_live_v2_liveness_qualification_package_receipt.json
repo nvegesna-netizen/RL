@@ -1,0 +1,37 @@
+{
+  "schema": "m4-shield-eligible-live-v2-liveness-qualification-package-receipt-v1",
+  "recorded_at": "2026-10-11",
+  "status": "PASS_CREDENTIAL_FREE_UNSUBMITTED",
+  "source_commit": "11143be695f3a59b934a6522d89f1dc6a6a27ce6",
+  "source_archive_sha256": "ff8cb7f09b64b6ff5d781c12c52d566c8c8821ebab559d569e322ec2fabe691f",
+  "megatron_archive_sha256": "98d98920c0fea3d8ae1216a485dc9b5aa4fc966e469435ad61f2bae456de80d2",
+  "protocol_sha256": "eabfcb0fae3f70206dc57182f7c25661a893d77418f8b8ea05daef6730003479",
+  "authorization_sha256": "aee963ca3dd20951bfba9d71056496e870120b3a52bb68979b272d0d33cb177a",
+  "execution_lock_sha256": "12cf416f41fb814a5a6f9c038c83ce88fbbc87146fc1963ea51b7a49f8e65a2b",
+  "package_validation_sha256": "037006822fdab25114b8c7e2a9430f5ba99f6247544776ba0bc4c25fb4f7fa4f",
+  "manifests": [
+    {"identity": "lq01", "seed": 20261102, "sha256": "0e9084f6821478a53ce770214ea4b64d608743e23ae7dbe7fb3fade048f89da5"},
+    {"identity": "lq02", "seed": 20261103, "sha256": "4705ae2ea33efed8aaeac0055a98494c08188666523c022b5cc2406a462c7120"},
+    {"identity": "lq03", "seed": 20261109, "sha256": "1eee41d636886306456dbb78d60e96601495706fa6d78cbab5e792f6a1a5616e"},
+    {"identity": "lq04", "seed": 20261110, "sha256": "ee33a0b1b3ba283d73cb3dbc72c62b28b37bc7a978d8b0d3886b6738cf967c65"},
+    {"identity": "lq05", "seed": 20261111, "sha256": "6bccf51e0f4d5a3436bf1e31035091e26faecec174148c069ff22751ad25578e"},
+    {"identity": "lq06", "seed": 20261119, "sha256": "5abbc183890f1a52da2bc43d2e3ac58a9e7e615f7bbc22b094ef274177889980"}
+  ],
+  "execution": {
+    "submission_attempt_limit_per_identity": 1,
+    "parallel_submission": true,
+    "launcher": "runllm.py --no_wait",
+    "workload_time_limit_seconds": 14400,
+    "client_queue_deadline": null,
+    "automatic_retry": false,
+    "automatic_replacement": false,
+    "automatic_extension": false
+  },
+  "claim_boundary": {
+    "engineering_liveness_gate_only": true,
+    "v2_acquisition_started": false,
+    "paired_replay_started": false,
+    "post_update_heldout_outcomes_opened": false,
+    "causal_effect_estimated": false
+  }
+}

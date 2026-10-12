@@ -1,0 +1,75 @@
+{
+  "authorization_sha256": "aee963ca3dd20951bfba9d71056496e870120b3a52bb68979b272d0d33cb177a",
+  "automatic_extension": false,
+  "automatic_replacement": false,
+  "automatic_retry": false,
+  "checks": {
+    "all_six_required": true,
+    "allocated_runtime_is_four_hours": true,
+    "capsules_forbidden": true,
+    "focused_tests_precede_workload": true,
+    "no_automatic_retry": true,
+    "outcomes_remain_excluded": true,
+    "queue_deadline_disabled": true,
+    "safe_source_archive": true,
+    "six_authorized_submissions": true,
+    "six_unique_identities": true,
+    "six_unique_seeds": true,
+    "source_archive_bound": true,
+    "source_commit_bound": true,
+    "v2_acquisition_not_started": true
+  },
+  "client_queue_deadline": null,
+  "diagnostic_terminal_authentication_sha256": "e2e9ea887d066902f0b64f0cb9b841ef45ffc502c36ccde48626fe6f0c36642c",
+  "execution_lock_sha256": "12cf416f41fb814a5a6f9c038c83ce88fbbc87146fc1963ea51b7a49f8e65a2b",
+  "manifests": [
+    {
+      "bytes": 16995736,
+      "identity": "lq01",
+      "seed": 20261102,
+      "sha256": "0e9084f6821478a53ce770214ea4b64d608743e23ae7dbe7fb3fade048f89da5"
+    },
+    {
+      "bytes": 16995736,
+      "identity": "lq02",
+      "seed": 20261103,
+      "sha256": "4705ae2ea33efed8aaeac0055a98494c08188666523c022b5cc2406a462c7120"
+    },
+    {
+      "bytes": 16995736,
+      "identity": "lq03",
+      "seed": 20261109,
+      "sha256": "1eee41d636886306456dbb78d60e96601495706fa6d78cbab5e792f6a1a5616e"
+    },
+    {
+      "bytes": 16995736,
+      "identity": "lq04",
+      "seed": 20261110,
+      "sha256": "ee33a0b1b3ba283d73cb3dbc72c62b28b37bc7a978d8b0d3886b6738cf967c65"
+    },
+    {
+      "bytes": 16995736,
+      "identity": "lq05",
+      "seed": 20261111,
+      "sha256": "6bccf51e0f4d5a3436bf1e31035091e26faecec174148c069ff22751ad25578e"
+    },
+    {
+      "bytes": 16995736,
+      "identity": "lq06",
+      "seed": 20261119,
+      "sha256": "5abbc183890f1a52da2bc43d2e3ac58a9e7e615f7bbc22b094ef274177889980"
+    }
+  ],
+  "post_update_heldout_outcomes_opened": false,
+  "progress_timeout_seconds": 1200,
+  "protocol_sha256": "eabfcb0fae3f70206dc57182f7c25661a893d77418f8b8ea05daef6730003479",
+  "runtime_time_limit_seconds": 14400,
+  "schema": "m4-shield-eligible-live-v2-liveness-qualification-package-validation-v1",
+  "source_archive_members": 3068,
+  "source_archive_sha256": "ff8cb7f09b64b6ff5d781c12c52d566c8c8821ebab559d569e322ec2fabe691f",
+  "source_archive_symlinks": 16,
+  "source_commit": "11143be695f3a59b934a6522d89f1dc6a6a27ce6",
+  "status": "PASS_AUTHORIZED_SIX_IDENTITY_QUALIFICATION_UNSUBMITTED",
+  "v1_terminal_authentication_sha256": "cebc287b0edd71c313bf1b70a21e70ff9f8c7f844880c4ab0cf459d19f02b456",
+  "v2_acquisition_started": false
+}
