@@ -1,0 +1,96 @@
+{
+  "schema": "m4-shield-eligible-live-v2-liveness-qualification-v1",
+  "frozen_at": "2026-10-11",
+  "status": "FROZEN_BEFORE_IMPLEMENTATION_AND_EXECUTION",
+  "question": "Can the eligible-live M4-Shield controller complete the full 64-update window on every previously allocated-timeout seed when capsule termination is prospectively suppressed?",
+  "predecessors": {
+    "v1_terminal_commit": "f49d184e4",
+    "v1_terminal_status": "TERMINAL_GATE_FAILED_CLOSED",
+    "v1_allocated_runtime_timeouts": 6,
+    "diagnostic_terminal_commit": "edf802191",
+    "diagnostic_status": "TERMINAL_PASS_NO_STALL_REPRODUCED_CAPTURE_EXCLUDED",
+    "diagnostic_global_absence_of_stalls_proven": false
+  },
+  "qualification": {
+    "assignment_domain": "m4-eligible-live-v2-forced-no-eligibility-liveness-v1",
+    "identities": [
+      {"identity": "lq01", "seed": 20261102, "v1_identity": "a02", "v1_last_completed_update": 2},
+      {"identity": "lq02", "seed": 20261103, "v1_identity": "a03", "v1_last_completed_update": 6},
+      {"identity": "lq03", "seed": 20261109, "v1_identity": "a09", "v1_last_completed_update": 6},
+      {"identity": "lq04", "seed": 20261110, "v1_identity": "a10", "v1_last_completed_update": 2},
+      {"identity": "lq05", "seed": 20261111, "v1_identity": "a11", "v1_last_completed_update": 2},
+      {"identity": "lq06", "seed": 20261119, "v1_identity": "a19", "v1_last_completed_update": 10}
+    ],
+    "excluded_queue_only_seed": 20261105,
+    "excluded_queue_only_reason": "The a05 predecessor never allocated and therefore contains no controller-liveness evidence.",
+    "runtime_behavior": {
+      "normal_m4_shield_actuation": true,
+      "normal_optimizer_and_scheduler_steps": true,
+      "eligible_decision_detection": true,
+      "eligible_capsule_trigger_consumed_and_suppressed": true,
+      "capsule_written": false,
+      "checkpoint_written": false,
+      "heldout_groups_removed": false
+    }
+  },
+  "instrument": {
+    "progress_timeout_seconds": 1200,
+    "progress_definition": "change in learner step, learner version, or explicit eligible-trigger suppression phase",
+    "timeout_record": [
+      "controller counters and phase",
+      "bounded replay-buffer counts and version histogram",
+      "bounded OARS-v2 liveness counters",
+      "rollout-pump and train-pump asyncio stacks",
+      "suppressed eligible-trigger count"
+    ],
+    "required_terminal_artifacts": [
+      "qualification result",
+      "lifecycle ledger",
+      "opportunity ledger",
+      "OARS-v2 ledger",
+      "observer-duty record",
+      "focused-test log",
+      "artifact SHA-256 ledger"
+    ]
+  },
+  "per_identity_gate": {
+    "pass_status": "PASS_FULL_64_UPDATE_LIVENESS",
+    "required_run_exit_code": 0,
+    "required_train_steps": 64,
+    "required_trainer_version": 64,
+    "required_lifecycle_learner_advances": 64,
+    "forbid_timeout_record": true,
+    "forbid_capsule": true,
+    "forbid_checkpoint": true,
+    "require_nonempty_audit_ledgers": true,
+    "failure_status": "FAIL_LIVENESS_QUALIFICATION"
+  },
+  "joint_gate": {
+    "required_passes": 6,
+    "allowed_failures": 0,
+    "automatic_retries": 0,
+    "automatic_replacements": 0,
+    "decision_rule": "Advance only if all six identities terminal-authenticate as PASS_FULL_64_UPDATE_LIVENESS. Any timeout or other failure closes the gate and may be used only to design a separately reviewed minimal repair."
+  },
+  "execution": {
+    "independent_parallel_submission": true,
+    "submission_attempts_per_identity": 1,
+    "launcher": "runllm.py --no_wait",
+    "workload_time_limit_seconds": 14400,
+    "client_queue_deadline": null,
+    "automatic_retry": false,
+    "automatic_replacement": false,
+    "automatic_extension": false
+  },
+  "outcome_boundary": {
+    "engineering_liveness_gate_only": true,
+    "v2_acquisition_started": false,
+    "v1_capsules_pooled_into_v2": false,
+    "diagnostic_capsule_included_in_primary_analysis": false,
+    "paired_replay_started": false,
+    "post_update_heldout_outcomes_opened": false,
+    "causal_effect_estimated": false,
+    "terminal_quality_claimed": false,
+    "pipeline_status_is_scientific_endpoint": false
+  }
+}

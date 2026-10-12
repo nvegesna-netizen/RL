@@ -1,0 +1,30 @@
+{
+  "schema": "m4-shield-eligible-live-v2-liveness-qualification-authorization-v1",
+  "recorded_at": "2026-10-11",
+  "status": "AUTHORIZED_BEFORE_IMPLEMENTATION_AND_EXECUTION",
+  "authority": {
+    "user_instruction": "do it",
+    "standing_eos_launch_authorization": true,
+    "standing_push_authorization": true
+  },
+  "authorized": {
+    "qualification_eos_submission_attempts": 6,
+    "submission_attempts_per_identity": 1,
+    "identities": ["lq01", "lq02", "lq03", "lq04", "lq05", "lq06"],
+    "seeds": [20261102, 20261103, 20261109, 20261110, 20261111, 20261119],
+    "required_launcher": "runllm.py --no_wait",
+    "workload_time_limit_seconds": 14400,
+    "client_queue_deadline": null,
+    "outcome_excluded": true,
+    "parallel_submission": true
+  },
+  "not_authorized_by_this_record": {
+    "automatic_retry": true,
+    "automatic_replacement": true,
+    "automatic_extension": true,
+    "v2_scientific_acquisition": true,
+    "paired_replay": true,
+    "post_update_outcome_opening": true,
+    "terminal_quality_claim": true
+  }
+}
