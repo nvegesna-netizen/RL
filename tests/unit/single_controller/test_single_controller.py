@@ -383,6 +383,33 @@ def test_eligible_live_capture_accepts_exact_shield_configuration() -> None:
     validate_single_controller_config(_eligible_live_capture_config())
 
 
+def test_eligible_live_liveness_suppression_requires_watchdog() -> None:
+    config = _eligible_live_capture_config()
+    config.async_rl.eligible_live_decision_capture = (
+        config.async_rl.eligible_live_decision_capture.model_copy(
+            update={"suppress_capture_for_liveness_qualification": True}
+        )
+    )
+
+    with pytest.raises(ValueError, match="requires enabled capture and the progress"):
+        validate_single_controller_config(config)
+
+
+def test_eligible_live_liveness_suppression_accepts_watchdog() -> None:
+    config = _eligible_live_capture_config()
+    config.async_rl.eligible_live_decision_capture = (
+        config.async_rl.eligible_live_decision_capture.model_copy(
+            update={
+                "progress_timeout_seconds": 1200.0,
+                "liveness_diagnostic_path": "liveness.json",
+                "suppress_capture_for_liveness_qualification": True,
+            }
+        )
+    )
+
+    validate_single_controller_config(config)
+
+
 def test_eligible_live_capture_rejects_nonshield_actuation() -> None:
     config = _eligible_live_capture_config()
     config.async_rl.opportunity_at_risk_v2_shadow = OpportunityAtRiskV2ShadowConfig(
@@ -1172,6 +1199,7 @@ def _run_lifecycle_controller(
             trajectory_seed=None,
             progress_timeout_seconds=None,
             liveness_diagnostic_path=None,
+            suppress_capture_for_liveness_qualification=False,
         ),
         gradient_opportunity_audit=SimpleNamespace(
             output_path=None, observer_duty_path=None
@@ -1183,6 +1211,8 @@ def _run_lifecycle_controller(
     ctrl._logger = MagicMock()
     ctrl._train_steps = train_steps
     ctrl._trainer_version = trainer_version
+    ctrl._eligible_live_capture_result = None
+    ctrl._eligible_live_suppressed_decisions = 0
     return ctrl
 
 
@@ -1198,6 +1228,7 @@ def test_eligible_live_watchdog_fails_fast_and_flushes_ledgers(
         trajectory_seed=20261102,
         progress_timeout_seconds=0.02,
         liveness_diagnostic_path=str(diagnostic_path),
+        suppress_capture_for_liveness_qualification=False,
     )
     pump_block = asyncio.Event()
 
@@ -1214,6 +1245,7 @@ def test_eligible_live_watchdog_fails_fast_and_flushes_ledgers(
     ctrl._buffer_admission_stalls = 7
     ctrl._eligible_live_progress_sequence = 0
     ctrl._eligible_live_progress_phase = "initialized"
+    ctrl._eligible_live_suppressed_decisions = 0
     ctrl._buffer = MagicMock()
     ctrl._buffer.__len__.return_value = 12
     ctrl._buffer.weight_version_list = [1] * 4 + [2] * 8
@@ -1258,6 +1290,7 @@ def test_eligible_live_watchdog_accepts_capture_phase_progress(
         trajectory_seed=20261102,
         progress_timeout_seconds=0.1,
         liveness_diagnostic_path=str(tmp_path / "liveness.json"),
+        suppress_capture_for_liveness_qualification=False,
     )
     ctrl._eligible_live_progress_sequence = 0
     ctrl._eligible_live_progress_phase = "initialized"
@@ -1288,6 +1321,57 @@ def test_eligible_live_watchdog_accepts_capture_phase_progress(
 
     asyncio.run(exercise_watchdog())
 
+    assert not (tmp_path / "liveness.json").exists()
+
+
+def test_eligible_live_liveness_qualification_suppresses_capture_trigger() -> None:
+    ctrl = _run_lifecycle_controller(train_steps=0, trainer_version=0)
+    ctrl._async_cfg.eligible_live_decision_capture = SimpleNamespace(
+        suppress_capture_for_liveness_qualification=True
+    )
+    ctrl._eligible_live_progress_sequence = 3
+    ctrl._eligible_live_progress_phase = "eligible_decision_detected"
+
+    assert ctrl._suppress_eligible_live_capture() is True
+    assert ctrl._eligible_live_suppressed_decisions == 1
+    assert ctrl._eligible_live_progress_sequence == 4
+    assert ctrl._eligible_live_progress_phase == (
+        "eligible_capture_suppressed_for_liveness_qualification"
+    )
+
+
+def test_run_accepts_full_liveness_qualification_without_capsule(
+    tmp_path: Path,
+) -> None:
+    ctrl = _run_lifecycle_controller(train_steps=64, trainer_version=64)
+    ctrl._master_config.grpo.max_num_steps = 64
+    ctrl._async_cfg.eligible_live_decision_capture = SimpleNamespace(
+        enabled=True,
+        output_dir=str(tmp_path / "forbidden-capsule"),
+        trajectory_identity="lq01",
+        trajectory_seed=20261102,
+        progress_timeout_seconds=1200.0,
+        liveness_diagnostic_path=str(tmp_path / "liveness.json"),
+        suppress_capture_for_liveness_qualification=True,
+    )
+    ctrl._eligible_live_progress_sequence = 0
+    ctrl._eligible_live_progress_phase = "initialized"
+    ctrl._eligible_live_suppressed_decisions = 2
+
+    result = asyncio.run(ctrl.run())
+
+    assert result == {
+        "train_steps": 64,
+        "trainer_version": 64,
+        "eligible_live_liveness_qualification": {
+            "status": "PASS_FULL_64_UPDATE_LIVENESS",
+            "suppressed_eligible_decisions": 2,
+            "capsule_written": False,
+            "checkpoint_written": False,
+            "post_update_outcomes_opened": False,
+        },
+    }
+    assert not (tmp_path / "forbidden-capsule").exists()
     assert not (tmp_path / "liveness.json").exists()
 
 

@@ -91,6 +91,7 @@ class EligibleLiveDecisionCaptureConfig(BaseModel, frozen=True):
     trajectory_seed: Optional[int] = None
     progress_timeout_seconds: Optional[float] = None
     liveness_diagnostic_path: Optional[str] = None
+    suppress_capture_for_liveness_qualification: bool = False
 
 
 class LifecycleDerivedOpportunityAuditConfig(BaseModel, frozen=True):
@@ -483,6 +484,13 @@ def validate_single_controller_config(master_config: MasterConfig) -> None:
         raise ValueError(
             "eligible_live_decision_capture progress watchdog requires capture "
             "to be enabled"
+        )
+    if live_capture_config.suppress_capture_for_liveness_qualification and (
+        not live_capture_config.enabled or timeout is None
+    ):
+        raise ValueError(
+            "eligible_live_decision_capture liveness qualification suppression "
+            "requires enabled capture and the progress watchdog"
         )
     if timeout is not None and (not math.isfinite(timeout) or timeout <= 0):
         raise ValueError(

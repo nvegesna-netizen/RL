@@ -39,6 +39,7 @@ async_rl:
     heldout_groups: 4
     trajectory_identity: qualification-seed-20261031
     trajectory_seed: 20261031
+    suppress_capture_for_liveness_qualification: false
   terminal_policy_export:
     enabled: false
 

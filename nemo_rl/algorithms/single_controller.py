@@ -203,6 +203,7 @@ class SingleControllerActor:
         self._conditional_capsule_frontiers_examined = 0
         self._conditional_capsule_result: dict[str, Any] | None = None
         self._eligible_live_capture_result: dict[str, Any] | None = None
+        self._eligible_live_suppressed_decisions = 0
         self._eligible_live_progress_sequence = 0
         self._eligible_live_progress_phase = "initialized"
         utility_config = self._async_cfg.gradient_utility_audit
@@ -634,18 +635,34 @@ class SingleControllerActor:
                     f"gain>={capsule_config.minimum_relative_predicted_gain}"
                 )
             elif live_capture_config.enabled:
-                if self._eligible_live_capture_result is None:
-                    raise RuntimeError(
-                        "eligible live decision capture ended without a capsule"
+                if live_capture_config.suppress_capture_for_liveness_qualification:
+                    live_capture_dir = Path(live_capture_config.output_dir or "")
+                    completed_bounded_run = (
+                        self._eligible_live_capture_result is None
+                        and not live_capture_dir.exists()
+                        and self._train_steps == self._master_config.grpo.max_num_steps
+                        and self._trainer_version
+                        == self._master_config.grpo.max_num_steps
                     )
-                completed_bounded_run = (
-                    self._eligible_live_capture_result["status"]
-                    == "QUALIFIED_OUTCOME_EXCLUDED_ELIGIBLE_CAPTURE"
-                    and self._trainer_version == self._train_steps
-                )
-                expected_description = (
-                    "one outcome-excluded first-eligible live M4-Shield capsule"
-                )
+                    expected_description = (
+                        "outcome-free eligible-live liveness qualification, "
+                        f"steps={self._master_config.grpo.max_num_steps}, "
+                        f"version={self._master_config.grpo.max_num_steps}, "
+                        "capsule=absent"
+                    )
+                else:
+                    if self._eligible_live_capture_result is None:
+                        raise RuntimeError(
+                            "eligible live decision capture ended without a capsule"
+                        )
+                    completed_bounded_run = (
+                        self._eligible_live_capture_result["status"]
+                        == "QUALIFIED_OUTCOME_EXCLUDED_ELIGIBLE_CAPTURE"
+                        and self._trainer_version == self._train_steps
+                    )
+                    expected_description = (
+                        "one outcome-excluded first-eligible live M4-Shield capsule"
+                    )
             else:
                 expected_steps = self._master_config.grpo.max_num_steps
                 completed_bounded_run = (
@@ -806,17 +823,30 @@ class SingleControllerActor:
                 ),
             }
         if live_capture_enabled:
-            assert self._eligible_live_capture_result is not None
-            result["eligible_live_decision_capture"] = {
-                "status": self._eligible_live_capture_result["status"],
-                "learner_version": self._eligible_live_capture_result[
-                    "learner_version"
-                ],
-                "manifest_sha256": self._eligible_live_capture_result[
-                    "manifest_sha256"
-                ],
-                "post_update_outcomes_opened": False,
-            }
+            live_capture_config = self._async_cfg.eligible_live_decision_capture
+            if live_capture_config.suppress_capture_for_liveness_qualification:
+                assert self._eligible_live_capture_result is None
+                result["eligible_live_liveness_qualification"] = {
+                    "status": "PASS_FULL_64_UPDATE_LIVENESS",
+                    "suppressed_eligible_decisions": (
+                        self._eligible_live_suppressed_decisions
+                    ),
+                    "capsule_written": False,
+                    "checkpoint_written": False,
+                    "post_update_outcomes_opened": False,
+                }
+            else:
+                assert self._eligible_live_capture_result is not None
+                result["eligible_live_decision_capture"] = {
+                    "status": self._eligible_live_capture_result["status"],
+                    "learner_version": self._eligible_live_capture_result[
+                        "learner_version"
+                    ],
+                    "manifest_sha256": self._eligible_live_capture_result[
+                        "manifest_sha256"
+                    ],
+                    "post_update_outcomes_opened": False,
+                }
         if export_result is not None:
             result["terminal_policy_export"] = export_result
         return result
@@ -834,6 +864,9 @@ class SingleControllerActor:
             "trainer_version": self._trainer_version,
             "eligible_live_progress_sequence": (self._eligible_live_progress_sequence),
             "eligible_live_progress_phase": self._eligible_live_progress_phase,
+            "suppressed_eligible_decisions": (
+                self._eligible_live_suppressed_decisions
+            ),
             "current_epoch": self._current_epoch,
             "inflight_rollouts": self._inflight_rollouts,
             "dispatched_rollouts": len(self._dispatched_rollouts),
@@ -855,6 +888,17 @@ class SingleControllerActor:
         """Advance the diagnostic-only heartbeat at a durable capture phase."""
         self._eligible_live_progress_sequence += 1
         self._eligible_live_progress_phase = phase
+
+    def _suppress_eligible_live_capture(self) -> bool:
+        """Consume an eligible trigger without changing the enacted action."""
+        config = self._async_cfg.eligible_live_decision_capture
+        if not config.suppress_capture_for_liveness_qualification:
+            return False
+        self._eligible_live_suppressed_decisions += 1
+        self._mark_eligible_live_progress(
+            "eligible_capture_suppressed_for_liveness_qualification"
+        )
+        return True
 
     @staticmethod
     def _task_liveness_state(task: asyncio.Task[Any]) -> dict[str, Any]:
@@ -1253,10 +1297,14 @@ class SingleControllerActor:
                                 self._mark_eligible_live_progress(
                                     "eligible_decision_detected"
                                 )
-                                for _ in range(num_groups):
-                                    self._buffer_capacity.release()
-                                await self._capture_eligible_live_decision(eligible)
-                                return
+                                capture_suppressed = (
+                                    self._suppress_eligible_live_capture()
+                                )
+                                if not capture_suppressed:
+                                    for _ in range(num_groups):
+                                        self._buffer_capacity.release()
+                                    await self._capture_eligible_live_decision(eligible)
+                                    return
 
                         # Release buffer capacity
                         for _ in range(num_groups):
