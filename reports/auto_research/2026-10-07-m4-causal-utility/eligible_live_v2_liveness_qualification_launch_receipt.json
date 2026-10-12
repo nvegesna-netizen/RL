@@ -1,0 +1,109 @@
+{
+  "schema": "m4-shield-eligible-live-v2-liveness-qualification-launch-receipt-v1",
+  "recorded_at": "2026-10-11",
+  "status": "SIX_AUTHORIZED_CHAINS_CREATED_NONTERMINAL",
+  "source_commit": "11143be695f3a59b934a6522d89f1dc6a6a27ce6",
+  "package_commit": "20d496b53",
+  "launcher_commit": "59cb90acb146f2d9bdd2f098f8043930d678d416",
+  "assignment_domain": "m4-eligible-live-v2-forced-no-eligibility-liveness-v1",
+  "launcher": "runllm.py --no_wait",
+  "submission_attempts_authorized": 6,
+  "submission_attempts_consumed": 6,
+  "client_failures": 0,
+  "chains": [
+    {
+      "identity": "lq01",
+      "seed": 20261102,
+      "parent_pipeline_id": 73188630,
+      "child_pipeline_id": 73188918,
+      "generate_job_id": 482160442,
+      "logs_before_job_id": 482163039,
+      "eos_job_id": 482163040,
+      "logs_after_job_id": 482163041,
+      "guard_sha256": "ad8edb568685e6910e95dbfd0b0b99c31b6eb4411c183cb0f7e10d04a9ea54fd",
+      "launch_log_sha256": "e5dc3eb7258083ba2550abc2775c8e61ccc7304969832f1e5ca1654d219fea03"
+    },
+    {
+      "identity": "lq02",
+      "seed": 20261103,
+      "parent_pipeline_id": 73189007,
+      "child_pipeline_id": 73189434,
+      "generate_job_id": 482163850,
+      "logs_before_job_id": 482168581,
+      "eos_job_id": 482168582,
+      "logs_after_job_id": 482168583,
+      "guard_sha256": "973e84195eba2c0458246906759f00f5a8dfef57ca59ade4e2422531336fdb6c",
+      "launch_log_sha256": "4213aac0d558c1d9ec41d9fe78cc78940f6e950f4ed65a3dfe0121eb6cedb74e"
+    },
+    {
+      "identity": "lq03",
+      "seed": 20261109,
+      "parent_pipeline_id": 73189464,
+      "child_pipeline_id": 73189588,
+      "generate_job_id": 482169025,
+      "logs_before_job_id": 482170444,
+      "eos_job_id": 482170445,
+      "logs_after_job_id": 482170446,
+      "guard_sha256": "f20c69aba288d7482937a28916802f861174630994566c6e7fe64a56d24bd04d",
+      "launch_log_sha256": "f7c7a5e80b5f280e73f4754c23b147159c1be8ba607c8673114622422157cc2b"
+    },
+    {
+      "identity": "lq04",
+      "seed": 20261110,
+      "parent_pipeline_id": 73189680,
+      "child_pipeline_id": 73190014,
+      "generate_job_id": 482171065,
+      "logs_before_job_id": 482172904,
+      "eos_job_id": 482172905,
+      "logs_after_job_id": 482172906,
+      "guard_sha256": "acd76de057e3dcb682a19e04de9c26cf44620fc4cba431b240edc8f692a91122",
+      "launch_log_sha256": "39e71272bd8170cb64f38a03349251875b9e3e7b38e16808e2e8744d0d42d805"
+    },
+    {
+      "identity": "lq05",
+      "seed": 20261111,
+      "parent_pipeline_id": 73190033,
+      "child_pipeline_id": 73190192,
+      "generate_job_id": 482173124,
+      "logs_before_job_id": 482174213,
+      "eos_job_id": 482174214,
+      "logs_after_job_id": 482174215,
+      "guard_sha256": "17a50700691d20e37d2923a5c7383846e9fa33e8e91a5da7862d1f7eb6705fa0",
+      "launch_log_sha256": "3caa8483a743eea05a4330cc33f26be1657e261093b47759fb5543eb8351fb95"
+    },
+    {
+      "identity": "lq06",
+      "seed": 20261119,
+      "parent_pipeline_id": 73190163,
+      "child_pipeline_id": 73190509,
+      "generate_job_id": 482174017,
+      "logs_before_job_id": 482175439,
+      "eos_job_id": 482175440,
+      "logs_after_job_id": 482175441,
+      "guard_sha256": "526cd10960358e2ede286db6e52aff8ed6a1049321e3f8f602d52a1d2b753b51",
+      "launch_log_sha256": "28adddbbdffa404be788219437d6850a3e766d88503d4019bb01f740f08afe65"
+    }
+  ],
+  "verification": {
+    "all_generate_jobs_succeeded": true,
+    "all_children_created": true,
+    "all_child_names_match_identity": true,
+    "all_children_have_logs_before_eos_logs_after": true,
+    "all_chains_terminal": false
+  },
+  "execution": {
+    "workload_time_limit_seconds": 14400,
+    "client_queue_deadline": null,
+    "automatic_retry": false,
+    "automatic_replacement": false,
+    "automatic_extension": false
+  },
+  "claim_boundary": {
+    "engineering_liveness_gate_only": true,
+    "pipeline_status_is_scientific_endpoint": false,
+    "v2_acquisition_started": false,
+    "paired_replay_started": false,
+    "post_update_heldout_outcomes_opened": false,
+    "causal_effect_estimated": false
+  }
+}
