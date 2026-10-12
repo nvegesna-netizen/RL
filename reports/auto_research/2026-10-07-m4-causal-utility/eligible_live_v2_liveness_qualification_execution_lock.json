@@ -1,0 +1,42 @@
+{
+  "schema": "m4-shield-eligible-live-v2-liveness-qualification-execution-lock-v1",
+  "frozen_at": "2026-10-11",
+  "status": "FROZEN_AFTER_IMPLEMENTATION_BEFORE_PACKAGE_AND_EXECUTION",
+  "source_commit": "11143be695f3a59b934a6522d89f1dc6a6a27ce6",
+  "source_archive_sha256": "ff8cb7f09b64b6ff5d781c12c52d566c8c8821ebab559d569e322ec2fabe691f",
+  "megatron_archive_sha256": "98d98920c0fea3d8ae1216a485dc9b5aa4fc966e469435ad61f2bae456de80d2",
+  "protocol_sha256": "eabfcb0fae3f70206dc57182f7c25661a893d77418f8b8ea05daef6730003479",
+  "authorization_sha256": "aee963ca3dd20951bfba9d71056496e870120b3a52bb68979b272d0d33cb177a",
+  "v1_terminal_authentication_sha256": "cebc287b0edd71c313bf1b70a21e70ff9f8c7f844880c4ab0cf459d19f02b456",
+  "diagnostic_terminal_authentication_sha256": "e2e9ea887d066902f0b64f0cb9b841ef45ffc502c36ccde48626fe6f0c36642c",
+  "qualification": {
+    "assignment_domain": "m4-eligible-live-v2-forced-no-eligibility-liveness-v1",
+    "identities": ["lq01", "lq02", "lq03", "lq04", "lq05", "lq06"],
+    "seeds": [20261102, 20261103, 20261109, 20261110, 20261111, 20261119],
+    "max_num_steps": 64,
+    "progress_timeout_seconds": 1200,
+    "suppress_capture_for_liveness_qualification": true,
+    "normal_m4_shield_actuation": true,
+    "capsule_forbidden": true,
+    "checkpoint_forbidden": true
+  },
+  "execution": {
+    "submission_attempt_limit_per_identity": 1,
+    "submission_attempt_limit_total": 6,
+    "parallel_submission": true,
+    "launcher": "runllm.py --no_wait",
+    "workload_time_limit_seconds": 14400,
+    "client_queue_deadline": null,
+    "automatic_retry": false,
+    "automatic_replacement": false,
+    "automatic_extension": false
+  },
+  "outcome_boundary": {
+    "engineering_liveness_gate_only": true,
+    "v2_acquisition_started": false,
+    "paired_replay_started": false,
+    "post_update_heldout_outcomes_opened": false,
+    "causal_effect_estimated": false,
+    "terminal_quality_claimed": false
+  }
+}
