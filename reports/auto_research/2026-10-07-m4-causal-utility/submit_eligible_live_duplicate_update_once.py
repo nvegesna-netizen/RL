@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import argparse
 import json
 import os
 import re
@@ -22,24 +23,63 @@ PROTOCOL_HASH = "a57986017e250fff4140ab3e078e6cc48f1a9a6f2a6a418f9b56c66de860037
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--bootstrap-replacement", action="store_true")
+    args = parser.parse_args()
+    manifest = MANIFEST
+    manifest_hash = MANIFEST_HASH
+    receipt_name = "eligible_live_duplicate_update_package_receipt.json"
+    stem = "eligible-live-duplicate-update"
+    launch_receipt_name = "eligible_live_duplicate_update_launch_receipt.json"
+    if args.bootstrap_replacement:
+        manifest = (
+            SESSION
+            / "m4-eligible-live-duplicate-update-bootstrap-replacement-final-manifest.json"
+        )
+        manifest_hash = (
+            "c37bf75c3e7fa0e6142620a6e911f891a4780812daf6699b5ad24ab3bea28ed7"
+        )
+        receipt_name = (
+            "eligible_live_duplicate_update_bootstrap_replacement_package_receipt.json"
+        )
+        stem = "eligible-live-duplicate-update-bootstrap-replacement"
+        launch_receipt_name = (
+            "eligible_live_duplicate_update_bootstrap_replacement_launch_receipt.json"
+        )
     if not os.environ.get("JET_GITLAB_TOKEN"):
         raise ValueError("source rotated setup_jet.sh before launch")
     if (
-        digest_file(MANIFEST) != MANIFEST_HASH
+        digest_file(manifest) != manifest_hash
         or digest_file(
             REPORT / "eligible_live_duplicate_update_qualification_protocol.json"
         )
         != PROTOCOL_HASH
     ):
         raise ValueError("frozen qualification package moved")
-    package = json.loads(
-        (REPORT / "eligible_live_duplicate_update_package_receipt.json").read_bytes()
-    )
+    package = json.loads((REPORT / receipt_name).read_bytes())
     if (
-        package["manifest_sha256"] != MANIFEST_HASH
+        package["manifest_sha256"] != manifest_hash
         or package["clean_room_status"] != "PASS_CLEAN_ROOM_STATIC_PACKAGE"
     ):
         raise ValueError("qualification package not reviewed")
+    if args.bootstrap_replacement:
+        authorization = package["replacement_authorization"]
+        if (
+            authorization["additional_launcher_invocations"] != 1
+            or authorization["original_guard_reused"]
+            or authorization["qualification_thresholds_changed"]
+        ):
+            raise ValueError("replacement authorization boundary changed")
+        original_guard = json.loads(
+            (
+                SESSION / "eligible-live-duplicate-update-one-shot-guard.json"
+            ).read_bytes()
+        )
+        if (
+            original_guard["parent_pipeline_id"] != 73740465
+            or original_guard["status"] != "SUBMITTED_NO_WAIT"
+        ):
+            raise ValueError("original launch identity changed")
     paths = list(package["overlay_sha256"]) + [
         "reports/auto_research/2026-10-07-m4-causal-utility/submit_eligible_live_duplicate_update_once.py"
     ]
@@ -53,10 +93,10 @@ def main() -> None:
     custom = REPORT / "eligible_live_restore_eos_custom_config_deadline_suppressed.yaml"
     if "deadline: false" not in custom.read_text():
         raise ValueError("queue deadline suppression missing")
-    guard_path = SESSION / "eligible-live-duplicate-update-one-shot-guard.json"
+    guard_path = SESSION / f"{stem}-one-shot-guard.json"
     record = {
         "status": "ATTEMPT_CONSUMED_BEFORE_INVOCATION",
-        "manifest_sha256": MANIFEST_HASH,
+        "manifest_sha256": manifest_hash,
         "invoked_at": datetime.now().astimezone().isoformat(),
         "maximum_invocations": 1,
         "automatic_retry": False,
@@ -67,7 +107,7 @@ def main() -> None:
         str(JET / ".venv/bin/python"),
         str(JET / "runllm.py"),
         "--prebuilt_manifest",
-        str(MANIFEST),
+        str(manifest),
         "--prebuilt_custom_config",
         str(custom),
         "--prebuilt_additional_variables",
@@ -84,7 +124,7 @@ def main() -> None:
         text=True,
         check=False,
     )
-    (SESSION / "eligible-live-duplicate-update-launch.log").write_text(process.stdout)
+    (SESSION / f"{stem}-launch.log").write_text(process.stdout)
     match = re.search(r"(?m)^(\d+): ", process.stdout)
     record.update(
         {
@@ -98,9 +138,7 @@ def main() -> None:
         }
     )
     guard_path.write_bytes(canonical_json(record))
-    (REPORT / "eligible_live_duplicate_update_launch_receipt.json").write_bytes(
-        canonical_json(record)
-    )
+    (REPORT / launch_receipt_name).write_bytes(canonical_json(record))
     print(json.dumps(record, sort_keys=True))
     if process.returncode or not match:
         raise SystemExit(1)

@@ -1,0 +1,55 @@
+{
+  "schema": "m4-eligible-live-duplicate-update-terminal-failure-v1",
+  "recorded_at": "2026-10-14",
+  "status": "FAILED_BEFORE_CHECKPOINT_TRANSPORT_OR_REPLAY",
+  "parent_pipeline_id": 73740465,
+  "child_pipeline_id": 73740815,
+  "eos_job_id": 486620007,
+  "logs_after_job_id": 486620008,
+  "slurm_job_id": 6248469,
+  "slurm_node": "eos0432",
+  "slurm_state": "FAILED",
+  "slurm_exit_code": "1:0",
+  "queue_time": "06:55:25",
+  "allocated_duration": "00:02:44",
+  "workload_step_duration": "00:02:23",
+  "observed_time_flags": ["--time 0:14400"],
+  "observed_queue_deadline_flag_present": false,
+  "failure": {
+    "stage": "training-state-digest smoke check import",
+    "exception": "ModuleNotFoundError: No module named 'megatron'",
+    "source_path": "research/m4_eligible_replay/worker.py",
+    "line": 12,
+    "mechanism": "Standalone worker import reaches megatron.core before importing nemo_rl; nemo_rl initialization adds the bundled Megatron-LM source to sys.path.",
+    "bundled_core_module_present": true,
+    "checkpoint_download_started": false,
+    "replay_started": false,
+    "four_hour_timeout": false
+  },
+  "evidence": {
+    "eos_trace_bytes": 35209,
+    "eos_trace_sha256": "299945765a5b398d642169f15720f4efc4f6ba8b28e16fcaa8e691011fd9636a",
+    "tests_log_bytes": 1206,
+    "tests_log_sha256": "d748aeba6ee5b3dd333127499d2f2cb830a8f6f050b64504537446d638fb8704",
+    "tests_copies_byte_identical_in_eos_and_logs_after": true,
+    "cpu_contract_tests_passed": 8,
+    "workload_sha256_inventory_written": false,
+    "hash_basis": "SHA-256 computed from direct terminal API retrieval; not a nonexistent workload checksum inventory",
+    "missing_compact_artifact_http_status": {
+      "transport.log": 404,
+      "transport-receipt.json": 404,
+      "replay-a.log": 404,
+      "replay-a.json": 404,
+      "qualification-result.json": 404
+    }
+  },
+  "disposition": {
+    "qualification_passed": false,
+    "fresh_acquisition_started": false,
+    "post_update_heldout_outcomes_opened": false,
+    "source_repaired_this_turn": false,
+    "replacement_launched_this_turn": false,
+    "original_guard_remains_consumed": true,
+    "next_step": "Repair the standalone worker import bootstrap, verify it in a fresh interpreter and the exact EOS environment, then package any separately authorized guarded replacement without weakening qualification."
+  }
+}

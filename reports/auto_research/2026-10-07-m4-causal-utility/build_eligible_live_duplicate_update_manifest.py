@@ -20,7 +20,9 @@ CONFIG = "examples/configs/grpo_math_1B_megatron_single_controller_m4_eligible_l
 PROTOCOL = "reports/auto_research/2026-10-07-m4-causal-utility/eligible_live_duplicate_update_qualification_protocol.json"
 
 
-def build(*, source: Path, megatron: Path, output: Path) -> dict:
+def build(
+    *, source: Path, megatron: Path, output: Path, bootstrap_replacement: bool = False
+) -> dict:
     """Embed hash-bound source and overlays, then test expanded shell syntax."""
     if digest_file(source) != SOURCE_HASH or digest_file(megatron) != MEGATRON_HASH:
         raise ValueError("qualified base archives changed")
@@ -94,6 +96,11 @@ print(result["status"])
 PY
 find "$ASSETS" -maxdepth 1 -type f ! -name artifacts.sha256 -print0 | sort -z | xargs -0 sha256sum > "$ASSETS/artifacts.sha256"
 """
+    if bootstrap_replacement:
+        script = script.replace(
+            '"$PYTHON" -m unittest research.m4_eligible_replay.test_contracts -v',
+            '"$PYTHON" -m unittest research.m4_eligible_replay.test_contracts research.m4_eligible_replay.test_bootstrap -v',
+        )
     replacements = {
         "@SOURCE@": base64.b64encode(source.read_bytes()).decode(),
         "@SOURCE_HASH@": SOURCE_HASH,
@@ -126,7 +133,7 @@ find "$ASSETS" -maxdepth 1 -type f ! -name artifacts.sha256 -print0 | sort -z | 
         "labels": {"target": "silicon"},
         "launchers": {"type:slurm": {"nodes": 1, "ntasks_per_node": 1}},
         "spec": {
-            "name": NAME,
+            "name": NAME + ("-bootstrap-replacement" if bootstrap_replacement else ""),
             "workspace": "/workspace",
             "nodes": 1,
             "time_limit": 14400,
@@ -141,7 +148,7 @@ find "$ASSETS" -maxdepth 1 -type f ! -name artifacts.sha256 -print0 | sort -z | 
         stream.write(canonical_json(manifest))
     return {
         "status": "PASS_STATIC_PACKAGE_CHECKS_UNSUBMITTED",
-        "name": NAME,
+        "name": manifest["spec"]["name"],
         "manifest_sha256": digest_file(output),
         "source_archive_sha256": SOURCE_HASH,
         "megatron_archive_sha256": MEGATRON_HASH,
@@ -158,10 +165,16 @@ def main() -> None:
     parser.add_argument("--source", type=Path, required=True)
     parser.add_argument("--megatron", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--bootstrap-replacement", action="store_true")
     args = parser.parse_args()
     print(
         json.dumps(
-            build(source=args.source, megatron=args.megatron, output=args.output),
+            build(
+                source=args.source,
+                megatron=args.megatron,
+                output=args.output,
+                bootstrap_replacement=args.bootstrap_replacement,
+            ),
             indent=2,
             sort_keys=True,
         )

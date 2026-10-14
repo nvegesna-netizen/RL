@@ -9,11 +9,17 @@ from typing import Any
 import numpy as np
 import ray
 import torch
-from megatron.core import tensor_parallel
-from megatron.core.optimizer import ChainedOptimizer
 
-from nemo_rl.models.policy.utils import get_runtime_env_for_policy_worker
-from nemo_rl.models.policy.workers.megatron_policy_worker import (
+from research.m4_eligible_replay.bootstrap import initialize_bundled_megatron
+
+# Standalone smoke checks have not imported nemo_rl.__init__ yet. Bootstrap
+# the packaged sources before importing either Megatron Core or Bridge.
+initialize_bundled_megatron()
+
+from megatron.core import tensor_parallel  # noqa: E402
+from megatron.core.optimizer import ChainedOptimizer  # noqa: E402
+from nemo_rl.models.policy.utils import get_runtime_env_for_policy_worker  # noqa: E402
+from nemo_rl.models.policy.workers.megatron_policy_worker import (  # noqa: E402
     MegatronPolicyWorkerImpl,
 )
 
