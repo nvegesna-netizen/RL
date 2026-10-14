@@ -1,0 +1,52 @@
+{
+  "schema": "m4-eligible-live-duplicate-update-qualification-v1",
+  "frozen_at": "2026-10-14",
+  "status": "FROZEN_BEFORE_GPU_EXECUTION",
+  "question": "Can two fresh processes restore full state and reproducibly execute the same comparator update without a historical treatment contrast?",
+  "source_capsule": {
+    "project_id": 70847,
+    "eos_job_id": 474952005,
+    "artifact_prefix": "workspace/assets/basic/m4-eligible-live-capture-qualification/m4-eligible-live-capsule",
+    "manifest_sha256": "184004bfd24a47e7bd4f80ceee9f11f2891fdbae70ee60cbce5b8ca5ec4284c7",
+    "captured_parameter_sha256": "e0765eb28e40eb7308c7c9b2e936179dc12f5da7deb38bdb467dc0e0de075e9e",
+    "learner_version": 7,
+    "primary_analysis_inclusion": false
+  },
+  "qualification": {
+    "fresh_processes": 2,
+    "replicates": ["a", "b"],
+    "action_in_both_processes": "reward_variance_base",
+    "updates_per_process": 1,
+    "optimizer_step_before": 7,
+    "optimizer_step_after": 8,
+    "scheduler_samples_before": 224,
+    "scheduler_samples_after": 256,
+    "policy_optimizer_master_weights_moments_scheduler_rng_hashes_match": true,
+    "pre_update_evaluation_mutation_allowed": false,
+    "pre_update_loss_absolute_tolerance": 1e-6,
+    "heldout_files_unchanged": true,
+    "post_update_heldout_loss_computed": false,
+    "shield_update_executed": false,
+    "historical_treatment_contrast_computed": false
+  },
+  "transport": {
+    "individual_eos_artifact_members_only": true,
+    "large_archive_downloaded": false,
+    "logs_after_checkpoint_download": false,
+    "only_comparator_and_heldout_group_files": true,
+    "recursive_checkpoint_inventory_verified": true,
+    "maximum_group_file_bytes": 268435456,
+    "stream_read_chunk_bytes": 1048576
+  },
+  "execution": {
+    "launcher": "runllm.py --no_wait",
+    "maximum_launcher_invocations": 1,
+    "replicates_sequential_inside_single_workload": true,
+    "workload_time_limit_seconds": 14400,
+    "client_queue_deadline": null,
+    "automatic_retry": false,
+    "automatic_extension": false
+  },
+  "pass_gate": "Both fresh-process records authenticate and match complete state hashes before and after the same one-update comparator replay; no scientific outcomes are computed.",
+  "acquisition_launches_in_this_qualification": 0
+}

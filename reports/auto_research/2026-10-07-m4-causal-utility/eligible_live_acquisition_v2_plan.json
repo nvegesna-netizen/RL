@@ -1,0 +1,115 @@
+{
+  "schema": "m4-shield-eligible-live-acquisition-plan-v2",
+  "status": "FROZEN_BEFORE_V2_PACKAGING_AND_EXECUTION",
+  "frozen_at": "2026-10-13",
+  "question": "At the first eligible live decision, does M4-Shield improve the one-update held-out GRPO surrogate relative to the reward-variance base action?",
+  "assignment_domain": "m4-eligible-live-causal-acquisition-v2",
+  "independence_unit": "preselected_training_seed_trajectory",
+  "estimand": "mean paired one-update contrast conditional on an authenticated first eligible decision within the fixed 64-update window",
+  "predecessors": {
+    "causal_protocol": {"path": "eligible_live_decision_causal_protocol.json", "sha256": "716ba0eb8f980ca5af0ef3d57e2415befc1fb1a315afeb01b9bc326a60341b48"},
+    "v1_terminal": {"path": "eligible_live_acquisition_v1_terminal_authentication.json", "sha256": "cebc287b0edd71c313bf1b70a21e70ff9f8c7f844880c4ab0cf459d19f02b456"},
+    "restore_gate": {"path": "eligible_live_restore_qualification_terminal_result.json", "sha256": "dbe064e4c294694daccc9be6c86622bf033d81ac915724b4034acff5385103aa"},
+    "liveness_recovery": {"path": "eligible_live_v2_liveness_qualification_offline_recovery.json", "sha256": "4cbf20424f34a804df98a8ebb8798d2fdb3693539e0813a2a7e4b31b894c8f2f"},
+    "qualified_package": {"path": "eligible_live_v2_liveness_qualification_package_receipt.json", "sha256": "7b564f9496898c46883b174c27fd2edd3c828aaf83d379345d987e7697439b75"}
+  },
+  "source": {
+    "qualified_runtime_commit": "11143be695f3a59b934a6522d89f1dc6a6a27ce6",
+    "qualified_runtime_archive_sha256": "ff8cb7f09b64b6ff5d781c12c52d566c8c8821ebab559d569e322ec2fabe691f",
+    "new_execution_archive_requires_separate_receipt": true,
+    "training_or_scheduler_change_permitted": false,
+    "liveness_stall_root_cause_proven": false
+  },
+  "capture_phase": {
+    "trajectory_count": 20,
+    "maximum_completed_updates_per_trajectory": 64,
+    "maximum_capsules_per_trajectory": 1,
+    "selection_rule": "first eligible decision under the unchanged causal protocol",
+    "parallel_execution_permitted": true,
+    "suppress_capture_for_liveness_qualification": false,
+    "captured_update_executed": false,
+    "post_update_outcomes_opened": false,
+    "all_20_terminal_and_authenticated_before_gate": true,
+    "minimum_authenticated_capsules_to_open_replay": 16,
+    "replacement_seeds": 0,
+    "pool_v1_or_qualification_capsules": false
+  },
+  "trajectories": [
+    {"identity": "v2a01", "seed": 20261201},
+    {"identity": "v2a02", "seed": 20261202},
+    {"identity": "v2a03", "seed": 20261203},
+    {"identity": "v2a04", "seed": 20261204},
+    {"identity": "v2a05", "seed": 20261205},
+    {"identity": "v2a06", "seed": 20261206},
+    {"identity": "v2a07", "seed": 20261207},
+    {"identity": "v2a08", "seed": 20261208},
+    {"identity": "v2a09", "seed": 20261209},
+    {"identity": "v2a10", "seed": 20261210},
+    {"identity": "v2a11", "seed": 20261211},
+    {"identity": "v2a12", "seed": 20261212},
+    {"identity": "v2a13", "seed": 20261213},
+    {"identity": "v2a14", "seed": 20261214},
+    {"identity": "v2a15", "seed": 20261215},
+    {"identity": "v2a16", "seed": 20261216},
+    {"identity": "v2a17", "seed": 20261217},
+    {"identity": "v2a18", "seed": 20261218},
+    {"identity": "v2a19", "seed": 20261219},
+    {"identity": "v2a20", "seed": 20261220}
+  ],
+  "execution": {
+    "launcher": "runllm.py --no_wait",
+    "submission_attempt_limit_per_identity": 1,
+    "workload_time_limit_seconds": 14400,
+    "client_queue_deadline": null,
+    "progress_watchdog_seconds": 1200,
+    "automatic_retry": false,
+    "automatic_replacement": false,
+    "automatic_extension": false
+  },
+  "artifact_transport": {
+    "checkpoint_source": "successful EOS workload artifact, accessed directly",
+    "large_archive_download_in_logs_after": false,
+    "compact_terminal_record_first": true,
+    "recursive_capsule_sha256_inventory_required": true,
+    "mutable_jet_wrapper_log_in_workload_checksum_inventory": false,
+    "transport_clean_room_test_required_before_launch": true
+  },
+  "replay_phase": {
+    "locked_until_capture_completion_gate": true,
+    "arms": ["reward_variance_base", "m4_shield"],
+    "updates_per_arm": 1,
+    "identical_pre_update_state_required": true,
+    "optimizer_scheduler_and_rng_restore_evidence_required": true,
+    "one_update_replay_qualification_required_before_acquisition_launch": true,
+    "qualification_uses_only_excluded_existing_capsule": true,
+    "regeneration_forbidden": true,
+    "action_reselection_forbidden": true,
+    "outcome_access_before_all_valid_replays_authenticate": false
+  },
+  "primary_analysis": {
+    "endpoint": "shield_post_minus_pre_heldout_clipped_pg_loss_minus_base_post_minus_pre",
+    "favorable_direction": "negative",
+    "unit": "one paired contrast per valid trajectory",
+    "summary": "paired mean with 95 percent studentized bootstrap interval",
+    "robustness": ["paired t interval", "exact sign flip test"],
+    "report_every_contrast": true,
+    "categorical_decision_labels": false,
+    "terminal_accuracy_endpoint": false
+  },
+  "stopping_rules": {
+    "no_eligible_decision_by_update_64": "valid no-capsule record; do not replace",
+    "runtime_or_integrity_failure": "identity fails closed; preserve evidence; no automatic retry",
+    "unauthenticated_or_unclassified_identity": "completion gate remains closed",
+    "fewer_than_16_authenticated_capsules": "stop without paired replay",
+    "paired_replay_missing_or_invalid_arm": "do not open any primary outcomes",
+    "outcome_guided_tuning": "forbidden"
+  },
+  "launch_readiness": {
+    "design_only": true,
+    "execution_lock_and_package_receipt_required": true,
+    "fresh_unconsumed_submission_guards_required": true,
+    "source_rotated_setup_jet_before_submission": true,
+    "v2_acquisition_started": false,
+    "paired_replay_started": false
+  }
+}

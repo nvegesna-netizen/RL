@@ -1,0 +1,48 @@
+{
+  "schema": "m4-eligible-live-duplicate-update-package-receipt-v1",
+  "recorded_at": "2026-10-14",
+  "status": "PASS_STATIC_PACKAGE_CHECKS_UNSUBMITTED",
+  "clean_room_status": "PASS_CLEAN_ROOM_STATIC_PACKAGE",
+  "name": "m4-eligible-live-duplicate-update-qualification",
+  "manifest_sha256": "7ecb51c8d232b21131753fcb7eb9bbdda00e6acab089ec84f8df26f7b7488e48",
+  "source_archive_sha256": "ff8cb7f09b64b6ff5d781c12c52d566c8c8821ebab559d569e322ec2fabe691f",
+  "megatron_archive_sha256": "98d98920c0fea3d8ae1216a485dc9b5aa4fc966e469435ad61f2bae456de80d2",
+  "protocol_sha256": "a57986017e250fff4140ab3e078e6cc48f1a9a6f2a6a418f9b56c66de860037d",
+  "overlay_sha256": {
+    "reports/auto_research/2026-10-07-m4-causal-utility/eligible_live_duplicate_update_qualification_protocol.json": "a57986017e250fff4140ab3e078e6cc48f1a9a6f2a6a418f9b56c66de860037d",
+    "research/m4_eligible_replay/__init__.py": "46b5bd12b07e34ff3ff4effcdcdcd8d7f922b5aa1036bcff09c7c5d80399bcd3",
+    "research/m4_eligible_replay/contracts.py": "c94394281bf247fd6ee659af2d2a237fbccf5f25159b7009cda2f16d92d7fe93",
+    "research/m4_eligible_replay/run_qualification.py": "cd16a148a1cd31bd6846ad0b05892cb00e5a497256d9ade0cc5a0db89c6f6ffb",
+    "research/m4_eligible_replay/test_contracts.py": "b1f31f9a47d3cc511fc1f83ca980fb4458e21e10215b0bcc99d4ea9a4d3e08b4",
+    "research/m4_eligible_replay/transport.py": "7292e3f792e3a452f715651bbccd785781da394e0afecd67d39e55423dfa7c17",
+    "research/m4_eligible_replay/worker.py": "fb3369449ded2e94cc0e2a47e240358c380f9025073653b5dfe43a0e6ddde3a3"
+  },
+  "prelaunch_verification": {
+    "clean_room_source_and_overlay_extraction": true,
+    "embedded_python_and_expanded_shell_syntax": true,
+    "cpu_contract_tests_passed": 8,
+    "ruff_and_compile_checks_passed": true,
+    "historical_manifest_access_authenticated": true,
+    "historical_checkpoint_metadata_access_authenticated": true,
+    "checkpoint_save_rng": true,
+    "checkpoint_save_optim": true,
+    "gpu_replay_tested_locally": false,
+    "remote_state_digest_smoke_test_required": true
+  },
+  "authorization": {
+    "user_request": "do the next sequence properly",
+    "standing_eos_launch_authorization": true,
+    "qualification_launcher_invocations": 1,
+    "automatic_retry": false,
+    "fresh_acquisition_launched_by_this_package": false
+  },
+  "transport": {
+    "checkpoint_outside_assets": true,
+    "large_archive_downloaded": false,
+    "direct_individual_eos_artifact_members": true,
+    "compact_records_uploaded_only": true
+  },
+  "new_eos_launches": 0,
+  "post_update_heldout_loss_computed": false,
+  "causal_contrast_computed": false
+}

@@ -353,7 +353,7 @@ if run_rc==0 and not liveness.exists() and not capsule.exists() and all(p.is_fil
     lifecycle_rows=[json.loads(line) for line in lifecycle.read_text().splitlines() if line]
     advances=[row for row in lifecycle_rows if row["stage"]=="learner_version_advanced"]
     versions=[row["learner_weight_version"] for row in advances]
-    oars_rows=[json.loads(line) for line in oars.read_text().splitlines() if line]
+    oars_rows=[row for row in (json.loads(line) for line in oars.read_text().splitlines() if line) if row.get('event_type')=='decision']
     eligible=sum(
         row.get("skip_reason") is None
         and row.get("proposals",{}).get("m4_shield",{}).get("proposed_group_ids")
@@ -396,7 +396,7 @@ print(result["status"],identity,seed)
 PY
 readonly GATE_RC=$?
 set -e
-find "$ASSETS" -type f ! -name "$(basename "$HASHES")" -print0 | sort -z | xargs -0 sha256sum > "$HASHES"
+find "$ASSETS" -maxdepth 1 -type f ! -name "$(basename "$HASHES")" -print0 | sort -z | xargs -0 sha256sum > "$HASHES"
 exit "$GATE_RC"
 '''
 

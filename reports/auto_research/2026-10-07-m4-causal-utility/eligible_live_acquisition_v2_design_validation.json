@@ -1,0 +1,26 @@
+{
+  "fresh_seeds": true,
+  "launch_ready": false,
+  "learner_advances": 384,
+  "liveness_passes": 6,
+  "new_eos_launches": 0,
+  "paired_outcomes_opened": false,
+  "pending_prelaunch_gates": [
+    "excluded-capsule one-update replay qualification",
+    "clean-room direct-EOS checkpoint transport",
+    "new source package receipt and execution lock",
+    "new unconsumed submission guards"
+  ],
+  "plan_sha256": "5dbe1ec155a9c3e7d57363820625286290f6803c0bd2e47484847ed3980e141e",
+  "predecessor_hashes": {
+    "causal_protocol": "716ba0eb8f980ca5af0ef3d57e2415befc1fb1a315afeb01b9bc326a60341b48",
+    "liveness_recovery": "4cbf20424f34a804df98a8ebb8798d2fdb3693539e0813a2a7e4b31b894c8f2f",
+    "qualified_package": "7b564f9496898c46883b174c27fd2edd3c828aaf83d379345d987e7697439b75",
+    "restore_gate": "dbe064e4c294694daccc9be6c86622bf033d81ac915724b4034acff5385103aa",
+    "v1_terminal": "cebc287b0edd71c313bf1b70a21e70ff9f8c7f844880c4ab0cf459d19f02b456"
+  },
+  "qualified_runtime_files_checked": 9,
+  "schema": "m4-eligible-live-v2-design-validation-v1",
+  "status": "PASS_FROZEN_DESIGN_ONLY",
+  "trajectory_count": 20
+}

@@ -1,0 +1,534 @@
+{
+  "causal_effect_estimated": false,
+  "chains": [
+    {
+      "artifact_manifest_sha256": "d07ee39f4ea60563fcc0a29af8a958ef2fccf38fbc1556e348ed308b62f481ee",
+      "artifact_records": {
+        "jet_assets/output_logs/output_script-0.log": {
+          "bytes": 17255849,
+          "declared_sha256": "c1daddea8e8f043c2641aa4949fcb1adbf667bc78243ccce0625132aa0724736",
+          "manifest_hash_matches": false,
+          "sha256": "6f904c2e7af9b78c6b7b57f5d25bcb5bcf3d232aa6d8aacf5fe3dec0eb11e1a6"
+        },
+        "m4-eligible-live-v2-lq01-lifecycle.jsonl": {
+          "bytes": 8094752,
+          "declared_sha256": "fa29d32de928e4e2b3f66c8989dd276bbe0ae1494bf2c9ac32a5941566786e18",
+          "manifest_hash_matches": true,
+          "sha256": "fa29d32de928e4e2b3f66c8989dd276bbe0ae1494bf2c9ac32a5941566786e18"
+        },
+        "m4-eligible-live-v2-lq01-oars-v2.jsonl": {
+          "bytes": 679852,
+          "declared_sha256": "0cb836f0d274bf50b434158ed175c24539f399792f64043561e918b2de5eaa17",
+          "manifest_hash_matches": true,
+          "sha256": "0cb836f0d274bf50b434158ed175c24539f399792f64043561e918b2de5eaa17"
+        },
+        "m4-eligible-live-v2-lq01-observer-duty.json": {
+          "bytes": 488,
+          "declared_sha256": "a52ca21f15d7b0d78903b296883827a238e2cea879b197e94ef7241c79e0213e",
+          "manifest_hash_matches": true,
+          "sha256": "a52ca21f15d7b0d78903b296883827a238e2cea879b197e94ef7241c79e0213e"
+        },
+        "m4-eligible-live-v2-lq01-opportunity.jsonl": {
+          "bytes": 1241436,
+          "declared_sha256": "4cf2b9f5261428e6ce72ef25848d0b7242f5066f3532a8624ac1dd99a3b263e1",
+          "manifest_hash_matches": true,
+          "sha256": "4cf2b9f5261428e6ce72ef25848d0b7242f5066f3532a8624ac1dd99a3b263e1"
+        },
+        "m4-eligible-live-v2-lq01-run.log": {
+          "bytes": 224020,
+          "declared_sha256": "a79e96815e44e9a699c1dedbf2586292d2e55dd8be877d9431cdf088aaf83240",
+          "manifest_hash_matches": true,
+          "sha256": "a79e96815e44e9a699c1dedbf2586292d2e55dd8be877d9431cdf088aaf83240"
+        },
+        "m4-eligible-live-v2-lq01-tests.log": {
+          "bytes": 39174,
+          "declared_sha256": "1823e9f8c802d32d14386a320147d12483e0fb53502e192cbad2f445c4b15cc2",
+          "manifest_hash_matches": true,
+          "sha256": "1823e9f8c802d32d14386a320147d12483e0fb53502e192cbad2f445c4b15cc2"
+        }
+      },
+      "classifier_replay": {
+        "original": {
+          "exit_code": 1,
+          "source_sha256": "7452fdfe72289bb6fc0f893e1ab6a4ecd099c60ce3b9541ec791abaa33d36975"
+        },
+        "repaired": {
+          "exit_code": 0,
+          "result_sha256": "c91a13d90dc4da67909c5187b123197ce7df5353c568498b3bd096f00a5c41ae",
+          "source_sha256": "4316c17cac208e093c4db832414d56f32938d2f6842cf6af487eeecbd0036439"
+        }
+      },
+      "eos_job_id": 482163040,
+      "identity": "lq01",
+      "logs_after_job_id": 482163041,
+      "original_manifest_sha256": "0e9084f6821478a53ce770214ea4b64d608743e23ae7dbe7fb3fade048f89da5",
+      "original_wrapper_status": "ASSERTION_FAILED_ON_HEADER_COUNT",
+      "recovered_qualification": {
+        "assignment_domain": "m4-eligible-live-v2-forced-no-eligibility-liveness-v1",
+        "capsule_written": false,
+        "causal_effect_estimated": false,
+        "checkpoint_written": false,
+        "identity": "lq01",
+        "lifecycle_learner_advances": 64,
+        "oars_actions_matching_m4_shield": 64,
+        "oars_decisions": 64,
+        "paired_replay_started": false,
+        "post_update_heldout_outcomes_opened": false,
+        "run_exit_code": 0,
+        "schema": "m4-shield-eligible-live-v2-liveness-qualification-result-v1",
+        "seed": 20261102,
+        "status": "PASS_FULL_64_UPDATE_LIVENESS",
+        "suppressed_eligible_decisions": 2,
+        "train_steps": 64,
+        "trainer_version": 64,
+        "v2_acquisition_started": false,
+        "watchdog_timeout_record_present": false
+      },
+      "seed": 20261102
+    },
+    {
+      "artifact_manifest_sha256": "753a94a7b09fc5248bd271fbdf88a9a6e25085e87be6791382d28f6f8f5a055b",
+      "artifact_records": {
+        "jet_assets/output_logs/output_script-0.log": {
+          "bytes": 17255879,
+          "declared_sha256": "be445c64a91d6d5eaa041d1cfd2110a41229c24164aa920c8ce5a4d9a5c48316",
+          "manifest_hash_matches": false,
+          "sha256": "1749e2e422fae6e825cf6ec3bbeffa5e3fbb1e1a82680a01397dd1e99ab84cfa"
+        },
+        "m4-eligible-live-v2-lq02-lifecycle.jsonl": {
+          "bytes": 8090981,
+          "declared_sha256": "898015fd26c22c11bafb1bc9e1cb26f520e3f9b1de7300b85679eb22140775e7",
+          "manifest_hash_matches": true,
+          "sha256": "898015fd26c22c11bafb1bc9e1cb26f520e3f9b1de7300b85679eb22140775e7"
+        },
+        "m4-eligible-live-v2-lq02-oars-v2.jsonl": {
+          "bytes": 689648,
+          "declared_sha256": "38cf664519e0130d632382b367b7b89fd4dec2824a227202edb605e4095f42d9",
+          "manifest_hash_matches": true,
+          "sha256": "38cf664519e0130d632382b367b7b89fd4dec2824a227202edb605e4095f42d9"
+        },
+        "m4-eligible-live-v2-lq02-observer-duty.json": {
+          "bytes": 487,
+          "declared_sha256": "c36e1ac3b34e58188b2b185abd247cd5eaa4f0511eda66170abcf5f652633b41",
+          "manifest_hash_matches": true,
+          "sha256": "c36e1ac3b34e58188b2b185abd247cd5eaa4f0511eda66170abcf5f652633b41"
+        },
+        "m4-eligible-live-v2-lq02-opportunity.jsonl": {
+          "bytes": 1269200,
+          "declared_sha256": "9018956b6086d21eef57f801a70bb77f1bccc9a63d12bb94a6d511355d73ceb2",
+          "manifest_hash_matches": true,
+          "sha256": "9018956b6086d21eef57f801a70bb77f1bccc9a63d12bb94a6d511355d73ceb2"
+        },
+        "m4-eligible-live-v2-lq02-run.log": {
+          "bytes": 224183,
+          "declared_sha256": "4dbc59c0cf333ab19eb2086e8db45a0eb42d5b47cf7df5d7bea8934149dd484e",
+          "manifest_hash_matches": true,
+          "sha256": "4dbc59c0cf333ab19eb2086e8db45a0eb42d5b47cf7df5d7bea8934149dd484e"
+        },
+        "m4-eligible-live-v2-lq02-tests.log": {
+          "bytes": 39041,
+          "declared_sha256": "c29d2b9ff1f21a23848eabd14537a7ee47946a5d89ad00da71b35e76af9d3372",
+          "manifest_hash_matches": true,
+          "sha256": "c29d2b9ff1f21a23848eabd14537a7ee47946a5d89ad00da71b35e76af9d3372"
+        }
+      },
+      "classifier_replay": {
+        "original": {
+          "exit_code": 1,
+          "source_sha256": "7452fdfe72289bb6fc0f893e1ab6a4ecd099c60ce3b9541ec791abaa33d36975"
+        },
+        "repaired": {
+          "exit_code": 0,
+          "result_sha256": "28d32a75def43f29958b99f22a69f983f42a881d019f7c6cb6296d89a635f05c",
+          "source_sha256": "4316c17cac208e093c4db832414d56f32938d2f6842cf6af487eeecbd0036439"
+        }
+      },
+      "eos_job_id": 482168582,
+      "identity": "lq02",
+      "logs_after_job_id": 482168583,
+      "original_manifest_sha256": "4705ae2ea33efed8aaeac0055a98494c08188666523c022b5cc2406a462c7120",
+      "original_wrapper_status": "ASSERTION_FAILED_ON_HEADER_COUNT",
+      "recovered_qualification": {
+        "assignment_domain": "m4-eligible-live-v2-forced-no-eligibility-liveness-v1",
+        "capsule_written": false,
+        "causal_effect_estimated": false,
+        "checkpoint_written": false,
+        "identity": "lq02",
+        "lifecycle_learner_advances": 64,
+        "oars_actions_matching_m4_shield": 64,
+        "oars_decisions": 64,
+        "paired_replay_started": false,
+        "post_update_heldout_outcomes_opened": false,
+        "run_exit_code": 0,
+        "schema": "m4-shield-eligible-live-v2-liveness-qualification-result-v1",
+        "seed": 20261103,
+        "status": "PASS_FULL_64_UPDATE_LIVENESS",
+        "suppressed_eligible_decisions": 5,
+        "train_steps": 64,
+        "trainer_version": 64,
+        "v2_acquisition_started": false,
+        "watchdog_timeout_record_present": false
+      },
+      "seed": 20261103
+    },
+    {
+      "artifact_manifest_sha256": "e5d518728468fa62f7e88f235cc5d5b9459de045580cd59576aedc1101b20ea0",
+      "artifact_records": {
+        "jet_assets/output_logs/output_script-0.log": {
+          "bytes": 17255198,
+          "declared_sha256": "111c7f8b36bd7c3b9df0f550c599176ff1694b8662189baa0178cebacd491891",
+          "manifest_hash_matches": false,
+          "sha256": "2ef3c28992a6b01c1bfbec07180882c1b16c277b0961a52e0f0ee05f9e805ab0"
+        },
+        "m4-eligible-live-v2-lq03-lifecycle.jsonl": {
+          "bytes": 8029369,
+          "declared_sha256": "56e6d9ee97eda1d1b63bc904a93428541d8252c9c3fcd1833cc903466b1edbfb",
+          "manifest_hash_matches": true,
+          "sha256": "56e6d9ee97eda1d1b63bc904a93428541d8252c9c3fcd1833cc903466b1edbfb"
+        },
+        "m4-eligible-live-v2-lq03-oars-v2.jsonl": {
+          "bytes": 680103,
+          "declared_sha256": "491bbdf77aa2bfd71c0c4b04d933b9e1d6f2ca5761d93bb44aae2d5bec791ab6",
+          "manifest_hash_matches": true,
+          "sha256": "491bbdf77aa2bfd71c0c4b04d933b9e1d6f2ca5761d93bb44aae2d5bec791ab6"
+        },
+        "m4-eligible-live-v2-lq03-observer-duty.json": {
+          "bytes": 487,
+          "declared_sha256": "4067f0c9a5e358bb03179d9ae61d41ad242e404631fb136ed80777aa1f59af74",
+          "manifest_hash_matches": true,
+          "sha256": "4067f0c9a5e358bb03179d9ae61d41ad242e404631fb136ed80777aa1f59af74"
+        },
+        "m4-eligible-live-v2-lq03-opportunity.jsonl": {
+          "bytes": 1225643,
+          "declared_sha256": "5afddab3bd8916101ea7570dd2410c9d7fda0213bbcc33334444ca98fd5668fc",
+          "manifest_hash_matches": true,
+          "sha256": "5afddab3bd8916101ea7570dd2410c9d7fda0213bbcc33334444ca98fd5668fc"
+        },
+        "m4-eligible-live-v2-lq03-run.log": {
+          "bytes": 223369,
+          "declared_sha256": "f450d13554f4cf1338696db818c5a849ea3b160f68843b32ca1c707fe76df7ec",
+          "manifest_hash_matches": true,
+          "sha256": "f450d13554f4cf1338696db818c5a849ea3b160f68843b32ca1c707fe76df7ec"
+        },
+        "m4-eligible-live-v2-lq03-tests.log": {
+          "bytes": 39174,
+          "declared_sha256": "379b3e5df854330ffb036c927de889a85872491a1e72edc9215dcf85165afba7",
+          "manifest_hash_matches": true,
+          "sha256": "379b3e5df854330ffb036c927de889a85872491a1e72edc9215dcf85165afba7"
+        }
+      },
+      "classifier_replay": {
+        "original": {
+          "exit_code": 1,
+          "source_sha256": "7452fdfe72289bb6fc0f893e1ab6a4ecd099c60ce3b9541ec791abaa33d36975"
+        },
+        "repaired": {
+          "exit_code": 0,
+          "result_sha256": "276d181a2d1feb403fd34b1a0e53207cdc437418f5dc2f97e64785ed24758348",
+          "source_sha256": "4316c17cac208e093c4db832414d56f32938d2f6842cf6af487eeecbd0036439"
+        }
+      },
+      "eos_job_id": 482170445,
+      "identity": "lq03",
+      "logs_after_job_id": 482170446,
+      "original_manifest_sha256": "1eee41d636886306456dbb78d60e96601495706fa6d78cbab5e792f6a1a5616e",
+      "original_wrapper_status": "ASSERTION_FAILED_ON_HEADER_COUNT",
+      "recovered_qualification": {
+        "assignment_domain": "m4-eligible-live-v2-forced-no-eligibility-liveness-v1",
+        "capsule_written": false,
+        "causal_effect_estimated": false,
+        "checkpoint_written": false,
+        "identity": "lq03",
+        "lifecycle_learner_advances": 64,
+        "oars_actions_matching_m4_shield": 64,
+        "oars_decisions": 64,
+        "paired_replay_started": false,
+        "post_update_heldout_outcomes_opened": false,
+        "run_exit_code": 0,
+        "schema": "m4-shield-eligible-live-v2-liveness-qualification-result-v1",
+        "seed": 20261109,
+        "status": "PASS_FULL_64_UPDATE_LIVENESS",
+        "suppressed_eligible_decisions": 6,
+        "train_steps": 64,
+        "trainer_version": 64,
+        "v2_acquisition_started": false,
+        "watchdog_timeout_record_present": false
+      },
+      "seed": 20261109
+    },
+    {
+      "artifact_manifest_sha256": "2921ee754f3e5737a508e4199fed342d6983707d6e0ceaaba8a507954000afcf",
+      "artifact_records": {
+        "jet_assets/output_logs/output_script-0.log": {
+          "bytes": 17255228,
+          "declared_sha256": "66aa64c3000756b7d7bf675c488123802fa42c61fb0afca8d09f139408a7f454",
+          "manifest_hash_matches": false,
+          "sha256": "61ff8b38d1fdbaff8f9fd55654f0d243dfcc2aa69a40df502700493033296a80"
+        },
+        "m4-eligible-live-v2-lq04-lifecycle.jsonl": {
+          "bytes": 7953792,
+          "declared_sha256": "f89957d0e0c64920804ff954dbd853536d2e50e5245c86bfb1047f624cb4da9f",
+          "manifest_hash_matches": true,
+          "sha256": "f89957d0e0c64920804ff954dbd853536d2e50e5245c86bfb1047f624cb4da9f"
+        },
+        "m4-eligible-live-v2-lq04-oars-v2.jsonl": {
+          "bytes": 684282,
+          "declared_sha256": "5c3a48149aea193d86d37cd5a4025428ce81782da153bc7fbf596d3e50dbccea",
+          "manifest_hash_matches": true,
+          "sha256": "5c3a48149aea193d86d37cd5a4025428ce81782da153bc7fbf596d3e50dbccea"
+        },
+        "m4-eligible-live-v2-lq04-observer-duty.json": {
+          "bytes": 487,
+          "declared_sha256": "b430936b999344f61317a585b4191727c6b382478bf0d0a71e76ddd1b4727d9e",
+          "manifest_hash_matches": true,
+          "sha256": "b430936b999344f61317a585b4191727c6b382478bf0d0a71e76ddd1b4727d9e"
+        },
+        "m4-eligible-live-v2-lq04-opportunity.jsonl": {
+          "bytes": 1244294,
+          "declared_sha256": "3a0de1a3295d01a576be697fae0a579d1640c3cd7f93a535d87e0ddb79af0b2e",
+          "manifest_hash_matches": true,
+          "sha256": "3a0de1a3295d01a576be697fae0a579d1640c3cd7f93a535d87e0ddb79af0b2e"
+        },
+        "m4-eligible-live-v2-lq04-run.log": {
+          "bytes": 223532,
+          "declared_sha256": "9125f400779c0551ad8848bbe8c3d1f4f59d1a390d5753b74635905cf129f722",
+          "manifest_hash_matches": true,
+          "sha256": "9125f400779c0551ad8848bbe8c3d1f4f59d1a390d5753b74635905cf129f722"
+        },
+        "m4-eligible-live-v2-lq04-tests.log": {
+          "bytes": 39041,
+          "declared_sha256": "e79f0c960b66e4ae48dfce1aa3c837d05ce46b5afad491a3e0f9e90b1df2bf36",
+          "manifest_hash_matches": true,
+          "sha256": "e79f0c960b66e4ae48dfce1aa3c837d05ce46b5afad491a3e0f9e90b1df2bf36"
+        }
+      },
+      "classifier_replay": {
+        "original": {
+          "exit_code": 1,
+          "source_sha256": "7452fdfe72289bb6fc0f893e1ab6a4ecd099c60ce3b9541ec791abaa33d36975"
+        },
+        "repaired": {
+          "exit_code": 0,
+          "result_sha256": "f4b30e31f28925d87d7d9dc10977db356e946a0d490bb602660f8bd87a8c9156",
+          "source_sha256": "4316c17cac208e093c4db832414d56f32938d2f6842cf6af487eeecbd0036439"
+        }
+      },
+      "eos_job_id": 482172905,
+      "identity": "lq04",
+      "logs_after_job_id": 482172906,
+      "original_manifest_sha256": "ee33a0b1b3ba283d73cb3dbc72c62b28b37bc7a978d8b0d3886b6738cf967c65",
+      "original_wrapper_status": "ASSERTION_FAILED_ON_HEADER_COUNT",
+      "recovered_qualification": {
+        "assignment_domain": "m4-eligible-live-v2-forced-no-eligibility-liveness-v1",
+        "capsule_written": false,
+        "causal_effect_estimated": false,
+        "checkpoint_written": false,
+        "identity": "lq04",
+        "lifecycle_learner_advances": 64,
+        "oars_actions_matching_m4_shield": 64,
+        "oars_decisions": 64,
+        "paired_replay_started": false,
+        "post_update_heldout_outcomes_opened": false,
+        "run_exit_code": 0,
+        "schema": "m4-shield-eligible-live-v2-liveness-qualification-result-v1",
+        "seed": 20261110,
+        "status": "PASS_FULL_64_UPDATE_LIVENESS",
+        "suppressed_eligible_decisions": 4,
+        "train_steps": 64,
+        "trainer_version": 64,
+        "v2_acquisition_started": false,
+        "watchdog_timeout_record_present": false
+      },
+      "seed": 20261110
+    },
+    {
+      "artifact_manifest_sha256": "cae39a9e5a51224ed5c2ecb310d589a268fa90782b63ccb75b7fb2b028668c29",
+      "artifact_records": {
+        "jet_assets/output_logs/output_script-0.log": {
+          "bytes": 17254512,
+          "declared_sha256": "5196d470ee230816e909f8b7ac42b2ec98083fa18c6e9cdd1e27e57b7f30f3e0",
+          "manifest_hash_matches": false,
+          "sha256": "af263c5dcf7f76b8c6df2f407bf6bff52b1dd3ada6062cbc6d3eac92de4bf228"
+        },
+        "m4-eligible-live-v2-lq05-lifecycle.jsonl": {
+          "bytes": 7894813,
+          "declared_sha256": "4ef92f5089da2bc0a85973bebd78a138f0c1d58290a5a1149007f7cd5d203452",
+          "manifest_hash_matches": true,
+          "sha256": "4ef92f5089da2bc0a85973bebd78a138f0c1d58290a5a1149007f7cd5d203452"
+        },
+        "m4-eligible-live-v2-lq05-oars-v2.jsonl": {
+          "bytes": 685369,
+          "declared_sha256": "d1cbc23d60b255afe33b3b799471fba30f1f7d39f852fb8c4f9cb78082311b5f",
+          "manifest_hash_matches": true,
+          "sha256": "d1cbc23d60b255afe33b3b799471fba30f1f7d39f852fb8c4f9cb78082311b5f"
+        },
+        "m4-eligible-live-v2-lq05-observer-duty.json": {
+          "bytes": 488,
+          "declared_sha256": "8b57e7e3de26548dafbfa025518e2e8f90f6fe16d93dd42a5824cad243e7a688",
+          "manifest_hash_matches": true,
+          "sha256": "8b57e7e3de26548dafbfa025518e2e8f90f6fe16d93dd42a5824cad243e7a688"
+        },
+        "m4-eligible-live-v2-lq05-opportunity.jsonl": {
+          "bytes": 1230640,
+          "declared_sha256": "b15647c51538ec37c9c75106ccd4471e5a83e96ce95ed20ce5f8aa9df9eb9cf3",
+          "manifest_hash_matches": true,
+          "sha256": "b15647c51538ec37c9c75106ccd4471e5a83e96ce95ed20ce5f8aa9df9eb9cf3"
+        },
+        "m4-eligible-live-v2-lq05-run.log": {
+          "bytes": 222683,
+          "declared_sha256": "d6dd526d69797096ae8853b5ba398bb1abc0b2f1fd20a7277e8b02acac74add8",
+          "manifest_hash_matches": true,
+          "sha256": "d6dd526d69797096ae8853b5ba398bb1abc0b2f1fd20a7277e8b02acac74add8"
+        },
+        "m4-eligible-live-v2-lq05-tests.log": {
+          "bytes": 39174,
+          "declared_sha256": "8f141a65122c97a462891dedaedd7a782a8ba21a38fa8a5a263bc9957a358297",
+          "manifest_hash_matches": true,
+          "sha256": "8f141a65122c97a462891dedaedd7a782a8ba21a38fa8a5a263bc9957a358297"
+        }
+      },
+      "classifier_replay": {
+        "original": {
+          "exit_code": 1,
+          "source_sha256": "7452fdfe72289bb6fc0f893e1ab6a4ecd099c60ce3b9541ec791abaa33d36975"
+        },
+        "repaired": {
+          "exit_code": 0,
+          "result_sha256": "f7524b6653bad372a899f84a47c7fe88de27fccfe975b624e034a7763be7c57f",
+          "source_sha256": "4316c17cac208e093c4db832414d56f32938d2f6842cf6af487eeecbd0036439"
+        }
+      },
+      "eos_job_id": 482174214,
+      "identity": "lq05",
+      "logs_after_job_id": 482174215,
+      "original_manifest_sha256": "6bccf51e0f4d5a3436bf1e31035091e26faecec174148c069ff22751ad25578e",
+      "original_wrapper_status": "ASSERTION_FAILED_ON_HEADER_COUNT",
+      "recovered_qualification": {
+        "assignment_domain": "m4-eligible-live-v2-forced-no-eligibility-liveness-v1",
+        "capsule_written": false,
+        "causal_effect_estimated": false,
+        "checkpoint_written": false,
+        "identity": "lq05",
+        "lifecycle_learner_advances": 64,
+        "oars_actions_matching_m4_shield": 64,
+        "oars_decisions": 64,
+        "paired_replay_started": false,
+        "post_update_heldout_outcomes_opened": false,
+        "run_exit_code": 0,
+        "schema": "m4-shield-eligible-live-v2-liveness-qualification-result-v1",
+        "seed": 20261111,
+        "status": "PASS_FULL_64_UPDATE_LIVENESS",
+        "suppressed_eligible_decisions": 10,
+        "train_steps": 64,
+        "trainer_version": 64,
+        "v2_acquisition_started": false,
+        "watchdog_timeout_record_present": false
+      },
+      "seed": 20261111
+    },
+    {
+      "artifact_manifest_sha256": "53e4f029bb3bb3bc38c6b437c575ca9ae2a308b9106ce9583e6346787f84cd43",
+      "artifact_records": {
+        "jet_assets/output_logs/output_script-0.log": {
+          "bytes": 17254493,
+          "declared_sha256": "3f20e2b701af502d85983dfa265b2c067da180bebfdb402d782742fe3774674d",
+          "manifest_hash_matches": false,
+          "sha256": "f16bb3e3a8696ba22aea5e33dd41aa5c717b4eb0d29b961a2bd4bcf6f9f81b91"
+        },
+        "m4-eligible-live-v2-lq06-lifecycle.jsonl": {
+          "bytes": 7497090,
+          "declared_sha256": "7440181ced11ee03acfc6de89085d2d975e6e8d15c521c0c749422275203dbc0",
+          "manifest_hash_matches": true,
+          "sha256": "7440181ced11ee03acfc6de89085d2d975e6e8d15c521c0c749422275203dbc0"
+        },
+        "m4-eligible-live-v2-lq06-oars-v2.jsonl": {
+          "bytes": 687339,
+          "declared_sha256": "364106c25f9921fc4514cd1c941726c2682876485445206da98af0a7a91712ca",
+          "manifest_hash_matches": true,
+          "sha256": "364106c25f9921fc4514cd1c941726c2682876485445206da98af0a7a91712ca"
+        },
+        "m4-eligible-live-v2-lq06-observer-duty.json": {
+          "bytes": 488,
+          "declared_sha256": "4f0fbb273102784073e1d958f10398c77436a28256421cd85349154d252fd98a",
+          "manifest_hash_matches": true,
+          "sha256": "4f0fbb273102784073e1d958f10398c77436a28256421cd85349154d252fd98a"
+        },
+        "m4-eligible-live-v2-lq06-opportunity.jsonl": {
+          "bytes": 1173010,
+          "declared_sha256": "205086673fefdda03bf2e76c799109fa8bfaada2a1134481bb7364f4ee80dc81",
+          "manifest_hash_matches": true,
+          "sha256": "205086673fefdda03bf2e76c799109fa8bfaada2a1134481bb7364f4ee80dc81"
+        },
+        "m4-eligible-live-v2-lq06-run.log": {
+          "bytes": 222664,
+          "declared_sha256": "472f78db252070ac30109d4f9810fd78d198fa7821e786d6f3f6e1d87f0c74e5",
+          "manifest_hash_matches": true,
+          "sha256": "472f78db252070ac30109d4f9810fd78d198fa7821e786d6f3f6e1d87f0c74e5"
+        },
+        "m4-eligible-live-v2-lq06-tests.log": {
+          "bytes": 39174,
+          "declared_sha256": "ff09c6967a4f3bfdd4d39f5de446fbde73a8b2190c8baa5827532e1d2d315530",
+          "manifest_hash_matches": true,
+          "sha256": "ff09c6967a4f3bfdd4d39f5de446fbde73a8b2190c8baa5827532e1d2d315530"
+        }
+      },
+      "classifier_replay": {
+        "original": {
+          "exit_code": 1,
+          "source_sha256": "7452fdfe72289bb6fc0f893e1ab6a4ecd099c60ce3b9541ec791abaa33d36975"
+        },
+        "repaired": {
+          "exit_code": 0,
+          "result_sha256": "8f11815c23113fe55a1065563f63668e48c83b9174261af195bd97df0f6884fd",
+          "source_sha256": "4316c17cac208e093c4db832414d56f32938d2f6842cf6af487eeecbd0036439"
+        }
+      },
+      "eos_job_id": 482175440,
+      "identity": "lq06",
+      "logs_after_job_id": 482175441,
+      "original_manifest_sha256": "5abbc183890f1a52da2bc43d2e3ac58a9e7e615f7bbc22b094ef274177889980",
+      "original_wrapper_status": "ASSERTION_FAILED_ON_HEADER_COUNT",
+      "recovered_qualification": {
+        "assignment_domain": "m4-eligible-live-v2-forced-no-eligibility-liveness-v1",
+        "capsule_written": false,
+        "causal_effect_estimated": false,
+        "checkpoint_written": false,
+        "identity": "lq06",
+        "lifecycle_learner_advances": 64,
+        "oars_actions_matching_m4_shield": 64,
+        "oars_decisions": 64,
+        "paired_replay_started": false,
+        "post_update_heldout_outcomes_opened": false,
+        "run_exit_code": 0,
+        "schema": "m4-shield-eligible-live-v2-liveness-qualification-result-v1",
+        "seed": 20261119,
+        "status": "PASS_FULL_64_UPDATE_LIVENESS",
+        "suppressed_eligible_decisions": 5,
+        "train_steps": 64,
+        "trainer_version": 64,
+        "v2_acquisition_started": false,
+        "watchdog_timeout_record_present": false
+      },
+      "seed": 20261119
+    }
+  ],
+  "new_eos_launches": 0,
+  "original_pipeline_states": "FAILED",
+  "original_wrapper_results_present": false,
+  "paired_replay_started": false,
+  "post_update_heldout_outcomes_opened": false,
+  "protocol_sha256": "eabfcb0fae3f70206dc57182f7c25661a893d77418f8b8ea05daef6730003479",
+  "raw_authentication_sha256": "3aab7ff8cb516e6dcf02eb7ed830b21cdb90df94d83e0c3d936b77647e751a6b",
+  "recorded_at": "2026-10-13",
+  "repair": {
+    "all_six_original_failures_reproduced": true,
+    "all_six_repaired_classifiers_pass": true,
+    "harness_log_issue": "JET appends to its output log after the recursive checksum sweep; all six workload-owned artifacts match their declared hashes and both copies are identical.",
+    "scientific_or_engineering_thresholds_changed": false,
+    "single_classifier_change": "Exclude the single ledger header when counting OARS decisions.",
+    "training_or_scheduler_code_changed": false
+  },
+  "schema": "m4-eligible-live-liveness-offline-recovery-v1",
+  "status": "PASS_ALL_SIX_ORIGINAL_LIVENESS_REQUIREMENTS_OFFLINE_RECOVERED",
+  "v2_acquisition_started": false
+}
