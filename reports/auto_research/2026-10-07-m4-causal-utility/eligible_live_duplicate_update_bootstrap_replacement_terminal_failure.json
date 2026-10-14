@@ -1,0 +1,57 @@
+{
+  "schema": "m4-eligible-live-bootstrap-replacement-terminal-failure-v1",
+  "recorded_at": "2026-10-14",
+  "status": "FAILED_FULL_WORKER_IMPORT_BEFORE_TRANSPORT_OR_REPLAY",
+  "parent_pipeline_id": 73836981,
+  "child_pipeline_id": 73837493,
+  "eos_job_id": 487356704,
+  "logs_after_job_id": 487356705,
+  "slurm_job_id": 6250803,
+  "slurm_node": "eos0044",
+  "slurm_state": "FAILED",
+  "slurm_exit_code": "1:0",
+  "queue_time": "03:50:06",
+  "allocated_duration": "00:02:54",
+  "workload_step_duration": "00:02:32",
+  "failure": {
+    "stage": "full worker import in state-digest smoke check",
+    "exception": "ModuleNotFoundError: No module named 'megatron.bridge'",
+    "importing_source": "nemo_rl/models/policy/workers/megatron_policy_worker.py:29",
+    "original_megatron_core_import_error_resolved": true,
+    "cpu_tests_passed": 10,
+    "checkpoint_transport_started": false,
+    "replay_started": false,
+    "four_hour_timeout": false
+  },
+  "evidence": {
+    "trace_bytes": 40815,
+    "trace_sha256": "db6cb173d62280bbf3900535f21beddb1e4d4347f367c02d0664cde3fb5e4c70",
+    "tests_log_bytes": 1531,
+    "tests_log_sha256": "083b18bfc69bcb0c0a6b9081ea9d36f40c754c4357c641f04bb7bc88f713e059",
+    "tests_eos_and_logs_after_copies_byte_identical": true,
+    "hash_basis": "computed from direct terminal API retrieval; workload checksum ledger was not reached",
+    "missing_artifact_http_status": {"transport.log": 404, "replay-a.log": 404, "qualification-result.json": 404}
+  },
+  "dependency_analysis": {
+    "base_source_archive_bridge_contents": "submodule directory only, no Bridge implementation",
+    "separate_core_archive_packaged": true,
+    "bridge_source_packaged": false,
+    "qualified_source_bridge_gitlink": "573e088c9c6740082c39744e03dc5b009e730ed4",
+    "available_bridge_archive": "session/20260914_m4_opportunity_control/m4-oars-preflight-megatron-bridge.tar.gz",
+    "available_bridge_archive_sha256": "1429945d1d50045900e40314fa283fa5f66484e945aad4920da137d7ad2c9313",
+    "available_bridge_archive_pax_commit": "573e088c9c6740082c39744e03dc5b009e730ed4",
+    "available_bridge_archive_members": 1060,
+    "available_archive_matches_qualified_gitlink": true,
+    "replacement_forces_system_actor_python": true,
+    "full_dependency_import_success_established": false
+  },
+  "disposition": {
+    "qualification_passed": false,
+    "scientific_outcomes_opened": false,
+    "fresh_acquisition_started": false,
+    "code_changed_this_diagnosis": false,
+    "new_launches_this_diagnosis": 0,
+    "both_submission_guards_remain_consumed": true,
+    "next_step": "Pin and package the matched Bridge source and full locked dependency environment; require full worker-import checks in both intended driver and actor environments before checkpoint transport, retaining every original qualification requirement."
+  }
+}

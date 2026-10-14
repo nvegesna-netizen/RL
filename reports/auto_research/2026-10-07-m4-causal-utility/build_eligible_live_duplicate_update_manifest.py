@@ -6,6 +6,7 @@ import argparse
 import base64
 import json
 import subprocess
+import tarfile
 from pathlib import Path
 
 from research.m4_eligible_replay.contracts import canonical_json, digest_file
@@ -15,17 +16,31 @@ REPORT = Path(__file__).resolve().parent
 REPO = REPORT.parents[2]
 SOURCE_HASH = "ff8cb7f09b64b6ff5d781c12c52d566c8c8821ebab559d569e322ec2fabe691f"
 MEGATRON_HASH = "98d98920c0fea3d8ae1216a485dc9b5aa4fc966e469435ad61f2bae456de80d2"
+BRIDGE_HASH = "1429945d1d50045900e40314fa283fa5f66484e945aad4920da137d7ad2c9313"
+BRIDGE_COMMIT = "573e088c9c6740082c39744e03dc5b009e730ed4"
 NAME = "m4-eligible-live-duplicate-update-qualification"
 CONFIG = "examples/configs/grpo_math_1B_megatron_single_controller_m4_eligible_live_capture.yaml"
 PROTOCOL = "reports/auto_research/2026-10-07-m4-causal-utility/eligible_live_duplicate_update_qualification_protocol.json"
 
 
 def build(
-    *, source: Path, megatron: Path, output: Path, bootstrap_replacement: bool = False
+    *,
+    source: Path,
+    megatron: Path,
+    output: Path,
+    bootstrap_replacement: bool = False,
+    full_environment: bool = False,
+    bridge: Path | None = None,
 ) -> dict:
     """Embed hash-bound source and overlays, then test expanded shell syntax."""
     if digest_file(source) != SOURCE_HASH or digest_file(megatron) != MEGATRON_HASH:
         raise ValueError("qualified base archives changed")
+    if full_environment:
+        if bridge is None or digest_file(bridge) != BRIDGE_HASH:
+            raise ValueError("qualified Bridge archive missing or changed")
+        with tarfile.open(bridge, "r:gz") as archive:
+            if archive.pax_headers.get("comment") != BRIDGE_COMMIT:
+                raise ValueError("Bridge archive does not match the qualified gitlink")
     paths = [
         str(path.relative_to(REPO))
         for path in sorted((REPO / "research/m4_eligible_replay").glob("*.py"))
@@ -101,6 +116,29 @@ find "$ASSETS" -maxdepth 1 -type f ! -name artifacts.sha256 -print0 | sort -z | 
             '"$PYTHON" -m unittest research.m4_eligible_replay.test_contracts -v',
             '"$PYTHON" -m unittest research.m4_eligible_replay.test_contracts research.m4_eligible_replay.test_bootstrap -v',
         )
+    if full_environment:
+        script = script.replace(
+            "readonly PYTHON=/opt/nemo_rl_venv/bin/python",
+            'readonly PYTHON=/opt/ray_venvs/nemo_rl.models.policy.workers.megatron_policy_worker.MegatronPolicyWorker/bin/python\ntest -x "$PYTHON"',
+        )
+        original = '(("@SOURCE@","@SOURCE_HASH@",root),("@MEGATRON@","@MEGATRON_HASH@",root/"3rdparty/Megatron-Bridge-workspace/Megatron-Bridge/3rdparty"))'
+        complete = '(("@SOURCE@","@SOURCE_HASH@",root),("@BRIDGE@","@BRIDGE_HASH@",root/"3rdparty/Megatron-Bridge-workspace"),("@MEGATRON@","@MEGATRON_HASH@",root/"3rdparty/Megatron-Bridge-workspace/Megatron-Bridge/3rdparty"))'
+        if original not in script:
+            raise ValueError("source extraction template moved")
+        script = script.replace(original, complete)
+        script = script.replace(
+            "export NEMO_RL_PY_EXECUTABLES_SYSTEM=1",
+            'export NEMO_RL_PY_EXECUTABLES_SYSTEM=1\nexport VIRTUAL_ENV=/opt/ray_venvs/nemo_rl.models.policy.workers.megatron_policy_worker.MegatronPolicyWorker\nexport UV_PROJECT_ENVIRONMENT="$VIRTUAL_ENV"',
+        )
+        begin = script.index('"$PYTHON" -m unittest')
+        end = script.index('"$PYTHON" -m research.m4_eligible_replay.transport', begin)
+        script = (
+            script[:begin]
+            + """"$PYTHON" -m unittest research.m4_eligible_replay.test_contracts research.m4_eligible_replay.test_bootstrap research.m4_eligible_replay.test_preflight -v > "$ASSETS/tests.log" 2>&1
+"$PYTHON" -m research.m4_eligible_replay.preflight --output "$ASSETS/environment-preflight.json" > "$ASSETS/environment-preflight.log" 2>&1
+"""
+            + script[end:]
+        )
     replacements = {
         "@SOURCE@": base64.b64encode(source.read_bytes()).decode(),
         "@SOURCE_HASH@": SOURCE_HASH,
@@ -110,6 +148,13 @@ find "$ASSETS" -maxdepth 1 -type f ! -name artifacts.sha256 -print0 | sort -z | 
         "@PROTOCOL@": PROTOCOL,
         "@CONFIG@": CONFIG,
     }
+    if full_environment:
+        replacements.update(
+            {
+                "@BRIDGE@": base64.b64encode(bridge.read_bytes()).decode(),
+                "@BRIDGE_HASH@": BRIDGE_HASH,
+            }
+        )
     for marker, value in replacements.items():
         script = script.replace(marker, value)
     subprocess.run(
@@ -133,7 +178,12 @@ find "$ASSETS" -maxdepth 1 -type f ! -name artifacts.sha256 -print0 | sort -z | 
         "labels": {"target": "silicon"},
         "launchers": {"type:slurm": {"nodes": 1, "ntasks_per_node": 1}},
         "spec": {
-            "name": NAME + ("-bootstrap-replacement" if bootstrap_replacement else ""),
+            "name": NAME
+            + (
+                "-full-environment"
+                if full_environment
+                else ("-bootstrap-replacement" if bootstrap_replacement else "")
+            ),
             "workspace": "/workspace",
             "nodes": 1,
             "time_limit": 14400,
@@ -146,7 +196,7 @@ find "$ASSETS" -maxdepth 1 -type f ! -name artifacts.sha256 -print0 | sort -z | 
     output.parent.mkdir(parents=True, exist_ok=True)
     with output.open("xb") as stream:
         stream.write(canonical_json(manifest))
-    return {
+    result = {
         "status": "PASS_STATIC_PACKAGE_CHECKS_UNSUBMITTED",
         "name": manifest["spec"]["name"],
         "manifest_sha256": digest_file(output),
@@ -158,6 +208,16 @@ find "$ASSETS" -maxdepth 1 -type f ! -name artifacts.sha256 -print0 | sort -z | 
         "four_hour_allocated_limit": True,
         "new_eos_launches": 0,
     }
+    if full_environment:
+        result.update(
+            {
+                "bridge_archive_sha256": BRIDGE_HASH,
+                "bridge_commit": BRIDGE_COMMIT,
+                "driver_and_actor_environment": "proven prefetched MCORE",
+                "full_import_preflight_before_transport": True,
+            }
+        )
+    return result
 
 
 def main() -> None:
@@ -166,6 +226,8 @@ def main() -> None:
     parser.add_argument("--megatron", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--bootstrap-replacement", action="store_true")
+    parser.add_argument("--full-environment", action="store_true")
+    parser.add_argument("--bridge", type=Path)
     args = parser.parse_args()
     print(
         json.dumps(
@@ -174,6 +236,8 @@ def main() -> None:
                 megatron=args.megatron,
                 output=args.output,
                 bootstrap_replacement=args.bootstrap_replacement,
+                full_environment=args.full_environment,
+                bridge=args.bridge,
             ),
             indent=2,
             sort_keys=True,

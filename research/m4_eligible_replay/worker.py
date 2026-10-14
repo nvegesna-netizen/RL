@@ -14,7 +14,7 @@ from research.m4_eligible_replay.bootstrap import initialize_bundled_megatron
 
 # Standalone smoke checks have not imported nemo_rl.__init__ yet. Bootstrap
 # the packaged sources before importing either Megatron Core or Bridge.
-initialize_bundled_megatron()
+initialize_bundled_megatron(require_bridge=True)
 
 from megatron.core import tensor_parallel  # noqa: E402
 from megatron.core.optimizer import ChainedOptimizer  # noqa: E402

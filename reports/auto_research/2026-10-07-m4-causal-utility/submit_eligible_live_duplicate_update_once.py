@@ -25,7 +25,10 @@ PROTOCOL_HASH = "a57986017e250fff4140ab3e078e6cc48f1a9a6f2a6a418f9b56c66de860037
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--bootstrap-replacement", action="store_true")
+    parser.add_argument("--full-environment", action="store_true")
     args = parser.parse_args()
+    if args.bootstrap_replacement and args.full_environment:
+        raise ValueError("select exactly one replacement package")
     manifest = MANIFEST
     manifest_hash = MANIFEST_HASH
     receipt_name = "eligible_live_duplicate_update_package_receipt.json"
@@ -46,6 +49,20 @@ def main() -> None:
         launch_receipt_name = (
             "eligible_live_duplicate_update_bootstrap_replacement_launch_receipt.json"
         )
+    if args.full_environment:
+        manifest = (
+            SESSION / "m4-eligible-live-duplicate-update-full-environment-manifest.json"
+        )
+        manifest_hash = (
+            "67269375ac579d6d9e338c76befb0f47990dacc3b3f02d44a7f8585e8065c06e"
+        )
+        receipt_name = (
+            "eligible_live_duplicate_update_full_environment_package_receipt.json"
+        )
+        stem = "eligible-live-duplicate-update-full-environment"
+        launch_receipt_name = (
+            "eligible_live_duplicate_update_full_environment_launch_receipt.json"
+        )
     if not os.environ.get("JET_GITLAB_TOKEN"):
         raise ValueError("source rotated setup_jet.sh before launch")
     if (
@@ -62,7 +79,7 @@ def main() -> None:
         or package["clean_room_status"] != "PASS_CLEAN_ROOM_STATIC_PACKAGE"
     ):
         raise ValueError("qualification package not reviewed")
-    if args.bootstrap_replacement:
+    if args.bootstrap_replacement or args.full_environment:
         authorization = package["replacement_authorization"]
         if (
             authorization["additional_launcher_invocations"] != 1
@@ -80,6 +97,20 @@ def main() -> None:
             or original_guard["status"] != "SUBMITTED_NO_WAIT"
         ):
             raise ValueError("original launch identity changed")
+    if args.full_environment:
+        prior = json.loads(
+            (
+                SESSION
+                / "eligible-live-duplicate-update-bootstrap-replacement-one-shot-guard.json"
+            ).read_bytes()
+        )
+        if (
+            prior["parent_pipeline_id"] != 73836981
+            or prior["status"] != "SUBMITTED_NO_WAIT"
+        ):
+            raise ValueError("bootstrap replacement identity changed")
+        if package["environment"]["full_import_preflight_before_transport"] is not True:
+            raise ValueError("full environment gate missing")
     paths = list(package["overlay_sha256"]) + [
         "reports/auto_research/2026-10-07-m4-causal-utility/submit_eligible_live_duplicate_update_once.py"
     ]
