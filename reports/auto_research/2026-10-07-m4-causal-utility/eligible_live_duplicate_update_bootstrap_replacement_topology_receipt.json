@@ -1,0 +1,19 @@
+{
+  "schema": "m4-eligible-live-bootstrap-replacement-topology-v1",
+  "recorded_at": "2026-10-14",
+  "parent_pipeline_id": 73836981,
+  "child_pipeline_id": 73837493,
+  "generate_job_id": 487353054,
+  "trigger_job_id": 487353055,
+  "logs_before_job_id": 487356703,
+  "eos_job_id": 487356704,
+  "logs_after_job_id": 487356705,
+  "exact_eos_job_name": "basic/m4-eligible-live-duplicate-update-qualification-bootstrap-replacement dgxh100_eos 00 [2 dgxh100_eos]",
+  "source_commit": "19bcb6b2b",
+  "manifest_sha256": "c37bf75c3e7fa0e6142620a6e911f891a4780812daf6699b5ad24ab3bea28ed7",
+  "status_at_authentication": {"child_pipeline": "running", "logs_before": "running", "eos": "created", "logs_after": "created"},
+  "qualification_passed": false,
+  "fresh_acquisition_launched": false,
+  "original_guard_reused": false,
+  "replacement_invocations_consumed": 1
+}
