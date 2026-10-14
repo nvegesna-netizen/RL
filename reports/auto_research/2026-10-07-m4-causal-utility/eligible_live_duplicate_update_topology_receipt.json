@@ -1,0 +1,25 @@
+{
+  "schema": "m4-eligible-live-duplicate-update-topology-v1",
+  "recorded_at": "2026-10-14",
+  "parent_pipeline_id": 73740465,
+  "child_pipeline_id": 73740815,
+  "generate_job_id": 486616690,
+  "trigger_job_id": 486616691,
+  "logs_before_job_id": 486620006,
+  "eos_job_id": 486620007,
+  "logs_after_job_id": 486620008,
+  "exact_eos_job_name": "basic/m4-eligible-live-duplicate-update-qualification dgxh100_eos 00 [2 dgxh100_eos]",
+  "child_ref": "dlalgo-ci/eos",
+  "source_commit": "8937812ee",
+  "manifest_sha256": "7ecb51c8d232b21131753fcb7eb9bbdda00e6acab089ec84f8df26f7b7488e48",
+  "status_at_authentication": {
+    "child_pipeline": "running",
+    "logs_before": "running",
+    "eos": "created",
+    "logs_after": "created"
+  },
+  "scientific_outcomes_read": false,
+  "qualification_passed": false,
+  "fresh_acquisition_launched": false,
+  "submission_guard_consumed": true
+}
