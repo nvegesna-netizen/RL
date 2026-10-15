@@ -1,0 +1,21 @@
+{
+  "schema": "m4-eligible-live-state-diagnostics-topology-v1",
+  "recorded_at": "2026-10-15",
+  "parent_pipeline_id": 74169247,
+  "child_pipeline_id": 74170029,
+  "generate_job_id": 490010936,
+  "trigger_job_id": 490010937,
+  "logs_before_job_id": 490015450,
+  "eos_job_id": 490015455,
+  "logs_after_job_id": 490015463,
+  "exact_eos_job_name": "basic/m4-eligible-live-duplicate-update-qualification-state-diagnostics dgxh100_eos 00 [2 dgxh100_eos]",
+  "source_commit": "7b748d20e7c9c96d786eb884c2a692bf95e60dea",
+  "manifest_sha256": "155617b25518767c3c6a2b70ca83c52c90c2a247f984dd397819f7ccdf1fd893",
+  "protocol_sha256": "a57986017e250fff4140ab3e078e6cc48f1a9a6f2a6a418f9b56c66de860037d",
+  "status_at_authentication": {"generate": "success", "child": "running", "logs_before": "running", "eos": "created", "logs_after": "created"},
+  "launcher_invocations_consumed": 1,
+  "prior_guards_reused": false,
+  "automatic_retry": false,
+  "qualification_passed": false,
+  "fresh_acquisition_launched": false
+}
