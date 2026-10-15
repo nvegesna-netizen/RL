@@ -1,0 +1,21 @@
+{
+  "schema": "m4-eligible-live-evaluation-rng-repair-topology-v1",
+  "recorded_at": "2026-10-15",
+  "parent_pipeline_id": 74196188,
+  "child_pipeline_id": 74196812,
+  "generate_job_id": 490223914,
+  "trigger_job_id": 490223916,
+  "logs_before_job_id": 490229778,
+  "eos_job_id": 490229782,
+  "logs_after_job_id": 490229790,
+  "exact_eos_job_name": "basic/m4-eligible-live-duplicate-update-qualification-evaluation-rng-repair dgxh100_eos 00 [2 dgxh100_eos]",
+  "source_commit": "5b96fb00b76d0eded486ffae3a1fd3fc240a3be4",
+  "manifest_sha256": "09275496967cab72edb7cc698729ab2a27015648090a08c37efd26fb9609ee56",
+  "protocol_sha256": "a57986017e250fff4140ab3e078e6cc48f1a9a6f2a6a418f9b56c66de860037d",
+  "status_at_authentication": {"generate": "success", "child": "running", "logs_before": "running", "eos": "created", "logs_after": "created"},
+  "launcher_invocations_consumed": 1,
+  "prior_guards_reused": false,
+  "automatic_retry": false,
+  "qualification_passed": false,
+  "fresh_acquisition_launched": false
+}
