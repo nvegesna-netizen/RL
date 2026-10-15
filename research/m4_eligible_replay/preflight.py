@@ -12,6 +12,7 @@ import sys
 
 from research.m4_eligible_replay.bootstrap import initialize_bundled_megatron
 from research.m4_eligible_replay.contracts import canonical_json
+from research.m4_eligible_replay.evaluation_rng import isolate_evaluation_tracker
 from research.m4_eligible_replay.ray_startup import (
     allocate_ray_root,
     ray_cleanup,
@@ -66,6 +67,27 @@ def inspect_environment() -> dict:
         original
     ) == digest({"x": torch.tensor([1.0, 3.0])}):
         raise ValueError("state digest smoke check failed")
+    # Optional backend is available here; use a separate Core tracker, never
+    # initialize or replace the model's global tracker during preflight.
+    from megatron.core.tensor_parallel.random import CudaRNGStatesTracker
+
+    tracker = CudaRNGStatesTracker()
+    tracker.set_states({"smoke": torch.tensor([1, 2], dtype=torch.uint8)})
+    expected = digest(tracker.get_states())
+    for exceptional in (False, True):
+        failure = RuntimeError("intentional RNG cleanup smoke")
+        try:
+            with isolate_evaluation_tracker(
+                tracker, clone_state=lambda value: value.clone(), digest=digest
+            ):
+                tracker.get_states()["smoke"].add_(1)
+                if exceptional:
+                    raise failure
+        except RuntimeError as error:
+            if not exceptional or error is not failure:
+                raise
+        if digest(tracker.get_states()) != expected:
+            raise ValueError("real tensor RNG restoration smoke failed")
     registry = importlib.import_module(
         "nemo_rl.distributed.ray_actor_environment_registry"
     )
@@ -83,6 +105,7 @@ def inspect_environment() -> dict:
         "full_worker_import": True,
         "qualification_module_import": True,
         "state_digest_smoke": True,
+        "real_tensor_tracker_restore_smoke": True,
     }
 
 

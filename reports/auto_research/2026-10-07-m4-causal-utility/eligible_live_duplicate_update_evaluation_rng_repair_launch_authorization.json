@@ -1,0 +1,17 @@
+{
+  "schema": "m4-eligible-live-evaluation-rng-repair-launch-authorization-v1",
+  "recorded_at": "2026-10-15",
+  "human_request": "make the repair and launch",
+  "scope": "One EOS duplicate-comparator qualification with evaluation-only tracked-RNG isolation, retained diagnostics and unchanged full state-equality gates",
+  "manifest_sha256": "09275496967cab72edb7cc698729ab2a27015648090a08c37efd26fb9609ee56",
+  "protocol_sha256": "a57986017e250fff4140ab3e078e6cc48f1a9a6f2a6a418f9b56c66de860037d",
+  "maximum_launcher_invocations": 1,
+  "automatic_retry": false,
+  "fresh_acquisition_authorized": false,
+  "prior_guards_reused": false,
+  "scientific_thresholds_changed": false,
+  "allocated_time_limit_seconds": 14400,
+  "client_queue_deadline": null,
+  "launcher_no_wait": true,
+  "rotated_setup_required": true
+}

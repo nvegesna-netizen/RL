@@ -33,6 +33,7 @@ def build(
     bridge: Path | None = None,
     ray_startup_repair: bool = False,
     state_diagnostics: bool = False,
+    evaluation_rng_repair: bool = False,
 ) -> dict:
     """Embed hash-bound source and overlays, then test expanded shell syntax."""
     if ray_startup_repair and not full_environment:
@@ -41,6 +42,8 @@ def build(
         raise ValueError(
             "state diagnostics requires the qualified short-root environment"
         )
+    if evaluation_rng_repair and not state_diagnostics:
+        raise ValueError("evaluation RNG repair requires retained state diagnostics")
     if digest_file(source) != SOURCE_HASH or digest_file(megatron) != MEGATRON_HASH:
         raise ValueError("qualified base archives changed")
     if full_environment:
@@ -167,6 +170,11 @@ find "$ASSETS" -maxdepth 1 -type f ! -name artifacts.sha256 -print0 | sort -z | 
             "research.m4_eligible_replay.test_ray_startup -v",
             "research.m4_eligible_replay.test_ray_startup research.m4_eligible_replay.test_state_diagnostics -v",
         )
+    if evaluation_rng_repair:
+        script = script.replace(
+            "research.m4_eligible_replay.test_state_diagnostics -v",
+            "research.m4_eligible_replay.test_state_diagnostics research.m4_eligible_replay.test_evaluation_rng -v",
+        )
     replacements = {
         "@SOURCE@": base64.b64encode(source.read_bytes()).decode(),
         "@SOURCE_HASH@": SOURCE_HASH,
@@ -228,6 +236,8 @@ find "$ASSETS" -maxdepth 1 -type f ! -name artifacts.sha256 -print0 | sort -z | 
     output.parent.mkdir(parents=True, exist_ok=True)
     if state_diagnostics:
         manifest["spec"]["name"] = NAME + "-state-diagnostics"
+    if evaluation_rng_repair:
+        manifest["spec"]["name"] = NAME + "-evaluation-rng-repair"
     with output.open("xb") as stream:
         stream.write(canonical_json(manifest))
     result = {
@@ -255,6 +265,8 @@ find "$ASSETS" -maxdepth 1 -type f ! -name artifacts.sha256 -print0 | sort -z | 
         result["ray_startup_repair"] = True
     if state_diagnostics:
         result["state_diagnostics"] = True
+    if evaluation_rng_repair:
+        result["evaluation_rng_repair"] = True
     return result
 
 
@@ -268,6 +280,7 @@ def main() -> None:
     parser.add_argument("--bridge", type=Path)
     parser.add_argument("--ray-startup-repair", action="store_true")
     parser.add_argument("--state-diagnostics", action="store_true")
+    parser.add_argument("--evaluation-rng-repair", action="store_true")
     args = parser.parse_args()
     print(
         json.dumps(
@@ -280,6 +293,7 @@ def main() -> None:
                 bridge=args.bridge,
                 ray_startup_repair=args.ray_startup_repair,
                 state_diagnostics=args.state_diagnostics,
+                evaluation_rng_repair=args.evaluation_rng_repair,
             ),
             indent=2,
             sort_keys=True,

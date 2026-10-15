@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import hashlib
+import json
 import random
+from collections.abc import Iterable
 from typing import Any
 
 import numpy as np
@@ -11,6 +13,7 @@ import ray
 import torch
 
 from research.m4_eligible_replay.bootstrap import initialize_bundled_megatron
+from research.m4_eligible_replay.evaluation_rng import isolate_evaluation_tracker
 
 # Standalone smoke checks have not imported nemo_rl.__init__ yet. Bootstrap
 # the packaged sources before importing either Megatron Core or Bridge.
@@ -71,6 +74,66 @@ def state_digest(value: Any) -> str:
 )  # pragma: no cover
 class EligibleLiveReplayWorker(MegatronPolicyWorkerImpl):
     """Restore RNG through Bridge's existing pre-load hook; leave acquisition alone."""
+
+    def train(
+        self,
+        data: Any,
+        loss_fn: Any,
+        eval_mode: bool = False,
+        gbs: int | None = None,
+        mbs: int | None = None,
+        check_dim_skip_keys: Iterable[str] | None = None,
+    ) -> dict[str, Any]:
+        """Isolate held-out forwards; delegate actual training without restoration."""
+        if not eval_mode:
+            return super().train(
+                data,
+                loss_fn=loss_fn,
+                eval_mode=eval_mode,
+                gbs=gbs,
+                mbs=mbs,
+                check_dim_skip_keys=check_dim_skip_keys,
+            )
+        tracker = tensor_parallel.get_cuda_rng_tracker()
+
+        def clone_state(value: Any) -> Any:
+            if (
+                not isinstance(value, torch.Tensor)
+                or value.dtype != torch.uint8
+                or value.ndim != 1
+            ):
+                raise TypeError(
+                    "qualification supports only byte-tensor RNG tracker states"
+                )
+            return value.clone()
+
+        print(
+            json.dumps(
+                {
+                    "stage": "EVALUATION_RNG_ISOLATION",
+                    "tracker_class": f"{type(tracker).__module__}.{type(tracker).__qualname__}",
+                    "state_types": sorted(
+                        {
+                            type(value).__name__
+                            for value in tracker.get_states().values()
+                        }
+                    ),
+                    "supported_mode": "named-byte-tensor-states",
+                }
+            ),
+            flush=True,
+        )
+        with isolate_evaluation_tracker(
+            tracker, clone_state=clone_state, digest=state_digest
+        ):
+            return super().train(
+                data,
+                loss_fn=loss_fn,
+                eval_mode=eval_mode,
+                gbs=gbs,
+                mbs=mbs,
+                check_dim_skip_keys=check_dim_skip_keys,
+            )
 
     def _pre_load_checkpoint_hook(self, state: Any, model: Any) -> None:
         checkpoint = state.cfg.checkpoint

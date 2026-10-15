@@ -43,11 +43,14 @@ def main() -> None:
     parser.add_argument("--full-environment", action="store_true")
     parser.add_argument("--ray-startup-repair", action="store_true")
     parser.add_argument("--state-diagnostics", action="store_true")
+    parser.add_argument("--evaluation-rng-repair", action="store_true")
     args = parser.parse_args()
     if args.ray_startup_repair and not args.full_environment:
         raise ValueError("Ray startup repair requires full-environment validation")
     if args.state_diagnostics and not args.ray_startup_repair:
         raise ValueError("diagnostics requires repaired startup validation")
+    if args.evaluation_rng_repair and not args.state_diagnostics:
+        raise ValueError("RNG repair requires diagnostic validation")
     manifest_path = (
         MANIFEST.with_name(
             "m4-eligible-live-duplicate-update-bootstrap-replacement-manifest.json"
@@ -73,6 +76,12 @@ def main() -> None:
         expected_name = (
             "m4-eligible-live-duplicate-update-qualification-state-diagnostics"
         )
+    if args.evaluation_rng_repair:
+        expected_name = (
+            "m4-eligible-live-duplicate-update-qualification-evaluation-rng-repair"
+        )
+        if "research.m4_eligible_replay.test_evaluation_rng -v" not in spec["script"]:
+            raise ValueError("RNG isolation regressions missing from runtime gate")
     if spec["name"] != expected_name or spec["time_limit"] != 14400:
         raise ValueError("workload identity/runtime changed")
     script = spec["script"].replace("{{", "{").replace("}}", "}")
@@ -131,6 +140,8 @@ def main() -> None:
             )
         if args.state_diagnostics:
             tests.append("research.m4_eligible_replay.test_state_diagnostics")
+        if args.evaluation_rng_repair:
+            tests.append("research.m4_eligible_replay.test_evaluation_rng")
         test_run = subprocess.run(
             [
                 sys.executable,

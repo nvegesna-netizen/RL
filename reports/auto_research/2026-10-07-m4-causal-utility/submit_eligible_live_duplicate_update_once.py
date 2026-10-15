@@ -28,6 +28,7 @@ def main() -> None:
     parser.add_argument("--full-environment", action="store_true")
     parser.add_argument("--ray-startup-repair", action="store_true")
     parser.add_argument("--state-diagnostics", action="store_true")
+    parser.add_argument("--evaluation-rng-repair", action="store_true")
     parser.add_argument("--validate-only", action="store_true")
     args = parser.parse_args()
     if (
@@ -37,6 +38,7 @@ def main() -> None:
                 args.full_environment,
                 args.ray_startup_repair,
                 args.state_diagnostics,
+                args.evaluation_rng_repair,
             )
         )
         > 1
@@ -112,6 +114,22 @@ def main() -> None:
         authorization_name = (
             "eligible_live_duplicate_update_state_diagnostics_launch_authorization.json"
         )
+    if args.evaluation_rng_repair:
+        manifest = (
+            SESSION
+            / "m4-eligible-live-duplicate-update-evaluation-rng-repair-manifest.json"
+        )
+        manifest_hash = (
+            "09275496967cab72edb7cc698729ab2a27015648090a08c37efd26fb9609ee56"
+        )
+        receipt_name = (
+            "eligible_live_duplicate_update_evaluation_rng_repair_package_receipt.json"
+        )
+        stem = "eligible-live-duplicate-update-evaluation-rng-repair"
+        launch_receipt_name = (
+            "eligible_live_duplicate_update_evaluation_rng_repair_launch_receipt.json"
+        )
+        authorization_name = "eligible_live_duplicate_update_evaluation_rng_repair_launch_authorization.json"
     if not os.environ.get("JET_GITLAB_TOKEN"):
         raise ValueError("source rotated setup_jet.sh before launch")
     if (
@@ -160,7 +178,7 @@ def main() -> None:
             raise ValueError("bootstrap replacement identity changed")
         if package["environment"]["full_import_preflight_before_transport"] is not True:
             raise ValueError("full environment gate missing")
-    if args.ray_startup_repair or args.state_diagnostics:
+    if args.ray_startup_repair or args.state_diagnostics or args.evaluation_rng_repair:
         authorization = json.loads((REPORT / authorization_name).read_bytes())
         if (
             authorization["manifest_sha256"] != manifest_hash
@@ -183,7 +201,7 @@ def main() -> None:
                 or prior["status"] != "SUBMITTED_NO_WAIT"
             ):
                 raise ValueError("prior consumed guard identity changed")
-        if args.state_diagnostics:
+        if args.state_diagnostics or args.evaluation_rng_repair:
             prior = json.loads(
                 (
                     SESSION
@@ -195,8 +213,25 @@ def main() -> None:
                 or prior["status"] != "SUBMITTED_NO_WAIT"
             ):
                 raise ValueError("prior Ray startup repair identity changed")
+        if args.evaluation_rng_repair:
+            prior = json.loads(
+                (
+                    SESSION
+                    / "eligible-live-duplicate-update-state-diagnostics-one-shot-guard.json"
+                ).read_bytes()
+            )
+            if (
+                prior["parent_pipeline_id"] != 74169247
+                or prior["status"] != "SUBMITTED_NO_WAIT"
+            ):
+                raise ValueError("prior diagnostic launch identity changed")
         if (
-            package["clean_room_tests_run"] != (39 if args.state_diagnostics else 29)
+            package["clean_room_tests_run"]
+            != (
+                53
+                if args.evaluation_rng_repair
+                else (39 if args.state_diagnostics else 29)
+            )
             or package["clean_room_tests_skipped"] != 0
             or not all(package["checks"].values())
         ):
@@ -207,7 +242,7 @@ def main() -> None:
     paths = list(package["overlay_sha256"]) + [
         "reports/auto_research/2026-10-07-m4-causal-utility/submit_eligible_live_duplicate_update_once.py"
     ]
-    if args.ray_startup_repair or args.state_diagnostics:
+    if args.ray_startup_repair or args.state_diagnostics or args.evaluation_rng_repair:
         paths.extend(
             [
                 str(REPORT / receipt_name),
