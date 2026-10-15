@@ -1,0 +1,22 @@
+{
+  "schema": "m4-eligible-live-ray-startup-repair-topology-v1",
+  "recorded_at": "2026-10-15",
+  "parent_pipeline_id": 74133064,
+  "child_pipeline_id": 74133322,
+  "generate_job_id": 489723938,
+  "trigger_job_id": 489723939,
+  "logs_before_job_id": 489725898,
+  "eos_job_id": 489725899,
+  "logs_after_job_id": 489725900,
+  "exact_eos_job_name": "basic/m4-eligible-live-duplicate-update-qualification-ray-startup-repair dgxh100_eos 00 [2 dgxh100_eos]",
+  "source_commit": "0f1122a5d0e0b43903ab68b8a185c4c0cd33099e",
+  "repair_commit": "1b545e3e7",
+  "manifest_sha256": "3124b9b7585aa9af7e888c9c4ce065d099efe51f3a3304558a46a1ae92f185c2",
+  "protocol_sha256": "a57986017e250fff4140ab3e078e6cc48f1a9a6f2a6a418f9b56c66de860037d",
+  "status_at_authentication": {"generate": "success", "child": "running", "logs_before": "running", "eos": "created", "logs_after": "created"},
+  "launcher_invocations_consumed": 1,
+  "prior_guards_reused": false,
+  "automatic_retry": false,
+  "qualification_passed": false,
+  "fresh_acquisition_launched": false
+}
