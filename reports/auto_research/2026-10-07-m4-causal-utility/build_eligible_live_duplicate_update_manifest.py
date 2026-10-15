@@ -32,10 +32,15 @@ def build(
     full_environment: bool = False,
     bridge: Path | None = None,
     ray_startup_repair: bool = False,
+    state_diagnostics: bool = False,
 ) -> dict:
     """Embed hash-bound source and overlays, then test expanded shell syntax."""
     if ray_startup_repair and not full_environment:
         raise ValueError("Ray startup repair requires the full pinned environment")
+    if state_diagnostics and not ray_startup_repair:
+        raise ValueError(
+            "state diagnostics requires the qualified short-root environment"
+        )
     if digest_file(source) != SOURCE_HASH or digest_file(megatron) != MEGATRON_HASH:
         raise ValueError("qualified base archives changed")
     if full_environment:
@@ -154,6 +159,14 @@ find "$ASSETS" -maxdepth 1 -type f ! -name artifacts.sha256 -print0 | sort -z | 
             "research.m4_eligible_replay.test_preflight -v",
             "research.m4_eligible_replay.test_preflight research.m4_eligible_replay.test_ray_startup -v",
         )
+    if state_diagnostics:
+        script = script.replace(
+            ' --replicate "$replicate" --output',
+            ' --replicate "$replicate" --state-diagnostics-dir "$ASSETS" --output',
+        ).replace(
+            "research.m4_eligible_replay.test_ray_startup -v",
+            "research.m4_eligible_replay.test_ray_startup research.m4_eligible_replay.test_state_diagnostics -v",
+        )
     replacements = {
         "@SOURCE@": base64.b64encode(source.read_bytes()).decode(),
         "@SOURCE_HASH@": SOURCE_HASH,
@@ -213,6 +226,8 @@ find "$ASSETS" -maxdepth 1 -type f ! -name artifacts.sha256 -print0 | sort -z | 
         },
     }
     output.parent.mkdir(parents=True, exist_ok=True)
+    if state_diagnostics:
+        manifest["spec"]["name"] = NAME + "-state-diagnostics"
     with output.open("xb") as stream:
         stream.write(canonical_json(manifest))
     result = {
@@ -238,6 +253,8 @@ find "$ASSETS" -maxdepth 1 -type f ! -name artifacts.sha256 -print0 | sort -z | 
         )
     if ray_startup_repair:
         result["ray_startup_repair"] = True
+    if state_diagnostics:
+        result["state_diagnostics"] = True
     return result
 
 
@@ -250,6 +267,7 @@ def main() -> None:
     parser.add_argument("--full-environment", action="store_true")
     parser.add_argument("--bridge", type=Path)
     parser.add_argument("--ray-startup-repair", action="store_true")
+    parser.add_argument("--state-diagnostics", action="store_true")
     args = parser.parse_args()
     print(
         json.dumps(
@@ -261,6 +279,7 @@ def main() -> None:
                 full_environment=args.full_environment,
                 bridge=args.bridge,
                 ray_startup_repair=args.ray_startup_repair,
+                state_diagnostics=args.state_diagnostics,
             ),
             indent=2,
             sort_keys=True,

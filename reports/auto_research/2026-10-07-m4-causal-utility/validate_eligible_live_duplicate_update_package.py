@@ -42,9 +42,12 @@ def main() -> None:
     parser.add_argument("--manifest", type=Path)
     parser.add_argument("--full-environment", action="store_true")
     parser.add_argument("--ray-startup-repair", action="store_true")
+    parser.add_argument("--state-diagnostics", action="store_true")
     args = parser.parse_args()
     if args.ray_startup_repair and not args.full_environment:
         raise ValueError("Ray startup repair requires full-environment validation")
+    if args.state_diagnostics and not args.ray_startup_repair:
+        raise ValueError("diagnostics requires repaired startup validation")
     manifest_path = (
         MANIFEST.with_name(
             "m4-eligible-live-duplicate-update-bootstrap-replacement-manifest.json"
@@ -66,11 +69,20 @@ def main() -> None:
         expected_name = (
             "m4-eligible-live-duplicate-update-qualification-ray-startup-repair"
         )
+    if args.state_diagnostics:
+        expected_name = (
+            "m4-eligible-live-duplicate-update-qualification-state-diagnostics"
+        )
     if spec["name"] != expected_name or spec["time_limit"] != 14400:
         raise ValueError("workload identity/runtime changed")
     script = spec["script"].replace("{{", "{").replace("}}", "}")
     if args.ray_startup_repair:
         validate_repaired_shell(script)
+    if (
+        args.state_diagnostics
+        and script.count('--state-diagnostics-dir "$ASSETS"') != 1
+    ):
+        raise ValueError("diagnostic persistence directory missing or duplicated")
     if args.full_environment:
         interpreter = "/opt/ray_venvs/nemo_rl.models.policy.workers.megatron_policy_worker.MegatronPolicyWorker/bin/python"
         if f"readonly PYTHON={interpreter}" not in script:
@@ -117,6 +129,8 @@ def main() -> None:
                 env=env,
                 check=True,
             )
+        if args.state_diagnostics:
+            tests.append("research.m4_eligible_replay.test_state_diagnostics")
         test_run = subprocess.run(
             [
                 sys.executable,

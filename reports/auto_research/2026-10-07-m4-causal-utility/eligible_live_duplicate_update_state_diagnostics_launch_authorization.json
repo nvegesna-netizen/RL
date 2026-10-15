@@ -1,0 +1,17 @@
+{
+  "schema": "m4-eligible-live-state-diagnostics-launch-authorization-v1",
+  "recorded_at": "2026-10-15",
+  "human_request": "do the next step properly and then launch",
+  "scope": "One EOS duplicate-comparator qualification with outcome-free per-field/idle/RNG state diagnostics; unchanged equality gate and no automatic retry",
+  "manifest_sha256": "155617b25518767c3c6a2b70ca83c52c90c2a247f984dd397819f7ccdf1fd893",
+  "protocol_sha256": "a57986017e250fff4140ab3e078e6cc48f1a9a6f2a6a418f9b56c66de860037d",
+  "maximum_launcher_invocations": 1,
+  "automatic_retry": false,
+  "fresh_acquisition_authorized": false,
+  "prior_guards_reused": false,
+  "scientific_thresholds_changed": false,
+  "allocated_time_limit_seconds": 14400,
+  "client_queue_deadline": null,
+  "launcher_no_wait": true,
+  "rotated_setup_required": true
+}

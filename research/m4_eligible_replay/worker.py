@@ -133,6 +133,9 @@ class EligibleLiveReplayWorker(MegatronPolicyWorkerImpl):
             "optimizer_step": steps[0],
             "scheduler_sha256": state_digest(self.scheduler.state_dict()),
             "rng_sha256": state_digest(rng),
+            "rng_component_sha256": {
+                key: state_digest(value) for key, value in rng.items()
+            },
             "scheduler_num_steps": int(self.scheduler.num_steps),
             "load_optim": bool(checkpoint.load_optim),
             "load_rng": bool(checkpoint.load_rng),

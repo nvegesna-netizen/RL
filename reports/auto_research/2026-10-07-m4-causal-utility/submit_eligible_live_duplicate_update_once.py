@@ -27,11 +27,17 @@ def main() -> None:
     parser.add_argument("--bootstrap-replacement", action="store_true")
     parser.add_argument("--full-environment", action="store_true")
     parser.add_argument("--ray-startup-repair", action="store_true")
+    parser.add_argument("--state-diagnostics", action="store_true")
     parser.add_argument("--validate-only", action="store_true")
     args = parser.parse_args()
     if (
         sum(
-            (args.bootstrap_replacement, args.full_environment, args.ray_startup_repair)
+            (
+                args.bootstrap_replacement,
+                args.full_environment,
+                args.ray_startup_repair,
+                args.state_diagnostics,
+            )
         )
         > 1
     ):
@@ -41,6 +47,9 @@ def main() -> None:
     receipt_name = "eligible_live_duplicate_update_package_receipt.json"
     stem = "eligible-live-duplicate-update"
     launch_receipt_name = "eligible_live_duplicate_update_launch_receipt.json"
+    authorization_name = (
+        "eligible_live_duplicate_update_ray_startup_launch_authorization.json"
+    )
     if args.bootstrap_replacement:
         manifest = (
             SESSION
@@ -84,6 +93,24 @@ def main() -> None:
         stem = "eligible-live-duplicate-update-ray-startup-repair"
         launch_receipt_name = (
             "eligible_live_duplicate_update_ray_startup_repair_launch_receipt.json"
+        )
+    if args.state_diagnostics:
+        manifest = (
+            SESSION
+            / "m4-eligible-live-duplicate-update-state-diagnostics-manifest.json"
+        )
+        manifest_hash = (
+            "155617b25518767c3c6a2b70ca83c52c90c2a247f984dd397819f7ccdf1fd893"
+        )
+        receipt_name = (
+            "eligible_live_duplicate_update_state_diagnostics_package_receipt.json"
+        )
+        stem = "eligible-live-duplicate-update-state-diagnostics"
+        launch_receipt_name = (
+            "eligible_live_duplicate_update_state_diagnostics_launch_receipt.json"
+        )
+        authorization_name = (
+            "eligible_live_duplicate_update_state_diagnostics_launch_authorization.json"
         )
     if not os.environ.get("JET_GITLAB_TOKEN"):
         raise ValueError("source rotated setup_jet.sh before launch")
@@ -133,13 +160,8 @@ def main() -> None:
             raise ValueError("bootstrap replacement identity changed")
         if package["environment"]["full_import_preflight_before_transport"] is not True:
             raise ValueError("full environment gate missing")
-    if args.ray_startup_repair:
-        authorization = json.loads(
-            (
-                REPORT
-                / "eligible_live_duplicate_update_ray_startup_launch_authorization.json"
-            ).read_bytes()
-        )
+    if args.ray_startup_repair or args.state_diagnostics:
+        authorization = json.loads((REPORT / authorization_name).read_bytes())
         if (
             authorization["manifest_sha256"] != manifest_hash
             or authorization["protocol_sha256"] != PROTOCOL_HASH
@@ -161,8 +183,20 @@ def main() -> None:
                 or prior["status"] != "SUBMITTED_NO_WAIT"
             ):
                 raise ValueError("prior consumed guard identity changed")
+        if args.state_diagnostics:
+            prior = json.loads(
+                (
+                    SESSION
+                    / "eligible-live-duplicate-update-ray-startup-repair-one-shot-guard.json"
+                ).read_bytes()
+            )
+            if (
+                prior["parent_pipeline_id"] != 74133064
+                or prior["status"] != "SUBMITTED_NO_WAIT"
+            ):
+                raise ValueError("prior Ray startup repair identity changed")
         if (
-            package["clean_room_tests_run"] != 29
+            package["clean_room_tests_run"] != (39 if args.state_diagnostics else 29)
             or package["clean_room_tests_skipped"] != 0
             or not all(package["checks"].values())
         ):
@@ -173,14 +207,11 @@ def main() -> None:
     paths = list(package["overlay_sha256"]) + [
         "reports/auto_research/2026-10-07-m4-causal-utility/submit_eligible_live_duplicate_update_once.py"
     ]
-    if args.ray_startup_repair:
+    if args.ray_startup_repair or args.state_diagnostics:
         paths.extend(
             [
                 str(REPORT / receipt_name),
-                str(
-                    REPORT
-                    / "eligible_live_duplicate_update_ray_startup_launch_authorization.json"
-                ),
+                str(REPORT / authorization_name),
             ]
         )
     if subprocess.check_output(

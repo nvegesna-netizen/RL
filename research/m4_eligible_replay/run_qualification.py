@@ -35,6 +35,7 @@ from research.m4_eligible_replay.ray_startup import (
     ray_cleanup,
     validate_ray_root,
 )
+from research.m4_eligible_replay.state_diagnostics import write_diagnostic
 
 
 WORKER = "research.m4_eligible_replay.worker.EligibleLiveReplayWorker"
@@ -55,6 +56,7 @@ def run(
     protocol_path: Path,
     replicate: str,
     ray_log_dir: Path | None = None,
+    state_diagnostics_dir: Path | None = None,
 ) -> dict[str, Any]:
     """Cover all setup failures with Ray cleanup and validate the socket budget."""
     if replicate not in ("a", "b"):
@@ -79,6 +81,7 @@ def run(
             protocol_path=protocol_path,
             replicate=replicate,
             ray_log_dir=root,
+            state_diagnostics_dir=state_diagnostics_dir,
         )
 
 
@@ -89,6 +92,7 @@ def _run(
     protocol_path: Path,
     replicate: str,
     ray_log_dir: Path,
+    state_diagnostics_dir: Path | None = None,
 ) -> dict[str, Any]:
     """Restore, forward-evaluate withheld data, and update only the comparator."""
     protocol = json.loads(protocol_path.read_bytes())
@@ -219,17 +223,36 @@ def _run(
             return states[0]
 
         before = snapshot()
+
+        def record_state(stage: str, states: dict[str, dict]) -> None:
+            if state_diagnostics_dir is not None:
+                write_diagnostic(
+                    state_diagnostics_dir,
+                    replicate=replicate,
+                    stage=stage,
+                    states=states,
+                    protocol_hash=digest_file(protocol_path),
+                    manifest_hash=source["manifest_sha256"],
+                )
+
+        record_state("before", {"before": before})
         if (
             before["parameter_sha256"] != source["captured_parameter_sha256"]
             or before["optimizer_step"] != 7
             or before["scheduler_num_steps"] != 224
         ):
             raise ValueError("captured training state was not fully restored")
+        idle = snapshot() if state_diagnostics_dir is not None else before
+        record_state("idle", {"idle": idle})
         evaluation = policy.train_from_meta(
             metas[0], ClippedPGLossFn(config.loss_fn), eval_mode=True, gbs=32, mbs=1
         )
         pre_loss = scalar(evaluation["loss"])
         before_update = snapshot()
+        record_state("after-eval", {"after_eval": before_update})
+        record_state(
+            "comparison", {"before": before, "idle": idle, "after_eval": before_update}
+        )
         if before != before_update:
             raise ValueError("held-out evaluation mutated training state")
         # Discard comparator training metrics; do not compute a held-out
@@ -292,6 +315,7 @@ def main() -> None:
     parser.add_argument("--protocol", type=Path, required=True)
     parser.add_argument("--replicate", choices=("a", "b"), required=True)
     parser.add_argument("--ray-log-dir", type=Path)
+    parser.add_argument("--state-diagnostics-dir", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     result = run(
@@ -300,6 +324,7 @@ def main() -> None:
         protocol_path=args.protocol,
         replicate=args.replicate,
         ray_log_dir=args.ray_log_dir,
+        state_diagnostics_dir=args.state_diagnostics_dir,
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     with args.output.open("xb") as stream:
