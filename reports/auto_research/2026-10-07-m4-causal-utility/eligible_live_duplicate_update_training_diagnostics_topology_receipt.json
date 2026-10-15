@@ -1,0 +1,22 @@
+{
+  "schema": "m4-eligible-live-training-diagnostics-topology-v1",
+  "recorded_at": "2026-10-15",
+  "parent_pipeline_id": 74228841,
+  "child_pipeline_id": 74229277,
+  "generate_job_id": 490481144,
+  "trigger_job_id": 490481145,
+  "logs_before_job_id": 490485545,
+  "eos_job_id": 490485546,
+  "logs_after_job_id": 490485548,
+  "exact_eos_job_name": "basic/m4-eligible-live-duplicate-update-qualification-training-diagnostics dgxh100_eos 00 [2 dgxh100_eos]",
+  "source_commit": "29e36f9f7f62167118ed67dd5f0113eb692d85fb",
+  "manifest_sha256": "9ae5af0835edc29250042f60a6e795241d201524bd33cac387249a1daa8dfd26",
+  "protocol_sha256": "a57986017e250fff4140ab3e078e6cc48f1a9a6f2a6a418f9b56c66de860037d",
+  "status_at_authentication": {"generate": "success", "child": "running", "logs_before": "running", "eos": "created", "logs_after": "created"},
+  "launcher_invocations_consumed": 1,
+  "prior_guards_reused": false,
+  "automatic_retry": false,
+  "qualification_passed": false,
+  "fresh_acquisition_launched": false,
+  "review_required_even_if_instrumented_updates_match": true
+}
