@@ -44,6 +44,7 @@ def main() -> None:
     parser.add_argument("--ray-startup-repair", action="store_true")
     parser.add_argument("--state-diagnostics", action="store_true")
     parser.add_argument("--evaluation-rng-repair", action="store_true")
+    parser.add_argument("--training-diagnostics", action="store_true")
     args = parser.parse_args()
     if args.ray_startup_repair and not args.full_environment:
         raise ValueError("Ray startup repair requires full-environment validation")
@@ -51,6 +52,10 @@ def main() -> None:
         raise ValueError("diagnostics requires repaired startup validation")
     if args.evaluation_rng_repair and not args.state_diagnostics:
         raise ValueError("RNG repair requires diagnostic validation")
+    if args.training_diagnostics and not args.evaluation_rng_repair:
+        raise ValueError(
+            "training diagnostic validation requires evaluation RNG repair"
+        )
     manifest_path = (
         MANIFEST.with_name(
             "m4-eligible-live-duplicate-update-bootstrap-replacement-manifest.json"
@@ -80,13 +85,31 @@ def main() -> None:
         expected_name = (
             "m4-eligible-live-duplicate-update-qualification-evaluation-rng-repair"
         )
-        if "research.m4_eligible_replay.test_evaluation_rng -v" not in spec["script"]:
+        if (
+            spec["script"].count(" research.m4_eligible_replay.test_evaluation_rng ")
+            != 1
+        ):
             raise ValueError("RNG isolation regressions missing from runtime gate")
+    if args.training_diagnostics:
+        expected_name = (
+            "m4-eligible-live-duplicate-update-qualification-training-diagnostics"
+        )
+        if "research.m4_eligible_replay.test_training_trace -v" not in spec["script"]:
+            raise ValueError("training trace regressions missing from runtime gate")
     if spec["name"] != expected_name or spec["time_limit"] != 14400:
         raise ValueError("workload identity/runtime changed")
     script = spec["script"].replace("{{", "{").replace("}}", "}")
     if args.ray_startup_repair:
         validate_repaired_shell(script)
+    if args.training_diagnostics:
+        if script.count(" --training-diagnostics --output") != 1:
+            raise ValueError("training diagnostics invocation missing or duplicated")
+        compare = script.index("-m research.m4_eligible_replay.analyze_training_trace ")
+        gate = script.index("result=validate_duplicate_replays(")
+        if compare >= gate or compare <= script.index("done\n"):
+            raise ValueError(
+                "training diagnostics must persist after A/B but before equality gate"
+            )
     if (
         args.state_diagnostics
         and script.count('--state-diagnostics-dir "$ASSETS"') != 1
@@ -142,6 +165,8 @@ def main() -> None:
             tests.append("research.m4_eligible_replay.test_state_diagnostics")
         if args.evaluation_rng_repair:
             tests.append("research.m4_eligible_replay.test_evaluation_rng")
+        if args.training_diagnostics:
+            tests.append("research.m4_eligible_replay.test_training_trace")
         test_run = subprocess.run(
             [
                 sys.executable,

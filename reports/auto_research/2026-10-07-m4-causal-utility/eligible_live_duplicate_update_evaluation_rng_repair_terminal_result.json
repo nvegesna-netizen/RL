@@ -1,0 +1,175 @@
+{
+  "schema": "m4-eligible-live-evaluation-rng-repair-terminal-result-v1",
+  "recorded_at": "2026-10-15",
+  "parent_pipeline_id": 74196188,
+  "child_pipeline_id": 74196812,
+  "eos_job_id": 490229782,
+  "logs_after_job_id": 490229790,
+  "source_commit": "5b96fb00b76d0eded486ffae3a1fd3fc240a3be4",
+  "manifest_sha256": "09275496967cab72edb7cc698729ab2a27015648090a08c37efd26fb9609ee56",
+  "protocol_sha256": "a57986017e250fff4140ab3e078e6cc48f1a9a6f2a6a418f9b56c66de860037d",
+  "qualification_status": "FAILED_DUPLICATE_POST_UPDATE_STATE_EQUALITY",
+  "evaluation_rng_repair_verified": true,
+  "slurm": {
+    "job_id": 6258859,
+    "node": "eos0349",
+    "queue_time": "00:00:01",
+    "allocated_duration": "00:13:35",
+    "workload_step_duration": "00:13:14",
+    "exit_code": "1:0",
+    "timeout": false,
+    "allocated_time_limit": "04:00:00",
+    "deadline": "N/A"
+  },
+  "progress": {
+    "a": {
+      "before_equals_before_update": true,
+      "optimizer_step_before": 7,
+      "optimizer_step_after": 8,
+      "scheduler_samples_before": 224,
+      "scheduler_samples_after": 256,
+      "parameter_changed": true,
+      "heldout_files_unchanged": true,
+      "post_update_heldout_loss_computed": false
+    },
+    "b": {
+      "before_equals_before_update": true,
+      "optimizer_step_before": 7,
+      "optimizer_step_after": 8,
+      "scheduler_samples_before": 224,
+      "scheduler_samples_after": 256,
+      "parameter_changed": true,
+      "heldout_files_unchanged": true,
+      "post_update_heldout_loss_computed": false
+    }
+  },
+  "unit_tests": {
+    "run": 53,
+    "passed": 52,
+    "skipped": 1
+  },
+  "actual_driver_and_actor_preflight_passed": true,
+  "real_tensor_tracker_restore_smoke_passed": true,
+  "independent_recomputation": {
+    "before_idle_after_eval_equal_both_replicates": true,
+    "before_differences": {},
+    "after_differences": {
+      "optimizer_sha256": {
+        "a": "39a0c861b6846fd65dc170163e08dbfeb83806175d642ce29fe04a4cc0e2fb86",
+        "b": "e3b2e79476d5f800452e499469abbdd3fe21797f9cc4bc8515ab417a021bd777"
+      },
+      "parameter_sha256": {
+        "a": "9952ac405495db9dfe08d35cd964a88d90073429dc86d7d23f92c90be370bf91",
+        "b": "a940c341410327c96e5ac019e4bda32e7abe81a1582c896fd8e043dfe0503723"
+      }
+    },
+    "same_base_group_ids": true,
+    "same_heldout_group_ids": true,
+    "pre_update_loss_agrees_within_1e_6": true,
+    "retained_validator_failure_reproduced_locally": "duplicate replay mismatch: state_after"
+  },
+  "runtime_tracker": {
+    "class": "megatron.core.tensor_parallel.random.CudaRNGStatesTracker",
+    "state_representation": "named-byte-tensor-states"
+  },
+  "evidence": {
+    "replay-a.json": {
+      "bytes": 3426,
+      "sha256": "4a92bc02eedf26ff9230961f9a1a0d4d508a0b0cf42fd8f1f4451e4aac89ea79",
+      "copies_identical": true
+    },
+    "replay-a.log": {
+      "bytes": 35980,
+      "sha256": "8e4752d5cb2878ed4fd456a2d2ec75afab786b10f63ab0507139c82ebea69b33",
+      "copies_identical": true
+    },
+    "replay-a-state-before.json": {
+      "bytes": 1239,
+      "sha256": "7d5a9c789000094776a06aaaf65ca0b98be68e827fd7b508f847ce9612eee5f7",
+      "copies_identical": true
+    },
+    "replay-a-state-idle.json": {
+      "bytes": 1235,
+      "sha256": "31e125a5baa40363e9374de9a2a5e24395587af4a9fec0074fe8803c80635499",
+      "copies_identical": true
+    },
+    "replay-a-state-after-eval.json": {
+      "bytes": 1247,
+      "sha256": "534bcab248d966db7ce1edf3b61bee7dbc97f24a248946dffe2ab16816170939",
+      "copies_identical": true
+    },
+    "replay-a-state-comparison.json": {
+      "bytes": 3036,
+      "sha256": "4f2447736076b1da4031c0aeadd84471139ea492085d56f029bcb6835aecab8d",
+      "copies_identical": true
+    },
+    "replay-b.json": {
+      "bytes": 3426,
+      "sha256": "653c93320d11295c032f686bf0c3f6c25580cc6303e2d5c2a0d96be12b632646",
+      "copies_identical": true
+    },
+    "replay-b.log": {
+      "bytes": 30870,
+      "sha256": "de3a5c540c6c79c4477488c076ded0f8620952013dfc0c6f3b5a18aa46a31d7c",
+      "copies_identical": true
+    },
+    "replay-b-state-before.json": {
+      "bytes": 1239,
+      "sha256": "15dfaf45f45b396a99329a4096cfa02b8674a9b6b516f5112e0413c8eab0c298",
+      "copies_identical": true
+    },
+    "replay-b-state-idle.json": {
+      "bytes": 1235,
+      "sha256": "4f6c36ead585ee56238f0f7b71ca308f07e40433a95445d81920c77dbd6347d2",
+      "copies_identical": true
+    },
+    "replay-b-state-after-eval.json": {
+      "bytes": 1247,
+      "sha256": "9022fd1e58a56c1ccb504f6b7e59f9672047a1d25a7018be66b1da237c53bf69",
+      "copies_identical": true
+    },
+    "replay-b-state-comparison.json": {
+      "bytes": 3036,
+      "sha256": "d5b9f397df4cda3453573f6be8799a8ecd8ee12e0f362d1da778d7940ee29997",
+      "copies_identical": true
+    },
+    "environment-preflight.json": {
+      "bytes": 1828,
+      "sha256": "fe2982082d5d3e8c91be341cda2d8159c62cf78f3b16749f439afa644db108d7",
+      "copies_identical": true
+    },
+    "tests.log": {
+      "bytes": 8437,
+      "sha256": "bed06e85c6386a7de21255ca5c340471992f4bf3994cfc7d945da523db9b8fc4",
+      "copies_identical": true
+    },
+    "transport-receipt.json": {
+      "bytes": 2306,
+      "sha256": "2b4b00fc24a1485951451dd294ba2f178377649078901d4c2790da2403b0407a",
+      "copies_identical": true
+    },
+    "qualification-result.json": {
+      "missing_both": true
+    }
+  },
+  "trace": {
+    "bytes": 40891,
+    "sha256": "cfd843dbf7089ea3d495c23ac6794eadc1a9cd6eef377ca2e663d64c1c4ddc54"
+  },
+  "diagnostic_limits": {
+    "parameter_difference_magnitude_known": false,
+    "exact_first_divergent_operator_known": false,
+    "actual_training_batch_order_fingerprinted": false,
+    "actual_training_worker_deterministic_settings_recorded": false
+  },
+  "next_step": "Audit actual worker runtime and deterministic controls; instrument ordered inputs and forward/gradient/update boundaries to localize divergence before any separately packaged engineering rerun. Do not weaken full-state equality.",
+  "disposition": {
+    "qualification_passed": false,
+    "causal_contrast_computed": false,
+    "post_update_heldout_loss_computed": false,
+    "fresh_acquisition_launched": false,
+    "new_launcher_invocations": 0,
+    "consumed_guard_preserved": true,
+    "implementation_changed_this_turn": false
+  }
+}

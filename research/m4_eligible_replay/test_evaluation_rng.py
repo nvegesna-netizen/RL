@@ -88,6 +88,7 @@ class EvaluationRngTests(unittest.TestCase):
             namespace,
         )
         self.worker = namespace["EligibleLiveReplayWorker"]()
+        self.worker.cfg = {}
 
     def evaluate(self, **kwargs: Any) -> dict:
         with redirect_stdout(io.StringIO()):

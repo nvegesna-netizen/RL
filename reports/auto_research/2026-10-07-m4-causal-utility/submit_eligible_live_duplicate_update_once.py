@@ -29,6 +29,7 @@ def main() -> None:
     parser.add_argument("--ray-startup-repair", action="store_true")
     parser.add_argument("--state-diagnostics", action="store_true")
     parser.add_argument("--evaluation-rng-repair", action="store_true")
+    parser.add_argument("--training-diagnostics", action="store_true")
     parser.add_argument("--validate-only", action="store_true")
     args = parser.parse_args()
     if (
@@ -39,6 +40,7 @@ def main() -> None:
                 args.ray_startup_repair,
                 args.state_diagnostics,
                 args.evaluation_rng_repair,
+                args.training_diagnostics,
             )
         )
         > 1
@@ -130,6 +132,22 @@ def main() -> None:
             "eligible_live_duplicate_update_evaluation_rng_repair_launch_receipt.json"
         )
         authorization_name = "eligible_live_duplicate_update_evaluation_rng_repair_launch_authorization.json"
+    if args.training_diagnostics:
+        manifest = (
+            SESSION
+            / "m4-eligible-live-duplicate-update-training-diagnostics-verified-manifest.json"
+        )
+        manifest_hash = (
+            "9ae5af0835edc29250042f60a6e795241d201524bd33cac387249a1daa8dfd26"
+        )
+        receipt_name = (
+            "eligible_live_duplicate_update_training_diagnostics_package_receipt.json"
+        )
+        stem = "eligible-live-duplicate-update-training-diagnostics"
+        launch_receipt_name = (
+            "eligible_live_duplicate_update_training_diagnostics_launch_receipt.json"
+        )
+        authorization_name = "eligible_live_duplicate_update_training_diagnostics_launch_authorization.json"
     if not os.environ.get("JET_GITLAB_TOKEN"):
         raise ValueError("source rotated setup_jet.sh before launch")
     if (
@@ -178,7 +196,12 @@ def main() -> None:
             raise ValueError("bootstrap replacement identity changed")
         if package["environment"]["full_import_preflight_before_transport"] is not True:
             raise ValueError("full environment gate missing")
-    if args.ray_startup_repair or args.state_diagnostics or args.evaluation_rng_repair:
+    if (
+        args.ray_startup_repair
+        or args.state_diagnostics
+        or args.evaluation_rng_repair
+        or args.training_diagnostics
+    ):
         authorization = json.loads((REPORT / authorization_name).read_bytes())
         if (
             authorization["manifest_sha256"] != manifest_hash
@@ -201,7 +224,11 @@ def main() -> None:
                 or prior["status"] != "SUBMITTED_NO_WAIT"
             ):
                 raise ValueError("prior consumed guard identity changed")
-        if args.state_diagnostics or args.evaluation_rng_repair:
+        if (
+            args.state_diagnostics
+            or args.evaluation_rng_repair
+            or args.training_diagnostics
+        ):
             prior = json.loads(
                 (
                     SESSION
@@ -213,7 +240,7 @@ def main() -> None:
                 or prior["status"] != "SUBMITTED_NO_WAIT"
             ):
                 raise ValueError("prior Ray startup repair identity changed")
-        if args.evaluation_rng_repair:
+        if args.evaluation_rng_repair or args.training_diagnostics:
             prior = json.loads(
                 (
                     SESSION
@@ -225,12 +252,31 @@ def main() -> None:
                 or prior["status"] != "SUBMITTED_NO_WAIT"
             ):
                 raise ValueError("prior diagnostic launch identity changed")
+        if args.training_diagnostics:
+            prior = json.loads(
+                (
+                    SESSION
+                    / "eligible-live-duplicate-update-evaluation-rng-repair-one-shot-guard.json"
+                ).read_bytes()
+            )
+            if (
+                prior["parent_pipeline_id"] != 74196188
+                or prior["status"] != "SUBMITTED_NO_WAIT"
+            ):
+                raise ValueError("prior evaluation RNG repair identity changed")
+            for name, expected in package["prior_guard_sha256"].items():
+                if digest_file(SESSION / name) != expected:
+                    raise ValueError("consumed predecessor guard changed")
         if (
             package["clean_room_tests_run"]
             != (
-                53
-                if args.evaluation_rng_repair
-                else (39 if args.state_diagnostics else 29)
+                77
+                if args.training_diagnostics
+                else (
+                    53
+                    if args.evaluation_rng_repair
+                    else (39 if args.state_diagnostics else 29)
+                )
             )
             or package["clean_room_tests_skipped"] != 0
             or not all(package["checks"].values())
@@ -242,7 +288,12 @@ def main() -> None:
     paths = list(package["overlay_sha256"]) + [
         "reports/auto_research/2026-10-07-m4-causal-utility/submit_eligible_live_duplicate_update_once.py"
     ]
-    if args.ray_startup_repair or args.state_diagnostics or args.evaluation_rng_repair:
+    if (
+        args.ray_startup_repair
+        or args.state_diagnostics
+        or args.evaluation_rng_repair
+        or args.training_diagnostics
+    ):
         paths.extend(
             [
                 str(REPORT / receipt_name),

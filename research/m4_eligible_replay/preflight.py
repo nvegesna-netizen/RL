@@ -18,6 +18,9 @@ from research.m4_eligible_replay.ray_startup import (
     ray_cleanup,
     validate_ray_root,
 )
+from research.m4_eligible_replay.training_trace_smoke import (
+    smoke as training_trace_smoke,
+)
 
 
 MCORE_PREFIX = Path(
@@ -93,6 +96,7 @@ def inspect_environment() -> dict:
     )
     if registry.MCORE_EXECUTABLE != sys.executable:
         raise ValueError("actor environment must use the verified MCORE interpreter")
+    training_trace_smoke(torch, digest)
     return {
         "python": sys.executable,
         "prefix": sys.prefix,
@@ -106,6 +110,7 @@ def inspect_environment() -> dict:
         "qualification_module_import": True,
         "state_digest_smoke": True,
         "real_tensor_tracker_restore_smoke": True,
+        "real_tensor_training_trace_smoke": True,
     }
 
 

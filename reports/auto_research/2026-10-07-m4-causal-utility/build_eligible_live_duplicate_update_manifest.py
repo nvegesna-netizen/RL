@@ -34,6 +34,7 @@ def build(
     ray_startup_repair: bool = False,
     state_diagnostics: bool = False,
     evaluation_rng_repair: bool = False,
+    training_diagnostics: bool = False,
 ) -> dict:
     """Embed hash-bound source and overlays, then test expanded shell syntax."""
     if ray_startup_repair and not full_environment:
@@ -44,6 +45,10 @@ def build(
         )
     if evaluation_rng_repair and not state_diagnostics:
         raise ValueError("evaluation RNG repair requires retained state diagnostics")
+    if training_diagnostics and not evaluation_rng_repair:
+        raise ValueError(
+            "training diagnostics requires the verified evaluation isolation repair"
+        )
     if digest_file(source) != SOURCE_HASH or digest_file(megatron) != MEGATRON_HASH:
         raise ValueError("qualified base archives changed")
     if full_environment:
@@ -175,6 +180,21 @@ find "$ASSETS" -maxdepth 1 -type f ! -name artifacts.sha256 -print0 | sort -z | 
             "research.m4_eligible_replay.test_state_diagnostics -v",
             "research.m4_eligible_replay.test_state_diagnostics research.m4_eligible_replay.test_evaluation_rng -v",
         )
+    if training_diagnostics:
+        script = script.replace(
+            "research.m4_eligible_replay.test_evaluation_rng -v",
+            "research.m4_eligible_replay.test_evaluation_rng research.m4_eligible_replay.test_training_trace -v",
+        ).replace(
+            ' --state-diagnostics-dir "$ASSETS" --output',
+            ' --state-diagnostics-dir "$ASSETS" --training-diagnostics --output',
+        )
+        marker = 'done\n"$PYTHON" - "$ASSETS"'
+        if script.count(marker) != 1:
+            raise ValueError("duplicate replay comparison shell boundary moved")
+        script = script.replace(
+            marker,
+            'done\n"$PYTHON" -m research.m4_eligible_replay.analyze_training_trace --assets "$ASSETS" --protocol "@PROTOCOL@"\n"$PYTHON" - "$ASSETS"',
+        )
     replacements = {
         "@SOURCE@": base64.b64encode(source.read_bytes()).decode(),
         "@SOURCE_HASH@": SOURCE_HASH,
@@ -238,6 +258,8 @@ find "$ASSETS" -maxdepth 1 -type f ! -name artifacts.sha256 -print0 | sort -z | 
         manifest["spec"]["name"] = NAME + "-state-diagnostics"
     if evaluation_rng_repair:
         manifest["spec"]["name"] = NAME + "-evaluation-rng-repair"
+    if training_diagnostics:
+        manifest["spec"]["name"] = NAME + "-training-diagnostics"
     with output.open("xb") as stream:
         stream.write(canonical_json(manifest))
     result = {
@@ -267,6 +289,8 @@ find "$ASSETS" -maxdepth 1 -type f ! -name artifacts.sha256 -print0 | sort -z | 
         result["state_diagnostics"] = True
     if evaluation_rng_repair:
         result["evaluation_rng_repair"] = True
+    if training_diagnostics:
+        result["training_diagnostics"] = True
     return result
 
 
@@ -281,6 +305,7 @@ def main() -> None:
     parser.add_argument("--ray-startup-repair", action="store_true")
     parser.add_argument("--state-diagnostics", action="store_true")
     parser.add_argument("--evaluation-rng-repair", action="store_true")
+    parser.add_argument("--training-diagnostics", action="store_true")
     args = parser.parse_args()
     print(
         json.dumps(
@@ -294,6 +319,7 @@ def main() -> None:
                 ray_startup_repair=args.ray_startup_repair,
                 state_diagnostics=args.state_diagnostics,
                 evaluation_rng_repair=args.evaluation_rng_repair,
+                training_diagnostics=args.training_diagnostics,
             ),
             indent=2,
             sort_keys=True,

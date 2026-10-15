@@ -1,0 +1,19 @@
+{
+  "schema": "m4-eligible-live-training-diagnostics-launch-authorization-v1",
+  "recorded_at": "2026-10-15",
+  "human_request": "do the next step properly",
+  "standing_authorization": "User previously authorized EOS launches generally and asked to continue the sequence",
+  "scope": "Exactly one excluded-capsule duplicate-comparator engineering qualification with ordered-input, forward-output, gradient, optimizer-component and actual-worker runtime diagnostics; no numerical setting or equality threshold change",
+  "manifest_sha256": "9ae5af0835edc29250042f60a6e795241d201524bd33cac387249a1daa8dfd26",
+  "protocol_sha256": "a57986017e250fff4140ab3e078e6cc48f1a9a6f2a6a418f9b56c66de860037d",
+  "maximum_launcher_invocations": 1,
+  "automatic_retry": false,
+  "fresh_acquisition_authorized": false,
+  "prior_guards_reused": false,
+  "scientific_thresholds_changed": false,
+  "allocated_time_limit_seconds": 14400,
+  "client_queue_deadline": null,
+  "launcher_no_wait": true,
+  "rotated_setup_required": true,
+  "review_required_before_any_fresh_cohort": true
+}

@@ -57,10 +57,13 @@ def run(
     replicate: str,
     ray_log_dir: Path | None = None,
     state_diagnostics_dir: Path | None = None,
+    training_diagnostics: bool = False,
 ) -> dict[str, Any]:
     """Cover all setup failures with Ray cleanup and validate the socket budget."""
     if replicate not in ("a", "b"):
         raise ValueError("wrong qualification replicate")
+    if training_diagnostics and state_diagnostics_dir is None:
+        raise ValueError("training diagnostics requires a persistent state directory")
     root = allocate_ray_root(replicate) if ray_log_dir is None else ray_log_dir
     size = validate_ray_root(root)
     print(
@@ -82,6 +85,7 @@ def run(
             replicate=replicate,
             ray_log_dir=root,
             state_diagnostics_dir=state_diagnostics_dir,
+            training_diagnostics=training_diagnostics,
         )
 
 
@@ -93,6 +97,7 @@ def _run(
     replicate: str,
     ray_log_dir: Path,
     state_diagnostics_dir: Path | None = None,
+    training_diagnostics: bool = False,
 ) -> dict[str, Any]:
     """Restore, forward-evaluate withheld data, and update only the comparator."""
     protocol = json.loads(protocol_path.read_bytes())
@@ -154,6 +159,21 @@ def _run(
         **OmegaConf.to_container(load_config(config_path), resolve=True)
     )
     config.policy["megatron_cfg"]["train_iters"] = 64
+    if training_diagnostics:
+        if state_diagnostics_dir is None:
+            raise ValueError(
+                "training diagnostics requires a persistent state directory"
+            )
+        config.policy["eligible_replay_training_trace"] = {
+            "output": str(
+                (
+                    state_diagnostics_dir / f"replay-{replicate}-training-trace.jsonl"
+                ).resolve()
+            ),
+            "replicate": replicate,
+            "protocol_sha256": digest_file(protocol_path),
+            "capsule_manifest_sha256": source["manifest_sha256"],
+        }
     if (
         config.policy["model_name"] != "meta-llama/Llama-3.2-1B-Instruct"
         or config.policy["train_global_batch_size"] != 32
@@ -316,6 +336,7 @@ def main() -> None:
     parser.add_argument("--replicate", choices=("a", "b"), required=True)
     parser.add_argument("--ray-log-dir", type=Path)
     parser.add_argument("--state-diagnostics-dir", type=Path)
+    parser.add_argument("--training-diagnostics", action="store_true")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     result = run(
@@ -325,6 +346,7 @@ def main() -> None:
         replicate=args.replicate,
         ray_log_dir=args.ray_log_dir,
         state_diagnostics_dir=args.state_diagnostics_dir,
+        training_diagnostics=args.training_diagnostics,
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     with args.output.open("xb") as stream:

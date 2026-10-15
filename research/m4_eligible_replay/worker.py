@@ -14,6 +14,7 @@ import torch
 
 from research.m4_eligible_replay.bootstrap import initialize_bundled_megatron
 from research.m4_eligible_replay.evaluation_rng import isolate_evaluation_tracker
+from research.m4_eligible_replay.training_trace import trace_training
 
 # Standalone smoke checks have not imported nemo_rl.__init__ yet. Bootstrap
 # the packaged sources before importing either Megatron Core or Bridge.
@@ -86,6 +87,19 @@ class EligibleLiveReplayWorker(MegatronPolicyWorkerImpl):
     ) -> dict[str, Any]:
         """Isolate held-out forwards; delegate actual training without restoration."""
         if not eval_mode:
+            trace_config = self.cfg.get("eligible_replay_training_trace")
+            if trace_config is not None:
+                with trace_training(
+                    self, data, config=trace_config, digest=state_digest
+                ):
+                    return super().train(
+                        data,
+                        loss_fn=loss_fn,
+                        eval_mode=eval_mode,
+                        gbs=gbs,
+                        mbs=mbs,
+                        check_dim_skip_keys=check_dim_skip_keys,
+                    )
             return super().train(
                 data,
                 loss_fn=loss_fn,
