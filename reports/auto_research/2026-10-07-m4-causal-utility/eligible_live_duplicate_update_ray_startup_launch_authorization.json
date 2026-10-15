@@ -1,0 +1,17 @@
+{
+  "schema": "m4-eligible-live-ray-startup-launch-authorization-v1",
+  "recorded_at": "2026-10-15",
+  "human_request": "launch",
+  "scope": "One repaired duplicate-comparator engineering qualification on EOS, following repair commit 1b545e3e7",
+  "manifest_sha256": "3124b9b7585aa9af7e888c9c4ce065d099efe51f3a3304558a46a1ae92f185c2",
+  "protocol_sha256": "a57986017e250fff4140ab3e078e6cc48f1a9a6f2a6a418f9b56c66de860037d",
+  "maximum_launcher_invocations": 1,
+  "automatic_retry": false,
+  "prior_guards_reused": false,
+  "fresh_acquisition_authorized": false,
+  "scientific_thresholds_changed": false,
+  "launcher_no_wait": true,
+  "allocated_time_limit_seconds": 14400,
+  "client_queue_deadline": null,
+  "rotated_setup_required": true
+}

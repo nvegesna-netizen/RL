@@ -26,8 +26,15 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--bootstrap-replacement", action="store_true")
     parser.add_argument("--full-environment", action="store_true")
+    parser.add_argument("--ray-startup-repair", action="store_true")
+    parser.add_argument("--validate-only", action="store_true")
     args = parser.parse_args()
-    if args.bootstrap_replacement and args.full_environment:
+    if (
+        sum(
+            (args.bootstrap_replacement, args.full_environment, args.ray_startup_repair)
+        )
+        > 1
+    ):
         raise ValueError("select exactly one replacement package")
     manifest = MANIFEST
     manifest_hash = MANIFEST_HASH
@@ -62,6 +69,21 @@ def main() -> None:
         stem = "eligible-live-duplicate-update-full-environment"
         launch_receipt_name = (
             "eligible_live_duplicate_update_full_environment_launch_receipt.json"
+        )
+    if args.ray_startup_repair:
+        manifest = (
+            SESSION
+            / "m4-eligible-live-duplicate-update-ray-startup-repair-verified-manifest.json"
+        )
+        manifest_hash = (
+            "3124b9b7585aa9af7e888c9c4ce065d099efe51f3a3304558a46a1ae92f185c2"
+        )
+        receipt_name = (
+            "eligible_live_duplicate_update_ray_startup_repair_package_receipt.json"
+        )
+        stem = "eligible-live-duplicate-update-ray-startup-repair"
+        launch_receipt_name = (
+            "eligible_live_duplicate_update_ray_startup_repair_launch_receipt.json"
         )
     if not os.environ.get("JET_GITLAB_TOKEN"):
         raise ValueError("source rotated setup_jet.sh before launch")
@@ -111,9 +133,56 @@ def main() -> None:
             raise ValueError("bootstrap replacement identity changed")
         if package["environment"]["full_import_preflight_before_transport"] is not True:
             raise ValueError("full environment gate missing")
+    if args.ray_startup_repair:
+        authorization = json.loads(
+            (
+                REPORT
+                / "eligible_live_duplicate_update_ray_startup_launch_authorization.json"
+            ).read_bytes()
+        )
+        if (
+            authorization["manifest_sha256"] != manifest_hash
+            or authorization["protocol_sha256"] != PROTOCOL_HASH
+            or authorization["maximum_launcher_invocations"] != 1
+            or authorization["automatic_retry"]
+            or authorization["fresh_acquisition_authorized"]
+        ):
+            raise ValueError("Ray startup replacement authorization changed")
+        for prior_stem, parent in (
+            ("eligible-live-duplicate-update", 73740465),
+            ("eligible-live-duplicate-update-bootstrap-replacement", 73836981),
+            ("eligible-live-duplicate-update-full-environment", 73906237),
+        ):
+            prior = json.loads(
+                (SESSION / f"{prior_stem}-one-shot-guard.json").read_bytes()
+            )
+            if (
+                prior["parent_pipeline_id"] != parent
+                or prior["status"] != "SUBMITTED_NO_WAIT"
+            ):
+                raise ValueError("prior consumed guard identity changed")
+        if (
+            package["clean_room_tests_run"] != 29
+            or package["clean_room_tests_skipped"] != 0
+            or not all(package["checks"].values())
+        ):
+            raise ValueError("Ray startup replacement offline gates failed")
+        spec = json.loads(manifest.read_bytes())["spec"]
+        if spec["name"] != package["workload_name"] or spec["time_limit"] != 14400:
+            raise ValueError("Ray startup replacement name or allocated limit changed")
     paths = list(package["overlay_sha256"]) + [
         "reports/auto_research/2026-10-07-m4-causal-utility/submit_eligible_live_duplicate_update_once.py"
     ]
+    if args.ray_startup_repair:
+        paths.extend(
+            [
+                str(REPORT / receipt_name),
+                str(
+                    REPORT
+                    / "eligible_live_duplicate_update_ray_startup_launch_authorization.json"
+                ),
+            ]
+        )
     if subprocess.check_output(
         ["git", "status", "--porcelain", "--", *paths], cwd=ROOT, text=True
     ).strip():
@@ -125,12 +194,32 @@ def main() -> None:
     if "deadline: false" not in custom.read_text():
         raise ValueError("queue deadline suppression missing")
     guard_path = SESSION / f"{stem}-one-shot-guard.json"
+    if guard_path.exists():
+        raise FileExistsError(f"one-shot invocation already consumed: {guard_path}")
+    source_commit = subprocess.check_output(
+        ["git", "rev-parse", "HEAD"], cwd=ROOT, text=True
+    ).strip()
+    if args.validate_only:
+        print(
+            json.dumps(
+                {
+                    "status": "PASS_GUARDED_SUBMISSION_INPUTS",
+                    "manifest_sha256": manifest_hash,
+                    "source_commit": source_commit,
+                    "guard_exists": False,
+                    "new_launcher_invocations": 0,
+                },
+                sort_keys=True,
+            )
+        )
+        return
     record = {
         "status": "ATTEMPT_CONSUMED_BEFORE_INVOCATION",
         "manifest_sha256": manifest_hash,
         "invoked_at": datetime.now().astimezone().isoformat(),
         "maximum_invocations": 1,
         "automatic_retry": False,
+        "source_commit": source_commit,
     }
     with guard_path.open("xb") as guard:
         guard.write(canonical_json(record))
