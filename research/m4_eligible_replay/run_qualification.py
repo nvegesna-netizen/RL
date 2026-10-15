@@ -30,6 +30,11 @@ from research.m4_eligible_replay.contracts import (
     canonical_json,
     digest_file,
 )
+from research.m4_eligible_replay.ray_startup import (
+    allocate_ray_root,
+    ray_cleanup,
+    validate_ray_root,
+)
 
 
 WORKER = "research.m4_eligible_replay.worker.EligibleLiveReplayWorker"
@@ -44,6 +49,40 @@ def scalar(value: Any) -> float:
 
 
 def run(
+    *,
+    capsule: Path,
+    config_path: Path,
+    protocol_path: Path,
+    replicate: str,
+    ray_log_dir: Path | None = None,
+) -> dict[str, Any]:
+    """Cover all setup failures with Ray cleanup and validate the socket budget."""
+    if replicate not in ("a", "b"):
+        raise ValueError("wrong qualification replicate")
+    root = allocate_ray_root(replicate) if ray_log_dir is None else ray_log_dir
+    size = validate_ray_root(root)
+    print(
+        json.dumps(
+            {
+                "stage": "RAY_ROOT_VALIDATED",
+                "replicate": replicate,
+                "ray_root": str(root),
+                "socket_budget_bytes": size,
+            }
+        ),
+        flush=True,
+    )
+    with ray_cleanup(ray.shutdown):
+        return _run(
+            capsule=capsule,
+            config_path=config_path,
+            protocol_path=protocol_path,
+            replicate=replicate,
+            ray_log_dir=root,
+        )
+
+
+def _run(
     *,
     capsule: Path,
     config_path: Path,
@@ -244,7 +283,6 @@ def run(
             finally:
                 policy.shutdown()
         cluster.shutdown()
-        ray.shutdown()
 
 
 def main() -> None:
@@ -253,7 +291,7 @@ def main() -> None:
     parser.add_argument("--config", type=Path, required=True)
     parser.add_argument("--protocol", type=Path, required=True)
     parser.add_argument("--replicate", choices=("a", "b"), required=True)
-    parser.add_argument("--ray-log-dir", type=Path, required=True)
+    parser.add_argument("--ray-log-dir", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     result = run(

@@ -1,0 +1,48 @@
+{
+  "schema": "m4-eligible-live-full-environment-terminal-failure-v1",
+  "recorded_at": "2026-10-15",
+  "parent_pipeline_id": 73906237,
+  "child_pipeline_id": 73906717,
+  "eos_job_id": 487936844,
+  "logs_before_job_id": 487936841,
+  "logs_after_job_id": 487936846,
+  "source_commit": "d22812f64",
+  "manifest_sha256": "67269375ac579d6d9e338c76befb0f47990dacc3b3f02d44a7f8585e8065c06e",
+  "status": "FAILED_RAY_STARTUP_BEFORE_TRANSPORT_OR_REPLAY",
+  "slurm": {"job_id": 6252452, "node": "eos0571", "queue_time": "13:54:01", "allocated_duration": "00:03:19", "workload_step_duration": "00:02:56", "exit_code": "1:0", "timeout": false},
+  "failure": {
+    "exception": "OSError: validate_socket_filename failed: AF_UNIX path length cannot exceed 107 bytes",
+    "stage": "init_ray in preflight.run, before isolated actor probe",
+    "socket_path": "/workspace/m4-full-environment-preflight-ray/session_2026-10-15_03-53-54_937526_3164759/sockets/plasma_store",
+    "socket_path_bytes": 108,
+    "full_driver_inspection_returned": true,
+    "isolated_actor_inspection_passed": false,
+    "unittest_total": 13,
+    "unittest_passed": 12,
+    "unittest_skipped": 1,
+    "skip_reason": "base-interpreter refusal test skipped in actual MCORE interpreter",
+    "checkpoint_transport_started": false,
+    "replay_started": false
+  },
+  "evidence": {
+    "trace_bytes": 37512,
+    "trace_sha256": "b88ef05415b74de07106fcf332c6b55d8fd730a1b7fb619e40cc760a12dd00c2",
+    "eos_artifact_archive_bytes": 43058597,
+    "eos_artifact_archive_sha256": "d78295f8bc989b5cee12e6d032d060211fe1fd42fd9d7ef818ebffa47d3232f9",
+    "preflight_log_bytes": 6376,
+    "preflight_log_sha256": "c95567843ca22f389c51fade62139e9518ec79c0b00d44894614a76fd54dfcb3",
+    "tests_log_bytes": 2147,
+    "tests_log_sha256": "a9cb3fef378d83836e54d00512c2dd1dd2352d593de9d33bb186276c9dfbb20e",
+    "eos_and_logs_after_compact_logs_byte_identical": true,
+    "missing_artifacts_both_jobs_http_404": ["transport.log", "replay-a.log", "qualification-result.json"],
+    "hash_basis": "direct terminal API retrieval, not a completed workload checksum ledger"
+  },
+  "repair_scope_recommended": {
+    "short_separate_ray_temp_roots": ["/tmp/m4pf", "/tmp/m4ra", "/tmp/m4rb"],
+    "same_observed_suffix_candidate_bytes": 73,
+    "current_replay_roots_same_suffix_bytes": 93,
+    "required_regression": "validate encoded socket length with conservative timestamp and PID headroom for all three Ray invocations before submission",
+    "preserve": "pinned backend sources, interpreter, protocol, outcome exclusions and complete-state qualification gates"
+  },
+  "disposition": {"qualification_passed": false, "scientific_outcomes_opened": false, "fresh_acquisition_started": false, "code_changed_this_diagnosis": false, "new_launches_this_diagnosis": 0, "full_environment_guard_remains_consumed": true}
+}

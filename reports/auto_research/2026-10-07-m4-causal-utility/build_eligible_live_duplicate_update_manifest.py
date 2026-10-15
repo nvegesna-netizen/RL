@@ -31,8 +31,11 @@ def build(
     bootstrap_replacement: bool = False,
     full_environment: bool = False,
     bridge: Path | None = None,
+    ray_startup_repair: bool = False,
 ) -> dict:
     """Embed hash-bound source and overlays, then test expanded shell syntax."""
+    if ray_startup_repair and not full_environment:
+        raise ValueError("Ray startup repair requires the full pinned environment")
     if digest_file(source) != SOURCE_HASH or digest_file(megatron) != MEGATRON_HASH:
         raise ValueError("qualified base archives changed")
     if full_environment:
@@ -139,6 +142,18 @@ find "$ASSETS" -maxdepth 1 -type f ! -name artifacts.sha256 -print0 | sort -z | 
 """
             + script[end:]
         )
+    if ray_startup_repair:
+        script = script.replace(
+            ' --ray-log-dir "/workspace/m4-duplicate-ray-$replicate"', ""
+        )
+        script = script.replace(
+            '"$PYTHON" -m unittest',
+            '"$PYTHON" -m research.m4_eligible_replay.ray_startup > "$ASSETS/ray-layout.json"\n"$PYTHON" -m unittest',
+            1,
+        ).replace(
+            "research.m4_eligible_replay.test_preflight -v",
+            "research.m4_eligible_replay.test_preflight research.m4_eligible_replay.test_ray_startup -v",
+        )
     replacements = {
         "@SOURCE@": base64.b64encode(source.read_bytes()).decode(),
         "@SOURCE_HASH@": SOURCE_HASH,
@@ -180,9 +195,13 @@ find "$ASSETS" -maxdepth 1 -type f ! -name artifacts.sha256 -print0 | sort -z | 
         "spec": {
             "name": NAME
             + (
-                "-full-environment"
-                if full_environment
-                else ("-bootstrap-replacement" if bootstrap_replacement else "")
+                "-ray-startup-repair"
+                if ray_startup_repair
+                else (
+                    "-full-environment"
+                    if full_environment
+                    else ("-bootstrap-replacement" if bootstrap_replacement else "")
+                )
             ),
             "workspace": "/workspace",
             "nodes": 1,
@@ -217,6 +236,8 @@ find "$ASSETS" -maxdepth 1 -type f ! -name artifacts.sha256 -print0 | sort -z | 
                 "full_import_preflight_before_transport": True,
             }
         )
+    if ray_startup_repair:
+        result["ray_startup_repair"] = True
     return result
 
 
@@ -228,6 +249,7 @@ def main() -> None:
     parser.add_argument("--bootstrap-replacement", action="store_true")
     parser.add_argument("--full-environment", action="store_true")
     parser.add_argument("--bridge", type=Path)
+    parser.add_argument("--ray-startup-repair", action="store_true")
     args = parser.parse_args()
     print(
         json.dumps(
@@ -238,6 +260,7 @@ def main() -> None:
                 bootstrap_replacement=args.bootstrap_replacement,
                 full_environment=args.full_environment,
                 bridge=args.bridge,
+                ray_startup_repair=args.ray_startup_repair,
             ),
             indent=2,
             sort_keys=True,

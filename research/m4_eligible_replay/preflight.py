@@ -12,6 +12,11 @@ import sys
 
 from research.m4_eligible_replay.bootstrap import initialize_bundled_megatron
 from research.m4_eligible_replay.contracts import canonical_json
+from research.m4_eligible_replay.ray_startup import (
+    allocate_ray_root,
+    ray_cleanup,
+    validate_ray_root,
+)
 
 
 MCORE_PREFIX = Path(
@@ -36,6 +41,8 @@ def inspect_environment() -> dict:
             "megatron.bridge.training.checkpointing",
             "nemo_rl.models.policy.tq_policy",
             "research.m4_eligible_replay.worker",
+            "research.m4_eligible_replay.run_qualification",
+            "ray",
         )
     }
     if (
@@ -68,10 +75,13 @@ def inspect_environment() -> dict:
         "python": sys.executable,
         "prefix": sys.prefix,
         "torch_version": torch.__version__,
+        "ray_version": modules["ray"].__version__,
+        "python_version": sys.version,
         "core_path": str(core),
         "bridge_checkpointing_path": str(expected_bridge),
         "transferqueue_commit": TRANSFERQUEUE_COMMIT,
         "full_worker_import": True,
+        "qualification_module_import": True,
         "state_digest_smoke": True,
     }
 
@@ -83,8 +93,20 @@ def run(output: Path) -> None:
     import ray
     from nemo_rl.distributed.virtual_cluster import init_ray
 
-    init_ray(log_dir="/workspace/m4-full-environment-preflight-ray")
-    try:
+    ray_root = allocate_ray_root("preflight")
+    print(
+        json.dumps(
+            {
+                "stage": "PASS_DRIVER_IMPORT",
+                "driver": driver,
+                "ray_root": str(ray_root),
+                "socket_budget_bytes": validate_ray_root(ray_root),
+            }
+        ),
+        flush=True,
+    )
+    with ray_cleanup(ray.shutdown):
+        init_ray(log_dir=str(ray_root))
         probe = ray.remote(num_cpus=1, num_gpus=0)(inspect_environment)
         actor = ray.get(
             probe.options(
@@ -103,6 +125,8 @@ def run(output: Path) -> None:
         for key in (
             "prefix",
             "torch_version",
+            "ray_version",
+            "python_version",
             "core_path",
             "bridge_checkpointing_path",
             "transferqueue_commit",
@@ -115,12 +139,12 @@ def run(output: Path) -> None:
             "actor": actor,
             "checkpoint_download_started": False,
             "replay_started": False,
+            "ray_root": str(ray_root),
+            "socket_budget_bytes": validate_ray_root(ray_root),
         }
         with output.open("xb") as stream:
             stream.write(canonical_json(result))
         print(result["status"])
-    finally:
-        ray.shutdown()
 
 
 def main() -> None:
