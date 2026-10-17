@@ -1,0 +1,29 @@
+{
+  "schema": "m4-eligible-live-deterministic-backward-topology-v1",
+  "recorded_at": "2026-10-17",
+  "parent_pipeline_id": 74643360,
+  "child_pipeline_id": 74643465,
+  "generate_job_id": 493555449,
+  "trigger_job_id": 493555450,
+  "logs_before_job_id": 493556317,
+  "eos_job_id": 493556318,
+  "logs_after_job_id": 493556319,
+  "exact_eos_job_name": "basic/m4-eligible-live-duplicate-update-qualification-deterministic-backward dgxh100_eos 00 [2 dgxh100_eos]",
+  "source_commit": "e385fd177a729d495cd69a24c89df67366b2f640",
+  "manifest_sha256": "228febc07ffee199cd12dc990c79b885b63d8e33b5b52c41d55c78a929746b73",
+  "protocol_sha256": "a57986017e250fff4140ab3e078e6cc48f1a9a6f2a6a418f9b56c66de860037d",
+  "status_at_authentication": {
+    "generate": "success",
+    "trigger": "running",
+    "child": "running",
+    "logs_before": "running",
+    "eos": "created",
+    "logs_after": "created"
+  },
+  "launcher_invocations_consumed": 1,
+  "prior_guards_reused": false,
+  "automatic_retry": false,
+  "qualification_passed": false,
+  "fresh_acquisition_launched": false,
+  "review_required_even_if_instrumented_updates_match": true
+}
