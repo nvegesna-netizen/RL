@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import random
 from collections.abc import Iterable
 from typing import Any
@@ -14,6 +15,13 @@ import torch
 
 from research.m4_eligible_replay.bootstrap import initialize_bundled_megatron
 from research.m4_eligible_replay.evaluation_rng import isolate_evaluation_tracker
+from research.m4_eligible_replay.deterministic_backward import (
+    MARKER,
+    REQUIRED_ENV,
+    initialize_worker,
+    validate_environment,
+    verify_worker,
+)
 from research.m4_eligible_replay.training_trace import trace_training
 
 # Standalone smoke checks have not imported nemo_rl.__init__ yet. Bootstrap
@@ -76,6 +84,34 @@ def state_digest(value: Any) -> str:
 class EligibleLiveReplayWorker(MegatronPolicyWorkerImpl):
     """Restore RNG through Bridge's existing pre-load hook; leave acquisition alone."""
 
+    @staticmethod
+    def configure_worker(
+        num_gpus: int | float,
+        bundle_indices: tuple[int, list[int]] | None = None,
+        num_gpus_per_node: int | None = None,
+    ) -> tuple[dict, dict, dict, dict]:
+        """Preserve native resources and explicitly propagate early actor controls."""
+        resources, environment, kwargs, runtime = (
+            MegatronPolicyWorkerImpl.configure_worker(
+                num_gpus,
+                bundle_indices=bundle_indices,
+                num_gpus_per_node=num_gpus_per_node,
+            )
+        )
+        if os.environ.get(MARKER) == "1":
+            validate_environment(os.environ)
+            environment.update({MARKER: "1", **REQUIRED_ENV})
+        return resources, environment, kwargs, runtime
+
+    def __init__(self, config: Any, *args: Any, **kwargs: Any) -> None:
+        """Apply deterministic config before the inherited model construction."""
+        if config.get("eligible_replay_deterministic") is True:
+            with initialize_worker(config):
+                super().__init__(config, *args, **kwargs)
+            verify_worker(self, torch)
+        else:
+            super().__init__(config, *args, **kwargs)
+
     def train(
         self,
         data: Any,
@@ -86,6 +122,8 @@ class EligibleLiveReplayWorker(MegatronPolicyWorkerImpl):
         check_dim_skip_keys: Iterable[str] | None = None,
     ) -> dict[str, Any]:
         """Isolate held-out forwards; delegate actual training without restoration."""
+        if self.cfg.get("eligible_replay_deterministic") is True:
+            verify_worker(self, torch)
         if not eval_mode:
             trace_config = self.cfg.get("eligible_replay_training_trace")
             if trace_config is not None:

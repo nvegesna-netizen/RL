@@ -17,6 +17,7 @@ from research.m4_eligible_replay.analyze_training_trace import (
     compare_traces,
     load_trace,
     RUNTIME_KEYS,
+    require_identical,
 )
 from research.m4_eligible_replay import test_evaluation_rng as rng_tests
 from research.m4_eligible_replay.training_trace import (
@@ -411,6 +412,21 @@ class TrainingTraceTests(unittest.TestCase):
 
 
 class TraceAnalysisTests(unittest.TestCase):
+    def test_strict_trace_gate_rejects_runtime_or_gradient_divergence(self) -> None:
+        for runtime_change in (False, True):
+            left, right = self.trace(), self.trace("b")
+            if runtime_change:
+                right[0]["payload"]["deterministic_algorithms"] = True
+            else:
+                right[-4]["payload"]["gradient_sha256"] = "c" * 64
+            with self.assertRaisesRegex(ValueError, "traces differ"):
+                require_identical(compare_traces(left, right))
+
+    def test_strict_trace_match_does_not_claim_full_qualification(self) -> None:
+        result = compare_traces(self.trace(), self.trace("b"))
+        require_identical(result)
+        self.assertFalse(result["qualification_passed"])
+
     def trace(self, replicate: str = "a") -> list[dict]:
         events, _ = TrainingTraceTests().exercise()
         runtime = {key: False for key in RUNTIME_KEYS}

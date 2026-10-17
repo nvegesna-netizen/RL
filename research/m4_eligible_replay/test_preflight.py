@@ -15,6 +15,7 @@ from unittest.mock import Mock, patch
 from research.m4_eligible_replay import preflight
 from research.m4_eligible_replay.preflight import MCORE_PREFIX, inspect_environment
 from research.m4_eligible_replay.ray_startup import ray_cleanup, validate_ray_root
+from research.m4_eligible_replay.deterministic_backward import MARKER, REQUIRED_ENV
 
 
 class PreflightTests(unittest.TestCase):
@@ -42,7 +43,8 @@ class PreflightTests(unittest.TestCase):
         self,
         *,
         startup_error: OSError | None = None,
-        actor_changes: dict[str, str] | None = None,
+        actor_changes: dict[str, Any] | None = None,
+        expected_error: str = "driver/actor mismatch",
     ) -> ModuleType:
         driver = {
             "prefix": str(MCORE_PREFIX),
@@ -52,6 +54,7 @@ class PreflightTests(unittest.TestCase):
             "core_path": "test-core",
             "bridge_checkpointing_path": "test-bridge",
             "transferqueue_commit": "test-commit",
+            "strict_deterministic_process": True,
         }
         actor = {**copy.deepcopy(driver), **(actor_changes or {})}
         ray = ModuleType("ray")
@@ -85,7 +88,7 @@ class PreflightTests(unittest.TestCase):
                     self.assertFalse(output.exists())
                     ray.remote.assert_not_called()
                 elif actor_changes:
-                    with self.assertRaisesRegex(ValueError, "driver/actor mismatch"):
+                    with self.assertRaisesRegex(ValueError, expected_error):
                         preflight.run(output)
                     self.assertFalse(output.exists())
                 else:
@@ -113,6 +116,22 @@ class PreflightTests(unittest.TestCase):
         env = probe.options.call_args.kwargs["runtime_env"]
         self.assertEqual(env["py_executable"], str(preflight.MCORE_PYTHON))
         self.assertEqual(ray.get.call_args.kwargs["timeout"], 300)
+
+    def test_strict_probe_environment_is_explicitly_propagated(self) -> None:
+        with patch.dict(preflight.os.environ, {MARKER: "1", **REQUIRED_ENV}):
+            ray = self.exercise_gate()
+        environment = ray.remote.return_value.return_value.options.call_args.kwargs[
+            "runtime_env"
+        ]["env_vars"]
+        for name, value in {MARKER: "1", **REQUIRED_ENV}.items():
+            self.assertEqual(environment[name], value)
+
+    def test_strict_probe_downgrade_is_rejected(self) -> None:
+        with patch.dict(preflight.os.environ, {MARKER: "1", **REQUIRED_ENV}):
+            self.exercise_gate(
+                actor_changes={"strict_deterministic_process": False},
+                expected_error="strict deterministic driver/actor",
+            )
 
     def test_replay_wrapper_cleans_setup_failure_for_both_replicates(self) -> None:
         # Execute the actual wrapper without importing optional CUDA dependencies.

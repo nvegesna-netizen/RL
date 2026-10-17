@@ -11,6 +11,7 @@ import tempfile
 from pathlib import Path
 
 from research.m4_eligible_replay.contracts import digest_file
+from research.m4_eligible_replay.deterministic_backward import MARKER, REQUIRED_ENV
 
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -36,6 +37,21 @@ def validate_repaired_shell(script: str) -> None:
         raise ValueError("fresh-process duplicate replay loop changed")
 
 
+def validate_deterministic_shell(script: str) -> None:
+    """Require exact controls before the first Python process and one replay flag."""
+    first_python = script.index('"$PYTHON" - "$RUN_REPO"')
+    for name, value in {MARKER: "1", **REQUIRED_ENV}.items():
+        control = f"export {name}={value}\n"
+        if script.count(control) != 1 or script.index(control) >= first_python:
+            raise ValueError("deterministic environment missing, duplicated or late")
+    if script.count(" --deterministic-backward --output") != 1:
+        raise ValueError("deterministic replay flag missing or duplicated")
+    if " research.m4_eligible_replay.test_deterministic_backward -v" not in script:
+        raise ValueError("deterministic tests missing from runtime gate")
+    if script.count("analyze_training_trace --require-identical --assets") != 1:
+        raise ValueError("strict trace identity gate missing or duplicated")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--bootstrap-replacement", action="store_true")
@@ -45,6 +61,7 @@ def main() -> None:
     parser.add_argument("--state-diagnostics", action="store_true")
     parser.add_argument("--evaluation-rng-repair", action="store_true")
     parser.add_argument("--training-diagnostics", action="store_true")
+    parser.add_argument("--deterministic-backward", action="store_true")
     args = parser.parse_args()
     if args.ray_startup_repair and not args.full_environment:
         raise ValueError("Ray startup repair requires full-environment validation")
@@ -55,6 +72,10 @@ def main() -> None:
     if args.training_diagnostics and not args.evaluation_rng_repair:
         raise ValueError(
             "training diagnostic validation requires evaluation RNG repair"
+        )
+    if args.deterministic_backward and not args.training_diagnostics:
+        raise ValueError(
+            "deterministic backward requires training diagnostic validation"
         )
     manifest_path = (
         MANIFEST.with_name(
@@ -94,15 +115,24 @@ def main() -> None:
         expected_name = (
             "m4-eligible-live-duplicate-update-qualification-training-diagnostics"
         )
-        if "research.m4_eligible_replay.test_training_trace -v" not in spec["script"]:
+        if (
+            spec["script"].count(" research.m4_eligible_replay.test_training_trace ")
+            != 1
+        ):
             raise ValueError("training trace regressions missing from runtime gate")
+    if args.deterministic_backward:
+        expected_name = (
+            "m4-eligible-live-duplicate-update-qualification-deterministic-backward"
+        )
     if spec["name"] != expected_name or spec["time_limit"] != 14400:
         raise ValueError("workload identity/runtime changed")
     script = spec["script"].replace("{{", "{").replace("}}", "}")
+    if args.deterministic_backward:
+        validate_deterministic_shell(script)
     if args.ray_startup_repair:
         validate_repaired_shell(script)
     if args.training_diagnostics:
-        if script.count(" --training-diagnostics --output") != 1:
+        if script.count(" --training-diagnostics ") != 1:
             raise ValueError("training diagnostics invocation missing or duplicated")
         compare = script.index("-m research.m4_eligible_replay.analyze_training_trace ")
         gate = script.index("result=validate_duplicate_replays(")
@@ -143,6 +173,8 @@ def main() -> None:
             [sys.executable, "-", str(root)], input=extract, text=True, check=True
         )
         env = {**os.environ, "PYTHONPATH": str(root)}
+        if args.deterministic_backward:
+            env.update({MARKER: "1", **REQUIRED_ENV})
         tests = [
             sys.executable,
             "-m",
@@ -167,6 +199,8 @@ def main() -> None:
             tests.append("research.m4_eligible_replay.test_evaluation_rng")
         if args.training_diagnostics:
             tests.append("research.m4_eligible_replay.test_training_trace")
+        if args.deterministic_backward:
+            tests.append("research.m4_eligible_replay.test_deterministic_backward")
         test_run = subprocess.run(
             [
                 sys.executable,

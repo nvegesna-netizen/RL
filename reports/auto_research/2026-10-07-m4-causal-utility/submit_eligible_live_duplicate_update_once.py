@@ -30,6 +30,7 @@ def main() -> None:
     parser.add_argument("--state-diagnostics", action="store_true")
     parser.add_argument("--evaluation-rng-repair", action="store_true")
     parser.add_argument("--training-diagnostics", action="store_true")
+    parser.add_argument("--deterministic-backward", action="store_true")
     parser.add_argument("--validate-only", action="store_true")
     args = parser.parse_args()
     if (
@@ -41,6 +42,7 @@ def main() -> None:
                 args.state_diagnostics,
                 args.evaluation_rng_repair,
                 args.training_diagnostics,
+                args.deterministic_backward,
             )
         )
         > 1
@@ -148,6 +150,22 @@ def main() -> None:
             "eligible_live_duplicate_update_training_diagnostics_launch_receipt.json"
         )
         authorization_name = "eligible_live_duplicate_update_training_diagnostics_launch_authorization.json"
+    if args.deterministic_backward:
+        manifest = (
+            SESSION
+            / "m4-eligible-live-duplicate-update-deterministic-backward-verified-manifest.json"
+        )
+        manifest_hash = (
+            "228febc07ffee199cd12dc990c79b885b63d8e33b5b52c41d55c78a929746b73"
+        )
+        receipt_name = (
+            "eligible_live_duplicate_update_deterministic_backward_package_receipt.json"
+        )
+        stem = "eligible-live-duplicate-update-deterministic-backward"
+        launch_receipt_name = (
+            "eligible_live_duplicate_update_deterministic_backward_launch_receipt.json"
+        )
+        authorization_name = "eligible_live_duplicate_update_deterministic_backward_launch_authorization.json"
     if not os.environ.get("JET_GITLAB_TOKEN"):
         raise ValueError("source rotated setup_jet.sh before launch")
     if (
@@ -201,6 +219,7 @@ def main() -> None:
         or args.state_diagnostics
         or args.evaluation_rng_repair
         or args.training_diagnostics
+        or args.deterministic_backward
     ):
         authorization = json.loads((REPORT / authorization_name).read_bytes())
         if (
@@ -228,6 +247,7 @@ def main() -> None:
             args.state_diagnostics
             or args.evaluation_rng_repair
             or args.training_diagnostics
+            or args.deterministic_backward
         ):
             prior = json.loads(
                 (
@@ -240,7 +260,11 @@ def main() -> None:
                 or prior["status"] != "SUBMITTED_NO_WAIT"
             ):
                 raise ValueError("prior Ray startup repair identity changed")
-        if args.evaluation_rng_repair or args.training_diagnostics:
+        if (
+            args.evaluation_rng_repair
+            or args.training_diagnostics
+            or args.deterministic_backward
+        ):
             prior = json.loads(
                 (
                     SESSION
@@ -252,7 +276,7 @@ def main() -> None:
                 or prior["status"] != "SUBMITTED_NO_WAIT"
             ):
                 raise ValueError("prior diagnostic launch identity changed")
-        if args.training_diagnostics:
+        if args.training_diagnostics or args.deterministic_backward:
             prior = json.loads(
                 (
                     SESSION
@@ -267,15 +291,31 @@ def main() -> None:
             for name, expected in package["prior_guard_sha256"].items():
                 if digest_file(SESSION / name) != expected:
                     raise ValueError("consumed predecessor guard changed")
+        if args.deterministic_backward:
+            prior = json.loads(
+                (
+                    SESSION
+                    / "eligible-live-duplicate-update-training-diagnostics-one-shot-guard.json"
+                ).read_bytes()
+            )
+            if (
+                prior["parent_pipeline_id"] != 74228841
+                or prior["status"] != "SUBMITTED_NO_WAIT"
+            ):
+                raise ValueError("prior training diagnostic identity changed")
         if (
             package["clean_room_tests_run"]
             != (
-                77
-                if args.training_diagnostics
+                95
+                if args.deterministic_backward
                 else (
-                    53
-                    if args.evaluation_rng_repair
-                    else (39 if args.state_diagnostics else 29)
+                    77
+                    if args.training_diagnostics
+                    else (
+                        53
+                        if args.evaluation_rng_repair
+                        else (39 if args.state_diagnostics else 29)
+                    )
                 )
             )
             or package["clean_room_tests_skipped"] != 0
@@ -293,6 +333,7 @@ def main() -> None:
         or args.state_diagnostics
         or args.evaluation_rng_repair
         or args.training_diagnostics
+        or args.deterministic_backward
     ):
         paths.extend(
             [

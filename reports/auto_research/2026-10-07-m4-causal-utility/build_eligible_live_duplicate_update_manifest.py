@@ -35,6 +35,7 @@ def build(
     state_diagnostics: bool = False,
     evaluation_rng_repair: bool = False,
     training_diagnostics: bool = False,
+    deterministic_backward: bool = False,
 ) -> dict:
     """Embed hash-bound source and overlays, then test expanded shell syntax."""
     if ray_startup_repair and not full_environment:
@@ -48,6 +49,10 @@ def build(
     if training_diagnostics and not evaluation_rng_repair:
         raise ValueError(
             "training diagnostics requires the verified evaluation isolation repair"
+        )
+    if deterministic_backward and not training_diagnostics:
+        raise ValueError(
+            "deterministic backward requires the full training diagnostic package"
         )
     if digest_file(source) != SOURCE_HASH or digest_file(megatron) != MEGATRON_HASH:
         raise ValueError("qualified base archives changed")
@@ -195,6 +200,25 @@ find "$ASSETS" -maxdepth 1 -type f ! -name artifacts.sha256 -print0 | sort -z | 
             marker,
             'done\n"$PYTHON" -m research.m4_eligible_replay.analyze_training_trace --assets "$ASSETS" --protocol "@PROTOCOL@"\n"$PYTHON" - "$ASSETS"',
         )
+    if deterministic_backward:
+        script = (
+            script.replace(
+                "readonly ASSETS={assets_dir}",
+                "readonly ASSETS={assets_dir}\nexport M4_ELIGIBLE_REPLAY_DETERMINISTIC=1\nexport CUBLAS_WORKSPACE_CONFIG=:4096:8\nexport NVTE_ALLOW_NONDETERMINISTIC_ALGO=0\nexport NCCL_ALGO=Ring",
+            )
+            .replace(
+                "research.m4_eligible_replay.test_training_trace -v",
+                "research.m4_eligible_replay.test_training_trace research.m4_eligible_replay.test_deterministic_backward -v",
+            )
+            .replace(
+                " --training-diagnostics --output",
+                " --training-diagnostics --deterministic-backward --output",
+            )
+            .replace(
+                "analyze_training_trace --assets",
+                "analyze_training_trace --require-identical --assets",
+            )
+        )
     replacements = {
         "@SOURCE@": base64.b64encode(source.read_bytes()).decode(),
         "@SOURCE_HASH@": SOURCE_HASH,
@@ -260,6 +284,8 @@ find "$ASSETS" -maxdepth 1 -type f ! -name artifacts.sha256 -print0 | sort -z | 
         manifest["spec"]["name"] = NAME + "-evaluation-rng-repair"
     if training_diagnostics:
         manifest["spec"]["name"] = NAME + "-training-diagnostics"
+    if deterministic_backward:
+        manifest["spec"]["name"] = NAME + "-deterministic-backward"
     with output.open("xb") as stream:
         stream.write(canonical_json(manifest))
     result = {
@@ -291,6 +317,8 @@ find "$ASSETS" -maxdepth 1 -type f ! -name artifacts.sha256 -print0 | sort -z | 
         result["evaluation_rng_repair"] = True
     if training_diagnostics:
         result["training_diagnostics"] = True
+    if deterministic_backward:
+        result["deterministic_backward"] = True
     return result
 
 
@@ -306,6 +334,7 @@ def main() -> None:
     parser.add_argument("--state-diagnostics", action="store_true")
     parser.add_argument("--evaluation-rng-repair", action="store_true")
     parser.add_argument("--training-diagnostics", action="store_true")
+    parser.add_argument("--deterministic-backward", action="store_true")
     args = parser.parse_args()
     print(
         json.dumps(
@@ -320,6 +349,7 @@ def main() -> None:
                 state_diagnostics=args.state_diagnostics,
                 evaluation_rng_repair=args.evaluation_rng_repair,
                 training_diagnostics=args.training_diagnostics,
+                deterministic_backward=args.deterministic_backward,
             ),
             indent=2,
             sort_keys=True,

@@ -1,0 +1,18 @@
+{
+  "schema": "m4-eligible-live-deterministic-backward-launch-authorization-v1",
+  "recorded_at": "2026-10-17",
+  "human_request": "do it",
+  "scope": "One excluded-capsule duplicate-comparator EOS qualification with audited strict deterministic execution, retained tracing, added exact trace-identity gate and unchanged original full-state equality gate",
+  "manifest_sha256": "228febc07ffee199cd12dc990c79b885b63d8e33b5b52c41d55c78a929746b73",
+  "protocol_sha256": "a57986017e250fff4140ab3e078e6cc48f1a9a6f2a6a418f9b56c66de860037d",
+  "maximum_launcher_invocations": 1,
+  "automatic_retry": false,
+  "fresh_acquisition_authorized": false,
+  "prior_guards_reused": false,
+  "scientific_thresholds_changed": false,
+  "allocated_time_limit_seconds": 14400,
+  "client_queue_deadline": null,
+  "launcher_no_wait": true,
+  "rotated_setup_required": true,
+  "new_execution_variant_requires_review_before_fresh_cohort": true
+}

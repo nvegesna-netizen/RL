@@ -231,10 +231,20 @@ def compare_traces(
     }
 
 
+def require_identical(result: dict[str, Any]) -> None:
+    """Add a strict engineering gate; trace equality alone is not qualification."""
+    if (
+        result["earliest_observed_divergence"] is not None
+        or result["runtime_changed_fields"]
+    ):
+        raise ValueError("strict deterministic training traces differ")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--assets", type=Path, required=True)
     parser.add_argument("--protocol", type=Path, required=True)
+    parser.add_argument("--require-identical", action="store_true")
     args = parser.parse_args()
     protocol = json.loads(args.protocol.read_bytes())
     protocol_hash = digest_file(args.protocol)
@@ -259,6 +269,8 @@ def main() -> None:
     with (args.assets / "training-trace-comparison.json").open("xb") as stream:
         stream.write(canonical_json(result))
     print(result["status"])
+    if args.require_identical:
+        require_identical(result)
 
 
 if __name__ == "__main__":

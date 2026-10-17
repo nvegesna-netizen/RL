@@ -59,6 +59,9 @@ class EvaluationRngTests(unittest.TestCase):
         tracker, call = self.tracker, self.call
 
         class Base:
+            def __init__(self, config: Any, *args: Any, **kwargs: Any) -> None:
+                self.cfg = config
+
             def train(self, data: Any, **kwargs: Any) -> dict:
                 tracker.states["model-parallel-rng"].value += 1
                 return call(data, **kwargs)
@@ -87,7 +90,7 @@ class EvaluationRngTests(unittest.TestCase):
             ),
             namespace,
         )
-        self.worker = namespace["EligibleLiveReplayWorker"]()
+        self.worker = namespace["EligibleLiveReplayWorker"]({})
         self.worker.cfg = {}
 
     def evaluate(self, **kwargs: Any) -> dict:

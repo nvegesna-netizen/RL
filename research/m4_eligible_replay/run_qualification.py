@@ -36,6 +36,8 @@ from research.m4_eligible_replay.ray_startup import (
     validate_ray_root,
 )
 from research.m4_eligible_replay.state_diagnostics import write_diagnostic
+from research.m4_eligible_replay.deterministic_backward import apply_torch_controls
+import os
 
 
 WORKER = "research.m4_eligible_replay.worker.EligibleLiveReplayWorker"
@@ -58,12 +60,19 @@ def run(
     ray_log_dir: Path | None = None,
     state_diagnostics_dir: Path | None = None,
     training_diagnostics: bool = False,
+    deterministic_backward: bool = False,
 ) -> dict[str, Any]:
     """Cover all setup failures with Ray cleanup and validate the socket budget."""
     if replicate not in ("a", "b"):
         raise ValueError("wrong qualification replicate")
     if training_diagnostics and state_diagnostics_dir is None:
         raise ValueError("training diagnostics requires a persistent state directory")
+    if deterministic_backward:
+        if not training_diagnostics:
+            raise ValueError(
+                "deterministic qualification requires training diagnostics"
+            )
+        apply_torch_controls(torch, os.environ)
     root = allocate_ray_root(replicate) if ray_log_dir is None else ray_log_dir
     size = validate_ray_root(root)
     print(
@@ -86,6 +95,7 @@ def run(
             ray_log_dir=root,
             state_diagnostics_dir=state_diagnostics_dir,
             training_diagnostics=training_diagnostics,
+            deterministic_backward=deterministic_backward,
         )
 
 
@@ -98,6 +108,7 @@ def _run(
     ray_log_dir: Path,
     state_diagnostics_dir: Path | None = None,
     training_diagnostics: bool = False,
+    deterministic_backward: bool = False,
 ) -> dict[str, Any]:
     """Restore, forward-evaluate withheld data, and update only the comparator."""
     protocol = json.loads(protocol_path.read_bytes())
@@ -159,6 +170,8 @@ def _run(
         **OmegaConf.to_container(load_config(config_path), resolve=True)
     )
     config.policy["megatron_cfg"]["train_iters"] = 64
+    if deterministic_backward:
+        config.policy["eligible_replay_deterministic"] = True
     if training_diagnostics:
         if state_diagnostics_dir is None:
             raise ValueError(
@@ -337,6 +350,7 @@ def main() -> None:
     parser.add_argument("--ray-log-dir", type=Path)
     parser.add_argument("--state-diagnostics-dir", type=Path)
     parser.add_argument("--training-diagnostics", action="store_true")
+    parser.add_argument("--deterministic-backward", action="store_true")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     result = run(
@@ -347,6 +361,7 @@ def main() -> None:
         ray_log_dir=args.ray_log_dir,
         state_diagnostics_dir=args.state_diagnostics_dir,
         training_diagnostics=args.training_diagnostics,
+        deterministic_backward=args.deterministic_backward,
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     with args.output.open("xb") as stream:

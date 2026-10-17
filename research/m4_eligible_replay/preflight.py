@@ -13,6 +13,12 @@ import sys
 from research.m4_eligible_replay.bootstrap import initialize_bundled_megatron
 from research.m4_eligible_replay.contracts import canonical_json
 from research.m4_eligible_replay.evaluation_rng import isolate_evaluation_tracker
+from research.m4_eligible_replay.deterministic_backward import (
+    MARKER,
+    REQUIRED_ENV,
+    apply_torch_controls,
+    verify_torch_controls,
+)
 from research.m4_eligible_replay.ray_startup import (
     allocate_ray_root,
     ray_cleanup,
@@ -36,6 +42,8 @@ def inspect_environment() -> dict:
         raise ValueError(f"expected proven MCORE prefix, got {sys.prefix}")
     core = initialize_bundled_megatron(require_bridge=True)
     bridge = core.parent.parent / "src"
+    if os.environ.get(MARKER) == "1":
+        apply_torch_controls(importlib.import_module("torch"), os.environ)
     modules = {
         name: importlib.import_module(name)
         for name in (
@@ -97,6 +105,8 @@ def inspect_environment() -> dict:
     if registry.MCORE_EXECUTABLE != sys.executable:
         raise ValueError("actor environment must use the verified MCORE interpreter")
     training_trace_smoke(torch, digest)
+    if os.environ.get(MARKER) == "1":
+        verify_torch_controls(torch, os.environ)
     return {
         "python": sys.executable,
         "prefix": sys.prefix,
@@ -111,6 +121,7 @@ def inspect_environment() -> dict:
         "state_digest_smoke": True,
         "real_tensor_tracker_restore_smoke": True,
         "real_tensor_training_trace_smoke": True,
+        "strict_deterministic_process": os.environ.get(MARKER) == "1",
     }
 
 
@@ -145,11 +156,21 @@ def run(output: Path) -> None:
                         "NEMO_RL_PY_EXECUTABLES_SYSTEM": "1",
                         "VIRTUAL_ENV": str(MCORE_PREFIX),
                         "UV_PROJECT_ENVIRONMENT": str(MCORE_PREFIX),
+                        **(
+                            {MARKER: "1", **REQUIRED_ENV}
+                            if os.environ.get(MARKER) == "1"
+                            else {}
+                        ),
                     },
                 }
             ).remote(),
             timeout=300,
         )
+        if os.environ.get(MARKER) == "1" and (
+            driver["strict_deterministic_process"] is not True
+            or actor["strict_deterministic_process"] is not True
+        ):
+            raise ValueError("strict deterministic driver/actor preflight failed")
         for key in (
             "prefix",
             "torch_version",

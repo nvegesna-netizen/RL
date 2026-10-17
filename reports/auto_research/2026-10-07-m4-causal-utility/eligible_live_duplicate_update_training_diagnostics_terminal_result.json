@@ -1,0 +1,336 @@
+{
+  "schema": "m4-eligible-live-training-diagnostics-terminal-result-v1",
+  "recorded_at": "2026-10-17",
+  "parent_pipeline_id": 74228841,
+  "child_pipeline_id": 74229277,
+  "eos_job_id": 490485546,
+  "logs_after_job_id": 490485548,
+  "source_commit": "29e36f9f7f62167118ed67dd5f0113eb692d85fb",
+  "manifest_sha256": "9ae5af0835edc29250042f60a6e795241d201524bd33cac387249a1daa8dfd26",
+  "protocol_sha256": "a57986017e250fff4140ab3e078e6cc48f1a9a6f2a6a418f9b56c66de860037d",
+  "qualification_status": "FAILED_DUPLICATE_POST_UPDATE_STATE_EQUALITY",
+  "diagnostic_status": "FIRST_OBSERVED_DIVERGENCE_IN_GRADIENTS_BEFORE_OPTIMIZER",
+  "slurm": {
+    "job_id": 6259417,
+    "node": "eos0170",
+    "queue_time": "1-09:15:44",
+    "allocated_duration": "00:18:03",
+    "workload_step_duration": "00:15:26",
+    "exit_code": "1:0",
+    "timeout": false
+  },
+  "tests": {
+    "run": 77,
+    "passed": 76,
+    "skipped": 1
+  },
+  "progress": {
+    "a": {
+      "pre_eval_state_unchanged": true,
+      "optimizer_before": 7,
+      "optimizer_after": 8,
+      "scheduler_before": 224,
+      "scheduler_after": 256,
+      "heldout_files_unchanged": true,
+      "post_update_heldout_loss_computed": false
+    },
+    "b": {
+      "pre_eval_state_unchanged": true,
+      "optimizer_before": 7,
+      "optimizer_after": 8,
+      "scheduler_before": 224,
+      "scheduler_after": 256,
+      "heldout_files_unchanged": true,
+      "post_update_heldout_loss_computed": false
+    }
+  },
+  "phase_comparison": {
+    "runtime": {
+      "a_count": 1,
+      "b_count": 1,
+      "matching": true
+    },
+    "worker_input": {
+      "a_count": 1,
+      "b_count": 1,
+      "matching": true
+    },
+    "forward_backward_start": {
+      "a_count": 1,
+      "b_count": 1,
+      "matching": true
+    },
+    "microbatch": {
+      "a_count": 8,
+      "b_count": 8,
+      "matching": true
+    },
+    "model_input": {
+      "a_count": 8,
+      "b_count": 8,
+      "matching": true
+    },
+    "model_output": {
+      "a_count": 8,
+      "b_count": 8,
+      "matching": true
+    },
+    "forward_backward_end": {
+      "a_count": 1,
+      "b_count": 1,
+      "matching": false
+    },
+    "optimizer_before": {
+      "a_count": 1,
+      "b_count": 1,
+      "matching": false
+    },
+    "optimizer_after": {
+      "a_count": 1,
+      "b_count": 1,
+      "matching": false
+    },
+    "complete": {
+      "a_count": 1,
+      "b_count": 1,
+      "matching": true
+    }
+  },
+  "strict_independent_recomputation": {
+    "strict_trace_validation_passed_both": true,
+    "before_idle_after_eval_equal_both": true,
+    "validator_error": "duplicate replay mismatch: state_after",
+    "all_observed_mismatches": [
+      {
+        "sequence": 27,
+        "a_phase": "forward_backward_end",
+        "b_phase": "forward_backward_end",
+        "changed_fields": [
+          "gradient_sha256"
+        ]
+      },
+      {
+        "sequence": 28,
+        "a_phase": "optimizer_before",
+        "b_phase": "optimizer_before",
+        "changed_fields": [
+          "gradient_sha256"
+        ]
+      },
+      {
+        "sequence": 29,
+        "a_phase": "optimizer_after",
+        "b_phase": "optimizer_after",
+        "changed_fields": [
+          "inner_optimizer_sha256",
+          "master_parameters_sha256",
+          "parameter_sha256"
+        ]
+      }
+    ],
+    "native_parameter_and_optimizer_inputs_match_before_step": true
+  },
+  "first_divergence": {
+    "a_phase": "forward_backward_end",
+    "b_phase": "forward_backward_end",
+    "changed_fields": [
+      "gradient_sha256"
+    ],
+    "sequence": 27
+  },
+  "gradient_hashes": {
+    "a": {
+      "gradient_sha256": "1882c36cfd8367fc9d6f876e3598ed194d0b0fb5fb90f870cf91b95d4bf41e90"
+    },
+    "b": {
+      "gradient_sha256": "361fe33329ce02d37fc415e614bf555a16d7636810b1ed88dc0e38d4773f97d4"
+    }
+  },
+  "before_state_differences": [],
+  "after_state_differences": [
+    "optimizer_sha256",
+    "parameter_sha256"
+  ],
+  "runtime_a": {
+    "callable_origins": {
+      "forward_backward": "/workspace/m4-duplicate-update-repo/nemo_rl/models/megatron/train.py",
+      "microbatch_iterator": "/workspace/m4-duplicate-update-repo/nemo_rl/models/megatron/data.py"
+    },
+    "cudnn_allow_tf32": true,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": false,
+    "deterministic_algorithms": false,
+    "deterministic_warn_only": false,
+    "environment": {
+      "CUBLAS_WORKSPACE_CONFIG": null,
+      "CUDA_LAUNCH_BLOCKING": null,
+      "NCCL_ALGO": null,
+      "NVTE_ALLOW_NONDETERMINISTIC_ALGO": null,
+      "NVTE_FLASH_ATTN": "1",
+      "NVTE_FUSED_ATTN": "1",
+      "NVTE_UNFUSED_ATTN": "1",
+      "OMP_NUM_THREADS": "1",
+      "PYTHONHASHSEED": null
+    },
+    "matmul_allow_tf32": false,
+    "model_modes": {
+      "attention_backend": "AttnBackend.auto",
+      "attention_dropout": "0.0",
+      "bf16": "True",
+      "cross_entropy_loss_fusion": "True",
+      "cuda_graph_impl": "none",
+      "cuda_graph_scope": "None",
+      "deterministic_mode": "False",
+      "fp16": "False",
+      "fp8": "None",
+      "hidden_dropout": "0.0",
+      "recompute_granularity": "None"
+    },
+    "module_origins": {
+      "megatron.bridge.models.conversion.auto_bridge": {
+        "path": "/opt/nemo-rl/3rdparty/Megatron-Bridge-workspace/Megatron-Bridge/src/megatron/bridge/models/conversion/auto_bridge.py",
+        "sha256": "01cd6c3156135352fbd7dace9c3adbded2472bbc55c5e0a97c30477f5723ab25"
+      },
+      "megatron.bridge.training.checkpointing": {
+        "path": "/opt/nemo-rl/3rdparty/Megatron-Bridge-workspace/Megatron-Bridge/src/megatron/bridge/training/checkpointing.py",
+        "sha256": "175a84e0dcd4e57ce9260263c2203b1e6d1817a79d84a3e5ed91c6e3c5e05ee8"
+      },
+      "megatron.core.optimizer": {
+        "path": "/workspace/m4-duplicate-update-repo/3rdparty/Megatron-Bridge-workspace/Megatron-Bridge/3rdparty/Megatron-LM/megatron/core/optimizer/__init__.py",
+        "sha256": "5a657e3f3ad88d1ea6bf3600258cd1e391921b55d88ba055134e958db300ea20"
+      },
+      "megatron.core.optimizer.optimizer": {
+        "path": "/workspace/m4-duplicate-update-repo/3rdparty/Megatron-Bridge-workspace/Megatron-Bridge/3rdparty/Megatron-LM/megatron/core/optimizer/optimizer.py",
+        "sha256": "24609822f7c165c9be9f6e95945c873bf474cdce3ca06600b00b52c5d23b31e4"
+      },
+      "megatron.core.tensor_parallel.random": {
+        "path": "/workspace/m4-duplicate-update-repo/3rdparty/Megatron-Bridge-workspace/Megatron-Bridge/3rdparty/Megatron-LM/megatron/core/tensor_parallel/random.py",
+        "sha256": "c2bc8b53e27f0a883eff360d5ba92071a6a27905ea03035426f4c071d3d036e4"
+      },
+      "nemo_rl.models.megatron.data": {
+        "path": "/workspace/m4-duplicate-update-repo/nemo_rl/models/megatron/data.py",
+        "sha256": "0860a793084f7965ff02112dbb8312da9a340aaf78f4a28946bdc33a9344be8c"
+      },
+      "nemo_rl.models.megatron.setup": {
+        "path": "/workspace/m4-duplicate-update-repo/nemo_rl/models/megatron/setup.py",
+        "sha256": "4945e932b9d5a70faf6698269f10cebdcec132d7606ef8579e50705e754b6ad0"
+      },
+      "nemo_rl.models.megatron.train": {
+        "path": "/workspace/m4-duplicate-update-repo/nemo_rl/models/megatron/train.py",
+        "sha256": "0beefa4b0f4b1b9d5d4b5485866e1048c1364c68f00f87b3e0ba17aa32f98df2"
+      },
+      "nemo_rl.models.policy.workers.megatron_policy_worker": {
+        "path": "/workspace/m4-duplicate-update-repo/nemo_rl/models/policy/workers/megatron_policy_worker.py",
+        "sha256": "160362a38ebe73eec5cfbc76d84355ea4c32f5c8c7aac8be8f4a7c13b461b7e9"
+      },
+      "research.m4_eligible_replay.worker": {
+        "path": "/workspace/m4-duplicate-update-repo/research/m4_eligible_replay/worker.py",
+        "sha256": "830246797cc6c6f1b7cbc86ad84a1c2b13bb4ce6be558953c6b682c7ed829e05"
+      },
+      "transformer_engine.pytorch": {
+        "path": "/root/.cache/uv/archive-v0/X3Wf-3NX-ai2rUn6/transformer_engine/pytorch/__init__.py",
+        "sha256": "b5b73ae8f37c394b69c3762afd67562a91c8a43bff018d95557d3dcc848c1845"
+      }
+    },
+    "torch_version": "2.11.0+cu130"
+  },
+  "runtime_b_differences": {},
+  "actual_preflight_passed": true,
+  "actual_real_tensor_trace_control_smoke_passed": true,
+  "bridge_origin_audit": {
+    "actual_model_actor_uses_image_paths": true,
+    "audited_checkpointing_source_matches_pinned_archive_bytes": true,
+    "audited_auto_bridge_source_matches_pinned_archive_bytes": true,
+    "entire_bridge_tree_authenticated": false,
+    "path_difference_alone_not_established_cause": true
+  },
+  "evidence": {
+    "replay-a.json": {
+      "bytes": 3426,
+      "sha256": "605b5a4b43b9284403735fe3adfe08f10a9aa9ac72031c5ad673dbe30d5770bc",
+      "copies_identical": true
+    },
+    "replay-a.log": {
+      "bytes": 35980,
+      "sha256": "151096731ceacfa60f86576d051f3ec0c5464eb2f37b1d20f81ff6218cc6acea",
+      "copies_identical": true
+    },
+    "replay-a-training-trace.jsonl": {
+      "bytes": 15490,
+      "sha256": "471259ff17b95f2dbdec77ba9ee00cfb3a492d07f6643281e25af045f562c269",
+      "copies_identical": true
+    },
+    "replay-a-state-comparison.json": {
+      "bytes": 3036,
+      "sha256": "4f2447736076b1da4031c0aeadd84471139ea492085d56f029bcb6835aecab8d",
+      "copies_identical": true
+    },
+    "replay-b.json": {
+      "bytes": 3426,
+      "sha256": "90806e07711d17d081a18acf56c456c18c90837abf0fb3868b3823ba38a93765",
+      "copies_identical": true
+    },
+    "replay-b.log": {
+      "bytes": 31235,
+      "sha256": "e126b0c1dc94c982d84654babad15bc3c04617f560979324495c342992fde3e8",
+      "copies_identical": true
+    },
+    "replay-b-training-trace.jsonl": {
+      "bytes": 15490,
+      "sha256": "4e54de2c228c7dc213c45eb5df0ef2fb840e386189e2f40a528cab7d2ea214b1",
+      "copies_identical": true
+    },
+    "replay-b-state-comparison.json": {
+      "bytes": 3036,
+      "sha256": "d5b9f397df4cda3453573f6be8799a8ecd8ee12e0f362d1da778d7940ee29997",
+      "copies_identical": true
+    },
+    "training-trace-comparison.json": {
+      "bytes": 1079,
+      "sha256": "2fce7455660243ad5b4983dea072a51a4d270524c68384173764be2bc85bb71d",
+      "copies_identical": true
+    },
+    "environment-preflight.json": {
+      "bytes": 1908,
+      "sha256": "c77ffb98160648afd9a7260d1b2e4a7081bb993cf5845e39ca485072886f8219",
+      "copies_identical": true
+    },
+    "tests.log": {
+      "bytes": 12475,
+      "sha256": "b8ae60ebafcff953df07357a5d7ea10fd135adadac49d0b28acdf5567492edd3",
+      "copies_identical": true
+    },
+    "transport-receipt.json": {
+      "bytes": 2306,
+      "sha256": "2b4b00fc24a1485951451dd294ba2f178377649078901d4c2790da2403b0407a",
+      "copies_identical": true
+    },
+    "qualification-result.json": {
+      "missing_both": true
+    }
+  },
+  "trace": {
+    "bytes": 41199,
+    "sha256": "fd6cd3de7cd271014b6b9da84da3bc97b36192680fe88543cac76ac479051ce2"
+  },
+  "interpretation": {
+    "ordered_inputs_and_raw_model_outputs_match_all_eight_microbatches": true,
+    "gradients_differ_before_optimizer_with_identical_optimizer_parameter_inputs": true,
+    "loss_processing_backward_or_accumulation_interval_localized": true,
+    "specific_operator_root_cause_established": false,
+    "gradient_difference_magnitude_known": false,
+    "deterministic_algorithms_enabled": false,
+    "model_deterministic_mode": false,
+    "cross_entropy_loss_fusion_flag_true_does_not_prove_that_kernel_executed": true
+  },
+  "next_step": "Audit and prepare fail-closed deterministic loss/backward qualification using actual worker settings and pinned Bridge validation; preserve exact equality and outcome embargo. Do not claim a particular kernel is responsible or perform an unchanged retry.",
+  "disposition": {
+    "qualification_passed": false,
+    "causal_contrast_computed": false,
+    "post_update_heldout_loss_computed": false,
+    "fresh_acquisition_launched": false,
+    "new_launcher_invocations": 0,
+    "consumed_guard_preserved": true,
+    "implementation_changed_this_turn": false
+  }
+}
