@@ -1,0 +1,28 @@
+{
+  "schema": "m4-minimal-observer-topology-v1",
+  "recorded_at": "2026-10-18",
+  "parent_pipeline_id": 74769312,
+  "child_pipeline_id": 74769382,
+  "generate_job_id": 494462944,
+  "trigger_job_id": 494462945,
+  "logs_before_job_id": 494463542,
+  "eos_job_id": 494463544,
+  "logs_after_job_id": 494463548,
+  "exact_eos_job_name": "basic/m4-eligible-live-duplicate-update-qualification-minimal-observer dgxh100_eos 00 [2 dgxh100_eos]",
+  "source_commit": "20e3b1edf6b5a85afbceca04a7f6b1684c577a1c",
+  "manifest_sha256": "de2ee7b5c1b4437b1d6ed53b9f930a3bf96dca471f31aee780aea3844fab238e",
+  "bridge_protocol_sha256": "bca546a19be0470aef206b11afa5637053dab3744e0a4db42878a4e5c323b7b8",
+  "status_at_authentication": {
+    "generate": "success",
+    "trigger": "running",
+    "child": "running",
+    "logs_before": "running",
+    "eos": "created",
+    "logs_after": "created"
+  },
+  "launcher_invocations_consumed": 1,
+  "prior_guards_reused": false,
+  "automatic_retry": false,
+  "qualification_passed": false,
+  "fresh_acquisition_launched": false
+}
