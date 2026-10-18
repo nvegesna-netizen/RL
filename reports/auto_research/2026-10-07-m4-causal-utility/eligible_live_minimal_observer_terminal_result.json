@@ -1,0 +1,349 @@
+{
+  "schema": "m4-minimal-observer-terminal-result-v1",
+  "recorded_at": "2026-10-18",
+  "parent_pipeline_id": 74769312,
+  "child_pipeline_id": 74769382,
+  "eos_job_id": 494463544,
+  "logs_after_job_id": 494463548,
+  "terminal_statuses": {
+    "parent": "success",
+    "child": "success",
+    "eos": "success",
+    "collector": "success"
+  },
+  "source_commit": "20e3b1edf6b5a85afbceca04a7f6b1684c577a1c",
+  "manifest_sha256": "de2ee7b5c1b4437b1d6ed53b9f930a3bf96dca471f31aee780aea3844fab238e",
+  "protocol_sha256": "a57986017e250fff4140ab3e078e6cc48f1a9a6f2a6a418f9b56c66de860037d",
+  "bridge_protocol_sha256": "bca546a19be0470aef206b11afa5637053dab3744e0a4db42878a4e5c323b7b8",
+  "reference_evidence_sha256": "b57c4ac1e6ba226ce3e8beb6c41e962c4d819e889f5e259cfd2fb3ce74459077",
+  "reference_parent_pipeline_id": 74643360,
+  "reference_eos_job_id": 493556318,
+  "qualification_passed": true,
+  "qualification_status": "PASS_MINIMAL_OBSERVER_DUPLICATE_AND_REFERENCE_EQUALITY",
+  "original_duplicate_gate_independently_recomputed": true,
+  "bridge_gate_independently_recomputed": true,
+  "all_record_bytes_match_traced_counterparts": true,
+  "all_boundary_runtime_metadata_matches_between_processes": true,
+  "evaluation_and_idle_preserve_state_both": true,
+  "deep_trace_absent_from_published_inventory": true,
+  "authenticated_manifest_member_count": 22,
+  "ordinary_result": {
+    "status": "PASS_DUPLICATE_ONE_UPDATE_REPLAY",
+    "replicates": 2,
+    "action": "reward_variance_base",
+    "historical_capsule_excluded": true,
+    "causal_contrast_computed": false,
+    "post_update_heldout_loss_computed": false,
+    "protocol_sha256": "a57986017e250fff4140ab3e078e6cc48f1a9a6f2a6a418f9b56c66de860037d",
+    "records_sha256": {
+      "a": "43d57b27b6dff7ac38d42c5be71e5c222cdb8b889f7db64c12d59d3f07797798",
+      "b": "60490619b68bf1d5fe12db330f2d6f807461111c163fc6a319037ad2f7f65a1a"
+    }
+  },
+  "bridge_result": {
+    "schema": "m4-minimal-observer-comparison-v1",
+    "status": "PASS_MINIMAL_OBSERVER_DUPLICATE_AND_REFERENCE_EQUALITY",
+    "original_duplicate_gate": "PASS_DUPLICATE_ONE_UPDATE_REPLAY",
+    "strict_runtime_matches_reference": true,
+    "worker_hash_only_runtime_exception": true,
+    "cross_instrumentation_full_state_equal": true,
+    "deep_training_trace_enabled": false,
+    "historical_capsule_excluded": true,
+    "causal_contrast_computed": false,
+    "post_update_heldout_loss_computed": false,
+    "bridge_protocol_sha256": "bca546a19be0470aef206b11afa5637053dab3744e0a4db42878a4e5c323b7b8",
+    "reference_sha256": "b57c4ac1e6ba226ce3e8beb6c41e962c4d819e889f5e259cfd2fb3ce74459077",
+    "records_sha256": {
+      "a": "43d57b27b6dff7ac38d42c5be71e5c222cdb8b889f7db64c12d59d3f07797798",
+      "b": "60490619b68bf1d5fe12db330f2d6f807461111c163fc6a319037ad2f7f65a1a"
+    }
+  },
+  "state_before_common": {
+    "finetune": false,
+    "load_optim": true,
+    "load_rng": true,
+    "optimizer_sha256": "d57d60b3fb32a919eb0aea558c5c9bd032fcb7f49c2287003bed72959bd6c594",
+    "optimizer_step": 7,
+    "parameter_sha256": "e0765eb28e40eb7308c7c9b2e936179dc12f5da7deb38bdb467dc0e0de075e9e",
+    "rng_component_sha256": {
+      "cuda": "f9ed3dcf1894b27b1a36f2f603b241f6c97d7c83f5398977ee5c3c67e9dbea38",
+      "numpy": "97d4df31c4457c5582505d80d2b95312de16fc92200d1e0fdef8dcaa8996cecd",
+      "python": "310ade4cd99a3b7306ee3a641e06cb7acc8afefba0f78677ff3f3125ce1a1093",
+      "torch": "852073b5b8f60180d0eecca86df6768a329d0e7e27f31603da4702a5f9d55e77",
+      "tracker": "221bcbf27b990547fe798fb8e051271ade5081cd2be96cb8be765986f7360b46"
+    },
+    "rng_sha256": "8304abec214b17c976fa0db80b0e8af0fd81815b562a09444ebef0fbe9ec0825",
+    "scheduler_num_steps": 224,
+    "scheduler_sha256": "305ec6057df153201fe9a99966959834794b6643f8e537ac420c22d24f6ccf97"
+  },
+  "state_after_common": {
+    "finetune": false,
+    "load_optim": true,
+    "load_rng": true,
+    "optimizer_sha256": "e67af23fe2e101aae04cdc149c0e491cc643e088fee308071fa5c7984585cd27",
+    "optimizer_step": 8,
+    "parameter_sha256": "16c9c352437508d18f1b7abaf03ce8a6a84282b602a5b1a5e4d1fb0861b6fc97",
+    "rng_component_sha256": {
+      "cuda": "f9ed3dcf1894b27b1a36f2f603b241f6c97d7c83f5398977ee5c3c67e9dbea38",
+      "numpy": "97d4df31c4457c5582505d80d2b95312de16fc92200d1e0fdef8dcaa8996cecd",
+      "python": "310ade4cd99a3b7306ee3a641e06cb7acc8afefba0f78677ff3f3125ce1a1093",
+      "torch": "852073b5b8f60180d0eecca86df6768a329d0e7e27f31603da4702a5f9d55e77",
+      "tracker": "87837b9ba040c56b34228d7fb3dccbb9086e040895e064533e6f8384e1fbd259"
+    },
+    "rng_sha256": "8a3fd9d8ef588fe9073bf97f3a94456e0286c11f5e0bab7e27722cc6fa014153",
+    "scheduler_num_steps": 256,
+    "scheduler_sha256": "09a291d8ca32dd5de3c908012fcb4f584d7c7d8b5bb38b7d4238dd2954310918"
+  },
+  "runtime_common": {
+    "callable_origins": {
+      "forward_backward": "/workspace/m4-duplicate-update-repo/nemo_rl/models/megatron/train.py",
+      "microbatch_iterator": "/workspace/m4-duplicate-update-repo/nemo_rl/models/megatron/data.py"
+    },
+    "cudnn_allow_tf32": true,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": true,
+    "deterministic_algorithms": true,
+    "deterministic_warn_only": false,
+    "environment": {
+      "CUBLAS_WORKSPACE_CONFIG": ":4096:8",
+      "CUDA_LAUNCH_BLOCKING": null,
+      "NCCL_ALGO": "Ring",
+      "NVTE_ALLOW_NONDETERMINISTIC_ALGO": "0",
+      "NVTE_FLASH_ATTN": "1",
+      "NVTE_FUSED_ATTN": "1",
+      "NVTE_UNFUSED_ATTN": "1",
+      "OMP_NUM_THREADS": "1",
+      "PYTHONHASHSEED": null
+    },
+    "matmul_allow_tf32": false,
+    "model_modes": {
+      "attention_backend": "AttnBackend.auto",
+      "attention_dropout": "0.0",
+      "bf16": "True",
+      "cross_entropy_loss_fusion": "False",
+      "cuda_graph_impl": "none",
+      "cuda_graph_scope": "None",
+      "deterministic_mode": "True",
+      "fp16": "False",
+      "fp8": "None",
+      "hidden_dropout": "0.0",
+      "recompute_granularity": "None"
+    },
+    "module_origins": {
+      "megatron.bridge.models.conversion.auto_bridge": {
+        "path": "/opt/nemo-rl/3rdparty/Megatron-Bridge-workspace/Megatron-Bridge/src/megatron/bridge/models/conversion/auto_bridge.py",
+        "sha256": "01cd6c3156135352fbd7dace9c3adbded2472bbc55c5e0a97c30477f5723ab25"
+      },
+      "megatron.bridge.training.checkpointing": {
+        "path": "/opt/nemo-rl/3rdparty/Megatron-Bridge-workspace/Megatron-Bridge/src/megatron/bridge/training/checkpointing.py",
+        "sha256": "175a84e0dcd4e57ce9260263c2203b1e6d1817a79d84a3e5ed91c6e3c5e05ee8"
+      },
+      "megatron.core.optimizer": {
+        "path": "/workspace/m4-duplicate-update-repo/3rdparty/Megatron-Bridge-workspace/Megatron-Bridge/3rdparty/Megatron-LM/megatron/core/optimizer/__init__.py",
+        "sha256": "5a657e3f3ad88d1ea6bf3600258cd1e391921b55d88ba055134e958db300ea20"
+      },
+      "megatron.core.optimizer.optimizer": {
+        "path": "/workspace/m4-duplicate-update-repo/3rdparty/Megatron-Bridge-workspace/Megatron-Bridge/3rdparty/Megatron-LM/megatron/core/optimizer/optimizer.py",
+        "sha256": "24609822f7c165c9be9f6e95945c873bf474cdce3ca06600b00b52c5d23b31e4"
+      },
+      "megatron.core.tensor_parallel.random": {
+        "path": "/workspace/m4-duplicate-update-repo/3rdparty/Megatron-Bridge-workspace/Megatron-Bridge/3rdparty/Megatron-LM/megatron/core/tensor_parallel/random.py",
+        "sha256": "c2bc8b53e27f0a883eff360d5ba92071a6a27905ea03035426f4c071d3d036e4"
+      },
+      "nemo_rl.models.megatron.data": {
+        "path": "/workspace/m4-duplicate-update-repo/nemo_rl/models/megatron/data.py",
+        "sha256": "0860a793084f7965ff02112dbb8312da9a340aaf78f4a28946bdc33a9344be8c"
+      },
+      "nemo_rl.models.megatron.setup": {
+        "path": "/workspace/m4-duplicate-update-repo/nemo_rl/models/megatron/setup.py",
+        "sha256": "4945e932b9d5a70faf6698269f10cebdcec132d7606ef8579e50705e754b6ad0"
+      },
+      "nemo_rl.models.megatron.train": {
+        "path": "/workspace/m4-duplicate-update-repo/nemo_rl/models/megatron/train.py",
+        "sha256": "0beefa4b0f4b1b9d5d4b5485866e1048c1364c68f00f87b3e0ba17aa32f98df2"
+      },
+      "nemo_rl.models.policy.workers.megatron_policy_worker": {
+        "path": "/workspace/m4-duplicate-update-repo/nemo_rl/models/policy/workers/megatron_policy_worker.py",
+        "sha256": "160362a38ebe73eec5cfbc76d84355ea4c32f5c8c7aac8be8f4a7c13b461b7e9"
+      },
+      "research.m4_eligible_replay.worker": {
+        "path": "/workspace/m4-duplicate-update-repo/research/m4_eligible_replay/worker.py",
+        "sha256": "385846ac706f71b8070ba4258dbc168f2fdfbf6bfbf67191f829cef0e8b86cba"
+      },
+      "transformer_engine.pytorch": {
+        "path": "/root/.cache/uv/archive-v0/X3Wf-3NX-ai2rUn6/transformer_engine/pytorch/__init__.py",
+        "sha256": "b5b73ae8f37c394b69c3762afd67562a91c8a43bff018d95557d3dcc848c1845"
+      }
+    },
+    "torch_version": "2.11.0+cu130"
+  },
+  "actual_worker_sha256": "385846ac706f71b8070ba4258dbc168f2fdfbf6bfbf67191f829cef0e8b86cba",
+  "slurm": {
+    "job_id": 6275376,
+    "node": "eos0536",
+    "queue_time": "05:53:22",
+    "allocated_duration": "00:13:11",
+    "workload_step_duration": "00:12:34",
+    "state": "COMPLETED",
+    "exit_code": "0:0",
+    "time_limit_seconds": 14400,
+    "deadline": "N/A"
+  },
+  "tests": {
+    "run": 106,
+    "passed": 105,
+    "skipped": 1,
+    "skip_reason": "real MCORE interpreter is checked by full preflight",
+    "actual_full_driver_and_actor_preflight_passed": true,
+    "actual_real_tensor_smokes_passed": true
+  },
+  "evidence": {
+    "environment-preflight.json": {
+      "sha256": "08ebb0b05ee72a2e35f9d6006184866d30c0feef10f8c2360e839069c85f7ed8",
+      "bytes": 1980,
+      "copies_identical": true
+    },
+    "environment-preflight.log": {
+      "sha256": "9c241caad4f2f2021c38f77318a12193a741204708ea5e9d163dbed5c71bade4",
+      "bytes": 11359,
+      "copies_identical": true
+    },
+    "minimal-observer-comparison.json": {
+      "sha256": "817c34994b58055734e09a31f4689e0c7a5ef02904bae49cf134aba0f62d6c9b",
+      "bytes": 787,
+      "copies_identical": true
+    },
+    "qualification-result.json": {
+      "sha256": "e3c5e1014687a4c25f41be67e7ffddf86c6f9e8c26d6b024fe138b3f3a599d2e",
+      "bytes": 449,
+      "copies_identical": true
+    },
+    "ray-layout.json": {
+      "sha256": "3a06d5b00797667b0ecead2eb880c8e0639603519c058db208aa9f401fd611d7",
+      "bytes": 90,
+      "copies_identical": true
+    },
+    "replay-a-execution-boundaries.json": {
+      "sha256": "3513a2db5d527724fb3b8759913fdc3a9f8c006fd16c00dcd0d392317de54121",
+      "bytes": 7232,
+      "copies_identical": true
+    },
+    "replay-a-state-after-eval.json": {
+      "sha256": "534bcab248d966db7ce1edf3b61bee7dbc97f24a248946dffe2ab16816170939",
+      "bytes": 1247,
+      "copies_identical": true
+    },
+    "replay-a-state-before.json": {
+      "sha256": "7d5a9c789000094776a06aaaf65ca0b98be68e827fd7b508f847ce9612eee5f7",
+      "bytes": 1239,
+      "copies_identical": true
+    },
+    "replay-a-state-comparison.json": {
+      "sha256": "4f2447736076b1da4031c0aeadd84471139ea492085d56f029bcb6835aecab8d",
+      "bytes": 3036,
+      "copies_identical": true
+    },
+    "replay-a-state-idle.json": {
+      "sha256": "31e125a5baa40363e9374de9a2a5e24395587af4a9fec0074fe8803c80635499",
+      "bytes": 1235,
+      "copies_identical": true
+    },
+    "replay-a.json": {
+      "sha256": "43d57b27b6dff7ac38d42c5be71e5c222cdb8b889f7db64c12d59d3f07797798",
+      "bytes": 3426,
+      "copies_identical": true
+    },
+    "replay-a.log": {
+      "sha256": "e7d29ff0f310644258e754b5a8b2a4eed7980d57ff1004d813a3ddb8c76dd8d5",
+      "bytes": 36496,
+      "copies_identical": true
+    },
+    "replay-b-execution-boundaries.json": {
+      "sha256": "0aa18ba654eaf0bbb25dcea8f1a912024cbfce8f6531cc87afae7ad36fbef320",
+      "bytes": 7232,
+      "copies_identical": true
+    },
+    "replay-b-state-after-eval.json": {
+      "sha256": "9022fd1e58a56c1ccb504f6b7e59f9672047a1d25a7018be66b1da237c53bf69",
+      "bytes": 1247,
+      "copies_identical": true
+    },
+    "replay-b-state-before.json": {
+      "sha256": "15dfaf45f45b396a99329a4096cfa02b8674a9b6b516f5112e0413c8eab0c298",
+      "bytes": 1239,
+      "copies_identical": true
+    },
+    "replay-b-state-comparison.json": {
+      "sha256": "d5b9f397df4cda3453573f6be8799a8ecd8ee12e0f362d1da778d7940ee29997",
+      "bytes": 3036,
+      "copies_identical": true
+    },
+    "replay-b-state-idle.json": {
+      "sha256": "4f6c36ead585ee56238f0f7b71ca308f07e40433a95445d81920c77dbd6347d2",
+      "bytes": 1235,
+      "copies_identical": true
+    },
+    "replay-b.json": {
+      "sha256": "60490619b68bf1d5fe12db330f2d6f807461111c163fc6a319037ad2f7f65a1a",
+      "bytes": 3426,
+      "copies_identical": true
+    },
+    "replay-b.log": {
+      "sha256": "1c2f4efd57455a716fb311cbd5964ee622072847b29d422276d678f86ba34678",
+      "bytes": 31386,
+      "copies_identical": true
+    },
+    "tests.log": {
+      "sha256": "94584f65994bedc98ca3931458df7a12214c866db72c426b5dd24dc8a7533636",
+      "bytes": 17720,
+      "copies_identical": true
+    },
+    "transport-receipt.json": {
+      "sha256": "2b4b00fc24a1485951451dd294ba2f178377649078901d4c2790da2403b0407a",
+      "bytes": 2306,
+      "copies_identical": true
+    },
+    "transport.log": {
+      "sha256": "e6b86271338faeaef4b2c791c17bbc19479cbbcfe43f7719bbfe10ccd70156b8",
+      "bytes": 67,
+      "copies_identical": true
+    },
+    "artifacts.sha256": {
+      "sha256": "91abead25fe1515ab65676ae58491340b90dc6111fd225f0a892c4164f4e997e",
+      "bytes": 3805,
+      "copies_identical": true
+    }
+  },
+  "job_trace": {
+    "bytes": 37521,
+    "sha256": "6867ad3c28f5943884f6b2c3ebc845f160995f7e5275a25a2728eadecc5e6552"
+  },
+  "guard_sha256": {
+    "eligible-live-duplicate-update-bootstrap-replacement-one-shot-guard.json": "4be1ad78fbf3f9397763b824800f57712ce7a5c8bb05da3c17af5130dd3693c6",
+    "eligible-live-duplicate-update-evaluation-rng-repair-one-shot-guard.json": "a207078ab32e530af1a189944ce2b776b419475e9c8a3ad54d64e8addd79c83a",
+    "eligible-live-duplicate-update-full-environment-one-shot-guard.json": "93d47282ce3114d2b3339961d8d96154fb957ac257992d13998ac93a67e15880",
+    "eligible-live-duplicate-update-one-shot-guard.json": "5bd9a2811c17096778ed42afa9d9381af90bae6af490b081e31e49746f2192c7",
+    "eligible-live-duplicate-update-ray-startup-repair-one-shot-guard.json": "ca5205479c2bb9e66141fa089c59753ed93a93af06ffb32825cf96f71942de61",
+    "eligible-live-duplicate-update-state-diagnostics-one-shot-guard.json": "40cd9f779dc4d94332fc5e9523218451936598bc4df18ac538b1eb25d856c562",
+    "eligible-live-duplicate-update-training-diagnostics-one-shot-guard.json": "3e1b5600b091ef3b41d09aac54d4507d7c2ba16725b410f36550bd22564c6157",
+    "eligible-live-duplicate-update-deterministic-backward-one-shot-guard.json": "b99043725155c11c5924c3964dee9110f254dc9cc8a142282962f2142b13e89e",
+    "eligible-live-minimal-observer-one-shot-guard.json": "111328218a43f6055bf2655dea3d9a378c5d98e99f53be36bf76c05ff980e7ee"
+  },
+  "interpretation": {
+    "duplicate_update_reproducible_without_deep_tracing_in_tested_strict_variant": true,
+    "instrumented_and_minimal_state_transition_equal_in_tested_setting": true,
+    "zero_observation_claimed": false,
+    "original_offending_operator_identified": false,
+    "m4_treatment_effect_estimated": false,
+    "terminal_quality_gain_established": false,
+    "production_performance_established": false
+  },
+  "next_step": "Review and prospectively bind the qualified strict minimal-observer replay variant into the fresh 20-seed capture/replay execution package; preserve the 16-of-20 completion gate, historical exclusion and unchanged endpoint before launching any new acquisition.",
+  "disposition": {
+    "runtime_source_changed": false,
+    "new_launcher_invocations": 0,
+    "fresh_acquisition_launched": false,
+    "causal_contrast_computed": false,
+    "post_update_heldout_loss_computed": false
+  }
+}
