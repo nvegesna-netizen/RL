@@ -1,0 +1,48 @@
+{
+  "base_manifest_sha256": "de2ee7b5c1b4437b1d6ed53b9f930a3bf96dca471f31aee780aea3844fab238e",
+  "clean_room_tests": {
+    "errors": 0,
+    "failures": 0,
+    "run": 132,
+    "skipped": 0
+  },
+  "frozen_design_validation": {
+    "plan_sha256": "5dbe1ec155a9c3e7d57363820625286290f6803c0bd2e47484847ed3980e141e",
+    "runtime_files_checked": 9,
+    "status": "PASS_FROZEN_DESIGN_ONLY"
+  },
+  "gpu_launch_ready": false,
+  "gpu_two_action_replay_qualified": false,
+  "new_eos_launches": 0,
+  "overlay_sha256": "4c73f47fa330a3ab9f3b3ed74c6f40fb079a247d64a66261688c2b6f78971b7e",
+  "qualified_source_overlay_unchanged": true,
+  "recorded_at": "2026-10-18",
+  "schema": "m4-offline-paired-package-receipt-v1",
+  "source_sha256": {
+    "reports/auto_research/2026-10-07-m4-causal-utility/eligible_live_acquisition_v2_plan.json": "5dbe1ec155a9c3e7d57363820625286290f6803c0bd2e47484847ed3980e141e",
+    "reports/auto_research/2026-10-07-m4-causal-utility/eligible_live_decision_causal_protocol.json": "716ba0eb8f980ca5af0ef3d57e2415befc1fb1a315afeb01b9bc326a60341b48",
+    "reports/auto_research/2026-10-07-m4-causal-utility/eligible_live_minimal_observer_terminal_result.json": "6616d16e0b415fc02511e3ea2cdef1832c562eaac127f7ff9fd51e01d7ab2723",
+    "reports/auto_research/2026-10-07-m4-causal-utility/paired_replay_runtime_amendment.json": "f8ab4944062315f6a93f999148f01f08e96bce33e91e0430bdeefd51e901193b",
+    "research/m4_paired_replay/__init__.py": "3e39561fadeab889faebed8a23c929631eba51c5d5baaa2ba4ac35f3d84b9eb6",
+    "research/m4_paired_replay/backend.py": "f710532c63678c77c3931401eaed6bbd8fc382630fa2e2f51e431d7df3cd987d",
+    "research/m4_paired_replay/contracts.py": "e5c605f91caa11d03f57d7f784e70b2d72b56121f87903c560c7dda74eb0a61a",
+    "research/m4_paired_replay/execution.py": "dfd179fbb96351d001a77156ade923b1dce1359c4871710510c47b29d6bdd8fb",
+    "research/m4_paired_replay/run_arm.py": "ce4e11a19d7dd9b7e2a9b086de3f54ce91d4615ebf36aba3ce3b071d34294c55",
+    "research/m4_paired_replay/runtime.py": "2199936a0edd639170b3a211fc50b750bc5d362eee3748835b2470131d726f09",
+    "research/m4_paired_replay/test_package.py": "05ab078a221172b6acca1b45ad1404827a27ed8de55d915d98fe21b7155a8ea5",
+    "research/m4_paired_replay/transport.py": "a79e457f25b5d0f6ab04a0694160c57ca21f15e0b8e7a822b34cabe6adbadcdc"
+  },
+  "status": "PASS_OFFLINE_PACKAGE_ONLY",
+  "synthetic_test_outcomes_only": true,
+  "independent_rebuild_byte_identical": true,
+  "checks": {
+    "exact_clean_room_combined_suite": true,
+    "original_frozen_design_revalidated": true,
+    "accepted_qualified_source_unchanged": true,
+    "independent_rebuild_byte_identical": true,
+    "ruff_and_compile_checks": true,
+    "nine_consumed_guards_unchanged": true,
+    "no_network_or_cuda_in_synthetic_tests": true,
+    "no_real_outcomes_loaded": true
+  }
+}

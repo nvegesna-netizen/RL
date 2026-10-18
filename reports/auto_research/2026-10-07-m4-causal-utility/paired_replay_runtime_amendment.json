@@ -1,0 +1,44 @@
+{
+  "schema": "m4-paired-replay-runtime-amendment-v1",
+  "recorded_at": "2026-10-18",
+  "status": "OFFLINE_PREPARED_NOT_GPU_EXECUTION_READY",
+  "scientific_plan_file": "eligible_live_acquisition_v2_plan.json",
+  "scientific_plan_file_sha256": "5dbe1ec155a9c3e7d57363820625286290f6803c0bd2e47484847ed3980e141e",
+  "causal_protocol_sha256": "716ba0eb8f980ca5af0ef3d57e2415befc1fb1a315afeb01b9bc326a60341b48",
+  "minimal_observer_reference_file": "eligible_live_minimal_observer_terminal_result.json",
+  "minimal_observer_reference_sha256": "6616d16e0b415fc02511e3ea2cdef1832c562eaac127f7ff9fd51e01d7ab2723",
+  "qualified_base_manifest_sha256": "de2ee7b5c1b4437b1d6ed53b9f930a3bf96dca471f31aee780aea3844fab238e",
+  "capture_training_scheduler_or_eligibility_changed": false,
+  "replay_execution": {
+    "fresh_process_per_arm": true,
+    "strict_runtime_identical_to_minimal_observer_reference": true,
+    "qualified_worker_unchanged": true,
+    "deep_training_trace_enabled": false,
+    "group_membership": "frozen recorded action",
+    "group_order": "serialized frontier order, matching accepted qualification",
+    "updates_per_arm": 1,
+    "pre_and_post_evaluation_state_unchanged": true,
+    "primary_endpoint": "unchanged token-normalized frozen heldout clipped-PG loss",
+    "secondary_endpoint_implementation_complete": false
+  },
+  "logical_sealing": {
+    "cryptographic_encryption_claimed": false,
+    "private_directories_mode": "0700",
+    "private_outcomes_and_logs_mode": "0600",
+    "public_receipts_include_losses": false,
+    "all_required_receipts_and_payload_hashes_before_any_outcome_json_load": true,
+    "node_local_ray_logs_are_outcome_bearing": true,
+    "privileged_manual_access_prevented": false
+  },
+  "remaining_prelaunch_checks": [
+    "Fresh capture classification producer: independently authenticate all twenty evidence records and their terminal EOS sources; metadata alone is not proof.",
+    "Actual new two-action adapter and post-update evaluation must pass on the pinned EOS runtime; CPU synthetic tests do not qualify CUDA execution.",
+    "Checkpoint/version coverage includes the possibility of version-zero optimizer state, which the accepted historical version-seven qualification did not establish.",
+    "Implement and qualify the preregistered secondary measurements or explicitly approve a prospective amendment before acquisition; no silent omission.",
+    "Verify real collector and node-local Ray log export quarantine; local descriptor redirection alone is insufficient.",
+    "Build reviewed capture/replay EOS workload manifests, source receipts, execution lock and new guards before any new acquisition."
+  ],
+  "gpu_launch_enabled": false,
+  "new_eos_launches": 0,
+  "historical_outcomes_opened": false
+}
