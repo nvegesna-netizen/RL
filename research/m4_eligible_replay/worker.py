@@ -124,6 +124,14 @@ class EligibleLiveReplayWorker(MegatronPolicyWorkerImpl):
         """Isolate held-out forwards; delegate actual training without restoration."""
         if self.cfg.get("eligible_replay_deterministic") is True:
             verify_worker(self, torch)
+        if self.cfg.get("eligible_replay_minimal_observer") is True:
+            if (
+                self.cfg.get("eligible_replay_deterministic") is not True
+                or self.cfg.get("eligible_replay_training_trace") is not None
+            ):
+                raise ValueError(
+                    "minimal observer requires strict mode and no training trace"
+                )
         if not eval_mode:
             trace_config = self.cfg.get("eligible_replay_training_trace")
             if trace_config is not None:
@@ -186,6 +194,22 @@ class EligibleLiveReplayWorker(MegatronPolicyWorkerImpl):
                 mbs=mbs,
                 check_dim_skip_keys=check_dim_skip_keys,
             )
+
+    def replay_execution_boundary(self) -> dict[str, Any]:
+        """Read strict runtime modes outside training, without tensor observation."""
+        if self.cfg.get("eligible_replay_minimal_observer") is not True:
+            raise ValueError("minimal observer boundary was not selected")
+        if self.cfg.get("eligible_replay_training_trace") is not None:
+            raise ValueError("minimal observer rejects training trace")
+        verify_worker(self, torch)
+        # Actual backend metadata is optional and needed only in this actor RPC.
+        from nemo_rl.models.policy.workers import megatron_policy_worker as backend
+        from research.m4_eligible_replay.training_trace import runtime_metadata
+
+        return {
+            "training_trace_enabled": False,
+            "runtime": runtime_metadata(self, backend, torch),
+        }
 
     def _pre_load_checkpoint_hook(self, state: Any, model: Any) -> None:
         checkpoint = state.cfg.checkpoint

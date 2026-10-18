@@ -21,6 +21,8 @@ BRIDGE_COMMIT = "573e088c9c6740082c39744e03dc5b009e730ed4"
 NAME = "m4-eligible-live-duplicate-update-qualification"
 CONFIG = "examples/configs/grpo_math_1B_megatron_single_controller_m4_eligible_live_capture.yaml"
 PROTOCOL = "reports/auto_research/2026-10-07-m4-causal-utility/eligible_live_duplicate_update_qualification_protocol.json"
+BRIDGE_PROTOCOL = "reports/auto_research/2026-10-07-m4-causal-utility/eligible_live_minimal_observer_protocol.json"
+REFERENCE = "reports/auto_research/2026-10-07-m4-causal-utility/eligible_live_duplicate_update_deterministic_backward_terminal_result.json"
 
 
 def build(
@@ -36,6 +38,7 @@ def build(
     evaluation_rng_repair: bool = False,
     training_diagnostics: bool = False,
     deterministic_backward: bool = False,
+    minimal_observer: bool = False,
 ) -> dict:
     """Embed hash-bound source and overlays, then test expanded shell syntax."""
     if ray_startup_repair and not full_environment:
@@ -54,6 +57,8 @@ def build(
         raise ValueError(
             "deterministic backward requires the full training diagnostic package"
         )
+    if minimal_observer and not deterministic_backward:
+        raise ValueError("minimal observer requires the strict deterministic package")
     if digest_file(source) != SOURCE_HASH or digest_file(megatron) != MEGATRON_HASH:
         raise ValueError("qualified base archives changed")
     if full_environment:
@@ -66,6 +71,8 @@ def build(
         str(path.relative_to(REPO))
         for path in sorted((REPO / "research/m4_eligible_replay").glob("*.py"))
     ] + [PROTOCOL]
+    if minimal_observer:
+        paths.extend([BRIDGE_PROTOCOL, REFERENCE])
     overlay = {
         name: {
             "sha256": digest_file(REPO / name),
@@ -219,6 +226,24 @@ find "$ASSETS" -maxdepth 1 -type f ! -name artifacts.sha256 -print0 | sort -z | 
                 "analyze_training_trace --require-identical --assets",
             )
         )
+    if minimal_observer:
+        replay_flag = " --training-diagnostics --deterministic-backward --output"
+        analyzer = '"$PYTHON" -m research.m4_eligible_replay.analyze_training_trace --require-identical --assets "$ASSETS" --protocol "@PROTOCOL@"'
+        if script.count(replay_flag) != 1 or script.count(analyzer) != 1:
+            raise ValueError("strict package boundary changed")
+        script = (
+            script.replace(
+                replay_flag, " --deterministic-backward --minimal-observer --output"
+            )
+            .replace(
+                analyzer,
+                '"$PYTHON" -m research.m4_eligible_replay.minimal_observer --assets "$ASSETS" --protocol "@PROTOCOL@" --bridge-protocol "@BRIDGE_PROTOCOL@"',
+            )
+            .replace(
+                "research.m4_eligible_replay.test_deterministic_backward -v",
+                "research.m4_eligible_replay.test_deterministic_backward research.m4_eligible_replay.test_minimal_observer -v",
+            )
+        )
     replacements = {
         "@SOURCE@": base64.b64encode(source.read_bytes()).decode(),
         "@SOURCE_HASH@": SOURCE_HASH,
@@ -227,6 +252,7 @@ find "$ASSETS" -maxdepth 1 -type f ! -name artifacts.sha256 -print0 | sort -z | 
         "@OVERLAY@": json.dumps(overlay, sort_keys=True, separators=(",", ":")),
         "@PROTOCOL@": PROTOCOL,
         "@CONFIG@": CONFIG,
+        "@BRIDGE_PROTOCOL@": BRIDGE_PROTOCOL,
     }
     if full_environment:
         replacements.update(
@@ -286,6 +312,8 @@ find "$ASSETS" -maxdepth 1 -type f ! -name artifacts.sha256 -print0 | sort -z | 
         manifest["spec"]["name"] = NAME + "-training-diagnostics"
     if deterministic_backward:
         manifest["spec"]["name"] = NAME + "-deterministic-backward"
+    if minimal_observer:
+        manifest["spec"]["name"] = NAME + "-minimal-observer"
     with output.open("xb") as stream:
         stream.write(canonical_json(manifest))
     result = {
@@ -319,6 +347,10 @@ find "$ASSETS" -maxdepth 1 -type f ! -name artifacts.sha256 -print0 | sort -z | 
         result["training_diagnostics"] = True
     if deterministic_backward:
         result["deterministic_backward"] = True
+    if minimal_observer:
+        result["minimal_observer"] = True
+        result["training_diagnostics"] = False
+        result["bridge_protocol_sha256"] = digest_file(REPO / BRIDGE_PROTOCOL)
     return result
 
 
@@ -335,6 +367,7 @@ def main() -> None:
     parser.add_argument("--evaluation-rng-repair", action="store_true")
     parser.add_argument("--training-diagnostics", action="store_true")
     parser.add_argument("--deterministic-backward", action="store_true")
+    parser.add_argument("--minimal-observer", action="store_true")
     args = parser.parse_args()
     print(
         json.dumps(
@@ -350,6 +383,7 @@ def main() -> None:
                 evaluation_rng_repair=args.evaluation_rng_repair,
                 training_diagnostics=args.training_diagnostics,
                 deterministic_backward=args.deterministic_backward,
+                minimal_observer=args.minimal_observer,
             ),
             indent=2,
             sort_keys=True,

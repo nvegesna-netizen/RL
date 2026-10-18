@@ -1,0 +1,13 @@
+{
+  "schema": "m4-minimal-observer-launch-authorization-v1",
+  "recorded_at": "2026-10-18",
+  "user_authorization": "do it",
+  "scope": "One minimal-observer strict deterministic duplicate comparator engineering qualification; two fresh one-update processes; no treatment contrast or post-update held-out loss.",
+  "manifest_sha256": "de2ee7b5c1b4437b1d6ed53b9f930a3bf96dca471f31aee780aea3844fab238e",
+  "bridge_protocol_sha256": "bca546a19be0470aef206b11afa5637053dab3744e0a4db42878a4e5c323b7b8",
+  "maximum_launcher_invocations": 1,
+  "automatic_retry": false,
+  "fresh_acquisition_authorized": false,
+  "original_gates_weakened": false,
+  "prior_guards_reused": false
+}

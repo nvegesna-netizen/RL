@@ -87,6 +87,51 @@ class DeterministicShellTests(unittest.TestCase):
                 )
             )
 
+    def minimal_shell(self) -> str:
+        return (
+            self.shell()
+            .replace(
+                "--training-diagnostics --deterministic-backward --output",
+                "--deterministic-backward --minimal-observer --output",
+            )
+            .replace(
+                "research.m4_eligible_replay.test_deterministic_backward -v",
+                "research.m4_eligible_replay.test_deterministic_backward research.m4_eligible_replay.test_minimal_observer -v",
+            )
+            .replace(
+                "analyze_training_trace --require-identical --assets /assets",
+                "done\n-m research.m4_eligible_replay.minimal_observer --assets /assets\nresult=validate_duplicate_replays(",
+            )
+        )
+
+    def test_minimal_observer_shell(self) -> None:
+        VALIDATE_DETERMINISTIC(self.minimal_shell(), minimal_observer=True)
+
+    def test_minimal_deep_trace_rejected(self) -> None:
+        with self.assertRaisesRegex(ValueError, "deep tracing"):
+            VALIDATE_DETERMINISTIC(
+                self.minimal_shell() + " --training-diagnostics ", minimal_observer=True
+            )
+
+    def test_minimal_cross_reference_gate_required(self) -> None:
+        with self.assertRaisesRegex(ValueError, "gate missing"):
+            VALIDATE_DETERMINISTIC(
+                self.minimal_shell().replace(
+                    "-m research.m4_eligible_replay.minimal_observer --assets",
+                    "removed",
+                ),
+                minimal_observer=True,
+            )
+
+    def test_minimal_tests_required(self) -> None:
+        with self.assertRaisesRegex(ValueError, "tests missing"):
+            VALIDATE_DETERMINISTIC(
+                self.minimal_shell().replace(
+                    " research.m4_eligible_replay.test_minimal_observer -v", " -v"
+                ),
+                minimal_observer=True,
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

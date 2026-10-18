@@ -61,14 +61,23 @@ def run(
     state_diagnostics_dir: Path | None = None,
     training_diagnostics: bool = False,
     deterministic_backward: bool = False,
+    minimal_observer: bool = False,
 ) -> dict[str, Any]:
     """Cover all setup failures with Ray cleanup and validate the socket budget."""
     if replicate not in ("a", "b"):
         raise ValueError("wrong qualification replicate")
     if training_diagnostics and state_diagnostics_dir is None:
         raise ValueError("training diagnostics requires a persistent state directory")
+    if minimal_observer and (
+        not deterministic_backward
+        or training_diagnostics
+        or state_diagnostics_dir is None
+    ):
+        raise ValueError(
+            "minimal observer requires strict mode, boundary directory and no training diagnostics"
+        )
     if deterministic_backward:
-        if not training_diagnostics:
+        if not training_diagnostics and not minimal_observer:
             raise ValueError(
                 "deterministic qualification requires training diagnostics"
             )
@@ -96,6 +105,7 @@ def run(
             state_diagnostics_dir=state_diagnostics_dir,
             training_diagnostics=training_diagnostics,
             deterministic_backward=deterministic_backward,
+            minimal_observer=minimal_observer,
         )
 
 
@@ -109,6 +119,7 @@ def _run(
     state_diagnostics_dir: Path | None = None,
     training_diagnostics: bool = False,
     deterministic_backward: bool = False,
+    minimal_observer: bool = False,
 ) -> dict[str, Any]:
     """Restore, forward-evaluate withheld data, and update only the comparator."""
     protocol = json.loads(protocol_path.read_bytes())
@@ -172,6 +183,10 @@ def _run(
     config.policy["megatron_cfg"]["train_iters"] = 64
     if deterministic_backward:
         config.policy["eligible_replay_deterministic"] = True
+    if minimal_observer:
+        if config.policy.get("eligible_replay_training_trace") is not None:
+            raise ValueError("minimal observer rejects configured training trace")
+        config.policy["eligible_replay_minimal_observer"] = True
     if training_diagnostics:
         if state_diagnostics_dir is None:
             raise ValueError(
@@ -256,6 +271,13 @@ def _run(
             return states[0]
 
         before = snapshot()
+        execution_before = None
+        if minimal_observer:
+            execution_before = policy.run_all_workers_single_data(
+                "replay_execution_boundary"
+            )
+            if len(execution_before) != 1:
+                raise ValueError("expected one execution boundary")
 
         def record_state(stage: str, states: dict[str, dict]) -> None:
             if state_diagnostics_dir is not None:
@@ -294,6 +316,24 @@ def _run(
             metas[1], ClippedPGLossFn(config.loss_fn), eval_mode=False, gbs=32, mbs=1
         )
         after = snapshot()
+        if minimal_observer:
+            execution_after = policy.run_all_workers_single_data(
+                "replay_execution_boundary"
+            )
+            if len(execution_after) != 1:
+                raise ValueError("expected one execution boundary")
+            boundary = {
+                "schema": "m4-minimal-observer-boundaries-v1",
+                "replicate": replicate,
+                "protocol_sha256": digest_file(protocol_path),
+                "capsule_manifest_sha256": source["manifest_sha256"],
+                "before": execution_before[0],
+                "after": execution_after[0],
+            }
+            with (
+                state_diagnostics_dir / f"replay-{replicate}-execution-boundaries.json"
+            ).open("xb") as stream:
+                stream.write(canonical_json(boundary))
         if (
             after["optimizer_step"] - before_update["optimizer_step"] != 1
             or after["scheduler_num_steps"] - before_update["scheduler_num_steps"] != 32
@@ -351,6 +391,7 @@ def main() -> None:
     parser.add_argument("--state-diagnostics-dir", type=Path)
     parser.add_argument("--training-diagnostics", action="store_true")
     parser.add_argument("--deterministic-backward", action="store_true")
+    parser.add_argument("--minimal-observer", action="store_true")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     result = run(
@@ -362,6 +403,7 @@ def main() -> None:
         state_diagnostics_dir=args.state_diagnostics_dir,
         training_diagnostics=args.training_diagnostics,
         deterministic_backward=args.deterministic_backward,
+        minimal_observer=args.minimal_observer,
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     with args.output.open("xb") as stream:

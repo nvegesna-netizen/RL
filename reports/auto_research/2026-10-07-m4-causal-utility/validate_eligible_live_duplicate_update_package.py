@@ -37,18 +37,47 @@ def validate_repaired_shell(script: str) -> None:
         raise ValueError("fresh-process duplicate replay loop changed")
 
 
-def validate_deterministic_shell(script: str) -> None:
+def validate_deterministic_shell(
+    script: str, *, minimal_observer: bool = False
+) -> None:
     """Require exact controls before the first Python process and one replay flag."""
     first_python = script.index('"$PYTHON" - "$RUN_REPO"')
     for name, value in {MARKER: "1", **REQUIRED_ENV}.items():
         control = f"export {name}={value}\n"
         if script.count(control) != 1 or script.index(control) >= first_python:
             raise ValueError("deterministic environment missing, duplicated or late")
-    if script.count(" --deterministic-backward --output") != 1:
+    flag = (
+        " --deterministic-backward --minimal-observer --output"
+        if minimal_observer
+        else " --deterministic-backward --output"
+    )
+    if script.count(flag) != 1:
         raise ValueError("deterministic replay flag missing or duplicated")
-    if " research.m4_eligible_replay.test_deterministic_backward -v" not in script:
+    if " research.m4_eligible_replay.test_deterministic_backward " not in script:
         raise ValueError("deterministic tests missing from runtime gate")
-    if script.count("analyze_training_trace --require-identical --assets") != 1:
+    if minimal_observer:
+        if (
+            " --training-diagnostics " in script
+            or "analyze_training_trace --" in script
+        ):
+            raise ValueError("minimal observer must not enable deep tracing")
+        if (
+            script.count("-m research.m4_eligible_replay.minimal_observer --assets")
+            != 1
+        ):
+            raise ValueError("minimal observer cross-reference gate missing")
+        compare = script.index(
+            "-m research.m4_eligible_replay.minimal_observer --assets"
+        )
+        if (
+            not script.index("done\n")
+            < compare
+            < script.index("result=validate_duplicate_replays(")
+        ):
+            raise ValueError("minimal observer comparison ordering changed")
+        if " research.m4_eligible_replay.test_minimal_observer -v" not in script:
+            raise ValueError("minimal observer tests missing")
+    elif script.count("analyze_training_trace --require-identical --assets") != 1:
         raise ValueError("strict trace identity gate missing or duplicated")
 
 
@@ -62,6 +91,7 @@ def main() -> None:
     parser.add_argument("--evaluation-rng-repair", action="store_true")
     parser.add_argument("--training-diagnostics", action="store_true")
     parser.add_argument("--deterministic-backward", action="store_true")
+    parser.add_argument("--minimal-observer", action="store_true")
     args = parser.parse_args()
     if args.ray_startup_repair and not args.full_environment:
         raise ValueError("Ray startup repair requires full-environment validation")
@@ -77,6 +107,8 @@ def main() -> None:
         raise ValueError(
             "deterministic backward requires training diagnostic validation"
         )
+    if args.minimal_observer and not args.deterministic_backward:
+        raise ValueError("minimal observer requires strict deterministic validation")
     manifest_path = (
         MANIFEST.with_name(
             "m4-eligible-live-duplicate-update-bootstrap-replacement-manifest.json"
@@ -124,14 +156,18 @@ def main() -> None:
         expected_name = (
             "m4-eligible-live-duplicate-update-qualification-deterministic-backward"
         )
+    if args.minimal_observer:
+        expected_name = (
+            "m4-eligible-live-duplicate-update-qualification-minimal-observer"
+        )
     if spec["name"] != expected_name or spec["time_limit"] != 14400:
         raise ValueError("workload identity/runtime changed")
     script = spec["script"].replace("{{", "{").replace("}}", "}")
     if args.deterministic_backward:
-        validate_deterministic_shell(script)
+        validate_deterministic_shell(script, minimal_observer=args.minimal_observer)
     if args.ray_startup_repair:
         validate_repaired_shell(script)
-    if args.training_diagnostics:
+    if args.training_diagnostics and not args.minimal_observer:
         if script.count(" --training-diagnostics ") != 1:
             raise ValueError("training diagnostics invocation missing or duplicated")
         compare = script.index("-m research.m4_eligible_replay.analyze_training_trace ")
@@ -201,6 +237,8 @@ def main() -> None:
             tests.append("research.m4_eligible_replay.test_training_trace")
         if args.deterministic_backward:
             tests.append("research.m4_eligible_replay.test_deterministic_backward")
+        if args.minimal_observer:
+            tests.append("research.m4_eligible_replay.test_minimal_observer")
         test_run = subprocess.run(
             [
                 sys.executable,
