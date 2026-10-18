@@ -23,6 +23,13 @@ from research.m4_eligible_replay.deterministic_backward import (
     verify_worker,
 )
 from research.m4_eligible_replay.training_trace import trace_training
+from research.m4_paired_replay.secondary import zero_step_if_uninitialized
+from research.m4_paired_replay.worker_support import (
+    gradient_probe,
+    heldout_logprobs,
+    parameter_begin,
+    parameter_end,
+)
 
 # Standalone smoke checks have not imported nemo_rl.__init__ yet. Bootstrap
 # the packaged sources before importing either Megatron Core or Bridge.
@@ -105,6 +112,7 @@ class EligibleLiveReplayWorker(MegatronPolicyWorkerImpl):
 
     def __init__(self, config: Any, *args: Any, **kwargs: Any) -> None:
         """Apply deterministic config before the inherited model construction."""
+        self._paired_parameter_snapshot = None
         if config.get("eligible_replay_deterministic") is True:
             with initialize_worker(config):
                 super().__init__(config, *args, **kwargs)
@@ -204,11 +212,22 @@ class EligibleLiveReplayWorker(MegatronPolicyWorkerImpl):
         verify_worker(self, torch)
         # Actual backend metadata is optional and needed only in this actor RPC.
         from nemo_rl.models.policy.workers import megatron_policy_worker as backend
-        from research.m4_eligible_replay.training_trace import runtime_metadata
+        from research.m4_eligible_replay.training_trace import (
+            runtime_metadata,
+            source_identity,
+        )
+
+        runtime = runtime_metadata(self, backend, torch)
+        if self.cfg.get("eligible_replay_paired_integration") is True:
+            for module_name in (
+                "research.m4_paired_replay.secondary",
+                "research.m4_paired_replay.worker_support",
+            ):
+                runtime["module_origins"][module_name] = source_identity(module_name)
 
         return {
             "training_trace_enabled": False,
-            "runtime": runtime_metadata(self, backend, torch),
+            "runtime": runtime,
         }
 
     def _pre_load_checkpoint_hook(self, state: Any, model: Any) -> None:
@@ -216,6 +235,34 @@ class EligibleLiveReplayWorker(MegatronPolicyWorkerImpl):
         if checkpoint.load is None or not checkpoint.load_optim or checkpoint.finetune:
             raise ValueError("qualification requires a real optimizer resume")
         checkpoint.load_rng = True
+
+    def paired_parameter_begin(self) -> None:
+        parameter_begin(self, torch)
+
+    def paired_parameter_end(self) -> float:
+        return parameter_end(self, torch)
+
+    def paired_logprobs_meta(self, meta: Any) -> dict:
+        return heldout_logprobs(
+            self,
+            meta,
+            torch=torch,
+            tracker=tensor_parallel.get_cuda_rng_tracker(),
+            digest=state_digest,
+        )
+
+    def paired_probe_meta(
+        self, meta: Any, loss_fn: Any, output: str, subject: dict
+    ) -> dict:
+        return gradient_probe(
+            self,
+            meta,
+            loss_fn,
+            torch=torch,
+            native_train=super().train,
+            output=output,
+            subject=subject,
+        )
 
     def replay_state(self) -> dict[str, Any]:
         """Return hashes and observed counters rather than parameter/state content."""
@@ -259,7 +306,17 @@ class EligibleLiveReplayWorker(MegatronPolicyWorkerImpl):
                     collect_steps(child)
 
         collect_steps(inner_states)
-        if not steps or len(set(steps)) != 1:
+        if not steps:
+            steps = [
+                zero_step_if_uninitialized(
+                    inner_states,
+                    expected_step=self.cfg.get(
+                        "eligible_replay_expected_optimizer_step"
+                    ),
+                    scheduler_samples=int(self.scheduler.num_steps),
+                )
+            ]
+        if len(set(steps)) != 1:
             raise ValueError("optimizer step counter is missing or inconsistent")
         return {
             "parameter_sha256": self.model_parameter_sha256(),

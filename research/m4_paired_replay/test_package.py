@@ -505,6 +505,7 @@ class TransportTests(FixtureBase):
                 target.write_bytes(self.payload[row["path"]])
             (root / "plan.json").write_bytes(canonical_json(self.plan))
             (root / "captures.json").write_bytes(canonical_json(self.captures))
+            (root / "public-key").write_bytes(b"synthetic test-only public-key fixture")
             (root / "lock.json").write_bytes(
                 canonical_json(
                     {
@@ -535,6 +536,18 @@ class TransportTests(FixtureBase):
                 str(root / "receipt.json"),
                 "--execution-lock",
                 str(root / "lock.json"),
+                "--capture-evidence",
+                str(root / "evidence"),
+                "--gradient-selected",
+                str(root / "gradient-selected"),
+                "--gradient-heldout",
+                str(root / "gradient-heldout"),
+                "--public-key",
+                str(root / "public-key"),
+                "--encrypted-envelope",
+                str(root / "envelope"),
+                "--encrypted-receipt",
+                str(root / "encrypted-receipt"),
             ]
             code = (
                 "import sys,types\n"
@@ -543,7 +556,11 @@ class TransportTests(FixtureBase):
                 "fake.NeMoBackend=fail\n"
                 "sys.modules['research.m4_paired_replay.backend']=fake\n"
                 f"sys.argv={arguments!r}\n"
-                "from research.m4_paired_replay.run_arm import main\nmain()\n"
+                "import research.m4_paired_replay.run_arm as runner\n"
+                "runner.verify_admission_bundle=lambda *args: None\n"
+                "runner.validate_public_key=lambda public_pem: None\n"
+                "runner.create_private_root=lambda path: path.mkdir(mode=0o700,parents=True)\n"
+                "runner.main()\n"
             )
             result = subprocess.run(
                 [sys.executable, "-c", code], capture_output=True, text=True

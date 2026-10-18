@@ -1,0 +1,47 @@
+{
+  "base_manifest_sha256": "de2ee7b5c1b4437b1d6ed53b9f930a3bf96dca471f31aee780aea3844fab238e",
+  "clean_room_tests": {
+    "errors": 0,
+    "failures": 0,
+    "run": 161,
+    "skipped": 0
+  },
+  "custom_worker_prospective_amendment": true,
+  "frozen_design_validation": {
+    "plan_sha256": "5dbe1ec155a9c3e7d57363820625286290f6803c0bd2e47484847ed3980e141e",
+    "runtime_files_checked": 9,
+    "status": "PASS_FROZEN_DESIGN_ONLY"
+  },
+  "gpu_launch_ready": false,
+  "gpu_two_action_replay_qualified": false,
+  "new_eos_launches": 0,
+  "overlay_sha256": "041d1bb9fa2f07da8b53cafe91569d85e0ce5ca191b91a3b5377d426208e4864",
+  "qualified_native_overlay_unchanged": true,
+  "recorded_at": "2026-10-18",
+  "schema": "m4-paired-integration-package-receipt-v1",
+  "source_sha256": {
+    "reports/auto_research/2026-10-07-m4-causal-utility/eligible_live_acquisition_v2_plan.json": "5dbe1ec155a9c3e7d57363820625286290f6803c0bd2e47484847ed3980e141e",
+    "reports/auto_research/2026-10-07-m4-causal-utility/eligible_live_decision_causal_protocol.json": "716ba0eb8f980ca5af0ef3d57e2415befc1fb1a315afeb01b9bc326a60341b48",
+    "reports/auto_research/2026-10-07-m4-causal-utility/eligible_live_minimal_observer_terminal_result.json": "6616d16e0b415fc02511e3ea2cdef1832c562eaac127f7ff9fd51e01d7ab2723",
+    "reports/auto_research/2026-10-07-m4-causal-utility/paired_integration_protocol.json": "9df790d3e1443bbc6e0fa896d061fe09d7dc7d5490b6dffb717c367195039e6d",
+    "reports/auto_research/2026-10-07-m4-causal-utility/paired_replay_runtime_amendment.json": "f8ab4944062315f6a93f999148f01f08e96bce33e91e0430bdeefd51e901193b",
+    "research/m4_eligible_replay/worker.py": "7f7b0b1276b87e3506b00141b188af512bd9dfc8ece0d34be6cd35af91f7313e",
+    "research/m4_paired_replay/__init__.py": "3e39561fadeab889faebed8a23c929631eba51c5d5baaa2ba4ac35f3d84b9eb6",
+    "research/m4_paired_replay/backend.py": "cee434fd084e33bf09bf7d6f72d74f2b1510e6242ef2a4099ef63f0e55b39785",
+    "research/m4_paired_replay/capture_authentication.py": "26e3ff23a304a8fd80223e4112d28c18be3ce7e51c194d8e4eed813f2671b34f",
+    "research/m4_paired_replay/collect_captures.py": "49941d033248d06030439499e95a3ab91ebd7295c7b8fb3e95475a22b8f2e269",
+    "research/m4_paired_replay/contracts.py": "e5c605f91caa11d03f57d7f784e70b2d72b56121f87903c560c7dda74eb0a61a",
+    "research/m4_paired_replay/execution.py": "7921e2ca723a0dae3aeaf3115087cb27977b3f027bee8dd0a169286739c94b41",
+    "research/m4_paired_replay/quarantine.py": "e9c2c0a46be0233aca62e56ad3879516b6094901db4fe757dbf0f3bbdb1d443f",
+    "research/m4_paired_replay/run_arm.py": "c5821cd6fdf23ac9df78428b45a6bc8baaa30000ad3ab894940dba710e8d3e5a",
+    "research/m4_paired_replay/run_probe.py": "aee12f5c3ab48009c2f4f37291277dd806716047e530c1ad6ca63650b495901c",
+    "research/m4_paired_replay/runtime.py": "4601b2e14bc3687f7dfd18d33da5bcc11650b1a444f25e0d8427dde8da231410",
+    "research/m4_paired_replay/secondary.py": "035c38e672cda96cb5cc7f96f22b6f99bbad27504bc74793402ecc225b61d62e",
+    "research/m4_paired_replay/test_integration.py": "e0a56c03efaee7afc62ed83998a081c68f46e4d54a7c3520a10bbb019b5f3ed1",
+    "research/m4_paired_replay/test_package.py": "69d084656b0bd01a95bc0bee36e8079a91d95aa03f6e9852bd803622806279f7",
+    "research/m4_paired_replay/transport.py": "a79e457f25b5d0f6ab04a0694160c57ca21f15e0b8e7a822b34cabe6adbadcdc",
+    "research/m4_paired_replay/worker_support.py": "f92befe16561cac91f24c05523a3702660eb29d5927b7e0f3ee057f95db2666f"
+  },
+  "status": "PASS_OFFLINE_PACKAGE_ONLY",
+  "synthetic_test_outcomes_only": true
+}

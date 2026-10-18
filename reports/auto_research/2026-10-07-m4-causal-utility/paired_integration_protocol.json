@@ -1,0 +1,45 @@
+{
+  "schema": "m4-paired-integration-protocol-v1",
+  "status": "OFFLINE_IMPLEMENTED_NOT_GPU_QUALIFIED",
+  "accepted_reference_sha256": "6616d16e0b415fc02511e3ea2cdef1832c562eaac127f7ff9fd51e01d7ab2723",
+  "frozen_plan_file_sha256": "5dbe1ec155a9c3e7d57363820625286290f6803c0bd2e47484847ed3980e141e",
+  "actor_modules": {
+    "research.m4_eligible_replay.worker": "7f7b0b1276b87e3506b00141b188af512bd9dfc8ece0d34be6cd35af91f7313e",
+    "research.m4_paired_replay.secondary": "035c38e672cda96cb5cc7f96f22b6f99bbad27504bc74793402ecc225b61d62e",
+    "research.m4_paired_replay.worker_support": "f92befe16561cac91f24c05523a3702660eb29d5927b7e0f3ee057f95db2666f"
+  },
+  "primary_native_train_ast_sha256": "8a394e9ed2a56a795a9ba989d64352340e22edeacb79fe387222a8575b2090e5",
+  "secondary_definitions": {
+    "policy_kl": "sampled_K3_pre_update_to_post_update_on_frozen_heldout_tokens",
+    "gradient_dot": "exact_FP64_dot_of_native_preclipping_gradients_in_separate_restored_processes",
+    "probe_norm_absolute_tolerance": 0.00001,
+    "probe_norm_relative_tolerance": 0.0001,
+    "primary_state_equality_tolerance": 0
+  },
+  "privacy": {
+    "public_key_only_on_eos": true,
+    "minimum_cryptography_version": "48.0.1",
+    "cipher": "AES-256-GCM",
+    "key_wrapping": "RSA-3072-OAEP-SHA256",
+    "all_arm_ciphertexts_authenticated_before_private_key_load": true,
+    "private_gradients_exported": false
+  },
+  "version_zero": {
+    "allow_missing_adam_counter_only_if": "explicit expected step zero, genuinely empty Adam state, scheduler samples zero",
+    "bridge_native_metadata_required": true,
+    "legacy_tracker_iteration_zero_override": false
+  },
+  "gates": {
+    "gpu_two_action_replay_qualified": false,
+    "fresh_acquisition_enabled": false,
+    "engineering_eos_launches_this_step": 0
+  },
+  "remaining_qualification_requirements": [
+    "Actual CUDA backend and all secondary diagnostics",
+    "Native full-state version-zero save/restore and one-update transition",
+    "Observed versus unobserved primary post-state bitwise equality",
+    "Collector and trace plaintext-canary exclusion",
+    "Patched cryptography in pinned EOS runtime",
+    "Frozen synthetic engineering manifest, execution lock, and fresh one-shot guard"
+  ]
+}

@@ -14,6 +14,27 @@ from collections.abc import Iterator
 from research.m4_eligible_replay.contracts import digest_file
 from research.m4_paired_replay.contracts import ARMS, admit, members
 from research.m4_paired_replay.execution import execute_arm
+from research.m4_paired_replay.capture_authentication import verify_admission_bundle
+from research.m4_paired_replay.quarantine import export_files, validate_public_key
+
+
+def create_private_root(path: Path) -> None:
+    """Keep plaintext outcomes outside JET asset/log mounts under an owner-only root."""
+    root = Path("/workspace/m4-paired-private")
+    if (
+        not path.is_absolute()
+        or path == root
+        or ".." in path.parts
+        or not path.is_relative_to(root)
+        or any(p.is_symlink() for p in (path, *path.parents))
+    ):
+        raise ValueError(
+            "plaintext replay root must be private and outside collector assets"
+        )
+    root.mkdir(mode=0o700, parents=True, exist_ok=True)
+    if root.stat().st_mode & 0o077:
+        raise ValueError("plaintext replay root is not owner-only")
+    path.mkdir(mode=0o700, parents=True, exist_ok=False)
 
 
 @contextmanager
@@ -53,6 +74,12 @@ def main() -> None:
     parser.add_argument("--private-root", type=Path, required=True)
     parser.add_argument("--receipt", type=Path, required=True)
     parser.add_argument("--execution-lock", type=Path, required=True)
+    parser.add_argument("--capture-evidence", type=Path)
+    parser.add_argument("--gradient-selected", type=Path)
+    parser.add_argument("--gradient-heldout", type=Path)
+    parser.add_argument("--public-key", type=Path)
+    parser.add_argument("--encrypted-envelope", type=Path)
+    parser.add_argument("--encrypted-receipt", type=Path)
     parser.add_argument("--validate-only", action="store_true")
     args = parser.parse_args()
     plan = json.loads(args.plan.read_bytes())
@@ -71,9 +98,24 @@ def main() -> None:
         "plan_file_sha256"
     ) != digest_file(args.plan):
         raise ValueError("fresh paired GPU execution is not unlocked")
-    if args.private_root.exists():
-        raise FileExistsError("private arm root already exists")
-    args.private_root.mkdir(mode=0o700, parents=True)
+    if any(
+        value is None
+        for value in (
+            args.capture_evidence,
+            args.gradient_selected,
+            args.gradient_heldout,
+            args.public_key,
+            args.encrypted_envelope,
+            args.encrypted_receipt,
+        )
+    ):
+        raise ValueError(
+            "authenticated capture proofs, separate gradient probes, and encrypted export required"
+        )
+    verify_admission_bundle(plan, captures, args.capture_evidence)
+    public_pem = args.public_key.read_bytes()
+    validate_public_key(public_pem)
+    create_private_root(args.private_root)
     with private_process_output(args.private_root / "process.log"):
         # CUDA/backend imports occur only after fresh admission and explicit lock.
         try:
@@ -85,6 +127,7 @@ def main() -> None:
                 arm=args.arm,
                 config_path=args.config,
                 expected_manifest_sha256=digest_file(args.capsule / "manifest.json"),
+                gradient_probe_files=(args.gradient_selected, args.gradient_heldout),
             )
             execute_arm(
                 backend=backend,
@@ -95,16 +138,30 @@ def main() -> None:
                 manifest_bytes=manifest_bytes,
                 private_dir=args.private_root / "sealed",
                 receipt_path=args.receipt,
+                measure_secondaries=True,
             )
         except Exception:
             # Preserve runtime diagnostics privately; never echo a metric-bearing
             # backend exception/traceback into the public JET wrapper stream.
             traceback.print_exc()
             raise SystemExit("ARM_FAILED_DETAILS_PRIVATE") from None
+    export_files(
+        private_root=args.private_root,
+        names=["sealed/outcome.json", "process.log"],
+        public_pem=public_pem,
+        identity={
+            "identity": args.identity,
+            "arm": args.arm,
+            "manifest_sha256": digest_file(args.capsule / "manifest.json"),
+            "arm_receipt_sha256": digest_file(args.receipt),
+        },
+        envelope_path=args.encrypted_envelope,
+        receipt_path=args.encrypted_receipt,
+    )
     print(
         json.dumps(
             {
-                "status": "COMPLETE_OUTCOME_SEALED",
+                "status": "COMPLETE_ENCRYPTED_PRIVATE_EXPORT",
                 "identity": args.identity,
                 "arm": args.arm,
             }

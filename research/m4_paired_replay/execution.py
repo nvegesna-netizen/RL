@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import base64
 import hashlib
 import math
 import os
@@ -21,6 +22,8 @@ from research.m4_paired_replay.contracts import (
 )
 from research.m4_paired_replay.runtime import verify_reference_runtime
 from research.m4_eligible_replay.training_trace import observer_cleanup
+from research.m4_paired_replay.quarantine import gated_open
+from research.m4_paired_replay.capture_authentication import verify_admission_bundle
 
 
 RECEIPT_FIELDS = {
@@ -54,6 +57,8 @@ class Backend(Protocol):
     def runtime(self) -> dict: ...
     def evaluate(self) -> float: ...
     def update(self) -> None: ...
+    def begin_measurements(self) -> None: ...
+    def finish_measurements(self) -> dict: ...
     def verify_inputs(self) -> None: ...
     def close(self) -> None: ...
 
@@ -97,6 +102,7 @@ def execute_arm(
     manifest_bytes: bytes,
     private_dir: Path,
     receipt_path: Path,
+    measure_secondaries: bool = False,
 ) -> dict:
     """Write no loss into public receipts; close the backend on every failure.
 
@@ -115,12 +121,15 @@ def execute_arm(
         strict_runtime(runtime_before)
         before = backend.snapshot()
         pre = finite(backend.evaluate())
+        if measure_secondaries:
+            backend.begin_measurements()
         before_update = backend.snapshot()
         if before != before_update:
             raise ValueError("pre-update evaluation mutated state")
         backend.update()
         after = backend.snapshot()
         post = finite(backend.evaluate())
+        secondaries = backend.finish_measurements() if measure_secondaries else None
         after_eval = backend.snapshot()
         validate_transition(before, before_update, after, after_eval, manifest)
         backend.verify_inputs()
@@ -137,6 +146,10 @@ def execute_arm(
             "post_loss": post,
             "change": post - pre,
         }
+        if measure_secondaries:
+            validate_secondaries(secondaries)
+            outcome["schema"] = "m4-paired-private-outcome-v2"
+            outcome["secondaries"] = secondaries
         sealed = private_dir / "outcome.json"
         fd = os.open(sealed, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
         with os.fdopen(fd, "wb") as stream:
@@ -170,22 +183,53 @@ def execute_arm(
     return receipt
 
 
-def release_outcomes(
+def validate_secondaries(row: dict) -> None:
+    """Reject missing or nonfinite registered diagnostics before sealing."""
+    if not isinstance(row, dict) or set(row) != {
+        "parameter_update_l2_norm",
+        "train_batch_gradient_l2_norm",
+        "heldout_gradient_dot_train_gradient",
+        "gradient_clipping",
+        "policy_kl",
+        "definitions",
+    }:
+        raise ValueError("registered secondary endpoints incomplete")
+    for name in (
+        "parameter_update_l2_norm",
+        "train_batch_gradient_l2_norm",
+        "policy_kl",
+    ):
+        if finite(row[name]) < 0:
+            raise ValueError("negative norm or KL diagnostic")
+    finite(row["heldout_gradient_dot_train_gradient"])
+    clipping = row["gradient_clipping"]
+    if set(clipping) != {"threshold", "coefficient", "applied"} or (
+        finite(clipping["threshold"]) < 0
+        or not 0 <= finite(clipping["coefficient"]) <= 1
+        or type(clipping["applied"]) is not bool
+        or clipping["applied"] != (clipping["coefficient"] < 1)
+    ):
+        raise ValueError("invalid gradient clipping diagnostic")
+    if row["definitions"] != {
+        "policy_kl": "sampled_K3_pre_update_to_post_update_on_frozen_heldout_tokens",
+        "gradient_dot": "exact_FP64_dot_of_native_preclipping_gradients_in_separate_restored_processes",
+        "probe_norm_absolute_tolerance": 1e-5,
+        "probe_norm_relative_tolerance": 1e-4,
+    }:
+        raise ValueError("secondary definitions differ")
+
+
+def authenticate_arm_receipts(
     *,
     plan: dict,
     captures: list[dict],
     manifests: dict[str, bytes],
     receipts: dict[tuple[str, str], dict],
-    outcome_paths: dict[tuple[str, str], Path],
-) -> list[dict]:
-    """Authenticate every required arm and file before deserializing any loss."""
+) -> set[tuple[str, str]]:
+    """Authenticate complete arm provenance before file decryption or loss parsing."""
     gate = capture_gate(plan, captures)
     required = {(r["identity"], arm) for r in gate["admitted"] for arm in ARMS}
-    if (
-        set(receipts) != required
-        or set(outcome_paths) != required
-        or set(manifests) != {i for i, _ in required}
-    ):
+    if set(receipts) != required or set(manifests) != {i for i, _ in required}:
         raise ValueError("missing, duplicate or unexpected replay arm")
     for identity, arm in sorted(required):
         _, manifest = admit(plan, captures, identity, manifests[identity])
@@ -230,19 +274,112 @@ def release_outcomes(
             or r["runtime"] != other["runtime"]
         ):
             raise ValueError("paired arm initial state or runtime differs")
+    return required
+
+
+def release_outcomes(
+    *,
+    plan: dict,
+    captures: list[dict],
+    manifests: dict[str, bytes],
+    receipts: dict[tuple[str, str], dict],
+    outcome_paths: dict[tuple[str, str], Path],
+    require_secondaries: bool = False,
+) -> list[dict]:
+    """Authenticate every required arm and file before deserializing any loss."""
+    required = authenticate_arm_receipts(
+        plan=plan, captures=captures, manifests=manifests, receipts=receipts
+    )
+    if set(outcome_paths) != required:
+        raise ValueError("missing, duplicate or unexpected replay arm")
+    payloads = {}
+    for identity, arm in sorted(required):
         if (
             outcome_paths[identity, arm].is_symlink()
             or not 1 <= outcome_paths[identity, arm].stat().st_size <= 8192
         ):
             raise ValueError("sealed outcome path or size invalid")
-        if digest_file(outcome_paths[identity, arm]) != r["outcome_sha256"]:
+        payload = outcome_paths[identity, arm].read_bytes()
+        if (
+            hashlib.sha256(payload).hexdigest()
+            != receipts[identity, arm]["outcome_sha256"]
+        ):
             raise ValueError("sealed outcome hash differs")
+        payloads[identity, arm] = payload
+    return decode_outcomes(payloads, receipts, require_secondaries=require_secondaries)
+
+
+def release_encrypted_outcomes(
+    *,
+    plan: dict,
+    captures: list[dict],
+    evidence_dir: Path,
+    manifests: dict[str, bytes],
+    receipts: dict[tuple[str, str], dict],
+    encrypted_receipts: dict[tuple[str, str], dict],
+    encrypted_paths: dict[tuple[str, str], Path],
+    private_key_path: Path,
+) -> list[dict]:
+    """Open fresh outcomes only after full capture, arm, and ciphertext authentication."""
+    verify_admission_bundle(plan, captures, evidence_dir)
+    required = authenticate_arm_receipts(
+        plan=plan, captures=captures, manifests=manifests, receipts=receipts
+    )
+    identities = {
+        key: {
+            "identity": key[0],
+            "arm": key[1],
+            "manifest_sha256": receipts[key]["manifest_sha256"],
+            "arm_receipt_sha256": hashlib.sha256(
+                canonical_json(receipts[key])
+            ).hexdigest(),
+        }
+        for key in required
+    }
+    bundles = gated_open(
+        encrypted_receipts,
+        encrypted_paths,
+        required=required,
+        expected_identities=identities,
+        private_path=private_key_path,
+    )
+    payloads = {}
+    for key in sorted(required):
+        bundle = json.loads(bundles[key])
+        if (
+            set(bundle) != {"schema", "files"}
+            or bundle["schema"] != "m4-private-file-bundle-v1"
+            or set(bundle["files"]) != {"sealed/outcome.json", "process.log"}
+        ):
+            raise ValueError("encrypted private bundle schema or member list differs")
+        payload = base64.b64decode(
+            bundle["files"]["sealed/outcome.json"], validate=True
+        )
+        if (
+            len(payload) > 8192
+            or hashlib.sha256(payload).hexdigest() != receipts[key]["outcome_sha256"]
+        ):
+            raise ValueError("encrypted outcome and arm receipt differ")
+        payloads[key] = payload
+    return decode_outcomes(payloads, receipts, require_secondaries=True)
+
+
+def decode_outcomes(
+    payloads: dict[tuple[str, str], bytes],
+    receipts: dict[tuple[str, str], dict],
+    *,
+    require_secondaries: bool,
+) -> list[dict]:
+    """Interpret already authenticated private endpoint bytes, never raw artifacts."""
+    required = set(receipts)
+    if set(payloads) != required:
+        raise ValueError("endpoint set differs from authenticated arm receipts")
     # Only the complete successful first pass permits JSON outcome loading.
     opened = {}
     for key in sorted(required):
-        row = json.loads(outcome_paths[key].read_bytes())
+        row = json.loads(payloads[key])
         r = receipts[key]
-        if set(row) != {
+        expected_fields = {
             "schema",
             "identity",
             "arm",
@@ -250,8 +387,15 @@ def release_outcomes(
             "pre_loss",
             "post_loss",
             "change",
-        } or (
-            row["schema"] != "m4-paired-private-outcome-v1"
+        }
+        if row["schema"] == "m4-paired-private-outcome-v2":
+            expected_fields.add("secondaries")
+            validate_secondaries(row["secondaries"])
+        elif require_secondaries:
+            raise ValueError("required registered secondary endpoints absent")
+        if set(row) != expected_fields or (
+            row["schema"]
+            not in {"m4-paired-private-outcome-v1", "m4-paired-private-outcome-v2"}
             or (row["identity"], row["arm"]) != key
             or row["manifest_sha256"] != r["manifest_sha256"]
             or finite(row["change"])
@@ -264,12 +408,14 @@ def release_outcomes(
         base, shield = [opened[identity, arm] for arm in ARMS]
         if abs(base["pre_loss"] - shield["pre_loss"]) > 1e-6:
             raise ValueError("paired pre-update heldout losses differ")
-        result.append(
-            {
-                "identity": identity,
-                "base_change": base["change"],
-                "shield_change": shield["change"],
-                "contrast": shield["change"] - base["change"],
-            }
-        )
+        pair = {
+            "identity": identity,
+            "base_change": base["change"],
+            "shield_change": shield["change"],
+            "contrast": shield["change"] - base["change"],
+        }
+        if "secondaries" in base and "secondaries" in shield:
+            pair["base_secondaries"] = base["secondaries"]
+            pair["shield_secondaries"] = shield["secondaries"]
+        result.append(pair)
     return result

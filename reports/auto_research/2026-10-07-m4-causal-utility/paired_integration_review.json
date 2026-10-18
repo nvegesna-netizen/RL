@@ -1,0 +1,52 @@
+{
+  "schema": "m4-paired-integration-review-v1",
+  "recorded_at": "2026-10-18",
+  "branch": "codex/m4-paired-integration-qualification",
+  "parent_commit": "386b3ab8c",
+  "status": "OFFLINE_VERIFIED_GPU_QUALIFICATION_PENDING",
+  "implemented": [
+    "Authenticated terminal capture classification producer and dispatch-time packet verification, including generator failure without child, independent capture checks, source inventory hashes, and full-window no-eligibility evidence.",
+    "Actual worker RPCs and adapter for parameter-update norm, native gradient norm/clipping, separately restored exact gradient dot products, and pre/post-update heldout K3 policy KL.",
+    "Gradient-only subprocess entrypoint that stops at the native optimizer boundary before any optimizer update; each private gradient binds assignment, manifest, arm, role, and complete restored state.",
+    "Owner-only plaintext staging outside collector asset/log roots; public-key-only encrypted exports for private outcomes and driver logs.",
+    "All-arm capture/provenance/ciphertext authentication before key loading; all decrypted endpoint hashes checked before outcome JSON interpretation; secondaries preserved in released paired records.",
+    "Explicit empty-Adam version-zero interpretation requires expected zero, genuinely empty state, and zero scheduler count. No legacy tracker or Bridge checkpoint implementation override.",
+    "Prospective hash-bound worker/helper amendment; accepted native module origins, strict modes, full-state equality, eligibility, seeds, and primary endpoint retained."
+  ],
+  "verification": {
+    "clean_room_tests": 161,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "local_paired_tests": 55,
+    "minimum_crypto_version": "48.0.1",
+    "accepted_primary_train_ast_unchanged": true,
+    "frozen_capture_training_sources_verified": 9,
+    "consumed_submission_guards_preserved": 9,
+    "scientific_outcomes_accessed": false,
+    "actual_cuda_backend_run": false,
+    "collector_plaintext_exclusion_tested_on_eos": false
+  },
+  "limitations": [
+    "The policy_kl secondary is a K3 pre/post log-probability drift statistic on fixed heldout tokens. Those tokens can be off-policy, so this is not an unbiased KL estimate under the pre-update policy distribution.",
+    "Pure numerical helpers are checked with a small Python stand-in, not real Torch tensors. Backend routing/state tests use fake backends. Actual CUDA behavior is not established by these tests.",
+    "The capture producer authenticates compact independent-analysis records. Fresh workload generation must still emit the new complete-window progress evidence and bind the frozen execution package.",
+    "The current source is a prospective custom-worker amendment, not the already GPU-qualified worker. The previous duplicate-update pass must not be relabeled as qualification of this integration.",
+    "Node-local Ray logs are outside the explicit public export allowlist but the actual EOS collector and trace boundaries still require a plaintext-canary test.",
+    "No reviewed scientific execution lock, new one-shot submission guard, or complete synthetic engineering JET manifest is produced by this offline step."
+  ],
+  "next_engineering_sequence": [
+    "Implement and clean-room validate a separately namespaced synthetic engineering harness with native Bridge-format version-zero checkpoint save/restore; no frozen v2 assignment or historical treatment outcomes.",
+    "Supply patched cryptography in the actual pinned EOS environment and generate local private-key escrow; embed only the public key.",
+    "Freeze the harness, source package, exact manifest, comparator/noninterference gates, collector canary test, and one fresh invocation guard.",
+    "Commit/push the reviewed engineering package, refresh setup_jet.sh, validate inputs, then invoke runllm.py --no_wait exactly once, with spec.time_limit=14400 and no client queue deadline.",
+    "Authenticate terminal EOS/collector evidence before accepting qualification. No automatic retry or fresh scientific acquisition before the qualification gate.",
+    "Only after all engineering gates pass, prepare the frozen twenty-seed cohort; require every capture chain terminal, at least sixteen admitted capsules, and every paired arm authenticated before opening outcomes."
+  ],
+  "scientific_interpretation": "No new M4 efficacy or terminal-quality result. This step improves prospective measurement and outcome-release infrastructure only.",
+  "references": [
+    "https://cryptography.io/en/latest/hazmat/primitives/asymmetric/rsa/",
+    "https://cryptography.io/en/latest/hazmat/primitives/aead/",
+    "https://docs.gitlab.com/api/jobs/"
+  ]
+}
