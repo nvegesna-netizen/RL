@@ -1,0 +1,78 @@
+{
+  "bridges": [
+    {
+      "downstream_pipeline": {
+        "created_at": "2026-10-19T13:15:42.854-07:00",
+        "id": 75097025,
+        "iid": 4838401,
+        "project_id": 70847,
+        "ref": "dlalgo-ci/eos",
+        "sha": "8f5151cf00e02933a9b92772443d62e95b5150ff",
+        "source": "parent_pipeline",
+        "status": "running",
+        "updated_at": "2026-10-19T13:15:53.284-07:00",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/75097025"
+      },
+      "id": 496887774,
+      "name": "trigger",
+      "status": "running"
+    }
+  ],
+  "children": [
+    {
+      "jobs": [
+        {
+          "failure_reason": null,
+          "id": 496890689,
+          "name": "basic/m4-synthetic-paired-v0-engineering dgxh100_eos 00 [3 logs_after]",
+          "status": "created"
+        },
+        {
+          "failure_reason": null,
+          "id": 496890688,
+          "name": "basic/m4-synthetic-paired-v0-engineering dgxh100_eos 00 [2 dgxh100_eos]",
+          "status": "created"
+        },
+        {
+          "failure_reason": null,
+          "id": 496890686,
+          "name": "basic/m4-synthetic-paired-v0-engineering dgxh100_eos 00 [1 logs_before]",
+          "status": "running"
+        }
+      ],
+      "pipeline": {
+        "id": 75097025,
+        "ref": "dlalgo-ci/eos",
+        "sha": "8f5151cf00e02933a9b92772443d62e95b5150ff",
+        "status": "running",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/75097025",
+        "yaml_errors": null
+      }
+    }
+  ],
+  "exact_collector_job_id": 496890689,
+  "exact_eos_job_id": 496890688,
+  "observed_at": "2026-10-19T20:15:56.558572+00:00",
+  "parent": {
+    "id": 75096695,
+    "ref": "dlalgo-ci/eos",
+    "sha": "8f5151cf00e02933a9b92772443d62e95b5150ff",
+    "status": "running",
+    "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/75096695",
+    "yaml_errors": null
+  },
+  "parent_jobs": [
+    {
+      "artifacts_file": {
+        "filename": "scripts-75096695.zip",
+        "size": 36614351
+      },
+      "id": 496887771,
+      "name": "generate",
+      "status": "success"
+    }
+  ],
+  "qualification_passed": false,
+  "schema": "m4-synthetic-async-checkpoint-replacement-topology-v1",
+  "scientific_outcomes_accessed": false
+}
