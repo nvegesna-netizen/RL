@@ -1,0 +1,78 @@
+{
+  "bridges": [
+    {
+      "downstream_pipeline": {
+        "created_at": "2026-10-19T11:40:54.115-07:00",
+        "id": 75076556,
+        "iid": 4838013,
+        "project_id": 70847,
+        "ref": "dlalgo-ci/eos",
+        "sha": "8f5151cf00e02933a9b92772443d62e95b5150ff",
+        "source": "parent_pipeline",
+        "status": "failed",
+        "updated_at": "2026-10-19T12:12:30.523-07:00",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/75076556"
+      },
+      "id": 496708436,
+      "name": "trigger",
+      "status": "failed"
+    }
+  ],
+  "children": [
+    {
+      "jobs": [
+        {
+          "failure_reason": null,
+          "id": 496723914,
+          "name": "basic/m4-synthetic-paired-v0-engineering dgxh100_eos 00 [3 logs_after]",
+          "status": "success"
+        },
+        {
+          "failure_reason": "script_failure",
+          "id": 496723913,
+          "name": "basic/m4-synthetic-paired-v0-engineering dgxh100_eos 00 [2 dgxh100_eos]",
+          "status": "failed"
+        },
+        {
+          "failure_reason": null,
+          "id": 496723912,
+          "name": "basic/m4-synthetic-paired-v0-engineering dgxh100_eos 00 [1 logs_before]",
+          "status": "success"
+        }
+      ],
+      "pipeline": {
+        "id": 75076556,
+        "ref": "dlalgo-ci/eos",
+        "sha": "8f5151cf00e02933a9b92772443d62e95b5150ff",
+        "status": "failed",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/75076556",
+        "yaml_errors": null
+      }
+    }
+  ],
+  "exact_collector_job_id": 496723914,
+  "exact_eos_job_id": 496723913,
+  "observed_at": "2026-10-19T19:51:52.645732+00:00",
+  "parent": {
+    "id": 75074742,
+    "ref": "dlalgo-ci/eos",
+    "sha": "8f5151cf00e02933a9b92772443d62e95b5150ff",
+    "status": "failed",
+    "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/75074742",
+    "yaml_errors": null
+  },
+  "parent_jobs": [
+    {
+      "artifacts_file": {
+        "filename": "scripts-75074742.zip",
+        "size": 36609907
+      },
+      "id": 496708434,
+      "name": "generate",
+      "status": "success"
+    }
+  ],
+  "qualification_passed": false,
+  "schema": "m4-synthetic-preflight-replacement-topology-v1",
+  "scientific_outcomes_accessed": false
+}

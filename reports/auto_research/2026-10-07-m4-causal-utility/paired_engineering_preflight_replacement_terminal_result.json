@@ -1,0 +1,42 @@
+{
+  "additional_retry_launched": false,
+  "all_chains_terminal": true,
+  "archive_sha256": {
+    "collector_archive_sha256": "d04adc45d11b07149af760853585481bd8ecd4a4e50dc56d8f3520e7a8f23051",
+    "eos_archive_sha256": "9195aa8bdf9aab24744442146e51cbe4707dc4d145b0a52d9496533a3a004bcd"
+  },
+  "cause": "Inherited policy.megatron_cfg.checkpoint.async_save=true conflicts with synthetic bootstrap synchronous-only guard",
+  "child_pipeline_id": 75076556,
+  "collector_job_id": 496723914,
+  "collector_verification": {
+    "collector_canary_excluded": true,
+    "failed_stage": "bootstrap",
+    "fresh_acquisition_unlocked": false,
+    "status": "ENGINEERING_RUNTIME_FAILED"
+  },
+  "eos_job_id": 496723913,
+  "error": "ValueError: synthetic bootstrap requires native synchronous checkpoint save",
+  "failed_stage": "bootstrap",
+  "guard_sha256": "8c16ece8fb4888255c844bb618e48b989bb30e7ab850017e9467d401532ebebe",
+  "inherited_config": "examples/configs/grpo_math_1B.yaml",
+  "native_model_initialization_reached": false,
+  "new_launcher_invocations": 1,
+  "next_step": "Offline native async-save/finalization contract repair and regression tests; preserve full checkpoint integrity and existing runtime configuration",
+  "parent_pipeline_id": 75074742,
+  "qualification_passed": false,
+  "real_torch_secondary_preflight_passed": true,
+  "schema": "m4-synthetic-preflight-replacement-terminal-v1",
+  "scientific_acquisition_launched": false,
+  "scientific_outcomes_accessed": false,
+  "tests": {
+    "errors": 0,
+    "failures": 0,
+    "run": 178,
+    "skipped": 0
+  },
+  "trace_sha256": {
+    "496723912": "195954d38f0b681370597ac33a387fa18193fddb126e07fab36f4beb82cd9be2",
+    "496723913": "7c89e51183bd74da01ea465bf5b84d99c750765de86b675e8bfffd8f885877e3",
+    "496723914": "268e792a611e544b160e5cde3f0f42abcafdf2b8995e3ed7d292c0c0805070e9"
+  }
+}
