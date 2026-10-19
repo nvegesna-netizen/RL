@@ -10,6 +10,7 @@ import secrets
 import subprocess
 import sys
 import traceback
+from typing import Callable, Protocol
 
 from research.m4_eligible_replay.contracts import canonical_json, digest_file
 from research.m4_eligible_replay.training_trace import observer_cleanup
@@ -40,6 +41,39 @@ from research.m4_paired_replay.run_arm import create_private_root
 
 
 CONFIG = "examples/configs/grpo_math_1B_megatron_single_controller_m4_eligible_live_capture.yaml"
+
+
+class BootstrapCheckpointPolicy(Protocol):
+    """Native policy checkpoint operations used by the synthetic bootstrap."""
+
+    def save_checkpoint(self, weights_path: str, *, optimizer_path: str) -> None: ...
+
+    def finalize_async_save(self) -> None: ...
+
+
+def save_bootstrap_checkpoint(
+    policy: BootstrapCheckpointPolicy,
+    checkpoint: Path,
+    *,
+    load_train_state: Callable[[Path], object],
+) -> None:
+    """Wait for native save completion before authenticating genuine v0 metadata.
+
+    Native finalization blocks for asynchronous saves and is a no-op for
+    synchronous saves. Never inspect metadata or publish a capsule on failure.
+    """
+    policy.save_checkpoint(str(checkpoint), optimizer_path=str(checkpoint))
+    policy.finalize_async_save()
+    metadata = checkpoint / "latest_train_state.pt"
+    if not metadata.is_file():
+        raise ValueError("native Bridge v0 metadata missing")
+    train_state = load_train_state(metadata)
+    if (
+        not isinstance(train_state, dict)
+        or "step" not in train_state
+        or train_state["step"] != 0
+    ):
+        raise ValueError("native bootstrap checkpoint is not version zero")
 
 
 def write_json(path: Path, value: dict) -> None:
@@ -74,10 +108,6 @@ def bootstrap(root: Path) -> None:
     cfg["eligible_replay_paired_integration"] = True
     cfg["eligible_replay_engineering_cold_start"] = True
     cfg["eligible_replay_probe_subject"] = {"identity": IDENTITY}
-    if cfg["megatron_cfg"].get("checkpoint", {}).get("async_save", False):
-        raise ValueError(
-            "synthetic bootstrap requires native synchronous checkpoint save"
-        )
     apply_torch_controls(q.torch, os.environ)
     q.ACTOR_ENVIRONMENT_REGISTRY[q.WORKER] = q.MCORE_EXECUTABLE
     q.set_seed(SEED)
@@ -144,16 +174,13 @@ def bootstrap(root: Path) -> None:
         checkpoint = capsule / "checkpoint/policy/weights"
         checkpoint.mkdir(mode=0o700, parents=True)
         parameter_sha = policy.run_all_workers_single_data("model_parameter_sha256")[0]
-        policy.save_checkpoint(str(checkpoint), optimizer_path=str(checkpoint))
-        policy.finalize_async_save()
-        # Reject the legacy iteration-zero tracker path; no reader monkeypatch.
-        if not (checkpoint / "latest_train_state.pt").is_file():
-            raise ValueError("native Bridge v0 metadata missing")
-        train_state = q.torch.load(
-            checkpoint / "latest_train_state.pt", map_location="cpu", weights_only=False
+        save_bootstrap_checkpoint(
+            policy,
+            checkpoint,
+            load_train_state=lambda path: q.torch.load(
+                path, map_location="cpu", weights_only=False
+            ),
         )
-        if not isinstance(train_state, dict) or int(train_state["step"]) != 0:
-            raise ValueError("native bootstrap checkpoint is not version zero")
         groups = []
         decision = synthetic_decision()
         base = decision["proposals"]["reward_variance_risk"]["proposed_group_ids"]

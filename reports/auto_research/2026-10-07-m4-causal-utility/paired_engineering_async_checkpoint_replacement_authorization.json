@@ -1,0 +1,27 @@
+{
+  "authority": "User explicitly authorizes evidence-based repair then relaunch",
+  "automatic_retry": false,
+  "ci_ref": "dlalgo-ci/eos",
+  "ci_sha_verified": "8f5151cf00e02933a9b92772443d62e95b5150ff",
+  "local_evidence_sha256": {
+    "m4-oars-preflight-megatron-bridge.tar.gz": "1429945d1d50045900e40314fa283fa5f66484e945aad4920da137d7ad2c9313",
+    "paired-engineering-generator-failure/generate-artifacts.zip": "b558314851984d1678120d13c90d4b64a8c2ab9553d7d36a7b67150d360541ac",
+    "paired-engineering-generator-failure/source-runtime-projection.tar.gz": "ed3050a2b6af92eb8ce93dca18aa9e4dec2d69b89cc23a0c757d8270ee20d70e",
+    "paired-engineering-preflight-replacement-terminal/async-checkpoint-repaired-generator-replay.zip": "d6df00961df7197503df40f84d7e92d17e3ebc0bffa6b1a18ae8e5af0200d323"
+  },
+  "manifest_sha256": "e56950ee24ed288f87467400b83cb6a2d45160b78c141d50f4a9fb26c3f07411",
+  "maximum_launcher_invocations": 1,
+  "native_qualification_and_collector_scan_required_before_scientific_cohort": true,
+  "package_receipt_sha256": "f5f0b1fc8ef583924b28dd2233e861a9a28163e83deac2408e6339e27319ac6c",
+  "packaging_tools_sha256": {
+    "reports/auto_research/2026-10-07-m4-causal-utility/submit_paired_engineering_async_checkpoint_replacement_once.py": "019b0f645b77e9767001cdb7d8cb3c2812f57195e0cdf09a33caa46aee58f3f5",
+    "reports/auto_research/2026-10-07-m4-causal-utility/test_paired_engineering_async_checkpoint_replacement_launcher.py": "917a834c44e49938e492b242b14eaa7357094019f484e9d1d8e17ee651f69506"
+  },
+  "protocol_sha256": "65b4e48ce4feddc6ed1fe2907dbaf108ea02c37d20190a19bf6f6ca13e6c5cfd",
+  "public_key_sha256": "60a3e51ae6dd340b09901f40c2544edaaecdda40d2797a2aca796ef3c4a17ae7",
+  "replaces_parent_pipeline_id": 75074742,
+  "schema": "m4-synthetic-async-checkpoint-replacement-authorization-v1",
+  "scientific_acquisition_authorized": false,
+  "stop_after_invocations": 1,
+  "synthetic_only": true
+}

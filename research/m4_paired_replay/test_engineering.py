@@ -13,7 +13,13 @@ import unittest
 import zipfile
 from unittest.mock import patch
 
-from research.m4_paired_replay.engineering import coordinate, execute_stages
+from nemo_rl.utils.config import load_config
+from research.m4_paired_replay.engineering import (
+    CONFIG,
+    coordinate,
+    execute_stages,
+    save_bootstrap_checkpoint,
+)
 from research.m4_paired_replay.engineering_contracts import (
     DOMAIN,
     IDENTITY,
@@ -140,6 +146,107 @@ class SyntheticGateTests(unittest.TestCase):
             self.assertEqual(run.call_count, 1)
             self.assertEqual(result["failed_stage"], "bootstrap")
             self.assertEqual(result["completed_stages"], [])
+
+
+class BootstrapCheckpointTests(unittest.TestCase):
+    def exercise(
+        self,
+        *,
+        asynchronous: bool,
+        state: object,
+        finalize_error: bool = False,
+        missing_metadata: bool = False,
+        save_error: bool = False,
+    ) -> list[str]:
+        events = []
+        with tempfile.TemporaryDirectory() as directory:
+            checkpoint = Path(directory)
+            metadata = checkpoint / "latest_train_state.pt"
+
+            class NativePolicy:
+                def save_checkpoint(
+                    self, weights_path: str, *, optimizer_path: str
+                ) -> None:
+                    events.append("save")
+                    if save_error:
+                        raise RuntimeError("native save failed")
+                    if weights_path != str(checkpoint) or optimizer_path != str(
+                        checkpoint
+                    ):
+                        raise AssertionError("full native checkpoint paths changed")
+                    if not asynchronous and not missing_metadata:
+                        metadata.touch()
+
+                def finalize_async_save(self) -> None:
+                    events.append("finalize")
+                    if finalize_error:
+                        raise RuntimeError("native writer failed")
+                    if asynchronous and not missing_metadata:
+                        metadata.touch()
+
+            def load(path: Path) -> object:
+                events.append("load")
+                self.assertEqual(path, metadata)
+                self.assertTrue(metadata.is_file())
+                return state
+
+            save_bootstrap_checkpoint(NativePolicy(), checkpoint, load_train_state=load)
+        return events
+
+    def test_delayed_async_metadata_waits_for_native_finalization(self) -> None:
+        self.assertEqual(
+            self.exercise(asynchronous=True, state={"step": 0}),
+            ["save", "finalize", "load"],
+        )
+
+    def test_actual_inherited_config_retains_native_async_save(self) -> None:
+        config = load_config(ROOT / CONFIG)
+        self.assertIs(config.policy.megatron_cfg.checkpoint.async_save, True)
+        self.assertEqual(
+            self.exercise(
+                asynchronous=config.policy.megatron_cfg.checkpoint.async_save,
+                state={"step": 0},
+            ),
+            ["save", "finalize", "load"],
+        )
+
+    def test_failed_save_never_advances_to_metadata(self) -> None:
+        with self.assertRaisesRegex(RuntimeError, "native save failed"):
+            self.exercise(asynchronous=True, state={"step": 0}, save_error=True)
+
+    def test_synchronous_save_keeps_same_completion_boundary(self) -> None:
+        self.assertEqual(
+            self.exercise(asynchronous=False, state={"step": 0}),
+            ["save", "finalize", "load"],
+        )
+
+    def test_failed_finalization_never_reads_metadata(self) -> None:
+        with self.assertRaisesRegex(RuntimeError, "native writer failed"):
+            self.exercise(asynchronous=True, state={"step": 0}, finalize_error=True)
+
+    def test_missing_native_metadata_is_rejected(self) -> None:
+        with self.assertRaisesRegex(ValueError, "metadata missing"):
+            self.exercise(asynchronous=True, state={"step": 0}, missing_metadata=True)
+
+    def test_nonzero_missing_or_malformed_version_is_rejected(self) -> None:
+        for state in ({"step": 1}, {"step": 0.5}, {}, [], None):
+            with (
+                self.subTest(state=state),
+                self.assertRaisesRegex(ValueError, "version zero"),
+            ):
+                self.exercise(asynchronous=True, state=state)
+
+    def test_bootstrap_uses_helper_without_rejecting_native_async_config(self) -> None:
+        tree = ast.parse(
+            (ROOT / "research/m4_paired_replay/engineering.py").read_text()
+        )
+        bootstrap = next(
+            n
+            for n in tree.body
+            if isinstance(n, ast.FunctionDef) and n.name == "bootstrap"
+        )
+        self.assertIn("save_bootstrap_checkpoint", ast.unparse(bootstrap))
+        self.assertNotIn("async_save", ast.unparse(bootstrap))
 
 
 class ColdStartHookTests(unittest.TestCase):
