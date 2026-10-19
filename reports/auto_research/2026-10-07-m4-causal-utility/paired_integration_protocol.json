@@ -4,7 +4,7 @@
   "accepted_reference_sha256": "6616d16e0b415fc02511e3ea2cdef1832c562eaac127f7ff9fd51e01d7ab2723",
   "frozen_plan_file_sha256": "5dbe1ec155a9c3e7d57363820625286290f6803c0bd2e47484847ed3980e141e",
   "actor_modules": {
-    "research.m4_eligible_replay.worker": "7f7b0b1276b87e3506b00141b188af512bd9dfc8ece0d34be6cd35af91f7313e",
+    "research.m4_eligible_replay.worker": "f3171c0a3947bab2c96711ae1670e59c744c4ff15768bd8cc7cd291505db81c0",
     "research.m4_paired_replay.secondary": "035c38e672cda96cb5cc7f96f22b6f99bbad27504bc74793402ecc225b61d62e",
     "research.m4_paired_replay.worker_support": "f92befe16561cac91f24c05523a3702660eb29d5927b7e0f3ee057f95db2666f"
   },

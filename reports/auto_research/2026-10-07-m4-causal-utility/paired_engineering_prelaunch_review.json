@@ -1,0 +1,34 @@
+{
+  "schema": "m4-synthetic-engineering-prelaunch-review-v1",
+  "status": "OFFLINE_REVIEWED_ONE_ENGINEERING_INVOCATION",
+  "parent_commit": "24b491f8f",
+  "manifest_sha256": "dd72955d998c16c52a018d1027ec5a72c7f975f932cce765946568a73766b122",
+  "checks": {
+    "clean_room_tests_178_zero_skips": true,
+    "independent_build_identical": true,
+    "jet_schema_and_rendered_shell_validated": true,
+    "native_worker_and_setup_match_accepted_source_archives": true,
+    "native_bridge_iteration_zero_metadata_used": true,
+    "no_checkpoint_reader_override": true,
+    "primary_native_train_ast_unchanged": true,
+    "all_nine_prior_submission_guards_unchanged": true,
+    "scientific_seeds_and_design_unchanged": true,
+    "synthetic_only_domain_rejected_by_scientific_admission": true,
+    "real_torch_secondary_preflight_before_native_bootstrap": true,
+    "normal_backend_rejects_engineering_cold_start": true,
+    "both_action_duplicate_and_observer_state_gates_unchanged": true,
+    "private_key_stays_local_owner_only_git_ignored": true,
+    "public_key_and_locked_linux_crypto_only_uploaded": true,
+    "encrypted_logs_include_failure_diagnostics": true,
+    "terminal_scanner_includes_noninventory_files_gzip_and_nested_zip": true,
+    "maximum_one_launcher_invocation_no_automatic_retry": true,
+    "allocated_limit_14400_no_client_queue_deadline": true,
+    "unrelated_manuscript_changes_excluded": true
+  },
+  "not_yet_verified": [
+    "Actual EOS native version-zero checkpoint save/full-state restore",
+    "Actual native gradient probes, secondaries, both-action duplicates and observer noninterference",
+    "Actual collector and complete job-trace canary exclusion after terminal authentication"
+  ],
+  "interpretation": "No scientific effect estimate or terminal-quality claim. Pipeline success alone cannot satisfy the qualification; terminal native-state and collector checks are required."
+}

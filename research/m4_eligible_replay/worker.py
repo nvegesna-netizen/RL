@@ -108,6 +108,8 @@ class EligibleLiveReplayWorker(MegatronPolicyWorkerImpl):
         if os.environ.get(MARKER) == "1":
             validate_environment(os.environ)
             environment.update({MARKER: "1", **REQUIRED_ENV})
+        if os.environ.get("M4_PAIRED_SYNTHETIC_ENGINEERING") == "1":
+            environment["M4_PAIRED_SYNTHETIC_ENGINEERING"] = "1"
         return resources, environment, kwargs, runtime
 
     def __init__(self, config: Any, *args: Any, **kwargs: Any) -> None:
@@ -232,9 +234,35 @@ class EligibleLiveReplayWorker(MegatronPolicyWorkerImpl):
 
     def _pre_load_checkpoint_hook(self, state: Any, model: Any) -> None:
         checkpoint = state.cfg.checkpoint
+        if self.cfg.get("eligible_replay_engineering_cold_start") is True:
+            if (
+                os.environ.get("M4_PAIRED_SYNTHETIC_ENGINEERING") != "1"
+                or self.cfg.get("eligible_replay_paired_integration") is not True
+                or checkpoint.load is not None
+                or checkpoint.load_optim
+                or checkpoint.pretrained_checkpoint is None
+            ):
+                raise ValueError(
+                    "cold start is restricted to synthetic engineering bootstrap"
+                )
+            # Preserve native pretrained initialization; this is not a resume proof.
+            return
         if checkpoint.load is None or not checkpoint.load_optim or checkpoint.finetune:
             raise ValueError("qualification requires a real optimizer resume")
         checkpoint.load_rng = True
+
+    def paired_engineering_canary(self, canary: str) -> None:
+        """Exercise actor stdout/stderr collection using a synthetic private marker."""
+        subject = self.cfg.get("eligible_replay_probe_subject", {})
+        if (
+            os.environ.get("M4_PAIRED_SYNTHETIC_ENGINEERING") != "1"
+            or not subject.get("identity", "").startswith("engineering-")
+            or len(canary) != 64
+            or any(c not in "0123456789abcdef" for c in canary)
+        ):
+            raise ValueError("invalid synthetic collector canary")
+        print("M4_PRIVATE_CANARY=" + canary, flush=True)
+        os.write(2, ("M4_PRIVATE_CANARY=" + canary + "\n").encode())
 
     def paired_parameter_begin(self) -> None:
         parameter_begin(self, torch)

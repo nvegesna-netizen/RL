@@ -1,0 +1,15 @@
+{
+  "schema": "m4-synthetic-engineering-launch-authorization-v1",
+  "recorded_at": "2026-10-18",
+  "user_request": "do it",
+  "scope": "Exactly one bounded synthetic paired EOS engineering qualification after offline gates pass.",
+  "manifest_sha256": "dd72955d998c16c52a018d1027ec5a72c7f975f932cce765946568a73766b122",
+  "protocol_sha256": "65b4e48ce4feddc6ed1fe2907dbaf108ea02c37d20190a19bf6f6ca13e6c5cfd",
+  "public_key_sha256": "60a3e51ae6dd340b09901f40c2544edaaecdda40d2797a2aca796ef3c4a17ae7",
+  "maximum_launcher_invocations": 1,
+  "automatic_retry": false,
+  "scientific_acquisition_authorized": false,
+  "required_launcher": "runllm.py --no_wait",
+  "allocated_time_limit_seconds": 14400,
+  "client_queue_deadline": null
+}

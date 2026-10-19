@@ -1,0 +1,65 @@
+{
+  "schema": "m4-synthetic-paired-qualification-protocol-v1",
+  "identity": "engineering-synthetic-v0-20261018",
+  "assignment_domain": "m4-paired-synthetic-engineering-v1",
+  "seed": 2026101807,
+  "synthetic_only": true,
+  "maximum_launcher_invocations": 1,
+  "automatic_retry": false,
+  "scientific_acquisition_authorized_by_this_protocol": false,
+  "source_reference_manifest_sha256": "de2ee7b5c1b4437b1d6ed53b9f930a3bf96dca471f31aee780aea3844fab238e",
+  "source_parent_commit": "24b491f8f",
+  "allocation": {
+    "time_limit_seconds": 14400,
+    "client_queue_deadline": null,
+    "required_launcher": "runllm.py --no_wait",
+    "nodes": 1,
+    "policy_workers": 1
+  },
+  "dataset": {
+    "groups": 12,
+    "samples_per_group": 8,
+    "sequence_tokens": 64,
+    "response_tokens": 32,
+    "random_token_ids": [
+      1000,
+      10000
+    ],
+    "source": "synthetically generated; no scientific or historical tensors",
+    "routing_metadata": "manufactured for engineering interface exercise, not an observed M4 eligibility event"
+  },
+  "processes": {
+    "native_v0_bootstrap": 1,
+    "gradient_only_probes": 4,
+    "one_update_primary_processes": 5,
+    "total_model_processes": 10,
+    "primary_labels": [
+      "base-control",
+      "base-a",
+      "base-b",
+      "shield-a",
+      "shield-b"
+    ],
+    "gradient_probes_execute_optimizer_step": false
+  },
+  "gates": [
+    "Native full-state Bridge metadata at iteration zero, no legacy reader override",
+    "Every primary restores parameters, optimizer, scheduler, and RNG identically",
+    "Both observed base replays and the unobserved base produce bitwise equal complete post states",
+    "Both observed alternate-action replays produce bitwise equal complete post states",
+    "All five registered secondary diagnostics complete; each gradient probe bound to exact manifest, arm, role, and full initial state",
+    "Pre/post heldout evaluations and boundary diagnostics preserve complete state",
+    "Both process output streams and actor output exercise a private random canary",
+    "Only encrypted private log/outcome bundles and outcome-free engineering records enter asset exports",
+    "After every job is terminal, authenticate EOS and collector artifacts, decrypt synthetic canary locally, and search collected files plus full job traces for plaintext"
+  ],
+  "privacy": {
+    "public_key_sha256": "60a3e51ae6dd340b09901f40c2544edaaecdda40d2797a2aca796ef3c4a17ae7",
+    "private_key_on_eos": false,
+    "raw_gradient_export": false,
+    "raw_checkpoint_export": false,
+    "crypto_version": "48.0.1",
+    "linux_wheels_from_committed_uv_lock": true
+  },
+  "interpretation": "Engineering compatibility and observer/collector qualification only. No scientific treatment effect, terminal accuracy, eligibility rate, or paper efficacy claim."
+}
