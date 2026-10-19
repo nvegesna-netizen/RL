@@ -1,0 +1,78 @@
+{
+  "bridges": [
+    {
+      "downstream_pipeline": {
+        "created_at": "2026-10-19T13:46:22.940-07:00",
+        "id": 75103586,
+        "iid": 4838647,
+        "project_id": 70847,
+        "ref": "dlalgo-ci/eos",
+        "sha": "8f5151cf00e02933a9b92772443d62e95b5150ff",
+        "source": "parent_pipeline",
+        "status": "running",
+        "updated_at": "2026-10-19T13:46:27.505-07:00",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/75103586"
+      },
+      "id": 496946298,
+      "name": "trigger",
+      "status": "running"
+    }
+  ],
+  "children": [
+    {
+      "jobs": [
+        {
+          "failure_reason": null,
+          "id": 496947977,
+          "name": "basic/m4-synthetic-paired-v0-engineering dgxh100_eos 00 [3 logs_after]",
+          "status": "created"
+        },
+        {
+          "failure_reason": null,
+          "id": 496947976,
+          "name": "basic/m4-synthetic-paired-v0-engineering dgxh100_eos 00 [2 dgxh100_eos]",
+          "status": "created"
+        },
+        {
+          "failure_reason": null,
+          "id": 496947975,
+          "name": "basic/m4-synthetic-paired-v0-engineering dgxh100_eos 00 [1 logs_before]",
+          "status": "running"
+        }
+      ],
+      "pipeline": {
+        "id": 75103586,
+        "ref": "dlalgo-ci/eos",
+        "sha": "8f5151cf00e02933a9b92772443d62e95b5150ff",
+        "status": "running",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/75103586",
+        "yaml_errors": null
+      }
+    }
+  ],
+  "exact_collector_job_id": 496947977,
+  "exact_eos_job_id": 496947976,
+  "observed_at": "2026-10-19T20:46:36.400712+00:00",
+  "parent": {
+    "id": 75103417,
+    "ref": "dlalgo-ci/eos",
+    "sha": "8f5151cf00e02933a9b92772443d62e95b5150ff",
+    "status": "running",
+    "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/75103417",
+    "yaml_errors": null
+  },
+  "parent_jobs": [
+    {
+      "artifacts_file": {
+        "filename": "scripts-75103417.zip",
+        "size": 36619304
+      },
+      "id": 496946297,
+      "name": "generate",
+      "status": "success"
+    }
+  ],
+  "qualification_passed": false,
+  "schema": "m4-synthetic-canary-rpc-replacement-topology-v1",
+  "scientific_outcomes_accessed": false
+}
