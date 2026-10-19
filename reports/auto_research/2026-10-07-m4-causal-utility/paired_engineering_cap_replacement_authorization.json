@@ -1,0 +1,27 @@
+{
+  "authority": "User do it approves one replacement launch under a fresh guard",
+  "automatic_retry": false,
+  "ci_ref": "dlalgo-ci/eos",
+  "ci_sha_verified": "8f5151cf00e02933a9b92772443d62e95b5150ff",
+  "local_evidence_sha256": {
+    "paired-engineering-generator-failure/generate-artifacts.zip": "b558314851984d1678120d13c90d4b64a8c2ab9553d7d36a7b67150d360541ac",
+    "paired-engineering-generator-failure/runtime-projection-generator-replay-confirm.zip": "66fde0678314241d3b8a758e15ebc5b2d1abd359f293e2c39221de96f142770c",
+    "paired-engineering-generator-failure/source-runtime-projection.tar.gz": "ed3050a2b6af92eb8ce93dca18aa9e4dec2d69b89cc23a0c757d8270ee20d70e"
+  },
+  "manifest_sha256": "927d8f6af9d6735a3fdcb53d7060cee7f428137d4d9f5aaf2f1851762e21f50a",
+  "maximum_launcher_invocations": 1,
+  "native_qualification_and_collector_scan_required_before_scientific_cohort": true,
+  "package_receipt_sha256": "1610e45be1aabfb528c4e6ce2bc4048e663e44b4a544760e9a385723cfcea20a",
+  "packaging_tools_sha256": {
+    "reports/auto_research/2026-10-07-m4-causal-utility/build_paired_engineering_manifest.py": "ec0c8ddcd3bf7273328550dc256efbf378ff6d0c3666d12b349f05afe7852c91",
+    "reports/auto_research/2026-10-07-m4-causal-utility/build_paired_source_projection.py": "4e06a3b5d185a0c5c2f6a3c7ef87e799278d3f5a854b25cc601fd3cb7df5c767",
+    "reports/auto_research/2026-10-07-m4-causal-utility/submit_paired_engineering_cap_replacement_once.py": "f5a63e592b6ccb2981d3389f977c29eaa016831af2837cffa161ea728d514ef3"
+  },
+  "protocol_sha256": "65b4e48ce4feddc6ed1fe2907dbaf108ea02c37d20190a19bf6f6ca13e6c5cfd",
+  "public_key_sha256": "60a3e51ae6dd340b09901f40c2544edaaecdda40d2797a2aca796ef3c4a17ae7",
+  "replaces_parent_pipeline_id": 74919539,
+  "schema": "m4-synthetic-cap-replacement-authorization-v1",
+  "scientific_acquisition_authorized": false,
+  "stop_after_invocations": 1,
+  "synthetic_only": true
+}
