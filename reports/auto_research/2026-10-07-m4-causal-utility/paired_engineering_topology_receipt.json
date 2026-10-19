@@ -1,0 +1,19 @@
+{
+  "schema": "m4-synthetic-engineering-topology-v1",
+  "source_commit": "42892f7f4e0239ef7ac3806011d5df64c6ae9469",
+  "manifest_sha256": "dd72955d998c16c52a018d1027ec5a72c7f975f932cce765946568a73766b122",
+  "parent_pipeline_id": 74919539,
+  "parent_ref": "dlalgo-ci/eos",
+  "ci_source_sha": "8f5151cf00e02933a9b92772443d62e95b5150ff",
+  "parent_status": "running",
+  "generate_job_id": 495529354,
+  "generate_status": "success",
+  "trigger_job_id": 495529355,
+  "child_pipeline_id": null,
+  "eos_job_id": null,
+  "collector_job_id": null,
+  "status": "PARENT_AUTHENTICATED_CHILD_PENDING",
+  "synthetic_only": true,
+  "automatic_retry": false,
+  "scientific_acquisition_launched": false
+}
