@@ -14,6 +14,7 @@ import sys
 import tempfile
 
 from build_paired_integration_package import build as build_overlay
+from build_paired_source_projection import validate as validate_projection
 from research.m4_eligible_replay.contracts import canonical_json, digest_file
 from research.m4_eligible_replay.deterministic_backward import MARKER, REQUIRED_ENV
 from research.m4_paired_replay.quarantine import validate_public_key
@@ -26,7 +27,9 @@ BASE_HASH = "de2ee7b5c1b4437b1d6ed53b9f930a3bf96dca471f31aee780aea3844fab238e"
 NAME = "m4-synthetic-paired-v0-engineering"
 
 
-def build(*, materials: Path, output: Path) -> dict:
+def build(
+    *, materials: Path, output: Path, source_projection: Path | None = None
+) -> dict:
     protocol_path = REPORT / "paired_engineering_protocol.json"
     protocol = json.loads(protocol_path.read_bytes())
     public_materials = json.loads(materials.read_bytes())
@@ -58,6 +61,21 @@ def build(*, materials: Path, output: Path) -> dict:
     base = json.loads(base_path.read_bytes())
     old_script = base["spec"]["script"].replace("{{", "{").replace("}}", "}")
     prefix = old_script.split('cd "$RUN_REPO"\n', 1)[0]
+    projection_proof = None
+    if source_projection is not None:
+        original = (
+            SESSION
+            / "m4-eligible-live-v2-liveness-qualification-source-11143be69.tar.gz"
+        )
+        projection_proof = validate_projection(original, source_projection)
+        old_payload = base64.b64encode(original.read_bytes()).decode()
+        new_payload = base64.b64encode(source_projection.read_bytes()).decode()
+        old_hash = projection_proof["original_source_sha256"]
+        if prefix.count(old_payload) != 1 or prefix.count(old_hash) != 1:
+            raise ValueError("accepted source transport boundary changed")
+        prefix = prefix.replace(old_payload, new_payload).replace(
+            old_hash, projection_proof["projected_source_sha256"]
+        )
     overlay_payload = json.dumps(
         frozen["overlay"], sort_keys=True, separators=(",", ":")
     )
@@ -227,6 +245,7 @@ exit "$runtime_rc"
         "scientific_outcomes_accessed": False,
         "new_launcher_invocations": 0,
         "gpu_qualification_passed": False,
+        "source_projection": projection_proof,
     }
 
 
@@ -234,10 +253,15 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--materials", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--source-projection", type=Path)
     args = parser.parse_args()
     print(
         json.dumps(
-            build(materials=args.materials, output=args.output),
+            build(
+                materials=args.materials,
+                output=args.output,
+                source_projection=args.source_projection,
+            ),
             sort_keys=True,
             indent=2,
         )
