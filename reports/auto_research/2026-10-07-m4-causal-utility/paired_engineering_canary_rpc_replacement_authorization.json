@@ -1,0 +1,26 @@
+{
+  "authority": "User requests relaunch after diagnosed canary RPC failure; repair verified before one replacement",
+  "automatic_retry": false,
+  "ci_ref": "dlalgo-ci/eos",
+  "ci_sha_verified": "8f5151cf00e02933a9b92772443d62e95b5150ff",
+  "local_evidence_sha256": {
+    "paired-engineering-async-checkpoint-replacement-terminal/canary-rpc-repaired-generator-replay.zip": "82223e5beb9fbc44e58c7925f0a9e2b87e233d72b6cd143a949c4f6f28010044",
+    "paired-engineering-generator-failure/generate-artifacts.zip": "b558314851984d1678120d13c90d4b64a8c2ab9553d7d36a7b67150d360541ac",
+    "paired-engineering-generator-failure/source-runtime-projection.tar.gz": "ed3050a2b6af92eb8ce93dca18aa9e4dec2d69b89cc23a0c757d8270ee20d70e"
+  },
+  "manifest_sha256": "a784cc2cddf8d871e5faa41b8bd1363a453ab7d188c242a5a6153abc03b95c18",
+  "maximum_launcher_invocations": 1,
+  "native_qualification_and_collector_scan_required_before_scientific_cohort": true,
+  "package_receipt_sha256": "cbd38d77e797420c47eee75c24bdecdf82db5c1e4a79c7aa884243549a72a76a",
+  "packaging_tools_sha256": {
+    "reports/auto_research/2026-10-07-m4-causal-utility/submit_paired_engineering_canary_rpc_replacement_once.py": "955b2c4cb9d9969d89e98bb89b2e3c0bae2381d84bd2a0112432ce95b9c4a93c",
+    "reports/auto_research/2026-10-07-m4-causal-utility/test_paired_engineering_canary_rpc_replacement_launcher.py": "8dec177828f33615b4cd8d5bad8114875fa899d2142f6af99c6e34899dd444df"
+  },
+  "protocol_sha256": "65b4e48ce4feddc6ed1fe2907dbaf108ea02c37d20190a19bf6f6ca13e6c5cfd",
+  "public_key_sha256": "60a3e51ae6dd340b09901f40c2544edaaecdda40d2797a2aca796ef3c4a17ae7",
+  "replaces_parent_pipeline_id": 75096695,
+  "schema": "m4-synthetic-canary-rpc-replacement-authorization-v1",
+  "scientific_acquisition_authorized": false,
+  "stop_after_invocations": 1,
+  "synthetic_only": true
+}

@@ -1,0 +1,46 @@
+{
+  "actor_canary_dispatch_reached": false,
+  "affected_call_lines": [
+    145,
+    290
+  ],
+  "all_chains_terminal": true,
+  "archive_sha256": {
+    "collector_archive_sha256": "3330888bd0f1f429b840e9b7d36d4dddb1abe2e2d10668964cdadbb8d0be4de7",
+    "eos_archive_sha256": "36bd1510e720dfd14595b4e9c26eaa5551fe66e9d243e04fdd98edd804a84aed"
+  },
+  "checkpoint_save_reached": false,
+  "child_pipeline_id": 75097025,
+  "collector_job_id": 496890689,
+  "collector_verification": {
+    "collector_canary_excluded": true,
+    "failed_stage": "bootstrap",
+    "fresh_acquisition_unlocked": false,
+    "status": "ENGINEERING_RUNTIME_FAILED"
+  },
+  "eos_job_id": 496890688,
+  "error": "AssertionError: run_all_workers_single_data rejects positional payloads; use kwargs",
+  "failed_stage": "bootstrap",
+  "local_reproduction_using_actual_dispatcher_ast": true,
+  "native_dispatcher_source_sha256": "79fd04da6d1b0d7146ece33df5abd81f564918b1cae72c4bdcfc7af5f48d6631",
+  "next_repair": "Pass canary=canary at both engineering call sites and add actual native-dispatcher argument-contract regression; preserve all checkpoint/privacy gates",
+  "parent_pipeline_id": 75096695,
+  "privacy_challenge_qualification_complete": false,
+  "qualification_passed": false,
+  "real_torch_secondary_preflight_passed": true,
+  "relaunch_invocations": 0,
+  "schema": "m4-async-checkpoint-replacement-terminal-diagnosis-v1",
+  "scientific_outcomes_accessed": false,
+  "tests": {
+    "errors": 0,
+    "failures": 0,
+    "run": 186,
+    "skipped": 0
+  },
+  "trace_sha256": {
+    "496890686": "4af57ab2587e575a8cc7db96754fec89758ca34d5130ae07a35099829532d5a8",
+    "496890688": "c98c48aa0d9555ddf16663e6b08b4ed0cbd698be6edc2bf5acf068f3ae922769",
+    "496890689": "8ecde6dbaa591ba36aed70bb145c7dd7a1f72245e2090fd7efd7c18f33d63585"
+  },
+  "worker_initialization_and_prepare_for_training_reached": true
+}

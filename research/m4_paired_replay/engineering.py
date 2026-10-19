@@ -142,7 +142,7 @@ def bootstrap(root: Path) -> None:
         cleanup.callback(policy.shutdown)
         policy.prepare_for_training()
         canary = json.loads((root / "canary.json").read_bytes())["canary"]
-        policy.run_all_workers_single_data("paired_engineering_canary", canary)
+        policy.run_all_workers_single_data("paired_engineering_canary", canary=canary)
         generator = q.torch.Generator(device="cpu").manual_seed(SEED)
         ids = q.torch.randint(
             1000, 10000, (96, 64), generator=generator, dtype=q.torch.int64
@@ -287,7 +287,9 @@ def run_model_stage(stage: str, root: Path) -> None:
         )
         cleanup.callback(backend.close)
         canary = json.loads((root / "canary.json").read_bytes())["canary"]
-        backend.policy.run_all_workers_single_data("paired_engineering_canary", canary)
+        backend.policy.run_all_workers_single_data(
+            "paired_engineering_canary", canary=canary
+        )
         runtime = backend.runtime()
         strict_runtime(runtime)
         before = backend.snapshot()

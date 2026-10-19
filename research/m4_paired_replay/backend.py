@@ -268,7 +268,7 @@ class NeMoBackend:
 
     def _heldout_logprobs(self) -> dict:
         rows = self.policy.run_all_workers_single_data(
-            "paired_logprobs_meta", self.metas[0]
+            "paired_logprobs_meta", meta=self.metas[0]
         )
         if len(rows) != 1:
             raise ValueError("held-out logprobs require one worker")
@@ -335,10 +335,10 @@ class NeMoBackend:
         self.runtime()
         rows = self.policy.run_all_workers_single_data(
             "paired_probe_meta",
-            self.metas[1 if role == "selected" else 0],
-            qualified.ClippedPGLossFn(self.config.loss_fn),
-            str(output),
-            {**self.probe_subject, "role": role},
+            meta=self.metas[1 if role == "selected" else 0],
+            loss_fn=qualified.ClippedPGLossFn(self.config.loss_fn),
+            output=str(output),
+            subject={**self.probe_subject, "role": role},
         )
         if len(rows) != 1 or rows[0] != {
             "status": "CAPTURED_NO_OPTIMIZER_UPDATE",

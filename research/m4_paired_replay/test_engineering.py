@@ -249,6 +249,125 @@ class BootstrapCheckpointTests(unittest.TestCase):
         self.assertNotIn("async_save", ast.unparse(bootstrap))
 
 
+class CanaryDispatchContractTests(unittest.TestCase):
+    def setUp(self) -> None:
+        tree = ast.parse((ROOT / "nemo_rl/distributed/worker_groups.py").read_text())
+        function = next(
+            n
+            for n in ast.walk(tree)
+            if isinstance(n, ast.FunctionDef)
+            and n.name == "run_all_workers_single_data"
+        )
+        module = ast.Module(
+            body=[
+                ast.ImportFrom(
+                    module="__future__", names=[ast.alias(name="annotations")], level=0
+                ),
+                function,
+            ],
+            type_ignores=[],
+        )
+        ast.fix_missing_locations(module)
+        namespace = {"ray": SimpleNamespace(put=lambda value: value)}
+        exec(compile(module, "actual_native_worker_group.py", "exec"), namespace)
+        self.native_dispatch = namespace["run_all_workers_single_data"]
+        self.delivered = []
+
+        def remote(*args: object, **kwargs: object) -> str:
+            self.assertEqual(args, ())
+            self.delivered.append(kwargs)
+            return "synthetic-future"
+
+        self.group = SimpleNamespace(
+            workers=[
+                SimpleNamespace(
+                    paired_engineering_canary=SimpleNamespace(remote=remote)
+                )
+            ],
+            sharding_annotations=SimpleNamespace(
+                names=[], get_worker_coords=lambda index: {}
+            ),
+        )
+
+    def test_native_dispatcher_rejects_original_positional_payload(self) -> None:
+        with self.assertRaisesRegex(AssertionError, "Please use kwargs"):
+            self.native_dispatch(self.group, "paired_engineering_canary", "fixture")
+        self.assertEqual(self.delivered, [])
+
+    def test_both_actual_canary_calls_reach_native_keyword_dispatch(self) -> None:
+        tree = ast.parse(
+            (ROOT / "research/m4_paired_replay/engineering.py").read_text()
+        )
+        calls = [
+            n
+            for n in ast.walk(tree)
+            if isinstance(n, ast.Call)
+            and isinstance(n.func, ast.Attribute)
+            and n.func.attr == "run_all_workers_single_data"
+            and n.args
+            and isinstance(n.args[0], ast.Constant)
+            and n.args[0].value == "paired_engineering_canary"
+        ]
+        self.assertEqual(len(calls), 2)
+
+        def dispatch(method: str, *args: object, **kwargs: object) -> list:
+            return self.native_dispatch(self.group, method, *args, **kwargs)
+
+        policy = SimpleNamespace(run_all_workers_single_data=dispatch)
+        for call in calls:
+            result = eval(
+                compile(ast.Expression(body=call), "actual_canary_call.py", "eval"),
+                {
+                    "policy": policy,
+                    "backend": SimpleNamespace(policy=policy),
+                    "canary": "synthetic-argument-contract-fixture",
+                },
+            )
+            self.assertEqual(result, ["synthetic-future"])
+        self.assertEqual(
+            self.delivered, [{"canary": "synthetic-argument-contract-fixture"}] * 2
+        )
+
+    def test_all_paired_runtime_single_data_calls_use_keyword_payloads(self) -> None:
+        for path in (ROOT / "research/m4_paired_replay").glob("*.py"):
+            if path.name.startswith("test_"):
+                continue
+            for call in ast.walk(ast.parse(path.read_text())):
+                if (
+                    isinstance(call, ast.Call)
+                    and isinstance(call.func, ast.Attribute)
+                    and call.func.attr == "run_all_workers_single_data"
+                ):
+                    with self.subTest(file=path.name, line=call.lineno):
+                        self.assertLessEqual(len(call.args), 1)
+
+    def test_paired_rpc_keyword_names_match_actual_worker_signatures(self) -> None:
+        worker = ast.parse((ROOT / "research/m4_eligible_replay/worker.py").read_text())
+        signatures = {
+            node.name: {a.arg for a in node.args.args[1:] + node.args.kwonlyargs}
+            for node in ast.walk(worker)
+            if isinstance(node, ast.FunctionDef) and node.name.startswith("paired_")
+        }
+        for path in (ROOT / "research/m4_paired_replay").glob("*.py"):
+            if path.name.startswith("test_"):
+                continue
+            for call in ast.walk(ast.parse(path.read_text())):
+                if not (
+                    isinstance(call, ast.Call)
+                    and isinstance(call.func, ast.Attribute)
+                    and call.func.attr == "run_all_workers_single_data"
+                    and call.args
+                    and isinstance(call.args[0], ast.Constant)
+                ):
+                    continue
+                name = call.args[0].value
+                if name in signatures:
+                    with self.subTest(file=path.name, method=name):
+                        self.assertTrue(
+                            {k.arg for k in call.keywords} <= signatures[name]
+                        )
+
+
 class ColdStartHookTests(unittest.TestCase):
     def setUp(self) -> None:
         tree = ast.parse((ROOT / "research/m4_eligible_replay/worker.py").read_text())
