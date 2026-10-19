@@ -4,15 +4,16 @@
   "accepted_reference_sha256": "6616d16e0b415fc02511e3ea2cdef1832c562eaac127f7ff9fd51e01d7ab2723",
   "frozen_plan_file_sha256": "5dbe1ec155a9c3e7d57363820625286290f6803c0bd2e47484847ed3980e141e",
   "actor_modules": {
-    "research.m4_eligible_replay.worker": "f3171c0a3947bab2c96711ae1670e59c744c4ff15768bd8cc7cd291505db81c0",
+    "research.m4_eligible_replay.worker": "ba9a740f3f1df723d73bc0dc3db128675941b352317a85a5ac2aab05249a5073",
     "research.m4_paired_replay.secondary": "035c38e672cda96cb5cc7f96f22b6f99bbad27504bc74793402ecc225b61d62e",
-    "research.m4_paired_replay.worker_support": "f92befe16561cac91f24c05523a3702660eb29d5927b7e0f3ee057f95db2666f"
+    "research.m4_paired_replay.worker_support": "f92befe16561cac91f24c05523a3702660eb29d5927b7e0f3ee057f95db2666f",
+    "research.m4_paired_replay.optimizer_zero": "c6cd55b4b3354903a82259b92949546803f73f82bc6bcecffbcf35829448191b"
   },
   "primary_native_train_ast_sha256": "8a394e9ed2a56a795a9ba989d64352340e22edeacb79fe387222a8575b2090e5",
   "secondary_definitions": {
     "policy_kl": "sampled_K3_pre_update_to_post_update_on_frozen_heldout_tokens",
     "gradient_dot": "exact_FP64_dot_of_native_preclipping_gradients_in_separate_restored_processes",
-    "probe_norm_absolute_tolerance": 0.00001,
+    "probe_norm_absolute_tolerance": 1e-05,
     "probe_norm_relative_tolerance": 0.0001,
     "primary_state_equality_tolerance": 0
   },
@@ -25,9 +26,10 @@
     "private_gradients_exported": false
   },
   "version_zero": {
-    "allow_missing_adam_counter_only_if": "explicit expected step zero, genuinely empty Adam state, scheduler samples zero",
+    "allow_missing_adam_counter_only_if": "explicit expected step zero and scheduler zero with genuinely empty Adam state; or engineering-only complete native zero moments and initial master weights with authenticated native train_state step zero; never assign a counter",
     "bridge_native_metadata_required": true,
-    "legacy_tracker_iteration_zero_override": false
+    "legacy_tracker_iteration_zero_override": false,
+    "native_initializer_repair": "TE native initialize_state with its explicit supported signature, all chained leaves, no step; hash-bound weights/RNG/scheduler/group/native-counter invariance and exact native checkpoint extractor"
   },
   "gates": {
     "gpu_two_action_replay_qualified": false,

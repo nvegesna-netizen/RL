@@ -4,12 +4,14 @@ from __future__ import annotations
 
 import ast
 import copy
+import hashlib
 from contextlib import nullcontext
 import json
 import os
 from pathlib import Path
 import tempfile
 from types import SimpleNamespace
+from typing import Callable
 import unittest
 import zipfile
 from unittest.mock import patch
@@ -37,6 +39,224 @@ from research.m4_paired_replay.quarantine import export_files
 from research.m4_eligible_replay.contracts import canonical_json, digest_file
 from research.m4_paired_replay.engineering_terminal import FILES, NAME, verify
 from research.m4_paired_replay.test_package import REPORT, ROOT, fixture
+from research.m4_paired_replay.optimizer_zero import (
+    materialize_native_zero,
+    require_engineering_zero,
+    validate_native_zero,
+)
+
+
+class ZeroTensor:
+    """Scalar tensor fixture; actual Torch/TE is tested only by EOS preflight."""
+
+    def __init__(self, value: float, dtype: str = "bf16") -> None:
+        self.value, self.dtype, self.shape = value, dtype, (1,)
+
+    def detach(self) -> ZeroTensor:
+        return self
+
+    def float(self) -> ZeroTensor:
+        return ZeroTensor(self.value, "fp32")
+
+
+class NativeAdamFixture:
+    def __init__(self, parameter: ZeroTensor, *, remainders: bool = False) -> None:
+        self.param_groups = [{"params": [parameter]}]
+        self.state = {}
+        self.master_weights = True
+        self.store_param_remainders = remainders
+        self.initialized = []
+
+    def initialize_state(self, param: ZeroTensor, store_param_remainders: bool) -> None:
+        self.initialized.append(store_param_remainders)
+        self.state[param] = {
+            "exp_avg": ZeroTensor(0, "fp32"),
+            "exp_avg_sq": ZeroTensor(0, "fp32"),
+            "master_param": ZeroTensor(0, "int16")
+            if store_param_remainders
+            else param.float(),
+        }
+
+    def get_unscaled_state(self, param: ZeroTensor, name: str) -> ZeroTensor:
+        return self.state[param][name]
+
+    def step(self) -> None:
+        raise AssertionError("a zero-state repair must never call step")
+
+
+class NativeZeroOptimizerTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.torch = SimpleNamespace(
+            Tensor=ZeroTensor,
+            bfloat16="bf16",
+            int16="int16",
+            count_nonzero=lambda x: SimpleNamespace(item=lambda: int(x.value != 0)),
+            isfinite=lambda x: SimpleNamespace(
+                all=lambda: SimpleNamespace(item=lambda: True)
+            ),
+            equal=lambda x, y: (
+                (x.value, x.dtype, x.shape) == (y.value, y.dtype, y.shape)
+            ),
+            distributed=SimpleNamespace(get_world_size=lambda: 1),
+        )
+        self.parameter = ZeroTensor(2.5)
+        self.raw = NativeAdamFixture(self.parameter)
+        self.leaf = SimpleNamespace(
+            optimizer=self.raw,
+            config=SimpleNamespace(use_precision_aware_optimizer_no_fp8_or_ds_fp8=True),
+            model_param_group_index_map={self.parameter: (0, 0)},
+        )
+        self.leaf._get_main_param_and_optimizer_states = lambda p: {
+            "param": self.raw.state[p]["master_param"],
+            "exp_avg": self.raw.state[p]["exp_avg"],
+            "exp_avg_sq": self.raw.state[p]["exp_avg_sq"],
+        }
+
+    def initialize(
+        self,
+        leaves: list | None = None,
+        snapshot: Callable[[], dict] = lambda: {"unchanged": True},
+    ) -> dict:
+        return materialize_native_zero(
+            [self.leaf] if leaves is None else leaves,
+            torch=self.torch,
+            adam_class=NativeAdamFixture,
+            snapshot=snapshot,
+        )
+
+    def test_required_native_argument_and_no_step(self) -> None:
+        result = self.initialize()
+        self.assertEqual(self.raw.initialized, [False])
+        self.assertEqual(result["optimizer_updates"], 0)
+        self.assertEqual(result["before"], result["after"])
+        self.assertNotIn("step", self.raw.param_groups[0])
+
+    def test_native_bf16_remainder_initialization(self):
+        self.raw.store_param_remainders = True
+        self.initialize()
+        self.assertEqual(self.raw.initialized, [True])
+        self.assertEqual(self.raw.state[self.parameter]["master_param"].dtype, "int16")
+
+    def test_all_chained_leaves_must_initialize(self) -> None:
+        other = NativeAdamFixture(ZeroTensor(-1))
+        second = SimpleNamespace(
+            optimizer=other,
+            config=self.leaf.config,
+            model_param_group_index_map={},
+        )
+        result = self.initialize([self.leaf, second])
+        self.assertEqual(result["parameter_shards"], 2)
+        self.assertEqual(other.initialized, [False])
+
+    def test_existing_state_or_counter_rejected_before_call(self) -> None:
+        for mutation in ("counter", "state"):
+            self.setUp()
+            if mutation == "counter":
+                self.raw.param_groups[0]["step"] = 0
+            else:
+                self.raw.state[self.parameter] = {"exp_avg": ZeroTensor(1)}
+            with self.assertRaises(ValueError):
+                self.initialize()
+            self.assertEqual(self.raw.initialized, [])
+
+    def test_state_allocation_is_not_repeatable(self) -> None:
+        self.initialize()
+        with self.assertRaises(ValueError):
+            self.initialize()
+
+    def test_weights_rng_scheduler_and_counter_invariance(self) -> None:
+        for field in ("weights", "rng", "scheduler", "counter"):
+            self.setUp()
+            snapshots = iter([{field: 0}, {field: 1}])
+            with self.assertRaisesRegex(ValueError, "changed weights"):
+                self.initialize(snapshot=lambda: next(snapshots))
+
+    def test_nonzero_or_incomplete_restored_state_rejected(self) -> None:
+        for key in ("exp_avg", "exp_avg_sq", "master_param", "missing", "step"):
+            self.setUp()
+            self.initialize()
+            if key == "missing":
+                self.raw.state[self.parameter].pop("master_param")
+            elif key == "step":
+                self.raw.param_groups[0]["step"] = 1
+            else:
+                self.raw.state[self.parameter][key].value = 10
+            with self.assertRaises(ValueError):
+                validate_native_zero(
+                    [self.leaf], torch=self.torch, adam_class=NativeAdamFixture
+                )
+
+    def test_exact_native_checkpoint_extraction_required(self) -> None:
+        self.leaf._get_main_param_and_optimizer_states = lambda p: {"param": p}
+        with self.assertRaisesRegex(ValueError, "extraction incomplete"):
+            self.initialize()
+
+    def test_unknown_initializer_signature_fails_without_call(self) -> None:
+        self.raw.initialize_state = lambda p, unknown: self.fail("must not call")
+        with self.assertRaisesRegex(ValueError, "signature"):
+            self.initialize()
+
+    def test_zero_restore_requires_engineering_and_native_metadata(self) -> None:
+        worker = SimpleNamespace(
+            cfg={
+                "eligible_replay_paired_integration": True,
+                "eligible_replay_expected_optimizer_step": 0,
+            },
+            mcore_state=SimpleNamespace(train_state=SimpleNamespace(step=0)),
+            scheduler=SimpleNamespace(num_steps=0),
+        )
+        with patch.dict(os.environ, {"M4_PAIRED_SYNTHETIC_ENGINEERING": "1"}):
+            require_engineering_zero(worker, self.torch)
+            for step in (1, None):
+                worker.mcore_state.train_state.step = step
+                with self.assertRaises(ValueError):
+                    require_engineering_zero(worker, self.torch)
+            worker.mcore_state.train_state.step = 0
+            worker.scheduler.num_steps = 1
+            with self.assertRaises(ValueError):
+                require_engineering_zero(worker, self.torch)
+        worker.scheduler.num_steps = 0
+        with patch.dict(os.environ, {"M4_PAIRED_SYNTHETIC_ENGINEERING": "0"}):
+            with self.assertRaises(ValueError):
+                require_engineering_zero(worker, self.torch)
+
+    def test_bootstrap_initialization_precedes_full_save(self) -> None:
+        tree = ast.parse(
+            (ROOT / "research/m4_paired_replay/engineering.py").read_text()
+        )
+        bootstrap = next(
+            n
+            for n in ast.walk(tree)
+            if isinstance(n, ast.FunctionDef) and n.name == "bootstrap"
+        )
+        calls = [n for n in ast.walk(bootstrap) if isinstance(n, ast.Call)]
+        init = next(
+            n
+            for n in calls
+            if n.args
+            and isinstance(n.args[0], ast.Constant)
+            and n.args[0].value == "paired_engineering_initialize_optimizer"
+        )
+        save = next(
+            n
+            for n in calls
+            if isinstance(n.func, ast.Name) and n.func.id == "save_bootstrap_checkpoint"
+        )
+        self.assertLess(init.lineno, save.lineno)
+
+    def test_primary_train_ast_remains_unchanged(self) -> None:
+        tree = ast.parse((ROOT / "research/m4_eligible_replay/worker.py").read_text())
+        train = next(
+            n
+            for n in ast.walk(tree)
+            if isinstance(n, ast.FunctionDef) and n.name == "train"
+        )
+        self.assertEqual(
+            hashlib.sha256(
+                ast.dump(train, include_attributes=False).encode()
+            ).hexdigest(),
+            "8a394e9ed2a56a795a9ba989d64352340e22edeacb79fe387222a8575b2090e5",
+        )
 
 
 def synthetic_fixture() -> tuple[dict, dict]:

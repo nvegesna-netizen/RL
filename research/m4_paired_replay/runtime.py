@@ -15,6 +15,7 @@ INTEGRATED_MODULES = (
     "research.m4_eligible_replay.worker",
     "research.m4_paired_replay.secondary",
     "research.m4_paired_replay.worker_support",
+    "research.m4_paired_replay.optimizer_zero",
 )
 
 

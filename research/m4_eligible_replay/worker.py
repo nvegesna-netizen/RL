@@ -24,6 +24,11 @@ from research.m4_eligible_replay.deterministic_backward import (
 )
 from research.m4_eligible_replay.training_trace import trace_training
 from research.m4_paired_replay.secondary import zero_step_if_uninitialized
+from research.m4_paired_replay.optimizer_zero import (
+    materialize_native_zero,
+    require_engineering_zero,
+    validate_native_zero,
+)
 from research.m4_paired_replay.worker_support import (
     gradient_probe,
     heldout_logprobs,
@@ -37,6 +42,7 @@ initialize_bundled_megatron(require_bridge=True)
 
 from megatron.core import tensor_parallel  # noqa: E402
 from megatron.core.optimizer import ChainedOptimizer  # noqa: E402
+from megatron.core.optimizer import Adam  # noqa: E402
 from nemo_rl.models.policy.utils import get_runtime_env_for_policy_worker  # noqa: E402
 from nemo_rl.models.policy.workers.megatron_policy_worker import (  # noqa: E402
     MegatronPolicyWorkerImpl,
@@ -224,6 +230,7 @@ class EligibleLiveReplayWorker(MegatronPolicyWorkerImpl):
             for module_name in (
                 "research.m4_paired_replay.secondary",
                 "research.m4_paired_replay.worker_support",
+                "research.m4_paired_replay.optimizer_zero",
             ):
                 runtime["module_origins"][module_name] = source_identity(module_name)
 
@@ -292,6 +299,54 @@ class EligibleLiveReplayWorker(MegatronPolicyWorkerImpl):
             subject=subject,
         )
 
+    def paired_engineering_initialize_optimizer(self) -> dict:
+        """Allocate native cold-start state without training or changing counters."""
+        require_engineering_zero(self, torch)
+        checkpoint = self.mcore_state.cfg.checkpoint
+        if (
+            self.cfg.get("eligible_replay_engineering_cold_start") is not True
+            or checkpoint.load is not None
+            or checkpoint.load_optim
+        ):
+            raise ValueError("optimizer allocation is restricted to cold bootstrap")
+        optimizers = (
+            self.optimizer.chained_optimizers
+            if isinstance(self.optimizer, ChainedOptimizer)
+            else [self.optimizer]
+        )
+
+        def snapshot() -> dict:
+            return {
+                "parameters": self.model_parameter_sha256(),
+                "scheduler": state_digest(self.scheduler.state_dict()),
+                "native_step": self.mcore_state.train_state.step,
+                "native_train_state": state_digest(
+                    self.mcore_state.train_state.state_dict()
+                ),
+                "groups": state_digest(
+                    [
+                        [
+                            {k: v for k, v in g.items() if k != "params"}
+                            for g in opt.optimizer.param_groups
+                        ]
+                        for opt in optimizers
+                    ]
+                ),
+                "rng": state_digest(
+                    {
+                        "python": random.getstate(),
+                        "numpy": np.random.get_state(),
+                        "torch": torch.get_rng_state(),
+                        "cuda": torch.cuda.get_rng_state(),
+                        "tracker": tensor_parallel.get_cuda_rng_tracker().get_states(),
+                    }
+                ),
+            }
+
+        return materialize_native_zero(
+            optimizers, torch=torch, adam_class=Adam, snapshot=snapshot
+        )
+
     def replay_state(self) -> dict[str, Any]:
         """Return hashes and observed counters rather than parameter/state content."""
         if (
@@ -335,15 +390,20 @@ class EligibleLiveReplayWorker(MegatronPolicyWorkerImpl):
 
         collect_steps(inner_states)
         if not steps:
-            steps = [
-                zero_step_if_uninitialized(
-                    inner_states,
-                    expected_step=self.cfg.get(
-                        "eligible_replay_expected_optimizer_step"
-                    ),
-                    scheduler_samples=int(self.scheduler.num_steps),
-                )
-            ]
+            if any(state["state"] for state in inner_states):
+                require_engineering_zero(self, torch)
+                validate_native_zero(optimizers, torch=torch, adam_class=Adam)
+                steps = [0]
+            else:
+                steps = [
+                    zero_step_if_uninitialized(
+                        inner_states,
+                        expected_step=self.cfg.get(
+                            "eligible_replay_expected_optimizer_step"
+                        ),
+                        scheduler_samples=int(self.scheduler.num_steps),
+                    )
+                ]
         if len(set(steps)) != 1:
             raise ValueError("optimizer step counter is missing or inconsistent")
         return {

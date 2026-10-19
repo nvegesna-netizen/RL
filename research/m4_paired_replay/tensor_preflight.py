@@ -73,8 +73,74 @@ def packing_smoke() -> bool:
 def smoke() -> dict:
     # Torch/CUDA is optional until the EOS-only real-tensor preflight runs.
     import torch
+    from research.m4_eligible_replay.bootstrap import initialize_bundled_megatron
+
+    initialize_bundled_megatron(require_bridge=True)
+    from megatron.core.optimizer import Adam, OptimizerConfig
+    from research.m4_paired_replay.optimizer_zero import materialize_native_zero
 
     packing_ready = packing_smoke()
+    # Exercise the actual installed TE initialization API, with no step/backward.
+    parameter = torch.nn.Parameter(
+        torch.tensor([1.0, -2.0], device="cuda", dtype=torch.bfloat16)
+    )
+    cfg = OptimizerConfig(
+        use_precision_aware_optimizer=True, use_distributed_optimizer=True, bf16=True
+    )
+    raw = Adam(
+        [parameter],
+        lr=0.001,
+        master_weights=True,
+        use_decoupled_grad=True,
+        master_weight_dtype=cfg.main_params_dtype,
+        exp_avg_dtype=cfg.exp_avg_dtype,
+        exp_avg_sq_dtype=cfg.exp_avg_sq_dtype,
+        store_param_remainders=cfg.store_param_remainders,
+    )
+    leaf = SimpleNamespace(
+        optimizer=raw,
+        config=cfg,
+        model_param_group_index_map={parameter: (0, 0)},
+    )
+    from megatron.core.optimizer.distrib_optimizer import DistributedOptimizer
+
+    leaf._get_main_param_and_optimizer_states = lambda p: (
+        DistributedOptimizer._get_main_param_and_optimizer_states(leaf, p)
+    )
+
+    def zero_snapshot() -> dict:
+        return {
+            "parameter": parameter.detach().cpu().tolist(),
+            "cpu_rng": torch.get_rng_state().tolist(),
+            "cuda_rng": torch.cuda.get_rng_state().tolist(),
+            "steps": [g.get("step") for g in raw.param_groups],
+        }
+
+    initialized = materialize_native_zero(
+        [leaf], torch=torch, adam_class=Adam, snapshot=zero_snapshot
+    )
+    # State serialization/restoration must preserve the zero-step boundary too.
+    restored = Adam(
+        [parameter],
+        lr=0.001,
+        master_weights=True,
+        use_decoupled_grad=True,
+        master_weight_dtype=cfg.main_params_dtype,
+        exp_avg_dtype=cfg.exp_avg_dtype,
+        exp_avg_sq_dtype=cfg.exp_avg_sq_dtype,
+        store_param_remainders=cfg.store_param_remainders,
+    )
+    restored.load_state_dict(raw.state_dict())
+    from research.m4_paired_replay.optimizer_zero import validate_native_zero
+
+    assert (
+        validate_native_zero(
+            [SimpleNamespace(optimizer=restored, config=cfg)],
+            torch=torch,
+            adam_class=Adam,
+        )
+        == 1
+    )
     root = Path("/workspace/m4-paired-private/preflight-smoke")
     create_private_root(root)
     model = torch.nn.Linear(2, 1, bias=False)
@@ -162,6 +228,10 @@ def smoke() -> dict:
         "status": "PASS_REAL_TORCH_SECONDARY_MECHANICS",
         "checks": {
             "native_sequence_packing_preparation": packing_ready,
+            "native_zero_step_optimizer_initialization_and_restore": (
+                initialized["optimizer_updates"] == 0
+                and initialized["native_checkpoint_extractor_passed"]
+            ),
             "parameter_delta": True,
             "probe_stops_before_optimizer": True,
             "optimizer_method_restored": True,
@@ -170,6 +240,11 @@ def smoke() -> dict:
             "frozen_token_k3_formula": True,
         },
         "native_model_qualified": False,
+        "native_optimizer_initialization": {
+            "source_sha256": initialized["native_adam_source_sha256"],
+            "signatures": initialized["native_initialization_signatures"],
+            "optimizer_updates": 0,
+        },
         "scientific_outcomes_accessed": False,
     }
 

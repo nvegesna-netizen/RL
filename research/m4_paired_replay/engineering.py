@@ -107,6 +107,7 @@ def bootstrap(root: Path) -> None:
     cfg["eligible_replay_minimal_observer"] = True
     cfg["eligible_replay_paired_integration"] = True
     cfg["eligible_replay_engineering_cold_start"] = True
+    cfg["eligible_replay_expected_optimizer_step"] = 0
     cfg["eligible_replay_probe_subject"] = {"identity": IDENTITY}
     apply_torch_controls(q.torch, os.environ)
     q.ACTOR_ENVIRONMENT_REGISTRY[q.WORKER] = q.MCORE_EXECUTABLE
@@ -169,6 +170,18 @@ def bootstrap(root: Path) -> None:
         checkpoint = capsule / "checkpoint/policy/weights"
         checkpoint.mkdir(mode=0o700, parents=True)
         parameter_sha = policy.run_all_workers_single_data("model_parameter_sha256")[0]
+        initialization = policy.run_all_workers_single_data(
+            "paired_engineering_initialize_optimizer"
+        )
+        if len(initialization) != 1:
+            raise ValueError("native initialization requires exactly one worker")
+        if (
+            initialization[0]["before"]["parameters"] != parameter_sha
+            or initialization[0]["before"] != initialization[0]["after"]
+            or initialization[0]["optimizer_updates"] != 0
+        ):
+            raise ValueError("native bootstrap initialization changed training state")
+        write_json(root / "optimizer-initialization.json", initialization[0])
         save_bootstrap_checkpoint(
             policy,
             checkpoint,
@@ -407,6 +420,8 @@ def coordinate(root: Path, public: Path, public_key: Path) -> int:
     names += (
         ["controller-error.log"] if (root / "controller-error.log").exists() else []
     )
+    if (root / "optimizer-initialization.json").exists():
+        names.append("optimizer-initialization.json")
     names += [
         str(p.relative_to(root))
         for folder in ("records", "outcomes")

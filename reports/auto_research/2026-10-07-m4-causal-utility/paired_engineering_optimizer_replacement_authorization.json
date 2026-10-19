@@ -1,0 +1,32 @@
+{
+  "authority": "User explicitly requests: gather evidence to determine the repair, repair, and then relaunch",
+  "automatic_retry": false,
+  "ci_ref": "dlalgo-ci/eos",
+  "ci_sha_verified": "8f5151cf00e02933a9b92772443d62e95b5150ff",
+  "local_evidence_sha256": {
+    "paired-engineering-generator-failure/generate-artifacts.zip": "b558314851984d1678120d13c90d4b64a8c2ab9553d7d36a7b67150d360541ac",
+    "paired-engineering-generator-failure/source-runtime-projection.tar.gz": "ed3050a2b6af92eb8ce93dca18aa9e4dec2d69b89cc23a0c757d8270ee20d70e",
+    "paired-engineering-packing-replacement-terminal/collector.zip": "c2e3de2f8fb1900f18445b586f5c2c77c07fc92eb04b0d7bca02d6000fbcdc55",
+    "paired-engineering-packing-replacement-terminal/diagnosis.json": "178537e117f93403020ed803238e955fec01bb96e46f1ad8911f4c3553411fab",
+    "paired-engineering-packing-replacement-terminal/eos.zip": "eddd2d97de8c235d6b581dc1e8e5048d18af01469c92c34ded7fc353145799ba",
+    "paired-engineering-packing-replacement-terminal/optimizer-v3-repaired-generator-replay.zip": "d889fa7a74fb62ba3c715a87615687e1e13f89983cdefd0753f7defb5a25f565",
+    "paired-engineering-packing-replacement-terminal/pinned-te-fused-adam.py": "c568493a65938d81863a2bac31230c5710051041ccb6ba010bcccaa164514beb",
+    "paired-engineering-packing-replacement-terminal/reproduction.json": "ec6be4d2001baeebad6c1e9fbab61e60efc177b3395ba2328a541ff59e1ba23b"
+  },
+  "manifest_sha256": "388a235284e68133f61dbb63bb2a84c8b376d52767aad9d82b197574675f7a7d",
+  "maximum_launcher_invocations": 1,
+  "native_qualification_and_collector_scan_required_before_scientific_cohort": true,
+  "package_receipt_sha256": "0627bca19ee53e7238c5588d0f5465f6ec7db634cc9a83a8dc6dbf141d90a471",
+  "packaging_tools_sha256": {
+    "reports/auto_research/2026-10-07-m4-causal-utility/paired_engineering_optimizer_repair_evidence.json": "8430c6eb5ec79d2e1f75bb624c73c079ddd95a0eceb71a00f56403cf25101934",
+    "reports/auto_research/2026-10-07-m4-causal-utility/submit_paired_engineering_optimizer_replacement_once.py": "bc29bd9967fdb28ed7abeef440158be8a1cd9767453811c224568bf5bcb0545f",
+    "reports/auto_research/2026-10-07-m4-causal-utility/test_paired_engineering_optimizer_replacement_launcher.py": "0d70cbd36b717428e2120b23ff55a734fec51a958eaaa991905c463f282380ab"
+  },
+  "protocol_sha256": "65b4e48ce4feddc6ed1fe2907dbaf108ea02c37d20190a19bf6f6ca13e6c5cfd",
+  "public_key_sha256": "60a3e51ae6dd340b09901f40c2544edaaecdda40d2797a2aca796ef3c4a17ae7",
+  "replaces_parent_pipeline_id": 75124494,
+  "schema": "m4-synthetic-optimizer-replacement-authorization-v1",
+  "scientific_acquisition_authorized": false,
+  "stop_after_invocations": 1,
+  "synthetic_only": true
+}
