@@ -1,0 +1,41 @@
+{
+  "all_chains_terminal": true,
+  "archive_sha256": {
+    "collector_archive_sha256": "a8145a82ffa2a5cad331da0b29fb8391da498e3db3e810aba35f23b3d54a94b1",
+    "eos_archive_sha256": "cceda7497fc13bc1663de87f4ba7875c6b8c848359191fb33f857653563eabe3"
+  },
+  "cause": "Inherited engineering marker propagates correctly but older test expects deterministic-only environment",
+  "child_pipeline_id": 74922498,
+  "collector_job_id": 495554345,
+  "eos_job_id": 495554340,
+  "failed_phase": "unit-test-preflight",
+  "local_reproduction": {
+    "marker_0": "PASS",
+    "marker_1": "FAIL same assertion"
+  },
+  "native_model_stages_reached": false,
+  "parent_pipeline_id": 74922269,
+  "qualification_passed": false,
+  "relaunch_invocations": 0,
+  "required_repair": [
+    "Isolate ambient engineering flag in deterministic-only test and explicitly test marker propagation on/off",
+    "Use actual EOS engineering environment for clean-room tests",
+    "Treat MCORE-only interpreter skip explicitly, not as zero-skip equivalence",
+    "Disable shell tracing around credential-bearing checks before rerun"
+  ],
+  "runtime_result_absent_in_both_archives": true,
+  "schema": "m4-synthetic-engineering-preflight-failure-v1",
+  "scientific_outcomes_accessed": false,
+  "skip_expected_on_mcore_interpreter": true,
+  "test_failures": 1,
+  "test_run": 178,
+  "test_skips": 1,
+  "tests_log_identical_in_both_archives": true,
+  "tests_log_sha256": "1416ae829277e231a080572636a0c59d0e5922829726b2f60f8ac815806cdf1f",
+  "trace_sha256": {
+    "495554337": "04feedd8e815d61d96e6dc0d02b98f38d6984e74216ea82de4ce922ccfdf81a0",
+    "495554340": "14e014a57d01ac120cc9bcaae7a5879338aa3210212578741002d9f9e2b49a18",
+    "495554345": "8b30792c11fedb36b69c32eb53378d0ab4b660afb5df56d5c3f7b88908ddf113"
+  },
+  "xtrace_exposes_literal_nonempty_check": true
+}

@@ -20,10 +20,13 @@ from research.m4_eligible_replay.deterministic_backward import MARKER, REQUIRED_
 
 class PreflightTests(unittest.TestCase):
     def test_base_interpreter_rejected_before_backend_import(self) -> None:
-        if Path(sys.prefix) == MCORE_PREFIX:
-            self.skipTest("the real MCORE interpreter is checked by the full preflight")
-        with self.assertRaisesRegex(ValueError, "expected proven MCORE prefix"):
+        with (
+            patch.object(sys, "prefix", "/m4-test-deliberately-wrong-prefix"),
+            patch.object(preflight, "initialize_bundled_megatron") as initialize,
+            self.assertRaisesRegex(ValueError, "expected proven MCORE prefix"),
+        ):
             inspect_environment()
+        initialize.assert_not_called()
 
     def test_full_imports_and_actor_gate_are_not_path_only_checks(self) -> None:
         source = Path(__file__).with_name("preflight.py").read_text()

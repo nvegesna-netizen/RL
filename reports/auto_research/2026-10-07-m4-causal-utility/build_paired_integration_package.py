@@ -20,6 +20,11 @@ from research.m4_eligible_replay.deterministic_backward import MARKER, REQUIRED_
 ROOT = Path(__file__).resolve().parents[3]
 REPORT = Path(__file__).resolve().parent
 BASE_HASH = "de2ee7b5c1b4437b1d6ed53b9f930a3bf96dca471f31aee780aea3844fab238e"
+PROSPECTIVE_OVERLAY_FILES = {
+    "research/m4_eligible_replay/worker.py",
+    "research/m4_eligible_replay/test_deterministic_backward.py",
+    "research/m4_eligible_replay/test_preflight.py",
+}
 
 
 def build(*, output: Path) -> dict:
@@ -45,7 +50,7 @@ def build(*, output: Path) -> dict:
     )
     for name, expected in previous["overlay_sha256"].items():
         if (
-            name != "research/m4_eligible_replay/worker.py"
+            name not in PROSPECTIVE_OVERLAY_FILES
             and digest_file(ROOT / name) != expected
         ):
             raise ValueError(f"accepted qualification source changed: {name}")
@@ -53,7 +58,7 @@ def build(*, output: Path) -> dict:
         str(p.relative_to(ROOT))
         for p in sorted((ROOT / "research/m4_paired_replay").glob("*.py"))
     ]
-    names += ["research/m4_eligible_replay/worker.py"]
+    names += sorted(PROSPECTIVE_OVERLAY_FILES)
     names += [
         str((REPORT / n).relative_to(ROOT))
         for n in (

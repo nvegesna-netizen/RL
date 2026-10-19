@@ -25,6 +25,16 @@ REPORT = Path(__file__).resolve().parent
 SESSION = ROOT / "session/20260914_m4_opportunity_control"
 BASE_HASH = "de2ee7b5c1b4437b1d6ed53b9f930a3bf96dca471f31aee780aea3844fab238e"
 NAME = "m4-synthetic-paired-v0-engineering"
+ENGINEERING_TEST_ENV = {
+    "CUDA_VISIBLE_DEVICES": "0",
+    "NEMO_RL_PY_EXECUTABLES_SYSTEM": "1",
+    "M4_PAIRED_SYNTHETIC_ENGINEERING": "1",
+}
+
+
+def quiet_shell_prefix(prefix: str) -> str:
+    """Disable inherited xtrace before any credential-bearing shell checks."""
+    return "set +x\n" + prefix
 
 
 def build(
@@ -61,6 +71,7 @@ def build(
     base = json.loads(base_path.read_bytes())
     old_script = base["spec"]["script"].replace("{{", "{").replace("}}", "}")
     prefix = old_script.split('cd "$RUN_REPO"\n', 1)[0]
+    prefix = quiet_shell_prefix(prefix)
     projection_proof = None
     if source_projection is not None:
         original = (
@@ -129,13 +140,15 @@ print("PASS_PUBLIC_ONLY_OVERLAY_AND_PINNED_CRYPTO")
         + extraction
         + "PY\n"
     )
+    exports = "\n".join(
+        f"export {name}={shlex.quote(value)}"
+        for name, value in ENGINEERING_TEST_ENV.items()
+    )
     script += r"""cd "$RUN_REPO"
 export PYTHONPATH="$CRYPTO_ROOT:$RUN_REPO"
-export CUDA_VISIBLE_DEVICES=0
-export NEMO_RL_PY_EXECUTABLES_SYSTEM=1
+@ENGINEERING_EXPORTS@
 export VIRTUAL_ENV=/opt/ray_venvs/nemo_rl.models.policy.workers.megatron_policy_worker.MegatronPolicyWorker
 export UV_PROJECT_ENVIRONMENT="$VIRTUAL_ENV"
-export M4_PAIRED_SYNTHETIC_ENGINEERING=1
 "$PYTHON" - <<'PY'
 from pathlib import Path
 import cryptography
@@ -155,7 +168,7 @@ set -e
 find "$ASSETS" -maxdepth 1 -type f ! -name artifacts.sha256 -print0 | sort -z | xargs -0 sha256sum > "$ASSETS/artifacts.sha256"
 echo "ENGINEERING_EXIT_CODE=$runtime_rc"
 exit "$runtime_rc"
-""".replace("@MODULES@", " ".join(modules))
+""".replace("@MODULES@", " ".join(modules)).replace("@ENGINEERING_EXPORTS@", exports)
     subprocess.run(
         ["bash", "-n"],
         input=script.replace("{assets_dir}", "/tmp/m4-engineering-assets"),
@@ -181,8 +194,14 @@ exit "$runtime_rc"
             check=True,
             stdout=subprocess.DEVNULL,
         )
-        env = {**os.environ, "PYTHONPATH": str(root), MARKER: "1", **REQUIRED_ENV}
-        code = "import json,sys,unittest; suite=unittest.defaultTestLoader.loadTestsFromNames(sys.argv[1:]); r=unittest.TextTestRunner().run(suite); print(json.dumps({'run':r.testsRun,'skipped':len(r.skipped),'failures':len(r.failures),'errors':len(r.errors)})); raise SystemExit(0 if r.wasSuccessful() else 1)"
+        env = {
+            **os.environ,
+            "PYTHONPATH": str(root),
+            MARKER: "1",
+            **REQUIRED_ENV,
+            **ENGINEERING_TEST_ENV,
+        }
+        code = "import json,sys,unittest; suite=unittest.defaultTestLoader.loadTestsFromNames(sys.argv[1:]); r=unittest.TextTestRunner().run(suite); print(json.dumps({'run':r.testsRun,'skipped':len(r.skipped),'failures':len(r.failures),'errors':len(r.errors),'skip_details':[{'test':t.id(),'reason':reason} for t,reason in r.skipped]})); raise SystemExit(0 if r.wasSuccessful() else 1)"
         process = subprocess.run(
             [sys.executable, "-c", code, *modules],
             cwd=root,

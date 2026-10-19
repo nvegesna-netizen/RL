@@ -224,19 +224,31 @@ class DeterministicBackwardTests(unittest.TestCase):
             {"native": True},
             {"native_runtime": True},
         )
-        with (
-            patch.object(
-                base, "configure_worker", Mock(return_value=values), create=True
-            ),
-            patch.dict(os.environ, ENV),
-        ):
-            result = worker_class.configure_worker(
-                1, bundle_indices=(0, [0]), num_gpus_per_node=1
-            )
-        self.assertIs(result[0], values[0])
-        self.assertIs(result[2], values[2])
-        self.assertIs(result[3], values[3])
-        self.assertEqual(result[1], {"original": "kept", **ENV})
+        marker = "M4_PAIRED_SYNTHETIC_ENGINEERING"
+        for value in (None, "0", "1", "unexpected"):
+            with (
+                self.subTest(engineering_marker=value),
+                patch.object(
+                    base,
+                    "configure_worker",
+                    Mock(return_value=(values[0], {"original": "kept"}, *values[2:])),
+                    create=True,
+                ),
+                patch.dict(os.environ, ENV),
+            ):
+                os.environ.pop(marker, None)
+                if value is not None:
+                    os.environ[marker] = value
+                result = worker_class.configure_worker(
+                    1, bundle_indices=(0, [0]), num_gpus_per_node=1
+                )
+            expected = {"original": "kept", **ENV}
+            if value == "1":
+                expected[marker] = "1"
+            self.assertIs(result[0], values[0])
+            self.assertIs(result[2], values[2])
+            self.assertIs(result[3], values[3])
+            self.assertEqual(result[1], expected)
 
     def test_native_setup_hook_precedes_model_validation(self) -> None:
         root = Path(__file__).resolve().parents[2]
