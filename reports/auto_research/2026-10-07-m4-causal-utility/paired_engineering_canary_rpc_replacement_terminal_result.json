@@ -1,0 +1,51 @@
+{
+  "all_chains_terminal": true,
+  "archive_sha256": {
+    "collector_archive_sha256": "979e03b91e52f4e7033ebe9ebcda1779d6be60dff9697847509e8e44db4016af",
+    "eos_archive_sha256": "67b3da0759f2345017be274ff4a392bf99dcacef023c26164be84218b773cad1"
+  },
+  "canary_rpc_completed": true,
+  "cause": "Bootstrap calls worker get_logprobs through single-data RPC with an unplanned BatchedDataDict; sequence packing requires metadata normally prepared by Policy._shard_for_logprob",
+  "checkpoint_save_reached": false,
+  "child_pipeline_id": 75103586,
+  "collector_job_id": 496947977,
+  "collector_verification": {
+    "collector_canary_excluded": true,
+    "failed_stage": "bootstrap",
+    "fresh_acquisition_unlocked": false,
+    "status": "ENGINEERING_RUNTIME_FAILED"
+  },
+  "eos_job_id": 496947976,
+  "error": "TypeError: 'NoneType' object is not subscriptable in get_microbatch_iterator_for_packable_sequences_len",
+  "failed_stage": "bootstrap",
+  "heldout_worker_helper_already_attaches_pack_metadata": true,
+  "local_reproduction": {
+    "checkpoint_save_reached": false,
+    "inherited_sequence_packing_enabled": true,
+    "private_bootstrap_log_contains_actual_canary": false,
+    "same_native_packing_error_reproduced": true
+  },
+  "native_sources_sha256": {
+    "nemo_rl/distributed/batched_data_dict.py": "857f3051b0b3997c586b4051768a8ecffe00aef8f772ba5cdaea0a28ab0a8e72",
+    "nemo_rl/models/megatron/data.py": "0860a793084f7965ff02112dbb8312da9a340aaf78f4a28946bdc33a9344be8c",
+    "nemo_rl/models/policy/lm_policy.py": "8cff4503e681e5af53150990b2e5a75c1a7b95521651cbb6ab7a7d78175d91ea"
+  },
+  "next_repair": "Use native Policy.get_logprobs to prepare sharding/packing and reassemble outputs, retaining existing configuration; add tests with actual packing enabled and audit remaining direct worker logprob calls",
+  "parent_pipeline_id": 75103417,
+  "qualification_passed": false,
+  "real_torch_secondary_preflight_passed": true,
+  "relaunch_invocations": 0,
+  "schema": "m4-canary-rpc-replacement-terminal-diagnosis-v1",
+  "scientific_outcomes_accessed": false,
+  "tests": {
+    "errors": 0,
+    "failures": 0,
+    "run": 190,
+    "skipped": 0
+  },
+  "trace_sha256": {
+    "496947975": "d19c7a3cf08272369b4e55c870f3330456dd6c01b4b1f28892b8f4232cfc2dbd",
+    "496947976": "ae3bd9e7f47ead476ba9e3dabdaa38e22bb1d085cce974bcb3943abf568754c1",
+    "496947977": "02c0c9b8ca4b1348e2291c09baf2536865e459d094f1e734fea7d6f6e267dd18"
+  }
+}

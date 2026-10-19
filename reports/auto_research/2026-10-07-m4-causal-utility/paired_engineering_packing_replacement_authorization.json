@@ -1,0 +1,26 @@
+{
+  "authority": "User do it approves native packing-entrypoint repair and one replacement launch",
+  "automatic_retry": false,
+  "ci_ref": "dlalgo-ci/eos",
+  "ci_sha_verified": "8f5151cf00e02933a9b92772443d62e95b5150ff",
+  "local_evidence_sha256": {
+    "paired-engineering-canary-rpc-replacement-terminal/packing-repaired-generator-replay.zip": "58540b7f952afea7162f10c1a75b3255bf3c27debfb83f7a0dcc585fcb3673eb",
+    "paired-engineering-generator-failure/generate-artifacts.zip": "b558314851984d1678120d13c90d4b64a8c2ab9553d7d36a7b67150d360541ac",
+    "paired-engineering-generator-failure/source-runtime-projection.tar.gz": "ed3050a2b6af92eb8ce93dca18aa9e4dec2d69b89cc23a0c757d8270ee20d70e"
+  },
+  "manifest_sha256": "0e771c7e3f5780779b0b39325ebda07b95286ed2df2cf9afe85fb0cc1c129cf3",
+  "maximum_launcher_invocations": 1,
+  "native_qualification_and_collector_scan_required_before_scientific_cohort": true,
+  "package_receipt_sha256": "e4167a251bff5b4419a465e74a2ed4446bca0f2caf4b850bb7d1d7529fd7d8d0",
+  "packaging_tools_sha256": {
+    "reports/auto_research/2026-10-07-m4-causal-utility/submit_paired_engineering_packing_replacement_once.py": "65c89eda0d61198859634169d887198178be4d36e036d132b290b480c9f84733",
+    "reports/auto_research/2026-10-07-m4-causal-utility/test_paired_engineering_packing_replacement_launcher.py": "a9daa1330f08a3b74e56ab2b4623cdf40a01a0cde77f9fb3b82ff90eae5740f9"
+  },
+  "protocol_sha256": "65b4e48ce4feddc6ed1fe2907dbaf108ea02c37d20190a19bf6f6ca13e6c5cfd",
+  "public_key_sha256": "60a3e51ae6dd340b09901f40c2544edaaecdda40d2797a2aca796ef3c4a17ae7",
+  "replaces_parent_pipeline_id": 75103417,
+  "schema": "m4-synthetic-packing-replacement-authorization-v1",
+  "scientific_acquisition_authorized": false,
+  "stop_after_invocations": 1,
+  "synthetic_only": true
+}

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import ast
 import copy
+from contextlib import nullcontext
 import json
 import os
 from pathlib import Path
@@ -13,7 +14,7 @@ import unittest
 import zipfile
 from unittest.mock import patch
 
-from nemo_rl.utils.config import load_config
+from nemo_rl.utils.config import load_config, register_omegaconf_resolvers
 from research.m4_paired_replay.engineering import (
     CONFIG,
     coordinate,
@@ -146,6 +147,159 @@ class SyntheticGateTests(unittest.TestCase):
             self.assertEqual(run.call_count, 1)
             self.assertEqual(result["failed_stage"], "bootstrap")
             self.assertEqual(result["completed_stages"], [])
+
+
+class BootstrapLogprobContractTests(unittest.TestCase):
+    def exercise_native_policy(self, reorder: list[int] | None) -> None:
+        tree = ast.parse((ROOT / "nemo_rl/models/policy/lm_policy.py").read_text())
+        functions = [
+            n
+            for n in ast.walk(tree)
+            if isinstance(n, ast.FunctionDef)
+            and n.name in {"get_logprobs", "_shard_for_logprob"}
+        ]
+        self.assertEqual(len(functions), 2)
+        events = []
+        case = self
+
+        class Tensor:
+            def detach(self) -> "Tensor":
+                return self
+
+            def cpu(self) -> "Tensor":
+                return self
+
+            def float(self) -> "Tensor":
+                return self
+
+        tensor = Tensor()
+
+        class Batch(dict):
+            def shard_by_batch_size(
+                self, shards: int, *, batch_size: object, sequence_packing_args: dict
+            ) -> tuple:
+                case.assertEqual(shards, 1)
+                case.assertIsNone(batch_size)
+                case.assertEqual(
+                    sequence_packing_args["max_tokens_per_microbatch"],
+                    config.sequence_packing.logprob_mb_tokens,
+                )
+                events.append("packing_prepared")
+                return ["planned-shard"], reorder
+
+            @staticmethod
+            def from_batches(rows: list) -> "Batch":
+                case.assertEqual(rows, ["worker-result"])
+                events.append("assembled")
+                return Batch(logprobs=tensor)
+
+            def reorder_data(self, indices: list[int]) -> None:
+                case.assertEqual(indices, reorder)
+                events.append("reordered")
+
+        register_omegaconf_resolvers()
+        config = load_config(ROOT / CONFIG).policy
+        self.assertTrue(config.sequence_packing.enabled)
+
+        def dispatch(method: str, **kwargs: object) -> str:
+            case.assertEqual(method, "get_logprobs")
+            case.assertEqual(kwargs["data"], ["planned-shard"])
+            case.assertIn("packing_prepared", events)
+            events.append("sharded_dispatch")
+            return "future"
+
+        namespace = {"nullcontext": nullcontext, "BatchedDataDict": Batch}
+        module = ast.Module(
+            body=[
+                ast.ImportFrom(
+                    module="__future__", names=[ast.alias(name="annotations")], level=0
+                ),
+                *functions,
+            ],
+            type_ignores=[],
+        )
+        ast.fix_missing_locations(module)
+        exec(compile(module, "actual_native_policy.py", "exec"), namespace)
+        policy = SimpleNamespace(
+            cfg=config,
+            data_parallel_size=1,
+            use_dynamic_batches=False,
+            use_sequence_packing=True,
+            sequence_packing_args={},
+            worker_group=SimpleNamespace(
+                run_all_workers_sharded_data=dispatch,
+                get_all_worker_results=lambda futures: ["worker-result"],
+            ),
+        )
+        policy._shard_for_logprob = lambda data: namespace["_shard_for_logprob"](
+            policy, data
+        )
+        policy.get_logprobs = lambda **kwargs: namespace["get_logprobs"](
+            policy, **kwargs
+        )
+        bootstrap = next(
+            n
+            for n in ast.parse(
+                (ROOT / "research/m4_paired_replay/engineering.py").read_text()
+            ).body
+            if isinstance(n, ast.FunctionDef) and n.name == "bootstrap"
+        )
+        assignments = [
+            n
+            for n in ast.walk(bootstrap)
+            if isinstance(n, ast.Assign)
+            and len(n.targets) == 1
+            and isinstance(n.targets[0], ast.Name)
+            and n.targets[0].id in {"outputs", "logprobs"}
+        ]
+        self.assertEqual(len(assignments), 2)
+        scope = {"policy": policy, "seed_fields": Batch()}
+        for statement in assignments:
+            exec(
+                compile(
+                    ast.Module(body=[statement], type_ignores=[]),
+                    "actual_bootstrap_call.py",
+                    "exec",
+                ),
+                scope,
+            )
+        self.assertIs(scope["logprobs"], tensor)
+        self.assertEqual(
+            events,
+            ["packing_prepared", "sharded_dispatch", "assembled"]
+            + (["reordered"] if reorder is not None else []),
+        )
+
+    def test_native_policy_packing_and_assembled_bootstrap_output(self) -> None:
+        self.exercise_native_policy(None)
+
+    def test_native_policy_restores_original_row_order(self) -> None:
+        self.exercise_native_policy([1, 0])
+
+    def test_bootstrap_never_directly_dispatches_unplanned_logprobs(self) -> None:
+        tree = ast.parse(
+            (ROOT / "research/m4_paired_replay/engineering.py").read_text()
+        )
+        for call in ast.walk(tree):
+            if (
+                isinstance(call, ast.Call)
+                and isinstance(call.func, ast.Attribute)
+                and call.func.attr == "run_all_workers_single_data"
+            ):
+                self.assertFalse(
+                    call.args
+                    and isinstance(call.args[0], ast.Constant)
+                    and call.args[0].value == "get_logprobs"
+                )
+
+    def test_real_tensor_preflight_checks_native_packed_iterator(self) -> None:
+        source = (ROOT / "research/m4_paired_replay/tensor_preflight.py").read_text()
+        for operation in (
+            "Policy._shard_for_logprob",
+            "get_microbatch_iterator_for_packable_sequences_len",
+            '"native_sequence_packing_preparation": packing_ready',
+        ):
+            self.assertIn(operation, source)
 
 
 class BootstrapCheckpointTests(unittest.TestCase):

@@ -127,6 +127,8 @@ def bootstrap(root: Path) -> None:
             port_range_high=config.cluster.get("master_port_range_high"),
         )
         cleanup.callback(cluster.shutdown)
+        if cluster.world_size() != 1:
+            raise ValueError("synthetic bootstrap requires one worker")
         policy = q.TQPolicy(
             cluster=cluster,
             config=cfg,
@@ -157,15 +159,8 @@ def bootstrap(root: Path) -> None:
                 "sample_mask": q.torch.ones(96, dtype=q.torch.float32),
             }
         )
-        outputs = policy.run_all_workers_single_data(
-            "get_logprobs",
-            data=seed_fields,
-            micro_batch_size=1,
-            require_router_replay=False,
-        )
-        if len(outputs) != 1:
-            raise ValueError("synthetic bootstrap requires one worker")
-        logprobs = outputs[0]["logprobs"].detach().cpu().float()
+        outputs = policy.get_logprobs(data=seed_fields)
+        logprobs = outputs["logprobs"].detach().cpu().float()
         if logprobs.shape != ids.shape or not bool(
             q.torch.isfinite(logprobs).all().item()
         ):

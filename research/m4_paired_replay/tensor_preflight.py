@@ -19,10 +19,62 @@ from research.m4_paired_replay.worker_support import (
 )
 
 
+def packing_smoke() -> bool:
+    """Exercise native packing preparation on real CPU tensors on EOS only."""
+    # Optional model-stack imports stay inside the EOS-only tensor preflight.
+    import torch
+    from nemo_rl.distributed.batched_data_dict import BatchedDataDict
+    from nemo_rl.models.policy.lm_policy import Policy
+    from nemo_rl.utils.config import load_config, register_omegaconf_resolvers
+    from research.m4_paired_replay.engineering import CONFIG
+
+    register_omegaconf_resolvers()
+    cfg = load_config(CONFIG).policy
+    assert cfg.sequence_packing.enabled and not cfg.dynamic_batching.enabled
+    packing = {
+        "algorithm": cfg.sequence_packing.algorithm,
+        "input_key": "input_ids",
+        "input_lengths_key": "input_lengths",
+        "sequence_length_pad_multiple": cfg.make_sequence_length_divisible_by,
+    }
+    order = cfg.sequence_packing.get("microbatch_order")
+    if order is not None:
+        packing["microbatch_order"] = order
+    policy = SimpleNamespace(
+        cfg=cfg,
+        data_parallel_size=1,
+        use_dynamic_batches=False,
+        use_sequence_packing=True,
+        sequence_packing_args=packing,
+    )
+    batch = BatchedDataDict(
+        {
+            "input_ids": torch.arange(64).repeat(96, 1),
+            "input_lengths": torch.full((96,), 64, dtype=torch.int64),
+            "token_mask": torch.ones((96, 64)),
+            "sample_mask": torch.ones(96),
+        }
+    )
+    assert batch.micro_batch_indices is None
+    shards, _ = Policy._shard_for_logprob(policy, batch)
+    assert len(shards) == 1 and shards[0].micro_batch_indices is not None
+    count, max_length = shards[0].get_microbatch_iterator_for_packable_sequences_len()
+    assert count > 0 and max_length >= 64
+    assert (
+        sum(
+            mb.size
+            for mb in shards[0].make_microbatch_iterator_for_packable_sequences()
+        )
+        == 96
+    )
+    return True
+
+
 def smoke() -> dict:
     # Torch/CUDA is optional until the EOS-only real-tensor preflight runs.
     import torch
 
+    packing_ready = packing_smoke()
     root = Path("/workspace/m4-paired-private/preflight-smoke")
     create_private_root(root)
     model = torch.nn.Linear(2, 1, bias=False)
@@ -109,6 +161,7 @@ def smoke() -> dict:
     return {
         "status": "PASS_REAL_TORCH_SECONDARY_MECHANICS",
         "checks": {
+            "native_sequence_packing_preparation": packing_ready,
             "parameter_delta": True,
             "probe_stops_before_optimizer": True,
             "optimizer_method_restored": True,
