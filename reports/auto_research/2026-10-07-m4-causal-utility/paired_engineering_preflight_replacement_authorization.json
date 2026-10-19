@@ -1,0 +1,26 @@
+{
+  "authority": "User asks can you relaunch, authorizing one preflight-repaired synthetic qualification replacement",
+  "automatic_retry": false,
+  "ci_ref": "dlalgo-ci/eos",
+  "ci_sha_verified": "8f5151cf00e02933a9b92772443d62e95b5150ff",
+  "local_evidence_sha256": {
+    "paired-engineering-cap-replacement-terminal/preflight-repaired-generator-replay.zip": "a87a35c1a4065925de6923b917c20eb9b63efc115a44188e47758a978b9d1a5a",
+    "paired-engineering-generator-failure/generate-artifacts.zip": "b558314851984d1678120d13c90d4b64a8c2ab9553d7d36a7b67150d360541ac",
+    "paired-engineering-generator-failure/source-runtime-projection.tar.gz": "ed3050a2b6af92eb8ce93dca18aa9e4dec2d69b89cc23a0c757d8270ee20d70e"
+  },
+  "manifest_sha256": "bb3bdba76548fc4f2e2209c7756fb6fbecc27f1b6e6e7856ed75e85db16c3740",
+  "maximum_launcher_invocations": 1,
+  "native_qualification_and_collector_scan_required_before_scientific_cohort": true,
+  "package_receipt_sha256": "3a97b9cb971d807d546b526b001e706b5f41190d54aa1acbf0bcf946bb824944",
+  "packaging_tools_sha256": {
+    "reports/auto_research/2026-10-07-m4-causal-utility/submit_paired_engineering_preflight_replacement_once.py": "0818ef99211e1342836332d26559156e3472c5ca5552f03c8b54aa491b2762c8",
+    "reports/auto_research/2026-10-07-m4-causal-utility/test_paired_engineering_preflight_replacement_launcher.py": "90a0d980352b63b82cc3c9b038b0d52caa66feff546d141ce727609d71b1f830"
+  },
+  "protocol_sha256": "65b4e48ce4feddc6ed1fe2907dbaf108ea02c37d20190a19bf6f6ca13e6c5cfd",
+  "public_key_sha256": "60a3e51ae6dd340b09901f40c2544edaaecdda40d2797a2aca796ef3c4a17ae7",
+  "replaces_parent_pipeline_id": 74922269,
+  "schema": "m4-synthetic-preflight-replacement-authorization-v1",
+  "scientific_acquisition_authorized": false,
+  "stop_after_invocations": 1,
+  "synthetic_only": true
+}
