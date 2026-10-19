@@ -1,0 +1,79 @@
+{
+  "artifact_cap_gate_passed": true,
+  "bridges": [
+    {
+      "downstream_pipeline": {
+        "created_at": "2026-10-18T21:09:01.254-07:00",
+        "id": 74922498,
+        "iid": 4830250,
+        "project_id": 70847,
+        "ref": "dlalgo-ci/eos",
+        "sha": "8f5151cf00e02933a9b92772443d62e95b5150ff",
+        "source": "parent_pipeline",
+        "status": "pending",
+        "updated_at": "2026-10-18T21:09:19.822-07:00",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/74922498"
+      },
+      "id": 495552623,
+      "name": "trigger",
+      "status": "running"
+    }
+  ],
+  "children": [
+    {
+      "jobs": [
+        {
+          "failure_reason": null,
+          "id": 495554345,
+          "name": "basic/m4-synthetic-paired-v0-engineering dgxh100_eos 00 [3 logs_after]",
+          "status": "created"
+        },
+        {
+          "failure_reason": null,
+          "id": 495554340,
+          "name": "basic/m4-synthetic-paired-v0-engineering dgxh100_eos 00 [2 dgxh100_eos]",
+          "status": "created"
+        },
+        {
+          "failure_reason": null,
+          "id": 495554337,
+          "name": "basic/m4-synthetic-paired-v0-engineering dgxh100_eos 00 [1 logs_before]",
+          "status": "running"
+        }
+      ],
+      "pipeline": {
+        "id": 74922498,
+        "ref": "dlalgo-ci/eos",
+        "sha": "8f5151cf00e02933a9b92772443d62e95b5150ff",
+        "status": "running",
+        "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/74922498",
+        "yaml_errors": null
+      }
+    }
+  ],
+  "exact_collector_job_id": 495554345,
+  "exact_eos_job_id": 495554340,
+  "generator_artifacts_file": {
+    "filename": "scripts-74922269.zip",
+    "size": 36586934
+  },
+  "observed_at": "2026-10-19T04:09:27.369304+00:00",
+  "parent": {
+    "id": 74922269,
+    "ref": "dlalgo-ci/eos",
+    "sha": "8f5151cf00e02933a9b92772443d62e95b5150ff",
+    "status": "running",
+    "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/74922269",
+    "yaml_errors": null
+  },
+  "parent_jobs": [
+    {
+      "id": 495552622,
+      "name": "generate",
+      "status": "success"
+    }
+  ],
+  "qualification_passed": false,
+  "schema": "m4-synthetic-cap-replacement-topology-v1",
+  "scientific_outcomes_accessed": false
+}
