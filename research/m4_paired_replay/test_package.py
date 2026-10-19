@@ -11,8 +11,12 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
+from types import CodeType, SimpleNamespace
+from typing import Optional
 import unittest
 from unittest.mock import patch
+
+from pydantic import BaseModel
 
 from research.m4_eligible_replay.contracts import canonical_json
 from research.m4_paired_replay.contracts import (
@@ -33,6 +37,51 @@ from research.m4_paired_replay.transport import fetch_arm
 
 ROOT = Path(__file__).resolve().parents[2]
 REPORT = ROOT / "reports/auto_research/2026-10-07-m4-causal-utility"
+
+
+def native_backend_guard_fixture() -> tuple[type, CodeType, dict]:
+    """Compile the actual native Pydantic class and unmodified backend guard.
+
+    AST loading avoids optional Torch/Ray imports, not configuration behavior:
+    Pydantic constructs the real native class, and the full actual guard executes.
+    """
+    source = ROOT / "nemo_rl/algorithms/loss/loss_functions.py"
+    native = next(
+        node
+        for node in ast.parse(source.read_text()).body
+        if isinstance(node, ast.ClassDef) and node.name == "ClippedPGLossConfig"
+    )
+    namespace = {"BaseModel": BaseModel, "Optional": Optional}
+    exec(
+        compile(
+            ast.Module(body=[native], type_ignores=[]),
+            str(source),
+            "exec",
+            dont_inherit=True,
+        ),
+        namespace,
+    )
+    backend = ast.parse(Path(__file__).with_name("backend.py").read_text())
+    initialize = next(
+        node
+        for node in ast.walk(backend)
+        if isinstance(node, ast.FunctionDef) and node.name == "_initialize"
+    )
+    guard = next(node for node in initialize.body if isinstance(node, ast.If))
+    code = compile(
+        ast.Module(body=[guard], type_ignores=[]), "actual-backend-guard", "exec"
+    )
+    policy = {
+        "model_name": "meta-llama/Llama-3.2-1B-Instruct",
+        "train_global_batch_size": 32,
+        "train_micro_batch_size": 1,
+        "megatron_cfg": {
+            "tensor_model_parallel_size": 1,
+            "pipeline_model_parallel_size": 1,
+            "context_parallel_size": 1,
+        },
+    }
+    return namespace["ClippedPGLossConfig"], code, policy
 
 
 def fixture() -> tuple:
@@ -472,10 +521,111 @@ class TransportTests(FixtureBase):
         self.assertIn("eval_mode=True", ast.unparse(evaluate))
         self.assertIn("self.metas[1]", ast.unparse(update))
         self.assertIn("eval_mode=False", ast.unparse(update))
-        self.assertIn(
-            'self.config.loss_fn["token_level_loss"]',
-            Path(__file__).with_name("backend.py").read_text(),
+
+    def test_actual_backend_guard_accepts_native_typed_loss_config(self) -> None:
+        loss_class, guard, policy = native_backend_guard_fixture()
+        loss = loss_class(token_level_loss=True)
+        with self.assertRaisesRegex(TypeError, "not subscriptable"):
+            loss["token_level_loss"]
+        exec(
+            guard,
+            {
+                "self": SimpleNamespace(config=SimpleNamespace(loss_fn=loss)),
+                "policy_config": policy,
+            },
         )
+
+    def test_actual_backend_guard_rejects_native_sequence_level_loss(self) -> None:
+        loss_class, guard, policy = native_backend_guard_fixture()
+        with self.assertRaisesRegex(ValueError, "frozen replay"):
+            exec(
+                guard,
+                {
+                    "self": SimpleNamespace(
+                        config=SimpleNamespace(
+                            loss_fn=loss_class(token_level_loss=False)
+                        )
+                    ),
+                    "policy_config": policy,
+                },
+            )
+
+    def test_actual_backend_guard_retains_every_frozen_rejection(self) -> None:
+        loss_class, guard, policy = native_backend_guard_fixture()
+        changes = [
+            ("model_name", "wrong-model"),
+            ("train_global_batch_size", 64),
+            ("train_micro_batch_size", 2),
+            ("eligible_replay_training_trace", {}),
+            ("eligible_replay_engineering_cold_start", True),
+        ]
+        for key, value in changes:
+            mutated = copy.deepcopy(policy)
+            mutated[key] = value
+            with (
+                self.subTest(key=key),
+                self.assertRaisesRegex(ValueError, "frozen replay"),
+            ):
+                exec(
+                    guard,
+                    {
+                        "self": SimpleNamespace(
+                            config=SimpleNamespace(
+                                loss_fn=loss_class(token_level_loss=True)
+                            )
+                        ),
+                        "policy_config": mutated,
+                    },
+                )
+        for key in (
+            "tensor_model_parallel_size",
+            "pipeline_model_parallel_size",
+            "context_parallel_size",
+        ):
+            mutated = copy.deepcopy(policy)
+            mutated["megatron_cfg"][key] = 2
+            with (
+                self.subTest(key=key),
+                self.assertRaisesRegex(ValueError, "frozen replay"),
+            ):
+                exec(
+                    guard,
+                    {
+                        "self": SimpleNamespace(
+                            config=SimpleNamespace(
+                                loss_fn=loss_class(token_level_loss=True)
+                            )
+                        ),
+                        "policy_config": mutated,
+                    },
+                )
+
+    def test_native_master_config_field_shapes_match_adapter_access(self) -> None:
+        tree = ast.parse(
+            (ROOT / "nemo_rl/algorithms/single_controller_utils/config.py").read_text()
+        )
+        master = next(
+            n
+            for n in tree.body
+            if isinstance(n, ast.ClassDef) and n.name == "MasterConfig"
+        )
+        fields = {
+            n.target.id: ast.unparse(n.annotation)
+            for n in master.body
+            if isinstance(n, ast.AnnAssign) and isinstance(n.target, ast.Name)
+        }
+        self.assertEqual(fields["loss_fn"], "ClippedPGLossConfig")
+        for field, path, name in (
+            ("policy", "nemo_rl/models/policy/__init__.py", "PolicyConfig"),
+            ("cluster", "nemo_rl/distributed/virtual_cluster.py", "ClusterConfig"),
+        ):
+            self.assertEqual(fields[field], name)
+            native = next(
+                n
+                for n in ast.parse((ROOT / path).read_text()).body
+                if isinstance(n, ast.ClassDef) and n.name == name
+            )
+            self.assertIn("TypedDict", [ast.unparse(b) for b in native.bases])
 
     def test_native_and_python_output_redirected_in_subprocess(self) -> None:
         with tempfile.TemporaryDirectory() as d:

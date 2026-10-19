@@ -1,0 +1,36 @@
+{
+  "authority": "User explicitly requests: do the repair and relaunch",
+  "automatic_retry": false,
+  "ci_ref": "dlalgo-ci/eos",
+  "ci_sha_verified": "8f5151cf00e02933a9b92772443d62e95b5150ff",
+  "local_evidence_sha256": {
+    "paired-engineering-generator-failure/generate-artifacts.zip": "b558314851984d1678120d13c90d4b64a8c2ab9553d7d36a7b67150d360541ac",
+    "paired-engineering-generator-failure/source-runtime-projection.tar.gz": "ed3050a2b6af92eb8ce93dca18aa9e4dec2d69b89cc23a0c757d8270ee20d70e",
+    "paired-engineering-optimizer-replacement-terminal/497185143.trace": "cadb0ce032a248bdbda51211097b97db29d59f26d4e0effede12380a06272a88",
+    "paired-engineering-optimizer-replacement-terminal/497185144.trace": "16cc2f53091be4cc252612a7756a906eadd6a916ab4c9600f1450f9b814d0f7f",
+    "paired-engineering-optimizer-replacement-terminal/497185145.trace": "edbb593190e90216ac9cb4b4d51087669e6dfd1f1aa78a7a32dc4c1a687a6a6f",
+    "paired-engineering-optimizer-replacement-terminal/collector.zip": "f0b26fa86859723bdd681739f46ae449e614d7cc64119e0ea040dc9d1166cb43",
+    "paired-engineering-optimizer-replacement-terminal/diagnosis.json": "fc886ae701f5f3b094cf9dcc881d082501567bdf2496d4329734738c8aacb5ba",
+    "paired-engineering-optimizer-replacement-terminal/eos.zip": "5c67fec73c34f1b20a1a1b06e827249fc2c358427508811bc9aa8535f2212294",
+    "paired-engineering-optimizer-replacement-terminal/loss-config-repaired-generator-replay.zip": "42e970f14b8f2db1e95ea5456795e9a78bd06f2089ca4f1cd8c4ff7ec9928770",
+    "paired-engineering-optimizer-replacement-terminal/metadata.json": "df222e98e85f03675f825c29a521b3b4aa41d9b064aaab97e0d7fe683e636b3e",
+    "paired-engineering-optimizer-replacement-terminal/reproduction.json": "2283b42b69f54c42258ad4b906eb6c30b224b923356473026af214f190d140cc",
+    "paired-engineering-optimizer-replacement-terminal/verification.json": "6bb6edbc2726bed3755ccbe19b610bc727f2e9b29c3d5768f0523dd34336868b"
+  },
+  "manifest_sha256": "d2dfd5d0e0d6b94028316974e0777aeb1a72f7058d1f9fd7762f462c13e58c74",
+  "maximum_launcher_invocations": 1,
+  "native_qualification_and_collector_scan_required_before_scientific_cohort": true,
+  "package_receipt_sha256": "a821aab1a95d79ace58d0614a3c10b3c1cfe42d8395ae91ddb15cc02ae951639",
+  "packaging_tools_sha256": {
+    "reports/auto_research/2026-10-07-m4-causal-utility/paired_engineering_loss_config_repair_evidence.json": "859d226e221da9139a9a7a586113be7f0407e919800fcb9b1c194f87a90a8ada",
+    "reports/auto_research/2026-10-07-m4-causal-utility/submit_paired_engineering_loss_config_replacement_once.py": "e4d2ddc3f181a0d4606a641f67a23f1a20126f093b43b719ad1c403f919aa361",
+    "reports/auto_research/2026-10-07-m4-causal-utility/test_paired_engineering_loss_config_replacement_launcher.py": "d92432f02b73856d81927161bb796b786d650c9476c3e278f6037a470ab4779f"
+  },
+  "protocol_sha256": "65b4e48ce4feddc6ed1fe2907dbaf108ea02c37d20190a19bf6f6ca13e6c5cfd",
+  "public_key_sha256": "60a3e51ae6dd340b09901f40c2544edaaecdda40d2797a2aca796ef3c4a17ae7",
+  "replaces_parent_pipeline_id": 75131528,
+  "schema": "m4-synthetic-loss-config-replacement-authorization-v1",
+  "scientific_acquisition_authorized": false,
+  "stop_after_invocations": 1,
+  "synthetic_only": true
+}

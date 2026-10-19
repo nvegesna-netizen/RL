@@ -9,13 +9,13 @@
         "ref": "dlalgo-ci/eos",
         "sha": "8f5151cf00e02933a9b92772443d62e95b5150ff",
         "source": "parent_pipeline",
-        "status": "running",
-        "updated_at": "2026-10-19T15:54:12.685-07:00",
+        "status": "failed",
+        "updated_at": "2026-10-19T16:07:32.081-07:00",
         "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/75131636"
       },
       "id": 497184115,
       "name": "trigger",
-      "status": "running"
+      "status": "failed"
     }
   ],
   "children": [
@@ -25,26 +25,26 @@
           "failure_reason": null,
           "id": 497185145,
           "name": "basic/m4-synthetic-paired-v0-engineering dgxh100_eos 00 [3 logs_after]",
-          "status": "created"
+          "status": "success"
         },
         {
-          "failure_reason": null,
+          "failure_reason": "script_failure",
           "id": 497185144,
           "name": "basic/m4-synthetic-paired-v0-engineering dgxh100_eos 00 [2 dgxh100_eos]",
-          "status": "created"
+          "status": "failed"
         },
         {
           "failure_reason": null,
           "id": 497185143,
           "name": "basic/m4-synthetic-paired-v0-engineering dgxh100_eos 00 [1 logs_before]",
-          "status": "running"
+          "status": "success"
         }
       ],
       "pipeline": {
         "id": 75131636,
         "ref": "dlalgo-ci/eos",
         "sha": "8f5151cf00e02933a9b92772443d62e95b5150ff",
-        "status": "running",
+        "status": "failed",
         "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/75131636",
         "yaml_errors": null
       }
@@ -52,12 +52,12 @@
   ],
   "exact_collector_job_id": 497185145,
   "exact_eos_job_id": 497185144,
-  "observed_at": "2026-10-19T22:54:28.084690+00:00",
+  "observed_at": "2026-10-19T23:21:57.153552+00:00",
   "parent": {
     "id": 75131528,
     "ref": "dlalgo-ci/eos",
     "sha": "8f5151cf00e02933a9b92772443d62e95b5150ff",
-    "status": "running",
+    "status": "failed",
     "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/75131528",
     "yaml_errors": null
   },

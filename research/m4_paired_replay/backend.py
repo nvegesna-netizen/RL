@@ -83,7 +83,7 @@ class NeMoBackend:
             policy_config["model_name"] != "meta-llama/Llama-3.2-1B-Instruct"
             or policy_config["train_global_batch_size"] != 32
             or policy_config["train_micro_batch_size"] != 1
-            or self.config.loss_fn["token_level_loss"] is not True
+            or self.config.loss_fn.token_level_loss is not True
             or policy_config.get("eligible_replay_training_trace") is not None
             or policy_config.get("eligible_replay_engineering_cold_start") is True
             or any(

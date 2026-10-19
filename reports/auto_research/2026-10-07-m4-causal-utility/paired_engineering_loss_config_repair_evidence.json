@@ -1,0 +1,90 @@
+{
+  "all_chains_terminal": true,
+  "archive_sha256": {
+    "collector_archive_sha256": "f0b26fa86859723bdd681739f46ae449e614d7cc64119e0ea040dc9d1166cb43",
+    "eos_archive_sha256": "5c67fec73c34f1b20a1a1b06e827249fc2c358427508811bc9aa8535f2212294"
+  },
+  "cause": "backend treats the native Pydantic ClippedPGLossConfig as a subscriptable dict",
+  "child_pipeline_id": 75131636,
+  "collector_job_id": 497185145,
+  "collector_verification": {
+    "collector_canary_excluded": true,
+    "failed_stage": "base-train",
+    "fresh_acquisition_unlocked": false,
+    "status": "ENGINEERING_RUNTIME_FAILED"
+  },
+  "completed_stages": [
+    "bootstrap"
+  ],
+  "eos_job_id": 497185144,
+  "exception": "'ClippedPGLossConfig' object is not subscriptable",
+  "failed_stage": "base-train",
+  "failure_source": "research/m4_paired_replay/backend.py:86",
+  "native_field_types_audited": {
+    "cluster": "TypedDict ClusterConfig",
+    "loss_fn": "Pydantic ClippedPGLossConfig",
+    "policy": "TypedDict PolicyConfig"
+  },
+  "native_model_checkpoint_save_completed": true,
+  "native_optimizer_initialization_invariants_unchanged": true,
+  "native_optimizer_initialization_updates": 0,
+  "native_source_sha256": {
+    "nemo_rl/algorithms/loss/loss_functions.py": "e744785d4c2ef73d85a958a0eb6db5b0f060c4cdcd9af7f464b4293c6f1e9b73",
+    "nemo_rl/algorithms/single_controller_utils/config.py": "e7f86e102ebb5094e65cd377ac531cf9c7152b6e43362065021721d16327dab4",
+    "nemo_rl/distributed/virtual_cluster.py": "ed491307e7f457db3733875a26d35153f3c943a0bf8430b81e3b13e54b81b829",
+    "nemo_rl/models/policy/__init__.py": "1f51cf50d1cbc796aa3dc7e9187736d6ed22586d6895928ca906b962f55f16fe"
+  },
+  "native_typed_config_reproduction": {
+    "exact_backend_subscript_reproduced": true,
+    "exception": "'ClippedPGLossConfig' object is not subscriptable",
+    "existing_test_asserts_incorrect_dictionary_access": true,
+    "native_attribute_access_true_false_verified": true,
+    "native_loss_source_sha256": "e744785d4c2ef73d85a958a0eb6db5b0f060c4cdcd9af7f464b4293c6f1e9b73",
+    "native_source_matches_frozen_archive": true,
+    "new_launcher_invocations": 0,
+    "real_torch_required": false,
+    "schema": "m4-native-loss-config-reproduction-v1",
+    "source_changes": 0
+  },
+  "new_launcher_invocations": 0,
+  "next_step": "Verify rebuilt package, then perform the user-authorized one-shot synthetic replacement",
+  "no_optimizer_or_training_change": true,
+  "parent_pipeline_id": 75131528,
+  "real_torch_preflight": {
+    "checks": {
+      "exact_gradient_dot": true,
+      "frozen_token_k3_formula": true,
+      "gradient_role_and_state_bound": true,
+      "native_sequence_packing_preparation": true,
+      "native_zero_step_optimizer_initialization_and_restore": true,
+      "optimizer_method_restored": true,
+      "parameter_delta": true,
+      "probe_stops_before_optimizer": true
+    },
+    "native_model_qualified": false,
+    "native_optimizer_initialization": {
+      "optimizer_updates": 0,
+      "signatures": [
+        "(param, store_param_remainders)"
+      ],
+      "source_sha256": "c568493a65938d81863a2bac31230c5710051041ccb6ba010bcccaa164514beb"
+    },
+    "scientific_outcomes_accessed": false,
+    "status": "PASS_REAL_TORCH_SECONDARY_MECHANICS"
+  },
+  "repair": "Use loss_fn.token_level_loss; execute native Pydantic class and actual backend guard instead of matching source text",
+  "schema": "m4-typed-loss-config-repair-evidence-v1",
+  "scientific_outcomes_accessed": false,
+  "source_repairs_this_turn": 1,
+  "tests": {
+    "errors": 0,
+    "failures": 0,
+    "run": 206,
+    "skipped": 0
+  },
+  "trace_sha256": {
+    "497185143": "cadb0ce032a248bdbda51211097b97db29d59f26d4e0effede12380a06272a88",
+    "497185144": "16cc2f53091be4cc252612a7756a906eadd6a916ab4c9600f1450f9b814d0f7f",
+    "497185145": "edbb593190e90216ac9cb4b4d51087669e6dfd1f1aa78a7a32dc4c1a687a6a6f"
+  }
+}
