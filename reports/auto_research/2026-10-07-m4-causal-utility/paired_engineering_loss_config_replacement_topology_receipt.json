@@ -9,13 +9,13 @@
         "ref": "dlalgo-ci/eos",
         "sha": "8f5151cf00e02933a9b92772443d62e95b5150ff",
         "source": "parent_pipeline",
-        "status": "running",
-        "updated_at": "2026-10-19T16:54:53.645-07:00",
+        "status": "success",
+        "updated_at": "2026-10-19T17:38:03.183-07:00",
         "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/75144358"
       },
       "id": 497285944,
       "name": "trigger",
-      "status": "running"
+      "status": "success"
     }
   ],
   "children": [
@@ -25,13 +25,13 @@
           "failure_reason": null,
           "id": 497286800,
           "name": "basic/m4-synthetic-paired-v0-engineering dgxh100_eos 00 [3 logs_after]",
-          "status": "created"
+          "status": "success"
         },
         {
           "failure_reason": null,
           "id": 497286799,
           "name": "basic/m4-synthetic-paired-v0-engineering dgxh100_eos 00 [2 dgxh100_eos]",
-          "status": "running"
+          "status": "success"
         },
         {
           "failure_reason": null,
@@ -44,7 +44,7 @@
         "id": 75144358,
         "ref": "dlalgo-ci/eos",
         "sha": "8f5151cf00e02933a9b92772443d62e95b5150ff",
-        "status": "running",
+        "status": "success",
         "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/75144358",
         "yaml_errors": null
       }
@@ -52,12 +52,12 @@
   ],
   "exact_collector_job_id": 497286800,
   "exact_eos_job_id": 497286799,
-  "observed_at": "2026-10-20T00:29:47.136063+00:00",
+  "observed_at": "2026-10-20T01:04:06.538442+00:00",
   "parent": {
     "id": 75144240,
     "ref": "dlalgo-ci/eos",
     "sha": "8f5151cf00e02933a9b92772443d62e95b5150ff",
-    "status": "running",
+    "status": "success",
     "web_url": "https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/75144240",
     "yaml_errors": null
   },

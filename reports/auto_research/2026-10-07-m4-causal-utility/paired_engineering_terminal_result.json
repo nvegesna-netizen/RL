@@ -1,0 +1,84 @@
+{
+  "actual_eos_secondary_preflight": {
+    "checks": {
+      "exact_gradient_dot": true,
+      "frozen_token_k3_formula": true,
+      "gradient_role_and_state_bound": true,
+      "native_sequence_packing_preparation": true,
+      "native_zero_step_optimizer_initialization_and_restore": true,
+      "optimizer_method_restored": true,
+      "parameter_delta": true,
+      "probe_stops_before_optimizer": true
+    },
+    "native_model_qualified": false,
+    "native_optimizer_initialization": {
+      "optimizer_updates": 0,
+      "signatures": [
+        "(param, store_param_remainders)"
+      ],
+      "source_sha256": "c568493a65938d81863a2bac31230c5710051041ccb6ba010bcccaa164514beb"
+    },
+    "scientific_outcomes_accessed": false,
+    "status": "PASS_REAL_TORCH_SECONDARY_MECHANICS"
+  },
+  "actual_eos_tests": {
+    "errors": 0,
+    "failures": 0,
+    "run": 210,
+    "skipped": 0
+  },
+  "archive_sha256": {
+    "collector_archive_sha256": "d0c1e487b9f5a3e333e015e407779900e414444a187cd55405184ae71aa990e6",
+    "eos_archive_sha256": "ba479c596c3bd9ed9134c6f9c180d1ab535e55c63fe7da8ed580a7638526186f"
+  },
+  "checks": {
+    "authenticated_archives": 2,
+    "authenticated_traces": 3,
+    "both_action_duplicates_equal": true,
+    "collector_plaintext_exclusion_verified": true,
+    "fresh_acquisition_unlocked": false,
+    "observer_post_state_equal": true,
+    "registered_secondaries_complete": true,
+    "scientific_outcomes_opened": false,
+    "status": "PASS_SYNTHETIC_ENGINEERING_QUALIFICATION",
+    "synthetic_only": true,
+    "version_zero_restored": true
+  },
+  "child_pipeline_id": 75144358,
+  "collector_job_id": 497286800,
+  "completed_stages": [
+    "bootstrap",
+    "base-train",
+    "base-heldout",
+    "shield-train",
+    "shield-heldout",
+    "base-control",
+    "base-a",
+    "base-b",
+    "shield-a",
+    "shield-b"
+  ],
+  "eos_job_id": 497286799,
+  "fresh_acquisition_launched": false,
+  "gradient_only_probes": 4,
+  "integration_protocol_sha256": "4decd6ccbc272062d5d691583f372a132434e0c7a69b6f05788025c485e4a8d1",
+  "logs_before_job_id": 497286798,
+  "manifest_sha256": "d2dfd5d0e0d6b94028316974e0777aeb1a72f7058d1f9fd7762f462c13e58c74",
+  "next_step": "Prepare and independently verify the frozen v2 twenty-trajectory capture package; retain capture completion and sealed replay gates",
+  "parent_pipeline_id": 75144240,
+  "primary_processes": 5,
+  "protocol_sha256": "65b4e48ce4feddc6ed1fe2907dbaf108ea02c37d20190a19bf6f6ca13e6c5cfd",
+  "qualification_passed": true,
+  "schema": "m4-paired-engineering-terminal-result-v1",
+  "scientific_treatment_effect_estimated": false,
+  "source_commit": "83017c6c4b720299c6bff5d5ceec3f3d4006798c",
+  "status": "PASS_SYNTHETIC_ENGINEERING_QUALIFICATION",
+  "synthetic_model_processes": 10,
+  "terminal_accuracy_improvement_established": false,
+  "terminal_topology_sha256": "50c4404badaacbba5110fce2db43dc0904219992dd5e5571c818df57981720bd",
+  "trace_sha256": {
+    "497286798": "cb7c7cb3fd38f50b5310d592467c7bc9518f858d6356d4c79a9eb5317e182ca7",
+    "497286799": "a67acd3714a79bfaf2d02343f04868a144f2243206517ff876641109a545a3ad",
+    "497286800": "7fdd80c70755c9017df39351e2a2997c7908f5cdf0653dcf4c1be809c52af523"
+  }
+}
