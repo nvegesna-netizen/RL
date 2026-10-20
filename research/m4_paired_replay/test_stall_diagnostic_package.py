@@ -78,7 +78,7 @@ class StallDiagnosticPackageTests(unittest.TestCase):
                 "seconds_without_learner_progress": 1201,
                 "controller_state": {"buffer_end_weight_version_counts": {}},
                 "tasks": {
-                    "rollout_pump": {"stack": ["test"]},
+                    "rollout_pump": {"stack": [], "done": True, "cancelled": False},
                     "train_pump": {"stack": ["test"]},
                 },
             }

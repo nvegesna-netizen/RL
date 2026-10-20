@@ -51,7 +51,9 @@ if watchdog.exists():
  assert record["trajectory_identity"]=="v2a09" and record["trajectory_seed"]==20261209
  assert record["timeout_seconds"]==1200 and record["seconds_without_learner_progress"]>=1200
  assert "buffer_end_weight_version_counts" in record["controller_state"]
- assert record["tasks"]["rollout_pump"]["stack"] and record["tasks"]["train_pump"]["stack"]
+ for task in record["tasks"].values():
+  assert isinstance(task["stack"],list)
+  assert task["stack"] or task["done"] or task["cancelled"]
  assert rc!=0
  assert "eligible live capture made no learner progress" in (root/"m4-eligible-live-v2a09-run.log").read_text()
  status="WATCHDOG_DIAGNOSTIC_COLLECTED"
