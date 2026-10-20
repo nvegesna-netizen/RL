@@ -1,0 +1,578 @@
+{
+  "authenticated_eos_chains": 20,
+  "ci_commit_sha": "8f5151cf00e02933a9b92772443d62e95b5150ff",
+  "ci_ref": "dlalgo-ci/eos",
+  "execution_source_commit": "82708a4e44c5724a80aed7e5cfd83b37d69a1dfd",
+  "failures": [],
+  "observed_at": "2026-10-20T02:38:24.872549+00:00",
+  "package_sha256": "cbaf4fffd2976252f42532379a38fa11700c84c9c66be31f4b540c5eacc6d88e",
+  "paired_replay_started": false,
+  "pending_invocations": 0,
+  "plan_sha256": "5dbe1ec155a9c3e7d57363820625286290f6803c0bd2e47484847ed3980e141e",
+  "rows": [
+    {
+      "child_jobs": [
+        {
+          "id": 497521287,
+          "name": "basic/m4-eligible-live-acquisition-v2a01 dgxh100_eos 00 [1 dgxh100_eos]",
+          "status": "running"
+        }
+      ],
+      "child_pipeline_id": 75172761,
+      "child_status": "running",
+      "eos_job_id": 497521287,
+      "eos_status": "running",
+      "guard_sha256": "b8e6b9e9c7f29bbddc6c2c852a7f6b71e400a91c38c916a6f6217b74ad5de2c8",
+      "identity": "v2a01",
+      "invoked_at": "2026-10-20T02:34:25.459445+00:00",
+      "manifest_sha256": "13f4c719e92bee1d29bead8f1b1d816fc152ad45e38b29587a180ba3082f474b",
+      "parent_jobs": [
+        {
+          "id": 497518428,
+          "name": "generate",
+          "status": "success"
+        }
+      ],
+      "parent_pipeline_id": 75172297,
+      "parent_status": "running",
+      "seed": 20261201,
+      "submission_status": "SUBMITTED_NO_WAIT"
+    },
+    {
+      "child_jobs": [
+        {
+          "id": 497521512,
+          "name": "basic/m4-eligible-live-acquisition-v2a02 dgxh100_eos 00 [1 dgxh100_eos]",
+          "status": "running"
+        }
+      ],
+      "child_pipeline_id": 75172792,
+      "child_status": "running",
+      "eos_job_id": 497521512,
+      "eos_status": "running",
+      "guard_sha256": "cbc962ebe7e55918b3273673890695b4bef93ddb80267a16851304c8a47d6d51",
+      "identity": "v2a02",
+      "invoked_at": "2026-10-20T02:34:51.322764+00:00",
+      "manifest_sha256": "deb0310e1275bf43f014667632d0948aa151d9c72f64465e998f08fef605a5c6",
+      "parent_jobs": [
+        {
+          "id": 497518574,
+          "name": "generate",
+          "status": "success"
+        }
+      ],
+      "parent_pipeline_id": 75172316,
+      "parent_status": "running",
+      "seed": 20261202,
+      "submission_status": "SUBMITTED_NO_WAIT"
+    },
+    {
+      "child_jobs": [
+        {
+          "id": 497521565,
+          "name": "basic/m4-eligible-live-acquisition-v2a03 dgxh100_eos 00 [1 dgxh100_eos]",
+          "status": "running"
+        }
+      ],
+      "child_pipeline_id": 75172800,
+      "child_status": "running",
+      "eos_job_id": 497521565,
+      "eos_status": "running",
+      "guard_sha256": "b1d40b600a736c01b0f8917dd6cdf2d2a309e92dfe336716cdd974c0a4b4a677",
+      "identity": "v2a03",
+      "invoked_at": "2026-10-20T02:35:01.801373+00:00",
+      "manifest_sha256": "1cc14eac8a0a518d3d655ef8f1031e6b32daa44ebf89b3c3482932c70b3c7ae5",
+      "parent_jobs": [
+        {
+          "id": 497518964,
+          "name": "generate",
+          "status": "success"
+        }
+      ],
+      "parent_pipeline_id": 75172500,
+      "parent_status": "running",
+      "seed": 20261203,
+      "submission_status": "SUBMITTED_NO_WAIT"
+    },
+    {
+      "child_jobs": [
+        {
+          "id": 497521698,
+          "name": "basic/m4-eligible-live-acquisition-v2a04 dgxh100_eos 00 [1 dgxh100_eos]",
+          "status": "running"
+        }
+      ],
+      "child_pipeline_id": 75172815,
+      "child_status": "running",
+      "eos_job_id": 497521698,
+      "eos_status": "running",
+      "guard_sha256": "c30d39e680144b6d7da84e950dc232724534a3b897d25a75731cd1a86f6bebd4",
+      "identity": "v2a04",
+      "invoked_at": "2026-10-20T02:35:10.536533+00:00",
+      "manifest_sha256": "f826b3ee4aa4245045d8fab519dc07ab89f4616179ab48bb293dcbb85212fecf",
+      "parent_jobs": [
+        {
+          "id": 497520451,
+          "name": "generate",
+          "status": "success"
+        }
+      ],
+      "parent_pipeline_id": 75172705,
+      "parent_status": "running",
+      "seed": 20261204,
+      "submission_status": "SUBMITTED_NO_WAIT"
+    },
+    {
+      "child_jobs": [
+        {
+          "id": 497522187,
+          "name": "basic/m4-eligible-live-acquisition-v2a05 dgxh100_eos 00 [1 dgxh100_eos]",
+          "status": "running"
+        }
+      ],
+      "child_pipeline_id": 75172848,
+      "child_status": "running",
+      "eos_job_id": 497522187,
+      "eos_status": "running",
+      "guard_sha256": "c615f31d5ff1df6dadd0823167a155133e79ba7ca12f080e1913a4824d618bc6",
+      "identity": "v2a05",
+      "invoked_at": "2026-10-20T02:35:18.149232+00:00",
+      "manifest_sha256": "7993b4f37d1742defcc90d50d24e2bba9542e2f5d12f9ff2a8bd376fe099c451",
+      "parent_jobs": [
+        {
+          "id": 497521209,
+          "name": "generate",
+          "status": "success"
+        }
+      ],
+      "parent_pipeline_id": 75172755,
+      "parent_status": "running",
+      "seed": 20261205,
+      "submission_status": "SUBMITTED_NO_WAIT"
+    },
+    {
+      "child_jobs": [
+        {
+          "id": 497522431,
+          "name": "basic/m4-eligible-live-acquisition-v2a06 dgxh100_eos 00 [1 dgxh100_eos]",
+          "status": "running"
+        }
+      ],
+      "child_pipeline_id": 75172880,
+      "child_status": "running",
+      "eos_job_id": 497522431,
+      "eos_status": "running",
+      "guard_sha256": "21d54a32b6286d80cce3c96576bdc469d6ef568d426f2ebb970b98db99af8768",
+      "identity": "v2a06",
+      "invoked_at": "2026-10-20T02:35:28.265173+00:00",
+      "manifest_sha256": "d0c934944edbc9485dd6d3d55608e962712d9bf28f82f29a32847f7221bd077f",
+      "parent_jobs": [
+        {
+          "id": 497521379,
+          "name": "generate",
+          "status": "success"
+        }
+      ],
+      "parent_pipeline_id": 75172775,
+      "parent_status": "running",
+      "seed": 20261206,
+      "submission_status": "SUBMITTED_NO_WAIT"
+    },
+    {
+      "child_jobs": [
+        {
+          "id": 497522921,
+          "name": "basic/m4-eligible-live-acquisition-v2a07 dgxh100_eos 00 [1 dgxh100_eos]",
+          "status": "running"
+        }
+      ],
+      "child_pipeline_id": 75172933,
+      "child_status": "running",
+      "eos_job_id": 497522921,
+      "eos_status": "running",
+      "guard_sha256": "52ecd4f4912ed7251c13a7d87ae0fe9275812e8a8bee512dbd20b04d11df6a6d",
+      "identity": "v2a07",
+      "invoked_at": "2026-10-20T02:35:36.214224+00:00",
+      "manifest_sha256": "0df95c9f4f8844b3afd35151ae758376353070aba275854177912690295ad5c6",
+      "parent_jobs": [
+        {
+          "id": 497521506,
+          "name": "generate",
+          "status": "success"
+        }
+      ],
+      "parent_pipeline_id": 75172789,
+      "parent_status": "running",
+      "seed": 20261207,
+      "submission_status": "SUBMITTED_NO_WAIT"
+    },
+    {
+      "child_jobs": [
+        {
+          "id": 497523356,
+          "name": "basic/m4-eligible-live-acquisition-v2a08 dgxh100_eos 00 [1 dgxh100_eos]",
+          "status": "running"
+        }
+      ],
+      "child_pipeline_id": 75172979,
+      "child_status": "running",
+      "eos_job_id": 497523356,
+      "eos_status": "running",
+      "guard_sha256": "14879f73268a4836f6b3263ce2be8815695cc8116a9dde8aca166226d0df496a",
+      "identity": "v2a08",
+      "invoked_at": "2026-10-20T02:35:45.544004+00:00",
+      "manifest_sha256": "ea5de038d3a9cfe5e57704f4b916a2769b08f0854fe10905f5baef8ad6c57c3a",
+      "parent_jobs": [
+        {
+          "id": 497521585,
+          "name": "generate",
+          "status": "success"
+        }
+      ],
+      "parent_pipeline_id": 75172805,
+      "parent_status": "running",
+      "seed": 20261208,
+      "submission_status": "SUBMITTED_NO_WAIT"
+    },
+    {
+      "child_jobs": [
+        {
+          "id": 497523812,
+          "name": "basic/m4-eligible-live-acquisition-v2a09 dgxh100_eos 00 [1 dgxh100_eos]",
+          "status": "running"
+        }
+      ],
+      "child_pipeline_id": 75173018,
+      "child_status": "running",
+      "eos_job_id": 497523812,
+      "eos_status": "running",
+      "guard_sha256": "3f75a0ee8a203d21725ce2c8d78f9e00644c76413c803294f7fb4e5f638f58f1",
+      "identity": "v2a09",
+      "invoked_at": "2026-10-20T02:35:54.012982+00:00",
+      "manifest_sha256": "155651b0d65b724c8d55264b552989e2cbd5179a6310ca849d630839d219f72e",
+      "parent_jobs": [
+        {
+          "id": 497522016,
+          "name": "generate",
+          "status": "success"
+        }
+      ],
+      "parent_pipeline_id": 75172836,
+      "parent_status": "running",
+      "seed": 20261209,
+      "submission_status": "SUBMITTED_NO_WAIT"
+    },
+    {
+      "child_jobs": [
+        {
+          "id": 497524003,
+          "name": "basic/m4-eligible-live-acquisition-v2a10 dgxh100_eos 00 [1 dgxh100_eos]",
+          "status": "running"
+        }
+      ],
+      "child_pipeline_id": 75173046,
+      "child_status": "running",
+      "eos_job_id": 497524003,
+      "eos_status": "running",
+      "guard_sha256": "b5442073c1df4e188de9cf01345eb1d5b3c8b5f6c605706c1636665decd8dfbe",
+      "identity": "v2a10",
+      "invoked_at": "2026-10-20T02:36:06.191057+00:00",
+      "manifest_sha256": "f1778c6e5d0a5e7d3c0083e08d11ea4913663693c8add0ff0d126700de79b7da",
+      "parent_jobs": [
+        {
+          "id": 497522218,
+          "name": "generate",
+          "status": "success"
+        }
+      ],
+      "parent_pipeline_id": 75172857,
+      "parent_status": "running",
+      "seed": 20261210,
+      "submission_status": "SUBMITTED_NO_WAIT"
+    },
+    {
+      "child_jobs": [
+        {
+          "id": 497524171,
+          "name": "basic/m4-eligible-live-acquisition-v2a11 dgxh100_eos 00 [1 dgxh100_eos]",
+          "status": "running"
+        }
+      ],
+      "child_pipeline_id": 75173068,
+      "child_status": "running",
+      "eos_job_id": 497524171,
+      "eos_status": "running",
+      "guard_sha256": "fa4e72e7cd56441594cf8d34026fb5ffd0a16f496ac6df11b8712d75385bde3d",
+      "identity": "v2a11",
+      "invoked_at": "2026-10-20T02:36:15.007857+00:00",
+      "manifest_sha256": "9a69f9e2a74000675a358e895fd9448f7d0e8ebcec73a7abef05237d5e9527d2",
+      "parent_jobs": [
+        {
+          "id": 497522490,
+          "name": "generate",
+          "status": "success"
+        }
+      ],
+      "parent_pipeline_id": 75172891,
+      "parent_status": "running",
+      "seed": 20261211,
+      "submission_status": "SUBMITTED_NO_WAIT"
+    },
+    {
+      "child_jobs": [
+        {
+          "id": 497524268,
+          "name": "basic/m4-eligible-live-acquisition-v2a12 dgxh100_eos 00 [1 dgxh100_eos]",
+          "status": "running"
+        }
+      ],
+      "child_pipeline_id": 75173084,
+      "child_status": "running",
+      "eos_job_id": 497524268,
+      "eos_status": "running",
+      "guard_sha256": "55a7cad825d11597f73a74dad3950513b42a59a24bbd160ac75acba44336a102",
+      "identity": "v2a12",
+      "invoked_at": "2026-10-20T02:36:22.636343+00:00",
+      "manifest_sha256": "25691ccab8779a53a6ed2dd75363d03d39667cf38fc389d109c1c8438811321a",
+      "parent_jobs": [
+        {
+          "id": 497522745,
+          "name": "generate",
+          "status": "success"
+        }
+      ],
+      "parent_pipeline_id": 75172926,
+      "parent_status": "running",
+      "seed": 20261212,
+      "submission_status": "SUBMITTED_NO_WAIT"
+    },
+    {
+      "child_jobs": [
+        {
+          "id": 497524476,
+          "name": "basic/m4-eligible-live-acquisition-v2a13 dgxh100_eos 00 [1 dgxh100_eos]",
+          "status": "running"
+        }
+      ],
+      "child_pipeline_id": 75173109,
+      "child_status": "running",
+      "eos_job_id": 497524476,
+      "eos_status": "running",
+      "guard_sha256": "b7fed178b0a1b3fce13e3f2e2ab94e6479194f7b4dd40849add4b72292572150",
+      "identity": "v2a13",
+      "invoked_at": "2026-10-20T02:36:30.117921+00:00",
+      "manifest_sha256": "0cdd864c0b6ace867df904c40e5ec34b6c6c8b36b4645a5b844705f200242753",
+      "parent_jobs": [
+        {
+          "id": 497523324,
+          "name": "generate",
+          "status": "success"
+        }
+      ],
+      "parent_pipeline_id": 75172974,
+      "parent_status": "running",
+      "seed": 20261213,
+      "submission_status": "SUBMITTED_NO_WAIT"
+    },
+    {
+      "child_jobs": [
+        {
+          "id": 497524579,
+          "name": "basic/m4-eligible-live-acquisition-v2a14 dgxh100_eos 00 [1 dgxh100_eos]",
+          "status": "running"
+        }
+      ],
+      "child_pipeline_id": 75173124,
+      "child_status": "running",
+      "eos_job_id": 497524579,
+      "eos_status": "running",
+      "guard_sha256": "155c4c8a87b0f1df6618733ac7a52d1c51c3b1dc85ddc0d4757a0c510abcb958",
+      "identity": "v2a14",
+      "invoked_at": "2026-10-20T02:36:38.933576+00:00",
+      "manifest_sha256": "16c1504360515b03d0eb5cb6170636e3910ba21e8e36696f1b2ecc53ba189a43",
+      "parent_jobs": [
+        {
+          "id": 497523681,
+          "name": "generate",
+          "status": "success"
+        }
+      ],
+      "parent_pipeline_id": 75173006,
+      "parent_status": "running",
+      "seed": 20261214,
+      "submission_status": "SUBMITTED_NO_WAIT"
+    },
+    {
+      "child_jobs": [
+        {
+          "id": 497524641,
+          "name": "basic/m4-eligible-live-acquisition-v2a15 dgxh100_eos 00 [1 dgxh100_eos]",
+          "status": "running"
+        }
+      ],
+      "child_pipeline_id": 75173129,
+      "child_status": "running",
+      "eos_job_id": 497524641,
+      "eos_status": "running",
+      "guard_sha256": "74b8b66edddb143eeae099db3fa0905aaed52991dc78bb34fda04a7cb16e1af3",
+      "identity": "v2a15",
+      "invoked_at": "2026-10-20T02:36:47.082064+00:00",
+      "manifest_sha256": "f7e49b628bc463772ac41cd67414af405b484f1c907857bbb6bd8151260eb780",
+      "parent_jobs": [
+        {
+          "id": 497523932,
+          "name": "generate",
+          "status": "success"
+        }
+      ],
+      "parent_pipeline_id": 75173033,
+      "parent_status": "running",
+      "seed": 20261215,
+      "submission_status": "SUBMITTED_NO_WAIT"
+    },
+    {
+      "child_jobs": [
+        {
+          "id": 497524748,
+          "name": "basic/m4-eligible-live-acquisition-v2a16 dgxh100_eos 00 [1 dgxh100_eos]",
+          "status": "running"
+        }
+      ],
+      "child_pipeline_id": 75173140,
+      "child_status": "running",
+      "eos_job_id": 497524748,
+      "eos_status": "running",
+      "guard_sha256": "22e8352dbfe306418cff7faaf6c06c24a69785d1bd5cf4ae8c7b20c317435cbe",
+      "identity": "v2a16",
+      "invoked_at": "2026-10-20T02:36:55.587316+00:00",
+      "manifest_sha256": "0b38db762a2b1cc9c4f7d594b27e0e6fc2c008f61a0650a501e4aa8acd8abd1c",
+      "parent_jobs": [
+        {
+          "id": 497524039,
+          "name": "generate",
+          "status": "success"
+        }
+      ],
+      "parent_pipeline_id": 75173056,
+      "parent_status": "running",
+      "seed": 20261216,
+      "submission_status": "SUBMITTED_NO_WAIT"
+    },
+    {
+      "child_jobs": [
+        {
+          "id": 497524919,
+          "name": "basic/m4-eligible-live-acquisition-v2a17 dgxh100_eos 00 [1 dgxh100_eos]",
+          "status": "running"
+        }
+      ],
+      "child_pipeline_id": 75173168,
+      "child_status": "running",
+      "eos_job_id": 497524919,
+      "eos_status": "running",
+      "guard_sha256": "a2adf317c3d1074b7965964a18de024e54e1bff5073e8a83433e4d748c5cca6c",
+      "identity": "v2a17",
+      "invoked_at": "2026-10-20T02:37:03.233665+00:00",
+      "manifest_sha256": "040566cccc243f66da9f776c6777a192ed9ece6ba24d4d2a3b4899a1e976edf0",
+      "parent_jobs": [
+        {
+          "id": 497524386,
+          "name": "generate",
+          "status": "success"
+        }
+      ],
+      "parent_pipeline_id": 75173096,
+      "parent_status": "running",
+      "seed": 20261217,
+      "submission_status": "SUBMITTED_NO_WAIT"
+    },
+    {
+      "child_jobs": [
+        {
+          "id": 497524933,
+          "name": "basic/m4-eligible-live-acquisition-v2a18 dgxh100_eos 00 [1 dgxh100_eos]",
+          "status": "running"
+        }
+      ],
+      "child_pipeline_id": 75173174,
+      "child_status": "running",
+      "eos_job_id": 497524933,
+      "eos_status": "running",
+      "guard_sha256": "8ac53a393afa50f42188f12556392aaaa9fe406f600ae10889faa0746d1566ea",
+      "identity": "v2a18",
+      "invoked_at": "2026-10-20T02:37:16.481540+00:00",
+      "manifest_sha256": "7af4fe5254903102787a4c9c0add849952b7b99ffff9d2d3613b8c75265f0439",
+      "parent_jobs": [
+        {
+          "id": 497524483,
+          "name": "generate",
+          "status": "success"
+        }
+      ],
+      "parent_pipeline_id": 75173110,
+      "parent_status": "running",
+      "seed": 20261218,
+      "submission_status": "SUBMITTED_NO_WAIT"
+    },
+    {
+      "child_jobs": [
+        {
+          "id": 497524958,
+          "name": "basic/m4-eligible-live-acquisition-v2a19 dgxh100_eos 00 [1 dgxh100_eos]",
+          "status": "running"
+        }
+      ],
+      "child_pipeline_id": 75173183,
+      "child_status": "running",
+      "eos_job_id": 497524958,
+      "eos_status": "running",
+      "guard_sha256": "6960d47ffc170ac9be516a8b1e0a608f33a9229f43ed692b87e75d7cc6c365f7",
+      "identity": "v2a19",
+      "invoked_at": "2026-10-20T02:37:24.381437+00:00",
+      "manifest_sha256": "e4036722c00f1740114ba6c296b5ab192a04357f56b13398484ea0fb7db6bc6c",
+      "parent_jobs": [
+        {
+          "id": 497524506,
+          "name": "generate",
+          "status": "success"
+        }
+      ],
+      "parent_pipeline_id": 75173120,
+      "parent_status": "running",
+      "seed": 20261219,
+      "submission_status": "SUBMITTED_NO_WAIT"
+    },
+    {
+      "child_jobs": [
+        {
+          "id": 497525174,
+          "name": "basic/m4-eligible-live-acquisition-v2a20 dgxh100_eos 00 [1 dgxh100_eos]",
+          "status": "running"
+        }
+      ],
+      "child_pipeline_id": 75173210,
+      "child_status": "running",
+      "eos_job_id": 497525174,
+      "eos_status": "running",
+      "guard_sha256": "afc36c20657508446cff10bfee6b570a0a6264d6152635db2c256c1e87d773a5",
+      "identity": "v2a20",
+      "invoked_at": "2026-10-20T02:37:32.678854+00:00",
+      "manifest_sha256": "90d4a6282b43c3fac91d797db185ec5431b2b59f0af69389d221ce162986aadb",
+      "parent_jobs": [
+        {
+          "id": 497524702,
+          "name": "generate",
+          "status": "success"
+        }
+      ],
+      "parent_pipeline_id": 75173136,
+      "parent_status": "running",
+      "seed": 20261220,
+      "submission_status": "SUBMITTED_NO_WAIT"
+    }
+  ],
+  "schema": "m4-v2-capture-launch-receipt-v1",
+  "scientific_outcomes_opened": false,
+  "status_only": true,
+  "submitted_parents": 20
+}
