@@ -1,0 +1,169 @@
+{
+  "admitted": [
+    {
+      "assignment_domain": "m4-eligible-live-causal-acquisition-v2",
+      "classification": "CAPSULE",
+      "eos_job_id": 497848686,
+      "evidence_sha256": "4bc2e76345031f0854e350c13782888390a34722b17affc69cf4c6ac04be0aa1",
+      "identity": "v2a01",
+      "manifest_sha256": "d042ab635659782b0b71265e244b912daae9bc26ce7bc1c2ab08f8a7e41e4da4",
+      "seed": 20261201,
+      "terminal_status": "success"
+    },
+    {
+      "assignment_domain": "m4-eligible-live-causal-acquisition-v2",
+      "classification": "CAPSULE",
+      "eos_job_id": 497848333,
+      "evidence_sha256": "fede2ef48ee371c65f4d29b87c0b35b9df86eb472192289039d43d4a3fd6a7b2",
+      "identity": "v2a02",
+      "manifest_sha256": "74ad3e975214f63ae29dbba27a8e42ebeb32372f636174888c0a8e228a5e0db2",
+      "seed": 20261202,
+      "terminal_status": "success"
+    },
+    {
+      "assignment_domain": "m4-eligible-live-causal-acquisition-v2",
+      "classification": "CAPSULE",
+      "eos_job_id": 497848396,
+      "evidence_sha256": "e25c773ccf9f7c688cabbd77b3be264f78205533576c4adf914c23e55f935df1",
+      "identity": "v2a03",
+      "manifest_sha256": "307fb420c2f0dcfdbbe28eddf3b42006a3a448acecc165a4fc424b98a6c7997c",
+      "seed": 20261203,
+      "terminal_status": "success"
+    },
+    {
+      "assignment_domain": "m4-eligible-live-causal-acquisition-v2",
+      "classification": "CAPSULE",
+      "eos_job_id": 497848579,
+      "evidence_sha256": "19195f8a3cad0545156783d42ee376ff9aa7ec2c8a060be4775f9df088a78b5b",
+      "identity": "v2a04",
+      "manifest_sha256": "9371a9b28bfe8c73dd5fe950186a51bbe45412dfc95e976b2160bfc4ba0a7668",
+      "seed": 20261204,
+      "terminal_status": "success"
+    },
+    {
+      "assignment_domain": "m4-eligible-live-causal-acquisition-v2",
+      "classification": "CAPSULE",
+      "eos_job_id": 497848649,
+      "evidence_sha256": "e5f0fe8cda53c566cd30f9d154f6265513215ae2870e51ccefe5e4dec117786f",
+      "identity": "v2a05",
+      "manifest_sha256": "781550bf1dfabfbb37935ec0887e2f9af42157897c253f5590f54c61dc96cea5",
+      "seed": 20261205,
+      "terminal_status": "success"
+    },
+    {
+      "assignment_domain": "m4-eligible-live-causal-acquisition-v2",
+      "classification": "CAPSULE",
+      "eos_job_id": 497848694,
+      "evidence_sha256": "27f8918ba11c17cc9459bf5d54a696cc77538ecb0d9be4a482df1c6340b8ea2a",
+      "identity": "v2a06",
+      "manifest_sha256": "b35465ff2c60d6a338ff86468f9620537ce0ffdbd72c5162d401615f2fbc9aba",
+      "seed": 20261206,
+      "terminal_status": "success"
+    },
+    {
+      "assignment_domain": "m4-eligible-live-causal-acquisition-v2",
+      "classification": "CAPSULE",
+      "eos_job_id": 497848724,
+      "evidence_sha256": "e819682946e8bd1afe354ca2380eea269012b0f6c3f01adf1acf94acea15c3f1",
+      "identity": "v2a07",
+      "manifest_sha256": "d11a700e00f2bf4a47539512e85e5beef063105929a1404177afe70d94f0afa1",
+      "seed": 20261207,
+      "terminal_status": "success"
+    },
+    {
+      "assignment_domain": "m4-eligible-live-causal-acquisition-v2",
+      "classification": "CAPSULE",
+      "eos_job_id": 497848818,
+      "evidence_sha256": "fb8ff543b0e105b33c5ee3c67773e33bfb26ad736397e3c0dc8c1aa744c5762b",
+      "identity": "v2a08",
+      "manifest_sha256": "c58da1c020f462b052819bdce469208592e69525c449b54ee6fd37dde6c2de98",
+      "seed": 20261208,
+      "terminal_status": "success"
+    },
+    {
+      "assignment_domain": "m4-eligible-live-causal-acquisition-v2",
+      "classification": "CAPSULE",
+      "eos_job_id": 497849130,
+      "evidence_sha256": "a55f758ea643c1e64a28f9e08697d365f20005e0c685f1df72258e545b45cf81",
+      "identity": "v2a10",
+      "manifest_sha256": "d2e04ce234c22f64775a742bac0b58cb0505d80ea9f67cb9dbcd376197a1b000",
+      "seed": 20261210,
+      "terminal_status": "success"
+    },
+    {
+      "assignment_domain": "m4-eligible-live-causal-acquisition-v2",
+      "classification": "CAPSULE",
+      "eos_job_id": 497849535,
+      "evidence_sha256": "e39210ecc7c81efbe95f204ec525244c23b096ec5fa7d2bbf802af9f2ba34c0a",
+      "identity": "v2a12",
+      "manifest_sha256": "7f8fe3e203889450646776013f79e6ac8554eb8c73a3d15cae779714df424cab",
+      "seed": 20261212,
+      "terminal_status": "success"
+    },
+    {
+      "assignment_domain": "m4-eligible-live-causal-acquisition-v2",
+      "classification": "CAPSULE",
+      "eos_job_id": 497849562,
+      "evidence_sha256": "ea1187c9110fbcdb59e3d223a32f541483ba2c0a161c16efb1ccbe6e3302013a",
+      "identity": "v2a13",
+      "manifest_sha256": "2590bf4e20465042648515b7cea9188e68242ced12b9cf482e13fdb47a360256",
+      "seed": 20261213,
+      "terminal_status": "success"
+    },
+    {
+      "assignment_domain": "m4-eligible-live-causal-acquisition-v2",
+      "classification": "CAPSULE",
+      "eos_job_id": 497849775,
+      "evidence_sha256": "d487cec4701d38083baebd147b31b143d957a2d2686556881b92690a9d1b7bfb",
+      "identity": "v2a14",
+      "manifest_sha256": "13a3d097bd405e3cb8e86014de490a42079885821b3ef1f1500a2fdf07bcaf7c",
+      "seed": 20261214,
+      "terminal_status": "success"
+    },
+    {
+      "assignment_domain": "m4-eligible-live-causal-acquisition-v2",
+      "classification": "CAPSULE",
+      "eos_job_id": 497849813,
+      "evidence_sha256": "5ed663b9ac130bb2d21c478b5a5e2f143e6e63bad1ff49737fa9ea2c32c3a6b9",
+      "identity": "v2a15",
+      "manifest_sha256": "c093b41c82877beb1efc833f21338866e0c9d3dd5be06a6a91915fc29f704cea",
+      "seed": 20261215,
+      "terminal_status": "success"
+    },
+    {
+      "assignment_domain": "m4-eligible-live-causal-acquisition-v2",
+      "classification": "CAPSULE",
+      "eos_job_id": 497849996,
+      "evidence_sha256": "d426fa9769d219392f7af1cfedccb3820c97cb2c262d32d032b2e01edc32476a",
+      "identity": "v2a16",
+      "manifest_sha256": "8ceaf83dd8e4ba275d3f11e375a695288b70b18c8c3c7358ee051ded80aaad4c",
+      "seed": 20261216,
+      "terminal_status": "success"
+    },
+    {
+      "assignment_domain": "m4-eligible-live-causal-acquisition-v2",
+      "classification": "CAPSULE",
+      "eos_job_id": 497850135,
+      "evidence_sha256": "bd6029444e368f5196189e86414cf07feb2bf1e32627e7d81cb2d4cbffac8c8e",
+      "identity": "v2a18",
+      "manifest_sha256": "5af478d80145e1ce66e89c6d9da995d64cb7bfa2e1e53725feb80dc93be0cd70",
+      "seed": 20261218,
+      "terminal_status": "success"
+    },
+    {
+      "assignment_domain": "m4-eligible-live-causal-acquisition-v2",
+      "classification": "CAPSULE",
+      "eos_job_id": 497850487,
+      "evidence_sha256": "c6ecfeaa4514b6321dbd78fec12d50080751d1d49369fc9b27c4e3ac8b695eb1",
+      "identity": "v2a20",
+      "manifest_sha256": "e6f485a77ec4728861dfc5664718e3ed0fec5825d6d79938b15f82acf9f36486",
+      "seed": 20261220,
+      "terminal_status": "success"
+    }
+  ],
+  "captures_sha256": "e3a408efc3981ca40a095863e75e3c579378242d39d5ce422d2e3bc28cac7d00",
+  "plan_sha256": "f90956f368753960473c980f2faaccd33375f80736fd36e9afda9049404b4209",
+  "primary_outcomes_opened": false,
+  "schema": "m4-paired-capture-gate-v1",
+  "valid_capsules": 16
+}

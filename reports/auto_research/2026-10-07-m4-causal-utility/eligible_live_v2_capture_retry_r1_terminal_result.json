@@ -1,0 +1,125 @@
+{
+  "all_four_failures_have_same_missing_buffer_field_exception": true,
+  "all_twenty_terminal_and_classified": true,
+  "authenticated_at": "2026-10-20T17:02:35.892350+00:00",
+  "bindings_sha256": "eae359a2ddc274dad39f7301ed305b8e6b496ad4e3ba614d7ae16031ccfea859",
+  "capture_gate_sha256": "a71d9489485dedc9fdb33d85ebf83c0892a47dc20027d1ead25abf31cc9acb81",
+  "checkpoint_bytes_downloaded_locally": false,
+  "classifications_sha256": "e3a408efc3981ca40a095863e75e3c579378242d39d5ce422d2e3bc28cac7d00",
+  "evidence_sha256": {
+    "v2a01": "4bc2e76345031f0854e350c13782888390a34722b17affc69cf4c6ac04be0aa1",
+    "v2a02": "fede2ef48ee371c65f4d29b87c0b35b9df86eb472192289039d43d4a3fd6a7b2",
+    "v2a03": "e25c773ccf9f7c688cabbd77b3be264f78205533576c4adf914c23e55f935df1",
+    "v2a04": "19195f8a3cad0545156783d42ee376ff9aa7ec2c8a060be4775f9df088a78b5b",
+    "v2a05": "e5f0fe8cda53c566cd30f9d154f6265513215ae2870e51ccefe5e4dec117786f",
+    "v2a06": "27f8918ba11c17cc9459bf5d54a696cc77538ecb0d9be4a482df1c6340b8ea2a",
+    "v2a07": "e819682946e8bd1afe354ca2380eea269012b0f6c3f01adf1acf94acea15c3f1",
+    "v2a08": "fb8ff543b0e105b33c5ee3c67773e33bfb26ad736397e3c0dc8c1aa744c5762b",
+    "v2a09": "05cb6607f75d150e033c63e200ee4d11dca9544f9770b51e996c3be7360a5357",
+    "v2a10": "a55f758ea643c1e64a28f9e08697d365f20005e0c685f1df72258e545b45cf81",
+    "v2a11": "126599ae2f72b4799a039c341f5d4b39d9cb25bd238d06703f9f83e10b35d53f",
+    "v2a12": "e39210ecc7c81efbe95f204ec525244c23b096ec5fa7d2bbf802af9f2ba34c0a",
+    "v2a13": "ea1187c9110fbcdb59e3d223a32f541483ba2c0a161c16efb1ccbe6e3302013a",
+    "v2a14": "d487cec4701d38083baebd147b31b143d957a2d2686556881b92690a9d1b7bfb",
+    "v2a15": "5ed663b9ac130bb2d21c478b5a5e2f143e6e63bad1ff49737fa9ea2c32c3a6b9",
+    "v2a16": "d426fa9769d219392f7af1cfedccb3820c97cb2c262d32d032b2e01edc32476a",
+    "v2a17": "870021a118f41ee3f4050202f2883f9795cf8d6926ce8be16dccc6f96d7c9fe6",
+    "v2a18": "bd6029444e368f5196189e86414cf07feb2bf1e32627e7d81cb2d4cbffac8c8e",
+    "v2a19": "c7b363e81f867e1be78f6158883e26339d5e9bfbd7a8854c6e351865fe224314",
+    "v2a20": "c6ecfeaa4514b6321dbd78fec12d50080751d1d49369fc9b27c4e3ac8b695eb1"
+  },
+  "excluded_diagnostic_capsule_counted": false,
+  "excluded_diagnostic_eos_job": 498201085,
+  "failed": 4,
+  "failed_attempts_preserved_not_treated_as_null_effects": true,
+  "failed_identities": [
+    "v2a09",
+    "v2a11",
+    "v2a17",
+    "v2a19"
+  ],
+  "failed_trace_evidence": [
+    {
+      "failure_reason": "script_failure",
+      "identity": "v2a09",
+      "job": 497848994,
+      "last_logged_training_step": 3,
+      "native_config_passed": true,
+      "native_test_pass_counts": [
+        2,
+        7,
+        16
+      ],
+      "runtime_exception": "AttributeError: 'TQReplayBuffer' object has no attribute 'weight_version_list'",
+      "slurm_time_limit_termination_found_in_runtime_stdout": false,
+      "trace_bytes": 7649742,
+      "trace_sha256": "465a4d5ccf2b25289eb60b0235ae4599a887e4966dac28cbcfba42c4f3b8a119",
+      "watchdog_artifact_http_status": 404
+    },
+    {
+      "failure_reason": "script_failure",
+      "identity": "v2a11",
+      "job": 497849328,
+      "last_logged_training_step": 4,
+      "native_config_passed": true,
+      "native_test_pass_counts": [
+        2,
+        7,
+        16
+      ],
+      "runtime_exception": "AttributeError: 'TQReplayBuffer' object has no attribute 'weight_version_list'",
+      "slurm_time_limit_termination_found_in_runtime_stdout": false,
+      "trace_bytes": 7651360,
+      "trace_sha256": "ac9eab43af98d06d984fe086d2d07c9bed7af176058c0c207ed9cc8b424e3f7e",
+      "watchdog_artifact_http_status": 404
+    },
+    {
+      "eos_job_id": 497850052,
+      "identity": "v2a17",
+      "last_logged_training_step": 7,
+      "native_config_marker_found": true,
+      "terminal_exception_lines": [
+        "0: AttributeError: 'TQReplayBuffer' object has no attribute 'weight_version_list'",
+        "0: ValueError: unexpected native capture failure"
+      ],
+      "trace_bytes": 7657821,
+      "trace_sha256": "d2f58d4a1465f434bac5088e2fb43fc141b464ee261aa5e95822e09e0d64c8b5"
+    },
+    {
+      "eos_job_id": 497850324,
+      "identity": "v2a19",
+      "last_logged_training_step": 16,
+      "native_config_marker_found": true,
+      "terminal_exception_lines": [
+        "0: AttributeError: 'TQReplayBuffer' object has no attribute 'weight_version_list'",
+        "0: ValueError: unexpected native capture failure"
+      ],
+      "trace_bytes": 7676446,
+      "trace_sha256": "bbff649492414f710086cb923de32bf8a17094599eb7f797f8fb680ac5b0ff6a"
+    }
+  ],
+  "formal_admission_bundle_authenticated": true,
+  "minimum_capsules_preregistered": 16,
+  "new_seed_or_trajectory_replacements": 0,
+  "next_step": {
+    "action": "Freeze, verify and dispatch a separately locked paired replay package for all sixteen admitted capsules only",
+    "arms_per_capsule": 2,
+    "capsules": 16,
+    "one_update_arm_runs": 32,
+    "open_primary_outcomes_only_after_all_required_replay_arms_authenticate": true,
+    "preserve_recorded_actions_and_identical_pre_update_state": true
+  },
+  "no_eligible_decision_records": 0,
+  "original_and_retry_guards_preserved": true,
+  "plan_canonical_object_sha256": "f90956f368753960473c980f2faaccd33375f80736fd36e9afda9049404b4209",
+  "plan_file_sha256": "5dbe1ec155a9c3e7d57363820625286290f6803c0bd2e47484847ed3980e141e",
+  "primary_outcomes_opened": false,
+  "recursive_checkpoint_reauthentication_required_before_replay": true,
+  "replay_launch_authorized_by_this_record": false,
+  "replay_launches_started": false,
+  "schema": "m4-v2-capture-retry-r1-terminal-result-v1",
+  "scientific_effect_estimated": false,
+  "status": "AUTHENTICATED_CAPTURE_GATE_SATISFIED",
+  "terminal_topology_sha256": "b4dc61a6952b95ad8b0cd0c91e82315f1e48cebb5c81fbc22c6b37e8c8eeb09a",
+  "valid_capsules": 16
+}

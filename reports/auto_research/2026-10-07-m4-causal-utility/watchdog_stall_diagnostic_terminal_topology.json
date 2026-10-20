@@ -1,0 +1,33 @@
+{
+  "all_frozen_inputs_and_forty_prior_guards_unchanged": true,
+  "child": {
+    "id": 75259778,
+    "ref": "dlalgo-ci/eos",
+    "sha": "8f5151cf00e02933a9b92772443d62e95b5150ff",
+    "status": "success"
+  },
+  "child_jobs": [
+    {
+      "id": 498201085,
+      "name": "basic/m4-v2-watchdog-stall-diagnostic-d01 dgxh100_eos 00 [1 dgxh100_eos]",
+      "status": "success"
+    }
+  ],
+  "guard_sha256": "c9d9615464baf1db32c173390c7e394c57bb7381a8a3658fc00415870ca3553d",
+  "observed_at": "2026-10-20T16:59:15.534440+00:00",
+  "parent": {
+    "id": 75259720,
+    "ref": "dlalgo-ci/eos",
+    "sha": "8f5151cf00e02933a9b92772443d62e95b5150ff",
+    "status": "success"
+  },
+  "parent_jobs": [
+    {
+      "id": 498200447,
+      "name": "generate",
+      "status": "success"
+    }
+  ],
+  "schema": "m4-watchdog-diagnostic-terminal-topology-v1",
+  "scientific_outcomes_opened": false
+}

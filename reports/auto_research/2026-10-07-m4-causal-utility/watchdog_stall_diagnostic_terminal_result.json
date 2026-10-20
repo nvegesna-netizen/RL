@@ -1,0 +1,101 @@
+{
+  "authenticated_at": "2026-10-20T17:01:14.509186+00:00",
+  "authentication": {
+    "authenticated_files": [
+      {
+        "bytes": 273,
+        "name": "watchdog-qualification.json",
+        "sha256": "dc99d8d359a2ac7050f6c12927329316b3f4acc5bde34bade05c8eecc328c5c1"
+      },
+      {
+        "bytes": 445,
+        "name": "stall-diagnostic-result.json",
+        "sha256": "26ce7359df142ef8cef42476d176a3e61efb2d5eaa01746ac0a35978e7071673"
+      },
+      {
+        "bytes": 38953,
+        "name": "m4-eligible-live-v2a09-tests.log",
+        "sha256": "7af8961cbb9722d2fb9946b6f0ef5e38ae0ab56d1908436804540da2a6e1d62e"
+      },
+      {
+        "bytes": 117264,
+        "name": "m4-eligible-live-v2a09-run.log",
+        "sha256": "9bacf56b596b00e26d20e767b4f07f4548747123f248c58fd3b9ad9709968cd9"
+      },
+      {
+        "bytes": 1068953,
+        "name": "m4-eligible-live-v2a09-lifecycle.jsonl",
+        "sha256": "3aad1b9240e134b9812f3acd31f7a2e6da4266ff737c7cd2ef255a986d29b587"
+      },
+      {
+        "bytes": 180509,
+        "name": "m4-eligible-live-v2a09-opportunity.jsonl",
+        "sha256": "2c252b42030eff0915f410be14381ac59dc369db17a1e2c87d67831827ca7f02"
+      },
+      {
+        "bytes": 471,
+        "name": "m4-eligible-live-v2a09-observer-duty.json",
+        "sha256": "69ccc857c50cdc1308f43dc2aea4315aeb1ae899f7b29aace79c4d7d0f02f279"
+      },
+      {
+        "bytes": 139624,
+        "name": "m4-eligible-live-v2a09-oars-v2.jsonl",
+        "sha256": "513e67cc8354fe4cb5aa0807e07cac0d725b4796ae8355429f0914b9526e1993"
+      }
+    ],
+    "inventory_sha256": "ad73f067879790adfe79447920b5e5ea500993cc199e69d8b52c802a2e09612a",
+    "job": 498201085,
+    "trace_bytes": 7665150,
+    "trace_sha256": "11140edcc5077ff371d46c8cefbcabdf4a75cd3e4c6f5d83424717b98ddad1bc"
+  },
+  "child_pipeline_id": 75259778,
+  "closed_files_authenticated": 8,
+  "diagnostic_capsule_scientific_admission_permitted": false,
+  "eos_job_id": 498201085,
+  "full_native_config_pass_marker_authenticated": true,
+  "interpretation": "Real-buffer forced-timeout tests passed with the native imports; the excluded live probe reached a capture instead of stalling. This does not establish that the underlying intermittent stall is repaired.",
+  "last_logged_training_step": 12,
+  "native_test_pass_counts": [
+    2,
+    7,
+    17
+  ],
+  "native_tests_skipped": 0,
+  "native_tests_total": 26,
+  "original_cohort_retried": false,
+  "parent_pipeline_id": 75259720,
+  "primary_outcomes_opened": false,
+  "protocol_sha256": "86c0168d5b4647fd90e94edb2018174862edc76758a9fd349e90d91b9afbc130",
+  "qualification": {
+    "native_test_pass_counts": [
+      2,
+      7,
+      17
+    ],
+    "protocol_sha256": "86c0168d5b4647fd90e94edb2018174862edc76758a9fd349e90d91b9afbc130",
+    "schema": "m4-real-buffer-watchdog-qualification-v1",
+    "scientific_acquisition": false,
+    "skipped": 0,
+    "status": "PASS_BEFORE_DIAGNOSTIC_TRAINING"
+  },
+  "qualification_before_training_marker_authenticated": true,
+  "runtime_result": {
+    "excluded_capsule_present": true,
+    "native_run_exit_code": 0,
+    "paired_replays": 0,
+    "primary_outcomes_opened": false,
+    "protocol_sha256": "86c0168d5b4647fd90e94edb2018174862edc76758a9fd349e90d91b9afbc130",
+    "qualification_passed": true,
+    "schema": "m4-excluded-stall-diagnostic-result-v1",
+    "scientific_acquisition": false,
+    "scientific_admission_permitted": false,
+    "status": "EXCLUDED_CAPTURE_REACHED_BEFORE_STALL",
+    "watchdog_record_present": false
+  },
+  "schema": "m4-excluded-watchdog-diagnostic-terminal-result-v1",
+  "source_commit": "81ef4dabcdd4cda078638e24e8c952416d7ec343",
+  "status": "NATIVE_REPAIR_QUALIFIED_STALL_NOT_REPRODUCED",
+  "terminal_topology_sha256": "46d85b6c617823ce17e15bb3d8d1a2500fa7bec7f9ebe7ae856739202774e4a0",
+  "underlying_stall_cause_established": false,
+  "watchdog_runtime_triggered": false
+}
