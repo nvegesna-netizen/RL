@@ -94,7 +94,7 @@ for name,expected in @NATIVE_HASHES_JSON@.items():
     assert hashlib.sha256((root/name).read_bytes()).hexdigest()==expected,name
 print("M4_V2_NATIVE_SOURCE_UNCHANGED")
 PY
-"$PYTHON" - "$PLAN" "$EXECUTION_LOCK" "$IDENTITY" "$SEED" <<'PY'
+"$PYTHON" - "$PLAN" "$EXECUTION_LOCK" "$IDENTITY" "$SEED" "$WATCHDOG" <<'PY'
 import json,sys
 from importlib.metadata import distribution
 from pathlib import Path
@@ -116,7 +116,7 @@ raw["async_rl"]["controlled_release_delay"]["seed"]=seed
 raw["async_rl"]["controlled_release_delay"]["assignment_domain"]="@ASSIGNMENT_DOMAIN@"
 capture=raw["async_rl"]["eligible_live_decision_capture"]
 capture.update(trajectory_identity=identity,trajectory_seed=seed,progress_timeout_seconds=1200,
-    suppress_capture_for_liveness_qualification=False)
+    liveness_diagnostic_path=sys.argv[5],suppress_capture_for_liveness_qualification=False)
 config=MasterConfig(**raw); validate_single_controller_config(config)
 assert config.grpo.max_num_steps==64 and not config.checkpointing["enabled"]
 assert config.policy["model_name"]=="meta-llama/Llama-3.2-1B-Instruct"

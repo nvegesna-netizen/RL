@@ -137,7 +137,7 @@ def capture_fixture() -> dict:
         jobs=[
             {
                 "id": 3,
-                "name": "basic/m4-eligible-live-acquisition-v2a01 dgxh100_eos 00 [2 dgxh100_eos]",
+                "name": "basic/m4-eligible-live-acquisition-v2a01 dgxh100_eos 00 [1 dgxh100_eos]",
                 "status": "success",
             },
             {"id": 4, "name": "logs-after", "status": "success"},
@@ -381,7 +381,7 @@ class CaptureAuthenticationTests(unittest.TestCase):
                 args["assignment"] = assignment
                 args["parent"]["status"] = args["child"]["status"] = "failed"
                 args["jobs"][0].update(
-                    name=f"basic/m4-eligible-live-acquisition-{assignment['identity']} dgxh100_eos 00 [2 dgxh100_eos]",
+                    name=f"basic/m4-eligible-live-acquisition-{assignment['identity']} dgxh100_eos 00 [1 dgxh100_eos]",
                     status="failed",
                     id=assignment["seed"],
                 )

@@ -67,6 +67,13 @@ CAUSAL_PROTOCOL_HASH = (
 )
 
 
+def eos_job_name(identity: str) -> str:
+    """Exact frozen collector-disabled topology: EOS is the first job step."""
+    return (
+        f"basic/m4-eligible-live-acquisition-{identity} dgxh100_eos 00 [1 dgxh100_eos]"
+    )
+
+
 def classify(
     *,
     assignment: dict,
@@ -84,7 +91,7 @@ def classify(
     """Use complete API topology and hash-bound compact files, never success alone."""
     identity, seed = assignment["identity"], assignment["seed"]
     workload = f"m4-eligible-live-acquisition-{identity}"
-    exact_name = f"basic/{workload} dgxh100_eos 00 [2 dgxh100_eos]"
+    exact_name = eos_job_name(identity)
     if parent["id"] != expected_parent_id or (
         (child is None and expected_child_id is not None)
         or (child is not None and child["id"] != expected_child_id)
@@ -425,12 +432,7 @@ def verify_admission_bundle(plan: dict, rows: list[dict], evidence_dir: Path) ->
             or len({j["id"] for j in jobs}) != len(jobs)
         ):
             raise ValueError("capture job set not fully terminal or unique")
-        eos = [
-            j
-            for j in jobs
-            if j["name"]
-            == f"basic/m4-eligible-live-acquisition-{expected['identity']} dgxh100_eos 00 [2 dgxh100_eos]"
-        ]
+        eos = [j for j in jobs if j["name"] == eos_job_name(expected["identity"])]
         if row["eos_job_id"] is None:
             if (
                 eos

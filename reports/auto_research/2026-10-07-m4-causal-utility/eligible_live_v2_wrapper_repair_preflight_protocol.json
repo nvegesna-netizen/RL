@@ -1,0 +1,36 @@
+{
+  "schema": "m4-v2-wrapper-repair-preflight-protocol-v1",
+  "identity": "wrapper-repair-pf01",
+  "status": "FROZEN_BEFORE_PREFLIGHT_LAUNCH",
+  "human_authority": "repair and relaunch, following the proposal for one bounded preflight before another full cohort",
+  "maximum_launcher_invocations": 1,
+  "required_launcher": "runllm.py --no_wait",
+  "allocated_time_limit_seconds": 14400,
+  "client_queue_deadline": null,
+  "automatic_retry": false,
+  "reference_cohort": "v2a01..v2a20, all twenty original attempts retained as failed pretraining engineering attempts",
+  "configuration_probe": {
+    "identity": "v2a01",
+    "seed": 20261201,
+    "purpose": "Validate the exact frozen configuration only; no trajectory is generated and no seed is consumed as scientific data",
+    "native_training_and_scheduler_files_changed": false,
+    "progress_watchdog_seconds": 1200,
+    "preflight_diagnostic_path_equals_training_cli_path": true
+  },
+  "execution": [
+    "Authenticate and extract the original qualified source and Megatron archives",
+    "Construct the full actual native MasterConfig and execute validate_single_controller_config using the corrected watchdog pair",
+    "Run the native eligible-capsule, Shield/liveness, and controller unit-test selections independently",
+    "Write a compact preflight PASS record and stop before the training entrypoint"
+  ],
+  "gates": {
+    "native_config_validation_required": true,
+    "all_native_test_commands_required_to_succeed": true,
+    "native_tests_skipped": 0,
+    "actual_training_entrypoint_invocations": 0,
+    "scientific_capsules": 0,
+    "paired_replays": 0,
+    "post_update_outcomes_opened": false
+  },
+  "follow_up": "Only after terminal artifact authentication and preflight acceptance may a separately frozen capture retry amendment be executed; this preflight does not relaunch the twenty trajectories"
+}

@@ -100,11 +100,18 @@ def validate() -> tuple[dict, Path]:
     return ready, directory
 
 
-def submit(candidate: dict, ready: dict, directory: Path) -> int:
+def submit(
+    candidate: dict,
+    ready: dict,
+    directory: Path,
+    *,
+    guard_directory: Path | None = None,
+) -> int:
     """Perform exactly one native invocation; no timeout or duplicate upload retry."""
     identity = candidate["identity"]
-    GUARDS.mkdir(mode=0o700, parents=True, exist_ok=True)
-    guard = GUARDS / f"{identity}.json"
+    guard_root = GUARDS if guard_directory is None else guard_directory
+    guard_root.mkdir(mode=0o700, parents=True, exist_ok=True)
+    guard = guard_root / f"{identity}.json"
     prior = read_guard(guard, candidate=candidate, package_hash=ready["package_sha256"])
     if prior is not None:
         print(
@@ -145,6 +152,7 @@ def submit(candidate: dict, ready: dict, directory: Path) -> int:
         raise ValueError("EOS CI reference moved; authority not consumed")
     record = {
         "schema": "m4-v2-capture-one-shot-guard-v1",
+        "purpose": ready.get("purpose", "fixed_cohort_capture"),
         "identity": identity,
         "seed": candidate["seed"],
         "manifest_sha256": candidate["sha256"],
@@ -162,7 +170,7 @@ def submit(candidate: dict, ready: dict, directory: Path) -> int:
         stream.write(canonical_json(record))
         stream.flush()
         os.fsync(stream.fileno())
-    log = GUARDS / f"{identity}.launch.log"
+    log = guard_root / f"{identity}.launch.log"
     command = [
         "bash",
         "-c",

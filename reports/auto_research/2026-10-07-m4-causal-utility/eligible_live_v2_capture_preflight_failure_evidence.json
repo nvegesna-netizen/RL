@@ -1,0 +1,317 @@
+{
+  "coverage_gap": "Offline transport check parsed the authority heredoc and verified native source hashes, but did not execute its configuration validation.",
+  "execution_source_commit": "82708a4e44c5724a80aed7e5cfd83b37d69a1dfd",
+  "formal_admission_bundle_produced": false,
+  "maximum_potential_admissible_capsules": 0,
+  "minimum_required_capsules": 16,
+  "native_watchdog_pair_reproduction": {
+    "cases": [
+      {
+        "case": "submitted_preflight",
+        "message": "eligible_live_decision_capture progress watchdog requires both progress_timeout_seconds and liveness_diagnostic_path",
+        "result": "REPRODUCED_NATIVE_VALUE_ERROR"
+      },
+      {
+        "case": "paired_path_candidate",
+        "message": null,
+        "result": "PASS_NATIVE_WATCHDOG_PAIR_GUARD"
+      }
+    ],
+    "cohort_relaunched": false,
+    "method": "Execute exact native Pydantic capture class and unmodified watchdog-pair guard AST, without Torch or training",
+    "native_source_sha256": "e7f86e102ebb5094e65cd377ac531cf9c7152b6e43362065021721d16327dab4",
+    "production_code_modified": false,
+    "schema": "m4-v2-native-watchdog-preflight-diagnosis-v1",
+    "scope": "Pair guard only, not complete native configuration validation"
+  },
+  "new_launcher_invocations": 0,
+  "old_guards_reset": false,
+  "package_sha256": "cbaf4fffd2976252f42532379a38fa11700c84c9c66be31f4b540c5eacc6d88e",
+  "paired_replay_permitted": false,
+  "production_repair_applied": false,
+  "recommended_sequence": [
+    "Correct watchdog path in preflight using the same overrides as actual training; execute native config validation in tests, not just parse it",
+    "Repair exact job-name binding for collector-disabled topology and test real JET step naming against the reader",
+    "Authenticate and retain this failed cohort; do not silently reuse guards or classify it as a scientific null result",
+    "Before another GPU attempt, freeze an explicit prospective repair/retry authorization and execution lock; verify a bounded preflight first"
+  ],
+  "representative_artifact": {
+    "archive_bytes": 11185448,
+    "archive_sha256": "81f22473375da5588773a56899d4bd05000b3fa18d8e44ef98675193dd7cdcb9",
+    "asset_members": [
+      "workspace/assets/basic/m4-eligible-live-acquisition-v2a01/",
+      "workspace/assets/basic/m4-eligible-live-acquisition-v2a01/jet_assets/",
+      "workspace/assets/basic/m4-eligible-live-acquisition-v2a01/jet_assets/exit_codes/",
+      "workspace/assets/basic/m4-eligible-live-acquisition-v2a01/jet_assets/exit_codes/exit_code_rank-0",
+      "workspace/assets/basic/m4-eligible-live-acquisition-v2a01/jet_assets/output_logs/",
+      "workspace/assets/basic/m4-eligible-live-acquisition-v2a01/jet_assets/output_logs/output_script-0.log",
+      "workspace/assets/basic/m4-eligible-live-acquisition-v2a01/m4-eligible-live-v2a01-metrics/"
+    ],
+    "job_id": 497521287,
+    "remaining_jobs": [
+      {
+        "failure_reason": "script_failure",
+        "identity": "v2a09",
+        "job_id": 497523812,
+        "same_watchdog_error": true,
+        "status": "failed",
+        "trace_sha256": "0dc1ab0b4d29e7e451272369d6f5a79c9554ab7fd7d2e3a683baafe83e48f7b5"
+      },
+      {
+        "failure_reason": "script_failure",
+        "identity": "v2a10",
+        "job_id": 497524003,
+        "same_watchdog_error": true,
+        "status": "failed",
+        "trace_sha256": "0f627a111d3f988cd009848682ecc6bfbec1363873059fdfabcb17cd73b1d071"
+      },
+      {
+        "failure_reason": "script_failure",
+        "identity": "v2a11",
+        "job_id": 497524171,
+        "same_watchdog_error": true,
+        "status": "failed",
+        "trace_sha256": "8099843a211d322d6eecf589fd1ee317932ba61107e30cac39cd98c0be4cf023"
+      }
+    ],
+    "schema": "m4-v2-failure-artifact-check-v1",
+    "scientific_outcomes_opened": false,
+    "training_test_or_capture_outputs_present": []
+  },
+  "root_cause": "Preflight capture.update sets progress_timeout_seconds but omits liveness_diagnostic_path; native validation rejects the incomplete watchdog pair before pytest or training. Actual training CLI supplied both but was never reached.",
+  "rows": [
+    {
+      "child_pipeline_id": 75172761,
+      "eos_job_id": 497521287,
+      "identity": "v2a01",
+      "native_runtime_authority_pass_stdout_present": false,
+      "native_source_verification_stdout_present": true,
+      "parent_pipeline_id": 75172297,
+      "same_preflight_exception": true,
+      "trace_bytes": 7502072,
+      "trace_sha256": "b1678e0cc7429a037c3c5180f68596a6fd2a7588fc6a9e58133bbddefbb890d3"
+    },
+    {
+      "child_pipeline_id": 75172792,
+      "eos_job_id": 497521512,
+      "identity": "v2a02",
+      "native_runtime_authority_pass_stdout_present": false,
+      "native_source_verification_stdout_present": true,
+      "parent_pipeline_id": 75172316,
+      "same_preflight_exception": true,
+      "trace_bytes": 7502050,
+      "trace_sha256": "5213080da4e60c21f10b5103258fe9387c4e883b82704746203d4a4e81d36efc"
+    },
+    {
+      "child_pipeline_id": 75172800,
+      "eos_job_id": 497521565,
+      "identity": "v2a03",
+      "native_runtime_authority_pass_stdout_present": false,
+      "native_source_verification_stdout_present": true,
+      "parent_pipeline_id": 75172500,
+      "same_preflight_exception": true,
+      "trace_bytes": 7502129,
+      "trace_sha256": "9718252009520d06effbb5759a974fcd999e1b85571085c77c0ea0fb1f4a0a6c"
+    },
+    {
+      "child_pipeline_id": 75172815,
+      "eos_job_id": 497521698,
+      "identity": "v2a04",
+      "native_runtime_authority_pass_stdout_present": false,
+      "native_source_verification_stdout_present": true,
+      "parent_pipeline_id": 75172705,
+      "same_preflight_exception": true,
+      "trace_bytes": 7502096,
+      "trace_sha256": "3a399fa945a131a547d2f430abeabe734f45e2ba5b26ca138b6967107b08f4ca"
+    },
+    {
+      "child_pipeline_id": 75172848,
+      "eos_job_id": 497522187,
+      "identity": "v2a05",
+      "native_runtime_authority_pass_stdout_present": false,
+      "native_source_verification_stdout_present": true,
+      "parent_pipeline_id": 75172755,
+      "same_preflight_exception": true,
+      "trace_bytes": 7502032,
+      "trace_sha256": "3d8329072a9e5545b8480d8a3e1d6d6da89addda3cbc1a471bb0f978818aad22"
+    },
+    {
+      "child_pipeline_id": 75172880,
+      "eos_job_id": 497522431,
+      "identity": "v2a06",
+      "native_runtime_authority_pass_stdout_present": false,
+      "native_source_verification_stdout_present": true,
+      "parent_pipeline_id": 75172775,
+      "same_preflight_exception": true,
+      "trace_bytes": 7502129,
+      "trace_sha256": "c91b7586bbfc4adc623926ee1305eefedddee9e7e7d4d1b826c104ba3213c178"
+    },
+    {
+      "child_pipeline_id": 75172933,
+      "eos_job_id": 497522921,
+      "identity": "v2a07",
+      "native_runtime_authority_pass_stdout_present": false,
+      "native_source_verification_stdout_present": true,
+      "parent_pipeline_id": 75172789,
+      "same_preflight_exception": true,
+      "trace_bytes": 7502078,
+      "trace_sha256": "c24011609ecaa1f8681b22dc429d1550952f83481f4e1add52dd241ca669b6bd"
+    },
+    {
+      "child_pipeline_id": 75172979,
+      "eos_job_id": 497523356,
+      "identity": "v2a08",
+      "native_runtime_authority_pass_stdout_present": false,
+      "native_source_verification_stdout_present": true,
+      "parent_pipeline_id": 75172805,
+      "same_preflight_exception": true,
+      "trace_bytes": 7502111,
+      "trace_sha256": "116f596a379a59c1f0118eec4332db1863c77a09b8ca73053bdfd0253d13d694"
+    },
+    {
+      "child_pipeline_id": 75173018,
+      "eos_job_id": 497523812,
+      "identity": "v2a09",
+      "native_runtime_authority_pass_stdout_present": false,
+      "native_source_verification_stdout_present": true,
+      "parent_pipeline_id": 75172836,
+      "same_preflight_exception": true,
+      "trace_bytes": 7502032,
+      "trace_sha256": "0dc1ab0b4d29e7e451272369d6f5a79c9554ab7fd7d2e3a683baafe83e48f7b5"
+    },
+    {
+      "child_pipeline_id": 75173046,
+      "eos_job_id": 497524003,
+      "identity": "v2a10",
+      "native_runtime_authority_pass_stdout_present": false,
+      "native_source_verification_stdout_present": true,
+      "parent_pipeline_id": 75172857,
+      "same_preflight_exception": true,
+      "trace_bytes": 7502157,
+      "trace_sha256": "0f627a111d3f988cd009848682ecc6bfbec1363873059fdfabcb17cd73b1d071"
+    },
+    {
+      "child_pipeline_id": 75173068,
+      "eos_job_id": 497524171,
+      "identity": "v2a11",
+      "native_runtime_authority_pass_stdout_present": false,
+      "native_source_verification_stdout_present": true,
+      "parent_pipeline_id": 75172891,
+      "same_preflight_exception": true,
+      "trace_bytes": 7502078,
+      "trace_sha256": "8099843a211d322d6eecf589fd1ee317932ba61107e30cac39cd98c0be4cf023"
+    },
+    {
+      "child_pipeline_id": 75173084,
+      "eos_job_id": 497524268,
+      "identity": "v2a12",
+      "native_runtime_authority_pass_stdout_present": false,
+      "native_source_verification_stdout_present": true,
+      "parent_pipeline_id": 75172926,
+      "same_preflight_exception": true,
+      "trace_bytes": 7502050,
+      "trace_sha256": "ceb3d41e9ec4ccb9a7760df630dc563994f5676f83ef1610ea558777d5315c7d"
+    },
+    {
+      "child_pipeline_id": 75173109,
+      "eos_job_id": 497524476,
+      "identity": "v2a13",
+      "native_runtime_authority_pass_stdout_present": false,
+      "native_source_verification_stdout_present": true,
+      "parent_pipeline_id": 75172974,
+      "same_preflight_exception": true,
+      "trace_bytes": 7502050,
+      "trace_sha256": "4d9cb19b7cd262f69423efb1799f32b8dab9ed171c558c93feef76fd9fde200c"
+    },
+    {
+      "child_pipeline_id": 75173124,
+      "eos_job_id": 497524579,
+      "identity": "v2a14",
+      "native_runtime_authority_pass_stdout_present": false,
+      "native_source_verification_stdout_present": true,
+      "parent_pipeline_id": 75173006,
+      "same_preflight_exception": true,
+      "trace_bytes": 7502050,
+      "trace_sha256": "8a8f79a7249a04c00bab23da953d016fd66693893873b572418fce952c7f6024"
+    },
+    {
+      "child_pipeline_id": 75173129,
+      "eos_job_id": 497524641,
+      "identity": "v2a15",
+      "native_runtime_authority_pass_stdout_present": false,
+      "native_source_verification_stdout_present": true,
+      "parent_pipeline_id": 75173033,
+      "same_preflight_exception": true,
+      "trace_bytes": 7502032,
+      "trace_sha256": "5fd1c0585ee62fd25f2801fbdb5e19b1b7253a2f6a3fb01d18e0802e93f61aab"
+    },
+    {
+      "child_pipeline_id": 75173140,
+      "eos_job_id": 497524748,
+      "identity": "v2a16",
+      "native_runtime_authority_pass_stdout_present": false,
+      "native_source_verification_stdout_present": true,
+      "parent_pipeline_id": 75173056,
+      "same_preflight_exception": true,
+      "trace_bytes": 7502032,
+      "trace_sha256": "ec68a470b5e13fe41e16b7c6c575a3f218fd78c269364219a2e497506a265d29"
+    },
+    {
+      "child_pipeline_id": 75173168,
+      "eos_job_id": 497524919,
+      "identity": "v2a17",
+      "native_runtime_authority_pass_stdout_present": false,
+      "native_source_verification_stdout_present": true,
+      "parent_pipeline_id": 75173096,
+      "same_preflight_exception": true,
+      "trace_bytes": 7502078,
+      "trace_sha256": "bab2fb1440a91cb1b70ced5f8b041e846d3d9531e7f07fab3f7f6e4fb1e9ba76"
+    },
+    {
+      "child_pipeline_id": 75173174,
+      "eos_job_id": 497524933,
+      "identity": "v2a18",
+      "native_runtime_authority_pass_stdout_present": false,
+      "native_source_verification_stdout_present": true,
+      "parent_pipeline_id": 75173110,
+      "same_preflight_exception": true,
+      "trace_bytes": 7502157,
+      "trace_sha256": "b27e0640df282fb3d2e77c609134e4a9448d5655442c3577ced4012241d02049"
+    },
+    {
+      "child_pipeline_id": 75173183,
+      "eos_job_id": 497524958,
+      "identity": "v2a19",
+      "native_runtime_authority_pass_stdout_present": false,
+      "native_source_verification_stdout_present": true,
+      "parent_pipeline_id": 75173120,
+      "same_preflight_exception": true,
+      "trace_bytes": 7502032,
+      "trace_sha256": "13b7c3c96a443e7c3d014b9eb01dd81547e3a3020e954efa0a9d17943486356b"
+    },
+    {
+      "child_pipeline_id": 75173210,
+      "eos_job_id": 497525174,
+      "identity": "v2a20",
+      "native_runtime_authority_pass_stdout_present": false,
+      "native_source_verification_stdout_present": true,
+      "parent_pipeline_id": 75173136,
+      "same_preflight_exception": true,
+      "trace_bytes": 7502111,
+      "trace_sha256": "ed0e5da04f7f060d2fd2ea6331c9e807a19e3d1cb21a249952d387a89173f06c"
+    }
+  ],
+  "schema": "m4-v2-capture-preflight-failure-evidence-v1",
+  "scientific_outcomes_opened": false,
+  "secondary_reader_defect": {
+    "actual_capture_job_suffix": "[1 dgxh100_eos]",
+    "affects_cause_of_eos_failure": false,
+    "cause": "Disabling logs_before removes the preceding step; JET numbers job steps from one. Reader still hardcodes the old ordinal.",
+    "native_generator_source": "jet/scripts/plugins/executors/gitlab/gitlab.py:on_gitlab_pipeline_create_names",
+    "observed_error": "exact capture EOS workload not authenticated",
+    "reader_expected_suffix": "[2 dgxh100_eos]",
+    "status": "CONFIRMED_BLOCKS_FORMAL_CLASSIFICATION"
+  },
+  "status": "COMMON_PRETRAINING_PACKAGE_FAILURE_CONFIRMED",
+  "trace_confirmed_failures": 20
+}

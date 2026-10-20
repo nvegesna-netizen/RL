@@ -20,11 +20,17 @@ from jet.scripts.plugins.core.logs import LogsPluginConfig, on_core_jobs
 from jet.scripts.plugins.executors.gitlab.gitlab import (
     GitlabExecutorConfig,
     on_gitlab_pipeline_create_steps,
+    on_gitlab_pipeline_create_names,
 )
 from jet.utils.auth_context import AuthContext
 from jet.utils.file_builders import YamlFileBuilder
 
 from research.m4_eligible_replay.contracts import canonical_json, digest_file
+from research.m4_paired_replay.capture_authentication import eos_job_name
+from research.m4_paired_replay.config_validation import (
+    execute_capture_overrides,
+    validate_native_constraints,
+)
 
 ROOT = Path(__file__).resolve().parents[3]
 REPORT = Path(__file__).resolve().parent
@@ -39,27 +45,33 @@ def verify(package_dir: Path) -> dict:
         raise ValueError("execution lock changed")
     config = LogsPluginConfig(enabled=False)
     pipeline = Pipeline(
-        jobs=[Job(name="capture", launcher="dgxh100_eos", steps=[JobStep(name="00")])]
+        jobs=[
+            Job(
+                name="basic/m4-eligible-live-acquisition-v2a01 dgxh100_eos",
+                launcher="dgxh100_eos",
+                steps=[JobStep(name="dgxh100_eos")],
+            )
+        ]
     )
-    pipeline.jobs["capture"].runtime["gitlab:jet-ci:name"] = "capture"
-    pipeline.jobs["capture"].steps["00"].runtime.set_name("jet-ci", "EOS capture")
     on_core_jobs(pipeline, config, AuthContext.unauthenticated())
-    if [step.name for step in pipeline.jobs["capture"].steps] != ["00"]:
+    if [step.name for step in next(iter(pipeline.jobs)).steps] != ["dgxh100_eos"]:
         raise ValueError("real JET hook created a collector")
+    on_gitlab_pipeline_create_names("jet-ci", pipeline)
     executor = GitlabExecutorConfig(type="gitlab", default_tags=[], environments={})
     generated = YamlFileBuilder(data={})
     on_gitlab_pipeline_create_steps("jet-ci", executor, generated, pipeline, "prod")
     jobs = generated.data
-    if set(jobs) != {"EOS capture"} or jobs["EOS capture"]["needs"] != [
+    expected_name = eos_job_name("v2a01")
+    if set(jobs) != {expected_name} or jobs[expected_name]["needs"] != [
         {"pipeline": "${JET_PIPELINE_ID}", "job": "generate"}
     ]:
         raise ValueError("capture topology contains unexpected dependency")
-    if ".artifacts.logs" not in jobs["EOS capture"]["extends"]:
+    if ".artifacts.logs" not in jobs[expected_name]["extends"]:
         raise ValueError("direct EOS workload artifacts disabled")
     row = package["candidates"][0]
     manifest = json.loads((ROOT / row["manifest"]).read_bytes())
     render = manifest["spec"]["script"].format(
-        assets_dir="/jet/assets/basic/m4-eligible-live-acquisition-v2a01"
+        assets_dir=f"/jet/assets/basic/{manifest['spec']['name']}"
     )
     with tempfile.TemporaryDirectory(prefix="m4-v2-capture-clean-room-") as directory:
         temp = Path(directory)
@@ -82,7 +94,7 @@ def verify(package_dir: Path) -> dict:
         blocks = re.findall(r"<<'PY'\n(.*?)\nPY(?:\n|$)", render, re.S)
         for block in blocks:
             ast.parse(block)
-        if len(blocks) != 4:
+        if len(blocks) != (5 if package.get("preflight_only") else 4):
             raise ValueError("unexpected runtime heredoc count")
         overlay_block = blocks[2]
         subprocess.run(
@@ -94,6 +106,34 @@ def verify(package_dir: Path) -> dict:
         for name, expected in lock["artifact_tool_sha256"].items():
             if digest_file(extracted / name) != expected:
                 raise ValueError("clean-room artifact tool changed")
+        # Execute the complete native cross-section validator on the actual
+        # packaged preflight assignments. Parsing alone missed the original bug.
+        # Optional host-only Hydra dependencies are not needed for JET imports.
+        from nemo_rl.utils.config import load_config, register_omegaconf_resolvers
+        from omegaconf import OmegaConf
+
+        register_omegaconf_resolvers()
+        config_path = (
+            extracted
+            / "examples/configs/grpo_math_1B_megatron_single_controller_m4_eligible_live_capture.yaml"
+        )
+        raw = OmegaConf.to_container(load_config(config_path), resolve=True)
+        for candidate in package["candidates"]:
+            candidate_manifest = json.loads((ROOT / candidate["manifest"]).read_bytes())
+            asset_root = f"/jet/assets/basic/{candidate_manifest['spec']['name']}"
+            runtime = candidate_manifest["spec"]["script"].format(assets_dir=asset_root)
+            watchdog = (
+                f"{asset_root}/m4-eligible-live-{candidate['identity']}-watchdog.json"
+            )
+            configured = execute_capture_overrides(
+                runtime,
+                raw,
+                identity=candidate["identity"],
+                seed=candidate["seed"],
+                watchdog=watchdog,
+                domain="m4-eligible-live-causal-acquisition-v2",
+            )
+            validate_native_constraints(extracted, configured)
         # Run real closed-file completion against synthetic boundary inputs only.
         sys.path.insert(0, str(ROOT))
         # Test-only fixture dependencies are unnecessary for JET schema imports.
@@ -165,6 +205,9 @@ def verify(package_dir: Path) -> dict:
         "actual_jet_gitlab_emitter_only_generation_dependency": True,
         "direct_eos_artifact_inheritance_retained": True,
         "clean_room_native_no_event_finalizer_passed": True,
+        "complete_native_cross_section_validator_executed": True,
+        "native_configuration_probe_count": len(package["candidates"]),
+        "generated_capture_job_name_matches_reader": True,
         "runtime_and_checkpoint_training_not_executed_locally": True,
         "jet_api_version": importlib.metadata.version("jet-api"),
         "large_checkpoint_downloads": 0,

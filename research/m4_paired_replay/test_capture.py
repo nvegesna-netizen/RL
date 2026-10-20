@@ -2,11 +2,14 @@
 
 from __future__ import annotations
 
+import copy
 import hashlib
 import importlib.util
 import json
 from pathlib import Path
+import re
 import subprocess
+import sys
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -14,6 +17,14 @@ from unittest.mock import patch
 from research.m4_eligible_replay.contracts import canonical_json
 from research.m4_paired_replay.capture_finalize import finish, inventory
 from research.m4_paired_replay.test_integration import synthetic_window
+from research.m4_paired_replay.test_integration import capture_fixture
+from research.m4_paired_replay.capture_authentication import classify
+from research.m4_paired_replay.config_validation import (
+    execute_capture_overrides,
+    validate_native_constraints,
+)
+from nemo_rl.utils.config import load_config, register_omegaconf_resolvers
+from omegaconf import OmegaConf
 
 ROOT = Path(__file__).resolve().parents[2]
 REPORT = ROOT / "reports/auto_research/2026-10-07-m4-causal-utility"
@@ -143,6 +154,131 @@ class CaptureFinalizationTests(unittest.TestCase):
 
 
 class CaptureRuntimeTemplateTests(unittest.TestCase):
+    def test_bounded_preflight_manifest_executes_repaired_overrides_without_training(
+        self,
+    ):
+        path = REPORT / "build_eligible_live_v2_wrapper_preflight.py"
+        spec = importlib.util.spec_from_file_location("wrapper_preflight", path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "preflight.json"
+            receipt = module.build(output)
+            manifest = json.loads(output.read_bytes())
+            assets = "/jet/assets/basic/" + manifest["spec"]["name"]
+            script = manifest["spec"]["script"].format(assets_dir=assets)
+            self.assertNotIn("examples/run_grpo_single_controller.py", script)
+            self.assertIn('"$SEED" "$WATCHDOG" <<\'PY\'', script)
+            self.assertFalse(receipt["training_entrypoint_present"])
+            self.assertEqual(manifest["spec"]["time_limit"], 14400)
+            watchdog = assets + "/m4-eligible-live-v2a01-watchdog.json"
+            raw = execute_capture_overrides(
+                script,
+                self.raw_config(),
+                identity="v2a01",
+                seed=20261201,
+                watchdog=watchdog,
+                domain="m4-eligible-live-causal-acquisition-v2",
+            )
+            validate_native_constraints(ROOT, raw)
+            # Exercise the emitted terminal gate with test-only pytest summaries.
+            tail = re.findall(r"<<'PY'\n(.*?)\nPY(?:\n|$)", script, re.S)[-1]
+            closed = Path(directory) / "test-only-assets"
+            closed.mkdir()
+            log = closed / "m4-eligible-live-v2a01-tests.log"
+            log.write_text("2 passed in 0.1s\n3 passed in 0.1s\n4 passed in 0.1s\n")
+            with patch.object(sys, "argv", ["-", str(closed)]):
+                exec(compile(tail, "test-only-preflight-terminal-gate", "exec"), {})
+            result = json.loads((closed / "wrapper-preflight-result.json").read_bytes())
+            self.assertEqual(result["native_tests_passed"], 9)
+            log.write_text(log.read_text() + "1 skipped\n")
+            with (
+                patch.object(sys, "argv", ["-", str(closed)]),
+                self.assertRaises(AssertionError),
+            ):
+                exec(compile(tail, "test-only-skipped-terminal-gate", "exec"), {})
+
+    def runtime(self):
+        path = REPORT / "build_eligible_live_v2_capture_package.py"
+        spec = importlib.util.spec_from_file_location("v2capture", path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module.RUNTIME
+
+    def raw_config(self):
+        register_omegaconf_resolvers()
+        return OmegaConf.to_container(
+            load_config(
+                ROOT
+                / "examples/configs/grpo_math_1B_megatron_single_controller_m4_eligible_live_capture.yaml"
+            ),
+            resolve=True,
+        )
+
+    def test_all_twenty_execute_complete_native_cross_section_validator(self):
+        raw = self.raw_config()
+        for index in range(1, 21):
+            identity = f"v2a{index:02d}"
+            watchdog = f"/jet/assets/basic/m4-eligible-live-acquisition-{identity}/m4-eligible-live-{identity}-watchdog.json"
+            with self.subTest(identity=identity):
+                configured = execute_capture_overrides(
+                    self.runtime(),
+                    raw,
+                    identity=identity,
+                    seed=20261200 + index,
+                    watchdog=watchdog,
+                    domain="m4-eligible-live-causal-acquisition-v2",
+                )
+                self.assertEqual(
+                    configured["async_rl"]["eligible_live_decision_capture"][
+                        "liveness_diagnostic_path"
+                    ],
+                    watchdog,
+                )
+                validate_native_constraints(ROOT, configured)
+
+    def test_original_omission_and_invalid_pairs_fail_native_validation(self):
+        raw = execute_capture_overrides(
+            self.runtime(),
+            self.raw_config(),
+            identity="v2a01",
+            seed=20261201,
+            watchdog="/tmp/m4-capture-watchdog.json",
+            domain="m4-eligible-live-causal-acquisition-v2",
+        )
+        for mutation in (
+            "missing_path",
+            "missing_timeout",
+            "zero_timeout",
+            "ledger_collision",
+            "wrong_seed",
+        ):
+            configured = copy.deepcopy(raw)
+            capture = configured["async_rl"]["eligible_live_decision_capture"]
+            if mutation == "missing_path":
+                capture["liveness_diagnostic_path"] = None
+            elif mutation == "missing_timeout":
+                capture["progress_timeout_seconds"] = None
+            elif mutation == "zero_timeout":
+                capture["progress_timeout_seconds"] = 0
+            elif mutation == "ledger_collision":
+                capture["liveness_diagnostic_path"] = configured["async_rl"][
+                    "lifecycle_audit_path"
+                ]
+            else:
+                capture["trajectory_seed"] += 1
+            with self.subTest(mutation=mutation), self.assertRaises(ValueError):
+                validate_native_constraints(ROOT, configured)
+
+    def test_reader_rejects_old_collector_enabled_step_ordinal(self):
+        args = capture_fixture()
+        classify(**args)
+        args["jobs"][0]["name"] = args["jobs"][0]["name"].replace(
+            "[1 dgxh100_eos]", "[2 dgxh100_eos]"
+        )
+        with self.assertRaisesRegex(ValueError, "exact capture EOS workload"):
+            classify(**args)
+
     def test_qualified_native_entrypoint_and_frozen_overrides(self):
         path = REPORT / "build_eligible_live_v2_capture_package.py"
         spec = importlib.util.spec_from_file_location("v2capture", path)
@@ -167,6 +303,50 @@ class CaptureRuntimeTemplateTests(unittest.TestCase):
 
 
 class CaptureOneShotLauncherTests(unittest.TestCase):
+    def test_explicit_preflight_guard_directory_preserves_old_cohort(self):
+        module = self.load_launcher()
+
+        def fake_run(command, **kwargs):
+            if "stdout" in kwargs:
+                kwargs["stdout"].write(
+                    b"12345: https://gitlab-master.nvidia.com/dl/jet/ci/-/pipelines/12345\n"
+                )
+            return subprocess.CompletedProcess(command, 0, stdout="ci-frozen\n")
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            old = root / "old"
+            old.mkdir()
+            sentinel = old / "v2a01.json"
+            sentinel.write_bytes(b"old-consumed-guard")
+            candidate = {
+                "identity": "wrapper-repair-pf01",
+                "seed": 20261201,
+                "sha256": "frozen",
+                "manifest": "test-only.json",
+            }
+            ready = {
+                "package_sha256": "new-preflight",
+                "ci_commit_sha": "ci-frozen",
+                "purpose": "wrapper_preflight_no_training",
+            }
+            with (
+                patch.object(module, "GUARDS", old),
+                patch.object(module.subprocess, "run", side_effect=fake_run),
+            ):
+                self.assertEqual(
+                    module.submit(
+                        candidate, ready, root, guard_directory=root / "preflight"
+                    ),
+                    0,
+                )
+            self.assertEqual(sentinel.read_bytes(), b"old-consumed-guard")
+            self.assertEqual(len(list(old.iterdir())), 1)
+            guard = json.loads(
+                (root / "preflight/wrapper-repair-pf01.json").read_bytes()
+            )
+            self.assertEqual(guard["purpose"], "wrapper_preflight_no_training")
+
     def load_launcher(self):
         spec = importlib.util.spec_from_file_location(
             "capture_launcher", REPORT / "submit_eligible_live_v2_captures_once.py"
