@@ -28,6 +28,7 @@ from nemo_rl.algorithms.async_utils.controlled_release import (
     ControlledReleaseArmConfig,
     ControlledReleaseDelayConfig,
 )
+from nemo_rl.algorithms.async_utils.replay_buffer import TQReplayBuffer
 from nemo_rl.algorithms.async_utils.staleness_sampler import (
     WeightFifoSamplerConfig,
     WindowedSamplerConfig,
@@ -1216,8 +1217,10 @@ def _run_lifecycle_controller(
     return ctrl
 
 
+@pytest.mark.parametrize("buffer_size", [0, 12])
 def test_eligible_live_watchdog_fails_fast_and_flushes_ledgers(
     tmp_path: Path,
+    buffer_size: int,
 ) -> None:
     ctrl = _run_lifecycle_controller(train_steps=2, trainer_version=2)
     diagnostic_path = tmp_path / "liveness.json"
@@ -1246,10 +1249,24 @@ def test_eligible_live_watchdog_fails_fast_and_flushes_ledgers(
     ctrl._eligible_live_progress_sequence = 0
     ctrl._eligible_live_progress_phase = "initialized"
     ctrl._eligible_live_suppressed_decisions = 0
-    ctrl._buffer = MagicMock()
-    ctrl._buffer.__len__.return_value = 12
-    ctrl._buffer.weight_version_list = [1] * 4 + [2] * 8
-    ctrl._buffer.ready_list = [True] * 8 + [False] * 4
+    # Use the real metadata interface: a mock invented weight_version_list and
+    # concealed a production AttributeError when the timeout branch executed.
+    ctrl._buffer = TQReplayBuffer(
+        dp_client=MagicMock(), partition_id="watchdog-test", pad_value_dict={}
+    )
+    for index in range(buffer_size):
+        ctrl._buffer.reserve(
+            weight_version=1 if index < 4 else 2,
+            group_id=f"watchdog-group-{index}",
+        )
+        if index < 8:
+            ctrl._buffer.ready_list[index] = True
+            ctrl._buffer.end_weight_list[index] = 2
+    before = (
+        list(ctrl._buffer.start_weight_list),
+        list(ctrl._buffer.end_weight_list),
+        list(ctrl._buffer.ready_list),
+    )
     ctrl._sampler = MagicMock(spec=single_controller.OpportunityAtRiskV2ShadowSampler)
     ctrl._sampler.liveness_diagnostic_state.return_value = {
         "baseline_sampler_type": "WeightFifoSampler",
@@ -1268,7 +1285,23 @@ def test_eligible_live_watchdog_fails_fast_and_flushes_ledgers(
     assert diagnostic["controller_state"]["eligible_live_progress_phase"] == (
         "pumps_started"
     )
-    assert diagnostic["controller_state"]["buffer_ready_size"] == 8
+    assert diagnostic["controller_state"]["buffer_size"] == buffer_size
+    assert diagnostic["controller_state"]["buffer_ready_size"] == min(buffer_size, 8)
+    assert diagnostic["controller_state"]["buffer_unready_size"] == max(
+        0, buffer_size - 8
+    )
+    assert diagnostic["controller_state"]["buffer_weight_version_counts"] == (
+        {"1": 4, "2": 8} if buffer_size else {}
+    )
+    assert diagnostic["controller_state"]["buffer_end_weight_version_counts"] == (
+        {"-1": 4, "2": 8} if buffer_size else {}
+    )
+    assert before == (
+        ctrl._buffer.start_weight_list,
+        ctrl._buffer.end_weight_list,
+        ctrl._buffer.ready_list,
+    )
+    assert not list(tmp_path.glob(".*.tmp"))
     assert diagnostic["controller_state"]["replenishment_credits"] == 1
     assert diagnostic["tasks"]["rollout_pump"]["stack"]
     assert diagnostic["tasks"]["train_pump"]["stack"]

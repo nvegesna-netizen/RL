@@ -1,0 +1,62 @@
+{
+  "capture_gate_evaluated": false,
+  "failures": [
+    {
+      "failure_reason": "script_failure",
+      "identity": "v2a09",
+      "job": 497848994,
+      "last_logged_training_step": 3,
+      "native_config_passed": true,
+      "native_test_pass_counts": [
+        2,
+        7,
+        16
+      ],
+      "runtime_exception": "AttributeError: 'TQReplayBuffer' object has no attribute 'weight_version_list'",
+      "slurm_time_limit_termination_found_in_runtime_stdout": false,
+      "trace_bytes": 7649742,
+      "trace_sha256": "465a4d5ccf2b25289eb60b0235ae4599a887e4966dac28cbcfba42c4f3b8a119",
+      "watchdog_artifact_http_status": 404
+    },
+    {
+      "failure_reason": "script_failure",
+      "identity": "v2a11",
+      "job": 497849328,
+      "last_logged_training_step": 4,
+      "native_config_passed": true,
+      "native_test_pass_counts": [
+        2,
+        7,
+        16
+      ],
+      "runtime_exception": "AttributeError: 'TQReplayBuffer' object has no attribute 'weight_version_list'",
+      "slurm_time_limit_termination_found_in_runtime_stdout": false,
+      "trace_bytes": 7651360,
+      "trace_sha256": "ac9eab43af98d06d984fe086d2d07c9bed7af176058c0c207ed9cc8b424e3f7e",
+      "watchdog_artifact_http_status": 404
+    }
+  ],
+  "formal_all_twenty_classification_complete": false,
+  "historical_launch_receipt_preserved": true,
+  "immediate_failure": "Progress watchdog diagnostic serialization accesses nonexistent TQReplayBuffer.weight_version_list; the real buffer has start_weight_list and end_weight_list. The exception occurs before the watchdog JSON is written.",
+  "implementation_changes": 0,
+  "new_eos_launches": 0,
+  "observed_at": "2026-10-20T10:42:04.415285+00:00",
+  "primary_outcomes_opened": false,
+  "recommended_sequence": [
+    "Preserve all twenty submitted attempts and consumed guards; no blind cohort retry.",
+    "Repair diagnostic-only buffer state collection against the actual TQReplayBuffer metadata interface and add real-buffer forced-timeout tests.",
+    "Qualify a forced-timeout path before a bounded excluded stall-diagnostic run; use the resulting controller and pump state to diagnose the learner stall.",
+    "Do not retune scientific eligibility, seeds, treatment, or endpoint based on failures."
+  ],
+  "schema": "m4-v2-capture-retry-r1-partial-failure-diagnosis-v1",
+  "status": "PARTIAL_COHORT_FAILURE_DIAGNOSIS_NOT_A_TERMINAL_SCIENTIFIC_RESULT",
+  "test_coverage_gap": "The native watchdog unit test supplies MagicMock.weight_version_list, an attribute the real TQReplayBuffer does not implement. Configuration validation and all 25 selected native tests passed in both failed jobs.",
+  "trigger": "The watchdog reached its configured no-progress branch after training had begun.",
+  "underlying_stall_root_cause": "NOT_YET_ESTABLISHED; the broken diagnostic handler suppressed the intended controller/task-state record.",
+  "verified_packaged_source_sha256": {
+    "nemo_rl/algorithms/async_utils/replay_buffer.py": "31cd33b352b8d27fb18d5b8a8f8e7009539595a547c9eb5506a5baaef0012a49",
+    "nemo_rl/algorithms/single_controller.py": "97164bd7649830c9a5499f0f6825e257c3314a34e5b27488955213de3d02047f",
+    "tests/unit/single_controller/test_single_controller.py": "ca1879a47ee7d4a8aa2322d59fd137fbbd7fb1ff3fc94012639730b70a7e15ff"
+  }
+}

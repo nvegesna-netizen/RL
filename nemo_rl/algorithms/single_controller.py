@@ -853,7 +853,8 @@ class SingleControllerActor:
 
     def _eligible_live_liveness_state(self) -> dict[str, Any]:
         """Return bounded controller-local state for a progress-timeout record."""
-        weights = list(self._buffer.weight_version_list)
+        weights = list(self._buffer.start_weight_list)
+        end_weights = list(self._buffer.end_weight_list)
         ready_list = list(self._buffer.ready_list)
         if not isinstance(self._sampler, OpportunityAtRiskV2ShadowSampler):
             raise TypeError(
@@ -864,9 +865,7 @@ class SingleControllerActor:
             "trainer_version": self._trainer_version,
             "eligible_live_progress_sequence": (self._eligible_live_progress_sequence),
             "eligible_live_progress_phase": self._eligible_live_progress_phase,
-            "suppressed_eligible_decisions": (
-                self._eligible_live_suppressed_decisions
-            ),
+            "suppressed_eligible_decisions": (self._eligible_live_suppressed_decisions),
             "current_epoch": self._current_epoch,
             "inflight_rollouts": self._inflight_rollouts,
             "dispatched_rollouts": len(self._dispatched_rollouts),
@@ -878,6 +877,10 @@ class SingleControllerActor:
             "buffer_unready_size": len(ready_list) - sum(ready_list),
             "buffer_weight_version_counts": {
                 str(version): weights.count(version) for version in sorted(set(weights))
+            },
+            "buffer_end_weight_version_counts": {
+                str(version): end_weights.count(version)
+                for version in sorted(set(end_weights))
             },
             "sampler_type": type(self._sampler).__name__,
         }
