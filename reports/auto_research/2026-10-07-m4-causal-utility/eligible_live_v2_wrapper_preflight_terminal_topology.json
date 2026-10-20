@@ -1,0 +1,41 @@
+{
+  "actual_training_entrypoint_present": false,
+  "child": {
+    "id": 75176292,
+    "ref": "dlalgo-ci/eos",
+    "sha": "8f5151cf00e02933a9b92772443d62e95b5150ff",
+    "status": "success"
+  },
+  "child_jobs": [
+    {
+      "id": 497553460,
+      "name": "basic/m4-v2-wrapper-repair-preflight-pf01 dgxh100_eos 00 [1 dgxh100_eos]",
+      "status": "success"
+    }
+  ],
+  "full_cohort_relaunched": false,
+  "guard_sha256": "67d2763de105adeee372bac766183f0b078a24d93dceac64d63eb919f398a5f1",
+  "manifest_sha256": "663e7c39909f852479b41873b10c27edb0eb6b11f7c6718bac64900f6e067bbf",
+  "native_launcher_return_code": 0,
+  "observed_at": "2026-10-20T06:20:44.500142+00:00",
+  "original_twenty_guards_preserved": true,
+  "package_sha256": "babf01b0243865dae028204d46ad0fbd883a81bde4e79104dc4528fc9569326b",
+  "parent": {
+    "id": 75176206,
+    "ref": "dlalgo-ci/eos",
+    "sha": "8f5151cf00e02933a9b92772443d62e95b5150ff",
+    "status": "success"
+  },
+  "parent_jobs": [
+    {
+      "id": 497552970,
+      "name": "generate",
+      "status": "success"
+    }
+  ],
+  "purpose": "wrapper_preflight_no_training",
+  "schema": "m4-v2-wrapper-preflight-launch-receipt-v1",
+  "scientific_outcomes_opened": false,
+  "source_commit": "2dfa80b9333d386b280863b9c24b6f4f4ff5c345",
+  "submission_attempts": 1
+}

@@ -1,0 +1,64 @@
+{
+  "artifact_archive": {
+    "bytes": 11194587,
+    "sha256": "8da7da43da3ab1ff2fc0b47d0e683e818d851a5a272a84b367d6edb80b1d3680"
+  },
+  "artifact_inventory_sha256": "71cb73d51540eb89060b98ed4931f43ae9673b2129b6796606a619edf469f5b4",
+  "authenticated_at": "2026-10-20T06:22:43.631378+00:00",
+  "authenticated_owned_artifacts": {
+    "m4-eligible-live-v2a01-tests.log": "5721b618adc52a584e95e1010314021dca43ab7b641748aa9756f4cb02e8e262",
+    "wrapper-preflight-result.json": "0cd1af48825a29e2bb71a5174fb75304492f23bdb8b72e4dcbf30a26b2652c9d"
+  },
+  "child_pipeline": 75176292,
+  "eos_job": 497553460,
+  "frozen_inputs_verified": 24,
+  "full_cohort_relaunched": false,
+  "interpretation": "Engineering qualification of repaired wrapper only; no scientific trajectory or causal effect was measured.",
+  "manifest_sha256": "663e7c39909f852479b41873b10c27edb0eb6b11f7c6718bac64900f6e067bbf",
+  "native_stdout_markers_verified": [
+    "M4_V2_NATIVE_SOURCE_UNCHANGED",
+    "M4_V2_NATIVE_RUNTIME_AUTHORITY_PASS v2a01 20261201",
+    "PASS_NATIVE_CONFIG_AND_UNIT_TEST_PREFLIGHT"
+  ],
+  "native_test_selection_deselected_counts": [
+    0,
+    28,
+    78
+  ],
+  "native_test_selection_pass_counts": [
+    2,
+    7,
+    16
+  ],
+  "next_step": "Freeze a separate prospective capture-retry amendment, execution lock and fresh one-shot guards before any new capture launches; preserve all twenty original pretraining failures.",
+  "original_twenty_guards_preserved": true,
+  "package_sha256": "babf01b0243865dae028204d46ad0fbd883a81bde4e79104dc4528fc9569326b",
+  "paired_replay_permitted": false,
+  "parent_pipeline": 75176206,
+  "preflight_guard_unchanged": true,
+  "protocol_sha256": "692a1b82aa8b11d1b4b45f7e56330a9e941151d11c378b5fd96a7f9454031fe4",
+  "rank_zero_exit_code": 0,
+  "runtime_result": {
+    "configuration_identity": "v2a01",
+    "configuration_seed": 20261201,
+    "full_native_master_config_validated": true,
+    "native_test_commands_succeeded": 3,
+    "native_tests_passed": 25,
+    "native_tests_skipped": 0,
+    "paired_replays": 0,
+    "protocol_sha256": "692a1b82aa8b11d1b4b45f7e56330a9e941151d11c378b5fd96a7f9454031fe4",
+    "schema": "m4-v2-wrapper-preflight-result-v1",
+    "scientific_capsules": 0,
+    "scientific_outcomes_opened": false,
+    "status": "PASS_NATIVE_CONFIG_AND_UNIT_TEST_PREFLIGHT",
+    "training_entrypoint_invocations": 0
+  },
+  "schema": "m4-v2-wrapper-preflight-terminal-result-v1",
+  "source_commit": "2dfa80b9333d386b280863b9c24b6f4f4ff5c345",
+  "status": "ACCEPTED_NO_TRAINING_WRAPPER_PREFLIGHT",
+  "terminal_topology_sha256": "cb3235c3523e2d7d2f67290463831461a1dff07f83b517a032fec8fe3576a5a3",
+  "trace": {
+    "bytes": 7542499,
+    "sha256": "9a1c4f128b391682ffa48f0d1956c0407b3e09a222c2fa84dd52aaaa68dc9bb8"
+  }
+}
