@@ -152,12 +152,73 @@ set -e
 """
 
 
-def build(output: Path) -> dict:
+def validate_retry_amendment(path: Path) -> dict:
+    """Require accepted outcome-free predecessors before creating retry authority."""
+    amendment = json.loads(path.read_bytes())
+    if (
+        amendment["identity"] != "capture-retry-r1"
+        or amendment["plan_sha256"] != PLAN_HASH
+        or amendment["maximum_new_launcher_invocations"] != 20
+        or amendment["new_attempts_per_identity"] != 1
+        or amendment["attempt_namespace"] != "m4-v2-capture-retry-r1-guards"
+        or amendment["changed_scientific_fields"] != []
+        or amendment["replacement_seeds"] != 0
+        or amendment["automatic_retry"]
+        or amendment["automatic_replacement"]
+        or amendment["automatic_extension"]
+        or amendment["paired_replay_authorized"]
+        or amendment["post_update_outcomes_opened"]
+        or amendment["allocated_seconds"] != 14400
+        or amendment["client_queue_deadline"] is not None
+        or amendment["progress_watchdog_seconds"] != 1200
+        or amendment["minimum_authenticated_capsules"] != 16
+        or amendment["maximum_updates"] != 64
+        or amendment["maximum_capsules_per_trajectory"] != 1
+        or amendment["selection_rule"]
+        != "first eligible decision under the unchanged causal protocol"
+        or amendment["terminal_accuracy_endpoint"]
+        or not amendment["parallel_capture_submission"]
+        or not amendment["preserve_original_attempts_and_guards"]
+        or not amendment["all_twenty_terminal_and_authenticated_before_gate"]
+    ):
+        raise ValueError("prospective repair retry boundary changed")
+    preflight_path = REPORT / "eligible_live_v2_wrapper_preflight_terminal_result.json"
+    original_path = REPORT / "eligible_live_v2_capture_pretraining_terminal_result.json"
+    if (
+        digest_file(preflight_path) != amendment["preflight_result_sha256"]
+        or digest_file(original_path) != amendment["original_terminal_result_sha256"]
+    ):
+        raise ValueError("retry predecessor evidence changed")
+    preflight = json.loads(preflight_path.read_bytes())
+    original = json.loads(original_path.read_bytes())
+    if (
+        preflight["status"] != "ACCEPTED_NO_TRAINING_WRAPPER_PREFLIGHT"
+        or preflight["runtime_result"]["training_entrypoint_invocations"] != 0
+        or preflight["runtime_result"]["native_tests_skipped"] != 0
+        or original["failed"] != 20
+        or original["valid_capsules"] != 0
+        or not original["formal_admission_bundle_authenticated"]
+        or original["scientific_outcomes_opened"]
+    ):
+        raise ValueError("retry requires accepted preflight and pretraining failures")
+    for name, expected in original["original_guard_sha256"].items():
+        if (
+            digest_file(SESSION / "m4-v2-capture-fixed-cohort-guards" / name)
+            != expected
+        ):
+            raise ValueError("original consumed guard changed")
+    return amendment
+
+
+def build(output: Path, *, retry_amendment: Path | None = None) -> dict:
     """Freeze all inputs before producing any launchable manifests."""
     plan_path = REPORT / "eligible_live_acquisition_v2_plan.json"
     if digest_file(plan_path) != PLAN_HASH:
         raise ValueError("frozen scientific plan changed")
     plan = json.loads(plan_path.read_bytes())
+    amendment = (
+        None if retry_amendment is None else validate_retry_amendment(retry_amendment)
+    )
     subprocess.run(
         [
             sys.executable,
@@ -224,6 +285,14 @@ def build(output: Path) -> dict:
         "automatic_retry": False,
         "paired_replay_authorized_by_this_record": False,
     }
+    if amendment is not None:
+        authorization.update(
+            scope=amendment["scope"],
+            human_authority=amendment["human_authority"],
+            attempt_namespace=amendment["attempt_namespace"],
+            retry_amendment_sha256=digest_file(retry_amendment),
+            original_attempts_preserved=True,
+        )
     put(output / "authorization.json", authorization)
     lock = {
         "schema": "m4-v2-fixed-capture-execution-lock-v1",
@@ -252,6 +321,15 @@ def build(output: Path) -> dict:
         "paired_replay_started": False,
         "post_update_outcomes_opened": False,
     }
+    if amendment is not None:
+        lock.update(
+            retry_amendment_sha256=digest_file(retry_amendment),
+            preflight_result_sha256=amendment["preflight_result_sha256"],
+            original_terminal_result_sha256=amendment[
+                "original_terminal_result_sha256"
+            ],
+            attempt_namespace=amendment["attempt_namespace"],
+        )
     put(output / "execution-lock.json", lock)
     payload_paths = {
         "SOURCE": source,
@@ -330,8 +408,9 @@ def build(output: Path) -> dict:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--retry-amendment", type=Path)
     args = parser.parse_args()
-    receipt = build(args.output.resolve())
+    receipt = build(args.output.resolve(), retry_amendment=args.retry_amendment)
     print(
         json.dumps(
             {"status": receipt["status"], "candidates": len(receipt["candidates"])}
