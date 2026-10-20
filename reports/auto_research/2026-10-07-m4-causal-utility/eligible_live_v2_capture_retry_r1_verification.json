@@ -1,0 +1,84 @@
+{
+  "accepted_preflight_native_file_hashes_identical": true,
+  "allowed_diff_proof": {
+    "all_other_manifest_fields_unchanged": true,
+    "manifest_count": 20,
+    "new_package_sha256": "85ed25c46c8cab619f715413b33c04f3f4617c7afe886ca7174b5296e5d307b0",
+    "old_package_sha256": "cbaf4fffd2976252f42532379a38fa11700c84c9c66be31f4b540c5eacc6d88e",
+    "only_differences": [
+      "authorization payload and its digest",
+      "execution lock payload and its digest",
+      "preflight WATCHDOG argv and liveness_diagnostic_path"
+    ],
+    "schema": "m4-v2-capture-retry-r1-allowed-diff-proof-v1",
+    "status": "PASS_EXACT_ALLOWED_DIFF_ALL_TWENTY",
+    "training_command_unchanged": true
+  },
+  "launcher_boundary_checks": {
+    "guards_created": 0,
+    "launches": 0,
+    "real_ready_passed": true,
+    "rejected_mutations": [
+      "capture_only",
+      "paired_replay_started",
+      "scientific_outcomes_opened",
+      "purpose",
+      "package_sha256",
+      "moved_frozen_input"
+    ],
+    "schema": "m4-v2-retry-r1-launch-boundary-check-v1"
+  },
+  "no_new_launches_before_freeze": true,
+  "schema": "m4-v2-capture-retry-r1-verification-v1",
+  "tests": {
+    "all_inputs_test_only": true,
+    "errors": 0,
+    "failures": 0,
+    "run": 129,
+    "schema": "m4-v2-retry-r1-targeted-tests-v1",
+    "skipped": 0
+  },
+  "transport": {
+    "actual_jet_gitlab_emitter_only_generation_dependency": true,
+    "actual_jet_log_hook_created_no_collector": true,
+    "all_embedded_python_parsed": true,
+    "all_rendered_shells_parsed": true,
+    "clean_room_native_no_event_finalizer_passed": true,
+    "complete_native_cross_section_validator_executed": true,
+    "direct_eos_artifact_inheritance_retained": true,
+    "execution_lock_sha256": "117da5aacc48ddab49e3a8a357f9cb6a0368089d513c3f282cffb0efa7f18344",
+    "generated_capture_job_name_matches_reader": true,
+    "jet_api_version": "3.80.0",
+    "large_checkpoint_downloads": 0,
+    "manifest_count": 20,
+    "manifest_sha256": [
+      "a4d0c4bbb5e5d845e465011b36e0f482ddc38e35101fb57ac8bb0886bb37d994",
+      "5dfccc9921a3bb27751da63d438fdacf26c63241a5ac595525996038009a5384",
+      "077e9fea51aba1772bce06d82eefa801ee92aa8665596fc21397334473dfdce5",
+      "958543e21b92c57380ff6dc126692111912b67b771637967f577a9c804858399",
+      "7ec1b289ba9ac832bcdc4939707f482733ef933823ab701895ce53a7e2124bf2",
+      "e48c357e3e816cb3caf5113af35c36089731bfef254c10e12e90292f5141e424",
+      "f2640b2ffd15f6bbcc68a732bb93ef1791f912cd443cca5d565ebaf07850a6e3",
+      "92095ee0f591db31f63c59e8d25d80ce4998de417970cd767cb4fe0ed6f57294",
+      "e025aa13450425af5b02e7fc00d1407a74c93e1a8b7ab8782f79ec2423443f4b",
+      "f2b9b81631b8638eda214877dab0fada5b6200474c743b216eb8f8498d9e9d84",
+      "bd7211fc8a29449b85a606c2c8fbe0da8b14adc5d0282dc532200eeb128a95b8",
+      "85a3ae496ffeaf86540968cba87d17165c9d95bfe2239ba74f6dcfa802840d12",
+      "9f0ef960f84ca0954d19c6ff01dd9d069ac277f4673943755a843b5abad2654a",
+      "5803cd543f604db2e4874b521c531b3068d0d189b2cc2df064b1e5e12bb76fe2",
+      "04316b0a2f93e21e3eab0e9a3234c82b71f15bd43b3e196caa3e4b2b059aca09",
+      "45fa1ce1f17f959732ad492c60f499129c7b23f21ce789e4ac61b08697833e6a",
+      "07ef980980cb2c576d4cdf2053af1e572b9490a245347ae7a828772eae96515a",
+      "ac2f1e6921de809449f32f96bcd687c838a500e32414306fe7458fbb5e16f72e",
+      "df8bdfe97402c5ae63c2277320ae43a9983d2fa7079f009d8988b614b6255e0b",
+      "c10de9a92e6286cdff8427ffa03a5ed376b212aa17816905f20e6a587678410f"
+    ],
+    "native_configuration_probe_count": 20,
+    "native_files_verified_after_extraction": 9,
+    "new_eos_launches": 0,
+    "package_sha256": "85ed25c46c8cab619f715413b33c04f3f4617c7afe886ca7174b5296e5d307b0",
+    "runtime_and_checkpoint_training_not_executed_locally": true,
+    "schema": "m4-v2-capture-transport-verification-v1",
+    "status": "PASS_OFFLINE_TRANSPORT_AND_NATIVE_EXTRACTION"
+  }
+}

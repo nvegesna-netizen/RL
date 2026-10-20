@@ -1,0 +1,219 @@
+{
+  "allocated_seconds": 14400,
+  "candidates": [
+    {
+      "identity": "v2a01",
+      "manifest": "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc/v2a01.json",
+      "seed": 20261201,
+      "sha256": "a4d0c4bbb5e5d845e465011b36e0f482ddc38e35101fb57ac8bb0886bb37d994"
+    },
+    {
+      "identity": "v2a02",
+      "manifest": "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc/v2a02.json",
+      "seed": 20261202,
+      "sha256": "5dfccc9921a3bb27751da63d438fdacf26c63241a5ac595525996038009a5384"
+    },
+    {
+      "identity": "v2a03",
+      "manifest": "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc/v2a03.json",
+      "seed": 20261203,
+      "sha256": "077e9fea51aba1772bce06d82eefa801ee92aa8665596fc21397334473dfdce5"
+    },
+    {
+      "identity": "v2a04",
+      "manifest": "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc/v2a04.json",
+      "seed": 20261204,
+      "sha256": "958543e21b92c57380ff6dc126692111912b67b771637967f577a9c804858399"
+    },
+    {
+      "identity": "v2a05",
+      "manifest": "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc/v2a05.json",
+      "seed": 20261205,
+      "sha256": "7ec1b289ba9ac832bcdc4939707f482733ef933823ab701895ce53a7e2124bf2"
+    },
+    {
+      "identity": "v2a06",
+      "manifest": "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc/v2a06.json",
+      "seed": 20261206,
+      "sha256": "e48c357e3e816cb3caf5113af35c36089731bfef254c10e12e90292f5141e424"
+    },
+    {
+      "identity": "v2a07",
+      "manifest": "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc/v2a07.json",
+      "seed": 20261207,
+      "sha256": "f2640b2ffd15f6bbcc68a732bb93ef1791f912cd443cca5d565ebaf07850a6e3"
+    },
+    {
+      "identity": "v2a08",
+      "manifest": "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc/v2a08.json",
+      "seed": 20261208,
+      "sha256": "92095ee0f591db31f63c59e8d25d80ce4998de417970cd767cb4fe0ed6f57294"
+    },
+    {
+      "identity": "v2a09",
+      "manifest": "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc/v2a09.json",
+      "seed": 20261209,
+      "sha256": "e025aa13450425af5b02e7fc00d1407a74c93e1a8b7ab8782f79ec2423443f4b"
+    },
+    {
+      "identity": "v2a10",
+      "manifest": "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc/v2a10.json",
+      "seed": 20261210,
+      "sha256": "f2b9b81631b8638eda214877dab0fada5b6200474c743b216eb8f8498d9e9d84"
+    },
+    {
+      "identity": "v2a11",
+      "manifest": "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc/v2a11.json",
+      "seed": 20261211,
+      "sha256": "bd7211fc8a29449b85a606c2c8fbe0da8b14adc5d0282dc532200eeb128a95b8"
+    },
+    {
+      "identity": "v2a12",
+      "manifest": "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc/v2a12.json",
+      "seed": 20261212,
+      "sha256": "85a3ae496ffeaf86540968cba87d17165c9d95bfe2239ba74f6dcfa802840d12"
+    },
+    {
+      "identity": "v2a13",
+      "manifest": "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc/v2a13.json",
+      "seed": 20261213,
+      "sha256": "9f0ef960f84ca0954d19c6ff01dd9d069ac277f4673943755a843b5abad2654a"
+    },
+    {
+      "identity": "v2a14",
+      "manifest": "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc/v2a14.json",
+      "seed": 20261214,
+      "sha256": "5803cd543f604db2e4874b521c531b3068d0d189b2cc2df064b1e5e12bb76fe2"
+    },
+    {
+      "identity": "v2a15",
+      "manifest": "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc/v2a15.json",
+      "seed": 20261215,
+      "sha256": "04316b0a2f93e21e3eab0e9a3234c82b71f15bd43b3e196caa3e4b2b059aca09"
+    },
+    {
+      "identity": "v2a16",
+      "manifest": "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc/v2a16.json",
+      "seed": 20261216,
+      "sha256": "45fa1ce1f17f959732ad492c60f499129c7b23f21ce789e4ac61b08697833e6a"
+    },
+    {
+      "identity": "v2a17",
+      "manifest": "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc/v2a17.json",
+      "seed": 20261217,
+      "sha256": "07ef980980cb2c576d4cdf2053af1e572b9490a245347ae7a828772eae96515a"
+    },
+    {
+      "identity": "v2a18",
+      "manifest": "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc/v2a18.json",
+      "seed": 20261218,
+      "sha256": "ac2f1e6921de809449f32f96bcd687c838a500e32414306fe7458fbb5e16f72e"
+    },
+    {
+      "identity": "v2a19",
+      "manifest": "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc/v2a19.json",
+      "seed": 20261219,
+      "sha256": "df8bdfe97402c5ae63c2277320ae43a9983d2fa7079f009d8988b614b6255e0b"
+    },
+    {
+      "identity": "v2a20",
+      "manifest": "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc/v2a20.json",
+      "seed": 20261220,
+      "sha256": "c10de9a92e6286cdff8427ffa03a5ed376b212aa17816905f20e6a587678410f"
+    }
+  ],
+  "capture_only": true,
+  "ci_commit_sha": "8f5151cf00e02933a9b92772443d62e95b5150ff",
+  "ci_ref": "dlalgo-ci/eos",
+  "execution_lock_sha256": "117da5aacc48ddab49e3a8a357f9cb6a0368089d513c3f282cffb0efa7f18344",
+  "execution_source_commit": "ef6dc7ebc03dd03a608cfab1f61f16b50472feb5",
+  "frozen_file_sha256": {
+    "/Users/nvegesna/Documents/JET-LLM/runllm.py": "7e5ca7cb2b9807404123b19009d8d975f390f38690bf0a691f65f291b49c3cbb",
+    "examples/configs/grpo_math_1B_megatron_single_controller_m4_eligible_live_capture.yaml": "94b6bb744beca304be20371135b9c0251d9e2b3d4b870b4be86d9c1c0be112f2",
+    "nemo_rl/algorithms/async_utils/eligible_live_decision_capsule.py": "d647cf0113cc4caefa244e61f26622f1453ee569b60a30105b17ac486c0d8913",
+    "nemo_rl/algorithms/async_utils/opportunity_at_risk_v2.py": "d6221b7f9766d07f9e1a4f1a0886af9c5625f3e4a6eaf0ddc283078c6d982c3b",
+    "nemo_rl/algorithms/async_utils/rollout_lifecycle.py": "4d62574c1695dbad310e5fd80c2ee65d7f1efeab22fb283b1e99fd11a0ef22ac",
+    "nemo_rl/algorithms/single_controller.py": "97164bd7649830c9a5499f0f6825e257c3314a34e5b27488955213de3d02047f",
+    "nemo_rl/algorithms/single_controller_utils/config.py": "e7f86e102ebb5094e65cd377ac531cf9c7152b6e43362065021721d16327dab4",
+    "nemo_rl/distributed/virtual_cluster.py": "ed491307e7f457db3733875a26d35153f3c943a0bf8430b81e3b13e54b81b829",
+    "reports/auto_research/2026-10-07-m4-causal-utility/analyze_eligible_live_decision_capture.py": "bd6734b03f9be962377373ce2f019e5243e07796ae5297af0fe233b3e16bd6ee",
+    "reports/auto_research/2026-10-07-m4-causal-utility/build_eligible_live_acquisition_capture_manifests.py": "3aac3ce2b6039b137786d37fdc80d44428d6e9b2681cf9893065f38e848e7e26",
+    "reports/auto_research/2026-10-07-m4-causal-utility/build_eligible_live_v2_capture_package.py": "7cee158c7ec3f20a9c468ef6033f2e9ebf9afababdbc4ed9613c1fc168874913",
+    "reports/auto_research/2026-10-07-m4-causal-utility/build_paired_source_projection.py": "4e06a3b5d185a0c5c2f6a3c7ef87e799278d3f5a854b25cc601fd3cb7df5c767",
+    "reports/auto_research/2026-10-07-m4-causal-utility/eligible_live_acquisition_v2_plan.json": "5dbe1ec155a9c3e7d57363820625286290f6803c0bd2e47484847ed3980e141e",
+    "reports/auto_research/2026-10-07-m4-causal-utility/eligible_live_capture_variables.yaml": "ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
+    "reports/auto_research/2026-10-07-m4-causal-utility/eligible_live_decision_causal_protocol.json": "716ba0eb8f980ca5af0ef3d57e2415befc1fb1a315afeb01b9bc326a60341b48",
+    "reports/auto_research/2026-10-07-m4-causal-utility/eligible_live_minimal_observer_terminal_result.json": "6616d16e0b415fc02511e3ea2cdef1832c562eaac127f7ff9fd51e01d7ab2723",
+    "reports/auto_research/2026-10-07-m4-causal-utility/eligible_live_restore_qualification_terminal_result.json": "dbe064e4c294694daccc9be6c86622bf033d81ac915724b4034acff5385103aa",
+    "reports/auto_research/2026-10-07-m4-causal-utility/eligible_live_v2_capture_authorization.json": "5076a60ab94a7238b3bf0fa4a6e536f004dfbf53ffe44a7cceb32427b74a2ef7",
+    "reports/auto_research/2026-10-07-m4-causal-utility/eligible_live_v2_capture_eos_custom_config.yaml": "9b42a5d423e141324b2b37e284008ba3950f2b2fe700c9fb9a6884093dc4e42f",
+    "reports/auto_research/2026-10-07-m4-causal-utility/eligible_live_v2_capture_execution_lock.json": "2d9616d5ea0e37d75e9f691a8cfdbe97f13df05cfa802425edcf2ae7e108e05f",
+    "reports/auto_research/2026-10-07-m4-causal-utility/eligible_live_v2_capture_pretraining_terminal_result.json": "e2bf65f07c243eebf528a041fe09b2c3278a71d3761cf9e66074d136a7a5bfac",
+    "reports/auto_research/2026-10-07-m4-causal-utility/eligible_live_v2_capture_retry_r1_amendment.json": "0e5270f563b1774435d126a67a8049ed93d8b2458d9179fbb7884453dc47de5a",
+    "reports/auto_research/2026-10-07-m4-causal-utility/eligible_live_v2_capture_retry_r1_authorization.json": "0a669436b88581333160ec540108fa74f11753e1bb08f591310fe46ac66f09d8",
+    "reports/auto_research/2026-10-07-m4-causal-utility/eligible_live_v2_capture_retry_r1_execution_lock.json": "117da5aacc48ddab49e3a8a357f9cb6a0368089d513c3f282cffb0efa7f18344",
+    "reports/auto_research/2026-10-07-m4-causal-utility/eligible_live_v2_capture_retry_r1_package_receipt.json": "85ed25c46c8cab619f715413b33c04f3f4617c7afe886ca7174b5296e5d307b0",
+    "reports/auto_research/2026-10-07-m4-causal-utility/eligible_live_v2_capture_retry_r1_verification.json": "1b552a7ac480b1ab478d740721032537fd62429a43163534b4cbb9ccd092c07b",
+    "reports/auto_research/2026-10-07-m4-causal-utility/eligible_live_v2_liveness_qualification_offline_recovery.json": "4cbf20424f34a804df98a8ebb8798d2fdb3693539e0813a2a7e4b31b894c8f2f",
+    "reports/auto_research/2026-10-07-m4-causal-utility/eligible_live_v2_wrapper_preflight_terminal_result.json": "c151599317c9d860b734e72128a112c39295eb5a5c90969c003f41aac0a63294",
+    "reports/auto_research/2026-10-07-m4-causal-utility/eligible_live_v2_wrapper_preflight_terminal_topology.json": "cb3235c3523e2d7d2f67290463831461a1dff07f83b517a032fec8fe3576a5a3",
+    "reports/auto_research/2026-10-07-m4-causal-utility/paired_engineering_terminal_result.json": "af1b3456688f7dfd37b35aedc22c9fabf69845ea220f9264f6cf241c7d8a9e08",
+    "reports/auto_research/2026-10-07-m4-causal-utility/submit_eligible_live_v2_captures_once.py": "292977e0a2424d1539310dde182343c3e8bc573cac1aa882c6952d8248daf310",
+    "reports/auto_research/2026-10-07-m4-causal-utility/submit_eligible_live_v2_retry_r1_once.py": "0de4615f35ff68ab73ff32faf651ce6f7f0930371bb6f9fc7d09e01d67e1ce10",
+    "reports/auto_research/2026-10-07-m4-causal-utility/verify_eligible_live_v2_capture_transport.py": "a970562a6292dc1ebcdfcffdf80fc79485224e89051575fc555697494e640754",
+    "research/m4_eligible_replay/__init__.py": "46b5bd12b07e34ff3ff4effcdcdcd8d7f922b5aa1036bcff09c7c5d80399bcd3",
+    "research/m4_eligible_replay/contracts.py": "c94394281bf247fd6ee659af2d2a237fbccf5f25159b7009cda2f16d92d7fe93",
+    "research/m4_paired_replay/__init__.py": "3e39561fadeab889faebed8a23c929631eba51c5d5baaa2ba4ac35f3d84b9eb6",
+    "research/m4_paired_replay/capture_completion.py": "953a1b17536dc296c2cf037168ea58a07d570fd70fb9cec2a487805216bf7b7a",
+    "research/m4_paired_replay/capture_finalize.py": "4d45770dd03003671e1196e6dc60f8d28534547432355d634cbc6c04f74e49be",
+    "research/m4_paired_replay/config_validation.py": "e0aa939fc33bff92373550ff7124dbc7271cebd38fa1ae9d1717a2d75499edd6",
+    "research/m4_paired_replay/test_capture.py": "14324c32fe30005ef6fba21af50a48ca0eb22814fa78e62555bef89f01b95122",
+    "research/m4_paired_replay/test_retry_amendment.py": "a0ea985024fe53c5fa34b6b24e707be8e8d147f2591cc3fa0f2c86124d4a62c1",
+    "session/20260914_m4_opportunity_control/m4-oars-shadow-preflight-megatron.tar.gz": "98d98920c0fea3d8ae1216a485dc9b5aa4fc966e469435ad61f2bae456de80d2",
+    "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc/allowed-diff-proof.json": "f6e8a8226920d18bb1e96e838674b6d5d72a749f35be653b8ff54b034389db72",
+    "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc/authorization.json": "0a669436b88581333160ec540108fa74f11753e1bb08f591310fe46ac66f09d8",
+    "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc/ci-ref-probe.json": "ebf176eb28fb0d5381ae9f595b4f5c5566bda859be1a0f90f0bb5cb8a2e505b3",
+    "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc/execution-lock.json": "117da5aacc48ddab49e3a8a357f9cb6a0368089d513c3f282cffb0efa7f18344",
+    "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc/launcher-boundary-verification.json": "f4010eeb5b32a58088fae9663d6b2091756c301b3c2b9f646716ab3f0518a0ca",
+    "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc/package.json": "85ed25c46c8cab619f715413b33c04f3f4617c7afe886ca7174b5296e5d307b0",
+    "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc/transport-verification.json": "b34197acac768cd76eb311e31b6217fa714dc9e164631e6791bc9c2afdc31e25",
+    "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc/v2a01.json": "a4d0c4bbb5e5d845e465011b36e0f482ddc38e35101fb57ac8bb0886bb37d994",
+    "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc/v2a02.json": "5dfccc9921a3bb27751da63d438fdacf26c63241a5ac595525996038009a5384",
+    "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc/v2a03.json": "077e9fea51aba1772bce06d82eefa801ee92aa8665596fc21397334473dfdce5",
+    "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc/v2a04.json": "958543e21b92c57380ff6dc126692111912b67b771637967f577a9c804858399",
+    "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc/v2a05.json": "7ec1b289ba9ac832bcdc4939707f482733ef933823ab701895ce53a7e2124bf2",
+    "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc/v2a06.json": "e48c357e3e816cb3caf5113af35c36089731bfef254c10e12e90292f5141e424",
+    "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc/v2a07.json": "f2640b2ffd15f6bbcc68a732bb93ef1791f912cd443cca5d565ebaf07850a6e3",
+    "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc/v2a08.json": "92095ee0f591db31f63c59e8d25d80ce4998de417970cd767cb4fe0ed6f57294",
+    "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc/v2a09.json": "e025aa13450425af5b02e7fc00d1407a74c93e1a8b7ab8782f79ec2423443f4b",
+    "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc/v2a10.json": "f2b9b81631b8638eda214877dab0fada5b6200474c743b216eb8f8498d9e9d84",
+    "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc/v2a11.json": "bd7211fc8a29449b85a606c2c8fbe0da8b14adc5d0282dc532200eeb128a95b8",
+    "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc/v2a12.json": "85a3ae496ffeaf86540968cba87d17165c9d95bfe2239ba74f6dcfa802840d12",
+    "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc/v2a13.json": "9f0ef960f84ca0954d19c6ff01dd9d069ac277f4673943755a843b5abad2654a",
+    "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc/v2a14.json": "5803cd543f604db2e4874b521c531b3068d0d189b2cc2df064b1e5e12bb76fe2",
+    "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc/v2a15.json": "04316b0a2f93e21e3eab0e9a3234c82b71f15bd43b3e196caa3e4b2b059aca09",
+    "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc/v2a16.json": "45fa1ce1f17f959732ad492c60f499129c7b23f21ce789e4ac61b08697833e6a",
+    "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc/v2a17.json": "07ef980980cb2c576d4cdf2053af1e572b9490a245347ae7a828772eae96515a",
+    "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc/v2a18.json": "ac2f1e6921de809449f32f96bcd687c838a500e32414306fe7458fbb5e16f72e",
+    "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc/v2a19.json": "df8bdfe97402c5ae63c2277320ae43a9983d2fa7079f009d8988b614b6255e0b",
+    "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc/v2a20.json": "c10de9a92e6286cdff8427ffa03a5ed376b212aa17816905f20e6a587678410f",
+    "session/20260914_m4_opportunity_control/m4-v2-retry-r1-targeted-tests-ef6dc7ebc.json": "9691fcad47fd6a39c888956df9abe5429e3afe3c50478acb1719595dabe123b4",
+    "session/20260914_m4_opportunity_control/paired-engineering-generator-failure/source-runtime-projection.tar.gz": "ed3050a2b6af92eb8ce93dca18aa9e4dec2d69b89cc23a0c757d8270ee20d70e",
+    "uv.lock": "bc69ceddc9f35d2c120235c96afac2e6c7b76827e044efda3e61f908be72c4cc"
+  },
+  "maximum_attempts_per_identity": 1,
+  "maximum_invocations": 20,
+  "minimum_authenticated_capsules": 16,
+  "new_attempt_namespace": "m4-v2-capture-retry-r1-guards",
+  "original_attempts_preserved": true,
+  "package_directory": "session/20260914_m4_opportunity_control/m4-v2-capture-retry-r1-ef6dc7ebc",
+  "package_sha256": "85ed25c46c8cab619f715413b33c04f3f4617c7afe886ca7174b5296e5d307b0",
+  "paired_replay_started": false,
+  "plan_sha256": "5dbe1ec155a9c3e7d57363820625286290f6803c0bd2e47484847ed3980e141e",
+  "purpose": "capture_retry_r1",
+  "queue_deadline": null,
+  "recorded_at": "2026-10-20T06:28:46.932319+00:00",
+  "schema": "m4-v2-capture-retry-r1-launch-readiness-v1",
+  "scientific_outcomes_opened": false,
+  "status": "PASS_VERIFIED_CAPTURE_RETRY_R1_READY"
+}
