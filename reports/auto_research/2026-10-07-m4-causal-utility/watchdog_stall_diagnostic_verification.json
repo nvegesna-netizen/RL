@@ -1,0 +1,32 @@
+{
+  "targeted_tests": {
+    "errors": 0,
+    "failures": 0,
+    "full_gpu_module_imports_executed": false,
+    "native_buffer_and_watchdog_definitions_executed_on_cpu": true,
+    "run": 20,
+    "skipped": 0,
+    "source_commit": "81ef4dabcdd4cda078638e24e8c952416d7ec343"
+  },
+  "transport": {
+    "actual_extraction_and_native_patch_executed": true,
+    "all_seven_python_blocks_parsed": true,
+    "complete_native_cross_section_validator_executed": true,
+    "cpu_test_skips": 0,
+    "direct_eos_artifact_inheritance": true,
+    "exact_eos_job_name": "basic/m4-v2-watchdog-stall-diagnostic-d01 dgxh100_eos 00 [1 dgxh100_eos]",
+    "extracted_real_buffer_watchdog_cpu_tests": 2,
+    "independent_rebuild_byte_identical": true,
+    "jet_schema_valid": true,
+    "manifest_sha256": "dab7d06fec938af294bfd19382c69fa4725fe40072d26928102bdca73dfae42c",
+    "native_full_import_tests_deferred_to_EOS": true,
+    "new_launches": 0,
+    "no_collector_created": true,
+    "package_sha256": "1b345adeda6f0c74fe690330f4b5584d7cfa4b107ec558a403c389881d37db2a",
+    "schema": "m4-watchdog-stall-clean-room-verification-v1",
+    "status": "PASS_EXCLUDED_DIAGNOSTIC_TRANSPORT",
+    "training_command_byte_identical": true,
+    "training_not_executed_locally": true,
+    "unmodified_native_files_verified": 8
+  }
+}

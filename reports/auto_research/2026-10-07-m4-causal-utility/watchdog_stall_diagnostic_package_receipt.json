@@ -1,0 +1,21 @@
+{
+  "manifest_sha256": "dab7d06fec938af294bfd19382c69fa4725fe40072d26928102bdca73dfae42c",
+  "maximum_launches": 1,
+  "native_patch_sha256": {
+    "nemo_rl/algorithms/single_controller.py": {
+      "after_sha256": "3a0f5b0f9cb6443dab1708e56c590f66bd798dc02c837004709454b5be21cafc",
+      "before_sha256": "97164bd7649830c9a5499f0f6825e257c3314a34e5b27488955213de3d02047f"
+    },
+    "tests/unit/single_controller/test_single_controller.py": {
+      "after_sha256": "483b27725fbead6198e305e8b326c990c49b9878570ca2605110a39cc1c5a84c",
+      "before_sha256": "ca1879a47ee7d4a8aa2322d59fd137fbbd7fb1ff3fc94012639730b70a7e15ff"
+    }
+  },
+  "only_controller_diagnostic_method_changed": true,
+  "protocol_sha256": "86c0168d5b4647fd90e94edb2018174862edc76758a9fd349e90d91b9afbc130",
+  "reference_manifest_sha256": "e025aa13450425af5b02e7fc00d1407a74c93e1a8b7ab8782f79ec2423443f4b",
+  "schema": "m4-watchdog-stall-diagnostic-package-v1",
+  "scientific_acquisition": false,
+  "source_commit": "81ef4dabcdd4cda078638e24e8c952416d7ec343",
+  "training_requires_native_qualification": true
+}

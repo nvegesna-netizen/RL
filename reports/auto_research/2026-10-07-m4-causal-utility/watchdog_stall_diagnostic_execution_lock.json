@@ -1,0 +1,36 @@
+{
+  "actual_eos_job_name": "basic/m4-v2-watchdog-stall-diagnostic-d01 dgxh100_eos 00 [1 dgxh100_eos]",
+  "allocated_seconds": 14400,
+  "baseline_plan_sha256": "5dbe1ec155a9c3e7d57363820625286290f6803c0bd2e47484847ed3980e141e",
+  "client_queue_deadline": null,
+  "guard_namespace": "m4-watchdog-stall-diagnostic-guards",
+  "manifest_sha256": "dab7d06fec938af294bfd19382c69fa4725fe40072d26928102bdca73dfae42c",
+  "maximum_invocations": 1,
+  "native_change_only_diagnostic_snapshot": true,
+  "native_pass_counts_required": [
+    2,
+    7,
+    17
+  ],
+  "native_patch_sha256": {
+    "nemo_rl/algorithms/single_controller.py": {
+      "after_sha256": "3a0f5b0f9cb6443dab1708e56c590f66bd798dc02c837004709454b5be21cafc",
+      "before_sha256": "97164bd7649830c9a5499f0f6825e257c3314a34e5b27488955213de3d02047f"
+    },
+    "tests/unit/single_controller/test_single_controller.py": {
+      "after_sha256": "483b27725fbead6198e305e8b326c990c49b9878570ca2605110a39cc1c5a84c",
+      "before_sha256": "ca1879a47ee7d4a8aa2322d59fd137fbbd7fb1ff3fc94012639730b70a7e15ff"
+    }
+  },
+  "package_sha256": "1b345adeda6f0c74fe690330f4b5584d7cfa4b107ec558a403c389881d37db2a",
+  "paired_replay_authorized": false,
+  "primary_outcomes_opened": false,
+  "prior_attempts_preserved": true,
+  "protocol_sha256": "86c0168d5b4647fd90e94edb2018174862edc76758a9fd349e90d91b9afbc130",
+  "qualification_before_training": true,
+  "schema": "m4-excluded-watchdog-stall-execution-lock-v1",
+  "scientific_acquisition": false,
+  "scientific_admission_permitted": false,
+  "source_commit": "81ef4dabcdd4cda078638e24e8c952416d7ec343",
+  "training_command_byte_identical": true
+}
