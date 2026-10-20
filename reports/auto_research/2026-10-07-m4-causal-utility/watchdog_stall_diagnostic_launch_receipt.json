@@ -1,0 +1,44 @@
+{
+  "all_frozen_inputs_and_forty_prior_guards_unchanged": true,
+  "child": {
+    "id": 75259778,
+    "ref": "dlalgo-ci/eos",
+    "sha": "8f5151cf00e02933a9b92772443d62e95b5150ff",
+    "status": "running"
+  },
+  "child_jobs": [
+    {
+      "id": 498201085,
+      "name": "basic/m4-v2-watchdog-stall-diagnostic-d01 dgxh100_eos 00 [1 dgxh100_eos]",
+      "status": "running"
+    }
+  ],
+  "guard_sha256": "c9d9615464baf1db32c173390c7e394c57bb7381a8a3658fc00415870ca3553d",
+  "manifest_sha256": "dab7d06fec938af294bfd19382c69fa4725fe40072d26928102bdca73dfae42c",
+  "native_launcher_return_code": 0,
+  "native_qualification_status": "PENDING_TERMINAL_ARTIFACT_AUTHENTICATION",
+  "observed_at": "2026-10-20T10:53:55.901807+00:00",
+  "original_cohort_retried_or_canceled": false,
+  "package_sha256": "1b345adeda6f0c74fe690330f4b5584d7cfa4b107ec558a403c389881d37db2a",
+  "paired_replays": 0,
+  "parent": {
+    "id": 75259720,
+    "ref": "dlalgo-ci/eos",
+    "sha": "8f5151cf00e02933a9b92772443d62e95b5150ff",
+    "status": "running"
+  },
+  "parent_jobs": [
+    {
+      "id": 498200447,
+      "name": "generate",
+      "status": "success"
+    }
+  ],
+  "primary_outcomes_opened": false,
+  "schema": "m4-excluded-watchdog-diagnostic-launch-receipt-v1",
+  "scientific_acquisition": false,
+  "scientific_admission_permitted": false,
+  "source_commit": "81ef4dabcdd4cda078638e24e8c952416d7ec343",
+  "submission_attempts": 1,
+  "training_start_requires_native_qualification": true
+}
