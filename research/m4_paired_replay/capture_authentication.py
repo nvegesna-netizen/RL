@@ -19,6 +19,7 @@ from research.m4_paired_replay.contracts import (
     object_hash,
     validate_plan,
 )
+from research.m4_paired_replay.capture_completion import validate_full_window
 
 
 # Exact checks emitted by the frozen independent capture analyzer.
@@ -183,13 +184,27 @@ def classify(
             progress = verified(
                 progress_bytes, f"m4-eligible-live-{identity}-progress.json"
             )
+            validate_full_window(progress)
+            for suffix, digest in progress["source_sha256"].items():
+                target = (
+                    f"/jet/assets/basic/{workload}/m4-eligible-live-{identity}-{suffix}"
+                )
+                hashes = [
+                    line.split("  ", 1)[0]
+                    for line in inventory_bytes.decode().splitlines()
+                    if line.split("  ", 1)[-1] == target
+                ]
+                if hashes != [digest]:
+                    raise ValueError(
+                        "full-window source not bound to workload inventory"
+                    )
             if (
                 result.get("paired_replay_started") is not False
                 or result["maximum_completed_updates"] != 64
+                or progress["eligible_divergence_count"] != 0
                 or (
                     progress["train_steps"] != 64
                     or progress["learner_version"] != 64
-                    or progress["run_exit_code"] != 0
                     or progress["capsule_written"] is not False
                 )
             ):

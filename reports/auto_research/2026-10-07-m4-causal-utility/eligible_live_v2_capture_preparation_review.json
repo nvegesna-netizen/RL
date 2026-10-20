@@ -1,0 +1,56 @@
+{
+  "schema": "m4-v2-capture-preparation-review-v1",
+  "recorded_at": "2026-10-20T01:17:04Z",
+  "status": "PASS_COMPLETION_READER_ONLY_NOT_LAUNCH_READY",
+  "engineering_parent_pipeline_id": 75144240,
+  "engineering_result": "PASS_SYNTHETIC_ENGINEERING_QUALIFICATION",
+  "scientific_effect_estimated": false,
+  "next_scientific_step": "Frozen twenty-trajectory v2 eligible-live capture cohort, followed by admission gate before paired replay",
+  "plan_sha256": "5dbe1ec155a9c3e7d57363820625286290f6803c0bd2e47484847ed3980e141e",
+  "causal_protocol_sha256": "716ba0eb8f980ca5af0ef3d57e2415befc1fb1a315afeb01b9bc326a60341b48",
+  "completion_reader": {
+    "observed_native_exit_code_preserved": true,
+    "expected_native_no_capsule_exception_requires_full_window": true,
+    "source_hashes_bound_to_workload_inventory": true,
+    "nonzero_eligible_divergence_rejected_at_no_event_admission": true,
+    "truncated_windows_watchdog_and_unrelated_errors_rejected": true,
+    "training_scheduler_and_eligibility_sources_changed": false
+  },
+  "verification": {
+    "targeted_tests": 112,
+    "extracted_clean_room_tests": 173,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "offline_overlay_sha256": "13fc5eb5eb8c76cd5986212aee1dcc1b8bcbdc866c2484d1f93f7da85a92a614",
+    "preserved_liveness_trajectories_reauthenticated": 6,
+    "preserved_full_windows": 6,
+    "qualification_trajectories_admitted_as_scientific_data": 0,
+    "native_exception_path_tested_with_synthetic_fixture_only": true
+  },
+  "capture_version_zero_audit": {
+    "synthetic_zero_step_initializer_will_not_be_injected_into_capture": true,
+    "reason": "With max_staleness_versions=1, at learner version zero all admissible groups start at zero. None satisfies start_version+1<=current_version, so strict imminent-M4 gain cannot trigger an eligible capture at version zero."
+  },
+  "remaining_before_launch": [
+    "Wire the completion emitter and classifier into the new native capture runtime, without modifying qualified training or eligibility code",
+    "Verify direct EOS checkpoint artifact transport and compact-only downstream collection; do not route large checkpoints through the bounded logs collector",
+    "Build and independently clean-room verify all twenty manifests, source receipt, execution lock and fresh one-shot guards"
+  ],
+  "cohort_constraints": {
+    "identities": "v2a01..v2a20",
+    "seeds": "20261201..20261220",
+    "maximum_updates_per_capture": 64,
+    "all_twenty_terminal_and_authenticated_before_admission": true,
+    "minimum_capsules": 16,
+    "replacements_retries_or_extensions": false,
+    "v1_pooling": false,
+    "allocated_time_limit_seconds": 14400,
+    "queue_deadline_seconds": null,
+    "progress_watchdog_seconds": 1200,
+    "paired_replay_before_admission": false
+  },
+  "new_launches": 0,
+  "old_guards_reset": false,
+  "scientific_outcomes_opened": false
+}

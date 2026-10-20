@@ -11,11 +11,18 @@ import os
 import math
 from pathlib import Path
 import tempfile
+import subprocess
+import sys
 import unittest
 from types import SimpleNamespace
 from unittest.mock import patch
 
 from research.m4_eligible_replay.contracts import canonical_json
+from research.m4_paired_replay.capture_completion import (
+    NO_CAPTURE_ERROR,
+    prove_full_window,
+    validate_full_window,
+)
 from research.m4_paired_replay.capture_authentication import (
     CAPTURE_CHECKS,
     CAUSAL_PROTOCOL_HASH,
@@ -38,6 +45,65 @@ from research.m4_paired_replay.execution import (
     release_encrypted_outcomes,
     validate_secondaries,
 )
+
+
+def synthetic_window(*, native_exception: bool) -> tuple[dict, dict[str, bytes]]:
+    """Return small test-only records; never call this from a capture runner."""
+    log = (
+        "RuntimeError: " + NO_CAPTURE_ERROR + "\n"
+        if native_exception
+        else "SC run complete: {'train_steps': 64, 'trainer_version': 64}\n"
+    ).encode()
+    lifecycle = b"".join(
+        canonical_json(
+            {"stage": "learner_version_advanced", "learner_weight_version": i}
+        )
+        for i in range(1, 65)
+    )
+    oars = canonical_json(
+        {"event_type": "header", "actuation_scorer": "m4_shield"}
+    ) + b"".join(
+        canonical_json(
+            {
+                "event_type": "decision",
+                "proposal_matches_actual": True,
+                "actual_selected_group_ids": [
+                    "test-only-0",
+                    "test-only-1",
+                    "test-only-2",
+                    "test-only-3",
+                ],
+                "proposals": {
+                    "reward_variance_risk": {
+                        "proposed_group_ids": [
+                            "test-only-0",
+                            "test-only-1",
+                            "test-only-2",
+                            "test-only-3",
+                        ]
+                    },
+                    "m4_shield": {
+                        "proposed_group_ids": [
+                            "test-only-0",
+                            "test-only-1",
+                            "test-only-2",
+                            "test-only-3",
+                        ]
+                    },
+                },
+            }
+        )
+        for _ in range(64)
+    )
+    files = {"run.log": log, "lifecycle.jsonl": lifecycle, "oars-v2.jsonl": oars}
+    return prove_full_window(
+        run_exit_code=int(native_exception),
+        run_log=log,
+        lifecycle=lifecycle,
+        oars=oars,
+        capsule_written=False,
+        watchdog_record_present=False,
+    ), files
 
 
 def capture_fixture() -> dict:
@@ -84,6 +150,33 @@ def capture_fixture() -> dict:
         inventory_bytes=inventory,
         progress_bytes=None,
     )
+
+
+def no_capture_fixture(*, native_exception: bool) -> dict:
+    args = capture_fixture()
+    result = json.loads(args["result_bytes"])
+    result.update(
+        status="NO_ELIGIBLE_DECISION",
+        maximum_completed_updates=64,
+        paired_replay_started=False,
+    )
+    args["result_bytes"] = canonical_json(result)
+    args["manifest_bytes"] = None
+    progress, source_files = synthetic_window(native_exception=native_exception)
+    args["progress_bytes"] = canonical_json(progress)
+    prefix = "/jet/assets/basic/m4-eligible-live-acquisition-v2a01/"
+    args["inventory_bytes"] = "".join(
+        f"{hashlib.sha256(data).hexdigest()}  {prefix}{name}\n"
+        for name, data in [
+            ("m4-eligible-live-v2a01-capture-result.json", args["result_bytes"]),
+            ("m4-eligible-live-v2a01-progress.json", args["progress_bytes"]),
+            *[
+                (f"m4-eligible-live-v2a01-{suffix}", data)
+                for suffix, data in source_files.items()
+            ],
+        ]
+    ).encode()
+    return args
 
 
 class CaptureAuthenticationTests(unittest.TestCase):
@@ -155,36 +248,129 @@ class CaptureAuthenticationTests(unittest.TestCase):
         self.assertIsNone(proof["child"])
 
     def test_no_eligibility_requires_authenticated_full_window(self) -> None:
-        args = capture_fixture()
-        result = json.loads(args["result_bytes"])
-        result.update(
-            status="NO_ELIGIBLE_DECISION",
-            maximum_completed_updates=64,
-            paired_replay_started=False,
-        )
-        args["result_bytes"] = canonical_json(result)
-        args["manifest_bytes"] = None
-        args["progress_bytes"] = canonical_json(
-            dict(
-                train_steps=64,
-                learner_version=64,
-                run_exit_code=0,
-                capsule_written=False,
-            )
-        )
-        prefix = "/jet/assets/basic/m4-eligible-live-acquisition-v2a01/"
-        args["inventory_bytes"] = "".join(
-            f"{hashlib.sha256(data).hexdigest()}  {prefix}{name}\n"
-            for name, data in (
-                ("m4-eligible-live-v2a01-capture-result.json", args["result_bytes"]),
-                ("m4-eligible-live-v2a01-progress.json", args["progress_bytes"]),
-            )
-        ).encode()
+        args = no_capture_fixture(native_exception=False)
         row, _ = classify(**args)
         self.assertEqual(row["classification"], "NO_ELIGIBLE")
         args["progress_bytes"] = None
         with self.assertRaisesRegex(ValueError, "missing"):
             classify(**args)
+
+    def test_expected_native_no_capture_exception_retains_raw_exit(self) -> None:
+        record, _ = synthetic_window(native_exception=True)
+        self.assertEqual(record["run_exit_code"], 1)
+        validate_full_window(record)
+        self.assertEqual(record["expected_no_capture_exception"], NO_CAPTURE_ERROR)
+
+    def test_reader_accepts_proved_native_boundary_without_faking_exit(self) -> None:
+        args = no_capture_fixture(native_exception=True)
+        row, _ = classify(**args)
+        self.assertEqual(row["classification"], "NO_ELIGIBLE")
+        self.assertEqual(json.loads(args["progress_bytes"])["run_exit_code"], 1)
+
+    def test_reader_requires_each_source_hash_in_workload_inventory(self) -> None:
+        args = no_capture_fixture(native_exception=True)
+        progress = json.loads(args["progress_bytes"])
+        args["inventory_bytes"] = args["inventory_bytes"].replace(
+            progress["source_sha256"]["lifecycle.jsonl"].encode(),
+            b"0" * 64,
+        )
+        with self.assertRaisesRegex(ValueError, "source not bound"):
+            classify(**args)
+
+    def test_suppressed_eligible_events_cannot_be_no_eligible(self) -> None:
+        args = no_capture_fixture(native_exception=True)
+        old = args["progress_bytes"]
+        progress = json.loads(old)
+        progress["eligible_divergence_count"] = 1
+        new = canonical_json(progress)
+        args["progress_bytes"] = new
+        args["inventory_bytes"] = args["inventory_bytes"].replace(
+            hashlib.sha256(old).hexdigest().encode(),
+            hashlib.sha256(new).hexdigest().encode(),
+        )
+        with self.assertRaisesRegex(ValueError, "complete authenticated window"):
+            classify(**args)
+
+    def test_completion_cli_emits_immutable_raw_exit_proof(self) -> None:
+        expected, files = synthetic_window(native_exception=True)
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            for name, data in files.items():
+                (root / name).write_bytes(data)
+            output = root / "proof.json"
+            command = [
+                sys.executable,
+                "-m",
+                "research.m4_paired_replay.capture_completion",
+                "--run-exit-code",
+                "1",
+                "--run-log",
+                str(root / "run.log"),
+                "--lifecycle",
+                str(root / "lifecycle.jsonl"),
+                "--oars",
+                str(root / "oars-v2.jsonl"),
+                "--capsule",
+                str(root / "absent-capsule"),
+                "--watchdog",
+                str(root / "absent-watchdog"),
+                "--output",
+                str(output),
+            ]
+            result = subprocess.run(command, capture_output=True, check=False)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(json.loads(output.read_bytes()), expected)
+            duplicate = subprocess.run(command, capture_output=True, check=False)
+            self.assertNotEqual(duplicate.returncode, 0)
+            self.assertEqual(json.loads(output.read_bytes()), expected)
+
+    def test_incomplete_or_failed_no_capture_proof_rejected(self) -> None:
+        good, _ = synthetic_window(native_exception=True)
+        mutations = {
+            "train_steps": 63,
+            "learner_version": 63,
+            "learner_versions": list(range(1, 64)),
+            "run_exit_code": 2,
+            "expected_no_capture_exception": "unrelated failure",
+            "capsule_written": True,
+            "watchdog_record_present": True,
+            "oars_header_count": 2,
+            "oars_header_scorer": "wrong-scorer",
+            "oars_decisions": 63,
+            "oars_actions_matching_shield": 63,
+            "source_sha256": {},
+        }
+        for key, value in mutations.items():
+            with self.subTest(key=key), self.assertRaises(ValueError):
+                validate_full_window({**good, key: value})
+
+    def test_native_runtime_error_not_relabelled_no_event(self) -> None:
+        _, files = synthetic_window(native_exception=True)
+        with self.assertRaisesRegex(ValueError, "unexpected native"):
+            prove_full_window(
+                run_exit_code=1,
+                run_log=b"RuntimeError: CUDA out of memory\n",
+                lifecycle=files["lifecycle.jsonl"],
+                oars=files["oars-v2.jsonl"],
+                capsule_written=False,
+                watchdog_record_present=False,
+            )
+
+    def test_native_no_capture_boundary_is_source_backed(self) -> None:
+        source = (ROOT / "nemo_rl/algorithms/single_controller.py").read_text()
+        tree = ast.parse(source)
+        self.assertTrue(
+            any(
+                isinstance(n, ast.Raise)
+                and isinstance(n.exc, ast.Call)
+                and isinstance(n.exc.func, ast.Name)
+                and n.exc.func.id == "RuntimeError"
+                and n.exc.args
+                and isinstance(n.exc.args[0], ast.Constant)
+                and n.exc.args[0].value == NO_CAPTURE_ERROR
+                for n in ast.walk(tree)
+            )
+        )
 
     def test_evidence_packets_rechecked_before_dispatch(self) -> None:
         plan, _, _, _, _ = fixture()
