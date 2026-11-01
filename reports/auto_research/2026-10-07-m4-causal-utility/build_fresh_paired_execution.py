@@ -139,7 +139,13 @@ def build(output: Path) -> dict:
     output.mkdir(parents=True, exist_ok=False)
     put(output / "execution-lock.json", lock)
     overlay_names = sorted(
-        CHANGED_CONTROL_FILES | {"research/m4_paired_replay/fresh_arm_job.py"}
+        CHANGED_CONTROL_FILES
+        | {
+            "research/m4_paired_replay/fresh_arm_job.py",
+            "research/m4_paired_replay/test_fresh_arm_job.py",
+            str(Path(__file__).relative_to(ROOT)),
+            str(gate_path.relative_to(ROOT)),
+        }
     )
     overlay = {
         name: {
@@ -184,6 +190,9 @@ PY
     test_line = next(
         s for s in old.splitlines() if s.startswith('"$PYTHON" -m unittest ')
     )
+    test_line = "M4_PAIRED_SYNTHETIC_ENGINEERING=1 " + test_line.replace(
+        " -v >", " research.m4_paired_replay.test_fresh_arm_job -v >"
+    )
     script = (
         prefix
         + extract
@@ -191,6 +200,18 @@ PY
         + test_line
         + "\n"
     )
+    script += r""""$PYTHON" - "$ASSETS" <<'PY'
+import json,re,sys
+from pathlib import Path
+root=Path(sys.argv[1]);text=(root/"tests.log").read_text()
+counts=re.findall(r"Ran (\d+) tests?",text)
+assert counts==["213"],counts
+assert re.search(r"^OK\s*$",text,re.M) and not re.search(r"skipped=|\bFAILED\b",text)
+with (root/"qualification.json").open("x") as stream:json.dump({"status":"PASS_NATIVE_REPLAY_TESTS","run":213,"skipped":0,"primary_outcomes_opened":False},stream,sort_keys=True)
+print("PASS_NATIVE_REPLAY_TESTS_BEFORE_CHECKPOINT_IO")
+PY
+test -z "${M4_PAIRED_SYNTHETIC_ENGINEERING:-}"
+"""
     script += r"""set +e
 "$PYTHON" -m research.m4_paired_replay.fresh_arm_job --inputs "$RUN_REPO/paired-inputs" --public "$ASSETS"
 readonly ARM_RC=$?
@@ -198,7 +219,7 @@ set -e
 "$PYTHON" - "$ASSETS" <<'PY'
 import hashlib,sys
 from pathlib import Path
-root=Path(sys.argv[1]);names=["tests.log","completion.json","failure.json","transport-receipt.json","arm-receipt.json","encrypted-envelope.json","encrypted-receipt.json","failure-envelope.json","failure-envelope-receipt.json"]
+root=Path(sys.argv[1]);names=["tests.log","qualification.json","completion.json","failure.json","transport-receipt.json","arm-receipt.json","encrypted-envelope.json","encrypted-receipt.json","failure-envelope.json","failure-envelope-receipt.json"]
 with (root/"artifacts.sha256").open("x") as stream:
  for name in names:
   path=root/name
