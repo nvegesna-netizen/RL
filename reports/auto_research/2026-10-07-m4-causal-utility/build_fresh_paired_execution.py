@@ -143,6 +143,7 @@ def build(output: Path) -> dict:
         | {
             "research/m4_paired_replay/fresh_arm_job.py",
             "research/m4_paired_replay/test_fresh_arm_job.py",
+            "research/m4_paired_replay/capture_completion.py",
             str(Path(__file__).relative_to(ROOT)),
             str(gate_path.relative_to(ROOT)),
         }
@@ -190,6 +191,36 @@ PY
     test_line = next(
         s for s in old.splitlines() if s.startswith('"$PYTHON" -m unittest ')
     )
+
+    def test_names(data: bytes) -> set[tuple[str, str]]:
+        tree = ast.parse(data)
+        return {
+            (node.name, method.name)
+            for node in tree.body
+            if isinstance(node, ast.ClassDef)
+            for method in node.body
+            if isinstance(method, ast.FunctionDef) and method.name.startswith("test_")
+        }
+
+    prior_tests = test_names(
+        base64.b64decode(
+            accepted_overlay["research/m4_paired_replay/test_integration.py"]["base64"]
+        )
+    )
+    current_tests = test_names(
+        (ROOT / "research/m4_paired_replay/test_integration.py").read_bytes()
+    )
+    if not prior_tests <= current_tests:
+        raise ValueError("qualified integration regression tests were removed")
+    native_test_count = (
+        210
+        + len(current_tests - prior_tests)
+        + len(
+            test_names(
+                (ROOT / "research/m4_paired_replay/test_fresh_arm_job.py").read_bytes()
+            )
+        )
+    )
     test_line = "M4_PAIRED_SYNTHETIC_ENGINEERING=1 " + test_line.replace(
         " -v >", " research.m4_paired_replay.test_fresh_arm_job -v >"
     )
@@ -205,13 +236,13 @@ import json,re,sys
 from pathlib import Path
 root=Path(sys.argv[1]);text=(root/"tests.log").read_text()
 counts=re.findall(r"Ran (\d+) tests?",text)
-assert counts==["213"],counts
+assert counts==["@NATIVE_TESTS@"],counts
 assert re.search(r"^OK\s*$",text,re.M) and not re.search(r"skipped=|\bFAILED\b",text)
-with (root/"qualification.json").open("x") as stream:json.dump({"status":"PASS_NATIVE_REPLAY_TESTS","run":213,"skipped":0,"primary_outcomes_opened":False},stream,sort_keys=True)
+with (root/"qualification.json").open("x") as stream:json.dump({"status":"PASS_NATIVE_REPLAY_TESTS","run":@NATIVE_TESTS@,"skipped":0,"primary_outcomes_opened":False},stream,sort_keys=True)
 print("PASS_NATIVE_REPLAY_TESTS_BEFORE_CHECKPOINT_IO")
 PY
 test -z "${M4_PAIRED_SYNTHETIC_ENGINEERING:-}"
-"""
+""".replace("@NATIVE_TESTS@", str(native_test_count))
     script += r"""set +e
 "$PYTHON" -m research.m4_paired_replay.fresh_arm_job --inputs "$RUN_REPO/paired-inputs" --public "$ASSETS"
 readonly ARM_RC=$?
@@ -281,6 +312,7 @@ exit "$ARM_RC"
             name: row["sha256"] for name, row in overlay.items()
         },
         "scientific_updates": 32,
+        "native_tests_required_per_job": native_test_count,
         "zero_update_gradient_processes": 64,
         "primary_outcomes_opened": False,
     }
